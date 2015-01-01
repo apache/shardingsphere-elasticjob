@@ -17,20 +17,19 @@
 
 package com.dangdang.ddframe.reg.spring.placeholder;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import com.dangdang.ddframe.reg.fixture.PlaceholderAnnotationBean;
+import com.dangdang.ddframe.reg.fixture.PlaceholderXmlBean;
+import com.dangdang.ddframe.test.AbstractZookeeperJUnit4SpringContextTests;
+import org.junit.Test;
+import org.springframework.test.context.ContextConfiguration;
 
 import javax.annotation.Resource;
 
-import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-
-import com.dangdang.ddframe.reg.fixture.PlaceholderAnnotationBean;
-import com.dangdang.ddframe.reg.fixture.PlaceholderXmlBean;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @ContextConfiguration(locations = "classpath:META-INF/reg/withNamespace.xml")
-public class RegPlaceholderSpringIntegrateTest extends AbstractJUnit4SpringContextTests {
+public class RegPlaceholderSpringIntegrateTest extends AbstractZookeeperJUnit4SpringContextTests {
     
     @Resource
     private PlaceholderAnnotationBean placeholderAnnotationBean;
@@ -44,8 +43,6 @@ public class RegPlaceholderSpringIntegrateTest extends AbstractJUnit4SpringConte
         assertThat(placeholderAnnotationBean.getRegValue2(), is("new"));
         assertThat(placeholderAnnotationBean.getWithNamespaceValue1(), is("with_namespace_value_1"));
         assertThat(placeholderAnnotationBean.getWithNamespaceValue2(), is("with_namespace_value_2"));
-        assertThat(placeholderAnnotationBean.getWithoutNamespaceValue1(), is("without_namespace_value_1"));
-        assertThat(placeholderAnnotationBean.getWithoutNamespaceValue2(), is("without_namespace_value_2"));
     }
     
     @Test
@@ -54,7 +51,5 @@ public class RegPlaceholderSpringIntegrateTest extends AbstractJUnit4SpringConte
         assertThat(placeholderXmlBean.getRegValue2(), is("${/new}"));
         assertThat(placeholderXmlBean.getWithNamespaceValue1(), is("with_namespace_value_1"));
         assertThat(placeholderXmlBean.getWithNamespaceValue2(), is("with_namespace_value_2"));
-        assertThat(placeholderXmlBean.getWithoutNamespaceValue1(), is("without_namespace_value_1"));
-        assertThat(placeholderXmlBean.getWithoutNamespaceValue2(), is("without_namespace_value_2"));
     }
 }

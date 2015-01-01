@@ -17,16 +17,16 @@
 
 package com.dangdang.ddframe.reg.spring.placeholder;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
+import com.dangdang.ddframe.test.AbstractZookeeperJUnit4SpringContextTests;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 @ContextConfiguration(locations = "classpath:META-INF/reg/placeholder/placeholderBean.xml")
-public final class PlaceholderResolvedForNoPlaceholderConfigurerTest extends AbstractJUnit4SpringContextTests {
+public final class PlaceholderResolvedForNoPlaceholderConfigurerTest extends AbstractZookeeperJUnit4SpringContextTests {
     
     private PlaceholderResolved placeholderResolved;
     

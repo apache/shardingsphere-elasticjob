@@ -50,6 +50,10 @@ public final class ScriptElasticJobUtil {
         Set<PosixFilePermission> permissionsSet = new HashSet<>();
         permissionsSet.add(PosixFilePermission.OWNER_READ);
         permissionsSet.add(PosixFilePermission.OWNER_EXECUTE);
+        permissionsSet.add(PosixFilePermission.GROUP_READ);
+        permissionsSet.add(PosixFilePermission.GROUP_EXECUTE);
+        permissionsSet.add(PosixFilePermission.OTHERS_READ);
+        permissionsSet.add(PosixFilePermission.OTHERS_EXECUTE);
         Files.setPosixFilePermissions(path, permissionsSet);
     }
 }
