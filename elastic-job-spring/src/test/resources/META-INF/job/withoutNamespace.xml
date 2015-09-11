@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd 
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context.xsd 
+                        ">
+    <context:property-placeholder location="classpath:conf/job/conf.properties" />
+    
+    <bean id="regCenter" class="com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter" init-method="init">
+        <constructor-arg>
+            <bean class="com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration">
+                <property name="serverLists" value="localhost:3181" />
+                <property name="namespace" value="dd-job" />
+                <property name="baseSleepTimeMilliseconds" value="1000" />
+                <property name="maxSleepTimeMilliseconds" value="3000" />
+                <property name="maxRetries" value="3" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="oneOffElasticJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
+        <constructor-arg ref="regCenter"></constructor-arg>
+        <constructor-arg>
+            <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
+                <constructor-arg name="jobName" value="oneOffElasticJob" />
+                <constructor-arg name="jobClass" value="com.dangdang.ddframe.job.fixture.OneOffElasticJob" />
+                <constructor-arg name="shardingTotalCount" value="${oneOffElasticJob.shardingTotalCount}" />
+                <constructor-arg name="cron" value="0/1 * * * * ?" />
+                <property name="shardingItemParameters" value="${oneOffElasticJob.shardingItemParameters}" />
+                <property name="disabled" value="${oneOffElasticJob.disabled}" />
+                <property name="overwrite" value="${oneOffElasticJob.overwrite}" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="perpetualElasticJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
+        <constructor-arg ref="regCenter"></constructor-arg>
+        <constructor-arg>
+            <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
+                <constructor-arg name="jobName" value="perpetualElasticJob" />
+                <constructor-arg name="jobClass" value="com.dangdang.ddframe.job.fixture.PerpetualElasticJob" />
+                <constructor-arg name="shardingTotalCount" value="3" />
+                <constructor-arg name="cron" value="0/1 * * * * ?" />
+                <property name="shardingItemParameters" value="0=A,1=B,2=C" />
+                <property name="processCountIntervalSeconds" value="10" />
+                <property name="concurrentDataProcessThreadCount" value="3" />
+                <property name="fetchDataCount" value="100" />
+                <property name="overwrite" value="true" />
+            </bean>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="oneOffElasticJobBean" class="com.dangdang.ddframe.job.fixture.OneOffElasticJob">
+        <property name="springValue" value="oneOff" />
+    </bean>
+</beans>
