@@ -26,6 +26,46 @@
 * **Spring支持：**支持spring容器，自定义命名空间，支持占位符。
 * **运维平台：**提供运维界面，可以管理作业和注册中心。
 
+## Quick Start
+
+* **目录结构说明**
+ 
+  **elastic-job-platform：**maven版本依赖模块，编译elastic-job主项目前需先编译本项目。
+  
+  **elastic-job-core：**elastic-job核心模块，只通过Quartz和Curator就可执行分布式作业。
+  
+  **elastic-job-spring：**elastic-job对spring支持的模块，包括命名空间，依赖注入，占位符等。
+  
+  **elastic-job-console：**elastic-job web控制台，可将编译之后的war放入tomcat等servlet容器中使用。
+  
+  **elastic-job-example：**使用例子。
+
+  **elastic-job-test：**测试elastic-job使用的公用类，使用方无需关注。
+
+* **使用步骤**
+
+  **安装Java环境**
+  
+  请使用JDK1.7及其以上版本。可参考http://www.oracle.com/technetwork/java/javase/downloads/index.html
+
+  **安装Zookeeper**
+  
+  请使用Zookeeper 3.4.6及其以上版本。可参考https://zookeeper.apache.org/doc/trunk/zookeeperStarted.html
+  
+  **安装Maven**
+  
+  请使用Maven 3.0.4及其以上版本。可参考http://maven.apache.org/install.html
+  
+  **编译elastic-job-platform**
+```
+  cd %elastic-job-source-folder%/elastic-job-platform
+  mvn clean install
+```
+  **编译elastic-job**
+```
+  cd %elastic-job-source-folder%
+  mvn clean install
+```
 
 ## 代码开发 
 
@@ -244,6 +284,58 @@ public class JobDemo {
 * 开启monitorExecution才能实现分布式作业幂等性（即不会在多个作业服务器运行同一个分片）的功能，但monitorExecution对短时间内执行的作业（如每5秒一触发）性能影响较大，建议关闭并自行实现幂等性。
 * elastic-job没有自动删除作业服务器的功能，因为无法区分是服务器崩溃还是正常下线。所以如果要下线服务器，需要手工删除zookeeper中相关的服务器节点。由于直接删除服务器节点风险较大，暂时不考虑在运维平台增加此功能。
 
+## 运维平台
+
+* **登录**
+
+  默认用户名和密码是**root/root**，可以通过修改conf\auth.properties文件修改默认登录用户名和密码。
+  
+* **主要功能**
+
+  登录安全控制
+  
+  注册中心管理
+  
+  作业维度状态查看
+  
+  服务器维度状态查看
+  
+  快捷修改作业设置
+  
+  控制作业暂停和恢复运行
+
+* **设计理念**
+
+  运维平台和elastic-job并无直接关系，是通过读取作业注册中心数据展现作业状态，或更新注册中心数据修改全局配置。
+  
+  控制台只能控制作业本身是否运行，但不能控制作业进程的启停，因为控制台和作业本身服务器是完全分布式的，控制台并不能控制作业服务器。
+
+* **不支持项**
+
+  添加作业。因为作业都是在首次运行时自动添加，使用运维平台添加作业并无必要。
+  
+  停止作业。即使删除了Zookeeper信息也不能真正停止作业的运行，还会导致运行中的作业出问题。
+  
+  删除作业服务器。由于直接删除服务器节点风险较大，暂时不考虑在运维平台增加此功能。
+
+* **主要界面**
+
+  总览页
+  
+  ![总览页](http://static.oschina.net/uploads/space/2015/0914/181749_5KW0_719192.png)
+
+  注册中心管理页
+  
+  ![注册中心管理页](http://static.oschina.net/uploads/space/2015/0914/181807_8a2B_719192.png)
+
+  作业详细信息页
+  
+  ![作业详细信息页](http://static.oschina.net/uploads/space/2015/0914/181852_nbqS_719192.png)
+
+  服务器详细信息页
+  
+  ![服务器详细信息页](http://static.oschina.net/uploads/space/2015/0914/181926_VSdT_719192.png)
+
 ## 实现原理
 
 * **弹性分布式实现**
@@ -360,55 +452,3 @@ public class JobDemo {
   作业执行
   
   ![作业执行](http://static.oschina.net/uploads/space/2015/0914/181025_OSzr_719192.png)
-
-## 运维平台
-
-* **登录**
-
-  默认用户名和密码是**root/root**，可以通过修改conf\auth.properties文件修改默认登录用户名和密码。
-  
-* **主要功能**
-
-  登录安全控制
-  
-  注册中心管理
-  
-  作业维度状态查看
-  
-  服务器维度状态查看
-  
-  快捷修改作业设置
-  
-  控制作业暂停和恢复运行
-
-* **设计理念**
-
-  运维平台和elastic-job并无直接关系，是通过读取作业注册中心数据展现作业状态，或更新注册中心数据修改全局配置。
-  
-  控制台只能控制作业本身是否运行，但不能控制作业进程的启停，因为控制台和作业本身服务器是完全分布式的，控制台并不能控制作业服务器。
-
-* **不支持项**
-
-  添加作业。因为作业都是在首次运行时自动添加，使用运维平台添加作业并无必要。
-  
-  停止作业。即使删除了Zookeeper信息也不能真正停止作业的运行，还会导致运行中的作业出问题。
-  
-  删除作业服务器。由于直接删除服务器节点风险较大，暂时不考虑在运维平台增加此功能。
-
-* **主要界面**
-
-  总览页
-  
-  ![总览页](http://static.oschina.net/uploads/space/2015/0914/181749_5KW0_719192.png)
-
-  注册中心管理页
-  
-  ![注册中心管理页](http://static.oschina.net/uploads/space/2015/0914/181807_8a2B_719192.png)
-
-  作业详细信息页
-  
-  ![作业详细信息页](http://static.oschina.net/uploads/space/2015/0914/181852_nbqS_719192.png)
-
-  服务器详细信息页
-  
-  ![服务器详细信息页](http://static.oschina.net/uploads/space/2015/0914/181926_VSdT_719192.png)
