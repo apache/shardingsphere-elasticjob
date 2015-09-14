@@ -319,19 +319,19 @@ public class JobDemo {
 
   总览页
   
-  ![总览页](http://static.oschina.net/uploads/space/2015/0914/181749_5KW0_719192.png)
+  ![总览页]()
 
   注册中心管理页
   
-  ![注册中心管理页](http://static.oschina.net/uploads/space/2015/0914/181807_8a2B_719192.png)
+  ![注册中心管理页]()
 
   作业详细信息页
   
-  ![作业详细信息页](http://static.oschina.net/uploads/space/2015/0914/181852_nbqS_719192.png)
+  ![作业详细信息页]()
 
   服务器详细信息页
   
-  ![服务器详细信息页](http://static.oschina.net/uploads/space/2015/0914/181926_VSdT_719192.png)
+  ![服务器详细信息页]()
 
 ## 实现原理
 
