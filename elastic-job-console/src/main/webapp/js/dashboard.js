@@ -61,6 +61,7 @@ function renderJServersForDashboardNav() {
     $.get("server/servers", {}, function (data) {
         var currentIp = $("#server-ip").text();
         var $serversDimension = $("#servers-dimension");
+        $serversDimension.empty();
         for (var i = 0; i < data.length; i++) {
             var liContent = "<a href='server_detail?serverIp=" + data[i].serverIp + "' data-placement='right' title='" + data[i].serverHostName + "'>" + data[i].serverIp + "</a>";
             if (currentIp && currentIp === data[i].serverIp) {
