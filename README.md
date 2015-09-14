@@ -56,13 +56,10 @@
   
   请使用Maven 3.0.4及其以上版本。可参考http://maven.apache.org/install.html
   
-  **编译elastic-job-platform**
+  **编译elastic-job-platform和elastic-job**
 ```
   cd %elastic-job-source-folder%/elastic-job-platform
   mvn clean install
-```
-  **编译elastic-job**
-```
   cd %elastic-job-source-folder%
   mvn clean install
 ```
