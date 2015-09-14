@@ -121,7 +121,7 @@ public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
 </beans>
 ```
 
-  **<job:bean />命名空间属性详细说明**
+  **job:bean命名空间属性详细说明**
 
 <table>
 <tbody>
@@ -133,7 +133,6 @@ public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
 <tr><td>shardingTotalCount</td><td>int</td><td>是</td><td></td><td>作业分片总数</td></tr>
 <tr><td>shardingItemParameters</td><td>String</td><td>否</td><td></td><td>分片序列号和个性化参数对照表<br>分片序列号和参数用等号分隔，多个键值对用逗号分隔<br>分片序列号从0开始，不可大于或等于作业分片总数<br>如：<br>0=a,1=b,2=c</td></tr>
 <tr><td>jobParameter</td><td>String</td><td>否</td><td></td><td>作业自定义参数<br>可以配置多个相同的作业，但是用不同的参数作为不同的调度实例</td></tr>
-<tr><td>runImmediately</td><td>boolean</td><td>否</td><td>false</td><td>作业启动时立即执行</td></tr>
 <tr><td>monitorRuntime</td><td>boolean</td><td>否</td><td>true</td><td>监控作业运行时状态<br>每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率。因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。<br>每次作业执行时间和间隔时间均较长短的情况，建议监控作业运行时状态，可保证数据不会重复选取。
 </td></tr>
 <tr><td>processCountIntervalSeconds</td><td>int</td><td>否</td><td>300</td><td>统计作业处理数据数量的间隔时间<br>单位：秒<br>对Perpetual和SequencePerpetual作业有效</td></tr>
@@ -146,7 +145,7 @@ public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
 </tbody>
 </table>
 
-  **<reg:zookeeper />命名空间属性详细说明**
+  **reg:zookeeper命名空间属性详细说明**
 
 <table>
 <tbody>
@@ -237,6 +236,14 @@ public class JobDemo {
 }
 ```
 
+##使用限制
+* 作业一旦启动成功后不能修改作业名称，如果修改名称则视为新的作业。
+* 同一台作业服务器只能运行一个相同的作业实例，因为作业运行时是按照IP注册和管理的。
+* 作业根据/etc/hosts文件获取IP地址，如果获取的IP地址是127.0.0.1而非真实IP地址，应正确配置此文件。
+* 一旦有服务器波动，或者修改分片项，将会触发重新分片；触发重新分片将会导致运行中的Perpetual以及SequencePerpetual作业再执行完本次作业后不再继续执行，等待分片结束后再恢复正常。
+* 开启monitorExecution才能实现分布式作业幂等性（即不会在多个作业服务器运行同一个分片）的功能，但monitorExecution对短时间内执行的作业（如每5秒一触发）性能影响较大，建议关闭并自行实现幂等性。
+* elastic-job没有自动删除作业服务器的功能，因为无法区分是服务器崩溃还是正常下线。所以如果要下线服务器，需要手工删除zookeeper中相关的服务器节点。由于直接删除服务器节点风险较大，暂时不考虑在运维平台增加此功能。
+
 ## 实现原理
 
 * **弹性分布式实现**
@@ -256,4 +263,152 @@ public class JobDemo {
   7.	实现失效转移功能，在某台服务器执行完毕后主动抓取未分配的分片，并且在某台服务器下线后主动寻找可用的服务器执行任务。
 
 
+* **注册中心数据结构**
+
+  注册中心在定义的命名空间下，创建作业名称节点，用于区分不同作业，所以作业一旦创建则不能修改作业名称，如果修改名称将视为新的作业。作业名称节点下又包含4个数据子节点，分别是config, servers, execution和leader。
   
+  **概览**
+
+![注册中心数据结构](http://static.oschina.net/uploads/space/2015/0914/171533_1BOb_719192.png)
+
+
+  **config节点**
+
+  作业全局配置信息
+  
+<table>
+<tbody>
+<tr><td><em>子节点名</em></td><td><em>临时节点</em></td><td><em>描述</em></td></tr>
+<tr><td>jobClass</td><td>否</td><td>作业实现类名称</td></tr>
+<tr><td>shardingTotalCount</td><td>否</td><td>作业分片总数</td></tr>
+<tr><td>cron</td><td>否</td><td>作业启动时间的cron表达式</td></tr>
+<tr><td>shardingItemParameters</td><td>否</td><td>分片序列号和个性化参数对照表</td></tr>
+<tr><td>jobParameter</td><td>否</td><td>作业自定义参数</td></tr>
+<tr><td>monitorExecution</td><td>否</td><td>监控作业执行时状态</td></tr>
+<tr><td>processCountIntervalSeconds</td><td>否</td><td>统计作业处理数据数量的间隔时间</td></tr>
+<tr><td>concurrentDataProcessThreadCount</td><td>否</td><td>同时处理数据的并发线程数</td></tr>
+<tr><td>fetchDataCount</td><td>否</td><td>每次抓取的数据量</td></tr>
+<tr><td>failover</td><td>否</td><td>是否开启失效转移</td></tr>
+<tr><td>description</td><td>否</td><td>作业描述信息</td></tr>
+</tbody>
+</table>
+
+
+  **servers节点**
+
+  作业服务器信息，子节点是作业服务器的IP地址。IP地址节点的子节点存储详细信息。同一台作业服务器只能运行一个相同的作业实例，因为作业运行时是按照IP注册和管理的。
+  
+<table>
+<tbody>
+<tr><td><em>子节点名</em></td><td><em>临时节点</em></td><td><em>描述</em></td></tr>
+<tr><td>hostName</td><td>否</td><td>作业服务器名称</td></tr>
+<tr><td>status</td><td>是</td><td>作业服务器状态，分为READY和RUNNING<br>用于表示服务器在等待执行作业还是正在执行作业<br>如果status节点不存在则表示作业服务器未上线</td></tr>
+<tr><td>disabled</td><td>否</td><td>作业服务器状态是否禁用<br>可用于部署作业时，先禁止启动，部署结束后统一启动</td></tr>
+<tr><td>sharding</td><td>否</td><td>该作业服务器分到的作业分片项<br>多个分片项用逗号分隔<br>如：0,1,2代表该服务器执行第1，2，3片分片</td></tr>
+<tr><td>processSuccessCount</td><td>否</td><td>统计一段时间内处理数据成功的数量<br>统计间隔可通过config\processCountIntervalSeconds配置</td></tr>
+<tr><td>processFailureCount</td><td>否</td><td>统计一段时间内处理数据失败的数量<br>统计间隔可通过config\processCountIntervalSeconds配置</td></tr>
+<tr><td>stoped</td><td>否</td><td>停止作业的标记</td></tr>
+</tbody>
+</table>
+
+
+  **execution节点**
+
+  执行时信息，子节点是分片项序号，从零开始，至分片总数减一。分片项序号的子节点存储详细信息。可通过配置config\monitorExecution为false关闭记录作业执行时信息。
+  
+<table>
+<tbody>
+<tr><td><em>子节点名</em></td><td><em>临时节点</em></td><td><em>描述</em></td></tr>
+<tr><td>running</td><td>是</td><td>分片项正在运行的状态<br>如果没有此节点，并且没有completed节点，表示该分片未运行</td></tr>
+<tr><td>completed</td><td>否</td><td>分片项运行完成的状态<br>下次作业开始执行时会清理</td></tr>
+<tr><td>failover</td><td>是</td><td>如果该分片项被失效转移分配给其他作业服务器，则此节点值记录执行此分片的作业服务器IP</td></tr>
+<tr><td>lastBeginTime</td><td>否</td><td>该分片项最近一次的开始执行时间</td></tr>
+<tr><td>nextFireTime</td><td>否</td><td>该分片项下次作业触发时间</td></tr>
+<tr><td>lastCompleteTime</td><td>否</td><td>该分片项最近一次的结束执行时间</td></tr>
+</tbody>
+</table>
+
+
+  **leader节点**
+
+  作业服务器主节点信息，分为election，sharding和execution三个子节点。分别用于主节点选举，分片和作业执行时处理。
+  
+  leader节点是内部使用的节点，如果对作业框架原理不感兴趣，可不关注此节点。
+
+  
+<table>
+<tbody>
+<tr><td><em>子节点名</em></td><td><em>临时节点</em></td><td><em>描述</em></td></tr>
+<tr><td>election\host</td><td>是</td><td>主节点服务器IP地址<br>一旦该节点被删除将会触发重新选举<br>重新选举的过程中一切主节点相关的操作都将阻塞</td></tr>
+<tr><td>election\latch</td><td>否</td><td>主节点选举的分布式锁<br>为curator的分布式锁使用</td></tr>
+<tr><td>sharding\necessary</td><td>否</td><td>是否需要重新分片的标记<br>如果分片总数变化，或作业服务器节点上下线或启用/禁用，以及主节点选举，会触发设置重分片标记<br>作业在下次执行时使用主节点重新分片，且中间不会被打断<br>作业执行时不会触发分片</td></tr>
+<tr><td>sharding\processing</td><td>是</td><td>主节点在分片时持有的节点<br>如果有此节点，所有的作业执行都将阻塞，直至分片结束<br>主节点分片结束或主节点崩溃会删除此临时节点</td></tr>
+<tr><td>execution\necessary</td><td>否</td><td>是否需要修正作业执行时分片项信息的标记<br>如果分片总数变化，会触发设置修正分片项信息标记<br>作业在下次执行时会增加或减少分片项数量</td></tr>
+<tr><td>execution\cleaning</td><td>是</td><td>主节点在清理上次作业运行时状态时所持有的节点<br>每次开始新作业都需要清理上次运行完成的作业信息<br>如果有此节点，所有的作业执行都将阻塞，直至清理结束<br>主节点分片结束或主节点崩溃会删除此临时节点</td></tr>
+<tr><td>failover\items\分片项</td><td>否</td><td>一旦有作业崩溃，则会向此节点记录<br>当有空闲作业服务器时，会从此节点抓取需失效转移的作业项</td></tr>
+<tr><td>failover\items\latch</td><td>否</td><td>分配失效转移分片项时占用的分布式锁<br>为curator的分布式锁使用</td></tr>
+</tbody>
+</table>
+
+
+* **流程图**
+
+  作业启动
+  
+  ![作业启动](http://static.oschina.net/uploads/space/2015/0914/181007_yQ7b_719192.jpg)
+  
+  作业执行
+  
+  ![作业执行](http://static.oschina.net/uploads/space/2015/0914/181025_OSzr_719192.png)
+
+## 运维平台
+
+* **登录**
+
+  默认用户名和密码是**root/root**，可以通过修改conf\auth.properties文件修改默认登录用户名和密码。
+  
+* **主要功能**
+
+  登录安全控制
+  
+  注册中心管理
+  
+  作业维度状态查看
+  
+  服务器维度状态查看
+  
+  快捷修改作业设置
+  
+  控制作业暂停和恢复运行
+
+* **设计理念**
+
+  运维平台和elastic-job并无直接关系，是通过读取作业注册中心数据展现作业状态，或更新注册中心数据修改全局配置。
+  
+  控制台只能控制作业本身是否运行，但不能控制作业进程的启停，因为控制台和作业本身服务器是完全分布式的，控制台并不能控制作业服务器。
+
+* **不支持项**
+
+  添加作业。因为作业都是在首次运行时自动添加，使用运维平台添加作业并无必要。
+  
+  停止作业。即使删除了Zookeeper信息也不能真正停止作业的运行，还会导致运行中的作业出问题。
+  
+  删除作业服务器。由于直接删除服务器节点风险较大，暂时不考虑在运维平台增加此功能。
+
+* **主要界面**
+
+  总览页
+  
+  ![总览页](http://static.oschina.net/uploads/space/2015/0914/181749_5KW0_719192.png)
+
+  注册中心管理页
+  
+  ![注册中心管理页](http://static.oschina.net/uploads/space/2015/0914/181807_8a2B_719192.png)
+
+  作业详细信息页
+  
+  ![作业详细信息页](http://static.oschina.net/uploads/space/2015/0914/181852_nbqS_719192.png)
+
+  服务器详细信息页
+  
+  ![服务器详细信息页](http://static.oschina.net/uploads/space/2015/0914/181926_VSdT_719192.png)
