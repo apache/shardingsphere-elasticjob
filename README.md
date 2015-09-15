@@ -3,6 +3,10 @@
   Elastic-Job是ddframe中dd-job的作业模块中分离出来的分布式弹性作业框架。去掉了和dd-job中的监控和ddframe接入规范部分。
 
   ddframe其他模块也有可独立开源的部分，之前当当曾开源过dd-soa的基石模块DubboX。
+  
+  elastic-job和ddframe关系见下图
+  
+  ![ddframe演进图](http://static.oschina.net/uploads/space/2015/0915/175924_g2OZ_719192.jpg)
 
 ##主要贡献者
 * 张亮 [当当网](http://www.dangdang.com/) zhangliang@dangdang.com
