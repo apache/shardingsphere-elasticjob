@@ -95,16 +95,16 @@ public class MyElasticJob extends AbstractOneOffElasticJob {
   作业执行时会将fetchData的数据传递给processData处理，其中processData得到的数据是通过多线程（线程池大小可配）拆分的。建议processData处理数据后，更新其状态，避免fetchData再次抓取到，从而使得作业永远不会停止。processData的返回值用于表示数据是否处理成功，抛出异常或者返回false将会在统计信息中归入失败次数，返回true则归入成功次数。
 
 ```java
-public class MyElasticJob extends AbstractSequencePerpetualElasticJob<Foo> {
+public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
     
     @Override
-    protected List<Foo> fetchData(JobExecutionSingleShardingContext context) {
+    protected List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
         List<Foo> result = // get data from database by sharding items
         return result;
     }
     
     @Override
-    protected boolean processData(JobExecutionSingleShardingContext context, Foo data) {
+    protected boolean processData(JobExecutionMultipleShardingContext context, Foo data) {
         // process data
         return true;
     }
@@ -116,16 +116,16 @@ public class MyElasticJob extends AbstractSequencePerpetualElasticJob<Foo> {
   SequencePerpetual作业类型和Perpetual作业类型极为相似，所不同的是Perpetual作业类型可以将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。如：从2个分片共获取到100条数据，第1个分片40条，第2个分片60条，配置为两个线程处理，则第1个线程处理前50条数据，第2个线程处理后50条数据，无视分片项；SequencePerpetual类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。如：从2个分片共获取到100条数据，第1个分片40条，第2个分片60条，则系统自动分配两个线程处理，第1个线程处理第1个分片的40条数据，第2个线程处理第2个分片的60条数据。由于Perpetual作业可以使用多余分片项的任意线程数处理，所以性能调优的可能会优于SequencePerpetual作业。
 
 ```java
-public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
+public class MyElasticJob extends AbstractSequencePerpetualElasticJob<Foo> {
     
     @Override
-    protected List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
+    protected List<Foo> fetchData(JobExecutionSingleShardingContext context) {
         List<Foo> result = // get data from database by sharding items
         return result;
     }
     
     @Override
-    protected boolean processData(JobExecutionMultipleShardingContext context, Foo data) {
+    protected boolean processData(JobExecutionSingleShardingContext context, Foo data) {
         // process data
         return true;
     }
@@ -247,10 +247,10 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 
 public class JobDemo {
   
-	  // 声明Zookeeper注册中心配置对象
+    // 声明Zookeeper注册中心配置对象
     private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("yourhost:2181", "zkRegTestCenter", 1000, 3000, 3);
     
-	  // 定义Zookeeper注册中心
+    // 定义Zookeeper注册中心
     private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
     // 声明作业配置对象
@@ -265,13 +265,13 @@ public class JobDemo {
         regCenter.init();
         // 声明作业启动器
         JobInitializer jobInitializer = new JobInitializer(regCenter, jobConfig);
-		    // 启动作业，主要是注册作业的信息
+        // 启动作业，主要是注册作业的信息
         jobInitializer.init();
-		    // 获取作业调度器实例
+        // 获取作业调度器实例
         JobScheduler jobScheduler = JobScheduler.getInstance();
-		    // 添加作业到调度器
+        // 添加作业到调度器
         jobScheduler.addJob("demoJob", jobInitializer);
-		    // 启动所有作业
+        // 启动所有作业
         jobScheduler.scheduleAllJobs();
     }
 }
