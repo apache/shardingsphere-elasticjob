@@ -1,13 +1,19 @@
 ##Elastic-Job - distributed scheduled job solution
 
-Elastic-Job是ddframe中dd-job的作业模块中分离出来的分布式弹性作业框架。去掉了和dd-job中的监控和ddframe接入规范部分。
+  Elastic-Job是ddframe中dd-job的作业模块中分离出来的分布式弹性作业框架。去掉了和dd-job中的监控和ddframe接入规范部分。该项目基于成熟的开源产品Quartz和Zookeeper及其客户端Curator进行二次开发。
 
-ddframe其他模块也有可独立开源的部分，之前当当曾开源过dd-soa的基石模块DubboX。
+  ddframe其他模块也有可独立开源的部分，之前当当曾开源过dd-soa的基石模块DubboX。
+  
+  elastic-job和ddframe关系见下图
+  
+  ![ddframe演进图](http://static.oschina.net/uploads/space/2015/0915/181703_2fxp_719192.jpg)
 
 ##主要贡献者
 * 张亮 [当当网](http://www.dangdang.com/) zhangliang@dangdang.com
 * 曹昊 [当当网](http://www.dangdang.com/) caohao@dangdang.com
 * 江树建 [当当网](http://www.dangdang.com/) jiangshujian@dangdang.com
+
+**讨论QQ群：**430066234（不限于Elastic-Job，包括分布式，定时任务相关以及其他互联网技术交流）
 
 ## Elastic-Job主要功能
 
@@ -25,3 +31,61 @@ ddframe其他模块也有可独立开源的部分，之前当当曾开源过dd-s
 * **容错处理：**作业服务器与Zookeeper服务器通信失败则立即停止作业运行，防止作业注册中心将失效的分片分项配给其他作业服务器，而当前作业服务器仍在执行任务，导致重复执行。
 * **Spring支持：**支持spring容器，自定义命名空间，支持占位符。
 * **运维平台：**提供运维界面，可以管理作业和注册中心。
+
+## 相关文档
+
+[目录结构说明](http://dangdangdotcom.github.io/elastic-job/folderIllustrate.html)
+
+[使用步骤](http://dangdangdotcom.github.io/elastic-job/usage.html)
+
+[开发指南](http://dangdangdotcom.github.io/elastic-job/userGuide.html)
+
+[使用限制](http://dangdangdotcom.github.io/elastic-job/limited.html)
+
+[运维平台](http://dangdangdotcom.github.io/elastic-job/webConsole.html)
+
+[实现原理](http://dangdangdotcom.github.io/elastic-job/theory.html)
+
+## Quick Start
+
+* **作业开发**
+
+```java
+public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
+    
+    @Override
+    protected List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
+        List<Foo> result = // get data from database by sharding items
+        return result;
+    }
+    
+    @Override
+    protected boolean processData(JobExecutionMultipleShardingContext context, Foo data) {
+        // process data
+        return true;
+    }
+}
+```
+
+* **作业配置**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg" 
+    xmlns:job="http://www.dangdang.com/schema/ddframe/job" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd 
+                        http://www.dangdang.com/schema/ddframe/reg 
+                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd 
+                        http://www.dangdang.com/schema/ddframe/job 
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd 
+                        ">
+    <!--配置作业注册中心 -->
+    <reg:zookeeper id="regCenter" serverLists=" yourhost:2181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
+    
+    <!-- 配置作业-->
+    <job:bean id="oneOffElasticJob" class="xxx.MyElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
+</beans>
+```
