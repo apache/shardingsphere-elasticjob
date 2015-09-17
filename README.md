@@ -13,6 +13,8 @@
 * 曹昊 [当当网](http://www.dangdang.com/) caohao@dangdang.com
 * 江树建 [当当网](http://www.dangdang.com/) jiangshujian@dangdang.com
 
+  讨论QQ群：430066234
+
 ## Elastic-Job主要功能
 
 * **定时任务：** 基于成熟的定时任务作业框架Quartz cron表达式执行定时任务。
