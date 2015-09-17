@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -50,6 +51,7 @@ import com.google.common.base.Strings;
  * 
  * @author zhangliang
  */
+@Slf4j
 public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     
     @Getter(AccessLevel.PROTECTED)
@@ -64,6 +66,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     }
     
     public void init() {
+        log.debug("Elastic job: zookeeper registry center init, server lists is: {}.", zkConfig.getServerLists());
         Builder builder = CuratorFrameworkFactory.builder()
                 .connectString(zkConfig.getServerLists())
                 .retryPolicy(new ExponentialBackoffRetry(zkConfig.getBaseSleepTimeMilliseconds(), zkConfig.getMaxRetries(), zkConfig.getMaxSleepTimeMilliseconds()))

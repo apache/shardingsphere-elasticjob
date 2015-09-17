@@ -48,9 +48,11 @@ public abstract class AbstractSequencePerpetualElasticJob<T> extends AbstractEla
     @Override
     protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
         Map<Integer, List<T>> data = takeData(shardingContext);
+        log.debug("Elastic job: sequence perpetual elastic job fetch data size: {}.", data != null ? data.size() : 0);
         while (!data.isEmpty() && !isStoped() && !getShardingService().isNeedSharding()) {
             processDataInMultipleThreads(shardingContext, data);
             data = takeData(shardingContext);
+            log.debug("Elastic job: sequence perpetual elastic job fetch data size: {}.", data != null ? data.size() : 0);
         }
     }
     
@@ -97,7 +99,7 @@ public abstract class AbstractSequencePerpetualElasticJob<T> extends AbstractEla
             } catch (final Exception ex) {
             // CHECKSTYLE:ON
                 ProcessCountStatistics.incrementProcessFailureCount(singleContext.getJobName());
-                log.error("Exception occur in job processing...", ex);
+                log.error("Elastic job: exception occur in job processing...", ex);
                 continue;
             }
             if (isSuccess) {

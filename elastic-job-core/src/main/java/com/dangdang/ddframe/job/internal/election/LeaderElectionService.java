@@ -70,7 +70,7 @@ public final class LeaderElectionService {
     public Boolean isLeader() {
         String locaLhostIp = localHostService.getIp();
         while (!hasLeader()) {
-            log.info("Leader node is electing, waiting for 100 ms at server '{}'", locaLhostIp);
+            log.info("Elastic job: leader node is electing, waiting for 100 ms at server '{}'", locaLhostIp);
             BlockUtils.waitingShortTime();
         }
         return locaLhostIp.equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST));

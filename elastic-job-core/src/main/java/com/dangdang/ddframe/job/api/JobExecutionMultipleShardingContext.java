@@ -68,4 +68,12 @@ public final class JobExecutionMultipleShardingContext extends AbstractJobExecut
         result.setShardingItemParameter(shardingItemParameters.get(item));
         return result;
     }
+    
+    @Override
+    public String toString() {
+        return String.format(
+            "jobName: %s, shardingTotalCount: %s, shardingItems: %s, shardingItemParameters: %s, jobParameter: %s",
+                getJobName(), getShardingTotalCount(), shardingItems, shardingItemParameters, getJobParameter()
+            );
+    }
 }

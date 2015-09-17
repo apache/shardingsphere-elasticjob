@@ -61,10 +61,10 @@ public final class ElectionListenerManager extends AbstractListenerManager {
             @Override
             protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
                 if (Type.NODE_REMOVED == event.getType() && electionNode.isLeaderHostPath(path) && !leaderElectionService.hasLeader()) {
-                    log.info("Leader crashed, elect a new leader now.");
+                    log.info("Elastic job: leader crashed, elect a new leader now.");
                     leaderElectionService.leaderElection();
                     shardingService.setReshardingFlag();
-                    log.info("Leader election cmplelted.");
+                    log.info("Elastic job: leader election completed.");
                 }
             }
         });

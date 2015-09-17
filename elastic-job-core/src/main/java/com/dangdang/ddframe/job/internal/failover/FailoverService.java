@@ -32,11 +32,14 @@ import com.dangdang.ddframe.job.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 作业失效转移服务.
  * 
  * @author zhangliang
  */
+@Slf4j
 public final class FailoverService {
     
     private final LocalHostService localHostService = new RealLocalHostService();
@@ -86,6 +89,7 @@ public final class FailoverService {
                     return;
                 }
                 int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
+                log.debug("Elastic job: failover job begin, crashed item:{}.", crashedItem);
                 jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
                 jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
                 JobRegistry.getInstance().getJob(jobConfiguration.getJobName()).triggerJob();

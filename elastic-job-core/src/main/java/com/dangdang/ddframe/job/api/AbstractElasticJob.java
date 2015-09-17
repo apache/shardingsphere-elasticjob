@@ -17,11 +17,6 @@
 
 package com.dangdang.ddframe.job.api;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -30,6 +25,11 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 弹性化分布式作业的基类.
@@ -61,6 +61,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
     
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
+        log.debug("Elastic job: job execute begin, job execution context:{}.", context);
         shardingService.shardingIfNecessary();
         JobExecutionMultipleShardingContext shardingContext = executionContextService.getJobExecutionShardingContext();
         if (executionService.misfireIfNecessary(shardingContext.getShardingItems())) {
@@ -69,17 +70,22 @@ public abstract class AbstractElasticJob implements ElasticJob {
         }
         executionService.cleanPreviousExecutionInfo();
         executeJobInternal(shardingContext);
+        log.debug("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
         while (!executionService.getMisfiredJobItems(shardingContext.getShardingItems()).isEmpty() && !stoped && !shardingService.isNeedSharding()) {
+            log.debug("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
             executionService.clearMisfire(shardingContext.getShardingItems());
             executeJobInternal(shardingContext);
+            log.debug("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
         if (configService.isFailover() && !stoped) {
             failoverService.failoverIfNecessary();
         }
+        log.debug("Elastic job: execute all completed, job execution context:{}.", context);
     }
     
     private void executeJobInternal(final JobExecutionMultipleShardingContext shardingContext) {
         if (shardingContext.getShardingItems().isEmpty()) {
+            log.debug("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
             return;
         }
         executionService.registerJobBegin(shardingContext);

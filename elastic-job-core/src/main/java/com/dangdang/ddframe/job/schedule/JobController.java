@@ -45,11 +45,14 @@ import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 作业控制器.
  * 
  * @author zhangliang, caohao
  */
+@Slf4j
 public class JobController {
     
     private final JobConfiguration jobConfiguration;
@@ -95,6 +98,7 @@ public class JobController {
      * 初始化作业.
      */
     public void init() {
+        log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
         registerElasticEnv();
         jobDetail = createJobDetail();
         trigger = createTrigger();

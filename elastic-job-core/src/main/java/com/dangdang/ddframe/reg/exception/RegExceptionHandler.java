@@ -41,7 +41,7 @@ public final class RegExceptionHandler {
      */
     public static void handleException(final Exception cause) {
         if (isIgnoredException(cause) || isIgnoredException(cause.getCause())) {
-            log.debug("Ignored exception for: {}", cause.getMessage());
+            log.debug("Elastic job: ignored exception for: {}", cause.getMessage());
         } else if (cause instanceof InterruptedException) {
             Thread.currentThread().interrupt();
         } else {

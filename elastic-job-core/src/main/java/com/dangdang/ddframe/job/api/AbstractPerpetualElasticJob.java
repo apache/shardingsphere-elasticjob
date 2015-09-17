@@ -43,6 +43,7 @@ public abstract class AbstractPerpetualElasticJob<T> extends AbstractElasticJob 
     protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
         int threadCount = getConfigService().getConcurrentDataProcessThreadCount();
         List<T> data = fetchData(shardingContext);
+        log.debug("Elastic job: perpetual elastic job fetch data size: {}.", data != null ? data.size() : 0);
         while (null != data && !data.isEmpty() && !isStoped() && !getShardingService().isNeedSharding()) {
             if (threadCount <= 1 || data.size() <= threadCount) {
                 processDataList(shardingContext, data);
@@ -50,6 +51,7 @@ public abstract class AbstractPerpetualElasticJob<T> extends AbstractElasticJob 
                 processDataInMultipleThreads(shardingContext, threadCount, data);
             }
             data = fetchData(shardingContext);
+            log.debug("Elastic job: perpetual elasticJob fetch data size: {}.", data != null ? data.size() : 0);
         }
     }
     
@@ -85,7 +87,7 @@ public abstract class AbstractPerpetualElasticJob<T> extends AbstractElasticJob 
             } catch (final Exception ex) {
             // CHECKSTYLE:ON
                 ProcessCountStatistics.incrementProcessFailureCount(shardingContext.getJobName());
-                log.error("Exception occur in job processing...", ex);
+                log.error("Elastic job: exception occur in job processing...", ex);
                 continue;
             }
             if (isSuccess) {

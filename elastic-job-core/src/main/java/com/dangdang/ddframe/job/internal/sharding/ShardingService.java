@@ -34,11 +34,14 @@ import com.dangdang.ddframe.job.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.internal.util.ItemUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 作业分片服务.
  * 
  * @author zhangliang
  */
+@Slf4j
 public final class ShardingService {
     
     private final JobNodeStorage jobNodeStorage;
@@ -90,12 +93,14 @@ public final class ShardingService {
         if (configService.isMonitorExecution()) {
             waitingOtherJobCompleted();
         }
+        log.debug("Elastic job: sharding begin.");
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = new AverageAllocationJobShardingStrategy();
         persistShardingInfo(jobShardingStrategy.sharding(serverService.getAvailableServers(), configService.getShardingTotalCount()));
         jobNodeStorage.removeJobNodeIfExisted(ShardingNode.NECESSARY);
         jobNodeStorage.removeJobNodeIfExisted(ShardingNode.PROCESSING);
+        log.debug("Elastic job: sharding completed.");
     }
     
     private void clearShardingInfo() {
@@ -112,12 +117,14 @@ public final class ShardingService {
     
     private void blockUntilShardingCompleted() {
         while (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING)) {
+            log.debug("Sleep short time until sharding completed.");
             BlockUtils.waitingShortTime();
         }
     }
     
     private void waitingOtherJobCompleted() {
         while (executionService.hasRunningItems()) {
+            log.debug("Sleep short time until other job completed.");
             BlockUtils.waitingShortTime();
         }
     }
