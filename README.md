@@ -13,7 +13,7 @@
 * 曹昊 [当当网](http://www.dangdang.com/) caohao@dangdang.com
 * 江树建 [当当网](http://www.dangdang.com/) jiangshujian@dangdang.com
 
-  讨论QQ群：430066234
+**讨论QQ群：**430066234（不限于Elastic-Job本身，包括分布式，定时任务相关以及其他互联网技术交流）
 
 ## Elastic-Job主要功能
 
