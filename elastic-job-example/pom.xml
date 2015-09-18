@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-example</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>${project.artifactId}</name>
     
     <properties>
@@ -12,7 +12,7 @@
         <project.build.locale>zh_CN</project.build.locale>
         <project.nexus.address>maven.dangdang.com</project.nexus.address>
         
-        <elastic-job.version>1.0.1-SNAPSHOT</elastic-job.version>
+        <elastic-job.version>1.0.1</elastic-job.version>
         
         <junit.version>4.12</junit.version>
         
