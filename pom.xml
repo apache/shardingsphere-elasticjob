@@ -5,6 +5,7 @@
     <version>1.0.1</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
+    <description>Elastic-Job - distributed scheduled job solution</description>
     
     <modules>
         <module>elastic-job-core</module>
@@ -314,7 +315,6 @@
     </repositories>
     
     <url>http://www.dangdang.com</url>
-    <description>Elastic Job</description>
     <licenses> 
         <license>
             <name>Apache Licene 2.0</name>
@@ -324,9 +324,9 @@
     </licenses>
     
     <scm>
-        <connection>scm:https://github.com/dangdangdotcom/elastic-job</connection>
-        <developerConnection>scm:https://github.com/dangdangdotcom/elastic-job</developerConnection>
-        <url>https://github.com/dangdangdotcom/elastic-job</url>
+        <connection>scm:git:https://github.com/terrymanu/dangdangdotcom/elastic-job.git</connection>
+        <developerConnection>scm:git:git@github.com:terrymanu/dangdangdotcom/elastic-job.git</developerConnection>
+        <url>https://github.com/terrymanu/dangdangdotcom/elastic-job</url>
     </scm>
     
     <mailingLists>
@@ -344,4 +344,17 @@
             <timezone>8</timezone>
         </developer>
     </developers>
+    
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-releases</id>
+            <name>Sonatype Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshot Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

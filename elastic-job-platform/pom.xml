@@ -5,6 +5,7 @@
     <version>1.0.1</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
+    <description>elastic job maven dependencies</description>
     
     <properties>
         <lombok.version>1.16.4</lombok.version>
@@ -173,4 +174,23 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    
+    <scm>
+        <connection>scm:git:https://github.com/terrymanu/dangdangdotcom/elastic-job.git</connection>
+        <developerConnection>scm:git:git@github.com:terrymanu/dangdangdotcom/elastic-job.git</developerConnection>
+        <url>https://github.com/terrymanu/dangdangdotcom/elastic-job</url>
+    </scm>
+    
+    <distributionManagement>
+        <repository>
+            <id>sonatype-nexus-releases</id>
+            <name>Sonatype Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshot Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
