@@ -46,6 +46,8 @@
 
 [实现原理](http://dangdangdotcom.github.io/elastic-job/theory.html)
 
+[InfoQ新闻](http://www.infoq.com/cn/news/2015/09/dangdang-elastic-job)
+
 ## Quick Start
 
 * **引入maven依赖**
