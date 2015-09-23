@@ -38,6 +38,8 @@
 
 [使用步骤](http://dangdangdotcom.github.io/elastic-job/usage.html)
 
+[阅读源码编译问题说明](http://dangdangdotcom.github.io/elastic-job/sourceCodeGuide.html)
+
 [开发指南](http://dangdangdotcom.github.io/elastic-job/userGuide.html)
 
 [使用限制](http://dangdangdotcom.github.io/elastic-job/limited.html)
