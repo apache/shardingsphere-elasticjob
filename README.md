@@ -34,13 +34,13 @@
 
 ## 相关文档
 
-[目录结构说明](http://dangdangdotcom.github.io/elastic-job/folderIllustrate.html)
+[目录结构说明](http://dangdangdotcom.github.io/elastic-job/directoryStructure.html)
 
 [使用步骤](http://dangdangdotcom.github.io/elastic-job/usage.html)
 
 [开发指南](http://dangdangdotcom.github.io/elastic-job/userGuide.html)
 
-[使用限制](http://dangdangdotcom.github.io/elastic-job/limited.html)
+[使用限制](http://dangdangdotcom.github.io/elastic-job/limitations.html)
 
 [运维平台](http://dangdangdotcom.github.io/elastic-job/webConsole.html)
 
