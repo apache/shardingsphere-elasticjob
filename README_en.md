@@ -18,11 +18,11 @@
 * **Scheduled job:** Based on CRON expression to execute tasks.
 * **Registry center:** Based on Zookeeper and its client Curator to implement global job register center, use to register, monitor control and coordinate distributed jobs.
 * **Sharding:** Split one task to many task items, can execute in multiple servers.
-* **scalability:** Crashed some running job servers or add on some new job servers, elastic-job will rehsarding at next job trigger, will not affect current jobs.
+* **Scalability:** Crashed some running job servers or add on some new job servers, elastic-job will re-hsarding at next job trigger, will not affect current jobs.
 * **Various job models:** Now support OneOff, Perpetual and SequencePerpetual 3 type job models.
 * **Failover:** Crashed some running job servers will not cause job re-sharding, will do it at next job trigger. Enable failover can use other idle servers to pull orphan task items to execute during current job execution life-cycle.
 * **Runtime status collector:** Monitor runtime status for jobs, statistics count for process success and failure, record previous trigger time, completed time and next trigger time.
-* **Job pause, resume and disable:** Can pause and resume jobs, and can disable job server(usually setting during system launch).
+* **Job pause, resume and disable:** Can pause and resume jobs, and can disable job server (usually setting during system launch).
 * **Misfired job re-trigger:** Record missing jobs automatically, and trigger them after previous job completed. Please reference Quartz misfire.
 * **Data processed concurrently:** Use concurrent threads processing fetched data, to improve throughput.
 * **Idempotency:** Judge duplicate jobs, restrict running jobs execute twice. Because enable idempotency need monitor job running status, the performance for instantaneous jobs maybe low.
@@ -52,7 +52,7 @@
 
 * **Add maven dependencies**
 
-elastic-job has already into Maven Central Repository, add dependencies in your pom.xml file.
+Elastic-Job has already into Maven Central Repository, add dependencies in your pom.xml file.
 
 ```xml
 <!-- add elastic-job core module -->
