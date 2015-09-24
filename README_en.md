@@ -18,7 +18,7 @@
 * **Scheduled job: ** Based on CRON expression to execute tasks.
 * **Registry center: ** Based on Zookeeper and its client Curator to implement global job register center, use to register, monitor control and coordinate distributed jobs.
 * **Sharding: ** Split one task to many task items, can execute in multiple servers.
-* **scalability：** Crashed some running job servers or add on some new job servers, elastic-job will rehsarding at next job trigger, will not affect current jobs.
+* **scalability: ** Crashed some running job servers or add on some new job servers, elastic-job will rehsarding at next job trigger, will not affect current jobs.
 * **Various job models: ** Now support OneOff, Perpetual and SequencePerpetual 3 type job models.
 * **Failover: ** Crashed some running job servers will not cause job re-sharding, will do it at next job trigger. Enable failover can use other idle servers to pull orphan task items to execute during current job execution life-cycle.
 * **Runtime status collector: ** Monitor runtime status for jobs, statistics count for process success and failure, record previous trigger time, completed time and next trigger time.
