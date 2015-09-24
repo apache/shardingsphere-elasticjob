@@ -117,14 +117,14 @@ public final class ShardingService {
     
     private void blockUntilShardingCompleted() {
         while (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING)) {
-            log.debug("Sleep short time until sharding completed.");
+            log.debug("Elastic job: sleep short time until sharding completed.");
             BlockUtils.waitingShortTime();
         }
     }
     
     private void waitingOtherJobCompleted() {
         while (executionService.hasRunningItems()) {
-            log.debug("Sleep short time until other job completed.");
+            log.debug("Elastic job: sleep short time until other job completed.");
             BlockUtils.waitingShortTime();
         }
     }
