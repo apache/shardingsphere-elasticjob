@@ -1,34 +1,34 @@
 ##Elastic-Job - distributed scheduled job solution
 
-  Elastic-Job is extracted from dd-job that is a component for ddframe. Elastic-Job just remove monitor and integrate standard parts in dd-job. It based on matured open source productions like Quartz, Zookeeper and its client Curator.
+  Elastic-Job is extracted from dd-job which is a component of ddframe. Elastic-Job just removed monitor and integrated standards parts from dd-job. It based on matured open-source productions like Quartz, Zookeeper and its client Curator.
   
-  Other components for ddframe also can open source independently. Dangdang has already open source DubboX, which is core component for dd-soa.
+  Other components of ddframe also can open-source independently. Dangdang has already released DubboX, which is core component of dd-soa.
   
-  The relationship for Elastic-Job and ddframe show in this picture:
+  The relationship between Elastic-Job and ddframe is in this picture:
   
-  ![Evolution chart for ddframe](http://static.oschina.net/uploads/space/2015/0915/181703_2fxp_719192.jpg)
+  ![Evolution diagram of ddframe](http://static.oschina.net/uploads/space/2015/0915/181703_2fxp_719192.jpg)
 
 ##Contributors
-* Zhang Liang [dangadng](http://www.dangdang.com/) zhangliang@dangdang.com
-* Cao Hao [dangadng](http://www.dangdang.com/) caohao@dangdang.com
-* Jiang Shu Jian [dangadng](http://www.dangdang.com/) jiangshujian@dangdang.com
+* Zhang Liang [Dangdang](http://www.dangdang.com/) zhangliang@dangdang.com
+* Cao Hao [Dangdang](http://www.dangdang.com/) caohao@dangdang.com
+* Jiang Shu Jian [Dangdang](http://www.dangdang.com/) jiangshujian@dangdang.com
 
 ## Features
 
-* **Scheduled job:** Based on CRON expression to execute tasks.
+* **Scheduled job:** Based on CRON expression to execute jobs.
 * **Registry center:** Based on Zookeeper and its client Curator to implement global job register center, use to register, monitor control and coordinate distributed jobs.
-* **Sharding:** Split one task to many task items, can execute in multiple servers.
-* **Scalability:** Crashed some running job servers or add on some new job servers, elastic-job will re-hsarding at next job trigger, will not affect current jobs.
-* **Various job models:** Now support OneOff, Perpetual and SequencePerpetual 3 type job models.
-* **Failover:** Crashed some running job servers will not cause job re-sharding, will do it at next job trigger. Enable failover can use other idle servers to pull orphan task items to execute during current job execution life-cycle.
-* **Runtime status collector:** Monitor runtime status for jobs, statistics count for process success and failure, record previous trigger time, completed time and next trigger time.
-* **Job pause, resume and disable:** Can pause and resume jobs, and can disable job server (usually setting during system launch).
-* **Misfired job re-trigger:** Record missing jobs automatically, and trigger them after previous job completed. Please reference Quartz misfire.
+* **Sharding:** Split single task to many task items, execute parallel on multiple servers.
+* **Scalability:** Server crashed or new server online, elastic-job will re-sharding when next job trigger, will not affect current running jobs.
+* **Multiple job modes:** Now support OneOff, Perpetual and SequencePerpetual job modes.
+* **Failover:** Server crashed does not trigger re-sharding, only do it when next task trigger. Enable failover can notify other idle servers to pull orphan task items.
+* **Execution status collection:** Monitor execution status and statistics process success and failure count, collect previous trigger time, completed time and next trigger time.
+* **Pause, resume and disable:** Pause or resume jobs, and disable servers (usually disabled during system launching).
+* **Misfired job re-trigger:** Record missing jobs automatically, and trigger them after previous task completed. Please reference Quartz misfire.
 * **Data processed concurrently:** Use concurrent threads processing fetched data, to improve throughput.
-* **Idempotency:** Judge duplicate jobs, restrict running jobs execute twice. Because enable idempotency need monitor job running status, the performance for instantaneous jobs maybe low.
-* **Failure tolerance:** If job servers loss connection from zookeeper, job will stop immediately which to prevent register center assign crashed task items to other job servers, but current job servers still run jobs, to cause duplicated.
-* **Spring support:** Spring framework integrated, customized namespace, place-holder supported etc.
-* **Web console:** Support web console, use to manage jobs and register centers.
+* **Idempotency:** Judge duplicate task items, restrict repeatable task items execute. Because enable idempotency need monitor job execution status, the performance for instantaneous jobs maybe low.
+* **Failure tolerance:** If job servers loss connection from registry center, job will stop immediately which to prevent registry center assign crashed task items to other job servers, but current job servers still running, then cause duplicated task items running.
+* **Spring support:** Integrate spring framework, customized namespace, place-holder supported etc.
+* **Web console:** Support web console to manage jobs and register centers.
 
 ## Related documents
 
@@ -52,7 +52,7 @@
 
 * **Add maven dependencies**
 
-Elastic-Job has already into Maven Central Repository, add dependencies in your pom.xml file.
+Elastic-Job has deployed to Maven Central Repository, add dependencies in your pom.xml file.
 
 ```xml
 <!-- add elastic-job core module -->
