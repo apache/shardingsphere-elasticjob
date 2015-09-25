@@ -62,7 +62,7 @@ public final class SpringJobFactory extends PropertySettingJobFactory {
                 throw new NoSuchBeanDefinitionException("");
             }
         } catch (final BeansException ex) {
-            log.info("Cannot found bean for class: '{}'. This job is not managed for spring.", bundle.getJobDetail().getJobClass().getCanonicalName());
+            log.info("Elastic job: cannot found bean for class: '{}'. This job is not managed for spring.", bundle.getJobDetail().getJobClass().getCanonicalName());
             return super.newJob(bundle, scheduler);
         }
         JobDataMap jobDataMap = new JobDataMap();
