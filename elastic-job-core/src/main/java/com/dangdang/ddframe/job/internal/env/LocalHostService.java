@@ -27,6 +27,11 @@ public interface LocalHostService {
     /**
      * 获取本机IP地址.
      * 
+     * <p>
+     * 有限获取外网IP地址.
+     * 也有可能是链接着路由器的最终IP地址.
+     * </p>
+     * 
      * @return 本机IP地址
      */
     String getIp();

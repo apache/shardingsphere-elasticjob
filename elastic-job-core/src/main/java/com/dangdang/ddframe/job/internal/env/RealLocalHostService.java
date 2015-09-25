@@ -18,7 +18,10 @@
 package com.dangdang.ddframe.job.internal.env;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 import com.dangdang.ddframe.job.exception.JobException;
 
@@ -29,9 +32,45 @@ import com.dangdang.ddframe.job.exception.JobException;
  */
 public final class RealLocalHostService implements LocalHostService {
     
+    private static volatile String cachedIpAddress;
+    
     @Override
     public String getIp() {
-        return getLocalHost().getHostAddress();
+        if (null != cachedIpAddress) {
+            return cachedIpAddress;
+        }
+        Enumeration<NetworkInterface> netInterfaces;
+        try {
+            netInterfaces = NetworkInterface.getNetworkInterfaces();
+        } catch (final SocketException ex) {
+            throw new JobException(ex);
+        }
+        String localIpAddress = null;
+        while (netInterfaces.hasMoreElements()) {
+            NetworkInterface netInterface = netInterfaces.nextElement();
+            Enumeration<InetAddress> ipAddresses = netInterface.getInetAddresses();
+            while (ipAddresses.hasMoreElements()) {
+                InetAddress ipAddress = ipAddresses.nextElement();
+                if (isPublicIpAddress(ipAddress)) {
+                    String publicIpAddress = ipAddress.getHostAddress();
+                    cachedIpAddress = publicIpAddress;
+                    return publicIpAddress;
+                }
+                if (isLocalIpAddress(ipAddress)) {
+                    localIpAddress = ipAddress.getHostAddress();
+                }
+            }
+        }
+        cachedIpAddress = localIpAddress;
+        return localIpAddress;
+    }
+    
+    private boolean isPublicIpAddress(final InetAddress ipAddress) {
+        return !ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && -1 == ipAddress.getHostAddress().indexOf(":");
+    }
+    
+    private boolean isLocalIpAddress(final InetAddress ipAddress) {
+        return ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && -1 == ipAddress.getHostAddress().indexOf(":");
     }
     
     @Override
