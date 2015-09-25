@@ -26,7 +26,7 @@
 * **Misfired job re-trigger:** Record missing jobs automatically, and trigger them after previous task completed. Please reference Quartz misfire.
 * **Data processed concurrently:** Use concurrent threads processing fetched data, to improve throughput.
 * **Idempotency:** Judge duplicate task items, restrict repeatable task items execute. Because enable idempotency need monitor job execution status, the performance for instantaneous jobs maybe low.
-* **Failure tolerance:** If job servers loss connection from registry center, job will stop immediately which to prevent registry center assign crashed task items to other job servers, but current job servers still running, then cause duplicated task items running.
+* **Failure tolerance:** If job servers lost connection from registry center, job will stop immediately which to prevent registry center assign crashed task items to other job servers, but current job servers still running, then cause duplicated task items running.
 * **Spring support:** Integrate spring framework, customized namespace, place-holder supported etc.
 * **Web console:** Support web console to manage jobs and register centers.
 
