@@ -49,6 +49,9 @@ public class PerpetualElasticDemoJob extends AbstractPerpetualElasticJob<Foo> {
             return false;
         }
         fooRepository.setInactive(data.getId());
+        for (int each : context.getShardingItems()) {
+            updateOffset(each, String.valueOf(data.getId()));
+        }
         return true;
     }
 }

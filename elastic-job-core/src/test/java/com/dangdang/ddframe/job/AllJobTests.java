@@ -43,6 +43,8 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionServiceTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverListenerManagerTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverNodeTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverServiceTest;
+import com.dangdang.ddframe.job.internal.offset.OffsetNodeTest;
+import com.dangdang.ddframe.job.internal.offset.OffsetServiceTest;
 import com.dangdang.ddframe.job.internal.server.ServerNodeTest;
 import com.dangdang.ddframe.job.internal.server.ServerServiceTest;
 import com.dangdang.ddframe.job.internal.sharding.AverageAllocationJobShardingStrategyTest;
@@ -76,6 +78,8 @@ import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
     FailoverServiceTest.class, 
     FailoverNodeTest.class, 
     FailoverListenerManagerTest.class, 
+    OffsetServiceTest.class, 
+    OffsetNodeTest.class, 
     AverageAllocationJobShardingStrategyTest.class, 
     ProcessCountJobTest.class, 
     ProcessCountStatisticsTest.class, 

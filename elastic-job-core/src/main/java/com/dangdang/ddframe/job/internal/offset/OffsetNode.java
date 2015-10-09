@@ -15,32 +15,30 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.internal.offset;
 
-import lombok.Getter;
-import lombok.Setter;
 
 /**
- * 作业运行时单片分片上下文.
+ * Elastic Job数据处理位置节点名称的常量类.
  * 
  * @author zhangliang
  */
-@Getter
-@Setter
-public final class JobExecutionSingleShardingContext extends AbstractJobExecutionShardingContext {
+public final class OffsetNode {
+    
+    static final String ROOT = "offset";
+    
+    private static final String ITEM = ROOT + "/%s";
+    
+    private OffsetNode() {
+    }
     
     /**
-     * 运行在本作业服务器的分片序列号.
+     * 获取分片数据处理位置节点路径.
+     * 
+     * @param item 作业项
+     * @return 分片数据处理位置节点路径
      */
-    private int shardingItem;
-    
-    /**
-     * 运行在本作业项的分片序列号和个性化参数.
-     */
-    private String shardingItemParameter;
-    
-    /**
-     * 数据处理位置.
-     */
-    private String offset;
+    public static String getItemNode(final int item) {
+        return String.format(ITEM, item);
+    }
 }

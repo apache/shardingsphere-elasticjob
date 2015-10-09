@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -40,12 +42,11 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.listener.ListenerManager;
+import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 作业控制器.
@@ -75,6 +76,8 @@ public class JobController {
     
     private final StatisticsService statisticsService;
     
+    private final OffsetService offsetService;
+    
     private Scheduler scheduler;
     
     private JobDetail jobDetail;
@@ -92,6 +95,7 @@ public class JobController {
         executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
         failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
         statisticsService = new StatisticsService(coordinatorRegistryCenter, jobConfiguration);
+        offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -128,6 +132,7 @@ public class JobController {
         result.getJobDataMap().put("executionContextService", executionContextService);
         result.getJobDataMap().put("executionService", executionService);
         result.getJobDataMap().put("failoverService", failoverService);
+        result.getJobDataMap().put("offsetService", offsetService);
         return result;
     }
     

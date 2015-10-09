@@ -77,6 +77,7 @@ public final class ExecutionContextServiceTest extends AbstractBaseJobTest {
         assertThat(actual.getJobParameter(), is("para"));
         assertThat(actual.getFetchDataCount(), is(100));
         assertTrue(actual.isMonitorExecution());
+        assertTrue(actual.getOffsets().isEmpty());
     }
     
     @Test
@@ -102,6 +103,7 @@ public final class ExecutionContextServiceTest extends AbstractBaseJobTest {
         assertThat(actual.getJobParameter(), is("para"));
         assertThat(actual.getFetchDataCount(), is(100));
         assertTrue(actual.isMonitorExecution());
+        assertTrue(actual.getOffsets().isEmpty());
     }
     
     @Test
@@ -125,6 +127,7 @@ public final class ExecutionContextServiceTest extends AbstractBaseJobTest {
         assertThat(actual.getJobParameter(), is("para"));
         assertThat(actual.getFetchDataCount(), is(100));
         assertTrue(actual.isMonitorExecution());
+        assertTrue(actual.getOffsets().isEmpty());
     }
     
     @Test
@@ -146,5 +149,31 @@ public final class ExecutionContextServiceTest extends AbstractBaseJobTest {
         assertThat(actual.getJobParameter(), is("para"));
         assertThat(actual.getFetchDataCount(), is(100));
         assertTrue(actual.isMonitorExecution());
+        assertTrue(actual.getOffsets().isEmpty());
+    }
+    
+    @Test
+    public void assertGetJobExecutionShardingContextWhenHaveOffsets() {
+        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "3");
+        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "0=A,2=C");
+        getRegistryCenter().persist("/testJob/config/jobParameter", "para");
+        getRegistryCenter().persist("/testJob/config/fetchDataCount", "100");
+        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/sharding", "0,1");
+        getRegistryCenter().persist("/testJob/offset/0", "offset0");
+        getRegistryCenter().persist("/testJob/offset/1", "");
+        getRegistryCenter().persist("/testJob/offset/2", "offset2");
+        JobExecutionMultipleShardingContext actual = executionContextService.getJobExecutionShardingContext();
+        assertThat(actual.getJobName(), is("testJob"));
+        assertThat(actual.getShardingTotalCount(), is(3));
+        assertThat(actual.getShardingItems(), is(Arrays.asList(0, 1)));
+        Map<Integer, String> expectedRunningItemParameters = new HashMap<Integer, String>(1);
+        expectedRunningItemParameters.put(0, "A");
+        assertThat(actual.getShardingItemParameters(), is(expectedRunningItemParameters));
+        assertThat(actual.getJobParameter(), is("para"));
+        assertThat(actual.getFetchDataCount(), is(100));
+        assertFalse(actual.isMonitorExecution());
+        Map<Integer, String> offset = new HashMap<>(1);
+        offset.put(0, "offset0");
+        assertThat(actual.getOffsets(), is(offset));
     }
 }

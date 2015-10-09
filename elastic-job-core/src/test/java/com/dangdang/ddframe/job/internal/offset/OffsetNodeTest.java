@@ -15,32 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.internal.offset;
 
-import lombok.Getter;
-import lombok.Setter;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-/**
- * 作业运行时单片分片上下文.
- * 
- * @author zhangliang
- */
-@Getter
-@Setter
-public final class JobExecutionSingleShardingContext extends AbstractJobExecutionShardingContext {
+import org.junit.Test;
+
+public final class OffsetNodeTest {
     
-    /**
-     * 运行在本作业服务器的分片序列号.
-     */
-    private int shardingItem;
-    
-    /**
-     * 运行在本作业项的分片序列号和个性化参数.
-     */
-    private String shardingItemParameter;
-    
-    /**
-     * 数据处理位置.
-     */
-    private String offset;
+    @Test
+    public void assertGetItemNode() {
+        assertThat(OffsetNode.getItemNode(0), is("offset/0"));
+    }
 }

@@ -17,6 +17,11 @@
 
 package com.dangdang.ddframe.job.api;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -24,12 +29,8 @@ import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
+import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 弹性化分布式作业的基类.
@@ -58,6 +59,10 @@ public abstract class AbstractElasticJob implements ElasticJob {
     
     @Setter
     private FailoverService failoverService;
+    
+    @Setter
+    @Getter(AccessLevel.PROTECTED)
+    private OffsetService offsetService;
     
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {

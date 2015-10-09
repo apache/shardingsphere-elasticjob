@@ -115,4 +115,14 @@ public abstract class AbstractPerpetualElasticJob<T> extends AbstractElasticJob 
      * @return 数据是否处理成功
      */
     protected abstract boolean processData(final JobExecutionMultipleShardingContext shardingContext, final T data);
+    
+    /**
+     * 更新数据处理位置.
+     * 
+     * @param item 分片项
+     * @param offset 数据处理位置
+     */
+    protected void updateOffset(final int item, final String offset) {
+        getOffsetService().updateOffset(item, offset);
+    }
 }

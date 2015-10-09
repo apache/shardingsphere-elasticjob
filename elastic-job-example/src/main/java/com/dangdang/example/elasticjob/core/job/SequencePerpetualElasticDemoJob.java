@@ -47,6 +47,7 @@ public class SequencePerpetualElasticDemoJob extends AbstractSequencePerpetualEl
     protected boolean processData(final JobExecutionSingleShardingContext context, final Foo data) {
         System.out.println(String.format(PROCESS_MESSAGE, data, new SimpleDateFormat(DATE_FORMAT).format(new Date())));
         fooRepository.setInactive(data.getId());
+        updateOffset(context.getShardingItem(), String.valueOf(data.getId()));
         return true;
     }
 }

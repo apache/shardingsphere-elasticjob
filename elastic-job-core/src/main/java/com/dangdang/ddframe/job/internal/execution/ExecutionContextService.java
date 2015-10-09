@@ -25,6 +25,7 @@ import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
+import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -46,12 +47,15 @@ public final class ExecutionContextService {
     
     private final FailoverService failoverService;
     
+    private final OffsetService offsetService;
+    
     public ExecutionContextService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
         shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
         failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
+        offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -91,6 +95,7 @@ public final class ExecutionContextService {
                 result.getShardingItemParameters().put(each, shardingItemParameters.get(each));
             }
         }
+        result.setOffsets(offsetService.getOffsets(result.getShardingItems()));
         return result;
     }
     

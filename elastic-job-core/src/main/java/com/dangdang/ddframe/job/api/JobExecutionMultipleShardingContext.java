@@ -52,6 +52,12 @@ public final class JobExecutionMultipleShardingContext extends AbstractJobExecut
     private Map<Integer, String> shardingItemParameters = new HashMap<>(initCollectionSize);
     
     /**
+     * 数据分片项和数据处理位置Map.
+     */
+    @Setter
+    private Map<Integer, String> offsets;
+    
+    /**
      * 根据分片项获取单分片作业运行时上下文.
      * 
      * @param item 分片项
@@ -66,6 +72,7 @@ public final class JobExecutionMultipleShardingContext extends AbstractJobExecut
         }
         result.setShardingItem(item);
         result.setShardingItemParameter(shardingItemParameters.get(item));
+        result.setOffset(offsets.get(item));
         return result;
     }
     

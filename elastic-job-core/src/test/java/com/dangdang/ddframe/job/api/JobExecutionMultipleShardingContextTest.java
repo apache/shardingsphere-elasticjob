@@ -23,6 +23,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -39,6 +41,7 @@ public final class JobExecutionMultipleShardingContextTest {
         assertThat(actual.getFetchDataCount(), is(0));
         assertThat(actual.getShardingItem(), is(0));
         assertThat(actual.getShardingItemParameter(), is("param0"));
+        assertThat(actual.getOffset(), is("offset0"));
     }
     
     private JobExecutionMultipleShardingContext createShardingContext() {
@@ -47,6 +50,10 @@ public final class JobExecutionMultipleShardingContextTest {
         result.setShardingTotalCount(10);
         result.setShardingItems(Arrays.asList(0, 1));
         result.getShardingItemParameters().put(0, "param0");
+        Map<Integer, String> offsets = new HashMap<>(2);
+        offsets.put(0, "offset0");
+        offsets.put(1, "offset1");
+        result.setOffsets(offsets);
         return result;
     }
 }
