@@ -74,7 +74,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         if (0 != zkConfig.getSessionTimeoutMilliseconds()) {
             builder.sessionTimeoutMs(zkConfig.getSessionTimeoutMilliseconds());
         }
-        if (0 == zkConfig.getConnectionTimeoutMilliseconds()) {
+        if (0 != zkConfig.getConnectionTimeoutMilliseconds()) {
             builder.connectionTimeoutMs(zkConfig.getConnectionTimeoutMilliseconds());
         }
         if (!Strings.isNullOrEmpty(zkConfig.getDigest())) {
