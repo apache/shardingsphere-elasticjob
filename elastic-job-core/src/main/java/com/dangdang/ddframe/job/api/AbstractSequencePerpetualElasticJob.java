@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.api;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,24 +47,36 @@ public abstract class AbstractSequencePerpetualElasticJob<T> extends AbstractEla
     
     @Override
     protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
-        Map<Integer, List<T>> data = takeData(shardingContext);
+        Map<Integer, List<T>> data = takeDataInMultipleThreads(shardingContext);
         log.debug("Elastic job: sequence perpetual elastic job fetch data size: {}.", data != null ? data.size() : 0);
         while (!data.isEmpty() && !isStoped() && !getShardingService().isNeedSharding()) {
             processDataInMultipleThreads(shardingContext, data);
-            data = takeData(shardingContext);
+            data = takeDataInMultipleThreads(shardingContext);
             log.debug("Elastic job: sequence perpetual elastic job fetch data size: {}.", data != null ? data.size() : 0);
         }
     }
     
-    private Map<Integer, List<T>> takeData(final JobExecutionMultipleShardingContext shardingContext) {
+    private Map<Integer, List<T>> takeDataInMultipleThreads(final JobExecutionMultipleShardingContext shardingContext) {
         List<Integer> items = shardingContext.getShardingItems();
-        Map<Integer, List<T>> result = new HashMap<>(items.size());
-        for (int each : items) {
-            List<T> data = fetchData(shardingContext.createJobExecutionSingleShardingContext(each));
-            if (null != data && !data.isEmpty()) {
-                result.put(each, data);
-            }
+        final Map<Integer, List<T>> result = new ConcurrentHashMap<>(items.size());
+        final CountDownLatch latch = new CountDownLatch(items.size());
+        for (final int each : items) {
+            executorService.submit(new Runnable() {
+                
+                @Override
+                public void run() {
+                    try {
+                        List<T> data = fetchData(shardingContext.createJobExecutionSingleShardingContext(each));
+                        if (null != data && !data.isEmpty()) {
+                            result.put(each, data);
+                        }
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
         }
+        latchAwait(latch);
         return result;
     }
     
@@ -83,6 +95,10 @@ public abstract class AbstractSequencePerpetualElasticJob<T> extends AbstractEla
                 }
             });
         }
+        latchAwait(latch);
+    }
+    
+    private void latchAwait(final CountDownLatch latch) {
         try {
             latch.await();
         } catch (final InterruptedException ex) {
