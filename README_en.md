@@ -32,6 +32,8 @@
 
 ## Related documents
 
+[Release notes](http://dangdangdotcom.github.io/elastic-job/releaseNotes_en.html)
+
 [Directory structure](http://dangdangdotcom.github.io/elastic-job/directoryStructure_en.html)
 
 [Usage](http://dangdangdotcom.github.io/elastic-job/usage_en.html)
