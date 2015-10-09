@@ -34,6 +34,8 @@
 
 ## 相关文档
 
+[Release Notes](http://dangdangdotcom.github.io/elastic-job/releaseNotes.html)
+
 [目录结构说明](http://dangdangdotcom.github.io/elastic-job/directoryStructure.html)
 
 [使用步骤](http://dangdangdotcom.github.io/elastic-job/usage.html)
@@ -49,6 +51,8 @@
 [实现原理](http://dangdangdotcom.github.io/elastic-job/theory.html)
 
 [InfoQ新闻](http://www.infoq.com/cn/news/2015/09/dangdang-elastic-job)
+
+[Elastic-Job Wiki](https://github.com/dangdangdotcom/elastic-job/wiki) （由社区志愿者自由编辑的）
 
 ## Quick Start
 
