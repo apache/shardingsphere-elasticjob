@@ -83,13 +83,20 @@ public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
     
     @Override
     protected List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
-        List<Foo> result = // get data from database by sharding items
+        Map<Integer, String> offset = context.getOffsets();
+        List<Foo> result = // get data from database by sharding items and by offset
         return result;
     }
     
     @Override
     protected boolean processData(JobExecutionMultipleShardingContext context, Foo data) {
         // process data
+        // ...
+        
+        // store offset
+        for (int each : context.getShardingItems()) {
+            updateOffset(each, "your offset, maybe id");
+        }
         return true;
     }
 }
