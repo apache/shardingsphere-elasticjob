@@ -50,6 +50,8 @@
 
 [Theory illustrate](http://dangdangdotcom.github.io/elastic-job/theory_en.html)
 
+[Job sharding strategy](http://dangdangdotcom.github.io/elastic-job/jobStrategy_en.html)
+
 [InfoQ news](http://www.infoq.com/cn/news/2015/09/dangdang-elastic-job)
 
 ## Quick Start
