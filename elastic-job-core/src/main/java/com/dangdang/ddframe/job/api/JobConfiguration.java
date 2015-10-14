@@ -128,7 +128,7 @@ public class JobConfiguration {
      * 作业分片策略实现类全路径.
      * 
      * <p>
-     * 默认使用{@code com.dangdang.ddframe.job.internal.sharding.strategy.AverageAllocationJobShardingStrategy}.
+     * 默认使用{@code com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategy}.
      * </p>
      */
     private String jobShardingStrategyClass = "";
