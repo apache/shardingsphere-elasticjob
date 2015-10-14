@@ -52,6 +52,7 @@ import com.dangdang.ddframe.job.internal.sharding.ShardingNodeTest;
 import com.dangdang.ddframe.job.internal.sharding.ShardingServiceTest;
 import com.dangdang.ddframe.job.internal.sharding.strategy.AverageAllocationJobShardingStrategyTest;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyFactoryTest;
+import com.dangdang.ddframe.job.internal.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountJobTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatisticsTest;
 import com.dangdang.ddframe.job.internal.storage.JobNodePathTest;
@@ -83,6 +84,7 @@ import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
     OffsetNodeTest.class, 
     JobShardingStrategyFactoryTest.class, 
     AverageAllocationJobShardingStrategyTest.class, 
+    OdevitySortByNameJobShardingStrategyTest.class, 
     ProcessCountJobTest.class, 
     ProcessCountStatisticsTest.class, 
     DisabledJobTest.class, 
