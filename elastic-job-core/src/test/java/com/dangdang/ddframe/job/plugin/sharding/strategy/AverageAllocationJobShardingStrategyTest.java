@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.internal.sharding.strategy;
+package com.dangdang.ddframe.job.plugin.sharding.strategy;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
 
 public final class AverageAllocationJobShardingStrategyTest {
     

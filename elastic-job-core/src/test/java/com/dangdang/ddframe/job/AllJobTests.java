@@ -50,13 +50,13 @@ import com.dangdang.ddframe.job.internal.server.ServerServiceTest;
 import com.dangdang.ddframe.job.internal.sharding.ShardingListenerManagerTest;
 import com.dangdang.ddframe.job.internal.sharding.ShardingNodeTest;
 import com.dangdang.ddframe.job.internal.sharding.ShardingServiceTest;
-import com.dangdang.ddframe.job.internal.sharding.strategy.AverageAllocationJobShardingStrategyTest;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyFactoryTest;
-import com.dangdang.ddframe.job.internal.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountJobTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatisticsTest;
 import com.dangdang.ddframe.job.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
+import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategyTest;
+import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({

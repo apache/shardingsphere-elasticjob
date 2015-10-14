@@ -1,6 +1,7 @@
 package com.dangdang.ddframe.job.internal.sharding.strategy;
 
 import com.dangdang.ddframe.job.exception.JobShardingStrategyClassConfigurationException;
+import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 

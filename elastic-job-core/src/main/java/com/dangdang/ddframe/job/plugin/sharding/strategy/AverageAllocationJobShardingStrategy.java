@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.internal.sharding.strategy;
+package com.dangdang.ddframe.job.plugin.sharding.strategy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOption;
 
 /**
  * 基于平均分配算法的分片策略.

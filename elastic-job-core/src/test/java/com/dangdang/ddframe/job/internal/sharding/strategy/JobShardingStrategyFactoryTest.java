@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.dangdang.ddframe.job.exception.JobShardingStrategyClassConfigurationException;
 import com.dangdang.ddframe.job.internal.sharding.strategy.fixture.InvalidJobShardingStrategy;
+import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
 
 public class JobShardingStrategyFactoryTest {
     

@@ -15,11 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.internal.sharding.strategy;
+package com.dangdang.ddframe.job.plugin.sharding.strategy;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOption;
 
 /**
  * 根据作业名的哈希值奇偶数决定IP升降序算法的分片策略.
