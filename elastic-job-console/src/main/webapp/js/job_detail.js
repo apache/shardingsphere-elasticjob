@@ -29,6 +29,7 @@ function renderSettings() {
         $("#processCountIntervalSeconds").attr("value", data.processCountIntervalSeconds);
         $("#concurrentDataProcessThreadCount").attr("value", data.concurrentDataProcessThreadCount);
         $("#fetchDataCount").attr("value", data.fetchDataCount);
+        $("#jobShardingStrategyClass").attr("value", data.jobShardingStrategyClass);
         $("#description").text(data.description);
         if (!data.monitorExecution) {
             $("#execution_info_tab").addClass("disabled");
@@ -51,8 +52,9 @@ function bindSubmitJobSettingsForm() {
         var failover = $("#failover").prop("checked");
         var misfire = $("#misfire").prop("checked");
         var shardingItemParameters = $("#shardingItemParameters").val();
+        var jobShardingStrategyClass = $("#jobShardingStrategyClass").val();
         var description = $("#description").val();
-        $.post("job/settings", {jobName: jobName, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, fetchDataCount: fetchDataCount, monitorExecution: monitorExecution, failover: failover, misfire: misfire,shardingItemParameters: shardingItemParameters, description: description}, function(data) {
+        $.post("job/settings", {jobName: jobName, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, fetchDataCount: fetchDataCount, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, description: description}, function(data) {
             showSuccessDialog();
             if (monitorExecution) {
                 $("#execution_info_tab").removeClass("disabled");

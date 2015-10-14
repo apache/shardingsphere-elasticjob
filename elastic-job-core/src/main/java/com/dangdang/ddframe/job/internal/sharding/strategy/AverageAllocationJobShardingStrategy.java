@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.internal.sharding;
+package com.dangdang.ddframe.job.internal.sharding.strategy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,12 +40,12 @@ import java.util.Map.Entry;
 public final class AverageAllocationJobShardingStrategy implements JobShardingStrategy {
     
     @Override
-    public Map<String, List<Integer>> sharding(final List<String> serversList, final int shardingTotalCount) {
+    public Map<String, List<Integer>> sharding(final List<String> serversList, final JobShardingStrategyOption option) {
         if (serversList.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, List<Integer>> result = shardingAliquot(serversList, shardingTotalCount);
-        addAliquant(serversList, shardingTotalCount, result);
+        Map<String, List<Integer>> result = shardingAliquot(serversList, option.getShardingTotalCount());
+        addAliquant(serversList, option.getShardingTotalCount(), result);
         return result;
     }
     

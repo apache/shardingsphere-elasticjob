@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
@@ -29,12 +31,13 @@ import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyFactory;
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOption;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.internal.util.ItemUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 作业分片服务.
@@ -43,6 +46,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public final class ShardingService {
+    
+    private final String jobName;
     
     private final JobNodeStorage jobNodeStorage;
     
@@ -57,6 +62,7 @@ public final class ShardingService {
     private final ExecutionService executionService;
     
     public ShardingService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
+        jobName = jobConfiguration.getJobName();
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
@@ -96,8 +102,9 @@ public final class ShardingService {
         log.debug("Elastic job: sharding begin.");
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
-        JobShardingStrategy jobShardingStrategy = new AverageAllocationJobShardingStrategy();
-        persistShardingInfo(jobShardingStrategy.sharding(serverService.getAvailableServers(), configService.getShardingTotalCount()));
+        JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(configService.getJobShardingStrategyClass());
+        JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, configService.getShardingTotalCount(), configService.getShardingItemParameters());
+        persistShardingInfo(jobShardingStrategy.sharding(serverService.getAvailableServers(), option));
         jobNodeStorage.removeJobNodeIfExisted(ShardingNode.NECESSARY);
         jobNodeStorage.removeJobNodeIfExisted(ShardingNode.PROCESSING);
         log.debug("Elastic job: sharding completed.");

@@ -39,6 +39,7 @@ import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 
 public final class ConfigurationServiceTest extends AbstractBaseJobTest {
     
@@ -109,6 +110,7 @@ public final class ConfigurationServiceTest extends AbstractBaseJobTest {
         assertThat(Integer.parseInt(getRegistryCenter().getDirectly("/testJob/config/fetchDataCount")), is(jobConfiguration.getFetchDataCount()));
         assertThat(Boolean.valueOf(getRegistryCenter().getDirectly("/testJob/config/failover")), is(jobConfiguration.isFailover()));
         assertThat(Boolean.valueOf(getRegistryCenter().getDirectly("/testJob/config/misfire")), is(jobConfiguration.isMisfire()));
+        assertThat(getRegistryCenter().getDirectly("/testJob/config/jobShardingStrategyClass"), is(jobConfiguration.getJobShardingStrategyClass()));
         assertThat(getRegistryCenter().getDirectly("/testJob/config/description"), is(jobConfiguration.getDescription()));
     }
     
@@ -215,6 +217,13 @@ public final class ConfigurationServiceTest extends AbstractBaseJobTest {
         getJobConfig().setMisfire(true);
         configService.persistJobConfiguration();
         assertTrue(configService.isMisfire());
+    }
+    
+    @Test
+    public void assertGetJobShardingStrategyClass() {
+        getJobConfig().setJobShardingStrategyClass(JobShardingStrategy.class.getName());
+        configService.persistJobConfiguration();
+        assertThat(configService.getJobShardingStrategyClass(), is(JobShardingStrategy.class.getName()));
     }
     
     class ConflictJob extends AbstractElasticJob {

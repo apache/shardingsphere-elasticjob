@@ -125,6 +125,15 @@ public class JobConfiguration {
     private boolean misfire = true;
     
     /**
+     * 作业分片策略实现类全路径.
+     * 
+     * <p>
+     * 默认使用{@code com.dangdang.ddframe.job.internal.sharding.strategy.AverageAllocationJobShardingStrategy}.
+     * </p>
+     */
+    private String jobShardingStrategyClass = "";
+    
+    /**
      * 作业描述信息.
      */
     private String description = "";

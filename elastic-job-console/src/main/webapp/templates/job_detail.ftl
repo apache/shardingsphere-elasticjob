@@ -75,6 +75,13 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="jobShardingStrategyClass" class="col-sm-2 control-label">作业分片策略实现类全路径</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="jobShardingStrategyClass" name="jobShardingStrategyClass" class="form-control" data-toggle="tooltip" data-placement="bottom" title="默认使用按照IP地址顺序分片策略，可参照文档定制化分片策略" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
                     <label for="description" class="col-sm-2 control-label">作业描述信息</label>
                     <div class="col-sm-9">
                         <textarea id="description" name="description" class="form-control"></textarea>

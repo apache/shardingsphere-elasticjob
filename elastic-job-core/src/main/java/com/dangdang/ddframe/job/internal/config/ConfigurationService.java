@@ -71,6 +71,7 @@ public final class ConfigurationService {
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, jobNodeStorage.getJobConfiguration().getFetchDataCount());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, jobNodeStorage.getJobConfiguration().isFailover());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, jobNodeStorage.getJobConfiguration().isMisfire());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, jobNodeStorage.getJobConfiguration().getJobShardingStrategyClass());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, jobNodeStorage.getJobConfiguration().getDescription());
     }
     
@@ -179,5 +180,14 @@ public final class ConfigurationService {
      */
     public boolean isMisfire() {
         return Boolean.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.MISFIRE));
+    }
+    
+    /**
+     * 获取作业分片策略实现类全路径.
+     * 
+     * @return 作业分片策略实现类全路径
+     */
+    public String getJobShardingStrategyClass() {
+        return jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS);
     }
 }

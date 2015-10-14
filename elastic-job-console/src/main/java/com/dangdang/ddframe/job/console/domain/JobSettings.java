@@ -52,5 +52,7 @@ public final class JobSettings implements Serializable {
     
     private boolean misfire;
     
+    private String jobShardingStrategyClass;
+    
     private String description;
 }

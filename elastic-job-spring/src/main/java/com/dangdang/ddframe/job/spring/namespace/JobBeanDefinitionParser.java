@@ -60,6 +60,7 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
         addPropertyValueIfNotEmpty("fetchDataCount", element, factory);
         addPropertyValueIfNotEmpty("failover", element, factory);
         addPropertyValueIfNotEmpty("misfire", element, factory);
+        addPropertyValueIfNotEmpty("jobShardingStrategyClass", element, factory);
         addPropertyValueIfNotEmpty("description", element, factory);
         addPropertyValueIfNotEmpty("disabled", element, factory);
         addPropertyValueIfNotEmpty("overwrite", element, factory);

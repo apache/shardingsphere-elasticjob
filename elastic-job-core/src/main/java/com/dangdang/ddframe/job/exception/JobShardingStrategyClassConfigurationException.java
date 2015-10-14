@@ -15,24 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.internal.sharding;
-
-import java.util.List;
-import java.util.Map;
+package com.dangdang.ddframe.job.exception;
 
 /**
- * 作业的分片策略.
+ * 作业分片策略类配置错误抛出的异常.
  * 
  * @author zhangliang
  */
-public interface JobShardingStrategy {
+public final class JobShardingStrategyClassConfigurationException extends JobException {
     
-    /**
-     * 进行作业分片.
-     * 
-     * @param serversList 所有参与分片的服务器列表
-     * @param shardingTotalCount 分片总数量
-     * @return 分配分片的服务器IP和分片集合的映射
-     */
-    Map<String, List<Integer>> sharding(List<String> serversList, int shardingTotalCount);
+    private static final long serialVersionUID = -5017090222608389272L;
+    
+    public JobShardingStrategyClassConfigurationException(final Exception cause) {
+        super(cause);
+    }
 }
