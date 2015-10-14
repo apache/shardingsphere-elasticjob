@@ -50,5 +50,7 @@ public final class JobSettings implements Serializable {
     
     private boolean failover;
     
+    private boolean misfire;
+    
     private String description;
 }

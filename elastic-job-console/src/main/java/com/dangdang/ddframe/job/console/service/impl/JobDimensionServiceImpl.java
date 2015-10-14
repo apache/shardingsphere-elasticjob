@@ -98,6 +98,7 @@ public class JobDimensionServiceImpl implements JobDimensionService {
         result.setConcurrentDataProcessThreadCount(Integer.parseInt(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "concurrentDataProcessThreadCount"))));
         result.setFetchDataCount(Integer.parseInt(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "fetchDataCount"))));
         result.setFailover(Boolean.valueOf(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "failover"))));
+        result.setMisfire(Boolean.valueOf(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "misfire"))));
         result.setDescription(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "description")));
         return result;
     }
@@ -113,6 +114,7 @@ public class JobDimensionServiceImpl implements JobDimensionService {
         updateIfchanged(jobSettings.getJobName(), "concurrentDataProcessThreadCount", jobSettings.getConcurrentDataProcessThreadCount());
         updateIfchanged(jobSettings.getJobName(), "fetchDataCount", jobSettings.getFetchDataCount());
         updateIfchanged(jobSettings.getJobName(), "failover", jobSettings.isFailover());
+        updateIfchanged(jobSettings.getJobName(), "misfire", jobSettings.isMisfire());
         updateIfchanged(jobSettings.getJobName(), "description", jobSettings.getDescription());
     }
     

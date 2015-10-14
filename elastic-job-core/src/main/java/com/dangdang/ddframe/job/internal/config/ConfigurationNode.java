@@ -48,6 +48,8 @@ public final class ConfigurationNode {
     
     static final String FAILOVER = ROOT + "/failover";
     
+    static final String MISFIRE = ROOT + "/misfire";
+    
     static final String DESCRIPTION = ROOT + "/description";
     
     private final JobNodePath jobNodePath;

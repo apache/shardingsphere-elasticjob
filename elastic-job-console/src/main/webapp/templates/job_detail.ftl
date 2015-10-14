@@ -52,13 +52,18 @@
                 
                 <div class="form-group">
                     <label for="monitorExecution" class="col-sm-2 control-label">监控作业执行时状态</label>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <input type="checkbox" id="monitorExecution" name="monitorExecution" data-toggle="tooltip" data-placement="bottom" title="每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率，因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。也无法实现作业失效转移。每次作业执行时间和间隔时间均较长短的情况，建议监控作业运行时状态，可保证数据不会重复选取。" />
                     </div>
                     
                     <label for="failover" class="col-sm-2 control-label">支持自动失效转移</label>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <input type="checkbox" id="failover" name="failover" data-toggle="tooltip" data-placement="bottom" title="只有开启监控作业执行时状态的情况下才可以开启失效转移" />
+                    </div>
+                    
+                    <label for="failover" class="col-sm-2 control-label">支持misfire</label>
+                    <div class="col-sm-2">
+                        <input type="checkbox" id="misfire" name="misfire" data-toggle="tooltip" data-placement="bottom" title="是否开启任务错过重新执行" />
                     </div>
                 </div>
                 

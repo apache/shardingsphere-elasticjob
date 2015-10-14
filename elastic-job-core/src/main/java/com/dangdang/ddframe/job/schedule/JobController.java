@@ -137,11 +137,15 @@ public class JobController {
     }
     
     private Trigger createTrigger() {
-        return TriggerBuilder
-                .newTrigger()
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(configService.getCron());
+        if (configService.isMisfire()) {
+            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
+        } else {
+            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
+        }
+        return TriggerBuilder.newTrigger()
                 .withIdentity(jobConfiguration.getJobName() + "_Trigger")
-                .withSchedule(CronScheduleBuilder.cronSchedule(configService.getCron()).withMisfireHandlingInstructionFireAndProceed())
-                .build();
+                .withSchedule(cronScheduleBuilder).build();
     }
     
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
@@ -157,6 +161,9 @@ public class JobController {
         result.put("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", jobName + "_Scheduler");
+        if (!configService.isMisfire()) {
+            result.put("org.quartz.jobStore.misfireThreshold", "1");
+        }
         prepareEnvironments(result);
         return result;
     }

@@ -108,6 +108,7 @@ public final class ConfigurationServiceTest extends AbstractBaseJobTest {
         assertThat(Integer.parseInt(getRegistryCenter().getDirectly("/testJob/config/concurrentDataProcessThreadCount")), is(jobConfiguration.getConcurrentDataProcessThreadCount()));
         assertThat(Integer.parseInt(getRegistryCenter().getDirectly("/testJob/config/fetchDataCount")), is(jobConfiguration.getFetchDataCount()));
         assertThat(Boolean.valueOf(getRegistryCenter().getDirectly("/testJob/config/failover")), is(jobConfiguration.isFailover()));
+        assertThat(Boolean.valueOf(getRegistryCenter().getDirectly("/testJob/config/misfire")), is(jobConfiguration.isMisfire()));
         assertThat(getRegistryCenter().getDirectly("/testJob/config/description"), is(jobConfiguration.getDescription()));
     }
     
@@ -207,6 +208,13 @@ public final class ConfigurationServiceTest extends AbstractBaseJobTest {
         getJobConfig().setFailover(true);
         configService.persistJobConfiguration();
         assertTrue(configService.isFailover());
+    }
+    
+    @Test
+    public void assertIsMisfire() {
+        getJobConfig().setMisfire(true);
+        configService.persistJobConfiguration();
+        assertTrue(configService.isMisfire());
     }
     
     class ConflictJob extends AbstractElasticJob {

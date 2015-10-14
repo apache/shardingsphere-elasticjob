@@ -76,7 +76,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
         executionService.cleanPreviousExecutionInfo();
         executeJobInternal(shardingContext);
         log.debug("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
-        while (!executionService.getMisfiredJobItems(shardingContext.getShardingItems()).isEmpty() && !stoped && !shardingService.isNeedSharding()) {
+        while (configService.isMisfire() && !executionService.getMisfiredJobItems(shardingContext.getShardingItems()).isEmpty() && !stoped && !shardingService.isNeedSharding()) {
             log.debug("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
             executionService.clearMisfire(shardingContext.getShardingItems());
             executeJobInternal(shardingContext);

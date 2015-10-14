@@ -120,6 +120,11 @@ public class JobConfiguration {
     private boolean failover;
     
     /**
+     * 是否开启misfire.
+     */
+    private boolean misfire = true;
+    
+    /**
      * 作业描述信息.
      */
     private String description = "";
