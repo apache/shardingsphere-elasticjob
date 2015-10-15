@@ -17,24 +17,15 @@
 
 package com.dangdang.ddframe.reg.exception;
 
-import java.io.IOException;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-/**
- * 找不到本地属性文件所抛出的异常.
- * 
- * @author zhangliang
- */
-public final class LocalPropertiesFileNotFoundException extends RegException {
+import org.junit.Test;
+
+public final class LocalPropertiesFileNotFoundExceptionTest {
     
-    private static final long serialVersionUID = 316825485808885546L;
-    
-    private static final String MSG = "CAN NOT found local properties files: [%s].";
-    
-    public LocalPropertiesFileNotFoundException(final String localPropertiesFileName) {
-        super(MSG, localPropertiesFileName);
-    }
-    
-    public LocalPropertiesFileNotFoundException(final IOException cause) {
-        super(cause);
+    @Test
+    public void assertGetMessage() {
+        assertThat(new LocalPropertiesFileNotFoundException("/invalid/invalid_file.properties").getMessage(), is("CAN NOT found local properties files: [/invalid/invalid_file.properties]."));
     }
 }

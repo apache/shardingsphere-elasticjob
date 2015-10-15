@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundExceptionTest;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandlerTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterForAuthTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterTest;
@@ -29,7 +30,8 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterTest;
 @SuiteClasses({
     ZookeeperRegistryCenterTest.class, 
     ZookeeperRegistryCenterForAuthTest.class, 
-    RegExceptionHandlerTest.class
+    RegExceptionHandlerTest.class, 
+    LocalPropertiesFileNotFoundExceptionTest.class
     })
 public class AllRegTests {
 

@@ -22,6 +22,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContextTest;
+import com.dangdang.ddframe.job.exception.JobConflictExceptionTest;
+import com.dangdang.ddframe.job.exception.TimeDiffIntolerableExceptionTest;
 import com.dangdang.ddframe.job.integrate.std.DisabledJobTest;
 import com.dangdang.ddframe.job.integrate.std.OneOffElasticJobTest;
 import com.dangdang.ddframe.job.integrate.std.PerpetualElasticJobForExecuteFailureTest;
@@ -85,6 +87,8 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobSha
     JobShardingStrategyFactoryTest.class, 
     AverageAllocationJobShardingStrategyTest.class, 
     OdevitySortByNameJobShardingStrategyTest.class, 
+    JobConflictExceptionTest.class, 
+    TimeDiffIntolerableExceptionTest.class, 
     ProcessCountJobTest.class, 
     ProcessCountStatisticsTest.class, 
     DisabledJobTest.class, 

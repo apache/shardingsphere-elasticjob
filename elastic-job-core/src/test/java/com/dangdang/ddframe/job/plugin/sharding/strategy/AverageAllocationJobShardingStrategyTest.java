@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOption;
-import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
 
 public final class AverageAllocationJobShardingStrategyTest {
     
