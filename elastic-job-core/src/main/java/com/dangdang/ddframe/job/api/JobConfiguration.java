@@ -111,6 +111,16 @@ public class JobConfiguration {
     private int fetchDataCount = 1;
     
     /**
+     * 最大容忍的本机与注册中心的时间误差秒数.
+     * 
+     * <p>
+     * 如果时间误差超过配置秒数则作业启动时将抛异常.
+     * 配置为-1表示不检查时间误差.
+     * </p>
+     */
+    private int maxTimeDiffSeconds = -1;
+    
+    /**
      * 是否开启失效转移.
      * 
      * <p>

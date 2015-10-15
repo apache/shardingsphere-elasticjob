@@ -97,6 +97,7 @@ public class JobDimensionServiceImpl implements JobDimensionService {
         result.setProcessCountIntervalSeconds(Integer.parseInt(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "processCountIntervalSeconds"))));
         result.setConcurrentDataProcessThreadCount(Integer.parseInt(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "concurrentDataProcessThreadCount"))));
         result.setFetchDataCount(Integer.parseInt(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "fetchDataCount"))));
+        result.setMaxTimeDiffSeconds(Integer.parseInt(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "maxTimeDiffSeconds"))));
         result.setFailover(Boolean.valueOf(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "failover"))));
         result.setMisfire(Boolean.valueOf(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "misfire"))));
         result.setJobShardingStrategyClass(curatorRepository.getData(JobNodePath.getConfigNodePath(jobName, "jobShardingStrategyClass")));
@@ -114,6 +115,7 @@ public class JobDimensionServiceImpl implements JobDimensionService {
         updateIfchanged(jobSettings.getJobName(), "processCountIntervalSeconds", jobSettings.getProcessCountIntervalSeconds());
         updateIfchanged(jobSettings.getJobName(), "concurrentDataProcessThreadCount", jobSettings.getConcurrentDataProcessThreadCount());
         updateIfchanged(jobSettings.getJobName(), "fetchDataCount", jobSettings.getFetchDataCount());
+        updateIfchanged(jobSettings.getJobName(), "maxTimeDiffSeconds", jobSettings.getMaxTimeDiffSeconds());
         updateIfchanged(jobSettings.getJobName(), "failover", jobSettings.isFailover());
         updateIfchanged(jobSettings.getJobName(), "misfire", jobSettings.isMisfire());
         updateIfchanged(jobSettings.getJobName(), "jobShardingStrategyClass", jobSettings.getJobShardingStrategyClass());

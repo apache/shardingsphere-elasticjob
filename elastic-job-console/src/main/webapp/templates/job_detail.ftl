@@ -51,6 +51,13 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="maxTimeDiffSeconds" class="col-sm-2 control-label">最大容忍的本机与注册中心的时间误差秒数</label>
+                    <div class="col-sm-1">
+                        <input type="number" id="maxTimeDiffSeconds" name="maxTimeDiffSeconds" class="form-control" data-toggle="tooltip" data-placement="bottom" title="如果时间误差超过配置秒数则作业启动时将抛异常。配置为-1表示不检查时间误差。" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
                     <label for="monitorExecution" class="col-sm-2 control-label">监控作业执行时状态</label>
                     <div class="col-sm-2">
                         <input type="checkbox" id="monitorExecution" name="monitorExecution" data-toggle="tooltip" data-placement="bottom" title="每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率，因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。也无法实现作业失效转移。每次作业执行时间和间隔时间均较长短的情况，建议监控作业运行时状态，可保证数据不会重复选取。" />

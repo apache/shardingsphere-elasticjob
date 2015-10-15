@@ -48,6 +48,8 @@ public final class JobSettings implements Serializable {
     
     private int fetchDataCount;
     
+    private int maxTimeDiffSeconds;
+    
     private boolean failover;
     
     private boolean misfire;

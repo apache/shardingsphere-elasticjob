@@ -44,6 +44,7 @@ import org.apache.zookeeper.data.ACL;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 /**
@@ -266,6 +267,21 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
+    }
+    
+    @Override
+    public long getRegistryCenterTime(final String key) {
+        long result = 0L;
+        try {
+            String path = client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(key);
+            result = client.checkExists().forPath(path).getCtime();
+        //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+        //CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+        Preconditions.checkArgument(0L != result, "Cannot get registry center time.");
+        return result;
     }
     
     @Override

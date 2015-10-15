@@ -38,6 +38,7 @@ import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
+import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 
@@ -189,6 +190,26 @@ public final class ConfigurationServiceTest extends AbstractBaseJobTest {
     public void assertGetFetchDataCount() {
         configService.persistJobConfiguration();
         assertThat(configService.getFetchDataCount(), is(1));
+    }
+    
+    @Test
+    public void assertIsMaxTimeDiffSecondsTolerableWithDefaultValue() {
+        configService.persistJobConfiguration();
+        configService.checkMaxTimeDiffSecondsTolerable();
+    }
+    
+    @Test
+    public void assertIsMaxTimeDiffSecondsTolerable() {
+        getJobConfig().setMaxTimeDiffSeconds(60);
+        configService.persistJobConfiguration();
+        configService.checkMaxTimeDiffSecondsTolerable();
+    }
+    
+    @Test(expected = TimeDiffIntolerableException.class)
+    public void assertIsNotMaxTimeDiffSecondsTolerable() {
+        getJobConfig().setMaxTimeDiffSeconds(-60);
+        configService.persistJobConfiguration();
+        configService.checkMaxTimeDiffSecondsTolerable();
     }
     
     @Test

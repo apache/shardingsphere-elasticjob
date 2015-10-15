@@ -67,6 +67,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
         log.debug("Elastic job: job execute begin, job execution context:{}.", context);
+        configService.checkMaxTimeDiffSecondsTolerable();
         shardingService.shardingIfNecessary();
         JobExecutionMultipleShardingContext shardingContext = executionContextService.getJobExecutionShardingContext();
         if (executionService.misfireIfNecessary(shardingContext.getShardingItems())) {

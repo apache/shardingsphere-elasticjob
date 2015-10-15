@@ -72,6 +72,7 @@
                 <property name="monitorExecution" value="${sequencePerpetualElasticJob.monitorExecution}" />
                 <property name="failover" value="${sequencePerpetualElasticJob.failover}" />
                 <property name="processCountIntervalSeconds" value="${sequencePerpetualElasticJob.processCountIntervalSeconds}" />
+                <property name="maxTimeDiffSeconds" value="${sequencePerpetualElasticJob.maxTimeDiffSeconds}" />
                 <property name="description" value="${sequencePerpetualElasticJob.description}" />
                 <property name="disabled" value="${sequencePerpetualElasticJob.disabled}" />
                 <property name="overwrite" value="${sequencePerpetualElasticJob.overwrite}" />

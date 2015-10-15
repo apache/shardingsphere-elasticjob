@@ -199,4 +199,13 @@ public final class JobNodeStorage {
         TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache();
         cache.getListenable().addListener(listener);
     }
+    
+    /**
+     * 获取注册中心当前时间.
+     * 
+     * @return 注册中心当前时间
+     */
+    public long getRegistryCenterTime() {
+        return coordinatorRegistryCenter.getRegistryCenterTime(jobNodePath.getFullPath("systemTime/current"));
+    }
 }

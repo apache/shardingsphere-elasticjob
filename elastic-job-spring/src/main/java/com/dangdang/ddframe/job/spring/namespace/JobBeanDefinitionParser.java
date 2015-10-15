@@ -58,6 +58,7 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
         addPropertyValueIfNotEmpty("processCountIntervalSeconds", element, factory);
         addPropertyValueIfNotEmpty("concurrentDataProcessThreadCount", element, factory);
         addPropertyValueIfNotEmpty("fetchDataCount", element, factory);
+        addPropertyValueIfNotEmpty("maxTimeDiffSeconds", element, factory);
         addPropertyValueIfNotEmpty("failover", element, factory);
         addPropertyValueIfNotEmpty("misfire", element, factory);
         addPropertyValueIfNotEmpty("jobShardingStrategyClass", element, factory);

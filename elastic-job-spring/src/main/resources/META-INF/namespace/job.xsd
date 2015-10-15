@@ -21,6 +21,7 @@
                     <xsd:attribute name="processCountIntervalSeconds" type="xsd:string" />
                     <xsd:attribute name="concurrentDataProcessThreadCount" type="xsd:string" />
                     <xsd:attribute name="fetchDataCount" type="xsd:string" />
+                    <xsd:attribute name="maxTimeDiffSeconds" type="xsd:string" />
                     <xsd:attribute name="failover" type="xsd:string" />
                     <xsd:attribute name="misfire" type="xsd:string" />
                     <xsd:attribute name="jobShardingStrategyClass" type="xsd:string" />

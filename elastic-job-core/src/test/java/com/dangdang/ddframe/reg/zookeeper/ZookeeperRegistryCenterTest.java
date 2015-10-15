@@ -209,6 +209,12 @@ public final class ZookeeperRegistryCenterTest {
     }
     
     @Test
+    public void getRegistryCenterTime() {
+        zkRegCenter.init();
+        assertTrue(zkRegCenter.getRegistryCenterTime("/_systemTime/current") <= System.currentTimeMillis());
+    }
+    
+    @Test
     public void getRawClient() {
         zkRegCenter.init();
         assertThat(zkRegCenter.getRawClient(), instanceOf(CuratorFramework.class));
