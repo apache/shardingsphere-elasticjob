@@ -13,9 +13,9 @@ import org.junit.Test;
 
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOption;
 
-public class RotateServerByNameJobShardingStrategyTest {
+public final class RotateServerByNameJobShardingStrategyTest {
     
-    private RotateServerByNameJobShardingStrategy odevitySortByNameJobShardingStrategy = new RotateServerByNameJobShardingStrategy();
+    private RotateServerByNameJobShardingStrategy rotateServerByNameJobShardingStrategy = new RotateServerByNameJobShardingStrategy();
     
     @Test
     public void assertsharding1() {
@@ -24,7 +24,7 @@ public class RotateServerByNameJobShardingStrategyTest {
         expected.put("host1", Arrays.asList(0));
         expected.put("host2", Arrays.asList(1));
         assertThat(
-                odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("1", 2, Collections.<Integer, String>emptyMap())), is(expected));
+                rotateServerByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("1", 2, Collections.<Integer, String>emptyMap())), is(expected));
     }
     
     @Test
@@ -34,7 +34,7 @@ public class RotateServerByNameJobShardingStrategyTest {
         expected.put("host1", Collections.<Integer>emptyList());
         expected.put("host2", Arrays.asList(0));
         assertThat(
-                odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("2", 2, Collections.<Integer, String>emptyMap())), is(expected));
+                rotateServerByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("2", 2, Collections.<Integer, String>emptyMap())), is(expected));
     }
     
     @Test
@@ -44,6 +44,6 @@ public class RotateServerByNameJobShardingStrategyTest {
         expected.put("host1", Arrays.asList(1));
         expected.put("host2", Collections.<Integer>emptyList());
         assertThat(
-                odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("3", 2, Collections.<Integer, String>emptyMap())), is(expected));
+                rotateServerByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("3", 2, Collections.<Integer, String>emptyMap())), is(expected));
     }
 }
