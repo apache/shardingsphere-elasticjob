@@ -55,4 +55,14 @@ public final class ConfigurationNodeTest {
     public void assertIsNotFailoverPath() {
         assertFalse(configurationNode.isFailoverPath("/testJob/config/failover1"));
     }
+    
+    @Test
+    public void assertIsCronPath() {
+        assertTrue(configurationNode.isCronPath("/testJob/config/cron"));
+    }
+    
+    @Test
+    public void assertIsNotCronPath() {
+        assertFalse(configurationNode.isCronPath("/testJob/config/cron1"));
+    }
 }

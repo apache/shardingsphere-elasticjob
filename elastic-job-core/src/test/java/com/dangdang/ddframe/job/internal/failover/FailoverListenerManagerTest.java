@@ -38,7 +38,7 @@ public final class FailoverListenerManagerTest extends AbstractBaseJobTest {
     public void setUp() {
         failoverListenerManager.listenJobCrashed();
         failoverListenerManager.listenFailoverJobCrashed();
-        failoverListenerManager.listenFailoverSerttingsChanged();
+        failoverListenerManager.listenFailoverSettingsChanged();
     }
     
     @Test

@@ -15,9 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.internal.election;
-
-import lombok.extern.slf4j.Slf4j;
+package com.dangdang.ddframe.job.internal.config;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
@@ -26,45 +24,43 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.schedule.JobController;
+import com.dangdang.ddframe.job.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 /**
- * 主节点选举监听管理器.
+ * 配置文件监听管理器.
  * 
- * @author zhangliang
+ * @author caohao
  */
-@Slf4j
-public final class ElectionListenerManager extends AbstractListenerManager {
+public final class ConfigurationListenerManager extends AbstractListenerManager {
     
-    private final LeaderElectionService leaderElectionService;
+    private final ConfigurationNode configNode;
     
-    private final ShardingService shardingService;
+    private final String jobName;
     
-    private final ElectionNode electionNode;
-    
-    public ElectionListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
+    public ConfigurationListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         super(coordinatorRegistryCenter, jobConfiguration);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        electionNode = new ElectionNode(jobConfiguration.getJobName());
+        jobName = jobConfiguration.getJobName();
+        configNode = new ConfigurationNode(jobName);
     }
     
     @Override
     public void start() {
-        listenLeaderElection();
+        listenCronSettingChanged();
     }
     
-    void listenLeaderElection() {
+    void listenCronSettingChanged() {
         addDataListener(new AbstractJobListener() {
             
             @Override
             protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (Type.NODE_REMOVED == event.getType() && electionNode.isLeaderHostPath(path) && !leaderElectionService.hasLeader()) {
-                    log.debug("Elastic job: leader crashed, elect a new leader now.");
-                    leaderElectionService.leaderElection();
-                    shardingService.setReshardingFlag();
-                    log.debug("Elastic job: leader election completed.");
+                if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
+                    String cronExpression = new String(event.getData().getData());
+                    JobController jobController = JobRegistry.getInstance().getJob(jobName);
+                    if (null != jobController) {
+                        jobController.rescheduleJob(cronExpression);
+                    }
                 }
             }
         });
