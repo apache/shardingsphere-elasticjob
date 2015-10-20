@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.internal.listener;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.internal.election.ElectionListenerManager;
 import com.dangdang.ddframe.job.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.internal.failover.FailoverListenerManager;
@@ -42,12 +43,15 @@ public final class ListenerManager {
     
     private final JobOperationListenerManager jobOperationListenerManager;
     
+    private final ConfigurationListenerManager configurationListenerManager;
+    
     public ListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         electionListenerManager = new ElectionListenerManager(coordinatorRegistryCenter, jobConfiguration);
         shardingListenerManager = new ShardingListenerManager(coordinatorRegistryCenter, jobConfiguration);
         executionListenerManager = new ExecutionListenerManager(coordinatorRegistryCenter, jobConfiguration);
         failoverListenerManager = new FailoverListenerManager(coordinatorRegistryCenter, jobConfiguration);
         jobOperationListenerManager = new JobOperationListenerManager(coordinatorRegistryCenter, jobConfiguration);
+        configurationListenerManager = new ConfigurationListenerManager(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -59,5 +63,6 @@ public final class ListenerManager {
         executionListenerManager.start();
         failoverListenerManager.start();
         jobOperationListenerManager.start();
+        configurationListenerManager.start();
     }
 }

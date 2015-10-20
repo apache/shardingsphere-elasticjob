@@ -24,6 +24,7 @@ import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 
 import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -31,6 +32,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.dangdang.ddframe.job.api.AbstractElasticJob;
@@ -47,6 +49,7 @@ import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Joiner;
 
 /**
  * 作业控制器.
@@ -55,6 +58,10 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  */
 @Slf4j
 public class JobController {
+    
+    private static final String SCHEDULER_INSTANCE_NAME_SUFFIX = "Scheduler";
+    
+    private static final String CRON_TRIGGER_INDENTITY_SUFFIX = "Trigger";
     
     private final JobConfiguration jobConfiguration;
     
@@ -82,8 +89,6 @@ public class JobController {
     
     private JobDetail jobDetail;
     
-    private Trigger trigger;
-    
     public JobController(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
         listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration);
@@ -105,10 +110,9 @@ public class JobController {
         log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
         registerElasticEnv();
         jobDetail = createJobDetail();
-        trigger = createTrigger();
         try {
             scheduler = initializeScheduler(jobDetail.getKey().toString());
-            scheduleJob();
+            scheduleJob(createTrigger(configService.getCron()));
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -136,15 +140,15 @@ public class JobController {
         return result;
     }
     
-    private Trigger createTrigger() {
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(configService.getCron());
+    private CronTrigger createTrigger(String cronExpression) {
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
         if (configService.isMisfire()) {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
         } else {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
         }
         return TriggerBuilder.newTrigger()
-                .withIdentity(jobConfiguration.getJobName() + "_Trigger")
+                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX))
                 .withSchedule(cronScheduleBuilder).build();
     }
     
@@ -160,7 +164,7 @@ public class JobController {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
         result.put("org.quartz.threadPool.threadCount", "1");
-        result.put("org.quartz.scheduler.instanceName", jobName + "_Scheduler");
+        result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
         if (!configService.isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
@@ -171,7 +175,7 @@ public class JobController {
     protected void prepareEnvironments(final Properties props) {
     }
     
-    private void scheduleJob() throws SchedulerException {
+    private void scheduleJob(final CronTrigger trigger) throws SchedulerException {
         if (!scheduler.checkExists(jobDetail.getKey())) {
             scheduler.scheduleJob(jobDetail, trigger);
         }
@@ -273,5 +277,17 @@ public class JobController {
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
+    }
+    
+    /**
+     * 重新调度作业.
+     */
+    public void rescheduleJob(String cronExpression) {
+        try {
+            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(
+                    jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX)), createTrigger(cronExpression));
+        } catch (SchedulerException ex) {
+            throw new JobException(ex);
+        } 
     }
 }

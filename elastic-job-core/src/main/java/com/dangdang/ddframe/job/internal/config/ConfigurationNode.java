@@ -91,4 +91,14 @@ public final class ConfigurationNode {
     public boolean isFailoverPath(final String path) {
         return jobNodePath.getFullPath(FAILOVER).equals(path);
     }
+    
+    /**
+     * 判断是否为作业调度配置路径.
+     * 
+     * @param path 节点路径
+     * @return 是否为作业调度配置路径
+     */
+    public boolean isCronPath(final String path) {
+        return jobNodePath.getFullPath(CRON).equals(path);
+    }
 }

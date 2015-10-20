@@ -67,7 +67,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
     public void start() {
         listenJobCrashed();
         listenFailoverJobCrashed();
-        listenFailoverSerttingsChanged();
+        listenFailoverSettingsChanged();
     }
     
     void listenJobCrashed() {
@@ -104,7 +104,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         return null != item && Type.NODE_REMOVED == event.getType() && !executionService.isCompleted(item) && configService.isFailover();
     }
     
-    void listenFailoverSerttingsChanged() {
+    void listenFailoverSettingsChanged() {
         addDataListener(new AbstractJobListener() {
             
             @Override
