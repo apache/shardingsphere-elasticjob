@@ -24,67 +24,25 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 
 import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.internal.util.NetUtils;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 获取真实本机网络的实现类类.
  * 
  * @author zhangliang
  */
+@Slf4j
 public final class RealLocalHostService implements LocalHostService {
-    
-    private static volatile String cachedIpAddress;
-    
+
     @Override
     public String getIp() {
-        if (null != cachedIpAddress) {
-            return cachedIpAddress;
-        }
-        Enumeration<NetworkInterface> netInterfaces;
-        try {
-            netInterfaces = NetworkInterface.getNetworkInterfaces();
-        } catch (final SocketException ex) {
-            throw new JobException(ex);
-        }
-        String localIpAddress = null;
-        while (netInterfaces.hasMoreElements()) {
-            NetworkInterface netInterface = netInterfaces.nextElement();
-            Enumeration<InetAddress> ipAddresses = netInterface.getInetAddresses();
-            while (ipAddresses.hasMoreElements()) {
-                InetAddress ipAddress = ipAddresses.nextElement();
-                if (isPublicIpAddress(ipAddress)) {
-                    String publicIpAddress = ipAddress.getHostAddress();
-                    cachedIpAddress = publicIpAddress;
-                    return publicIpAddress;
-                }
-                if (isLocalIpAddress(ipAddress)) {
-                    localIpAddress = ipAddress.getHostAddress();
-                }
-            }
-        }
-        cachedIpAddress = localIpAddress;
-        return localIpAddress;
+        return NetUtils.getLocalHost();
     }
-    
-    private boolean isPublicIpAddress(final InetAddress ipAddress) {
-        return !ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && -1 == ipAddress.getHostAddress().indexOf(":");
-    }
-    
-    private boolean isLocalIpAddress(final InetAddress ipAddress) {
-        return ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && -1 == ipAddress.getHostAddress().indexOf(":");
-    }
-    
+
     @Override
     public String getHostName() {
-        return getLocalHost().getHostName();
+        return NetUtils.getHostName(getIp());
     }
-    
-    private static InetAddress getLocalHost() {
-        InetAddress result;
-        try {
-            result = InetAddress.getLocalHost();
-        } catch (final UnknownHostException ex) {
-            throw new JobException(ex);
-        }
-        return result;
-    }
+
 }
