@@ -38,6 +38,8 @@
 
 [Release Notes](http://dangdangdotcom.github.io/elastic-job/releaseNotes.html)
 
+[1.0.2接口变更声明](http://dangdangdotcom.github.io/elastic-job/1.0.2UpdateNotes.html)
+
 [目录结构说明](http://dangdangdotcom.github.io/elastic-job/directoryStructure.html)
 
 [使用步骤](http://dangdangdotcom.github.io/elastic-job/usage.html)
