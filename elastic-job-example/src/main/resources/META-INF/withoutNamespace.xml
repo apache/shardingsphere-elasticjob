@@ -22,60 +22,60 @@
         </constructor-arg>
     </bean>
     
-    <bean id="oneOffElasticJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
+    <bean id="simpleJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
-                <constructor-arg name="jobName" value="oneOffElasticJob" />
-                <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.OneOffElasticDemoJob" />
-                <constructor-arg name="shardingTotalCount" value="${oneOffElasticJob.shardingTotalCount}" />
-                <constructor-arg name="cron" value="${oneOffElasticJob.cron}" />
-                <property name="shardingItemParameters" value="${oneOffElasticJob.shardingItemParameters}" />
-                <property name="monitorExecution" value="${oneOffElasticJob.monitorExecution}" />
-                <property name="failover" value="${oneOffElasticJob.failover}" />
-                <property name="description" value="${oneOffElasticJob.description}" />
-                <property name="disabled" value="${oneOffElasticJob.disabled}" />
-                <property name="overwrite" value="${oneOffElasticJob.overwrite}" />
+                <constructor-arg name="jobName" value="simpleJob" />
+                <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.SimpleJobDemo" />
+                <constructor-arg name="shardingTotalCount" value="${simpleJob.shardingTotalCount}" />
+                <constructor-arg name="cron" value="${simpleJob.cron}" />
+                <property name="shardingItemParameters" value="${simpleJob.shardingItemParameters}" />
+                <property name="monitorExecution" value="${simpleJob.monitorExecution}" />
+                <property name="failover" value="${simpleJob.failover}" />
+                <property name="description" value="${simpleJob.description}" />
+                <property name="disabled" value="${simpleJob.disabled}" />
+                <property name="overwrite" value="${simpleJob.overwrite}" />
             </bean>
         </constructor-arg>
     </bean>
     
-    <bean id="perpetualElasticJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
+    <bean id="throughputDataFlowJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
-                <constructor-arg name="jobName" value="perpetualElasticJob" />
-                <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.PerpetualElasticDemoJob" />
-                <constructor-arg name="shardingTotalCount" value="${perpetualElasticJob.shardingTotalCount}" />
-                <constructor-arg name="cron" value="${perpetualElasticJob.cron}" />
-                <property name="shardingItemParameters" value="${perpetualElasticJob.shardingItemParameters}" />
-                <property name="monitorExecution" value="${perpetualElasticJob.monitorExecution}" />
-                <property name="failover" value="${perpetualElasticJob.failover}" />
-                <property name="processCountIntervalSeconds" value="${perpetualElasticJob.processCountIntervalSeconds}" />
-                <property name="concurrentDataProcessThreadCount" value="${perpetualElasticJob.concurrentDataProcessThreadCount}" />
-                <property name="description" value="${perpetualElasticJob.description}" />
-                <property name="disabled" value="${perpetualElasticJob.disabled}" />
-                <property name="overwrite" value="${perpetualElasticJob.overwrite}" />
+                <constructor-arg name="jobName" value="throughputDataFlowJob" />
+                <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.ThroughputDataFlowJobDemo" />
+                <constructor-arg name="shardingTotalCount" value="${throughputDataFlowJob.shardingTotalCount}" />
+                <constructor-arg name="cron" value="${throughputDataFlowJob.cron}" />
+                <property name="shardingItemParameters" value="${throughputDataFlowJob.shardingItemParameters}" />
+                <property name="monitorExecution" value="${throughputDataFlowJob.monitorExecution}" />
+                <property name="failover" value="${throughputDataFlowJob.failover}" />
+                <property name="processCountIntervalSeconds" value="${throughputDataFlowJob.processCountIntervalSeconds}" />
+                <property name="concurrentDataProcessThreadCount" value="${throughputDataFlowJob.concurrentDataProcessThreadCount}" />
+                <property name="description" value="${throughputDataFlowJob.description}" />
+                <property name="disabled" value="${throughputDataFlowJob.disabled}" />
+                <property name="overwrite" value="${throughputDataFlowJob.overwrite}" />
             </bean>
         </constructor-arg>
     </bean>
     
-    <bean id="sequencePerpetualElasticJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
+    <bean id="sequenceDataFlowJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
-                <constructor-arg name="jobName" value="sequencePerpetualElasticJob" />
-                <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.SequencePerpetualElasticDemoJob" />
-                <constructor-arg name="shardingTotalCount" value="${sequencePerpetualElasticJob.shardingTotalCount}" />
-                <constructor-arg name="cron" value="${sequencePerpetualElasticJob.cron}" />
-                <property name="shardingItemParameters" value="${sequencePerpetualElasticJob.shardingItemParameters}" />
-                <property name="monitorExecution" value="${sequencePerpetualElasticJob.monitorExecution}" />
-                <property name="failover" value="${sequencePerpetualElasticJob.failover}" />
-                <property name="processCountIntervalSeconds" value="${sequencePerpetualElasticJob.processCountIntervalSeconds}" />
-                <property name="maxTimeDiffSeconds" value="${sequencePerpetualElasticJob.maxTimeDiffSeconds}" />
-                <property name="description" value="${sequencePerpetualElasticJob.description}" />
-                <property name="disabled" value="${sequencePerpetualElasticJob.disabled}" />
-                <property name="overwrite" value="${sequencePerpetualElasticJob.overwrite}" />
+                <constructor-arg name="jobName" value="sequenceDataFlowJob" />
+                <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.SequenceDataFlowJobDemo" />
+                <constructor-arg name="shardingTotalCount" value="${sequenceDataFlowJob.shardingTotalCount}" />
+                <constructor-arg name="cron" value="${sequenceDataFlowJob.cron}" />
+                <property name="shardingItemParameters" value="${sequenceDataFlowJob.shardingItemParameters}" />
+                <property name="monitorExecution" value="${sequenceDataFlowJob.monitorExecution}" />
+                <property name="failover" value="${sequenceDataFlowJob.failover}" />
+                <property name="processCountIntervalSeconds" value="${sequenceDataFlowJob.processCountIntervalSeconds}" />
+                <property name="maxTimeDiffSeconds" value="${sequenceDataFlowJob.maxTimeDiffSeconds}" />
+                <property name="description" value="${sequenceDataFlowJob.description}" />
+                <property name="disabled" value="${sequenceDataFlowJob.disabled}" />
+                <property name="overwrite" value="${sequenceDataFlowJob.overwrite}" />
             </bean>
         </constructor-arg>
     </bean>

@@ -22,21 +22,21 @@ import com.dangdang.ddframe.job.schedule.JobController;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.example.elasticjob.core.job.OneOffElasticDemoJob;
-import com.dangdang.example.elasticjob.core.job.PerpetualElasticDemoJob;
-import com.dangdang.example.elasticjob.core.job.SequencePerpetualElasticDemoJob;
+import com.dangdang.example.elasticjob.core.job.SequenceDataFlowJobDemo;
+import com.dangdang.example.elasticjob.core.job.SimpleJobDemo;
+import com.dangdang.example.elasticjob.core.job.ThroughputDataFlowJobDemo;
 
 public final class JobMain {
     
-    private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "elastic-job-example", 1000, 3000, 3);
+    private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "elasticjob-example", 1000, 3000, 3);
     
     private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
-    private final JobConfiguration jobConfig1 = new JobConfiguration("oneOffElasticDemoJob", OneOffElasticDemoJob.class, 10, "0/5 * * * * ?");
+    private final JobConfiguration jobConfig1 = new JobConfiguration("simpleElasticDemoJob", SimpleJobDemo.class, 10, "0/5 * * * * ?");
     
-    private final JobConfiguration jobConfig2 = new JobConfiguration("perpetualElasticDemoJob", PerpetualElasticDemoJob.class, 10, "0/5 * * * * ?");
+    private final JobConfiguration jobConfig2 = new JobConfiguration("throughputDataFlowElasticDemoJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
-    private final JobConfiguration jobConfig3 = new JobConfiguration("sequencePerpetualElasticDemoJob", SequencePerpetualElasticDemoJob.class, 10, "0/5 * * * * ?");
+    private final JobConfiguration jobConfig3 = new JobConfiguration("sequenceDataFlowElasticDemoJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {

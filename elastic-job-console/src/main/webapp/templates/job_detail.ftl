@@ -36,12 +36,12 @@
                 <div class="form-group">
                     <label for="concurrentDataProcessThreadCount" class="col-sm-2 control-label">处理数据的并发线程数</label>
                     <div class="col-sm-1">
-                        <input type="number" id="concurrentDataProcessThreadCount" name="concurrentDataProcessThreadCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="只对PerpetualElasticJob类型作业起作用" />
+                        <input type="number" id="concurrentDataProcessThreadCount" name="concurrentDataProcessThreadCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="只对高吞吐量处理数据流类型作业起作用" />
                     </div>
                     
                     <label for="processCountIntervalSeconds" class="col-sm-2 control-label">统计处理数据量的间隔秒数</label>
                     <div class="col-sm-2">
-                        <input type="number" id="processCountIntervalSeconds" name="processCountIntervalSeconds" class="form-control" data-toggle="tooltip" data-placement="bottom" title="只对PerpetualElasticJob类型作业起作用" />
+                        <input type="number" id="processCountIntervalSeconds" name="processCountIntervalSeconds" class="form-control" data-toggle="tooltip" data-placement="bottom" title="只对处理数据流类型作业起作用" />
                     </div>
                     
                     <label for="fetchDataCount" class="col-sm-2 control-label">每次抓取的数据量</label>

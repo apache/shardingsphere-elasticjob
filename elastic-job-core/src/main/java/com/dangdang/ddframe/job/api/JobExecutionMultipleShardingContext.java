@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
 
 import lombok.Getter;
 import lombok.Setter;

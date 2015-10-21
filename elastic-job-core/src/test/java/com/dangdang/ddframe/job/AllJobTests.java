@@ -24,15 +24,17 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContextTest;
 import com.dangdang.ddframe.job.exception.JobConflictExceptionTest;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableExceptionTest;
-import com.dangdang.ddframe.job.integrate.std.DisabledJobTest;
-import com.dangdang.ddframe.job.integrate.std.OneOffElasticJobTest;
-import com.dangdang.ddframe.job.integrate.std.PerpetualElasticJobForExecuteFailureTest;
-import com.dangdang.ddframe.job.integrate.std.PerpetualElasticJobForExecuteThrowsExceptionTest;
-import com.dangdang.ddframe.job.integrate.std.PerpetualElasticJobForMultipleThreadsTest;
-import com.dangdang.ddframe.job.integrate.std.PerpetualElasticJobForNotMonitorTest;
-import com.dangdang.ddframe.job.integrate.std.PerpetualElasticJobForStopedTest;
-import com.dangdang.ddframe.job.integrate.std.PerpetualElasticJobTest;
-import com.dangdang.ddframe.job.integrate.std.SequencePerpetualElasticJobTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.sequence.OneOffSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.sequence.StreamingSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.OneOffThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForExecuteFailureTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForMultipleThreadsTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForNotMonitorTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForStopedTest;
+import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.integrate.std.simple.DisabledJobTest;
+import com.dangdang.ddframe.job.integrate.std.simple.SimpleElasticJobTest;
 import com.dangdang.ddframe.job.internal.config.ConfigurationNodeTest;
 import com.dangdang.ddframe.job.internal.config.ConfigurationServiceTest;
 import com.dangdang.ddframe.job.internal.election.ElectionListenerManagerTest;
@@ -59,6 +61,7 @@ import com.dangdang.ddframe.job.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
+import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobShardingStrategyTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -87,19 +90,22 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobSha
     JobShardingStrategyFactoryTest.class, 
     AverageAllocationJobShardingStrategyTest.class, 
     OdevitySortByNameJobShardingStrategyTest.class, 
+    RotateServerByNameJobShardingStrategyTest.class, 
     JobConflictExceptionTest.class, 
     TimeDiffIntolerableExceptionTest.class, 
     ProcessCountJobTest.class, 
     ProcessCountStatisticsTest.class, 
     DisabledJobTest.class, 
-    OneOffElasticJobTest.class, 
-    SequencePerpetualElasticJobTest.class, 
-    PerpetualElasticJobTest.class, 
-    PerpetualElasticJobForNotMonitorTest.class, 
-    PerpetualElasticJobForMultipleThreadsTest.class, 
-    PerpetualElasticJobForExecuteFailureTest.class, 
-    PerpetualElasticJobForExecuteThrowsExceptionTest.class, 
-    PerpetualElasticJobForStopedTest.class
+    SimpleElasticJobTest.class, 
+    OneOffSequenceDataFlowElasticJobTest.class, 
+    StreamingSequenceDataFlowElasticJobTest.class, 
+    OneOffThroughputDataFlowElasticJobTest.class, 
+    StreamingThroughputDataFlowElasticJobTest.class, 
+    StreamingThroughputDataFlowElasticJobForNotMonitorTest.class, 
+    StreamingThroughputDataFlowElasticJobForMultipleThreadsTest.class, 
+    StreamingThroughputDataFlowElasticJobForExecuteFailureTest.class, 
+    StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest.class, 
+    StreamingThroughputDataFlowElasticJobForStopedTest.class
     })
 public class AllJobTests {
 }

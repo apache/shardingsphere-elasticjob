@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
+
 import lombok.Getter;
 import lombok.Setter;
 

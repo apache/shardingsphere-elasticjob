@@ -17,31 +17,21 @@
 
 package com.dangdang.ddframe.job.api;
 
-import lombok.extern.slf4j.Slf4j;
+import com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob;
 
 /**
- * 一次性运行的分布式作业的基类.
+ * 简单的分布式作业.
+ * 
+ * <p>
+ * 仅保证作业可被分布式定时调用, 不提供任何作业处理逻辑.
+ * </p>
+ * 
+ * <p>
+ * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
+ * </p>
+ * @see com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob
  * 
  * @author zhangliang, caohao
  */
-@Slf4j
-public abstract class AbstractOneOffElasticJob extends AbstractElasticJob {
-    
-    @Override
-    protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
-        try {
-            process(shardingContext);
-         // CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-         // CHECKSTYLE:ON
-            log.error("Elastic job: exception occur in job processing...", ex);
-        }
-    }
-    
-    /**
-     * 执行作业.
-     * 
-     * @param shardingContext 作业分片规则配置上下文
-     */
-    protected abstract void process(final JobExecutionMultipleShardingContext shardingContext);
-}
+@Deprecated
+public abstract class AbstractOneOffElasticJob extends AbstractSimpleElasticJob { }

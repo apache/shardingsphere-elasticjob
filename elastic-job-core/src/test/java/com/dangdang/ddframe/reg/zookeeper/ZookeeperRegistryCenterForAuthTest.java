@@ -41,6 +41,8 @@ public final class ZookeeperRegistryCenterForAuthTest {
     @Before
     public void setUp() {
         NestedZookeeperServers.getInstance().startServerIfNotStarted();
+        zkConfig.setSessionTimeoutMilliseconds(5000);
+        zkConfig.setConnectionTimeoutMilliseconds(5000);
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
     }
     

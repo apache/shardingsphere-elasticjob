@@ -27,8 +27,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.fixture.OneOffElasticJob;
-import com.dangdang.ddframe.job.fixture.PerpetualElasticJob;
+import com.dangdang.ddframe.job.fixture.SimpleElasticJob;
+import com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
 import com.dangdang.ddframe.job.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -43,38 +43,38 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     @Before
     @After
     public void reset() {
-        OneOffElasticJob.reset();
-        PerpetualElasticJob.reset();
+        SimpleElasticJob.reset();
+        ThroughputDataFlowElasticJob.reset();
         ProcessCountStatistics.reset("testJob");
     }
     
     @After
     public void tearDown() {
-        JobRegistry.getInstance().getJob("oneOffElasticJob").shutdown();
-        JobRegistry.getInstance().getJob("perpetualElasticJob").shutdown();
+        JobRegistry.getInstance().getJob("simpleElasticJob").shutdown();
+        JobRegistry.getInstance().getJob("throughputDataFlowElasticJob").shutdown();
         WaitingUtils.waitingLongTime();
     }
     
     @Test
     public void assertSpringJobBean() {
-        assertOneOffElasticJobBean();
-        assertPerpetualElasticJobBean();
+        assertSimpleElasticJobBean();
+        assertThroughputDataFlowElasticJobBean();
     }
     
-    private void assertOneOffElasticJobBean() {
-        while (!OneOffElasticJob.isCompleted() || null == OneOffElasticJob.getJobValue()) {
+    private void assertSimpleElasticJobBean() {
+        while (!SimpleElasticJob.isCompleted() || null == SimpleElasticJob.getJobValue()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(OneOffElasticJob.isCompleted());
-        assertThat(OneOffElasticJob.getJobValue(), is("oneOff"));
-        assertTrue(regCenter.isExisted("/oneOffElasticJob/execution"));
+        assertTrue(SimpleElasticJob.isCompleted());
+        assertThat(SimpleElasticJob.getJobValue(), is("simple"));
+        assertTrue(regCenter.isExisted("/simpleElasticJob/execution"));
     }
     
-    private void assertPerpetualElasticJobBean() {
-        while (!PerpetualElasticJob.isCompleted()) {
+    private void assertThroughputDataFlowElasticJobBean() {
+        while (!ThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(PerpetualElasticJob.isCompleted());
-        assertTrue(regCenter.isExisted("/perpetualElasticJob/execution"));
+        assertTrue(ThroughputDataFlowElasticJob.isCompleted());
+        assertTrue(regCenter.isExisted("/throughputDataFlowElasticJob/execution"));
     }
 }

@@ -226,4 +226,11 @@ public final class ZookeeperRegistryCenterTest {
         zkRegCenter.init();
         assertThat(zkRegCenter.getRawCache(), instanceOf(TreeCache.class));
     }
+    
+    @Test
+    public void getZkConfig() {
+        ZookeeperConfiguration expected = new ZookeeperConfiguration();
+        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(expected);
+        assertThat(zkRegCenter.getZkConfig(), is(expected));
+    }
 }

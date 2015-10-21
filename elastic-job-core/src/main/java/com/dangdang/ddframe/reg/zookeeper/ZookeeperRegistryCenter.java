@@ -280,7 +280,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
-        Preconditions.checkArgument(0L != result, "Cannot get registry center time.");
+        Preconditions.checkState(0L != result, "Cannot get registry center time.");
         return result;
     }
     

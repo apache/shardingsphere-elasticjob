@@ -87,7 +87,7 @@ public class JobConfiguration {
      * 
      * <p>
      * 单位: 秒.
-     * 只对PerpetualElasticJob类型作业起作用.
+     * 只对处理数据流类型作业起作用.
      * </p>
      */
     private int processCountIntervalSeconds = 300;
@@ -96,7 +96,7 @@ public class JobConfiguration {
      * 处理数据的并发线程数.
      * 
      * <p>
-     * 只对PerpetualElasticJob类型作业起作用.
+     * 只对高吞吐量处理数据流类型作业起作用.
      * </p>
      */
     private int concurrentDataProcessThreadCount = 1;

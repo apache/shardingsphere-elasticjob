@@ -35,7 +35,6 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.dangdang.ddframe.job.api.AbstractElasticJob;
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
@@ -43,6 +42,7 @@ import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
+import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
@@ -140,7 +140,7 @@ public class JobController {
         return result;
     }
     
-    private CronTrigger createTrigger(String cronExpression) {
+    private CronTrigger createTrigger(final String cronExpression) {
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
         if (configService.isMisfire()) {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
@@ -282,11 +282,10 @@ public class JobController {
     /**
      * 重新调度作业.
      */
-    public void rescheduleJob(String cronExpression) {
+    public void rescheduleJob(final String cronExpression) {
         try {
-            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(
-                    jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX)), createTrigger(cronExpression));
-        } catch (SchedulerException ex) {
+            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX)), createTrigger(cronExpression));
+        } catch (final SchedulerException ex) {
             throw new JobException(ex);
         } 
     }

@@ -17,112 +17,31 @@
 
 package com.dangdang.ddframe.job.api;
 
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import lombok.extern.slf4j.Slf4j;
-
-import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.google.common.collect.Lists;
+import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
 
 /**
- * 不断获取并处理最新数据的分布式作业的基类.
+ * 不断获取最新数据的高吞吐量处理数据流程作业.
+ * 
+ * <p>
+ * 作业执行过程中不断的获取是否有新数据.
+ * 有新数据则作业一直不停止.
+ * 适用于流式数据处理.
+ * </p>
+ * 
+ * <p>
+ * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
+ * </p>
+ * @see com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob
  * 
  * @author zhangliang
  * 
- * @param <T> 执行作业的实体类型
+ * @param <T> 数据流作业处理的数据实体类型
  */
-@Slf4j
-public abstract class AbstractPerpetualElasticJob<T> extends AbstractElasticJob {
-    
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+@Deprecated
+public abstract class AbstractPerpetualElasticJob<T> extends AbstractThroughputDataFlowElasticJob<T> {
     
     @Override
-    protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
-        int threadCount = getConfigService().getConcurrentDataProcessThreadCount();
-        List<T> data = fetchData(shardingContext);
-        log.debug("Elastic job: perpetual elastic job fetch data size: {}.", data != null ? data.size() : 0);
-        while (null != data && !data.isEmpty() && !isStoped() && !getShardingService().isNeedSharding()) {
-            if (threadCount <= 1 || data.size() <= threadCount) {
-                processDataList(shardingContext, data);
-            } else {
-                processDataInMultipleThreads(shardingContext, threadCount, data);
-            }
-            data = fetchData(shardingContext);
-            log.debug("Elastic job: perpetual elasticJob fetch data size: {}.", data != null ? data.size() : 0);
-        }
-    }
-    
-    private void processDataInMultipleThreads(final JobExecutionMultipleShardingContext shardingContext, final int threadCount, final List<T> data) {
-        List<List<T>> splitedData = Lists.partition(data, data.size() / threadCount);
-        final CountDownLatch latch = new CountDownLatch(splitedData.size());
-        for (final List<T> each : splitedData) {
-            executorService.submit(new Runnable() {
-                
-                @Override
-                public void run() {
-                    try {
-                        processDataList(shardingContext, each);
-                    } finally {
-                        latch.countDown();
-                    }
-                }
-            });
-        }
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-    }
-    
-    private void processDataList(final JobExecutionMultipleShardingContext shardingContext, final List<T> data) {
-        for (T each : data) {
-            boolean isSuccess = false;
-            try {
-                isSuccess = processData(shardingContext, each);
-            // CHECKSTYLE:OFF
-            } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-                ProcessCountStatistics.incrementProcessFailureCount(shardingContext.getJobName());
-                log.error("Elastic job: exception occur in job processing...", ex);
-                continue;
-            }
-            if (isSuccess) {
-                ProcessCountStatistics.incrementProcessSuccessCount(shardingContext.getJobName());
-            } else {
-                ProcessCountStatistics.incrementProcessFailureCount(shardingContext.getJobName());
-            }
-        }
-    }
-    
-    /**
-     * 获取待处理的数据.
-     * 不返回空结果则永久不停止作业执行.
-     * 
-     * @param shardingContext 作业分片规则配置上下文
-     * @return 待处理的数据集合
-     */
-    protected abstract List<T> fetchData(final JobExecutionMultipleShardingContext shardingContext);
-    
-    /**
-     * 处理数据.
-     * 
-     * @param shardingContext 作业分片规则配置上下文
-     * @param data 待处理的数据
-     * @return 数据是否处理成功
-     */
-    protected abstract boolean processData(final JobExecutionMultipleShardingContext shardingContext, final T data);
-    
-    /**
-     * 更新数据处理位置.
-     * 
-     * @param item 分片项
-     * @param offset 数据处理位置
-     */
-    protected void updateOffset(final int item, final String offset) {
-        getOffsetService().updateOffset(item, offset);
+    public boolean isStreamingProcess() {
+        return true;
     }
 }

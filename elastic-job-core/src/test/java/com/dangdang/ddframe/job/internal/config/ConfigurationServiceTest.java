@@ -33,13 +33,13 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.data.Stat;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.api.AbstractElasticJob;
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
+import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 
 public final class ConfigurationServiceTest extends AbstractBaseJobTest {
