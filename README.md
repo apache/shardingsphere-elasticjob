@@ -22,7 +22,7 @@
 * **作业注册中心：** 基于Zookeeper及其客户端Curator实现的全局注册中心。用于注册，控制和协调分布式作业执行。
 * **作业分片：** 将单一任务分片为多个小任务项并在多服务器并行执行。
 * **弹性扩容缩容：** 运行中的作业服务器崩溃或新增，作业框架将在下次作业执行前重分片，不影响当前作业执行。
-* **支持多种作业执行模式：** 支持OneOff，Perpetual和SequencePerpetual三种作业模式。
+* **支持多种作业执行模式：** 支持Simple，ThroughputDataFlow和SequenceDataFlow三种作业模式。
 * **失效转移：** 运行中的作业服务器崩溃不会导致重分片，只会在下次作业启动时分片。启用失效转移功能可以在本次作业执行过程中，监测其他作业服务器空闲，抓取未完成的孤儿分片项执行。
 * **运行时状态收集：** 监控作业运行时状态，统计最近一段时间处理的数据成功和失败数量，记录作业上次运行开始时间，结束时间和下次运行时间。
 * **作业停止，恢复和禁用：**用于作业启停，并可禁止某作业运行（上线时常用）。
@@ -82,7 +82,7 @@ elastic-job已经发布到中央仓库，可以在pom.xml文件中直接引入ma
 * **作业开发**
 
 ```java
-public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
+public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
     
     @Override
     protected List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
