@@ -20,6 +20,11 @@ package com.dangdang.ddframe.job.api;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 作业运行时分片上下文抽象类.
+ * 
+ * @author zhangliang
+ */
 @Getter
 @Setter
 abstract class AbstractJobExecutionShardingContext {
