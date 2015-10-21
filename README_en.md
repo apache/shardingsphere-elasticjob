@@ -20,7 +20,7 @@
 * **Registry center:** Based on Zookeeper and its client Curator to implement global job register center, use to register, monitor control and coordinate distributed jobs.
 * **Sharding:** Split single task to many task items, execute parallel on multiple servers.
 * **Scalability:** Server crashed or new server online, elastic-job will re-sharding when next job trigger, will not affect current running jobs.
-* **Multiple job modes:** Now support OneOff, Perpetual and SequencePerpetual job modes.
+* **Multiple job modes:** Now support Simple, ThroughputDataFlow and SequenceDataFlow job modes.
 * **Failover:** Server crashed does not trigger re-sharding, only do it when next task trigger. Enable failover can notify other idle servers to pull orphan task items.
 * **Execution status collection:** Monitor execution status and statistics process success and failure count, collect previous trigger time, completed time and next trigger time.
 * **Pause, resume and disable:** Pause or resume jobs, and disable servers (usually disabled during system launching).
@@ -78,7 +78,7 @@ Elastic-Job has deployed to Maven Central Repository, add dependencies in your p
 * **Job development**
 
 ```java
-public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
+public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
     
     @Override
     protected List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
