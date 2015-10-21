@@ -17,16 +17,25 @@
 
 package com.dangdang.ddframe.job.api;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 一次性运行的分布式作业的基类.
  * 
- * @author zhangliang
+ * @author zhangliang, caohao
  */
+@Slf4j
 public abstract class AbstractOneOffElasticJob extends AbstractElasticJob {
     
     @Override
     protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
-        process(shardingContext);
+        try {
+            process(shardingContext);
+         // CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+         // CHECKSTYLE:ON
+            log.error("Elastic job: exception occur in job processing...", ex);
+        }
     }
     
     /**
