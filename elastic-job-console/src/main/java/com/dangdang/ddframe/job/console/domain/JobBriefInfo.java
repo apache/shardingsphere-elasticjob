@@ -33,6 +33,8 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     private JobStatus status;
     
     private String description;
+
+    private String cron;
     
     @Override
     public int compareTo(final JobBriefInfo o) {

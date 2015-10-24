@@ -5,6 +5,7 @@
         <tr>
             <th>作业名</th>
             <th>运行状态</th>
+            <th>cron表达式</th>
             <th>描述</th>
         </tr>
     </thead>

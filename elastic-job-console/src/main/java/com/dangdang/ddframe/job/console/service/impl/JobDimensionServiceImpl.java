@@ -53,6 +53,7 @@ public class JobDimensionServiceImpl implements JobDimensionService {
             jobBriefInfo.setJobName(each);
             jobBriefInfo.setDescription(curatorRepository.getData(JobNodePath.getConfigNodePath(each, "description")));
             jobBriefInfo.setStatus(getJobStatus(each));
+            jobBriefInfo.setCron(curatorRepository.getData(JobNodePath.getConfigNodePath(each, "cron")));
             result.add(jobBriefInfo);
         }
         Collections.sort(result);
