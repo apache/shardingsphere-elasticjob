@@ -36,10 +36,7 @@
 
 ## 相关文档
 
-**下载**
-&nbsp;[elastic-job-core](http://dangdangdotcom.github.io/elastic-job/downloads/elastic-job-core-1.0.2.jar)
-&nbsp;[elastic-job-spring](http://dangdangdotcom.github.io/elastic-job/downloads/elastic-job-spring-1.0.2.jar)
-&nbsp;[elastic-job-console](http://dangdangdotcom.github.io/elastic-job/downloads/elastic-job-console-1.0.2.jar)
+[下载](http://dangdangdotcom.github.io/elastic-job/downloads.html)
 
 [Release Notes](http://dangdangdotcom.github.io/elastic-job/releaseNotes.html)
 
