@@ -60,6 +60,8 @@
 
 [作业分片策略](http://dangdangdotcom.github.io/elastic-job/jobStrategy.html)
 
+[监控](http://dangdangdotcom.github.io/elastic-job/monitor.html)
+
 [InfoQ新闻](http://www.infoq.com/cn/news/2015/09/dangdang-elastic-job)
 
 [Elastic-Job Wiki](https://github.com/dangdangdotcom/elastic-job/wiki) （由社区志愿者自由编辑的）
