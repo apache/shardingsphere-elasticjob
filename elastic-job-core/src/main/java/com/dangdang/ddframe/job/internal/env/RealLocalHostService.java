@@ -66,11 +66,15 @@ public final class RealLocalHostService implements LocalHostService {
     }
     
     private boolean isPublicIpAddress(final InetAddress ipAddress) {
-        return !ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && -1 == ipAddress.getHostAddress().indexOf(":");
+        return !ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && !isV6IpAddress(ipAddress);
     }
     
     private boolean isLocalIpAddress(final InetAddress ipAddress) {
-        return ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && -1 == ipAddress.getHostAddress().indexOf(":");
+        return ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && !isV6IpAddress(ipAddress);
+    }
+    
+    private boolean isV6IpAddress(final InetAddress ipAddress) {
+        return -1 != ipAddress.getHostAddress().indexOf(":");
     }
     
     @Override
