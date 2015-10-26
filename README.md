@@ -36,6 +36,11 @@
 
 ## 相关文档
 
+**下载**
+&nbsp;[elastic-job-core](http://dangdangdotcom.github.io/elastic-job/downloads/elastic-job-core-1.0.2.jar)
+&nbsp;[elastic-job-spring](http://dangdangdotcom.github.io/elastic-job/downloads/elastic-job-spring-1.0.2.jar)
+&nbsp;[elastic-job-console](http://dangdangdotcom.github.io/elastic-job/downloads/elastic-job-console-1.0.2.jar)
+
 [Release Notes](http://dangdangdotcom.github.io/elastic-job/releaseNotes.html)
 
 [1.0.2接口变更声明](http://dangdangdotcom.github.io/elastic-job/1.0.2UpdateNotes.html)
@@ -71,14 +76,14 @@ elastic-job已经发布到中央仓库，可以在pom.xml文件中直接引入ma
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-core</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 
 <!-- 使用springframework自定义命名空间时引入 -->
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-spring</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 * **作业开发**
