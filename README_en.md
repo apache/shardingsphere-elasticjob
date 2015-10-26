@@ -7,7 +7,7 @@
   
   The relationship between Elastic-Job and ddframe is in this picture:
   
-  ![Evolution diagram of ddframe](http://static.oschina.net/uploads/space/2015/0915/181703_2fxp_719192.jpg)
+  ![Evolution diagram of ddframe](http://dangdangdotcom.github.io/elastic-job/images/ddframe.jpg)
 
 ##Contributors
 * Zhang Liang [Dangdang](http://www.dangdang.com/) zhangliang@dangdang.com
