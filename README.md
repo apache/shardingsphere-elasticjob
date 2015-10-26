@@ -7,7 +7,7 @@
   
   elastic-job和ddframe关系见下图
   
-  ![ddframe演进图](http://static.oschina.net/uploads/space/2015/0915/181703_2fxp_719192.jpg)
+  ![ddframe演进图](http://dangdangdotcom.github.io/elastic-job/images/ddframe.jpg)
 
 ##主要贡献者
 * 张亮 [当当网](http://www.dangdang.com/) zhangliang@dangdang.com
