@@ -22,7 +22,7 @@
         </constructor-arg>
     </bean>
     
-    <bean id="simpleJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
+    <bean id="simpleJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
@@ -40,7 +40,7 @@
         </constructor-arg>
     </bean>
     
-    <bean id="throughputDataFlowJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
+    <bean id="throughputDataFlowJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
@@ -60,7 +60,7 @@
         </constructor-arg>
     </bean>
     
-    <bean id="sequenceDataFlowJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobController" init-method="init">
+    <bean id="sequenceDataFlowJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">

@@ -24,7 +24,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.spring.schedule.SpringJobController;
+import com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler;
 import com.google.common.base.Strings;
 
 /**
@@ -38,7 +38,7 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
     //CHECKSTYLE:OFF
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
     //CHECKSTYLE:ON
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobController.class);
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
         factory.setInitMethodName("init");
         factory.setDestroyMethodName("shutdown");
         factory.addConstructorArgReference(element.getAttribute("regCenter"));

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.schedule;
+package com.dangdang.ddframe.job.internal.schedule;
 
 import org.quartz.Trigger;
 import org.quartz.listeners.TriggerListenerSupport;

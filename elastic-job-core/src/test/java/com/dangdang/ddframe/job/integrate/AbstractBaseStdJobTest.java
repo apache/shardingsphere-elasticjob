@@ -31,13 +31,13 @@ import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.job.schedule.JobController;
-import com.dangdang.ddframe.job.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
@@ -57,7 +57,7 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfig;
     
-    private final JobController jobController;
+    private final JobScheduler jobScheduler;
     
     private final boolean disabled;
     
@@ -66,7 +66,7 @@ public abstract class AbstractBaseStdJobTest {
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         jobConfig = new JobConfiguration("testJob", elasticJobClass, 3, "0/1 * * * * ?");
         jobConfig.setDisabled(disabled);
-        jobController = new JobController(regCenter, jobConfig);
+        jobScheduler = new JobScheduler(regCenter, jobConfig);
         this.disabled = disabled;
         leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
     }
@@ -92,7 +92,7 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     protected void initJob() {
-        jobController.init();
+        jobScheduler.init();
     }
     
     protected void assertRegCenterCommonInfo() {

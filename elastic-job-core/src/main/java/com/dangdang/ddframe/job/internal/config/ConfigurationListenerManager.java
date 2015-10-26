@@ -22,10 +22,10 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.schedule.JobController;
-import com.dangdang.ddframe.job.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 /**
@@ -57,9 +57,9 @@ public final class ConfigurationListenerManager extends AbstractListenerManager 
             protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
                 if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
                     String cronExpression = new String(event.getData().getData());
-                    JobController jobController = JobRegistry.getInstance().getJob(jobName);
-                    if (null != jobController) {
-                        jobController.rescheduleJob(cronExpression);
+                    JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
+                    if (null != jobScheduler) {
+                        jobScheduler.rescheduleJob(cronExpression);
                     }
                 }
             }

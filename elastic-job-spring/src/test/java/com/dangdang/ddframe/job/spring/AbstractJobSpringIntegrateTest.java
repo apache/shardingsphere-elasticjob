@@ -29,8 +29,8 @@ import org.junit.Test;
 
 import com.dangdang.ddframe.job.fixture.SimpleElasticJob;
 import com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.job.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.test.AbstractZookeeperJUnit4SpringContextTests;
 import com.dangdang.ddframe.test.WaitingUtils;

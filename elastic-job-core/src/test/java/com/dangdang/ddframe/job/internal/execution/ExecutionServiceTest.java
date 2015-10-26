@@ -32,14 +32,14 @@ import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.job.schedule.JobController;
-import com.dangdang.ddframe.job.schedule.JobRegistry;
 import com.dangdang.ddframe.test.WaitingUtils;
 
 public final class ExecutionServiceTest extends AbstractBaseJobTest {
@@ -52,7 +52,7 @@ public final class ExecutionServiceTest extends AbstractBaseJobTest {
     
     @Before
     public void setUp() {
-        JobRegistry.getInstance().addJob("testJob", new TestJobController());
+        JobRegistry.getInstance().addJob("testJob", new TestJobScheduler());
     }
     
     @After
@@ -376,9 +376,9 @@ public final class ExecutionServiceTest extends AbstractBaseJobTest {
         assertFalse(executionService.isCompleted(0));
     }
     
-    class TestJobController extends JobController {
+    class TestJobScheduler extends JobScheduler {
         
-        public TestJobController() {
+        public TestJobScheduler() {
             super(getRegistryCenter(), getJobConfig());
         }
         

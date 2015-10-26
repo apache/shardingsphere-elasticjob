@@ -26,11 +26,11 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
-import com.dangdang.ddframe.job.schedule.JobController;
-import com.dangdang.ddframe.job.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 
 public final class FailoverServiceTest extends AbstractBaseJobTest {
     
@@ -77,12 +77,12 @@ public final class FailoverServiceTest extends AbstractBaseJobTest {
     public void assertFailoverIfNecessary() {
         getRegistryCenter().persist("/testJob/leader/failover/items/0", "");
         getRegistryCenter().persist("/testJob/leader/failover/items/1", "");
-        JobController jobController = new JobController(getRegistryCenter(), getJobConfig());
-        jobController.init();
-        JobRegistry.getInstance().addJob("testJob", jobController);
+        JobScheduler jobScheduler = new JobScheduler(getRegistryCenter(), getJobConfig());
+        jobScheduler.init();
+        JobRegistry.getInstance().addJob("testJob", jobScheduler);
         failoverService.failoverIfNecessary();
-        jobController.stopJob();
-        jobController.shutdown();
+        jobScheduler.stopJob();
+        jobScheduler.shutdown();
         assertTrue(getRegistryCenter().isExisted("/testJob/leader/failover/latch"));
         assertTrue(getRegistryCenter().isExisted("/testJob/leader/failover/items/0"));
         assertFalse(getRegistryCenter().isExisted("/testJob/leader/failover/items/1"));

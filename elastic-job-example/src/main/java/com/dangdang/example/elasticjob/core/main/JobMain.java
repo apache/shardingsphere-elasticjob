@@ -18,7 +18,7 @@
 package com.dangdang.example.elasticjob.core.main;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.schedule.JobController;
+import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
@@ -46,8 +46,8 @@ public final class JobMain {
     
     public void init() {
         regCenter.init();
-        new JobController(regCenter, jobConfig1).init();
-        new JobController(regCenter, jobConfig2).init();
-        new JobController(regCenter, jobConfig3).init();
+        new JobScheduler(regCenter, jobConfig1).init();
+        new JobScheduler(regCenter, jobConfig2).init();
+        new JobScheduler(regCenter, jobConfig3).init();
     }
 }

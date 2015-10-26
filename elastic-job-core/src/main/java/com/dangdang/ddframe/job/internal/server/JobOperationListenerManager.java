@@ -24,10 +24,10 @@ import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.schedule.JobController;
-import com.dangdang.ddframe.job.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 /**
@@ -75,15 +75,15 @@ public final class JobOperationListenerManager extends AbstractListenerManager {
                 if (!serverNode.isJobStopedPath(path)) {
                     return;
                 }
-                JobController jobController = JobRegistry.getInstance().getJob(jobName);
-                if (null == jobController) {
+                JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
+                if (null == jobScheduler) {
                     return;
                 }
                 if (Type.NODE_ADDED == event.getType()) {
-                    jobController.stopJob();
+                    jobScheduler.stopJob();
                 }
                 if (Type.NODE_REMOVED == event.getType()) {
-                    jobController.resumeManualStopedJob();
+                    jobScheduler.resumeManualStopedJob();
                 }
             }
         });

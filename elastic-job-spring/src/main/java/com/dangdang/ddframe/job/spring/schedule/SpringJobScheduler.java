@@ -17,23 +17,36 @@
 
 package com.dangdang.ddframe.job.spring.schedule;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import java.util.Properties;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.JobScheduler;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 /**
  * 基于Spring的作业启动器.
  *
- * <p>
- * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
- * </p>
- * @see com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler
  * @author caohao
  */
-@Deprecated
-public class SpringJobController extends SpringJobScheduler {
+public class SpringJobScheduler extends JobScheduler implements ApplicationContextAware {
     
-    public SpringJobController(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
+    private ApplicationContext applicationContext;
+    
+    public SpringJobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         super(coordinatorRegistryCenter, jobConfiguration);
+    }
+    
+    @Override
+    public void setApplicationContext(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+    
+    @Override
+    protected void prepareEnvironments(final Properties props) {
+        SpringJobFactory.setApplicationContext(applicationContext);
+        props.put("org.quartz.scheduler.jobFactory.class", SpringJobFactory.class.getName());
     }
 }

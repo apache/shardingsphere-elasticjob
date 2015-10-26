@@ -15,10 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.schedule;
+package com.dangdang.ddframe.job.internal.schedule;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import com.dangdang.ddframe.job.api.JobScheduler;
 
 /**
  * 作业注册表.
@@ -29,7 +31,7 @@ public final class JobRegistry {
     
     private static volatile JobRegistry instance;
     
-    private ConcurrentMap<String, JobController> map = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, JobScheduler> map = new ConcurrentHashMap<>();
     
     private JobRegistry() {
     }
@@ -49,10 +51,10 @@ public final class JobRegistry {
      * 添加作业.
      * 
      * @param jobName 作业名称
-     * @param jobController 作业控制器
+     * @param jobScheduler 作业控制器
      */
-    public void addJob(final String jobName, final JobController jobController) {
-        map.put(jobName, jobController);
+    public void addJob(final String jobName, final JobScheduler jobScheduler) {
+        map.put(jobName, jobScheduler);
     }
     
     /**
@@ -60,7 +62,7 @@ public final class JobRegistry {
      * 
      * @param jobName 作业名称
      */
-    public JobController getJob(final String jobName) {
+    public JobScheduler getJob(final String jobName) {
         return map.get(jobName);
     }
 }

@@ -37,6 +37,7 @@ public class SimpleJobDemo extends AbstractSimpleElasticJob {
     @Override
     public void process(final JobExecutionMultipleShardingContext context) {
         printContext.printProcessJobMessage(context.getShardingItems());
+        System.out.println("-----------------------------" + fooRepository);
         fooRepository.findActive(context.getShardingItems());
         // do something
     }
