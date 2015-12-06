@@ -134,7 +134,7 @@ public final class ZookeeperRegistryCenterTest {
     public void getChildrenKeys() {
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter.init();
-        assertThat(zkRegCenter.getChildrenKeys("/test"), is(Arrays.asList("child", "deep")));
+        assertThat(zkRegCenter.getChildrenKeys("/test"), is(Arrays.asList("deep", "child")));
         assertThat(zkRegCenter.getChildrenKeys("/test/deep"), is(Arrays.asList("nested")));
         assertThat(zkRegCenter.getChildrenKeys("/test/child"), is(Collections.EMPTY_LIST));
         assertThat(zkRegCenter.getChildrenKeys("/test/notExisted"), is(Collections.EMPTY_LIST));

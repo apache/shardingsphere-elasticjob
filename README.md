@@ -62,6 +62,8 @@
 
 [监控](http://dangdangdotcom.github.io/elastic-job/monitor.html)
 
+[快速上手](http://dangdangdotcom.github.io/elastic-job/quickStart.html)（感谢第三方志愿者 泽伟@心探索科技 提供文档）
+
 [InfoQ新闻](http://www.infoq.com/cn/news/2015/09/dangdang-elastic-job)
 
 [Elastic-Job Wiki](https://github.com/dangdangdotcom/elastic-job/wiki) （由社区志愿者自由编辑的）

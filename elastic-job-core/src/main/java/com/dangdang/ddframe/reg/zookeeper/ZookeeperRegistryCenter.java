@@ -21,13 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -46,6 +43,10 @@ import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基于Zookeeper的注册中心.
@@ -186,7 +187,15 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     
     public List<String> getChildrenKeys(final String key) {
         try {
-            return client.getChildren().forPath(key);
+            List<String> result = client.getChildren().forPath(key);
+            Collections.sort(result, new Comparator<String>() {
+                
+                @Override
+                public int compare(final String o1, final String o2) {
+                    return o2.compareTo(o1);
+                }
+            });
+            return result;
          //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON

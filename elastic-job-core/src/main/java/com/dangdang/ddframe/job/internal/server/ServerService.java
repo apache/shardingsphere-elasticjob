@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
@@ -38,14 +39,20 @@ public final class ServerService {
     
     private final LocalHostService localHostService = new RealLocalHostService();
     
+    private final LeaderElectionService leaderElectionService;
+    
     public ServerService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
+        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
      * 持久化作业服务器上线相关信息.
      */
     public void persistServerOnline() {
+        if (!leaderElectionService.hasLeader()) {
+            leaderElectionService.leaderElection();
+        }
         persistHostName();
         persistDisabled();
         ephemeralPersistServerReady();

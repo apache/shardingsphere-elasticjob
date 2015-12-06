@@ -44,7 +44,17 @@ public final class ServerServiceTest extends AbstractBaseJobTest {
     }
     
     @Test
-    public void assertPersistServerOnline() {
+    public void assertPersistServerOnlineWhenLeaderElecting() {
+        serverService.persistServerOnline();
+        assertThat(getRegistryCenter().get("/testJob/leader/election/host"), is(localHostService.getIp()));
+        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
+        assertFalse(getRegistryCenter().isExisted("/testJob/servers/" + localHostService.getIp() + "/disabled"));
+        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
+    }
+    
+    @Test
+    public void assertPersistServerOnlineWithoutLeaderElecting() {
+        getRegistryCenter().persist("/testJob/leader/election/host", localHostService.getIp());
         serverService.persistServerOnline();
         assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         assertFalse(getRegistryCenter().isExisted("/testJob/servers/" + localHostService.getIp() + "/disabled"));
