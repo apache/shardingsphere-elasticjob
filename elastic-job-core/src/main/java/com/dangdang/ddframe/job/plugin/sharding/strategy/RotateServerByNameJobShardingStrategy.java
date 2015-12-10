@@ -27,6 +27,10 @@ public class RotateServerByNameJobShardingStrategy implements JobShardingStrateg
         if (0 == offset) {
             return serversList;
         }
+        
+        if(offset < 0)
+            offset = Math.abs(offset);
+        
         List<String> result = new ArrayList<String>(serverSize);
         for (int i = 0; i < serverSize; i++) {
             int index = (i + offset) % serverSize;
