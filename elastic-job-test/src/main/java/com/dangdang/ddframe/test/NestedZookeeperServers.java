@@ -91,4 +91,27 @@ public final class NestedZookeeperServers {
             testingServers.putIfAbsent(port, testingServer);
         }
     }
+
+        public static void stopAndClean() {
+        File tempDir = new File(TEST_TEMP_DIRECTORY);
+        delete(tempDir);
+    }
+
+    public static void delete(File fileOrDir) {
+        if ((fileOrDir.isDirectory() && fileOrDir.list().length == 0 || fileOrDir.isFile())&& fileOrDir.canWrite()) {
+            try {
+                if (!fileOrDir.delete()) {
+                    fileOrDir.deleteOnExit();
+                }
+            } catch (Exception e) {
+                // do nothing
+            }
+        } else {
+            for (File file : fileOrDir.listFiles()) {
+                delete(file);
+            }
+            delete(fileOrDir);
+        }
+    }
+    
 }

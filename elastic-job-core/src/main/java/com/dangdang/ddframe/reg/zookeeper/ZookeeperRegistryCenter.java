@@ -107,6 +107,9 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
+
+        // 清理垃圾文件
+        NestedZookeeperServers.stopAndClean();
     }
     
     private void fillData() throws Exception {
