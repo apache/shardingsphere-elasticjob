@@ -159,4 +159,9 @@ public class JobConfiguration {
      * 如果可覆盖, 每次启动作业都以本地配置为准.
      */
     private boolean overwrite;
+    
+    /**
+     * 作业辅助监控端口.
+     */
+    private int monitorPort = -1;
 }

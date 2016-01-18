@@ -50,6 +50,8 @@ public final class JobSettings implements Serializable {
     
     private int maxTimeDiffSeconds;
     
+    private int monitorPort = -1;
+    
     private boolean failover;
     
     private boolean misfire;

@@ -21,8 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
@@ -43,6 +41,7 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.listener.ListenerManager;
+import com.dangdang.ddframe.job.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
@@ -51,6 +50,8 @@ import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 作业调度器.
@@ -86,6 +87,8 @@ public class JobScheduler {
     
     private final OffsetService offsetService;
     
+    private final MonitorService monitorService;
+    
     private Scheduler scheduler;
     
     private JobDetail jobDetail;
@@ -102,6 +105,7 @@ public class JobScheduler {
         failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
         statisticsService = new StatisticsService(coordinatorRegistryCenter, jobConfiguration);
         offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
+        monitorService = new MonitorService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -128,6 +132,7 @@ public class JobScheduler {
         serverService.clearJobStopedStatus();
         statisticsService.startProcessCountJob();
         shardingService.setReshardingFlag();
+        monitorService.listen();
     }
     
     private JobDetail createJobDetail() {
@@ -274,6 +279,7 @@ public class JobScheduler {
      */
     public void shutdown() {
         try {
+            monitorService.close();
             scheduler.shutdown();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);

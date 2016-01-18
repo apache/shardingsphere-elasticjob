@@ -47,6 +47,7 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionServiceTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverListenerManagerTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverNodeTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverServiceTest;
+import com.dangdang.ddframe.job.internal.monitor.MonitorServiceTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetNodeTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetServiceTest;
 import com.dangdang.ddframe.job.internal.server.ServerNodeTest;
@@ -58,6 +59,7 @@ import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyFa
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountJobTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatisticsTest;
 import com.dangdang.ddframe.job.internal.storage.JobNodePathTest;
+import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtilsTest;
 import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
@@ -67,7 +69,8 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobSh
 @SuiteClasses({
     JobExecutionMultipleShardingContextTest.class, 
     JobNodePathTest.class, 
-    ItemUtilsTest.class, 
+    ItemUtilsTest.class,
+    SensitiveInfoUtilsTest.class, 
     ConfigurationServiceTest.class, 
     ConfigurationNodeTest.class, 
     LeaderElectionServiceTest.class, 
@@ -105,7 +108,8 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobSh
     StreamingThroughputDataFlowElasticJobForMultipleThreadsTest.class, 
     StreamingThroughputDataFlowElasticJobForExecuteFailureTest.class, 
     StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest.class, 
-    StreamingThroughputDataFlowElasticJobForStopedTest.class
+    StreamingThroughputDataFlowElasticJobForStopedTest.class,
+    MonitorServiceTest.class
     })
 public class AllJobTests {
 }

@@ -18,6 +18,7 @@
                     <xsd:attribute name="shardingItemParameters" type="xsd:string" />
                     <xsd:attribute name="jobParameter" type="xsd:string" />
                     <xsd:attribute name="monitorExecution" type="xsd:string" />
+                    <xsd:attribute name="monitorPort" type="xsd:string" />
                     <xsd:attribute name="processCountIntervalSeconds" type="xsd:string" />
                     <xsd:attribute name="concurrentDataProcessThreadCount" type="xsd:string" />
                     <xsd:attribute name="fetchDataCount" type="xsd:string" />

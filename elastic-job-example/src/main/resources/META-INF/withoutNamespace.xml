@@ -32,6 +32,7 @@
                 <constructor-arg name="cron" value="${simpleJob.cron}" />
                 <property name="shardingItemParameters" value="${simpleJob.shardingItemParameters}" />
                 <property name="monitorExecution" value="${simpleJob.monitorExecution}" />
+                <property name="monitorPort" value="${simpleJob.monitorPort}" />
                 <property name="failover" value="${simpleJob.failover}" />
                 <property name="description" value="${simpleJob.description}" />
                 <property name="disabled" value="${simpleJob.disabled}" />
