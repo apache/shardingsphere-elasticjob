@@ -1,6 +1,6 @@
 ##Elastic-Job - distributed scheduled job solution
 [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/images/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-
+[![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)<br/>
   Elastic-Job is extracted from dd-job which is a component of ddframe. Elastic-Job just removed monitor and integrated standards parts from dd-job. It based on matured open-source productions like Quartz, Zookeeper and its client Curator.
   
   Other components of ddframe also can open-source independently. Dangdang has already released DubboX, which is core component of dd-soa.
