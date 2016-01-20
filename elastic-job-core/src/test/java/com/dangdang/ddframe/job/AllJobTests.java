@@ -47,7 +47,8 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionServiceTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverListenerManagerTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverNodeTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverServiceTest;
-import com.dangdang.ddframe.job.internal.monitor.MonitorServiceTest;
+import com.dangdang.ddframe.job.internal.monitor.MonitorServiceDisableTest;
+import com.dangdang.ddframe.job.internal.monitor.MonitorServiceEnableTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetNodeTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetServiceTest;
 import com.dangdang.ddframe.job.internal.server.ServerNodeTest;
@@ -109,7 +110,8 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobSh
     StreamingThroughputDataFlowElasticJobForExecuteFailureTest.class, 
     StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest.class, 
     StreamingThroughputDataFlowElasticJobForStopedTest.class,
-    MonitorServiceTest.class
+    MonitorServiceEnableTest.class,
+    MonitorServiceDisableTest.class
     })
 public class AllJobTests {
 }

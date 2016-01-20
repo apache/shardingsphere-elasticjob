@@ -24,14 +24,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -79,7 +78,7 @@ public final class MonitorService {
             log.info("Elastic job: monitor service is running, the port is '{}'", port);
             openSocketForMonitor(port);
         } catch (final IOException ex) {
-            throw new JobException(ex);
+            log.warn(ex.getMessage());
         }
     }
     
@@ -91,10 +90,8 @@ public final class MonitorService {
                 while (!closed) {
                     try {
                         process(serverSocket.accept());
-                    } catch (final SocketException ex) {
-                        log.debug(ex.getMessage());
                     } catch (final IOException ex) {
-                        throw new JobException(ex);
+                        log.warn(ex.getMessage());
                     }
                 }
             }
@@ -114,7 +111,7 @@ public final class MonitorService {
                 outputMessage(writer, Joiner.on("\n").join(SensitiveInfoUtils.filterSenstiveIps(result)) + "\n");
             }
         } catch (final IOException ex) {
-            throw new JobException(ex);
+            log.warn(ex.getMessage());
         }
     }
     
@@ -123,8 +120,9 @@ public final class MonitorService {
             String zkPath = path + "/" + each;
             String zkValue = coordinatorRegistryCenter.get(zkPath);
             TreeCache treeCache = (TreeCache) coordinatorRegistryCenter.getRawCache();
-            String treeCachePath = treeCache.getCurrentData(zkPath).getPath();
-            String treeCacheValue = new String(treeCache.getCurrentData(zkPath).getData());
+            ChildData treeCacheData = treeCache.getCurrentData(zkPath);
+            String treeCachePath =  null == treeCacheData ? "" : treeCacheData.getPath();
+            String treeCacheValue = null == treeCacheData ? "" : new String(treeCacheData.getData());
             if (zkValue.equals(treeCacheValue) && zkPath.equals(treeCachePath)) {
                 result.add(Joiner.on(" | ").join(zkPath, zkValue));
             } else {
@@ -140,15 +138,12 @@ public final class MonitorService {
     }
     
     public void close() {
-        if (configService.getMonitorPort() < 0) {
-            return;
-        }
         closed = true;
         if (null != serverSocket && !serverSocket.isClosed()) {
             try {
                 serverSocket.close();
             } catch (final IOException ex) {
-                throw new JobException(ex);
+                log.warn(ex.getMessage());
             }
         }
     }
