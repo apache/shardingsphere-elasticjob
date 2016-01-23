@@ -27,12 +27,11 @@ import org.junit.Test;
 
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.test.WaitingUtils;
 
 public final class ElectionListenerManagerTest extends AbstractBaseJobTest {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final ElectionListenerManager electionListenerManager = new ElectionListenerManager(getRegistryCenter(), getJobConfig());
     

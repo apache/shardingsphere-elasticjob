@@ -110,7 +110,7 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobSh
     StreamingThroughputDataFlowElasticJobForExecuteFailureTest.class, 
     StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest.class, 
     StreamingThroughputDataFlowElasticJobForStopedTest.class,
-    MonitorServiceEnableTest.class,
+    MonitorServiceEnableTest.class, 
     MonitorServiceDisableTest.class
     })
 public class AllJobTests {

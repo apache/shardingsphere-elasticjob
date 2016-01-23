@@ -40,7 +40,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class JobNodeStorage {
+public class JobNodeStorage {
     
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     

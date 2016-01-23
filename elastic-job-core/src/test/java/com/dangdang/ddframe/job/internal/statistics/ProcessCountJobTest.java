@@ -27,11 +27,10 @@ import org.quartz.JobExecutionException;
 
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 
 public final class ProcessCountJobTest extends AbstractBaseJobTest {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final ProcessCountJob processCountJob = new ProcessCountJob(getRegistryCenter(), getJobConfig());
     

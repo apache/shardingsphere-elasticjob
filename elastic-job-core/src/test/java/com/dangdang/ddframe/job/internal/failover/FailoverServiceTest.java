@@ -29,12 +29,11 @@ import org.junit.Test;
 import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 
 public final class FailoverServiceTest extends AbstractBaseJobTest {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final FailoverService failoverService = new FailoverService(getRegistryCenter(), getJobConfig());
     
@@ -106,7 +105,7 @@ public final class FailoverServiceTest extends AbstractBaseJobTest {
     
     @Test
     public void assertGetLocalHostTakeOffItems() {
-        getRegistryCenter().persist("/testJob/servers/" + new RealLocalHostService().getIp() + "/sharding", "0,1,2");
+        getRegistryCenter().persist("/testJob/servers/" + new LocalHostService().getIp() + "/sharding", "0,1,2");
         getRegistryCenter().persist("/testJob/execution/0/failover", "host0");
         getRegistryCenter().persist("/testJob/execution/1/failover", "host1");
         assertThat(failoverService.getLocalHostTakeOffItems(), is(Arrays.asList(0, 1)));

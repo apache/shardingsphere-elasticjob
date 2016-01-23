@@ -17,12 +17,22 @@
 
 package com.dangdang.ddframe.job.internal.env;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+
+import com.dangdang.ddframe.job.exception.JobException;
+
 /**
- * 本机网络服务接口.
+ * 获取真实本机网络的实现类.
  * 
  * @author zhangliang
  */
-public interface LocalHostService {
+public class LocalHostService {
+    
+    private static volatile String cachedIpAddress;
     
     /**
      * 获取本机IP地址.
@@ -34,12 +44,64 @@ public interface LocalHostService {
      * 
      * @return 本机IP地址
      */
-    String getIp();
+    public String getIp() {
+        if (null != cachedIpAddress) {
+            return cachedIpAddress;
+        }
+        Enumeration<NetworkInterface> netInterfaces;
+        try {
+            netInterfaces = NetworkInterface.getNetworkInterfaces();
+        } catch (final SocketException ex) {
+            throw new JobException(ex);
+        }
+        String localIpAddress = null;
+        while (netInterfaces.hasMoreElements()) {
+            NetworkInterface netInterface = netInterfaces.nextElement();
+            Enumeration<InetAddress> ipAddresses = netInterface.getInetAddresses();
+            while (ipAddresses.hasMoreElements()) {
+                InetAddress ipAddress = ipAddresses.nextElement();
+                if (isPublicIpAddress(ipAddress)) {
+                    String publicIpAddress = ipAddress.getHostAddress();
+                    cachedIpAddress = publicIpAddress;
+                    return publicIpAddress;
+                }
+                if (isLocalIpAddress(ipAddress)) {
+                    localIpAddress = ipAddress.getHostAddress();
+                }
+            }
+        }
+        cachedIpAddress = localIpAddress;
+        return localIpAddress;
+    }
+    
+    private boolean isPublicIpAddress(final InetAddress ipAddress) {
+        return !ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && !isV6IpAddress(ipAddress);
+    }
+    
+    private boolean isLocalIpAddress(final InetAddress ipAddress) {
+        return ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && !isV6IpAddress(ipAddress);
+    }
+    
+    private boolean isV6IpAddress(final InetAddress ipAddress) {
+        return -1 != ipAddress.getHostAddress().indexOf(":");
+    }
     
     /**
      * 获取本机Host名称.
      * 
      * @return 本机Host名称
      */
-    String getHostName();
+    public String getHostName() {
+        return getLocalHost().getHostName();
+    }
+    
+    private static InetAddress getLocalHost() {
+        InetAddress result;
+        try {
+            result = InetAddress.getLocalHost();
+        } catch (final UnknownHostException ex) {
+            throw new JobException(ex);
+        }
+        return result;
+    }
 }

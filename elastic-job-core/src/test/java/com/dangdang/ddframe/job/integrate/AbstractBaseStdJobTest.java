@@ -21,8 +21,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import lombok.AccessLevel;
-import lombok.Getter;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +32,6 @@ import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
@@ -44,10 +41,13 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.test.NestedZookeeperServers;
 import com.dangdang.ddframe.test.WaitingUtils;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 public abstract class AbstractBaseStdJobTest {
     
     @Getter(AccessLevel.PROTECTED)
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedZookeeperServers.ZK_CONNECTION_STRING, "zkRegTestCenter", 1000, 3000, 3);
     

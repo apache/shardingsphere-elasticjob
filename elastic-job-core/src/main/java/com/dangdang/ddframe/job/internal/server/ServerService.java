@@ -24,7 +24,6 @@ import java.util.List;
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
@@ -33,11 +32,11 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang, caohao
  */
-public final class ServerService {
+public class ServerService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final LeaderElectionService leaderElectionService;
     
@@ -126,7 +125,6 @@ public final class ServerService {
                 result.add(each);
             }
         }
-        Collections.sort(result);
         return result;
     }
     

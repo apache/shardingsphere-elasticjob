@@ -21,22 +21,30 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
-import com.dangdang.ddframe.job.internal.env.FakeLocalHostService;
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.test.WaitingUtils;
 
 public final class LeaderElectionServiceTest extends AbstractBaseJobTest {
     
+    @Mock
+    private LocalHostService localHostService;
+    
     private final LeaderElectionService leaderElectionService = new LeaderElectionService(getRegistryCenter(), getJobConfig());
     
     @Before
-    public void setUp() throws NoSuchFieldException {
-        ReflectionUtils.setFieldValue(leaderElectionService, "localHostService", new FakeLocalHostService("host0"));
+    public void initMocks() throws NoSuchFieldException {
+        MockitoAnnotations.initMocks(this);
+        when(localHostService.getIp()).thenReturn("host0");
+        ReflectionUtils.setFieldValue(leaderElectionService, "localHostService", localHostService);
     }
     
     @Test

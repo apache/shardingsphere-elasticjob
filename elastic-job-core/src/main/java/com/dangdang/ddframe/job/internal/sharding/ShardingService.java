@@ -22,13 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import lombok.extern.slf4j.Slf4j;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
@@ -39,19 +36,21 @@ import com.dangdang.ddframe.job.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.internal.util.ItemUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 作业分片服务.
  * 
  * @author zhangliang
  */
 @Slf4j
-public final class ShardingService {
+public class ShardingService {
     
     private final String jobName;
     
     private final JobNodeStorage jobNodeStorage;
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final LeaderElectionService leaderElectionService;
     
@@ -110,18 +109,6 @@ public final class ShardingService {
         log.debug("Elastic job: sharding completed.");
     }
     
-    private void clearShardingInfo() {
-        for (String each : serverService.getAllServers()) {
-            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getShardingNode(each));
-        }
-    }
-    
-    private void persistShardingInfo(final Map<String, List<Integer>> shardingItems) {
-        for (Entry<String, List<Integer>> entry : shardingItems.entrySet()) {
-            jobNodeStorage.replaceJobNode(ShardingNode.getShardingNode(entry.getKey()), ItemUtils.toItemsString(entry.getValue()));
-        }
-    }
-    
     private void blockUntilShardingCompleted() {
         while (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING)) {
             log.debug("Elastic job: sleep short time until sharding completed.");
@@ -133,6 +120,18 @@ public final class ShardingService {
         while (executionService.hasRunningItems()) {
             log.debug("Elastic job: sleep short time until other job completed.");
             BlockUtils.waitingShortTime();
+        }
+    }
+    
+    private void clearShardingInfo() {
+        for (String each : serverService.getAllServers()) {
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getShardingNode(each));
+        }
+    }
+    
+    private void persistShardingInfo(final Map<String, List<Integer>> shardingItems) {
+        for (Entry<String, List<Integer>> entry : shardingItems.entrySet()) {
+            jobNodeStorage.replaceJobNode(ShardingNode.getShardingNode(entry.getKey()), ItemUtils.toItemsString(entry.getValue()));
         }
     }
     

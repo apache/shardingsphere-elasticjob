@@ -34,7 +34,7 @@ import com.google.common.base.Strings;
  * 
  * @author zhangliang
  */
-public final class ConfigurationService {
+public class ConfigurationService {
     
     private final JobNodeStorage jobNodeStorage;
     

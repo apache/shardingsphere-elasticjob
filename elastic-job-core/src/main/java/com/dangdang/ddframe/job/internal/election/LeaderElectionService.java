@@ -17,15 +17,14 @@
 
 package com.dangdang.ddframe.job.internal.election;
 
-import lombok.extern.slf4j.Slf4j;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.internal.util.BlockUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 选举主节点的服务.
@@ -33,9 +32,9 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * @author zhangliang
  */
 @Slf4j
-public final class LeaderElectionService {
+public class LeaderElectionService {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final JobNodeStorage jobNodeStorage;
     

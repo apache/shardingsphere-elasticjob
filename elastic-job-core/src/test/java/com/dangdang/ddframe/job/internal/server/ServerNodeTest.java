@@ -17,19 +17,18 @@
 
 package com.dangdang.ddframe.job.internal.server;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 
 public final class ServerNodeTest {
     
-    private LocalHostService localHostService = new RealLocalHostService();
+    private LocalHostService localHostService = new LocalHostService();
     
     private ServerNode serverNode = new ServerNode("testJob");
     

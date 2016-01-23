@@ -21,370 +21,423 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
+import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
+import com.dangdang.ddframe.job.internal.AbstractBaseJobTest.TestJob;
+import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
-import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.test.WaitingUtils;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 
-public final class ExecutionServiceTest extends AbstractBaseJobTest {
+public final class ExecutionServiceTest {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    @Mock
+    private JobNodeStorage jobNodeStorage;
     
-    private final LeaderElectionService leaderElectionService = new LeaderElectionService(getRegistryCenter(), getJobConfig());
+    @Mock
+    private LocalHostService localHostService;
     
-    private final ExecutionService executionService = new ExecutionService(getRegistryCenter(), getJobConfig());
+    @Mock
+    private ConfigurationService configService;
+    
+    @Mock
+    private ServerService serverService;
+    
+    @Mock
+    private LeaderElectionService leaderElectionService;
+    
+    @Mock
+    private JobScheduler jobScheduler;
+    
+    private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    
+    private final ExecutionService executionService = new ExecutionService(null, jobConfig);
     
     @Before
-    public void setUp() {
-        JobRegistry.getInstance().addJob("testJob", new TestJobScheduler());
-    }
-    
-    @After
-    public void tearDown() throws NoSuchFieldException {
-        ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
-        ProcessCountStatistics.reset("testJob");
+    public void setUp() throws NoSuchFieldException {
+        MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(executionService, "jobNodeStorage", jobNodeStorage);
+        ReflectionUtils.setFieldValue(executionService, "configService", configService);
+        ReflectionUtils.setFieldValue(executionService, "serverService", serverService);
+        ReflectionUtils.setFieldValue(executionService, "leaderElectionService", leaderElectionService);
+        when(localHostService.getIp()).thenReturn("mockedIP");
+        when(localHostService.getHostName()).thenReturn("mockedHostName");
+        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        jobConfig.setOverwrite(true);
     }
     
     @Test
     public void assertRegisterJobBeginWhenNotAssignAnyItem() {
-        JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
-        jobExecutionShardingContext.setShardingItems(Collections.<Integer>emptyList());
-        executionService.registerJobBegin(jobExecutionShardingContext);
-        assertFalse(getRegistryCenter().isExisted("/testJob/servers/" + localHostService.getIp() + "/status"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/running"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/1/running"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/2/running"));
+        executionService.registerJobBegin(new JobExecutionMultipleShardingContext());
+        verify(configService, times(0)).isMonitorExecution();
     }
     
     @Test
     public void assertRegisterJobBeginWhenNotMonitorExecution() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/status", ServerStatus.READY.name());
+        when(configService.isMonitorExecution()).thenReturn(false);
         JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
         jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
         executionService.registerJobBegin(jobExecutionShardingContext);
-        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/running"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/1/running"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/2/running"));
+        verify(configService).isMonitorExecution();
     }
     
     @Test
-    public void assertRegisterJobBegin() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/status", "");
+    public void assertRegisterJobBeginWithoutNextFireTime() {
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobScheduler.getNextFireTime()).thenReturn(null);
+        JobRegistry.getInstance().addJob("testJob", jobScheduler);
         JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
         jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
         executionService.registerJobBegin(jobExecutionShardingContext);
-        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.RUNNING.name()));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0/running"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1/running"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/2/running"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0/lastBeginTime"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1/lastBeginTime"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/2/lastBeginTime"));
-        assertThat(getRegistryCenter().get("/testJob/execution/0/nextFireTime"), is("0"));
-        assertThat(getRegistryCenter().get("/testJob/execution/1/nextFireTime"), is("0"));
-        assertThat(getRegistryCenter().get("/testJob/execution/2/nextFireTime"), is("0"));
+        verify(configService).isMonitorExecution();
+        verify(serverService).updateServerStatus(ServerStatus.RUNNING);
+        verify(jobNodeStorage).fillEphemeralJobNode("execution/0/running", "");
+        verify(jobNodeStorage).fillEphemeralJobNode("execution/1/running", "");
+        verify(jobNodeStorage).fillEphemeralJobNode("execution/2/running", "");
+        verify(jobNodeStorage).replaceJobNode(eq("execution/0/lastBeginTime"), anyLong());
+        verify(jobNodeStorage).replaceJobNode(eq("execution/1/lastBeginTime"), anyLong());
+        verify(jobNodeStorage).replaceJobNode(eq("execution/2/lastBeginTime"), anyLong());
+    }
+    
+    @Test
+    public void assertRegisterJobBeginWithNextFireTime() {
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobScheduler.getNextFireTime()).thenReturn(new Date(0L));
+        JobRegistry.getInstance().addJob("testJob", jobScheduler);
+        JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
+        jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
+        executionService.registerJobBegin(jobExecutionShardingContext);
+        verify(configService).isMonitorExecution();
+        verify(serverService).updateServerStatus(ServerStatus.RUNNING);
+        verify(jobNodeStorage).fillEphemeralJobNode("execution/0/running", "");
+        verify(jobNodeStorage).fillEphemeralJobNode("execution/1/running", "");
+        verify(jobNodeStorage).fillEphemeralJobNode("execution/2/running", "");
+        verify(jobNodeStorage).replaceJobNode(eq("execution/0/lastBeginTime"), anyLong());
+        verify(jobNodeStorage).replaceJobNode(eq("execution/1/lastBeginTime"), anyLong());
+        verify(jobNodeStorage).replaceJobNode(eq("execution/2/lastBeginTime"), anyLong());
+        verify(jobNodeStorage).replaceJobNode("execution/0/nextFireTime", 0L);
+        verify(jobNodeStorage).replaceJobNode("execution/1/nextFireTime", 0L);
+        verify(jobNodeStorage).replaceJobNode("execution/2/nextFireTime", 0L);
     }
     
     @Test
     public void assertRegisterJobCompletedWhenNotMonitorExecution() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/status", ServerStatus.READY.name());
-        JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
-        jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
-        executionService.registerJobBegin(jobExecutionShardingContext);
-        executionService.registerJobCompleted(jobExecutionShardingContext);
-        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution"));
+        when(configService.isMonitorExecution()).thenReturn(false);
+        executionService.registerJobCompleted(new JobExecutionMultipleShardingContext());
+        verify(configService).isMonitorExecution();
+        verify(serverService, times(0)).updateServerStatus(ServerStatus.READY);
     }
     
     @Test
     public void assertRegisterJobCompleted() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/status", "");
+        when(configService.isMonitorExecution()).thenReturn(true);
         JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
         jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
-        executionService.registerJobBegin(jobExecutionShardingContext);
         executionService.registerJobCompleted(jobExecutionShardingContext);
-        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0/completed"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1/completed"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/2/completed"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/running"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/1/running"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/2/running"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0/lastCompleteTime"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1/lastCompleteTime"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/2/lastCompleteTime"));
-    }
-    
-    @Test
-    public void assertMisfireIfNecessary() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2", "");
-        assertTrue(executionService.misfireIfNecessary(Arrays.asList(0, 1, 2)));
-    }
-    
-    @Test
-    public void assertMisfireIfNotNecessary() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/execution/0/completed", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2", "");
-        assertFalse(executionService.misfireIfNecessary(Arrays.asList(0, 1, 2)));
-    }
-    
-    @Test
-    public void assertMisfireIfNotNecessaryWhenNotMonitorExecution() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        assertFalse(executionService.misfireIfNecessary(Arrays.asList(0, 1, 2)));
+        verify(serverService).updateServerStatus(ServerStatus.READY);
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/completed");
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/completed");
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/2/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/running");
+        verify(jobNodeStorage).replaceJobNode(eq("execution/0/lastCompleteTime"), anyLong());
+        verify(jobNodeStorage).replaceJobNode(eq("execution/1/lastCompleteTime"), anyLong());
+        verify(jobNodeStorage).replaceJobNode(eq("execution/2/lastCompleteTime"), anyLong());
     }
     
     @Test
     public void assertSetNeedFixExecutionInfoFlag() {
         executionService.setNeedFixExecutionInfoFlag();
-        assertTrue(getRegistryCenter().isExisted("/testJob/leader/execution/necessary"));
+        verify(jobNodeStorage).createJobNodeIfNeeded("leader/execution/necessary");
     }
     
     @Test
     public void assertCleanPreviousExecutionInfoWhenNotMonitorExecution() {
-        leaderElectionService.leaderElection();
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(false);
         executionService.cleanPreviousExecutionInfo();
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution"));
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService, times(0)).isLeader();
     }
     
     @Test
-    public void assertCleanPreviousExecutionInfoWhenNotNeedFixExecutionInfo() {
-        leaderElectionService.leaderElection();
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/execution/0/completed", "");
-        getRegistryCenter().persist("/testJob/execution/1", "");
+    public void assertCleanPreviousExecutionInfoWhenIsNotLeader() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/cleaning")).thenReturn(true, false);
         executionService.cleanPreviousExecutionInfo();
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/completed"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/1/completed"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1"));
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage, times(2)).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test
-    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValueGreater() {
-        leaderElectionService.leaderElection();
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "4");
-        getRegistryCenter().persist("/testJob/execution/0/completed", "");
-        getRegistryCenter().persist("/testJob/execution/1", "");
-        getRegistryCenter().persist("/testJob/leader/execution/necessary", "");
+    public void assertCleanPreviousExecutionInfoWhenIsLeaderButNotNeedFixExecutionInfo() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(false);
         executionService.cleanPreviousExecutionInfo();
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/completed"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/1/completed"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/2/completed"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/3/completed"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/2"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/3"));
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test
-    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValueLess() {
-        leaderElectionService.leaderElection();
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "1");
-        getRegistryCenter().persist("/testJob/execution/0/completed", "");
-        getRegistryCenter().persist("/testJob/execution/1", "");
-        getRegistryCenter().persist("/testJob/leader/execution/necessary", "");
+    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesGreater() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
+        when(configService.getShardingTotalCount()).thenReturn(4);
         executionService.cleanPreviousExecutionInfo();
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/completed"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/1"));
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
+        verify(configService).getShardingTotalCount();
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/3");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test
-    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForValueEquals() {
-        leaderElectionService.leaderElection();
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "2");
-        getRegistryCenter().persist("/testJob/execution/0/completed", "");
-        getRegistryCenter().persist("/testJob/execution/1", "");
-        getRegistryCenter().persist("/testJob/leader/execution/necessary", "");
+    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesLess() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
+        when(configService.getShardingTotalCount()).thenReturn(2);
         executionService.cleanPreviousExecutionInfo();
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/completed"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1"));
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
+        verify(configService).getShardingTotalCount();
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test
-    public void assertCleanPreviousExecutionInfoWhenIsNotLeaderAndIsCleaning() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/leader/election/host", "otherHost");
-        getRegistryCenter().persist("/testJob/execution/0/completed", "");
-        getRegistryCenter().persist("/testJob/execution/1", "");
-        getRegistryCenter().persistEphemeral("/testJob/leader/execution/cleaning", "");
-        new Thread() {
-            
-            @Override
-            public void run() {
-                WaitingUtils.waitingShortTime();
-                getRegistryCenter().remove("/testJob/leader/execution/cleaning");
-            }
-        }.start();
+    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesEqual() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
+        when(configService.getShardingTotalCount()).thenReturn(3);
         executionService.cleanPreviousExecutionInfo();
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0/completed"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1"));
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
+        verify(configService).getShardingTotalCount();
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test
     public void assertClearRunningInfo() {
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2/running", "");
         executionService.clearRunningInfo(Arrays.asList(0, 1, 2));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/running"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1/completed"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/2/running"));
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/running");
+    }
+    
+    @Test
+    public void assertMisfireIfNotNecessaryWhenNotMonitorExecution() {
+        when(configService.isMonitorExecution()).thenReturn(false);
+        assertFalse(executionService.misfireIfNecessary(Arrays.asList(0, 1, 2)));
+        verify(configService).isMonitorExecution();
+    }
+    
+    @Test
+    public void assertMisfireIfNotNecessary() {
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/2/running")).thenReturn(false);
+        assertFalse(executionService.misfireIfNecessary(Arrays.asList(0, 1, 2)));
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/2/running");
+    }
+    
+    @Test
+    public void assertMisfireIfNecessary() {
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
+        assertTrue(executionService.misfireIfNecessary(Arrays.asList(0, 1, 2)));
+        verify(configService, times(2)).isMonitorExecution();
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/2/misfire");
+    }
+    
+    @Test
+    public void assertSetMisfireWhenMonitorExecutionDisabled() {
+        when(configService.isMonitorExecution()).thenReturn(false);
+        executionService.setMisfire(Arrays.asList(0, 1, 2));
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("execution/0/misfire");
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("execution/1/misfire");
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("execution/2/misfire");
     }
     
     @Test
     public void assertSetMisfire() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
+        when(configService.isMonitorExecution()).thenReturn(true);
         executionService.setMisfire(Arrays.asList(0, 1, 2));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0/misfire"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/1/misfire"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/2/misfire"));
-    }
-    
-    @Test
-    public void assertSetMisfireWhenIsNotMonitorExecution() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        executionService.setMisfire(Arrays.asList(0, 1, 2));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/misfire"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/1/misfire"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/2/misfire"));
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/2/misfire");
     }
     
     @Test
     public void assertGetMisfiredJobItems() {
-        getRegistryCenter().persist("/testJob/execution/0/misfire", "");
-        getRegistryCenter().persist("/testJob/execution/1/misfire", "");
+        when(jobNodeStorage.isJobNodeExisted("execution/0/misfire")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/misfire")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/2/misfire")).thenReturn(false);
         assertThat(executionService.getMisfiredJobItems(Arrays.asList(0, 1, 2)), is(Arrays.asList(0, 1)));
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/misfire");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/misfire");
+        verify(jobNodeStorage).isJobNodeExisted("execution/2/misfire");
     }
     
     @Test
     public void assertClearMisfire() {
-        getRegistryCenter().persist("/testJob/execution/0/misfire", "");
-        getRegistryCenter().persist("/testJob/execution/1/misfire", "");
-        getRegistryCenter().persist("/testJob/execution/2/misfire", "");
-        executionService.clearMisfire(Arrays.asList(0, 1));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/0/misfire"));
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution/1/misfire"));
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/2/misfire"));
+        executionService.clearMisfire(Arrays.asList(0, 1, 2));
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/misfire");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/misfire");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/misfire");
     }
     
     @Test
     public void assertRemoveExecutionInfo() {
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2/misfire", "");
         executionService.removeExecutionInfo();
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution"));
-    }
-    
-    @Test
-    public void assertHasRunningItemsForAll() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2/misfire", "");
-        assertTrue(executionService.hasRunningItems());
-    }
-    
-    @Test
-    public void assertNotHaveRunningItemsForAll() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/execution/0", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2/misfire", "");
-        assertFalse(executionService.hasRunningItems());
-    }
-    
-    @Test
-    public void assertNotHaveRunningItemsWhenJNotMonitorExecutionForAll() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2/misfire", "");
-        assertFalse(executionService.hasRunningItems());
-    }
-    
-    @Test
-    public void assertHasRunningItems() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2/misfire", "");
-        assertTrue(executionService.hasRunningItems(Arrays.asList(0, 1, 2)));
-    }
-    
-    @Test
-    public void assertNotHaveRunningItems() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2/misfire", "");
-        assertFalse(executionService.hasRunningItems(Arrays.asList(1, 2)));
-    }
-    
-    @Test
-    public void assertNotHaveRunningItemsWhenJNotMonitorExecution() {
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2/misfire", "");
-        assertFalse(executionService.hasRunningItems(Arrays.asList(0, 1, 2)));
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution");
     }
     
     @Test
     public void assertIsCompleted() {
-        getRegistryCenter().persist("/testJob/execution/0/completed", "");
+        when(jobNodeStorage.isJobNodeExisted("execution/0/completed")).thenReturn(true);
         assertTrue(executionService.isCompleted(0));
     }
     
     @Test
-    public void assertIsNotCompleted() {
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        assertFalse(executionService.isCompleted(0));
+    public void assertNotHaveRunningItemsWhenJNotMonitorExecution() {
+        when(configService.isMonitorExecution()).thenReturn(false);
+        assertFalse(executionService.hasRunningItems(Arrays.asList(0, 1, 2)));
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage, times(0)).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage, times(0)).isJobNodeExisted("execution/1/running");
+        verify(jobNodeStorage, times(0)).isJobNodeExisted("execution/2/running");
     }
     
-    class TestJobScheduler extends JobScheduler {
-        
-        public TestJobScheduler() {
-            super(getRegistryCenter(), getJobConfig());
-        }
-        
-        @Override
-        public Date getNextFireTime() {
-            return new Date(0L);
-        }
+    @Test
+    public void assertHasRunningItems() {
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
+        assertTrue(executionService.hasRunningItems(Arrays.asList(0, 1, 2)));
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+    }
+    
+    @Test
+    public void assertNotHaveRunningItems() {
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/2/running")).thenReturn(false);
+        assertFalse(executionService.hasRunningItems(Arrays.asList(0, 1, 2)));
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/2/running");
+    }
+    
+    @Test
+    public void assertNotHaveRunningItemsWhenJNotMonitorExecutionForAll() {
+        when(configService.isMonitorExecution()).thenReturn(false);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        assertFalse(executionService.hasRunningItems());
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+    }
+    
+    @Test
+    public void assertHasRunningItemsForAll() {
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
+        assertTrue(executionService.hasRunningItems());
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+    }
+    
+    @Test
+    public void assertNotHaveRunningItemsForAll() {
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/2/running")).thenReturn(false);
+        assertFalse(executionService.hasRunningItems());
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/2/running");
     }
 }
