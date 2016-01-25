@@ -46,15 +46,7 @@ public class LeaderElectionService {
      * 选举主节点.
      */
     public void leaderElection() {
-        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderExecutionCallback() {
-            
-            @Override
-            public void execute() {
-                if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST)) {
-                    jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST, localHostService.getIp());
-                }
-            }
-        });
+        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback());
     }
     
     /**
@@ -87,5 +79,15 @@ public class LeaderElectionService {
      */
     public boolean hasLeader() {
         return jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST);
+    }
+    
+    class LeaderElectionExecutionCallback implements LeaderExecutionCallback {
+        
+        @Override
+        public void execute() {
+            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST)) {
+                jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST, localHostService.getIp());
+            }
+        }
     }
 }
