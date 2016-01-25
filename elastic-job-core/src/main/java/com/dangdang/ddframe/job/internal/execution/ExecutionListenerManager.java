@@ -46,20 +46,18 @@ public final class ExecutionListenerManager extends AbstractListenerManager {
     
     @Override
     public void start() {
-        listenMonitorExecutionChanged();
+        addDataListener(new MonitorExecutionChangedJobListener());
     }
     
-    void listenMonitorExecutionChanged() {
-        addDataListener(new AbstractJobListener() {
-            
-            @Override
-            protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (configNode.isMonitorExecutionPath(path) && Type.NODE_UPDATED == event.getType()) {
-                    if (!Boolean.valueOf(new String(event.getData().getData()))) {
-                        executionService.removeExecutionInfo();
-                    }
+    class MonitorExecutionChangedJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (configNode.isMonitorExecutionPath(path) && Type.NODE_UPDATED == event.getType()) {
+                if (!Boolean.valueOf(new String(event.getData().getData()))) {
+                    executionService.removeExecutionInfo();
                 }
             }
-        });
+        }
     }
 }

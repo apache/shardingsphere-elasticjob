@@ -17,48 +17,71 @@
 
 package com.dangdang.ddframe.job.internal.execution;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
-import com.dangdang.ddframe.test.WaitingUtils;
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.internal.AbstractBaseJobTest.TestJob;
+import com.dangdang.ddframe.job.internal.execution.ExecutionListenerManager.MonitorExecutionChangedJobListener;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 
-public final class ExecutionListenerManagerTest extends AbstractBaseJobTest {
+public final class ExecutionListenerManagerTest {
     
-    private final ExecutionListenerManager executionListenerManager = new ExecutionListenerManager(getRegistryCenter(), getJobConfig());
+    @Mock
+    private JobNodeStorage jobNodeStorage;
+    
+    @Mock
+    private ExecutionService executionService;
+    
+    private final ExecutionListenerManager executionListenerManager = new ExecutionListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
     
     @Before
-    public void setUp() {
-        executionListenerManager.listenMonitorExecutionChanged();
+    public void setUp() throws NoSuchFieldException {
+        MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(executionListenerManager, executionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
+        ReflectionUtils.setFieldValue(executionListenerManager, "executionService", executionService);
     }
     
     @Test
-    public void assertListenMonitorExecutionChangedWhenCreate() {
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        WaitingUtils.waitingShortTime();
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0/running"));
+    public void assertStart() {
+        executionListenerManager.start();
+        verify(jobNodeStorage).addDataListener(Matchers.<MonitorExecutionChangedJobListener>any());
     }
     
     @Test
-    public void assertListenMonitorExecutionChangedWhenUpdateTrue() {
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        WaitingUtils.waitingShortTime();
-        assertTrue(getRegistryCenter().isExisted("/testJob/execution/0/running"));
+    public void assertMonitorExecutionChangedJobListenerWhenIsNotMonitorExecutionPath() {
+        executionListenerManager.new MonitorExecutionChangedJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/config/other", null, "true".getBytes())), "/testJob/config/other");
+        verify(executionService, times(0)).removeExecutionInfo();
     }
     
     @Test
-    public void assertListenMonitorExecutionChangedWhenUpdateFalse() {
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        WaitingUtils.waitingShortTime();
-        getRegistryCenter().update("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        WaitingUtils.waitingShortTime();
-        assertFalse(getRegistryCenter().isExisted("/testJob/execution"));
+    public void assertMonitorExecutionChangedJobListenerWhenIsMonitorExecutionPathButNotUpdate() {
+        executionListenerManager.new MonitorExecutionChangedJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/config/monitorExecution", null, "true".getBytes())), "/testJob/config/monitorExecution");
+        verify(executionService, times(0)).removeExecutionInfo();
+    }
+    
+    @Test
+    public void assertMonitorExecutionChangedJobListenerWhenIsMonitorExecutionPathAndUpdateButEnable() {
+        executionListenerManager.new MonitorExecutionChangedJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/config/monitorExecution", null, "true".getBytes())), "/testJob/config/monitorExecution");
+        verify(executionService, times(0)).removeExecutionInfo();
+    }
+    
+    @Test
+    public void assertMonitorExecutionChangedJobListenerWhenIsMonitorExecutionPathAndUpdateButDisable() {
+        executionListenerManager.new MonitorExecutionChangedJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/config/monitorExecution", null, "false".getBytes())), "/testJob/config/monitorExecution");
+        verify(executionService).removeExecutionInfo();
     }
 }

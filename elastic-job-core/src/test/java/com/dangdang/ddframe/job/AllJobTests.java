@@ -35,6 +35,7 @@ import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.StreamingThrou
 import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.integrate.std.simple.DisabledJobTest;
 import com.dangdang.ddframe.job.integrate.std.simple.SimpleElasticJobTest;
+import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManagerTest;
 import com.dangdang.ddframe.job.internal.config.ConfigurationNodeTest;
 import com.dangdang.ddframe.job.internal.config.ConfigurationServiceTest;
 import com.dangdang.ddframe.job.internal.election.ElectionListenerManagerTest;
@@ -51,6 +52,7 @@ import com.dangdang.ddframe.job.internal.monitor.MonitorServiceDisableTest;
 import com.dangdang.ddframe.job.internal.monitor.MonitorServiceEnableTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetNodeTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetServiceTest;
+import com.dangdang.ddframe.job.internal.server.JobOperationListenerManagerTest;
 import com.dangdang.ddframe.job.internal.server.ServerNodeTest;
 import com.dangdang.ddframe.job.internal.server.ServerServiceTest;
 import com.dangdang.ddframe.job.internal.sharding.ShardingListenerManagerTest;
@@ -60,8 +62,8 @@ import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyFa
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountJobTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatisticsTest;
 import com.dangdang.ddframe.job.internal.storage.JobNodePathTest;
-import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtilsTest;
 import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
+import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtilsTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobShardingStrategyTest;
@@ -74,11 +76,13 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobSh
     SensitiveInfoUtilsTest.class, 
     ConfigurationServiceTest.class, 
     ConfigurationNodeTest.class, 
+    ConfigurationListenerManagerTest.class, 
     LeaderElectionServiceTest.class, 
     ElectionNodeTest.class, 
     ElectionListenerManagerTest.class, 
     ServerServiceTest.class, 
     ServerNodeTest.class, 
+    JobOperationListenerManagerTest.class, 
     ShardingServiceTest.class, 
     ShardingNodeTest.class, 
     ShardingListenerManagerTest.class, 
