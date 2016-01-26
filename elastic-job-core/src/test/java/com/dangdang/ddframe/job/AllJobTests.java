@@ -61,6 +61,7 @@ import com.dangdang.ddframe.job.internal.sharding.ShardingServiceTest;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyFactoryTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountJobTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatisticsTest;
+import com.dangdang.ddframe.job.internal.statistics.StatisticsServiceTest;
 import com.dangdang.ddframe.job.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
 import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtilsTest;
@@ -95,14 +96,15 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobSh
     FailoverListenerManagerTest.class, 
     OffsetServiceTest.class, 
     OffsetNodeTest.class, 
+    StatisticsServiceTest.class, 
+    ProcessCountJobTest.class, 
+    ProcessCountStatisticsTest.class, 
     JobShardingStrategyFactoryTest.class, 
     AverageAllocationJobShardingStrategyTest.class, 
     OdevitySortByNameJobShardingStrategyTest.class, 
     RotateServerByNameJobShardingStrategyTest.class, 
     JobConflictExceptionTest.class, 
     TimeDiffIntolerableExceptionTest.class, 
-    ProcessCountJobTest.class, 
-    ProcessCountStatisticsTest.class, 
     DisabledJobTest.class, 
     SimpleElasticJobTest.class, 
     OneOffSequenceDataFlowElasticJobTest.class, 

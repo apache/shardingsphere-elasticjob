@@ -21,19 +21,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 统计处理数据数量的类.
  * 
  * @author zhangliang
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProcessCountStatistics {
     
     private static ConcurrentMap<String, AtomicInteger> processSuccessCount = new ConcurrentHashMap<>();
     
     private static ConcurrentMap<String, AtomicInteger> processFailureCount = new ConcurrentHashMap<>();
-    
-    private ProcessCountStatistics() {
-    }
     
     /**
      * 增加本作业服务器处理数据正确的数量.

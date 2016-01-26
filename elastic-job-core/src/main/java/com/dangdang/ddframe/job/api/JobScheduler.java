@@ -280,6 +280,7 @@ public class JobScheduler {
     public void shutdown() {
         try {
             monitorService.close();
+            statisticsService.stopProcessCountJob();
             scheduler.shutdown();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);

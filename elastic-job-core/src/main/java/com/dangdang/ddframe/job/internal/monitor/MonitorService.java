@@ -50,15 +50,15 @@ public final class MonitorService {
     
     public static final String DUMP_COMMAND = "dump";
     
+    private final String jobName;
+    
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
+    
+    private final ConfigurationService configService;
     
     private ServerSocket serverSocket;
     
     private volatile boolean closed;
-    
-    private final ConfigurationService configService;
-    
-    private final String jobName;
     
     public MonitorService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         jobName = jobConfiguration.getJobName();
@@ -85,6 +85,7 @@ public final class MonitorService {
     private void openSocketForMonitor(final int port) throws IOException {
         serverSocket = new ServerSocket(port);
         new Thread() {
+            
             @Override
             public void run() {
                 while (!closed) {
@@ -137,6 +138,9 @@ public final class MonitorService {
         outputWriter.flush();
     }
     
+    /**
+     * 关闭作业监听服务.
+     */
     public void close() {
         closed = true;
         if (null != serverSocket && !serverSocket.isClosed()) {

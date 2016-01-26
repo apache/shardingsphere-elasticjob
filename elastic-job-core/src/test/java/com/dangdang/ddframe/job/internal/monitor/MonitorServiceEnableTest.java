@@ -38,5 +38,4 @@ public final class MonitorServiceEnableTest extends AbstractMonitorServiceTest {
         assertThat(sendCommand(MonitorService.DUMP_COMMAND, MONITOR_PORT), is("/testJob/servers | "));
         assertNull(sendCommand("unknown_command", MONITOR_PORT));
     }
-    
 }

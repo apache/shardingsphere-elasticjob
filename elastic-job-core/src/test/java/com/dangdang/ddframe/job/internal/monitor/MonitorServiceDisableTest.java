@@ -33,5 +33,4 @@ public final class MonitorServiceDisableTest extends AbstractMonitorServiceTest 
     public void assertMonitorWithDumpCommand() throws IOException {
         sendCommand(MonitorService.DUMP_COMMAND, 9000);
     }
-    
 }
