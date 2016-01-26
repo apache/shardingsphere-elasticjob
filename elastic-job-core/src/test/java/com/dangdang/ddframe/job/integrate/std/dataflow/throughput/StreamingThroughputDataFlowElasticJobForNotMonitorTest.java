@@ -50,7 +50,7 @@ public final class StreamingThroughputDataFlowElasticJobForNotMonitorTest extend
         while (!StreamingThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertFalse(getRegCenter().isExisted("/testJob/execution"));
+        assertFalse(REG_CENTER.isExisted("/testJob/execution"));
         assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(10));
         assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(0));
     }

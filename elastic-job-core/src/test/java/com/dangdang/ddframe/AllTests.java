@@ -17,17 +17,24 @@
 
 package com.dangdang.ddframe;
 
+import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.dangdang.ddframe.job.AllJobTests;
 import com.dangdang.ddframe.reg.AllRegTests;
+import com.dangdang.ddframe.test.NestedZookeeperServers;
 
 @RunWith(Suite.class)
 @SuiteClasses({
     AllRegTests.class, 
     AllJobTests.class
     })
-public class AllTests {
+public final class AllTests {
+    
+    @AfterClass
+    public static void clear() {
+        NestedZookeeperServers.getInstance().closeServer();
+    }
 }

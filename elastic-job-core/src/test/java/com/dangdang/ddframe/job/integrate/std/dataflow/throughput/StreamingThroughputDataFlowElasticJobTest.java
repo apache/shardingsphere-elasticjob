@@ -49,7 +49,7 @@ public final class StreamingThroughputDataFlowElasticJobTest extends AbstractEna
         while (!StreamingThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/testJob/execution"));
+        assertTrue(REG_CENTER.isExisted("/testJob/execution"));
         assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(10));
         assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(0));
     }

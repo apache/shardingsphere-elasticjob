@@ -23,7 +23,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
@@ -39,20 +41,17 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.test.NestedZookeeperServers;
-import com.dangdang.ddframe.test.WaitingUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 
 public abstract class AbstractBaseStdJobTest {
     
+    protected static final CoordinatorRegistryCenter REG_CENTER = new ZookeeperRegistryCenter(
+            new ZookeeperConfiguration(NestedZookeeperServers.ZK_CONNECTION_STRING, "zkRegTestCenter", 1000, 3000, 3));
+    
     @Getter(AccessLevel.PROTECTED)
     private final LocalHostService localHostService = new LocalHostService();
-    
-    private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedZookeeperServers.ZK_CONNECTION_STRING, "zkRegTestCenter", 1000, 3000, 3);
-    
-    @Getter(AccessLevel.PROTECTED)
-    private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
     @Getter(AccessLevel.PROTECTED)
     private final JobConfiguration jobConfig;
@@ -66,29 +65,36 @@ public abstract class AbstractBaseStdJobTest {
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         jobConfig = new JobConfiguration("testJob", elasticJobClass, 3, "0/1 * * * * ?");
         jobConfig.setDisabled(disabled);
-        jobScheduler = new JobScheduler(regCenter, jobConfig);
+        jobScheduler = new JobScheduler(REG_CENTER, jobConfig);
         this.disabled = disabled;
-        leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
+        leaderElectionService = new LeaderElectionService(REG_CENTER, jobConfig);
+    }
+    
+    @BeforeClass
+    public static void init() {
+        NestedZookeeperServers.getInstance().startServerIfNotStarted();
+        REG_CENTER.init();
+    }
+    
+    @AfterClass
+    public static void destory() {
+        REG_CENTER.remove("/testJob");
+        REG_CENTER.close();
     }
     
     @Before
     public void setUp() {
         ProcessCountStatistics.reset("testJob");
-        NestedZookeeperServers.getInstance().startServerIfNotStarted();
         jobConfig.setShardingItemParameters("0=A,1=B,2=C");
         jobConfig.setOverwrite(true);
-        regCenter.init();
+        REG_CENTER.init();
     }
     
     @After
     public void tearDown() throws SchedulerException, NoSuchFieldException {
         ProcessCountStatistics.reset("testJob");
         JobRegistry.getInstance().getJob("testJob").shutdown();
-        WaitingUtils.waitingLongTime();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
-        regCenter.remove("/testJob");
-        regCenter.close();
-        WaitingUtils.waitingLongTime();
     }
     
     protected void initJob() {
@@ -96,19 +102,19 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     protected void assertRegCenterCommonInfo() {
-        assertThat(regCenter.get("/testJob/leader/election/host"), is(localHostService.getIp()));
-        assertThat(regCenter.get("/testJob/config/shardingTotalCount"), is("3"));
-        assertThat(regCenter.get("/testJob/config/shardingItemParameters"), is("0=A,1=B,2=C"));
-        assertThat(regCenter.get("/testJob/config/cron"), is("0/1 * * * * ?"));
-        assertThat(regCenter.get("/testJob/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
+        assertThat(REG_CENTER.get("/testJob/leader/election/host"), is(localHostService.getIp()));
+        assertThat(REG_CENTER.get("/testJob/config/shardingTotalCount"), is("3"));
+        assertThat(REG_CENTER.get("/testJob/config/shardingItemParameters"), is("0=A,1=B,2=C"));
+        assertThat(REG_CENTER.get("/testJob/config/cron"), is("0/1 * * * * ?"));
+        assertThat(REG_CENTER.get("/testJob/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
-            assertTrue(regCenter.isExisted("/testJob/servers/" + localHostService.getIp() + "/disabled"));
+            assertTrue(REG_CENTER.isExisted("/testJob/servers/" + localHostService.getIp() + "/disabled"));
         } else {
-            assertFalse(regCenter.isExisted("/testJob/servers/" + localHostService.getIp() + "/disabled"));
+            assertFalse(REG_CENTER.isExisted("/testJob/servers/" + localHostService.getIp() + "/disabled"));
         }
-        assertFalse(regCenter.isExisted("/testJob/servers/" + localHostService.getIp() + "/stoped"));
-        assertThat(regCenter.get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
-        regCenter.remove("/testJob/leader/election");
+        assertFalse(REG_CENTER.isExisted("/testJob/servers/" + localHostService.getIp() + "/stoped"));
+        assertThat(REG_CENTER.get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
+        REG_CENTER.remove("/testJob/leader/election");
         assertTrue(leaderElectionService.isLeader());
     }
 }

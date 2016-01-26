@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -89,6 +90,17 @@ public final class NestedZookeeperServers {
                 throw new TestEnvironmentException(ex);
             }
             testingServers.putIfAbsent(port, testingServer);
+        }
+    }
+    
+    /**
+     * 关闭内嵌的端口号为3181的Zookeeper服务.
+     */
+    public void closeServer() {
+        try {
+            testingServers.get(DEFAULT_PORT).close();
+        } catch (final IOException ex) {
+            throw new TestEnvironmentException(ex);
         }
     }
 }

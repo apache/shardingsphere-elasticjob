@@ -49,7 +49,7 @@ public final class StreamingSequenceDataFlowElasticJobTest extends AbstractEnabl
         while (!StreamingSequenceDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/testJob/execution"));
+        assertTrue(REG_CENTER.isExisted("/testJob/execution"));
         assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(30));
         assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(0));
     }

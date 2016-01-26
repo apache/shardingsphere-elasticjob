@@ -119,5 +119,5 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobSh
     MonitorServiceEnableTest.class, 
     MonitorServiceDisableTest.class
     })
-public class AllJobTests {
+public final class AllJobTests {
 }

@@ -33,6 +33,5 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterTest;
     RegExceptionHandlerTest.class, 
     LocalPropertiesFileNotFoundExceptionTest.class
     })
-public class AllRegTests {
-
+public final class AllRegTests {
 }
