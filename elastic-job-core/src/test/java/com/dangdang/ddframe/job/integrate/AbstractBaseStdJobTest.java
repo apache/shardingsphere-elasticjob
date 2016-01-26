@@ -66,8 +66,11 @@ public abstract class AbstractBaseStdJobTest {
     
     private final LeaderElectionService leaderElectionService;
     
+    @Getter
+    private final String jobName = System.nanoTime() + "_testJob";
+    
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
-        jobConfig = new JobConfiguration("testJob", elasticJobClass, 3, "0/1 * * * * ?");
+        jobConfig = new JobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
         jobScheduler = new JobScheduler(REG_CENTER, jobConfig);
         this.disabled = disabled;
         monitorPort = -1;
@@ -75,7 +78,7 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
-        jobConfig = new JobConfiguration("testJob", elasticJobClass, 3, "0/1 * * * * ?");
+        jobConfig = new JobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
         jobScheduler = new JobScheduler(REG_CENTER, jobConfig);
         disabled = false;
         this.monitorPort = monitorPort;
@@ -90,13 +93,12 @@ public abstract class AbstractBaseStdJobTest {
     
     @AfterClass
     public static void destory() {
-        REG_CENTER.remove("/testJob");
         REG_CENTER.close();
     }
     
     @Before
     public void setUp() {
-        ProcessCountStatistics.reset("testJob");
+        ProcessCountStatistics.reset(jobName);
         jobConfig.setShardingItemParameters("0=A,1=B,2=C");
         jobConfig.setDisabled(disabled);
         jobConfig.setMonitorPort(monitorPort);
@@ -106,10 +108,10 @@ public abstract class AbstractBaseStdJobTest {
     
     @After
     public void tearDown() throws SchedulerException, NoSuchFieldException {
-        ProcessCountStatistics.reset("testJob");
-        JobScheduler jobScheduler = JobRegistry.getInstance().getJob("testJob");
+        ProcessCountStatistics.reset(jobName);
+        JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
         if (null != jobScheduler) {
-            JobRegistry.getInstance().getJob("testJob").shutdown();
+            JobRegistry.getInstance().getJob(jobName).shutdown();
         }
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
@@ -119,19 +121,19 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     protected void assertRegCenterCommonInfo() {
-        assertThat(REG_CENTER.get("/testJob/leader/election/host"), is(localHostService.getIp()));
-        assertThat(REG_CENTER.get("/testJob/config/shardingTotalCount"), is("3"));
-        assertThat(REG_CENTER.get("/testJob/config/shardingItemParameters"), is("0=A,1=B,2=C"));
-        assertThat(REG_CENTER.get("/testJob/config/cron"), is("0/1 * * * * ?"));
-        assertThat(REG_CENTER.get("/testJob/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
+        assertThat(REG_CENTER.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));
+        assertThat(REG_CENTER.get("/" + jobName + "/config/shardingTotalCount"), is("3"));
+        assertThat(REG_CENTER.get("/" + jobName + "/config/shardingItemParameters"), is("0=A,1=B,2=C"));
+        assertThat(REG_CENTER.get("/" + jobName + "/config/cron"), is("0/1 * * * * ?"));
+        assertThat(REG_CENTER.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
-            assertTrue(REG_CENTER.isExisted("/testJob/servers/" + localHostService.getIp() + "/disabled"));
+            assertTrue(REG_CENTER.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
         } else {
-            assertFalse(REG_CENTER.isExisted("/testJob/servers/" + localHostService.getIp() + "/disabled"));
+            assertFalse(REG_CENTER.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
         }
-        assertFalse(REG_CENTER.isExisted("/testJob/servers/" + localHostService.getIp() + "/stoped"));
-        assertThat(REG_CENTER.get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
-        REG_CENTER.remove("/testJob/leader/election");
+        assertFalse(REG_CENTER.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/stoped"));
+        assertThat(REG_CENTER.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
+        REG_CENTER.remove("/" + jobName + "/leader/election");
         assertTrue(leaderElectionService.isLeader());
     }
     

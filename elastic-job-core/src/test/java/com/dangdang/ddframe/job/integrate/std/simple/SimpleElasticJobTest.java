@@ -46,6 +46,6 @@ public final class SimpleElasticJobTest extends AbstractEnabledBaseStdJobTest {
         while (!SimpleElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(REG_CENTER.isExisted("/testJob/execution"));
+        assertTrue(REG_CENTER.isExisted("/" + getJobName() + "/execution"));
     }
 }

@@ -50,8 +50,8 @@ public final class OneOffSequenceDataFlowElasticJobTest extends AbstractEnabledB
         while (!OneOffSequenceDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(REG_CENTER.isExisted("/testJob/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(30));
-        assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(0));
+        assertTrue(REG_CENTER.isExisted("/" + getJobName() + "/execution"));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(30));
+        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

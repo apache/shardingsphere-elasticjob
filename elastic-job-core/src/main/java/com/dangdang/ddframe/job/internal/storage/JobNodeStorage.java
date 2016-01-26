@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.internal.storage;
 
 import java.util.List;
 
-import lombok.Getter;
-
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
@@ -30,6 +28,8 @@ import org.apache.curator.framework.state.ConnectionStateListener;
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
+import lombok.Getter;
 
 /**
  * 作业节点数据访问类.

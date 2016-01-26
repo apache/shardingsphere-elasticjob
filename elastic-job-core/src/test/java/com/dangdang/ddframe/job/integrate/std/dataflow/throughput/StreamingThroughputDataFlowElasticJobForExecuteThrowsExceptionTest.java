@@ -49,8 +49,8 @@ public final class StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptio
         while (!StreamingThroughputDataFlowElasticJobForExecuteThrowsException.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(REG_CENTER.isExisted("/testJob/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(0));
-        assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(1));
+        assertTrue(REG_CENTER.isExisted("/" + getJobName() + "/execution"));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(0));
+        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(1));
     }
 }
