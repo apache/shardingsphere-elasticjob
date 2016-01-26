@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.job.internal.failover;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
@@ -34,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest.TestJob;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;

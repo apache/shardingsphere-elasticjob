@@ -39,7 +39,7 @@ import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest.TestJob;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest.TestJob;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 

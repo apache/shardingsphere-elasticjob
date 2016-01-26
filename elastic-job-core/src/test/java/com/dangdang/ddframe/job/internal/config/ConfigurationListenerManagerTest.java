@@ -31,7 +31,7 @@ import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobScheduler;
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest.TestJob;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager.CronSettingChangedJobListener;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;

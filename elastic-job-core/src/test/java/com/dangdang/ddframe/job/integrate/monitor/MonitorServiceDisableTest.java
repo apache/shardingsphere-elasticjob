@@ -15,27 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.internal.monitor;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+package com.dangdang.ddframe.job.integrate.monitor;
 
 import java.io.IOException;
 
 import org.junit.Test;
 
-public final class MonitorServiceEnableTest extends AbstractMonitorServiceTest {
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
+import com.dangdang.ddframe.job.internal.monitor.MonitorService;
+
+public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
     
-    private static final int MONITOR_PORT = 9000;
-    
-    public MonitorServiceEnableTest() {
-        super(MONITOR_PORT);
+    public MonitorServiceDisableTest() {
+        super(TestJob.class, -1);
     }
     
-    @Test
-    public void assertMonitorWithCommand() throws IOException {
-        assertThat(sendCommand(MonitorService.DUMP_COMMAND, MONITOR_PORT), is("/testJob/servers | "));
-        assertNull(sendCommand("unknown_command", MONITOR_PORT));
+    @Test(expected = IOException.class)
+    public void assertMonitorWithDumpCommand() throws IOException {
+        SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, 9000);
     }
 }

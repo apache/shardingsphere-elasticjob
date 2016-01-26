@@ -31,9 +31,11 @@ import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
@@ -60,13 +62,23 @@ public abstract class AbstractBaseStdJobTest {
     
     private final boolean disabled;
     
+    private final int monitorPort;
+    
     private final LeaderElectionService leaderElectionService;
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         jobConfig = new JobConfiguration("testJob", elasticJobClass, 3, "0/1 * * * * ?");
-        jobConfig.setDisabled(disabled);
         jobScheduler = new JobScheduler(REG_CENTER, jobConfig);
         this.disabled = disabled;
+        monitorPort = -1;
+        leaderElectionService = new LeaderElectionService(REG_CENTER, jobConfig);
+    }
+    
+    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
+        jobConfig = new JobConfiguration("testJob", elasticJobClass, 3, "0/1 * * * * ?");
+        jobScheduler = new JobScheduler(REG_CENTER, jobConfig);
+        disabled = false;
+        this.monitorPort = monitorPort;
         leaderElectionService = new LeaderElectionService(REG_CENTER, jobConfig);
     }
     
@@ -86,6 +98,8 @@ public abstract class AbstractBaseStdJobTest {
     public void setUp() {
         ProcessCountStatistics.reset("testJob");
         jobConfig.setShardingItemParameters("0=A,1=B,2=C");
+        jobConfig.setDisabled(disabled);
+        jobConfig.setMonitorPort(monitorPort);
         jobConfig.setOverwrite(true);
         REG_CENTER.init();
     }
@@ -93,7 +107,10 @@ public abstract class AbstractBaseStdJobTest {
     @After
     public void tearDown() throws SchedulerException, NoSuchFieldException {
         ProcessCountStatistics.reset("testJob");
-        JobRegistry.getInstance().getJob("testJob").shutdown();
+        JobScheduler jobScheduler = JobRegistry.getInstance().getJob("testJob");
+        if (null != jobScheduler) {
+            JobRegistry.getInstance().getJob("testJob").shutdown();
+        }
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }
     
@@ -116,5 +133,12 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(REG_CENTER.get("/testJob/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
         REG_CENTER.remove("/testJob/leader/election");
         assertTrue(leaderElectionService.isLeader());
+    }
+    
+    public static class TestJob extends AbstractElasticJob {
+        
+        @Override
+        protected void executeJob(final JobExecutionMultipleShardingContext jobExecutionShardingContext) {
+        }
     }
 }
