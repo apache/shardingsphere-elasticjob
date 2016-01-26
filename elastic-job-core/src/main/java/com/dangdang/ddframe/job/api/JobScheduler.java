@@ -236,6 +236,9 @@ public class JobScheduler {
      */
     public void resumeManualStopedJob() {
         try {
+            if (scheduler.isShutdown()) {
+                return;
+            }
             scheduler.resumeAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);

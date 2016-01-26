@@ -15,25 +15,16 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job;
+package com.dangdang.ddframe.job.exception;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.job.api.AllApiTests;
-import com.dangdang.ddframe.job.exception.AllExceptionTests;
-import com.dangdang.ddframe.job.integrate.AllIntegrateTests;
-import com.dangdang.ddframe.job.internal.AllInternalTests;
-import com.dangdang.ddframe.job.plugin.sharding.strategy.AllPluginTests;
-
 @RunWith(Suite.class)
 @SuiteClasses({
-    AllApiTests.class, 
-    AllExceptionTests.class, 
-    AllPluginTests.class, 
-    AllInternalTests.class, 
-    AllIntegrateTests.class
+    JobConflictExceptionTest.class, 
+    TimeDiffIntolerableExceptionTest.class
     })
-public final class AllJobTests {
+public final class AllExceptionTests {
 }

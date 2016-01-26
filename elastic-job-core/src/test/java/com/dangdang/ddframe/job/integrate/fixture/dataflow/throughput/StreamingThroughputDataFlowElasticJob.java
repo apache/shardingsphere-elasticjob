@@ -29,11 +29,11 @@ import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasti
 
 public final class StreamingThroughputDataFlowElasticJob extends AbstractThroughputDataFlowElasticJob<String> {
     
-    private static Set<String> processedData = new CopyOnWriteArraySet<>();
+    private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     
-    private static Map<Integer, String> offsets = new ConcurrentHashMap<>();
+    private static volatile Map<Integer, String> offsets = new ConcurrentHashMap<>();
     
-    private static List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
+    private static volatile List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
     
     @Override
     public List<String> fetchData(final JobExecutionMultipleShardingContext context) {
