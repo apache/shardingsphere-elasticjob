@@ -66,7 +66,7 @@ public abstract class AbstractBaseStdJobTest {
     
     private final LeaderElectionService leaderElectionService;
     
-    @Getter
+    @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_testJob";
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
