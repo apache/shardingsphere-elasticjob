@@ -26,11 +26,15 @@ import com.dangdang.ddframe.job.AllJobTests;
 import com.dangdang.ddframe.reg.AllRegTests;
 import com.dangdang.ddframe.test.NestedZookeeperServers;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 @RunWith(Suite.class)
 @SuiteClasses({
     AllRegTests.class, 
     AllJobTests.class
     })
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllTests {
     
     @AfterClass

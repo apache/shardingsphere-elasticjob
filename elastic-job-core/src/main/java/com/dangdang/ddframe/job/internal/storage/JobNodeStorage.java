@@ -196,7 +196,7 @@ public class JobNodeStorage {
      * 注册数据监听器.
      */
     public void addDataListener(final TreeCacheListener listener) {
-        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache();
+        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + jobConfiguration.getJobName());
         cache.getListenable().addListener(listener);
     }
     

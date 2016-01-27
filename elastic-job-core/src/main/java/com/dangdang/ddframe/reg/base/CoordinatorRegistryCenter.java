@@ -53,14 +53,22 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     /**
      * 持久化临时顺序注册数据.
      * 
-     * @param key
+     * @param key 键
      */
     void persistEphemeralSequential(String key);
     
     /**
+     * 添加本地缓存.
+     * 
+     * @param watcherPath 需加入缓存的路径
+     */
+    void addCacheData(String cachePath);
+    
+    /**
      * 获取注册中心数据缓存对象.
      * 
+     * @param cachePath 缓存的节点路径
      * @return 注册中心数据缓存对象
      */
-    Object getRawCache();
+    Object getRawCache(String cachePath);
 }

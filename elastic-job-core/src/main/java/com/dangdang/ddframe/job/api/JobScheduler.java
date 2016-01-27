@@ -67,6 +67,8 @@ public class JobScheduler {
     
     private final JobConfiguration jobConfiguration;
     
+    private final CoordinatorRegistryCenter coordinatorRegistryCenter;
+    
     private final ListenerManager listenerManager;
     
     private final ConfigurationService configService;
@@ -95,6 +97,7 @@ public class JobScheduler {
     
     public JobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
+        this.coordinatorRegistryCenter = coordinatorRegistryCenter;
         listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration);
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
@@ -113,6 +116,7 @@ public class JobScheduler {
      */
     public void init() {
         log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
+        coordinatorRegistryCenter.addCacheData("/" + jobConfiguration.getJobName());
         registerElasticEnv();
         jobDetail = createJobDetail();
         try {
