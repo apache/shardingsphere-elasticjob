@@ -1,5 +1,5 @@
 ##Elastic-Job - distributed scheduled job solution
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/images/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
   Elastic-Job是ddframe中dd-job的作业模块中分离出来的分布式弹性作业框架。去掉了和dd-job中的监控和ddframe接入规范部分。该项目基于成熟的开源产品Quartz和Zookeeper及其客户端Curator进行二次开发。
 
@@ -7,7 +7,7 @@
 
   elastic-job和ddframe关系见下图
 
-  ![ddframe演进图](http://dangdangdotcom.github.io/elastic-job/images/ddframe.jpg)
+  ![ddframe演进图](http://dangdangdotcom.github.io/elastic-job/img/ddframe.jpg)
 
 ##主要贡献者
 * 张亮 [当当网](http://www.dangdang.com/) zhangliang@dangdang.com
@@ -36,35 +36,33 @@
 
 ## 相关文档
 
-[下载](http://dangdangdotcom.github.io/elastic-job/downloads.html)
+[Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
 
-[Release Notes](http://dangdangdotcom.github.io/elastic-job/releaseNotes.html)
+[1.0.2接口变更声明](http://dangdangdotcom.github.io/elastic-job/post/update_notes_1.0.2/)
 
-[1.0.2接口变更声明](http://dangdangdotcom.github.io/elastic-job/1.0.2UpdateNotes.html)
+[何为分布式作业？](http://dangdangdotcom.github.io/elastic-job/post/distribution/)
 
-[何为分布式作业？](http://dangdangdotcom.github.io/elastic-job/distribution.html)
+[目录结构说明](http://dangdangdotcom.github.io/elastic-job/post/directory_structure/)
 
-[目录结构说明](http://dangdangdotcom.github.io/elastic-job/directoryStructure.html)
+[使用步骤](http://dangdangdotcom.github.io/elastic-job/post/usage/)
 
-[使用步骤](http://dangdangdotcom.github.io/elastic-job/usage.html)
+[开发指南](http://dangdangdotcom.github.io/elastic-job/post/user_guide/)
 
-[开发指南](http://dangdangdotcom.github.io/elastic-job/userGuide.html)
+[使用限制](http://dangdangdotcom.github.io/elastic-job/post/limitations/)
 
-[使用限制](http://dangdangdotcom.github.io/elastic-job/limitations.html)
+[运维平台](http://dangdangdotcom.github.io/elastic-job/post/web_console/)
 
-[运维平台](http://dangdangdotcom.github.io/elastic-job/webConsole.html)
+[阅读源码编译问题说明](http://dangdangdotcom.github.io/elastic-job/post/source_code_guide/)
 
-[阅读源码编译问题说明](http://dangdangdotcom.github.io/elastic-job/sourceCodeGuide.html)
+[实现原理](http://dangdangdotcom.github.io/elastic-job/post/theory/)
 
-[实现原理](http://dangdangdotcom.github.io/elastic-job/theory.html)
+[作业分片策略](http://dangdangdotcom.github.io/elastic-job/post/job_strategy/)
 
-[作业分片策略](http://dangdangdotcom.github.io/elastic-job/jobStrategy.html)
+[作业运行状态监听](http://dangdangdotcom.github.io/elastic-job/post/execution_monitor/)
 
-[作业运行状态监听](http://dangdangdotcom.github.io/elastic-job/execution.html)
+[dump作业运行信息（便于开发者debug）](http://dangdangdotcom.github.io/elastic-job/post/dump/)
 
-[dump作业运行信息（便于开发者debug）](http://dangdangdotcom.github.io/elastic-job/dump.html)
-
-[快速上手](http://dangdangdotcom.github.io/elastic-job/quickStart.html)（感谢第三方志愿者 泽伟@心探索科技 提供文档）
+[快速上手](http://dangdangdotcom.github.io/elastic-job/post/quick_start/)（感谢第三方志愿者 泽伟@心探索科技 提供文档）
 
 [InfoQ新闻](http://www.infoq.com/cn/news/2015/09/dangdang-elastic-job)
 
