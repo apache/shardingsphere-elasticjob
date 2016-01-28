@@ -244,6 +244,7 @@ public class JobScheduler {
                 return;
             }
             scheduler.resumeAll();
+            // TODO 恢复stoped=fasle状态
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
