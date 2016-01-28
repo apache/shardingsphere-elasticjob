@@ -66,6 +66,8 @@
 
 [InfoQ新闻](http://www.infoq.com/cn/news/2015/09/dangdang-elastic-job)
 
+[InfoQ文章：详解当当网的分布式作业框架](http://www.infoq.com/cn/articles/dangdang-distributed-work-framework-elastic-job)
+
 [Elastic-Job Wiki](https://github.com/dangdangdotcom/elastic-job/wiki) （由社区志愿者自由编辑的）
 
 ## Quick Start
