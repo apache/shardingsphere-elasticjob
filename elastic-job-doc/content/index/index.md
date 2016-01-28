@@ -1,6 +1,6 @@
 # Elastic-Job - distributed scheduled job solution
 
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/images/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Hex.pm](img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 `Elastic-Job`是`ddframe`中`dd-job`的作业模块中分离出来的分布式弹性作业框架。去掉了和`dd-job`中的监控和`ddframe`接入规范部分。该项目基于成熟的开源产品`Quartz`和`Zookeeper`及其客户端`Curator`进行二次开发。
 
