@@ -17,11 +17,24 @@
 
 package com.dangdang.ddframe.job.integrate;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
+import org.junit.Before;
 
-public abstract class AbstractDisabledBaseStdJobTest extends AbstractBaseStdJobTest {
+import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.JobConfiguration;
+
+public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobTest {
     
-    protected AbstractDisabledBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass) {
-        super(elasticJobClass, true);
+    protected AbstractBaseStdJobAutoInitTest(final Class<? extends ElasticJob> elasticJobClass) {
+        super(elasticJobClass, false);
+    }
+    
+    protected void setJobConfig(final JobConfiguration jobConfig) {
+    }
+    
+    @Before
+    public void autoJobInit() {
+        setJobConfig(getJobConfig());
+        initJob();
+        assertRegCenterCommonInfo();
     }
 }

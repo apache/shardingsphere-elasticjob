@@ -25,12 +25,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractEnabledBaseStdJobTest;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJobForExecuteThrowsException;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
 import com.dangdang.ddframe.test.WaitingUtils;
 
-public final class StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest extends AbstractEnabledBaseStdJobTest {
+public final class StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest extends AbstractBaseStdJobAutoInitTest {
     
     public StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest() {
         super(StreamingThroughputDataFlowElasticJobForExecuteThrowsException.class);
@@ -44,8 +44,6 @@ public final class StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptio
     
     @Test
     public void assertJobInit() {
-        initJob();
-        assertRegCenterCommonInfo();
         while (!StreamingThroughputDataFlowElasticJobForExecuteThrowsException.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }

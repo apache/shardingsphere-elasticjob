@@ -25,12 +25,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractEnabledBaseStdJobTest;
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.OneOffThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
 import com.dangdang.ddframe.test.WaitingUtils;
 
-public final class OneOffThroughputDataFlowElasticJobTest extends AbstractEnabledBaseStdJobTest {
+public final class OneOffThroughputDataFlowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public OneOffThroughputDataFlowElasticJobTest() {
         super(OneOffThroughputDataFlowElasticJob.class);
@@ -42,11 +43,13 @@ public final class OneOffThroughputDataFlowElasticJobTest extends AbstractEnable
         OneOffThroughputDataFlowElasticJob.reset();
     }
     
+    @Override
+    protected void setJobConfig(final JobConfiguration jobConfig) {
+        jobConfig.setMisfire(false);
+    }
+    
     @Test
     public void assertJobInit() {
-        getJobConfig().setMisfire(false);
-        initJob();
-        assertRegCenterCommonInfo();
         while (!OneOffThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }

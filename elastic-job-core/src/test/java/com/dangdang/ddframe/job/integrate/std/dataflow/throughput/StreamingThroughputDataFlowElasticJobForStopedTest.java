@@ -23,11 +23,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractEnabledBaseStdJobTest;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.test.WaitingUtils;
 
-public final class StreamingThroughputDataFlowElasticJobForStopedTest extends AbstractEnabledBaseStdJobTest {
+public final class StreamingThroughputDataFlowElasticJobForStopedTest extends AbstractBaseStdJobAutoInitTest {
     
     public StreamingThroughputDataFlowElasticJobForStopedTest() {
         super(StreamingThroughputDataFlowElasticJob.class);
@@ -41,7 +41,6 @@ public final class StreamingThroughputDataFlowElasticJobForStopedTest extends Ab
     
     @Test
     public void assertClearStopJobStatusWhenRestartingJob() {
-        initJob();
         while (!StreamingThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
