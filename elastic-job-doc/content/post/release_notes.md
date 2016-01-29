@@ -8,6 +8,7 @@ weight=1
 
 ## 1.0.3-SNAPSHOT
 1. 修正Issuse#30，注册中心宕机较长时间后重新恢复，作业仍然无法继续执行
+1. 修正Issuse#36，任务在控制台暂停之后，无法恢复运行
 1. 功能提升Issuse#39，增加作业辅助监听功能，通过dump命令抓取作业运行时信息
 1. 修正Issuse#40，TreeCache使用粒度过粗，导致out of memory
 
