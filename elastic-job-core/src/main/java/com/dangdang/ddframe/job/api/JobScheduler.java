@@ -25,7 +25,6 @@ import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -39,7 +38,6 @@ import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
@@ -56,7 +54,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 作业调度器.
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 @Slf4j
 public class JobScheduler {
@@ -125,7 +124,7 @@ public class JobScheduler {
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
-        JobRegistry.getInstance().addJob(jobConfiguration.getJobName(), this);
+        JobRegistry.getInstance().addJobScheduler(jobConfiguration.getJobName(), this);
     }
     
     private void registerElasticEnv() {
@@ -224,11 +223,7 @@ public class JobScheduler {
      */
     public void stopJob() {
         try {
-            for (JobExecutionContext each : scheduler.getCurrentlyExecutingJobs()) {
-                if (each.getJobInstance() instanceof AbstractElasticJob) {
-                    ((AbstractElasticJob) each.getJobInstance()).stop();
-                }
-            }
+            JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).stop();
             scheduler.pauseAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
@@ -243,8 +238,8 @@ public class JobScheduler {
             if (scheduler.isShutdown()) {
                 return;
             }
+            JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).resume();
             scheduler.resumeAll();
-            // TODO 恢复stoped=fasle状态
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -264,6 +259,7 @@ public class JobScheduler {
         if (serverService.isJobStopedManually()) {
             return;
         }
+        JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).resume();
         try {
             scheduler.resumeAll();
         } catch (final SchedulerException ex) {

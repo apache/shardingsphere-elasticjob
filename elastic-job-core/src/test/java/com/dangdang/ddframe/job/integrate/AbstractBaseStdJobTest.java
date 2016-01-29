@@ -109,9 +109,9 @@ public abstract class AbstractBaseStdJobTest {
     @After
     public void tearDown() throws SchedulerException, NoSuchFieldException {
         ProcessCountStatistics.reset(jobName);
-        JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
+        JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
         if (null != jobScheduler) {
-            JobRegistry.getInstance().getJob(jobName).shutdown();
+            JobRegistry.getInstance().getJobScheduler(jobName).shutdown();
         }
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }

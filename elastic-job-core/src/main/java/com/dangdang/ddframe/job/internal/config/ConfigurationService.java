@@ -216,4 +216,14 @@ public class ConfigurationService {
     public int getMonitorPort() {
         return Integer.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_PORT));
     }
+    
+
+    /**
+     * 获取作业名称.
+     * 
+     * @return 作业名称
+     */
+    public String getJobName() {
+        return jobNodeStorage.getJobConfiguration().getJobName();
+    }
 }

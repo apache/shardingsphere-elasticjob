@@ -58,9 +58,9 @@ public final class JobOperationListenerManager extends AbstractListenerManager {
         @Override
         public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
             if (ConnectionState.LOST == newState) {
-                JobRegistry.getInstance().getJob(jobName).stopJob();
+                JobRegistry.getInstance().getJobScheduler(jobName).stopJob();
             } else if (ConnectionState.RECONNECTED == newState) {
-                JobRegistry.getInstance().getJob(jobName).resumeCrashedJob();
+                JobRegistry.getInstance().getJobScheduler(jobName).resumeCrashedJob();
             }
         }
     }
@@ -72,7 +72,7 @@ public final class JobOperationListenerManager extends AbstractListenerManager {
             if (!serverNode.isJobStopedPath(path)) {
                 return;
             }
-            JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
+            JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
             if (null == jobScheduler) {
                 return;
             }

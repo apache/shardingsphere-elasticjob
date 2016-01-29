@@ -60,7 +60,7 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     /**
      * 添加本地缓存.
      * 
-     * @param watcherPath 需加入缓存的路径
+     * @param cachePath 需加入缓存的路径
      */
     void addCacheData(String cachePath);
     

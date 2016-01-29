@@ -17,12 +17,20 @@
 
 package com.dangdang.ddframe.job.api;
 
-import org.quartz.Job;
-
 /**
- * 弹性化分布式作业接口.
+ * 可停止的作业或目标.
  * 
- * @author zhangliang
+ * @author caohao
  */
-public interface ElasticJob extends Job, Stopable {
+public interface Stopable {
+    
+    /**
+     * 停止运行中的作业或目标.
+     */
+    void stop();
+    
+    /**
+     * 恢复运行作业或目标.
+     */
+    void resume();
 }

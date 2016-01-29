@@ -104,7 +104,7 @@ public final class ExecutionServiceTest {
     public void assertRegisterJobBeginWithoutNextFireTime() {
         when(configService.isMonitorExecution()).thenReturn(true);
         when(jobScheduler.getNextFireTime()).thenReturn(null);
-        JobRegistry.getInstance().addJob("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
         jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
         executionService.registerJobBegin(jobExecutionShardingContext);
@@ -122,7 +122,7 @@ public final class ExecutionServiceTest {
     public void assertRegisterJobBeginWithNextFireTime() {
         when(configService.isMonitorExecution()).thenReturn(true);
         when(jobScheduler.getNextFireTime()).thenReturn(new Date(0L));
-        JobRegistry.getInstance().addJob("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
         jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
         executionService.registerJobBegin(jobExecutionShardingContext);

@@ -17,11 +17,6 @@
 
 package com.dangdang.ddframe.job.internal.job;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -32,12 +27,19 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 弹性化分布式作业的基类.
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 @Slf4j
 public abstract class AbstractElasticJob implements ElasticJob {
@@ -45,7 +47,6 @@ public abstract class AbstractElasticJob implements ElasticJob {
     @Getter(AccessLevel.PROTECTED)
     private volatile boolean stoped;
     
-    @Setter
     @Getter(AccessLevel.PROTECTED)
     private ConfigurationService configService;
     
@@ -106,10 +107,18 @@ public abstract class AbstractElasticJob implements ElasticJob {
     
     protected abstract void executeJob(final JobExecutionMultipleShardingContext shardingContext);
     
-    /**
-     * 停止运行中的作业.
-     */
-    public void stop() {
+    @Override
+    public final void stop() {
         stoped = true;
+    }
+    
+    @Override
+    public final void resume() {
+        stoped = false;
+    }
+    
+    public final void setConfigService(final ConfigurationService configService) {
+        this.configService = configService;
+        JobRegistry.getInstance().addJobInstance(configService.getJobName(), this);
     }
 }

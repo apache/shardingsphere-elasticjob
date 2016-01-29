@@ -56,7 +56,7 @@ public final class ConfigurationListenerManager extends AbstractListenerManager 
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
                 String cronExpression = new String(event.getData().getData());
-                JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
+                JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
                 if (null != jobScheduler) {
                     jobScheduler.rescheduleJob(cronExpression);
                 }

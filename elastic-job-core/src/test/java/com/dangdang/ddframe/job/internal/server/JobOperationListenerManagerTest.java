@@ -66,14 +66,14 @@ public final class JobOperationListenerManagerTest {
     
     @Test
     public void assertConnectionLostListenerWhenConnectionStateIsLost() {
-        JobRegistry.getInstance().addJob("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.LOST);
         verify(jobScheduler).stopJob();
     }
     
     @Test
     public void assertConnectionLostListenerWhenConnectionStateIsReconnected() {
-        JobRegistry.getInstance().addJob("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
         verify(jobScheduler).resumeCrashedJob();
     }
@@ -96,7 +96,7 @@ public final class JobOperationListenerManagerTest {
     
     @Test
     public void assertJobStopedStatusJobListenerWhenIsJobStopedPathAndUpdate() {
-        JobRegistry.getInstance().addJob("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         jobOperationListenerManager.new JobStopedStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/servers/" + ip + "/stoped", null, "".getBytes())), "/testJob/servers/" + ip + "/stoped");
         verify(jobScheduler, times(0)).stopJob();
@@ -105,7 +105,7 @@ public final class JobOperationListenerManagerTest {
     
     @Test
     public void assertJobStopedStatusJobListenerWhenIsJobStopedPathAndAdd() {
-        JobRegistry.getInstance().addJob("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         jobOperationListenerManager.new JobStopedStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/servers/" + ip + "/stoped", null, "".getBytes())), "/testJob/servers/" + ip + "/stoped");
         verify(jobScheduler).stopJob();
@@ -114,7 +114,7 @@ public final class JobOperationListenerManagerTest {
     
     @Test
     public void assertJobStopedStatusJobListenerWhenIsJobStopedPathAndRemove() {
-        JobRegistry.getInstance().addJob("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         jobOperationListenerManager.new JobStopedStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/testJob/servers/" + ip + "/stoped", null, "".getBytes())), "/testJob/servers/" + ip + "/stoped");
         verify(jobScheduler, times(0)).stopJob();

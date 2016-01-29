@@ -38,7 +38,8 @@ import com.google.common.collect.Lists;
 /**
  * 执行作业的服务.
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 public class ExecutionService {
     
@@ -71,7 +72,7 @@ public class ExecutionService {
             for (int each : jobExecutionShardingContext.getShardingItems()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
-                JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobConfiguration.getJobName());
+                JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobConfiguration.getJobName());
                 if (null == jobScheduler) {
                     continue;
                 }
