@@ -20,6 +20,8 @@ package com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput;
 import java.util.Arrays;
 import java.util.List;
 
+import org.quartz.JobExecutionException;
+
 import lombok.Getter;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
@@ -48,6 +50,10 @@ public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException exte
     @Override
     public boolean isStreamingProcess() {
         return true;
+    }
+    
+    @Override
+    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
     }
     
     public static void reset() {

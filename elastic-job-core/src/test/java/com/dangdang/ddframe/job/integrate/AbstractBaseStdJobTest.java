@@ -23,7 +23,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.quartz.SchedulerException;
@@ -89,11 +88,6 @@ public abstract class AbstractBaseStdJobTest {
     public static void init() {
         NestedZookeeperServers.getInstance().startServerIfNotStarted();
         REG_CENTER.init();
-    }
-    
-    @AfterClass
-    public static void destory() {
-        REG_CENTER.close();
     }
     
     @Before

@@ -31,8 +31,9 @@ public final class ClassNotElasticJobTest {
         NestedZookeeperServers.getInstance().startServerIfNotStarted();
     }
     
+    @SuppressWarnings("resource")
     @Test(expected = BeanCreationException.class)
-    public void assertJobClassNotFound() {
+    public void assertNotElasticJob() {
         try {
             new ClassPathXmlApplicationContext("classpath:META-INF/job/classNotElasticJob.xml");
         } catch (final BeanCreationException ex) {

@@ -31,6 +31,7 @@ public final class ClassNotFoundTest {
         NestedZookeeperServers.getInstance().startServerIfNotStarted();
     }
     
+    @SuppressWarnings("resource")
     @Test(expected = BeanCreationException.class)
     public void assertJobClassNotFound() {
         try {

@@ -20,10 +20,13 @@ package com.dangdang.ddframe.job.internal.job;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import lombok.extern.slf4j.Slf4j;
+import org.quartz.JobExecutionException;
 
 import com.dangdang.ddframe.job.api.DataFlowElasticJob;
+import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 用于处理数据流程的作业抽象类.
@@ -42,7 +45,13 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         getOffsetService().updateOffset(item, offset);
     }
     
+    @Override
+    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
+        log.error("Elastic job: exception occur in job processing...", jobExecutionException.getCause());
+    }
+    
     protected final void processDataWithStatistics(final C shardingContext, final List<T> data) {
+        Exception firstException = null;
         for (T each : data) {
             boolean isSuccess = false;
             try {
@@ -51,7 +60,9 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
             } catch (final Exception ex) {
             // CHECKSTYLE:ON
                 ProcessCountStatistics.incrementProcessFailureCount(shardingContext.getJobName());
-                log.error("Elastic job: exception occur in job processing...", ex);
+                if (null == firstException) {
+                    firstException = ex;
+                }
                 continue;
             }
             if (isSuccess) {
@@ -59,6 +70,9 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
             } else {
                 ProcessCountStatistics.incrementProcessFailureCount(shardingContext.getJobName());
             }
+        }
+        if (null != firstException) {
+            throw new JobException(firstException);
         }
     }
     
