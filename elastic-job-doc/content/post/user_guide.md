@@ -8,11 +8,13 @@ weight=6
 
 ## 代码开发
 
+### 作业类型
+
 目前提供`2`种作业类型，分别是`Simple`和`DataFlow`。`DataFlow`类型用于处理数据流，它又提供`2`种作业类型，分别是`ThroughputDataFlow`和`SequenceDataFlow`。需要继承相应的抽象类。
 
 方法参数`shardingContext`包含作业配置，分片和运行时信息。可通过`getShardingTotalCount()`, `getShardingItems()`等方法分别获取分片总数，运行在本作业服务器的分片序列号集合等。
 
-### Simple类型作业
+#### Simple类型作业
 
 `Simple`类型作业意为简单实现，未经任何封装的类型。需要继承`AbstractSimpleElasticJob`，该类只提供了一个方法用于覆盖，此方法将被定时执行。用于执行普通的定时任务，与`Quartz`原生接口相似，只是增加了弹性扩缩容和分片等功能。
 
@@ -26,7 +28,7 @@ public class MyElasticJob extends AbstractSimpleElasticJob {
 }
 ```
 
-### ThroughputDataFlow类型作业
+#### ThroughputDataFlow类型作业
 
 `ThroughputDataFlow`类型作业意为高吞吐的数据流作业。需要继承`AbstractThroughputDataFlowElasticJob`并可以指定返回值泛型，该类提供`3`个方法可覆盖，分别用于抓取数据，处理数据和指定是否流式处理数据。可以获取数据处理成功失败次数等辅助监控信息。如果流式处理数据，`fetchData`方法的返回值只有为`null`或长度为空时，作业才会停止执行，否则作业会一直运行下去；非流式处理数据则只会在每次作业执行过程中执行一次`fetchData`方法和`processData`方法，即完成本次作业。流式数据处理参照`TbSchedule`设计，适用于不间歇的数据处理。
 
@@ -61,7 +63,7 @@ public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
 }
 ```
 
-### SequenceDataFlow类型作业
+#### SequenceDataFlow类型作业
 
 `SequenceDataFlow`类型作业和`ThroughputDataFlow`作业类型极为相似，所不同的是`ThroughputDataFlow`作业类型可以将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，配置为两个线程处理，则第`1`个线程处理前`50`条数据，第`2`个线程处理后`50`条数据，无视分片项；`SequenceDataFlow`类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，则系统自动分配两个线程处理，第`1`个线程处理第`1`个分片的`40`条数据，第`2`个线程处理第`2`个分片的`60`条数据。由于`ThroughputDataFlow`作业可以使用多于分片项的任意线程数处理，所以性能调优的可能会优于`SequenceDataFlow`作业。
 
@@ -90,6 +92,27 @@ public class MyElasticJob extends AbstractSequenceDataFlowElasticJob<Foo> {
         return true;
     }
 }
+```
+
+### 异常处理
+
+`elastic-job`在最上层接口提供了`handleJobExecutionException`方法，使用作业时可以覆盖此方法，并使用`quartz`提供的`JobExecutionException`控制异常后作业的声明周期。默认实现是直接将异常抛出。示例：
+
+```java
+public class XXXSimpleJob extends AbstractSimpleElasticJob {
+    
+    @Override
+    public void process(final JobExecutionMultipleShardingContext context) {
+        int zero = 0;
+        10 / zero;
+    }
+    
+    @Override
+    public void handleJobExecutionException(JobExecutionException jobExecutionException) throws JobExecutionException {
+        jobExecutionException.unscheduleAllTriggers();
+    }
+}
+
 ```
 
 ## 作业配置
