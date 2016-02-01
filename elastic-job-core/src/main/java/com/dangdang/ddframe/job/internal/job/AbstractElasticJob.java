@@ -69,32 +69,32 @@ public abstract class AbstractElasticJob implements ElasticJob {
     
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
-        log.debug("Elastic job: job execute begin, job execution context:{}.", context);
+        log.trace("Elastic job: job execute begin, job execution context:{}.", context);
         configService.checkMaxTimeDiffSecondsTolerable();
         shardingService.shardingIfNecessary();
         JobExecutionMultipleShardingContext shardingContext = executionContextService.getJobExecutionShardingContext();
         if (executionService.misfireIfNecessary(shardingContext.getShardingItems())) {
-            log.info("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
+            log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
             return;
         }
         executionService.cleanPreviousExecutionInfo();
         executeJobInternal(shardingContext);
-        log.debug("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
+        log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
         while (configService.isMisfire() && !executionService.getMisfiredJobItems(shardingContext.getShardingItems()).isEmpty() && !stoped && !shardingService.isNeedSharding()) {
-            log.debug("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
+            log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
             executionService.clearMisfire(shardingContext.getShardingItems());
             executeJobInternal(shardingContext);
-            log.debug("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
+            log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
         if (configService.isFailover() && !stoped) {
             failoverService.failoverIfNecessary();
         }
-        log.debug("Elastic job: execute all completed, job execution context:{}.", context);
+        log.trace("Elastic job: execute all completed, job execution context:{}.", context);
     }
     
     private void executeJobInternal(final JobExecutionMultipleShardingContext shardingContext) throws JobExecutionException {
         if (shardingContext.getShardingItems().isEmpty()) {
-            log.debug("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
+            log.trace("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
             return;
         }
         executionService.registerJobBegin(shardingContext);

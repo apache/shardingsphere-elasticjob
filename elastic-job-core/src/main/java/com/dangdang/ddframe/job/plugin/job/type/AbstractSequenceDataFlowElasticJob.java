@@ -88,7 +88,7 @@ public abstract class AbstractSequenceDataFlowElasticJob<T> extends AbstractData
             });
         }
         latchAwait(latch);
-        log.debug("Elastic job: fetch data size: {}.", result != null ? result.size() : 0);
+        log.trace("Elastic job: fetch data size: {}.", result != null ? result.size() : 0);
         return result;
     }
     
