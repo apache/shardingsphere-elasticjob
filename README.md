@@ -99,14 +99,14 @@ elastic-job已经发布到中央仓库，可以在pom.xml文件中直接引入ma
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-core</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 
 <!-- 使用springframework自定义命名空间时引入 -->
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-spring</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 * **作业开发**

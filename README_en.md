@@ -1,13 +1,14 @@
 ##Elastic-Job - distributed scheduled job solution
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/images/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)<br/>
+**License:** [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+**Maven Central:** [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
   Elastic-Job is extracted from dd-job which is a component of ddframe. Elastic-Job just removed monitor and integrated standards parts from dd-job. It based on matured open-source productions like Quartz, Zookeeper and its client Curator.
   
   Other components of ddframe also can open-source independently. Dangdang has already released DubboX, which is core component of dd-soa.
   
   The relationship between Elastic-Job and ddframe is in this picture:
   
-  ![Evolution diagram of ddframe](http://dangdangdotcom.github.io/elastic-job/images/ddframe.jpg)
+  ![Evolution diagram of ddframe](http://dangdangdotcom.github.io/elastic-job/img/ddframe.jpg)
 
 ##Contributors
 * Zhang Liang [Dangdang](http://www.dangdang.com/) zhangliang@dangdang.com
@@ -67,14 +68,14 @@ Elastic-Job has deployed to Maven Central Repository, add dependencies in your p
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-core</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 
 <!-- add elastic-job spring module, use namespace -->
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-spring</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 * **Job development**
