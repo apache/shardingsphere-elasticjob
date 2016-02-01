@@ -31,7 +31,8 @@ import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
  * 仅保证作业可被分布式定时调用, 不提供任何作业处理逻辑.
  * </p>
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 @Slf4j
 public abstract class AbstractSimpleElasticJob extends AbstractElasticJob {

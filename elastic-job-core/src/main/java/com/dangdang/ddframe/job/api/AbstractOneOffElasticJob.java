@@ -31,7 +31,8 @@ import com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob;
  * </p>
  * @see com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 @Deprecated
 public abstract class AbstractOneOffElasticJob extends AbstractSimpleElasticJob { }

@@ -30,7 +30,8 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 /**
  * 作业服务器节点服务.
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 public class ServerService {
     

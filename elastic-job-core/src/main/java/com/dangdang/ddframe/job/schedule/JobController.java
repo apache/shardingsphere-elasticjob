@@ -27,7 +27,8 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
  * </p>
  * @see com.dangdang.ddframe.job.api.JobScheduler
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 @Deprecated
 public class JobController extends com.dangdang.ddframe.job.api.JobScheduler {
