@@ -92,13 +92,20 @@ public abstract class AbstractElasticJob implements ElasticJob {
         log.debug("Elastic job: execute all completed, job execution context:{}.", context);
     }
     
-    private void executeJobInternal(final JobExecutionMultipleShardingContext shardingContext) {
+    private void executeJobInternal(final JobExecutionMultipleShardingContext shardingContext) throws JobExecutionException {
         if (shardingContext.getShardingItems().isEmpty()) {
             log.debug("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
             return;
         }
         executionService.registerJobBegin(shardingContext);
-        executeJob(shardingContext);
+        try {
+            executeJob(shardingContext);
+        //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+        //CHECKSTYLE:ON
+            handleJobExecutionException(new JobExecutionException(ex));
+        }
+        
         executionService.registerJobCompleted(shardingContext);
         if (configService.isFailover()) {
             failoverService.updateFailoverComplete(shardingContext.getShardingItems());
@@ -106,6 +113,11 @@ public abstract class AbstractElasticJob implements ElasticJob {
     }
     
     protected abstract void executeJob(final JobExecutionMultipleShardingContext shardingContext);
+    
+    @Override
+    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
+        throw jobExecutionException;
+    }
     
     @Override
     public final void stop() {
