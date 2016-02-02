@@ -1,7 +1,9 @@
 ##Elastic-Job - distributed scheduled job solution
 **License:** [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-**Maven Central:** [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+**Elastic-Job-Core Maven Central:** [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-core)
+
+**Elastic-Job-Spring Maven Central:** [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-spring/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-spring)
 
   Elastic-Job是ddframe中dd-job的作业模块中分离出来的分布式弹性作业框架。去掉了和dd-job中的监控和ddframe接入规范部分。该项目基于成熟的开源产品Quartz和Zookeeper及其客户端Curator进行二次开发。
 
