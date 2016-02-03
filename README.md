@@ -1,11 +1,4 @@
 ##Elastic-Job - distributed scheduled job solution
-# Release Notes
-* elastic-job&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
-* elastic-job-core&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-core)
-* elastic-job-spring&nbsp;&nbsp;&nbsp;[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-spring/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-spring)
-
-# License
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
   Elastic-Job是ddframe中dd-job的作业模块中分离出来的分布式弹性作业框架。去掉了和dd-job中的监控和ddframe接入规范部分。该项目基于成熟的开源产品Quartz和Zookeeper及其客户端Curator进行二次开发。
 
@@ -14,6 +7,14 @@
   elastic-job和ddframe关系见下图
 
   ![ddframe演进图](http://dangdangdotcom.github.io/elastic-job/img/ddframe.jpg)
+
+# Release Notes
+* elastic-job&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+* elastic-job-core&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-core)
+* elastic-job-spring&nbsp;&nbsp;&nbsp;[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-spring/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-spring)
+
+# License
+[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ##主要贡献者
 * 张亮 [当当网](http://www.dangdang.com/) zhangliang@dangdang.com
