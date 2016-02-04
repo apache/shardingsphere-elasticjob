@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.api.AllApiTests;
 import com.dangdang.ddframe.job.exception.AllExceptionTests;
 import com.dangdang.ddframe.job.integrate.AllIntegrateTests;
 import com.dangdang.ddframe.job.internal.AllInternalTests;
-import com.dangdang.ddframe.job.plugin.sharding.strategy.AllPluginTests;
+import com.dangdang.ddframe.job.plugin.AllPluginTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({

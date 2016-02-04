@@ -21,8 +21,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.job.integrate.monitor.MonitorServiceDisableTest;
-import com.dangdang.ddframe.job.integrate.monitor.MonitorServiceEnableTest;
 import com.dangdang.ddframe.job.integrate.std.dataflow.sequence.OneOffSequenceDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.integrate.std.dataflow.sequence.StreamingSequenceDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.integrate.std.dataflow.throughput.OneOffThroughputDataFlowElasticJobTest;
@@ -47,9 +45,7 @@ import com.dangdang.ddframe.job.integrate.std.simple.SimpleElasticJobTest;
     StreamingThroughputDataFlowElasticJobForMultipleThreadsTest.class, 
     StreamingThroughputDataFlowElasticJobForExecuteFailureTest.class, 
     StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest.class, 
-    StreamingThroughputDataFlowElasticJobForStopedTest.class,
-    MonitorServiceEnableTest.class, 
-    MonitorServiceDisableTest.class
+    StreamingThroughputDataFlowElasticJobForStopedTest.class
     })
 public final class AllIntegrateTests {
 }

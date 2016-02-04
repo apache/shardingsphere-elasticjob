@@ -22,6 +22,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses(JobExecutionMultipleShardingContextTest.class)
+@SuiteClasses({
+    JobExecutionMultipleShardingContextTest.class, 
+    JobSchedulerTest.class, 
+    JobNodeStorageTest.class
+    })
 public final class AllApiTests {
 }

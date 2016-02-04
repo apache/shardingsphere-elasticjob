@@ -33,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest.TestJob;
+import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;

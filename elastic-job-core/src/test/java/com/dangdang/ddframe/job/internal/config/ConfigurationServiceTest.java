@@ -39,7 +39,7 @@ import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
-import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest.TestJob;
+import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 
@@ -61,7 +61,7 @@ public final class ConfigurationServiceTest {
     @Test(expected = JobConflictException.class)
     public void assertPersistJobConfigurationForJobConflict() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.JOB_CLASS)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS)).thenReturn(TestJob.class.getName());
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS)).thenReturn("ConflictJob");
         when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
         try {
             configService.persistJobConfiguration();
@@ -275,5 +275,12 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_PORT)).thenReturn("8888");
         assertThat(configService.getMonitorPort(), is(8888));
         verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MONITOR_PORT);
+    }
+    
+    @Test
+    public void assertGetJobName() {
+        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        assertThat(configService.getJobName(), is("testJob"));
+        verify(jobNodeStorage).getJobConfiguration();
     }
 }

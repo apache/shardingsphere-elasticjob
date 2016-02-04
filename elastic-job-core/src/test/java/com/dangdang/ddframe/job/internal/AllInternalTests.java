@@ -27,6 +27,7 @@ import com.dangdang.ddframe.job.internal.config.ConfigurationServiceTest;
 import com.dangdang.ddframe.job.internal.election.ElectionListenerManagerTest;
 import com.dangdang.ddframe.job.internal.election.ElectionNodeTest;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionServiceTest;
+import com.dangdang.ddframe.job.internal.env.LocalHostServiceTest;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextServiceTest;
 import com.dangdang.ddframe.job.internal.execution.ExecutionListenerManagerTest;
 import com.dangdang.ddframe.job.internal.execution.ExecutionNodeTest;
@@ -34,8 +35,14 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionServiceTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverListenerManagerTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverNodeTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverServiceTest;
+import com.dangdang.ddframe.job.internal.listener.JobListenerTest;
+import com.dangdang.ddframe.job.internal.listener.ListenerManagerTest;
+import com.dangdang.ddframe.job.internal.monitor.MonitorServiceDisableTest;
+import com.dangdang.ddframe.job.internal.monitor.MonitorServiceEnableTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetNodeTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetServiceTest;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistryTest;
+import com.dangdang.ddframe.job.internal.schedule.JobTriggerListenerTest;
 import com.dangdang.ddframe.job.internal.server.JobOperationListenerManagerTest;
 import com.dangdang.ddframe.job.internal.server.ServerNodeTest;
 import com.dangdang.ddframe.job.internal.server.ServerServiceTest;
@@ -55,6 +62,7 @@ import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtilsTest;
     JobNodePathTest.class, 
     ItemUtilsTest.class,
     SensitiveInfoUtilsTest.class, 
+    LocalHostServiceTest.class, 
     ConfigurationServiceTest.class, 
     ConfigurationNodeTest.class, 
     ConfigurationListenerManagerTest.class, 
@@ -79,7 +87,13 @@ import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtilsTest;
     StatisticsServiceTest.class, 
     ProcessCountJobTest.class, 
     ProcessCountStatisticsTest.class, 
-    JobShardingStrategyFactoryTest.class
+    JobShardingStrategyFactoryTest.class, 
+    JobRegistryTest.class, 
+    JobTriggerListenerTest.class, 
+    ListenerManagerTest.class, 
+    JobListenerTest.class, 
+    MonitorServiceEnableTest.class, 
+    MonitorServiceDisableTest.class
     })
 public final class AllInternalTests {
 }

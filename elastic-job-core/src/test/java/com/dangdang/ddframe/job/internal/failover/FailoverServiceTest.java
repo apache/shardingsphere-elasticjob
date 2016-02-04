@@ -36,7 +36,7 @@ import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobScheduler;
-import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest.TestJob;
+import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService.FailoverLeaderExecutionCallback;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;

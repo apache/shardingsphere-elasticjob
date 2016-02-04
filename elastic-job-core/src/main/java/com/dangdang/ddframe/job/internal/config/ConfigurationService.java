@@ -150,9 +150,14 @@ public class ConfigurationService {
     }
     
     /**
-     * 获取统计作业处理数据数量的间隔时间.
+     * 获取同时处理数据的并发线程数.
      * 
-     * @return 统计作业处理数据数量的间隔时间
+     * <p>
+     * 不能小于1.
+     * 仅ThroughputDataFlow作业有效.
+     * </p>
+     * 
+     * @return 同时处理数据的并发线程数
      */
     public int getConcurrentDataProcessThreadCount() {
         return Integer.parseInt(jobNodeStorage.getJobNodeData(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT));
@@ -217,7 +222,6 @@ public class ConfigurationService {
         return Integer.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_PORT));
     }
     
-
     /**
      * 获取作业名称.
      * 

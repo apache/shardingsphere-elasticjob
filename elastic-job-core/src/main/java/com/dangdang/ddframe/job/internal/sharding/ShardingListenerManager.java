@@ -34,7 +34,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class ShardingListenerManager extends AbstractListenerManager {
+public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ShardingService shardingService;
     

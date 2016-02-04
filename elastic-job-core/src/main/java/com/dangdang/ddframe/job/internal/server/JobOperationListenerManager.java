@@ -35,7 +35,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class JobOperationListenerManager extends AbstractListenerManager {
+public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     

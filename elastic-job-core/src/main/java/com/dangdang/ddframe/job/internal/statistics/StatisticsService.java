@@ -30,7 +30,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class StatisticsService {
+public class StatisticsService {
     
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     

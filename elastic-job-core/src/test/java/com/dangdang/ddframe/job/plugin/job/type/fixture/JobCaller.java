@@ -15,17 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.plugin.sharding.strategy;
+package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.List;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-    AverageAllocationJobShardingStrategyTest.class, 
-    OdevitySortByNameJobShardingStrategyTest.class, 
-    RotateServerByNameJobShardingStrategyTest.class
-    })
-public final class AllPluginTests {
+public interface JobCaller {
+    
+    void process();
+    
+    List<Object> fetchData();
+    
+    List<Object> fetchData(int shardingItem);
+    
+    boolean processData(Object data);
 }

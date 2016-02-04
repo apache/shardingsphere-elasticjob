@@ -23,12 +23,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobScheduler;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 作业注册表.
  * 
  * @author zhangliang
  * @author caohao
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobRegistry {
     
     private static volatile JobRegistry instance;
@@ -37,9 +41,11 @@ public final class JobRegistry {
     
     private ConcurrentHashMap<String, ElasticJob> instanceMap = new ConcurrentHashMap<>();
     
-    private JobRegistry() {
-    }
-    
+    /**
+     * 获取作业注册表实例.
+     * 
+     * @return 作业注册表实例
+     */
     public static JobRegistry getInstance() {
         if (null == instance) {
             synchronized (JobRegistry.class) {

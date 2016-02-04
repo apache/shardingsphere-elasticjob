@@ -44,6 +44,11 @@ public final class JobExecutionMultipleShardingContextTest {
         assertThat(actual.getOffset(), is("offset0"));
     }
     
+    @Test
+    public void assertToString() {
+        assertThat(createShardingContext().toString(), is("jobName: testJob, shardingTotalCount: 10, shardingItems: [0, 1], shardingItemParameters: {0=param0}, jobParameter: null"));
+    }
+    
     private JobExecutionMultipleShardingContext createShardingContext() {
         JobExecutionMultipleShardingContext result = new JobExecutionMultipleShardingContext();
         result.setJobName("testJob");

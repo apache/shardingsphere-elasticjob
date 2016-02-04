@@ -30,11 +30,9 @@ import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
@@ -129,12 +127,5 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(REG_CENTER.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
         REG_CENTER.remove("/" + jobName + "/leader/election");
         assertTrue(leaderElectionService.isLeader());
-    }
-    
-    public static class TestJob extends AbstractElasticJob {
-        
-        @Override
-        protected void executeJob(final JobExecutionMultipleShardingContext jobExecutionShardingContext) {
-        }
     }
 }

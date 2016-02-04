@@ -23,21 +23,19 @@ import org.quartz.listeners.TriggerListenerSupport;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * 作业触发监听器.
  * 
  * @author zhangliang
  */
+@RequiredArgsConstructor
 public final class JobTriggerListener extends TriggerListenerSupport {
     
     private final ExecutionService executionService;
     
     private final ShardingService shardingService;
-    
-    public JobTriggerListener(final ExecutionService executionService, final ShardingService shardingService) {
-        this.executionService = executionService;
-        this.shardingService = shardingService;
-    }
     
     @Override
     public String getName() {

@@ -1,4 +1,4 @@
-package com.dangdang.ddframe.job.integrate.monitor;
+package com.dangdang.ddframe.job.internal.monitor;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

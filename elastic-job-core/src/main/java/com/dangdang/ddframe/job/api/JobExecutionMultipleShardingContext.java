@@ -56,7 +56,7 @@ public final class JobExecutionMultipleShardingContext extends AbstractJobExecut
      * 数据分片项和数据处理位置Map.
      */
     @Setter
-    private Map<Integer, String> offsets;
+    private Map<Integer, String> offsets = new HashMap<>();
     
     /**
      * 根据分片项获取单分片作业运行时上下文.

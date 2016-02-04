@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.integrate.monitor;
+package com.dangdang.ddframe.job.internal.monitor;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
 import com.dangdang.ddframe.job.internal.monitor.MonitorService;
 

@@ -15,23 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.integrate.monitor;
+package com.dangdang.ddframe.job.internal.env;
 
-import java.io.IOException;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
-import com.dangdang.ddframe.job.internal.monitor.MonitorService;
-
-public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
+public final class LocalHostServiceTest {
     
-    public MonitorServiceDisableTest() {
-        super(TestJob.class, -1);
+    private final LocalHostService localHostService = new LocalHostService();
+    
+    @Test
+    public void assertGetIp() {
+        assertNotNull(localHostService.getIp());
     }
     
-    @Test(expected = IOException.class)
-    public void assertMonitorWithDumpCommand() throws IOException {
-        SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, 9000);
+    @Test
+    public void assertGetHostName() {
+        assertNotNull(localHostService.getHostName());
     }
 }

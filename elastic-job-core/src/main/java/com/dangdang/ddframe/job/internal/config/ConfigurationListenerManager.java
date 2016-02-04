@@ -33,7 +33,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author caohao
  */
-public final class ConfigurationListenerManager extends AbstractListenerManager {
+public class ConfigurationListenerManager extends AbstractListenerManager {
     
     private final ConfigurationNode configNode;
     

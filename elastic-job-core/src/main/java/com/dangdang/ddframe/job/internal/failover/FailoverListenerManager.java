@@ -36,7 +36,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class FailoverListenerManager extends AbstractListenerManager {
+public class FailoverListenerManager extends AbstractListenerManager {
     
     private final ConfigurationService configService;
     

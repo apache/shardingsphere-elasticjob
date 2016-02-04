@@ -149,18 +149,6 @@ public class JobScheduler {
         return result;
     }
     
-    private CronTrigger createTrigger(final String cronExpression) {
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-        if (configService.isMisfire()) {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
-        } else {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
-        }
-        return TriggerBuilder.newTrigger()
-                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX))
-                .withSchedule(cronScheduleBuilder).build();
-    }
-    
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
         StdSchedulerFactory factory = new StdSchedulerFactory();
         factory.initialize(getBaseQuartzProperties(jobName));
@@ -182,6 +170,18 @@ public class JobScheduler {
     }
     
     protected void prepareEnvironments(final Properties props) {
+    }
+    
+    private CronTrigger createTrigger(final String cronExpression) {
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
+        if (configService.isMisfire()) {
+            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
+        } else {
+            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
+        }
+        return TriggerBuilder.newTrigger()
+                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX))
+                .withSchedule(cronScheduleBuilder).build();
     }
     
     private void scheduleJob(final CronTrigger trigger) throws SchedulerException {

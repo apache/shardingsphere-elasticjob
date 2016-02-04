@@ -32,7 +32,7 @@ import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobScheduler;
-import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest.TestJob;
+import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.JobOperationListenerManager.ConnectionLostListener;
@@ -76,6 +76,14 @@ public final class JobOperationListenerManagerTest {
         JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
         verify(jobScheduler).resumeCrashedJob();
+    }
+    
+    @Test
+    public void assertConnectionLostListenerWhenConnectionStateIsOther() {
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
+        jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.CONNECTED);
+        verify(jobScheduler, times(0)).stopJob();
+        verify(jobScheduler, times(0)).resumeCrashedJob();
     }
     
     @Test

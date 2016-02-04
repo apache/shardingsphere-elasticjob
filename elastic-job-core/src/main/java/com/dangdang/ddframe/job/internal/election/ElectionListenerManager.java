@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author zhangliang
  */
 @Slf4j
-public final class ElectionListenerManager extends AbstractListenerManager {
+public class ElectionListenerManager extends AbstractListenerManager {
     
     private final LeaderElectionService leaderElectionService;
     

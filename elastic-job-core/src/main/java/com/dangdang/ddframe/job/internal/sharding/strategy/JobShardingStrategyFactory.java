@@ -5,15 +5,16 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobSha
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 作业分片策略工厂.
  * 
  * @author zhangliang
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobShardingStrategyFactory {
-    
-    private JobShardingStrategyFactory() {
-    }
     
     /**
      * 获取 作业分片策略实例.

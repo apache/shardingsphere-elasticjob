@@ -32,7 +32,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class ExecutionListenerManager extends AbstractListenerManager {
+public class ExecutionListenerManager extends AbstractListenerManager {
     
     private final ExecutionService executionService;
     
