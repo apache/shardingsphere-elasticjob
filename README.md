@@ -16,6 +16,9 @@
 # License
 [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
+# Build Status
+[![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
+[![Coverage Status](https://coveralls.io/repos/dangdangdotcom/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/dangdangdotcom/elastic-job?branch=master)
 ##主要贡献者
 * 张亮 [当当网](http://www.dangdang.com/) zhangliang@dangdang.com
 * 曹昊 [当当网](http://www.dangdang.com/) caohao@dangdang.com
