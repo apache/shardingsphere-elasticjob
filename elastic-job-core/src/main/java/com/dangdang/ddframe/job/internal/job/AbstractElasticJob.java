@@ -104,11 +104,12 @@ public abstract class AbstractElasticJob implements ElasticJob {
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
             handleJobExecutionException(new JobExecutionException(ex));
-        }
-        // TODO 如果抛出异常则作业状态将不正确，待考虑如何保持作业完整性
-        executionService.registerJobCompleted(shardingContext);
-        if (configService.isFailover()) {
-            failoverService.updateFailoverComplete(shardingContext.getShardingItems());
+        } finally {
+            // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
+            executionService.registerJobCompleted(shardingContext);
+            if (configService.isFailover()) {
+                failoverService.updateFailoverComplete(shardingContext.getShardingItems());
+            }
         }
     }
     

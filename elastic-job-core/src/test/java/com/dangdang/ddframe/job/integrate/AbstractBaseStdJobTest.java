@@ -36,18 +36,20 @@ import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
+import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.ddframe.test.NestedZookeeperServers;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 
-public abstract class AbstractBaseStdJobTest {
+public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBaseTest {
     
-    protected static final CoordinatorRegistryCenter REG_CENTER = new ZookeeperRegistryCenter(
-            new ZookeeperConfiguration(NestedZookeeperServers.ZK_CONNECTION_STRING, "zkRegTestCenter", 1000, 3000, 3));
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, "zkRegTestCenter", 1000, 3000, 3);
+    
+    @Getter(value = AccessLevel.PROTECTED)
+    private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
     @Getter(AccessLevel.PROTECTED)
     private final LocalHostService localHostService = new LocalHostService();
@@ -68,24 +70,25 @@ public abstract class AbstractBaseStdJobTest {
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         jobConfig = new JobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
-        jobScheduler = new JobScheduler(REG_CENTER, jobConfig);
+        jobScheduler = new JobScheduler(regCenter, jobConfig);
         this.disabled = disabled;
         monitorPort = -1;
-        leaderElectionService = new LeaderElectionService(REG_CENTER, jobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
     }
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
         jobConfig = new JobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
-        jobScheduler = new JobScheduler(REG_CENTER, jobConfig);
+        jobScheduler = new JobScheduler(regCenter, jobConfig);
         disabled = false;
         this.monitorPort = monitorPort;
-        leaderElectionService = new LeaderElectionService(REG_CENTER, jobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
     }
     
     @BeforeClass
     public static void init() {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted();
-        REG_CENTER.init();
+        zkConfig.setNestedPort(PORT);
+        zkConfig.setNestedDataDir(TEST_TEMP_DIRECTORY);
+        regCenter.init();
     }
     
     @Before
@@ -95,7 +98,7 @@ public abstract class AbstractBaseStdJobTest {
         jobConfig.setDisabled(disabled);
         jobConfig.setMonitorPort(monitorPort);
         jobConfig.setOverwrite(true);
-        REG_CENTER.init();
+        regCenter.init();
     }
     
     @After
@@ -113,19 +116,19 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     protected void assertRegCenterCommonInfo() {
-        assertThat(REG_CENTER.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));
-        assertThat(REG_CENTER.get("/" + jobName + "/config/shardingTotalCount"), is("3"));
-        assertThat(REG_CENTER.get("/" + jobName + "/config/shardingItemParameters"), is("0=A,1=B,2=C"));
-        assertThat(REG_CENTER.get("/" + jobName + "/config/cron"), is("0/1 * * * * ?"));
-        assertThat(REG_CENTER.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
+        assertThat(regCenter.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));
+        assertThat(regCenter.get("/" + jobName + "/config/shardingTotalCount"), is("3"));
+        assertThat(regCenter.get("/" + jobName + "/config/shardingItemParameters"), is("0=A,1=B,2=C"));
+        assertThat(regCenter.get("/" + jobName + "/config/cron"), is("0/1 * * * * ?"));
+        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
-            assertTrue(REG_CENTER.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
+            assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
         } else {
-            assertFalse(REG_CENTER.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
+            assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
         }
-        assertFalse(REG_CENTER.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/stoped"));
-        assertThat(REG_CENTER.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
-        REG_CENTER.remove("/" + jobName + "/leader/election");
+        assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/stoped"));
+        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
+        regCenter.remove("/" + jobName + "/leader/election");
         assertTrue(leaderElectionService.isLeader());
     }
 }

@@ -70,6 +70,9 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     }
     
     public void init() {
+        if (zkConfig.isUseNestedZookeeper()) {
+            NestedZookeeperServers.getInstance().startServerIfNotStarted(zkConfig.getNestedPort(), zkConfig.getNestedDataDir());
+        }
         log.debug("Elastic job: zookeeper registry center init, server lists is: {}.", zkConfig.getServerLists());
         Builder builder = CuratorFrameworkFactory.builder()
                 .connectString(zkConfig.getServerLists())
@@ -143,6 +146,9 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         }
         waitForCacheClose();
         CloseableUtils.closeQuietly(client);
+        if (zkConfig.isUseNestedZookeeper()) {
+            NestedZookeeperServers.getInstance().closeServer(zkConfig.getNestedPort());
+        }
     }
     
     /* TODO 等待500ms, cache先关闭再关闭client, 否则会抛异常

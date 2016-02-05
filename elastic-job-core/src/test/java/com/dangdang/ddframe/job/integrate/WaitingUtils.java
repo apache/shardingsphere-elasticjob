@@ -15,22 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.test;
+package com.dangdang.ddframe.job.integrate;
 
-/**
- * 测试环境启动失败所抛出的异常.
- * 
- * @author zhangliang
- */
-public final class TestEnvironmentException extends RuntimeException {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class WaitingUtils {
     
-    private static final long serialVersionUID = 8253327513203871758L;
-    
-    public TestEnvironmentException(final Exception cause) {
-        super(cause);
+    public static void waitingShortTime() {
+        sleep(300L);
     }
     
-    public TestEnvironmentException(final String message, final Object... args) {
-        super(String.format(message, args));
+    private static void sleep(final long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

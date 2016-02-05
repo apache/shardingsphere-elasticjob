@@ -26,9 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
+import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.sequence.StreamingSequenceDataFlowElasticJob;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.test.WaitingUtils;
 
 public final class StreamingSequenceDataFlowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
@@ -47,7 +47,7 @@ public final class StreamingSequenceDataFlowElasticJobTest extends AbstractBaseS
         while (!StreamingSequenceDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(REG_CENTER.isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
         assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(30));
         assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }

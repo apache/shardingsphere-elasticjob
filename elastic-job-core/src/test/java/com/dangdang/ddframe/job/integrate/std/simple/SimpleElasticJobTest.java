@@ -24,8 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
+import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.simple.SimpleElasticJob;
-import com.dangdang.ddframe.test.WaitingUtils;
 
 public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
@@ -44,6 +44,6 @@ public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
         while (!SimpleElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(REG_CENTER.isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
     }
 }

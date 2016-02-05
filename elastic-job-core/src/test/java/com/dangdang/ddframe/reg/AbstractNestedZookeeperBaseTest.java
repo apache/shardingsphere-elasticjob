@@ -15,26 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.test;
+package com.dangdang.ddframe.reg;
 
-public final class WaitingUtils {
+import com.google.common.base.Joiner;
+
+public abstract class AbstractNestedZookeeperBaseTest {
     
-    private WaitingUtils() {
-    }
+    public static final int PORT = 3181;
     
-    public static void waitingShortTime() {
-        sleep(300L);
-    }
+    public static final String TEST_TEMP_DIRECTORY = String.format("target/test_zk_data/%s/", System.nanoTime());
     
-    public static void waitingLongTime() {
-        sleep(1500L);
-    }
-    
-    private static void sleep(final long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-    }
+    public static final String ZK_CONNECTION_STRING = Joiner.on(":").join("localhost", PORT);
 }

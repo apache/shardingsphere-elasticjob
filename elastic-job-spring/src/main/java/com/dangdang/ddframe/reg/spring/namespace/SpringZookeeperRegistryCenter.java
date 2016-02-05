@@ -59,6 +59,14 @@ public final class SpringZookeeperRegistryCenter extends ZookeeperRegistryCenter
         if (!Strings.isNullOrEmpty(digest)) {
             getZkConfig().setDigest(digest);
         }
+        String nestedPort = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getNestedPort());
+        if (!Strings.isNullOrEmpty(nestedPort)) {
+            getZkConfig().setNestedPort(Integer.parseInt(nestedPort));
+        }
+        String nestedDataDir = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getNestedDataDir());
+        if (!Strings.isNullOrEmpty(nestedDataDir)) {
+            getZkConfig().setNestedDataDir(nestedDataDir);
+        }
         String localPropertiesPath = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getLocalPropertiesPath());
         if (!Strings.isNullOrEmpty(localPropertiesPath)) {
             getZkConfig().setLocalPropertiesPath(localPropertiesPath);

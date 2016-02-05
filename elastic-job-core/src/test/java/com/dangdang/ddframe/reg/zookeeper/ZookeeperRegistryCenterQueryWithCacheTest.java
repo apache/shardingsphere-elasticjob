@@ -25,17 +25,17 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.dangdang.ddframe.test.NestedZookeeperServers;
+import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 
-public final class ZookeeperRegistryCenterQueryWithCacheTest {
+public final class ZookeeperRegistryCenterQueryWithCacheTest extends AbstractNestedZookeeperBaseTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedZookeeperServers.ZK_CONNECTION_STRING, ZookeeperRegistryCenterQueryWithCacheTest.class.getName(), 1000, 3000, 3);
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterQueryWithCacheTest.class.getName(), 1000, 3000, 3);
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted();
+        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, TEST_TEMP_DIRECTORY);
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter.init();

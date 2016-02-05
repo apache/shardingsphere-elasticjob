@@ -18,6 +18,8 @@
                 <property name="baseSleepTimeMilliseconds" value="${baseSleepTimeMilliseconds}" />
                 <property name="maxSleepTimeMilliseconds" value="${maxSleepTimeMilliseconds}" />
                 <property name="maxRetries" value="${maxRetries}" />
+                <property name="nestedPort" value="${nestedPort}" />
+                <property name="nestedDataDir" value="${nestedDataDir}" />
             </bean>
         </constructor-arg>
     </bean>

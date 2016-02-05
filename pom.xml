@@ -10,7 +10,6 @@
     <modules>
         <module>elastic-job-core</module>
         <module>elastic-job-spring</module>
-        <module>elastic-job-test</module>
         <module>elastic-job-console</module>
     </modules>
     
@@ -98,6 +97,11 @@
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-test</artifactId>
                 <version>${curator.version}</version>
             </dependency>
             <dependency>
@@ -207,12 +211,6 @@
                         <artifactId>hamcrest-core</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-test</artifactId>
-                <version>${curator.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -407,9 +405,6 @@
                             <exclude>com/dangdang/**/*Test.class</exclude>
                             <exclude>com/dangdang/**/Test*.class</exclude>
                             <exclude>com/dangdang/ddframe/job/console/**/*.class</exclude>
-                            <exclude>com/dangdang/ddframe/job/spring/**/*.class</exclude>
-                            <exclude>com/dangdang/ddframe/reg/spring/**/*.class</exclude>
-                            <exclude>com/dangdang/ddframe/test/**/*.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>

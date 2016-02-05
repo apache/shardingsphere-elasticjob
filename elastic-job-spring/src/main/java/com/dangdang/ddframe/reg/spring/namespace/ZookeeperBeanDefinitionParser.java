@@ -49,6 +49,8 @@ public class ZookeeperBeanDefinitionParser extends AbstractSingleBeanDefinitionP
         result.setSessionTimeoutMilliseconds(element.getAttribute("sessionTimeoutMilliseconds"));
         result.setConnectionTimeoutMilliseconds(element.getAttribute("connectionTimeoutMilliseconds"));
         result.setDigest(element.getAttribute("digest"));
+        result.setNestedPort(element.getAttribute("nestedPort"));
+        result.setNestedDataDir(element.getAttribute("nestedDataDir"));
         result.setLocalPropertiesPath(element.getAttribute("localPropertiesPath"));
         result.setOverwrite(element.getAttribute("overwrite"));
         return result;

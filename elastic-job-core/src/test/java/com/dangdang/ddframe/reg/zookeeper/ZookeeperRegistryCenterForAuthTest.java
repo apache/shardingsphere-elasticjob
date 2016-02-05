@@ -28,17 +28,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.test.NestedZookeeperServers;
+import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 
-public final class ZookeeperRegistryCenterForAuthTest {
+public final class ZookeeperRegistryCenterForAuthTest extends AbstractNestedZookeeperBaseTest {
     
-    private ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedZookeeperServers.ZK_CONNECTION_STRING, ZookeeperRegistryCenterForAuthTest.class.getName(), 1000, 3000, 3);
+    private ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterForAuthTest.class.getName(), 1000, 3000, 3);
     
     private ZookeeperRegistryCenter zkRegCenter;
     
     @Before
     public void setUp() {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted();
+        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, TEST_TEMP_DIRECTORY);
         zkConfig.setDigest("digest:password");
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkConfig.setSessionTimeoutMilliseconds(5000);
@@ -56,7 +56,7 @@ public final class ZookeeperRegistryCenterForAuthTest {
         zkRegCenter.init();
         zkRegCenter.close();
         CuratorFramework client = CuratorFrameworkFactory.builder()
-            .connectString(NestedZookeeperServers.ZK_CONNECTION_STRING)
+            .connectString(ZK_CONNECTION_STRING)
             .retryPolicy(new RetryOneTime(2000))
             .authorization("digest", "digest:password".getBytes()).build();
         client.start();
@@ -68,7 +68,7 @@ public final class ZookeeperRegistryCenterForAuthTest {
     public void assertInitWithDigestFailure() throws Exception {
         zkRegCenter.init();
         zkRegCenter.close();
-        CuratorFramework client = CuratorFrameworkFactory.newClient(NestedZookeeperServers.ZK_CONNECTION_STRING, new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(ZK_CONNECTION_STRING, new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         client.getData().forPath("/" + ZookeeperRegistryCenterForAuthTest.class.getName() + "/test/deep/nested");

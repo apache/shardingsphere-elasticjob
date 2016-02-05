@@ -23,21 +23,27 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundExceptionTest;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandlerTest;
+import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServersTest;
+import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfigurationTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterForAuthTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterForLocalPropertiesTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterMiscellaneousTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterModifyTest;
+import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterNestedTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterQueryWithCacheTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterQueryWithoutCacheTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+    ZookeeperConfigurationTest.class, 
+    NestedZookeeperServersTest.class, 
     ZookeeperRegistryCenterForLocalPropertiesTest.class, 
     ZookeeperRegistryCenterForAuthTest.class, 
     ZookeeperRegistryCenterQueryWithCacheTest.class, 
     ZookeeperRegistryCenterQueryWithoutCacheTest.class, 
     ZookeeperRegistryCenterModifyTest.class, 
     ZookeeperRegistryCenterMiscellaneousTest.class, 
+    ZookeeperRegistryCenterNestedTest.class, 
     RegExceptionHandlerTest.class, 
     LocalPropertiesFileNotFoundExceptionTest.class
     })

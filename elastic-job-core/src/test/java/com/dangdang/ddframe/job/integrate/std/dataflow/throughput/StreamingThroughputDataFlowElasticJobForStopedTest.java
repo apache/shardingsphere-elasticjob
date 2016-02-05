@@ -24,8 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
+import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
-import com.dangdang.ddframe.test.WaitingUtils;
 
 public final class StreamingThroughputDataFlowElasticJobForStopedTest extends AbstractBaseStdJobAutoInitTest {
     
@@ -44,8 +44,8 @@ public final class StreamingThroughputDataFlowElasticJobForStopedTest extends Ab
         while (!StreamingThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        REG_CENTER.persist("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/stoped", "");
+        getRegCenter().persist("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/stoped", "");
         initJob();
-        assertFalse(REG_CENTER.isExisted("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/stoped"));
+        assertFalse(getRegCenter().isExisted("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/stoped"));
     }
 }

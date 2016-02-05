@@ -140,7 +140,9 @@ public final class SimpleElasticJobTest {
             verify(executionService).cleanPreviousExecutionInfo();
             verify(executionService).registerJobBegin(shardingContext);
             verify(jobCaller).process();
-            verify(executionService, times(0)).registerJobCompleted(shardingContext);
+            verify(executionService).registerJobCompleted(shardingContext);
+            verify(configService, times(1)).isFailover();
+            verify(failoverService, times(0)).updateFailoverComplete(shardingContext.getShardingItems());
         }
     }
     

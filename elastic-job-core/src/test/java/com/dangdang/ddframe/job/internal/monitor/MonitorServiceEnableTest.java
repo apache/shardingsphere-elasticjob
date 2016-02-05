@@ -26,7 +26,6 @@ import org.junit.Test;
 
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
-import com.dangdang.ddframe.job.internal.monitor.MonitorService;
 
 public final class MonitorServiceEnableTest extends AbstractBaseStdJobTest {
     

@@ -17,21 +17,18 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 
-public final class ZookeeperRegistryCenterMiscellaneousTest extends AbstractNestedZookeeperBaseTest {
+public final class ZookeeperRegistryCenterNestedTest extends AbstractNestedZookeeperBaseTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterMiscellaneousTest.class.getName(), 1000, 3000, 3);
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterNestedTest.class.getName(), 1000, 3000, 3);
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
@@ -39,8 +36,8 @@ public final class ZookeeperRegistryCenterMiscellaneousTest extends AbstractNest
     public static void setUp() {
         NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, TEST_TEMP_DIRECTORY);
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
+        zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter.init();
-        zkRegCenter.addCacheData("/test");
     }
     
     @AfterClass
@@ -49,20 +46,10 @@ public final class ZookeeperRegistryCenterMiscellaneousTest extends AbstractNest
     }
     
     @Test
-    public void assertGetRawClient() {
-        assertThat(zkRegCenter.getRawClient(), instanceOf(CuratorFramework.class));
-        assertThat(((CuratorFramework) zkRegCenter.getRawClient()).getNamespace(), is(ZookeeperRegistryCenterMiscellaneousTest.class.getName()));
-    }
-    
-    @Test
-    public void assertGetRawCache() {
-        assertThat(zkRegCenter.getRawCache("/test"), instanceOf(TreeCache.class));
-    }
-    
-    @Test
-    public void assertGetZkConfig() {
-        ZookeeperConfiguration expected = new ZookeeperConfiguration();
-        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(expected);
-        assertThat(zkRegCenter.getZkConfig(), is(expected));
+    public void assertInitWhenUse() {
+        zkRegCenter.persist("/test", "test_update");
+        zkRegCenter.persist("/persist/new", "new_value");
+        assertThat(zkRegCenter.get("/test"), is("test_update"));
+        assertThat(zkRegCenter.get("/persist/new"), is("new_value"));
     }
 }

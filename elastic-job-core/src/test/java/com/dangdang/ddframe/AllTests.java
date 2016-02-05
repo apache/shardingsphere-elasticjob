@@ -23,8 +23,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.dangdang.ddframe.job.AllJobTests;
+import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.AllRegTests;
-import com.dangdang.ddframe.test.NestedZookeeperServers;
+import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,6 @@ public final class AllTests {
     
     @AfterClass
     public static void clear() {
-        NestedZookeeperServers.getInstance().closeServer();
+        NestedZookeeperServers.getInstance().closeServer(AbstractNestedZookeeperBaseTest.PORT);
     }
 }
