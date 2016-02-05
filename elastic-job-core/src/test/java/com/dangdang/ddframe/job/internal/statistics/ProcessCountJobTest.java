@@ -37,7 +37,7 @@ public final class ProcessCountJobTest {
     @Mock
     private ServerService serverService;
     
-    private final ProcessCountJob processCountJob = new ProcessCountJob(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    private final ProcessCountJob processCountJob = new ProcessCountJob(null, new JobConfiguration(ProcessCountJobTest.class.getName(), TestJob.class, 3, "0/1 * * * * ?"));
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -47,18 +47,18 @@ public final class ProcessCountJobTest {
     
     @Test
     public void assertRun() throws JobExecutionException {
-        ProcessCountStatistics.incrementProcessSuccessCount("testJob");
-        ProcessCountStatistics.incrementProcessSuccessCount("testJob");
-        ProcessCountStatistics.incrementProcessFailureCount("testJob");
-        ProcessCountStatistics.incrementProcessFailureCount("testJob");
-        ProcessCountStatistics.incrementProcessSuccessCount("otherTestJob");
-        ProcessCountStatistics.incrementProcessFailureCount("otherTestJob");
+        ProcessCountStatistics.incrementProcessSuccessCount(ProcessCountJobTest.class.getName());
+        ProcessCountStatistics.incrementProcessSuccessCount(ProcessCountJobTest.class.getName());
+        ProcessCountStatistics.incrementProcessFailureCount(ProcessCountJobTest.class.getName());
+        ProcessCountStatistics.incrementProcessFailureCount(ProcessCountJobTest.class.getName());
+        ProcessCountStatistics.incrementProcessSuccessCount(ProcessCountJobTest.class.getName() + "_otherTestJob");
+        ProcessCountStatistics.incrementProcessFailureCount(ProcessCountJobTest.class.getName() + "_otherTestJob");
         processCountJob.run();
         verify(serverService).persistProcessSuccessCount(2);
         verify(serverService).persistProcessFailureCount(2);
-        assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(0));
-        assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(0));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount("otherTestJob"), is(1));
-        assertThat(ProcessCountStatistics.getProcessFailureCount("otherTestJob"), is(1));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(ProcessCountJobTest.class.getName()), is(0));
+        assertThat(ProcessCountStatistics.getProcessFailureCount(ProcessCountJobTest.class.getName()), is(0));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(ProcessCountJobTest.class.getName() + "_otherTestJob"), is(1));
+        assertThat(ProcessCountStatistics.getProcessFailureCount(ProcessCountJobTest.class.getName() + "_otherTestJob"), is(1));
     }
 }
