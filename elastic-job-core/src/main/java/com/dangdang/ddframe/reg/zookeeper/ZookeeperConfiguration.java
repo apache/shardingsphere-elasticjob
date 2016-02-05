@@ -90,6 +90,7 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
     
     /**
      * 内嵌Zookeeper的数据存储路径.
+     * 为空表示不开启内嵌Zookeeper.
      */
     private String nestedDataDir;
     

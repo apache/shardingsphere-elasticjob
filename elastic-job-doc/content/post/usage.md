@@ -12,7 +12,7 @@ weight=5
 
 ## 安装Zookeeper
 
-请使用`Zookeeper 3.4.6`及其以上版本。[详情参见](https://zookeeper.apache.org/doc/trunk/zookeeperStarted.html)
+请使用`Zookeeper 3.4.6`及其以上版本。[详情参见](https://zookeeper.apache.org/doc/trunk/zookeeperStarted.html)。或使用`elastic-job`自带的内嵌`Zookeeper`
 
 ## 安装Maven
 

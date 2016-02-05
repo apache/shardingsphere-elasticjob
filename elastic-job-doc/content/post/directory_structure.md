@@ -22,10 +22,6 @@ weight=4
 
 使用示例。
 
-## elastic-job-test
-
-测试`elastic-job`使用的公用类，使用方无需关注。
-
 ## elastic-job-doc
 
 使用`markdown`生成文档的项目，使用方无需关注。

@@ -165,7 +165,7 @@ public class XXXSimpleJob extends AbstractSimpleElasticJob {
 |failover                        |boolean|否     |false| 是否开启失效转移<br />仅`monitorExecution`开启，失效转移才有效                   |
 |misfire                         |boolean|否     |true | 是否开启错过任务重新执行                                                     |
 |jobShardingStrategyClass        |String |否     |true | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](http://dangdangdotcom.github.io/elastic-job/post/job_strategy)     |
-|description                     |String |否     |     | 作业描述信息                |
+|description                     |String |否     |     | 作业描述信息                                                                |
 | disabled                       |boolean|否     |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动             |
 | overwrite                      |boolean|否     |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准        |
 
@@ -181,7 +181,9 @@ public class XXXSimpleJob extends AbstractSimpleElasticJob {
 |maxRetries                      |int    |`是`    |     | 最大重试次数                                                                 |
 |sessionTimeoutMilliseconds      |int    |否     |60000| 会话超时时间<br />单位：毫秒                                                  |
 |connectionTimeoutMilliseconds   |int    |否     |15000| 连接超时时间<br />单位：毫秒                                                  |
-|digest                          |String |否     |无验证| 连接Zookeeper的权限令牌<br />缺省为不需要权限验证                                                  |
+|digest                          |String |否     |无验证| 连接`Zookeeper`的权限令牌<br />缺省为不需要权限验证                              |
+|nestedPort                      |int    |否     |-1   | 内嵌`Zookeeper`的端口号<br />-1表示不开启内嵌`Zookeeper`                          |
+|nestedDataDir                   |String |否     |     | 内嵌`Zookeeper`的数据存储路径<br />为空表示不开启内嵌`Zookeeper`                   |
 
 ### 基于Spring但不使用命名空间
 

@@ -6,6 +6,10 @@ weight=1
 
 # Release Notes
 
+## 1.0.4-snapshot
+1. 精简项目模块，移除elastic-job-test模块
+1. 功能提升Issuse#16，提供内嵌zookeeper，简化开发环境
+
 ## 1.0.3
 1. 修正Issuse#30，注册中心宕机较长时间后重新恢复，作业仍然无法继续执行
 1. 修正Issuse#36，任务在控制台暂停之后，无法恢复运行
