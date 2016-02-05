@@ -23,15 +23,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.dangdang.ddframe.job.spring.WithNamespaceTest;
 import com.dangdang.ddframe.job.spring.WithoutNamespaceTest;
-import com.dangdang.ddframe.job.spring.failure.ClassNotElasticJobTest;
-import com.dangdang.ddframe.job.spring.failure.ClassNotFoundTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
     WithNamespaceTest.class, 
-    WithoutNamespaceTest.class, 
-    ClassNotFoundTest.class, 
-    ClassNotElasticJobTest.class
+    WithoutNamespaceTest.class
     })
 public class AllSpringJobTests {
 }

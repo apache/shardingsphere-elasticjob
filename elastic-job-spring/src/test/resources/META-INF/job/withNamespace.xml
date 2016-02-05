@@ -16,8 +16,8 @@
     <context:property-placeholder location="classpath:conf/job/conf.properties" />
     <reg:zookeeper id="regCenter" serverLists="localhost:3181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
     
-    <job:bean id="simpleElasticJob" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob" regCenter="regCenter" cron="${simpleElasticJob.cron}" shardingTotalCount="${simpleElasticJob.shardingTotalCount}" shardingItemParameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}" />
-    <job:bean id="throughputDataFlowElasticJob" class="com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/1 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="3" fetchDataCount="100" description="中文描述" overwrite="true" />
+    <job:bean id="simpleElasticJob_namespace" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob" regCenter="regCenter" cron="${simpleElasticJob.cron}" shardingTotalCount="${simpleElasticJob.shardingTotalCount}" shardingItemParameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}" />
+    <job:bean id="throughputDataFlowElasticJob_namespace" class="com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/1 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="3" fetchDataCount="100" description="中文描述" overwrite="true" />
     
     <bean id="simpleElasticJobBean" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob">
         <property name="springValue" value="simple" />

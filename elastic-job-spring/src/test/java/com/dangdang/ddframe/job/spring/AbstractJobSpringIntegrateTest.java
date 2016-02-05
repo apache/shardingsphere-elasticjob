@@ -35,7 +35,14 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.test.AbstractZookeeperJUnit4SpringContextTests;
 import com.dangdang.ddframe.test.WaitingUtils;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJUnit4SpringContextTests {
+    
+    private final String simpleJobName;
+    
+    private final String throughputDataFlowJobName;
     
     @Resource
     private CoordinatorRegistryCenter regCenter;
@@ -45,14 +52,13 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     public void reset() {
         SimpleElasticJob.reset();
         ThroughputDataFlowElasticJob.reset();
-        ProcessCountStatistics.reset("testJob");
+        ProcessCountStatistics.reset(throughputDataFlowJobName);
     }
     
     @After
     public void tearDown() {
-        JobRegistry.getInstance().getJobScheduler("simpleElasticJob").shutdown();
-        JobRegistry.getInstance().getJobScheduler("throughputDataFlowElasticJob").shutdown();
-        WaitingUtils.waitingLongTime();
+        JobRegistry.getInstance().getJobScheduler(simpleJobName).shutdown();
+        JobRegistry.getInstance().getJobScheduler(throughputDataFlowJobName).shutdown();
     }
     
     @Test
@@ -67,7 +73,7 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
         }
         assertTrue(SimpleElasticJob.isCompleted());
         assertThat(SimpleElasticJob.getJobValue(), is("simple"));
-        assertTrue(regCenter.isExisted("/simpleElasticJob/execution"));
+        assertTrue(regCenter.isExisted("/" + simpleJobName + "/execution"));
     }
     
     private void assertThroughputDataFlowElasticJobBean() {
@@ -75,6 +81,6 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
             WaitingUtils.waitingShortTime();
         }
         assertTrue(ThroughputDataFlowElasticJob.isCompleted());
-        assertTrue(regCenter.isExisted("/throughputDataFlowElasticJob/execution"));
+        assertTrue(regCenter.isExisted("/" + throughputDataFlowJobName + "/execution"));
     }
 }
