@@ -9,6 +9,9 @@ weight=1
 ## 1.0.4-snapshot
 1. 精简项目模块，移除elastic-job-test模块
 1. 功能提升Issuse#16，提供内嵌zookeeper，简化开发环境
+1. 功能提升Issuse#28，DataFlow类型作业增加processData批量处理数据的方法。
+由于功能提升导致之前的数据流作业接口由2个变为4个，原AbstractThroughputDataFlowElasticJob和AbstractSequenceDataFlowElasticJob改变为AbstractIndividualThroughputDataFlowElasticJob、AbstractIndividualSequenceDataFlowElasticJob，并增加两种作业类型：AbstractBatchThroughputDataFlowElasticJob、AbstractBatchSequenceDataFlowElasticJob
+1. 接口变更，便于分类清晰，将com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob移动至com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob，数据流作业类型移动至com.dangdang.ddframe.job.plugin.job.type.dataflow包
 
 ## 1.0.3
 1. 修正Issuse#30，注册中心宕机较长时间后重新恢复，作业仍然无法继续执行

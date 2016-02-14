@@ -35,7 +35,7 @@ public class MyElasticJob extends AbstractSimpleElasticJob {
 作业执行时会将`fetchData`的数据传递给`processData`处理，其中`processData`得到的数据是通过多线程（线程池大小可配）拆分的。如果采用流式作业处理方式，建议`processData`处理数据后更新其状态，避免`fetchData`再次抓取到，从而使得作业永远不会停止。`processData`的返回值用于表示数据是否处理成功，抛出异常或者返回`false`将会在统计信息中归入失败次数，返回`true`则归入成功次数。
 
 ```java
-public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
+public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<Foo> {
     
     @Override
     public List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
@@ -68,7 +68,7 @@ public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
 `SequenceDataFlow`类型作业和`ThroughputDataFlow`作业类型极为相似，所不同的是`ThroughputDataFlow`作业类型可以将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，配置为两个线程处理，则第`1`个线程处理前`50`条数据，第`2`个线程处理后`50`条数据，无视分片项；`SequenceDataFlow`类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，则系统自动分配两个线程处理，第`1`个线程处理第`1`个分片的`40`条数据，第`2`个线程处理第`2`个分片的`60`条数据。由于`ThroughputDataFlow`作业可以使用多于分片项的任意线程数处理，所以性能调优的可能会优于`SequenceDataFlow`作业。
 
 ```java
-public class MyElasticJob extends AbstractSequenceDataFlowElasticJob<Foo> {
+public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<Foo> {
     
     @Override
     public List<Foo> fetchData(JobExecutionSingleShardingContext context) {
@@ -93,6 +93,9 @@ public class MyElasticJob extends AbstractSequenceDataFlowElasticJob<Foo> {
     }
 }
 ```
+
+### 批量处理
+为了提高数据处理效率，数据流类型作业提供了批量处理数据的功能。之前逐条处理数据的两个抽象类分别是`AbstractIndividualSequenceDataFlowElasticJob`和`AbstractIndividualSequenceDataFlowElasticJob`，批量处理则使用另外两个接口`AbstractBatchSequenceDataFlowElasticJob`和`AbstractBatchSequenceDataFlowElasticJob`。不同之处在于`processData`方法的返回值从`boolean`类型变为`int`类型，用于表示一批数据处理的成功数量，第二个入参则转变为`List`数据集合。
 
 ### 异常处理
 
