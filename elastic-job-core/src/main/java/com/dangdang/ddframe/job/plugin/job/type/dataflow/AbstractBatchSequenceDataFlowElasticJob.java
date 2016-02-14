@@ -15,24 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.integrate.fixture.simple;
+package com.dangdang.ddframe.job.plugin.job.type.dataflow;
 
-import lombok.Getter;
+import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.internal.job.dataflow.AbstractBatchDataFlowElasticJob;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
-
-public final class SimpleElasticJob extends AbstractSimpleElasticJob {
-    
-    @Getter
-    private static volatile boolean completed;
-    
-    @Override
-    public void process(final JobExecutionMultipleShardingContext context) {
-        completed = true;
-    }
-    
-    public static void reset() {
-        completed = false;
-    }
+/**
+ * 保证同一分片顺序性的批量处理数据流程的作业.
+ * 
+ * @author zhangliang
+ *
+ * @param <T> 数据流作业处理的数据实体类型
+ */
+public abstract class AbstractBatchSequenceDataFlowElasticJob<T> extends AbstractBatchDataFlowElasticJob<T, JobExecutionSingleShardingContext> {
 }

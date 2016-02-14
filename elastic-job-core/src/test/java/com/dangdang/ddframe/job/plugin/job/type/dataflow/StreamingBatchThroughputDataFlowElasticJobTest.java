@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.plugin.job.type;
+package com.dangdang.ddframe.job.plugin.job.type.dataflow;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -40,10 +40,11 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.job.plugin.job.type.fixture.FooStreamingThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
+import com.dangdang.ddframe.job.plugin.job.type.fixture.FooStreamingBatchThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 
-public final class StreamingThroughputDataFlowElasticJobTest {
+public final class StreamingBatchThroughputDataFlowElasticJobTest {
     
     @Mock
     private JobCaller jobCaller;
@@ -66,21 +67,21 @@ public final class StreamingThroughputDataFlowElasticJobTest {
     @Mock
     private OffsetService offsetService;
     
-    private FooStreamingThroughputDataFlowElasticJob streamingThroughputDataFlowElasticJob;
-    
     private JobExecutionMultipleShardingContext shardingContext;
+    
+    private FooStreamingBatchThroughputDataFlowElasticJob streamingBatchThroughputDataFlowElasticJob;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(configService.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
-        streamingThroughputDataFlowElasticJob = new FooStreamingThroughputDataFlowElasticJob(jobCaller);
-        streamingThroughputDataFlowElasticJob.setConfigService(configService);
-        streamingThroughputDataFlowElasticJob.setShardingService(shardingService);
-        streamingThroughputDataFlowElasticJob.setExecutionContextService(executionContextService);
-        streamingThroughputDataFlowElasticJob.setExecutionService(executionService);
-        streamingThroughputDataFlowElasticJob.setFailoverService(failoverService);
-        streamingThroughputDataFlowElasticJob.setOffsetService(offsetService);
+        streamingBatchThroughputDataFlowElasticJob = new FooStreamingBatchThroughputDataFlowElasticJob(jobCaller);
+        streamingBatchThroughputDataFlowElasticJob.setConfigService(configService);
+        streamingBatchThroughputDataFlowElasticJob.setShardingService(shardingService);
+        streamingBatchThroughputDataFlowElasticJob.setExecutionContextService(executionContextService);
+        streamingBatchThroughputDataFlowElasticJob.setExecutionService(executionService);
+        streamingBatchThroughputDataFlowElasticJob.setFailoverService(failoverService);
+        streamingBatchThroughputDataFlowElasticJob.setOffsetService(offsetService);
         shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfireAndIsNotFailover(configService, executionContextService, executionService, shardingContext);
     }
@@ -93,7 +94,7 @@ public final class StreamingThroughputDataFlowElasticJobTest {
     @Test
     public void assertExecuteWhenFetchDataIsNull() throws JobExecutionException {
         when(jobCaller.fetchData()).thenReturn(null);
-        streamingThroughputDataFlowElasticJob.execute(null);
+        streamingBatchThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).fetchData();
         verify(jobCaller, times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfireAndIsNotFailover(configService, shardingService, executionContextService, executionService, failoverService, shardingContext);
@@ -103,7 +104,7 @@ public final class StreamingThroughputDataFlowElasticJobTest {
     @Test
     public void assertExecuteWhenFetchDataIsEmpty() throws JobExecutionException {
         when(jobCaller.fetchData()).thenReturn(Collections.emptyList());
-        streamingThroughputDataFlowElasticJob.execute(null);
+        streamingBatchThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).fetchData();
         verify(jobCaller, times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfireAndIsNotFailover(configService, shardingService, executionContextService, executionService, failoverService, shardingContext);
@@ -113,20 +114,20 @@ public final class StreamingThroughputDataFlowElasticJobTest {
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsStoped() throws JobExecutionException {
         when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1));
-        streamingThroughputDataFlowElasticJob.stop();
-        streamingThroughputDataFlowElasticJob.execute(null);
+        streamingBatchThroughputDataFlowElasticJob.stop();
+        streamingBatchThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).fetchData();
         verify(jobCaller, times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfireAndIsNotFailover(configService, shardingService, executionContextService, executionService, failoverService, shardingContext);
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
-        streamingThroughputDataFlowElasticJob.resume();
+        streamingBatchThroughputDataFlowElasticJob.resume();
     }
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsNeedSharding() throws JobExecutionException {
         when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1));
         when(shardingService.isNeedSharding()).thenReturn(true);
-        streamingThroughputDataFlowElasticJob.execute(null);
+        streamingBatchThroughputDataFlowElasticJob.execute(null);
         verify(shardingService).isNeedSharding();
         verify(jobCaller, times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfireAndIsNotFailover(configService, shardingService, executionContextService, executionService, failoverService, shardingContext);
@@ -136,16 +137,18 @@ public final class StreamingThroughputDataFlowElasticJobTest {
     @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
-        when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1, 2), Collections.<Object>emptyList());
+        when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3), Collections.<Object>emptyList());
         when(shardingService.isNeedSharding()).thenReturn(false);
         when(jobCaller.processData(1)).thenReturn(false);
         when(jobCaller.processData(2)).thenReturn(true);
-        streamingThroughputDataFlowElasticJob.execute(null);
+        when(jobCaller.processData(3)).thenThrow(new NullPointerException());
+        streamingBatchThroughputDataFlowElasticJob.execute(null);
         verify(shardingService).isNeedSharding();
         verify(jobCaller, times(2)).fetchData();
         verify(jobCaller).processData(1);
         verify(jobCaller).processData(2);
         ElasticJobAssert.verifyForIsNotMisfireAndIsNotFailover(configService, shardingService, executionContextService, executionService, failoverService, shardingContext);
-        ElasticJobAssert.assertProcessCountStatistics(1, 1);
+        ElasticJobAssert.assertProcessCountStatistics(1, 2);
     }
+
 }

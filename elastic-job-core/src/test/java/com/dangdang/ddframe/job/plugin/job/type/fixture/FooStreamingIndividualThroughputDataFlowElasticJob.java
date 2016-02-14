@@ -15,42 +15,32 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.fixture;
+package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public final class ThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
+@RequiredArgsConstructor
+public final class FooStreamingIndividualThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<Object> {
     
-    @Getter
-    private static volatile boolean completed;
+    private final JobCaller jobCaller;
     
     @Override
-    public List<String> fetchData(final JobExecutionMultipleShardingContext context) {
-        if (completed) {
-            return Collections.emptyList();
-        }
-        return Arrays.asList("data");
+    public List<Object> fetchData(final JobExecutionMultipleShardingContext shardingContext) {
+        return jobCaller.fetchData();
     }
     
     @Override
-    public boolean processData(final JobExecutionMultipleShardingContext context, final String data) {
-        completed = true;
-        return true;
+    public boolean processData(final JobExecutionMultipleShardingContext shardingContext, final Object data) {
+        return jobCaller.processData(data);
     }
     
     @Override
     public boolean isStreamingProcess() {
         return true;
-    }
-    
-    public static void reset() {
-        completed = false;
     }
 }

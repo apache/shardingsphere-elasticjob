@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.plugin.job.type;
+package com.dangdang.ddframe.job.plugin.job.type.dataflow;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -40,10 +40,11 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.job.plugin.job.type.fixture.FooStreamingSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
+import com.dangdang.ddframe.job.plugin.job.type.fixture.FooStreamingBatchSequenceDataFlowElasticJob;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 
-public final class StreamingSequenceDataFlowElasticJobTest {
+public final class StreamingBatchSequenceDataFlowElasticJobTest {
     
     @Mock
     private JobCaller jobCaller;
@@ -66,21 +67,21 @@ public final class StreamingSequenceDataFlowElasticJobTest {
     @Mock
     private OffsetService offsetService;
     
-    private FooStreamingSequenceDataFlowElasticJob streamingSequenceDataFlowElasticJob;
-    
     private JobExecutionMultipleShardingContext shardingContext;
+    
+    private FooStreamingBatchSequenceDataFlowElasticJob streamingBatchSequenceDataFlowElasticJob;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(configService.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
-        streamingSequenceDataFlowElasticJob = new FooStreamingSequenceDataFlowElasticJob(jobCaller);
-        streamingSequenceDataFlowElasticJob.setConfigService(configService);
-        streamingSequenceDataFlowElasticJob.setShardingService(shardingService);
-        streamingSequenceDataFlowElasticJob.setExecutionContextService(executionContextService);
-        streamingSequenceDataFlowElasticJob.setExecutionService(executionService);
-        streamingSequenceDataFlowElasticJob.setFailoverService(failoverService);
-        streamingSequenceDataFlowElasticJob.setOffsetService(offsetService);
+        streamingBatchSequenceDataFlowElasticJob = new FooStreamingBatchSequenceDataFlowElasticJob(jobCaller);
+        streamingBatchSequenceDataFlowElasticJob.setConfigService(configService);
+        streamingBatchSequenceDataFlowElasticJob.setShardingService(shardingService);
+        streamingBatchSequenceDataFlowElasticJob.setExecutionContextService(executionContextService);
+        streamingBatchSequenceDataFlowElasticJob.setExecutionService(executionService);
+        streamingBatchSequenceDataFlowElasticJob.setFailoverService(failoverService);
+        streamingBatchSequenceDataFlowElasticJob.setOffsetService(offsetService);
         shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfireAndIsNotFailover(configService, executionContextService, executionService, shardingContext);
     }
@@ -94,7 +95,7 @@ public final class StreamingSequenceDataFlowElasticJobTest {
     public void assertExecuteWhenFetchDataIsNullAndEmpty() throws JobExecutionException {
         when(jobCaller.fetchData(0)).thenReturn(null);
         when(jobCaller.fetchData(1)).thenReturn(Collections.emptyList());
-        streamingSequenceDataFlowElasticJob.execute(null);
+        streamingBatchSequenceDataFlowElasticJob.execute(null);
         verify(jobCaller).fetchData(0);
         verify(jobCaller).fetchData(1);
         verify(jobCaller, times(0)).processData(any());
@@ -109,8 +110,9 @@ public final class StreamingSequenceDataFlowElasticJobTest {
         when(jobCaller.fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4), Collections.emptyList());
         when(jobCaller.processData(1)).thenReturn(true);
         when(jobCaller.processData(2)).thenReturn(true);
-        when(jobCaller.processData(4)).thenThrow(new RuntimeException());
-        streamingSequenceDataFlowElasticJob.execute(null);
+        when(jobCaller.processData(3)).thenReturn(false);
+        when(jobCaller.processData(4)).thenThrow(new NullPointerException());
+        streamingBatchSequenceDataFlowElasticJob.execute(null);
         verify(jobCaller, times(2)).fetchData(0);
         verify(jobCaller, times(2)).fetchData(1);
         verify(jobCaller).processData(1);

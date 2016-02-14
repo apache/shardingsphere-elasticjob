@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
-public final class StreamingThroughputDataFlowElasticJob extends AbstractThroughputDataFlowElasticJob<String> {
+public final class StreamingThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
     private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     

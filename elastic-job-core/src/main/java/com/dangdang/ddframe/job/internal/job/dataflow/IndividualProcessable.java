@@ -15,45 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
-
-import java.util.List;
+package com.dangdang.ddframe.job.internal.job.dataflow;
 
 import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
 
 /**
- * 保用于处理数据流程的作业接口.
+ * 逐条处理数据的接口.
  * 
  * @author zhangliang
- * 
+ *
  * @param <T> 数据流作业处理的数据实体类型
- * 
  * @param <C> 作业运行时分片上下文类型
  */
-public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingContext> extends ElasticJob {
+public interface IndividualProcessable<T, C extends AbstractJobExecutionShardingContext> {
     
     /**
-     * 获取待处理的数据.
+     * 处理数据.
      * 
      * @param shardingContext 作业分片规则配置上下文
-     * @return 待处理的数据集合
+     * @param data 待处理的数据
+     * @return 数据是否处理成功
      */
-    List<T> fetchData(final C shardingContext);
-    
-    /**
-     * 配置是否流式处理数据.
-     * 如果流式处理数据, 则fetchData不返回空结果将持续执行作业.
-     * 如果非流式处理数据, 则处理数据完成后作业结束.
-     * 
-     * @return 是否流式处理数据
-     */
-    boolean isStreamingProcess();
-    
-    /**
-     * 更新数据处理位置.
-     * 
-     * @param item 分片项
-     * @param offset 数据处理位置
-     */
-    void updateOffset(final int item, final String offset);
+    boolean processData(final C shardingContext, final T data);
 }

@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.integrate.std.dataflow.throughput;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.After;
@@ -54,7 +55,7 @@ public final class StreamingThroughputDataFlowElasticJobForNotMonitorTest extend
             WaitingUtils.waitingShortTime();
         }
         assertFalse(getRegCenter().isExisted("/" + getJobName() + "/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(10));
+        assertTrue(ProcessCountStatistics.getProcessSuccessCount(getJobName()) >= 10);
         assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

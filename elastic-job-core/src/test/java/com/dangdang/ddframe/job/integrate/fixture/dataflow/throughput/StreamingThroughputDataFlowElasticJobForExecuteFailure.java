@@ -20,12 +20,12 @@ package com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput;
 import java.util.Arrays;
 import java.util.List;
 
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
+
 import lombok.Getter;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
-
-public class StreamingThroughputDataFlowElasticJobForExecuteFailure extends AbstractThroughputDataFlowElasticJob<String> {
+public class StreamingThroughputDataFlowElasticJobForExecuteFailure extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
     @Getter
     private static volatile boolean completed;

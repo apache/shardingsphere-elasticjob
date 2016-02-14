@@ -19,28 +19,37 @@ package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
 import java.util.List;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractBatchSequenceDataFlowElasticJob;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class FooStreamingThroughputDataFlowElasticJob extends AbstractThroughputDataFlowElasticJob<Object> {
+public final class FooUnstreamingBatchSequenceDataFlowElasticJob extends AbstractBatchSequenceDataFlowElasticJob<Object> {
     
     private final JobCaller jobCaller;
     
     @Override
-    public List<Object> fetchData(final JobExecutionMultipleShardingContext shardingContext) {
-        return jobCaller.fetchData();
+    public List<Object> fetchData(final JobExecutionSingleShardingContext shardingContext) {
+        return jobCaller.fetchData(shardingContext.getShardingItem());
     }
     
     @Override
-    public boolean processData(final JobExecutionMultipleShardingContext shardingContext, final Object data) {
-        return jobCaller.processData(data);
+    public int processData(final JobExecutionSingleShardingContext shardingContext, final List<Object> data) {
+        int result = 0;
+        for (Object each : data) {
+            try {
+                if (jobCaller.processData(each)) {
+                    result++;
+                }
+            } catch (final NullPointerException ex) {
+            }
+        }
+        return result;
     }
     
     @Override
     public boolean isStreamingProcess() {
-        return true;
+        return false;
     }
 }

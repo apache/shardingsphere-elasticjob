@@ -25,13 +25,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractBatchSequenceDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 
 @Component
-public class SequenceDataFlowJobDemo extends AbstractSequenceDataFlowElasticJob<Foo> {
+public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(SequenceDataFlowJobDemo.class);
     
@@ -45,10 +45,14 @@ public class SequenceDataFlowJobDemo extends AbstractSequenceDataFlowElasticJob<
     }
     
     @Override
-    public boolean processData(final JobExecutionSingleShardingContext context, final Foo data) {
+    public int processData(final JobExecutionSingleShardingContext context, final List<Foo> data) {
         printContext.printProcessDataMessage(data);
-        fooRepository.setInactive(data.getId());
-        return true;
+        int successCount = 0;
+        for (Foo each : data) {
+            fooRepository.setInactive(each.getId());
+            successCount++;
+        }
+        return successCount;
     }
     
     @Override

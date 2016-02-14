@@ -15,27 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.plugin.job.type.fixture;
-
-import org.quartz.JobExecutionException;
+package com.dangdang.ddframe.job.plugin.job.type.dataflow;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.internal.job.dataflow.AbstractBatchDataFlowElasticJob;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public class FooSimpleElasticJob extends AbstractSimpleElasticJob {
-    
-    private final JobCaller jobCaller;
-    
-    @Override
-    public void process(final JobExecutionMultipleShardingContext shardingContext) {
-        jobCaller.process();
-    }
-    
-    @Override
-    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
-        throw jobExecutionException;
-    }
+/**
+ * 高吞吐量批量处理数据流程的作业.
+ * 
+ * @author zhangliang
+ *
+ * @param <T> 数据流作业处理的数据实体类型
+ */
+public abstract class AbstractBatchThroughputDataFlowElasticJob<T> extends AbstractBatchDataFlowElasticJob<T, JobExecutionMultipleShardingContext> {
 }

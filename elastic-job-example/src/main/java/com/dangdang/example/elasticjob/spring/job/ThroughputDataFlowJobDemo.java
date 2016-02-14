@@ -24,13 +24,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 
 @Component
-public class ThroughputDataFlowJobDemo extends AbstractThroughputDataFlowElasticJob<Foo> {
+public class ThroughputDataFlowJobDemo extends AbstractIndividualThroughputDataFlowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(ThroughputDataFlowJobDemo.class);
     
@@ -52,7 +52,7 @@ public class ThroughputDataFlowJobDemo extends AbstractThroughputDataFlowElastic
         fooRepository.setInactive(data.getId());
         return true;
     }
-
+    
     @Override
     public boolean isStreamingProcess() {
         return true;

@@ -15,33 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.plugin.job.type.dataflow;
 
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.internal.job.dataflow.AbstractIndividualDataFlowElasticJob;
 
 /**
- * 不断获取最新数据的高吞吐量处理数据流程作业.
- * 
- * <p>
- * 作业执行过程中不断的获取是否有新数据.
- * 有新数据则作业一直不停止.
- * 适用于流式数据处理.
- * </p>
- * 
- * <p>
- * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
- * </p>
- * @see com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractThroughputIndividualDataFlowElasticJob
+ * 高吞吐量逐条处理数据流程的作业.
  * 
  * @author zhangliang
- * 
+ *
  * @param <T> 数据流作业处理的数据实体类型
  */
-@Deprecated
-public abstract class AbstractPerpetualElasticJob<T> extends AbstractIndividualDataFlowElasticJob<T, JobExecutionMultipleShardingContext> {
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return true;
-    }
+public abstract class AbstractIndividualThroughputDataFlowElasticJob<T> extends AbstractIndividualDataFlowElasticJob<T, JobExecutionMultipleShardingContext> {
 }

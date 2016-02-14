@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.plugin.job.type;
+package com.dangdang.ddframe.job.plugin.job.type.simple;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -44,6 +44,7 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 

@@ -21,11 +21,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.job.plugin.job.type.SimpleElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.StreamingSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.StreamingThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.UnstreamingSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.UnstreamingThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.StreamingBatchSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.StreamingBatchThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.StreamingIndividualSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.StreamingIndividualThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.UnstreamingBatchSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.UnstreamingBatchThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.UnstreamingIndividualSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.UnstreamingIndividualThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.simple.SimpleElasticJobTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobShardingStrategyTest;
@@ -33,10 +37,14 @@ import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobSh
 @RunWith(Suite.class)
 @SuiteClasses({
     SimpleElasticJobTest.class, 
-    UnstreamingThroughputDataFlowElasticJobTest.class, 
-    StreamingThroughputDataFlowElasticJobTest.class, 
-    UnstreamingSequenceDataFlowElasticJobTest.class, 
-    StreamingSequenceDataFlowElasticJobTest.class, 
+    StreamingIndividualThroughputDataFlowElasticJobTest.class,
+    StreamingBatchThroughputDataFlowElasticJobTest.class, 
+    StreamingIndividualSequenceDataFlowElasticJobTest.class,
+    StreamingBatchSequenceDataFlowElasticJobTest.class, 
+    UnstreamingIndividualThroughputDataFlowElasticJobTest.class,
+    UnstreamingBatchThroughputDataFlowElasticJobTest.class, 
+    UnstreamingIndividualSequenceDataFlowElasticJobTest.class,
+    UnstreamingBatchSequenceDataFlowElasticJobTest.class, 
     AverageAllocationJobShardingStrategyTest.class, 
     OdevitySortByNameJobShardingStrategyTest.class, 
     RotateServerByNameJobShardingStrategyTest.class

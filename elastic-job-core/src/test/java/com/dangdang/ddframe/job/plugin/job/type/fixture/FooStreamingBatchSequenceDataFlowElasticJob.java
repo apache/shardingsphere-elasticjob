@@ -20,12 +20,12 @@ package com.dangdang.ddframe.job.plugin.job.type.fixture;
 import java.util.List;
 
 import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractBatchSequenceDataFlowElasticJob;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class FooStreamingSequenceDataFlowElasticJob extends AbstractSequenceDataFlowElasticJob<Object> {
+public final class FooStreamingBatchSequenceDataFlowElasticJob extends AbstractBatchSequenceDataFlowElasticJob<Object> {
     
     private final JobCaller jobCaller;
     
@@ -35,8 +35,17 @@ public final class FooStreamingSequenceDataFlowElasticJob extends AbstractSequen
     }
     
     @Override
-    public boolean processData(final JobExecutionSingleShardingContext shardingContext, final Object data) {
-        return jobCaller.processData(data);
+    public int processData(final JobExecutionSingleShardingContext shardingContext, final List<Object> data) {
+        int result = 0;
+        for (Object each : data) {
+            try {
+                if (jobCaller.processData(each)) {
+                    result++;
+                }
+            } catch (final NullPointerException ex) {
+            }
+        }
+        return result;
     }
     
     @Override

@@ -46,6 +46,16 @@ public final class ProcessCountStatistics {
     }
     
     /**
+     * 增加本作业服务器处理数据正确的数量.
+     * 
+     * @param jobName 作业名称
+     * @param successCount 处理数据正确的数量
+     */
+    public static void incrementProcessSuccessCount(final String jobName, final int successCount) {
+        incrementProcessCount(jobName, successCount, processSuccessCount);
+    }
+    
+    /**
      * 增加本作业服务器处理数据错误的数量.
      * 
      * @param jobName 作业名称
@@ -54,9 +64,24 @@ public final class ProcessCountStatistics {
         incrementProcessCount(jobName, processFailureCount);
     }
     
+    /**
+     * 增加本作业服务器处理数据错误的数量.
+     * 
+     * @param jobName 作业名称
+     * @param failureCount 处理数据错误的数量
+     */
+    public static void incrementProcessFailureCount(final String jobName, final int failureCount) {
+        incrementProcessCount(jobName, failureCount, processFailureCount);
+    }
+    
     private static void incrementProcessCount(final String jobName, final ConcurrentMap<String, AtomicInteger> processCountMap) {
         processCountMap.putIfAbsent(jobName, new AtomicInteger(0));
         processCountMap.get(jobName).incrementAndGet();
+    }
+    
+    private static void incrementProcessCount(final String jobName, final int count, final ConcurrentMap<String, AtomicInteger> processCountMap) {
+        processCountMap.putIfAbsent(jobName, new AtomicInteger(0));
+        processCountMap.get(jobName).addAndGet(count);
     }
     
     /**

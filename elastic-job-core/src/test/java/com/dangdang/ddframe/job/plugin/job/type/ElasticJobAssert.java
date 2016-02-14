@@ -39,16 +39,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ElasticJobAssert {
     
-    static final String JOB_NAME = "unit_test_job";
+    public static final String JOB_NAME = "unit_test_job";
     
-    static JobExecutionMultipleShardingContext getShardingContext() {
+    public static JobExecutionMultipleShardingContext getShardingContext() {
         JobExecutionMultipleShardingContext result = new JobExecutionMultipleShardingContext();
         result.setJobName(JOB_NAME);
         result.setShardingItems(Arrays.asList(0, 1));
         return result;
     }
     
-    static void prepareForIsNotMisfireAndIsNotFailover(final ConfigurationService configService, final ExecutionContextService executionContextService, 
+    public static void prepareForIsNotMisfireAndIsNotFailover(final ConfigurationService configService, final ExecutionContextService executionContextService, 
             final ExecutionService executionService, final JobExecutionMultipleShardingContext shardingContext) {
         when(executionContextService.getJobExecutionShardingContext()).thenReturn(shardingContext);
         when(executionService.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
@@ -56,7 +56,7 @@ public class ElasticJobAssert {
         when(configService.isFailover()).thenReturn(false);
     }
     
-    static void verifyForIsNotMisfireAndIsNotFailover(final ConfigurationService configService, final ShardingService shardingService, final ExecutionContextService executionContextService, 
+    public static void verifyForIsNotMisfireAndIsNotFailover(final ConfigurationService configService, final ShardingService shardingService, final ExecutionContextService executionContextService, 
             final ExecutionService executionService, final FailoverService failoverService, final JobExecutionMultipleShardingContext shardingContext) {
         verify(configService).checkMaxTimeDiffSecondsTolerable();
         verify(shardingService).shardingIfNecessary();
@@ -71,7 +71,7 @@ public class ElasticJobAssert {
         verify(failoverService, times(0)).failoverIfNecessary();
     }
     
-    static void assertProcessCountStatistics(final int successCount, final int failureCount) {
+    public static void assertProcessCountStatistics(final int successCount, final int failureCount) {
         assertThat(ProcessCountStatistics.getProcessSuccessCount(JOB_NAME), is(successCount));
         assertThat(ProcessCountStatistics.getProcessFailureCount(JOB_NAME), is(failureCount));
     }

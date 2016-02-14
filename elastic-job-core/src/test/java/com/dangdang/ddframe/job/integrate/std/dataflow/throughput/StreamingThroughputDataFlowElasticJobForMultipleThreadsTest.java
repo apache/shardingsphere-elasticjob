@@ -54,7 +54,7 @@ public final class StreamingThroughputDataFlowElasticJobForMultipleThreadsTest e
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(10));
+        assertTrue(ProcessCountStatistics.getProcessSuccessCount(getJobName()) >= 10);
         assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

@@ -15,48 +15,47 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput;
+package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.quartz.JobExecutionException;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractBatchThroughputDataFlowElasticJob;
 
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException extends AbstractIndividualThroughputDataFlowElasticJob<String> {
+@RequiredArgsConstructor
+public final class FooUnstreamingBatchThroughputDataFlowElasticJob extends AbstractBatchThroughputDataFlowElasticJob<Object> {
     
-    @Getter
-    private static volatile boolean completed;
+    private final JobCaller jobCaller;
     
     @Override
-    public List<String> fetchData(final JobExecutionMultipleShardingContext context) {
-        if (completed) {
-            return null;
-        }
-        return Arrays.asList("data");
+    public List<Object> fetchData(final JobExecutionMultipleShardingContext shardingContext) {
+        return jobCaller.fetchData();
     }
     
     @Override
-    public boolean processData(final JobExecutionMultipleShardingContext context, final String data) {
-        completed = true;
-        throw new JobException("");
+    public int processData(final JobExecutionMultipleShardingContext shardingContext, final List<Object> data) {
+        int result = 0;
+        for (Object each : data) {
+            try {
+                if (jobCaller.processData(each)) {
+                    result++;
+                }
+            } catch (final NullPointerException ex) {
+            }
+        }
+        return result;
     }
     
     @Override
     public boolean isStreamingProcess() {
-        return true;
+        return false;
     }
     
     @Override
     public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
-    }
-    
-    public static void reset() {
-        completed = false;
     }
 }

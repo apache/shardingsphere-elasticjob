@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.plugin.job.type;
+package com.dangdang.ddframe.job.plugin.job.type.simple;
 
 import lombok.extern.slf4j.Slf4j;
 

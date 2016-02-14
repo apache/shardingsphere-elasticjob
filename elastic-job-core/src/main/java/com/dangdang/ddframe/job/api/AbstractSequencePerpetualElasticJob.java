@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.plugin.job.type.AbstractSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.internal.job.dataflow.AbstractIndividualDataFlowElasticJob;
 
 /**
  * 不断获取最新数据并保证同一分片顺序性的处理数据流程作业.
@@ -32,14 +32,14 @@ import com.dangdang.ddframe.job.plugin.job.type.AbstractSequenceDataFlowElasticJ
  * <p>
  * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
  * </p>
- * @see com.dangdang.ddframe.job.plugin.job.type.AbstractSequenceDataFlowElasticJob
+ * @see com.dangdang.ddframe.job.internal.job.dataflow.AbstractIndividualDataFlowElasticJob
  * 
  * @author zhangliang
  * 
  * @param <T> 数据流作业处理的数据实体类型
  */
 @Deprecated
-public abstract class AbstractSequencePerpetualElasticJob<T> extends AbstractSequenceDataFlowElasticJob<T> {
+public abstract class AbstractSequencePerpetualElasticJob<T> extends AbstractIndividualDataFlowElasticJob<T, JobExecutionSingleShardingContext> {
     
     @Override
     public boolean isStreamingProcess() {

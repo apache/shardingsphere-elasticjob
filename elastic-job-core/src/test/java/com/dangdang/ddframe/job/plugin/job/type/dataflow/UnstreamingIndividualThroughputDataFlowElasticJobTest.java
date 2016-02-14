@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.plugin.job.type;
+package com.dangdang.ddframe.job.plugin.job.type.dataflow;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -41,10 +41,11 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.job.plugin.job.type.fixture.FooUnstreamingThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
+import com.dangdang.ddframe.job.plugin.job.type.fixture.FooUnstreamingIndividualThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 
-public final class UnstreamingThroughputDataFlowElasticJobTest {
+public final class UnstreamingIndividualThroughputDataFlowElasticJobTest {
     
     @Mock
     private JobCaller jobCaller;
@@ -67,7 +68,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
     @Mock
     private OffsetService offsetService;
     
-    private FooUnstreamingThroughputDataFlowElasticJob unstreamingThroughputDataFlowElasticJob;
+    private FooUnstreamingIndividualThroughputDataFlowElasticJob unstreamingIndividualThroughputDataFlowElasticJob;
     
     private JobExecutionMultipleShardingContext shardingContext;
     
@@ -75,13 +76,13 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(configService.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
-        unstreamingThroughputDataFlowElasticJob = new FooUnstreamingThroughputDataFlowElasticJob(jobCaller);
-        unstreamingThroughputDataFlowElasticJob.setConfigService(configService);
-        unstreamingThroughputDataFlowElasticJob.setShardingService(shardingService);
-        unstreamingThroughputDataFlowElasticJob.setExecutionContextService(executionContextService);
-        unstreamingThroughputDataFlowElasticJob.setExecutionService(executionService);
-        unstreamingThroughputDataFlowElasticJob.setFailoverService(failoverService);
-        unstreamingThroughputDataFlowElasticJob.setOffsetService(offsetService);
+        unstreamingIndividualThroughputDataFlowElasticJob = new FooUnstreamingIndividualThroughputDataFlowElasticJob(jobCaller);
+        unstreamingIndividualThroughputDataFlowElasticJob.setConfigService(configService);
+        unstreamingIndividualThroughputDataFlowElasticJob.setShardingService(shardingService);
+        unstreamingIndividualThroughputDataFlowElasticJob.setExecutionContextService(executionContextService);
+        unstreamingIndividualThroughputDataFlowElasticJob.setExecutionService(executionService);
+        unstreamingIndividualThroughputDataFlowElasticJob.setFailoverService(failoverService);
+        unstreamingIndividualThroughputDataFlowElasticJob.setOffsetService(offsetService);
         shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfireAndIsNotFailover(configService, executionContextService, executionService, shardingContext);
     }
@@ -94,7 +95,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
     @Test
     public void assertExecuteWhenFetchDataIsNull() throws JobExecutionException {
         when(jobCaller.fetchData()).thenReturn(null);
-        unstreamingThroughputDataFlowElasticJob.execute(null);
+        unstreamingIndividualThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller, times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfireAndIsNotFailover(configService, shardingService, executionContextService, executionService, failoverService, shardingContext);
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
@@ -103,7 +104,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
     @Test
     public void assertExecuteWhenFetchDataIsEmpty() throws JobExecutionException {
         when(jobCaller.fetchData()).thenReturn(Collections.emptyList());
-        unstreamingThroughputDataFlowElasticJob.execute(null);
+        unstreamingIndividualThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller, times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfireAndIsNotFailover(configService, shardingService, executionContextService, executionService, failoverService, shardingContext);
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
@@ -115,7 +116,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
         when(jobCaller.processData(1)).thenReturn(true);
         when(jobCaller.processData(2)).thenReturn(true);
         when(configService.getConcurrentDataProcessThreadCount()).thenReturn(1);
-        unstreamingThroughputDataFlowElasticJob.execute(null);
+        unstreamingIndividualThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).processData(1);
         verify(jobCaller).processData(2);
         verify(configService).getConcurrentDataProcessThreadCount();
@@ -128,7 +129,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
         when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1));
         when(jobCaller.processData(1)).thenReturn(true);
         when(configService.getConcurrentDataProcessThreadCount()).thenReturn(2);
-        unstreamingThroughputDataFlowElasticJob.execute(null);
+        unstreamingIndividualThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).processData(1);
         verify(configService).getConcurrentDataProcessThreadCount();
         ElasticJobAssert.verifyForIsNotMisfireAndIsNotFailover(configService, shardingService, executionContextService, executionService, failoverService, shardingContext);
@@ -140,7 +141,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
         when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         doThrow(RuntimeException.class).when(jobCaller).processData(any());
         when(configService.getConcurrentDataProcessThreadCount()).thenReturn(1);
-        unstreamingThroughputDataFlowElasticJob.execute(null);
+        unstreamingIndividualThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).processData(1);
         verify(jobCaller).processData(2);
         verify(configService).getConcurrentDataProcessThreadCount();
@@ -154,7 +155,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
         when(jobCaller.processData(1)).thenReturn(true, true);
         when(jobCaller.processData(2)).thenReturn(false, false);
         when(configService.getConcurrentDataProcessThreadCount()).thenReturn(1);
-        unstreamingThroughputDataFlowElasticJob.execute(null);
+        unstreamingIndividualThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).processData(1);
         verify(jobCaller).processData(2);
         verify(configService).getConcurrentDataProcessThreadCount();
@@ -170,7 +171,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
         when(jobCaller.processData(3)).thenReturn(true);
         when(jobCaller.processData(4)).thenReturn(true);
         when(configService.getConcurrentDataProcessThreadCount()).thenReturn(2);
-        unstreamingThroughputDataFlowElasticJob.execute(null);
+        unstreamingIndividualThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).processData(1);
         verify(jobCaller).processData(2);
         verify(jobCaller).processData(3);
@@ -182,7 +183,7 @@ public final class UnstreamingThroughputDataFlowElasticJobTest {
     
     @Test
     public void assertUpdateOffset() {
-        unstreamingThroughputDataFlowElasticJob.updateOffset(0, "offset1");
+        unstreamingIndividualThroughputDataFlowElasticJob.updateOffset(0, "offset1");
         verify(offsetService).updateOffset(0, "offset1");
     }
 }

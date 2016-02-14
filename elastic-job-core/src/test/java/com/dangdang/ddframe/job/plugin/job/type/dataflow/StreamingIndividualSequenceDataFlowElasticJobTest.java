@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.plugin.job.type;
+package com.dangdang.ddframe.job.plugin.job.type.dataflow;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -40,10 +40,13 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.job.plugin.job.type.fixture.FooUnstreamingSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
+import com.dangdang.ddframe.job.plugin.job.type.fixture.FooStreamingIndividualSequenceDataFlowElasticJob;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 
-public final class UnstreamingSequenceDataFlowElasticJobTest {
+public final class StreamingIndividualSequenceDataFlowElasticJobTest {
+    
+
     
     @Mock
     private JobCaller jobCaller;
@@ -66,21 +69,21 @@ public final class UnstreamingSequenceDataFlowElasticJobTest {
     @Mock
     private OffsetService offsetService;
     
-    private FooUnstreamingSequenceDataFlowElasticJob unstreamingSequenceDataFlowElasticJob;
-    
     private JobExecutionMultipleShardingContext shardingContext;
+    
+    private FooStreamingIndividualSequenceDataFlowElasticJob streamingIndividualSequenceDataFlowElasticJob;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(configService.getJobName()).thenReturn("testJob");
-        unstreamingSequenceDataFlowElasticJob = new FooUnstreamingSequenceDataFlowElasticJob(jobCaller);
-        unstreamingSequenceDataFlowElasticJob.setConfigService(configService);
-        unstreamingSequenceDataFlowElasticJob.setShardingService(shardingService);
-        unstreamingSequenceDataFlowElasticJob.setExecutionContextService(executionContextService);
-        unstreamingSequenceDataFlowElasticJob.setExecutionService(executionService);
-        unstreamingSequenceDataFlowElasticJob.setFailoverService(failoverService);
-        unstreamingSequenceDataFlowElasticJob.setOffsetService(offsetService);
+        when(configService.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
+        streamingIndividualSequenceDataFlowElasticJob = new FooStreamingIndividualSequenceDataFlowElasticJob(jobCaller);
+        streamingIndividualSequenceDataFlowElasticJob.setConfigService(configService);
+        streamingIndividualSequenceDataFlowElasticJob.setShardingService(shardingService);
+        streamingIndividualSequenceDataFlowElasticJob.setExecutionContextService(executionContextService);
+        streamingIndividualSequenceDataFlowElasticJob.setExecutionService(executionService);
+        streamingIndividualSequenceDataFlowElasticJob.setFailoverService(failoverService);
+        streamingIndividualSequenceDataFlowElasticJob.setOffsetService(offsetService);
         shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfireAndIsNotFailover(configService, executionContextService, executionService, shardingContext);
     }
@@ -94,7 +97,7 @@ public final class UnstreamingSequenceDataFlowElasticJobTest {
     public void assertExecuteWhenFetchDataIsNullAndEmpty() throws JobExecutionException {
         when(jobCaller.fetchData(0)).thenReturn(null);
         when(jobCaller.fetchData(1)).thenReturn(Collections.emptyList());
-        unstreamingSequenceDataFlowElasticJob.execute(null);
+        streamingIndividualSequenceDataFlowElasticJob.execute(null);
         verify(jobCaller).fetchData(0);
         verify(jobCaller).fetchData(1);
         verify(jobCaller, times(0)).processData(any());
@@ -102,16 +105,17 @@ public final class UnstreamingSequenceDataFlowElasticJobTest {
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
-        when(jobCaller.fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
-        when(jobCaller.fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
+        when(jobCaller.fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2), Collections.emptyList());
+        when(jobCaller.fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4), Collections.emptyList());
         when(jobCaller.processData(1)).thenReturn(true);
         when(jobCaller.processData(2)).thenReturn(true);
         when(jobCaller.processData(4)).thenThrow(new RuntimeException());
-        unstreamingSequenceDataFlowElasticJob.execute(null);
-        verify(jobCaller).fetchData(0);
-        verify(jobCaller).fetchData(1);
+        streamingIndividualSequenceDataFlowElasticJob.execute(null);
+        verify(jobCaller, times(2)).fetchData(0);
+        verify(jobCaller, times(2)).fetchData(1);
         verify(jobCaller).processData(1);
         verify(jobCaller).processData(2);
         verify(jobCaller).processData(3);

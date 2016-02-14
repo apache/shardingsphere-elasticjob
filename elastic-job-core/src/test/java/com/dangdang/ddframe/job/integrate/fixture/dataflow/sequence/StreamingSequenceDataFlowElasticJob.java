@@ -23,9 +23,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
 
-public final class StreamingSequenceDataFlowElasticJob extends AbstractSequenceDataFlowElasticJob<String> {
+public final class StreamingSequenceDataFlowElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<String> {
     
     private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     

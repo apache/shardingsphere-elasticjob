@@ -17,25 +17,30 @@
 
 package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
-import org.quartz.JobExecutionException;
+import java.util.List;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class FooSimpleElasticJob extends AbstractSimpleElasticJob {
+public final class FooUnstreamingIndividualSequenceDataFlowElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<Object> {
     
     private final JobCaller jobCaller;
     
     @Override
-    public void process(final JobExecutionMultipleShardingContext shardingContext) {
-        jobCaller.process();
+    public List<Object> fetchData(final JobExecutionSingleShardingContext shardingContext) {
+        return jobCaller.fetchData(shardingContext.getShardingItem());
     }
     
     @Override
-    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
-        throw jobExecutionException;
+    public boolean processData(final JobExecutionSingleShardingContext shardingContext, final Object data) {
+        return jobCaller.processData(data);
+    }
+    
+    @Override
+    public boolean isStreamingProcess() {
+        return false;
     }
 }
