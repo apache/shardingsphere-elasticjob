@@ -401,6 +401,7 @@
                     <quiet>true</quiet>
                     <format>xml</format>
                     <instrumentation>
+                        <ignoreTrivial>true</ignoreTrivial>
                         <excludes>
                             <exclude>com/dangdang/**/*Test.class</exclude>
                             <exclude>com/dangdang/**/Test*.class</exclude>
@@ -414,7 +415,7 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>${coveralls-maven-plugin.version}</version>
             </plugin>
-            <!-- 
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
