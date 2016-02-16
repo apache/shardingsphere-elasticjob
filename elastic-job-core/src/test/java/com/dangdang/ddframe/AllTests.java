@@ -17,17 +17,29 @@
 
 package com.dangdang.ddframe;
 
+import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.dangdang.ddframe.job.AllJobTests;
+import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.AllRegTests;
+import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServers;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @RunWith(Suite.class)
 @SuiteClasses({
     AllRegTests.class, 
     AllJobTests.class
     })
-public class AllTests {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AllTests {
+    
+    @AfterClass
+    public static void clear() {
+        NestedZookeeperServers.getInstance().closeServer(AbstractNestedZookeeperBaseTest.PORT);
+    }
 }

@@ -19,33 +19,55 @@ package com.dangdang.ddframe.job.internal.offset;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 
 
-public final class OffsetServiceTest extends AbstractBaseJobTest {
+public final class OffsetServiceTest {
     
-    private OffsetService offsetService = new OffsetService(getRegistryCenter(), getJobConfig());
+    @Mock
+    private JobNodeStorage jobNodeStorage;
+    
+    private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    
+    private OffsetService offsetService = new OffsetService(null, jobConfig);
+    
+    @Before
+    public void setUp() throws NoSuchFieldException {
+        MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(offsetService, "jobNodeStorage", jobNodeStorage);
+    }
     
     @Test
     public void assertUpdateOffset() {
         offsetService.updateOffset(0, "offset0");
-        assertThat(getRegistryCenter().getDirectly("/testJob/offset/0"), is("offset0"));
+        verify(jobNodeStorage).createJobNodeIfNeeded("offset/0");
+        verify(jobNodeStorage).updateJobNode("offset/0", "offset0");
     }
     
     @Test
     public void assertGetOffsets() {
-        offsetService.updateOffset(0, "offset0");
-        offsetService.updateOffset(1, "");
-        offsetService.updateOffset(2, "offset2");
-        Map<Integer, String> expected = new HashMap<>(2);
+        when(jobNodeStorage.getJobNodeDataDirectly("offset/0")).thenReturn("offset0");
+        when(jobNodeStorage.getJobNodeDataDirectly("offset/1")).thenReturn("");
+        when(jobNodeStorage.getJobNodeDataDirectly("offset/2")).thenReturn("offset2");
+        Map<Integer, String> expected = new HashMap<>(1);
         expected.put(0, "offset0");
-        assertThat(offsetService.getOffsets(Arrays.asList(0)), is(expected));
+        assertThat(offsetService.getOffsets(Arrays.asList(0, 1)), is(expected));
+        verify(jobNodeStorage).getJobNodeDataDirectly("offset/0");
+        verify(jobNodeStorage).getJobNodeDataDirectly("offset/1");
     }
 }

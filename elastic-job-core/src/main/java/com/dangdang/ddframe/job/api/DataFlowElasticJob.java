@@ -41,15 +41,6 @@ public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingCon
     List<T> fetchData(final C shardingContext);
     
     /**
-     * 处理数据.
-     * 
-     * @param shardingContext 作业分片规则配置上下文
-     * @param data 待处理的数据
-     * @return 数据是否处理成功
-     */
-    boolean processData(final C shardingContext, final T data);
-    
-    /**
      * 配置是否流式处理数据.
      * 如果流式处理数据, 则fetchData不返回空结果将持续执行作业.
      * 如果非流式处理数据, 则处理数据完成后作业结束.

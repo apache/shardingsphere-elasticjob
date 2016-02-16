@@ -20,13 +20,15 @@ package com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput;
 import java.util.Arrays;
 import java.util.List;
 
-import lombok.Getter;
+import org.quartz.JobExecutionException;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
-public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException extends AbstractThroughputDataFlowElasticJob<String> {
+import lombok.Getter;
+
+public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
     @Getter
     private static volatile boolean completed;
@@ -48,6 +50,10 @@ public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException exte
     @Override
     public boolean isStreamingProcess() {
         return true;
+    }
+    
+    @Override
+    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
     }
     
     public static void reset() {

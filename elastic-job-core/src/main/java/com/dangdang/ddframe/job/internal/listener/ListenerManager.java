@@ -31,7 +31,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class ListenerManager {
+public class ListenerManager {
     
     private final ElectionListenerManager electionListenerManager;
     

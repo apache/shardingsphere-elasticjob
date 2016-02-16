@@ -23,13 +23,13 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
-public final class OneOffThroughputDataFlowElasticJob extends AbstractThroughputDataFlowElasticJob<String> {
+public final class OneOffThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
-    private static Set<String> processedData = new CopyOnWriteArraySet<>();
+    private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     
-    private static List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
+    private static volatile List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
     
     @Override
     public List<String> fetchData(final JobExecutionMultipleShardingContext context) {

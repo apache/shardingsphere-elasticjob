@@ -21,12 +21,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
+
 import lombok.Getter;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
-
-public final class ThroughputDataFlowElasticJob extends AbstractThroughputDataFlowElasticJob<String> {
+public final class ThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
     @Getter
     private static volatile boolean completed;

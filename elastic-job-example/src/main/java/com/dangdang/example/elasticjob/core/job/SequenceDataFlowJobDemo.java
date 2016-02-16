@@ -21,12 +21,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 
-public class SequenceDataFlowJobDemo extends AbstractSequenceDataFlowElasticJob<Foo> {
+public class SequenceDataFlowJobDemo extends AbstractIndividualSequenceDataFlowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(SequenceDataFlowJobDemo.class);
     

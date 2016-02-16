@@ -30,13 +30,15 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class StatisticsService {
+public class StatisticsService {
     
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     
     private final JobConfiguration jobConfiguration;
     
     private final ConfigurationService configService;
+    
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
     
     public StatisticsService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
@@ -50,8 +52,14 @@ public final class StatisticsService {
     public void startProcessCountJob() {
         int processCountIntervalSeconds = configService.getProcessCountIntervalSeconds();
         if (processCountIntervalSeconds > 0) {
-            ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
-            service.scheduleAtFixedRate(new ProcessCountJob(coordinatorRegistryCenter, jobConfiguration), processCountIntervalSeconds, processCountIntervalSeconds, TimeUnit.SECONDS);
+            scheduledExecutorService.scheduleAtFixedRate(new ProcessCountJob(coordinatorRegistryCenter, jobConfiguration), processCountIntervalSeconds, processCountIntervalSeconds, TimeUnit.SECONDS);
         }
+    }
+    
+    /**
+     * 停止统计处理数据数量的作业.
+     */
+    public void stopProcessCountJob() {
+        scheduledExecutorService.shutdown();
     }
 }

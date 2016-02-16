@@ -31,7 +31,7 @@ import com.google.common.base.Strings;
  * 
  * @author zhangliang
  */
-public final class OffsetService {
+public class OffsetService {
     
     private final JobNodeStorage jobNodeStorage;
     

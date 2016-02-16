@@ -25,12 +25,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractEnabledBaseStdJobTest;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
+import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.test.WaitingUtils;
 
-public final class StreamingThroughputDataFlowElasticJobTest extends AbstractEnabledBaseStdJobTest {
+public final class StreamingThroughputDataFlowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public StreamingThroughputDataFlowElasticJobTest() {
         super(StreamingThroughputDataFlowElasticJob.class);
@@ -44,13 +44,11 @@ public final class StreamingThroughputDataFlowElasticJobTest extends AbstractEna
     
     @Test
     public void assertJobInit() {
-        initJob();
-        assertRegCenterCommonInfo();
         while (!StreamingThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/testJob/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(10));
-        assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(0));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(10));
+        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.internal.storage;
 
 import java.util.List;
 
-import lombok.Getter;
-
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
@@ -31,6 +29,8 @@ import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
+import lombok.Getter;
+
 /**
  * 作业节点数据访问类.
  * 
@@ -40,7 +40,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class JobNodeStorage {
+public class JobNodeStorage {
     
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     
@@ -196,7 +196,7 @@ public final class JobNodeStorage {
      * 注册数据监听器.
      */
     public void addDataListener(final TreeCacheListener listener) {
-        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache();
+        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + jobConfiguration.getJobName());
         cache.getListenable().addListener(listener);
     }
     

@@ -35,7 +35,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class JobOperationListenerManager extends AbstractListenerManager {
+public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
@@ -49,43 +49,39 @@ public final class JobOperationListenerManager extends AbstractListenerManager {
     
     @Override
     public void start() {
-        listenConnectionLostListener();
-        listenJobStopedStatus();
+        addConnectionStateListener(new ConnectionLostListener());
+        addDataListener(new JobStopedStatusJobListener());
     }
     
-    void listenConnectionLostListener() {
-        addConnectionStateListener(new ConnectionStateListener() {
-            
-            @Override
-            public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
-                if (ConnectionState.LOST == newState) {
-                    JobRegistry.getInstance().getJob(jobName).stopJob();
-                } else if (ConnectionState.RECONNECTED == newState) {
-                    JobRegistry.getInstance().getJob(jobName).resumeCrashedJob();
-                }
+    class ConnectionLostListener implements ConnectionStateListener {
+        
+        @Override
+        public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
+            if (ConnectionState.LOST == newState) {
+                JobRegistry.getInstance().getJobScheduler(jobName).stopJob();
+            } else if (ConnectionState.RECONNECTED == newState) {
+                JobRegistry.getInstance().getJobScheduler(jobName).resumeCrashedJob();
             }
-        });
+        }
     }
     
-    void listenJobStopedStatus() {
-        addDataListener(new AbstractJobListener() {
-            
-            @Override
-            protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (!serverNode.isJobStopedPath(path)) {
-                    return;
-                }
-                JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
-                if (null == jobScheduler) {
-                    return;
-                }
-                if (Type.NODE_ADDED == event.getType()) {
-                    jobScheduler.stopJob();
-                }
-                if (Type.NODE_REMOVED == event.getType()) {
-                    jobScheduler.resumeManualStopedJob();
-                }
+    class JobStopedStatusJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (!serverNode.isJobStopedPath(path)) {
+                return;
             }
-        });
+            JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
+            if (null == jobScheduler) {
+                return;
+            }
+            if (Type.NODE_ADDED == event.getType()) {
+                jobScheduler.stopJob();
+            }
+            if (Type.NODE_REMOVED == event.getType()) {
+                jobScheduler.resumeManualStopedJob();
+            }
+        }
     }
 }

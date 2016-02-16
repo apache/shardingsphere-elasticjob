@@ -17,38 +17,93 @@
 
 package com.dangdang.ddframe.job.internal.election;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
-import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
-import com.dangdang.ddframe.test.WaitingUtils;
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.election.ElectionListenerManager.LeaderElectionJobListener;
+import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 
-public final class ElectionListenerManagerTest extends AbstractBaseJobTest {
+public final class ElectionListenerManagerTest {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    @Mock
+    private JobNodeStorage jobNodeStorage;
     
-    private final ElectionListenerManager electionListenerManager = new ElectionListenerManager(getRegistryCenter(), getJobConfig());
+    @Mock
+    private LeaderElectionService leaderElectionService;
+    
+    @Mock
+    private ShardingService shardingService;
+    
+    private final ElectionListenerManager electionListenerManager = new ElectionListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
     
     @Before
-    public void setUp() {
-        electionListenerManager.listenLeaderElection();
+    public void setUp() throws NoSuchFieldException {
+        MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(electionListenerManager, electionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
+        ReflectionUtils.setFieldValue(electionListenerManager, "leaderElectionService", leaderElectionService);
+        ReflectionUtils.setFieldValue(electionListenerManager, "shardingService", shardingService);
     }
     
     @Test
-    public void assertListenLeaderElection() {
-        getRegistryCenter().persist("/testJob/leader/election/host", "host0");
-        assertFalse(getRegistryCenter().isExisted("/testJob/leader/sharding/necessary"));
-        WaitingUtils.waitingShortTime();
-        getRegistryCenter().remove("/testJob/leader/election");
-        WaitingUtils.waitingShortTime();
-        assertThat(getRegistryCenter().get("/testJob/leader/election/host"), is(localHostService.getIp()));
-        assertTrue(getRegistryCenter().isExisted("/testJob/leader/sharding/necessary"));
+    public void assertStart() {
+        electionListenerManager.start();
+        verify(jobNodeStorage).addDataListener(Matchers.<LeaderElectionJobListener>any());
     }
+    
+    @Test
+    public void assertLeaderElectionJobListenerWhenIsNotLeaderHostPath() {
+        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/leader/election/other", null, "localhost".getBytes())), "/testJob/leader/election/other");
+        verify(leaderElectionService, times(0)).leaderElection();
+    }
+    
+    @Test
+    public void assertCronSettingChangedJobListenerWhenIsLeaderHostPathButNotRemove() {
+        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/leader/election/host", null, "localhost".getBytes())), "/testJob/leader/election/host");
+        verify(leaderElectionService, times(0)).leaderElection();
+    }
+    
+    @Test
+    public void assertCronSettingChangedJobListenerWhenIsLeaderHostPathAndIsRemoveAndIsLeader() {
+        when(leaderElectionService.hasLeader()).thenReturn(true);
+        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/testJob/leader/election/host", null, "localhost".getBytes())), "/testJob/leader/election/host");
+        verify(leaderElectionService).hasLeader();
+        verify(leaderElectionService, times(0)).leaderElection();
+    }
+    
+    @Test
+    public void assertCronSettingChangedJobListenerWhenIsLeaderHostPathAndIsRemoveAndIsNotLeader() {
+        when(leaderElectionService.hasLeader()).thenReturn(false);
+        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/testJob/leader/election/host", null, "localhost".getBytes())), "/testJob/leader/election/host");
+        verify(leaderElectionService).hasLeader();
+        verify(leaderElectionService).leaderElection();
+        verify(shardingService).setReshardingFlag();
+    }
+    
+//    @Test
+//    public void assertListenLeaderElection() {
+//        getRegistryCenter().persist("/testJob/leader/election/host", "host0");
+//        assertFalse(getRegistryCenter().isExisted("/testJob/leader/sharding/necessary"));
+//        WaitingUtils.waitingShortTime();
+//        getRegistryCenter().remove("/testJob/leader/election");
+//        WaitingUtils.waitingShortTime();
+//        assertThat(getRegistryCenter().get("/testJob/leader/election/host"), is(localHostService.getIp()));
+//        assertTrue(getRegistryCenter().isExisted("/testJob/leader/sharding/necessary"));
+//    }
 }

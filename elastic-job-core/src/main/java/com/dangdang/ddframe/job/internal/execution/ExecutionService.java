@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
@@ -37,9 +38,10 @@ import com.google.common.collect.Lists;
 /**
  * 执行作业的服务.
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
-public final class ExecutionService {
+public class ExecutionService {
     
     private final JobConfiguration jobConfiguration;
     
@@ -70,7 +72,11 @@ public final class ExecutionService {
             for (int each : jobExecutionShardingContext.getShardingItems()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
-                Date nextFireTime = JobRegistry.getInstance().getJob(jobConfiguration.getJobName()).getNextFireTime();
+                JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobConfiguration.getJobName());
+                if (null == jobScheduler) {
+                    continue;
+                }
+                Date nextFireTime = jobScheduler.getNextFireTime();
                 if (null != nextFireTime) {
                     jobNodeStorage.replaceJobNode(ExecutionNode.getNextFireTimeNode(each), nextFireTime.getTime());
                 }
@@ -113,7 +119,7 @@ public final class ExecutionService {
         if (leaderElectionService.isLeader()) {
             jobNodeStorage.fillEphemeralJobNode(ExecutionNode.CLEANING, "");
             List<Integer> items = getAllItems();
-            for (int each : getAllItems()) {
+            for (int each : items) {
                 jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getCompletedNode(each));
             }
             if (jobNodeStorage.isJobNodeExisted(ExecutionNode.NECESSARY)) {
@@ -175,33 +181,6 @@ public final class ExecutionService {
     }
     
     /**
-     * 判断是否还有执行中的作业.
-     * 
-     * @return 是否还有执行中的作业
-     */
-    public boolean hasRunningItems() {
-        return hasRunningItems(getAllItems());
-    }
-    
-    /**
-     * 判断分片项中是否还有执行中的作业.
-     * 
-     * @param items 需要判断的分片项列表
-     * @return 分片项中是否还有执行中的作业
-     */
-    public boolean hasRunningItems(final List<Integer> items) {
-        if (!configService.isMonitorExecution()) {
-            return false;
-        }
-        for (int each : items) {
-            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getRunningNode(each))) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
      * 设置任务被错过执行的标记.
      * 
      * @param items 需要设置错过执行的任务分片项
@@ -257,6 +236,33 @@ public final class ExecutionService {
      */
     public boolean isCompleted(final int item) {
         return jobNodeStorage.isJobNodeExisted(ExecutionNode.getCompletedNode(item));
+    }
+    
+    /**
+     * 判断分片项中是否还有执行中的作业.
+     * 
+     * @param items 需要判断的分片项列表
+     * @return 分片项中是否还有执行中的作业
+     */
+    public boolean hasRunningItems(final List<Integer> items) {
+        if (!configService.isMonitorExecution()) {
+            return false;
+        }
+        for (int each : items) {
+            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getRunningNode(each))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * 判断是否还有执行中的作业.
+     * 
+     * @return 是否还有执行中的作业
+     */
+    public boolean hasRunningItems() {
+        return hasRunningItems(getAllItems());
     }
     
     private List<Integer> getAllItems() {

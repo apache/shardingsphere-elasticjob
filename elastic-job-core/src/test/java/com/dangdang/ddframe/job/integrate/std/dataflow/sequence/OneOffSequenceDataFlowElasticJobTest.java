@@ -25,12 +25,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractEnabledBaseStdJobTest;
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
+import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.sequence.OneOffSequenceDataFlowElasticJob;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.test.WaitingUtils;
 
-public final class OneOffSequenceDataFlowElasticJobTest extends AbstractEnabledBaseStdJobTest {
+public final class OneOffSequenceDataFlowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public OneOffSequenceDataFlowElasticJobTest() {
         super(OneOffSequenceDataFlowElasticJob.class);
@@ -42,16 +43,18 @@ public final class OneOffSequenceDataFlowElasticJobTest extends AbstractEnabledB
         OneOffSequenceDataFlowElasticJob.reset();
     }
     
+    @Override
+    protected void setJobConfig(final JobConfiguration jobConfig) {
+        jobConfig.setMisfire(false);
+    }
+    
     @Test
     public void assertJobInit() {
-        getJobConfig().setMisfire(false);
-        initJob();
-        assertRegCenterCommonInfo();
         while (!OneOffSequenceDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/testJob/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(30));
-        assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(0));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(ProcessCountStatistics.getProcessSuccessCount(getJobName()) >= 30);
+        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

@@ -21,13 +21,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -41,8 +38,8 @@ import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.listener.ListenerManager;
+import com.dangdang.ddframe.job.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
@@ -52,10 +49,13 @@ import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 作业调度器.
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 @Slf4j
 public class JobScheduler {
@@ -65,6 +65,8 @@ public class JobScheduler {
     private static final String CRON_TRIGGER_INDENTITY_SUFFIX = "Trigger";
     
     private final JobConfiguration jobConfiguration;
+    
+    private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     
     private final ListenerManager listenerManager;
     
@@ -86,12 +88,15 @@ public class JobScheduler {
     
     private final OffsetService offsetService;
     
+    private final MonitorService monitorService;
+    
     private Scheduler scheduler;
     
     private JobDetail jobDetail;
     
     public JobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
+        this.coordinatorRegistryCenter = coordinatorRegistryCenter;
         listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration);
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
@@ -102,6 +107,7 @@ public class JobScheduler {
         failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
         statisticsService = new StatisticsService(coordinatorRegistryCenter, jobConfiguration);
         offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
+        monitorService = new MonitorService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -109,6 +115,7 @@ public class JobScheduler {
      */
     public void init() {
         log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
+        coordinatorRegistryCenter.addCacheData("/" + jobConfiguration.getJobName());
         registerElasticEnv();
         jobDetail = createJobDetail();
         try {
@@ -117,7 +124,7 @@ public class JobScheduler {
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
-        JobRegistry.getInstance().addJob(jobConfiguration.getJobName(), this);
+        JobRegistry.getInstance().addJobScheduler(jobConfiguration.getJobName(), this);
     }
     
     private void registerElasticEnv() {
@@ -128,6 +135,7 @@ public class JobScheduler {
         serverService.clearJobStopedStatus();
         statisticsService.startProcessCountJob();
         shardingService.setReshardingFlag();
+        monitorService.listen();
     }
     
     private JobDetail createJobDetail() {
@@ -139,18 +147,6 @@ public class JobScheduler {
         result.getJobDataMap().put("failoverService", failoverService);
         result.getJobDataMap().put("offsetService", offsetService);
         return result;
-    }
-    
-    private CronTrigger createTrigger(final String cronExpression) {
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-        if (configService.isMisfire()) {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
-        } else {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
-        }
-        return TriggerBuilder.newTrigger()
-                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX))
-                .withSchedule(cronScheduleBuilder).build();
     }
     
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
@@ -174,6 +170,18 @@ public class JobScheduler {
     }
     
     protected void prepareEnvironments(final Properties props) {
+    }
+    
+    private CronTrigger createTrigger(final String cronExpression) {
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
+        if (configService.isMisfire()) {
+            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
+        } else {
+            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
+        }
+        return TriggerBuilder.newTrigger()
+                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX))
+                .withSchedule(cronScheduleBuilder).build();
     }
     
     private void scheduleJob(final CronTrigger trigger) throws SchedulerException {
@@ -215,11 +223,7 @@ public class JobScheduler {
      */
     public void stopJob() {
         try {
-            for (JobExecutionContext each : scheduler.getCurrentlyExecutingJobs()) {
-                if (each.getJobInstance() instanceof AbstractElasticJob) {
-                    ((AbstractElasticJob) each.getJobInstance()).stop();
-                }
-            }
+            JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).stop();
             scheduler.pauseAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
@@ -231,6 +235,10 @@ public class JobScheduler {
      */
     public void resumeManualStopedJob() {
         try {
+            if (scheduler.isShutdown()) {
+                return;
+            }
+            JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).resume();
             scheduler.resumeAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
@@ -251,6 +259,7 @@ public class JobScheduler {
         if (serverService.isJobStopedManually()) {
             return;
         }
+        JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).resume();
         try {
             scheduler.resumeAll();
         } catch (final SchedulerException ex) {
@@ -274,6 +283,8 @@ public class JobScheduler {
      */
     public void shutdown() {
         try {
+            monitorService.close();
+            statisticsService.stopProcessCountJob();
             scheduler.shutdown();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);

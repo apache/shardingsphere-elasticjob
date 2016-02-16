@@ -21,13 +21,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractDisabledBaseStdJobTest;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
 import com.dangdang.ddframe.job.integrate.fixture.simple.SimpleElasticJob;
 
-public final class DisabledJobTest extends AbstractDisabledBaseStdJobTest {
+public final class DisabledJobTest extends AbstractBaseStdJobTest {
     
     public DisabledJobTest() {
-        super(SimpleElasticJob.class);
+        super(SimpleElasticJob.class, true);
     }
     
     @Before

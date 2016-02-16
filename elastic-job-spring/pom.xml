@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.dangdang</groupId>
         <artifactId>elastic-job</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.4-SNAPSHOT</version>
     </parent>
     <artifactId>elastic-job-spring</artifactId>
     <name>${project.artifactId}</name>
@@ -21,10 +21,8 @@
         </dependency>
         
         <dependency>
-            <groupId>com.dangdang</groupId>
-            <artifactId>elastic-job-test</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

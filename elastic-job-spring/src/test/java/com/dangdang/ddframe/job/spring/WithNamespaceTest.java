@@ -20,4 +20,9 @@ package com.dangdang.ddframe.job.spring;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withNamespace.xml")
-public final class WithNamespaceTest extends AbstractJobSpringIntegrateTest { }
+public final class WithNamespaceTest extends AbstractJobSpringIntegrateTest {
+    
+    public WithNamespaceTest() {
+        super("simpleElasticJob_namespace", "throughputDataFlowElasticJob_namespace");
+    }
+}

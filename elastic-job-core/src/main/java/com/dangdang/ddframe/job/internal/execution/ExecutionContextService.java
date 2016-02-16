@@ -35,7 +35,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class ExecutionContextService {
+public class ExecutionContextService {
     
     private final JobConfiguration jobConfiguration;
     

@@ -55,6 +55,7 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
         addPropertyValueIfNotEmpty("shardingItemParameters", element, factory);
         addPropertyValueIfNotEmpty("jobParameter", element, factory);
         addPropertyValueIfNotEmpty("monitorExecution", element, factory);
+        addPropertyValueIfNotEmpty("monitorPort", element, factory);
         addPropertyValueIfNotEmpty("processCountIntervalSeconds", element, factory);
         addPropertyValueIfNotEmpty("concurrentDataProcessThreadCount", element, factory);
         addPropertyValueIfNotEmpty("fetchDataCount", element, factory);

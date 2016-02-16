@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.internal.election;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
@@ -29,13 +27,15 @@ import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 主节点选举监听管理器.
  * 
  * @author zhangliang
  */
 @Slf4j
-public final class ElectionListenerManager extends AbstractListenerManager {
+public class ElectionListenerManager extends AbstractListenerManager {
     
     private final LeaderElectionService leaderElectionService;
     
@@ -52,21 +52,19 @@ public final class ElectionListenerManager extends AbstractListenerManager {
     
     @Override
     public void start() {
-        listenLeaderElection();
+        addDataListener(new LeaderElectionJobListener());
     }
     
-    void listenLeaderElection() {
-        addDataListener(new AbstractJobListener() {
-            
-            @Override
-            protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (Type.NODE_REMOVED == event.getType() && electionNode.isLeaderHostPath(path) && !leaderElectionService.hasLeader()) {
-                    log.debug("Elastic job: leader crashed, elect a new leader now.");
-                    leaderElectionService.leaderElection();
-                    shardingService.setReshardingFlag();
-                    log.debug("Elastic job: leader election completed.");
-                }
+    class LeaderElectionJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (electionNode.isLeaderHostPath(path) && Type.NODE_REMOVED == event.getType() && !leaderElectionService.hasLeader()) {
+                log.debug("Elastic job: leader crashed, elect a new leader now.");
+                leaderElectionService.leaderElection();
+                shardingService.setReshardingFlag();
+                log.debug("Elastic job: leader election completed.");
             }
-        });
+        }
     }
 }

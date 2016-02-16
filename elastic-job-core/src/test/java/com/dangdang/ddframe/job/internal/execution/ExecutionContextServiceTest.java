@@ -17,163 +17,235 @@
 
 package com.dangdang.ddframe.job.internal.execution;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
+import org.unitils.util.ReflectionUtils;
 
+import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
+import com.dangdang.ddframe.job.internal.failover.FailoverService;
+import com.dangdang.ddframe.job.internal.offset.OffsetService;
+import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
+import com.google.common.collect.Lists;
 
-public final class ExecutionContextServiceTest extends AbstractBaseJobTest {
+public final class ExecutionContextServiceTest {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    @Mock
+    private JobNodeStorage jobNodeStorage;
     
-    private final ExecutionContextService executionContextService = new ExecutionContextService(getRegistryCenter(), getJobConfig());
+    @Mock
+    private LocalHostService localHostService;
+    
+    @Mock
+    private ConfigurationService configService;
+    
+    @Mock
+    private ShardingService shardingService;
+    
+    @Mock
+    private FailoverService failoverService;
+    
+    @Mock
+    private OffsetService offsetService;
+    
+    private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    
+    private final ExecutionContextService executionContextService = new ExecutionContextService(null, jobConfig);
+    
+    @Before
+    public void setUp() throws NoSuchFieldException {
+        MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(executionContextService, "jobNodeStorage", jobNodeStorage);
+        ReflectionUtils.setFieldValue(executionContextService, "configService", configService);
+        ReflectionUtils.setFieldValue(executionContextService, "shardingService", shardingService);
+        ReflectionUtils.setFieldValue(executionContextService, "failoverService", failoverService);
+        ReflectionUtils.setFieldValue(executionContextService, "offsetService", offsetService);
+        when(localHostService.getIp()).thenReturn("mockedIP");
+        when(localHostService.getHostName()).thenReturn("mockedHostName");
+        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+    }
     
     @Test
     public void assertGetJobExecutionShardingContextWhenNotAssignShardingItem() {
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "3");
-        getRegistryCenter().persist("/testJob/config/jobParameter", "para");
-        getRegistryCenter().persist("/testJob/config/fetchDataCount", "100");
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.FALSE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/sharding", "");
-        JobExecutionMultipleShardingContext actual = executionContextService.getJobExecutionShardingContext();
-        assertThat(actual.getJobName(), is("testJob"));
-        assertThat(actual.getShardingTotalCount(), is(3));
-        assertThat(actual.getJobParameter(), is("para"));
-        assertThat(actual.getFetchDataCount(), is(100));
-        assertTrue(actual.getShardingItems().isEmpty());
-        assertFalse(actual.isMonitorExecution());
+        when(configService.getShardingTotalCount()).thenReturn(3);
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Collections.<Integer>emptyList());
+        when(configService.isFailover()).thenReturn(false);
+        when(configService.isMonitorExecution()).thenReturn(false);
+        when(configService.getFetchDataCount()).thenReturn(10);
+        JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
+        expected.setJobName("testJob");
+        expected.setShardingTotalCount(3);
+        expected.setFetchDataCount(10);
+        assertThat(executionContextService.getJobExecutionShardingContext(), new ReflectionEquals(expected));
+        verify(configService).getShardingTotalCount();
+        verify(shardingService).getLocalHostShardingItems();
+        verify(configService).isFailover();
+        verify(configService).isMonitorExecution();
+        verify(configService).getFetchDataCount();
     }
     
     @Test
     public void assertGetJobExecutionShardingContextWhenAssignShardingItems() {
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "3");
-        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "0=A,2=C");
-        getRegistryCenter().persist("/testJob/config/jobParameter", "para");
-        getRegistryCenter().persist("/testJob/config/fetchDataCount", "100");
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/sharding", "0,1");
-        getRegistryCenter().persist("/testJob/execution/0", "");
-        getRegistryCenter().persist("/testJob/execution/1", "");
-        getRegistryCenter().persist("/testJob/execution/2", "");
-        JobExecutionMultipleShardingContext actual = executionContextService.getJobExecutionShardingContext();
-        assertThat(actual.getJobName(), is("testJob"));
-        assertThat(actual.getShardingTotalCount(), is(3));
-        assertThat(actual.getShardingItems(), is(Arrays.asList(0, 1)));
-        Map<Integer, String> expectedRunningItemParameters = new HashMap<Integer, String>(1);
-        expectedRunningItemParameters.put(0, "A");
-        assertThat(actual.getShardingItemParameters(), is(expectedRunningItemParameters));
-        assertThat(actual.getJobParameter(), is("para"));
-        assertThat(actual.getFetchDataCount(), is(100));
-        assertTrue(actual.isMonitorExecution());
-        assertTrue(actual.getOffsets().isEmpty());
+        when(configService.getShardingTotalCount()).thenReturn(3);
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(configService.isFailover()).thenReturn(false);
+        when(configService.isMonitorExecution()).thenReturn(false);
+        when(configService.getFetchDataCount()).thenReturn(10);
+        Map<Integer, String> shardingItemParameters = new HashMap<>(3);
+        shardingItemParameters.put(0, "A");
+        shardingItemParameters.put(1, "B");
+        shardingItemParameters.put(2, "C");
+        when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
+        Map<Integer, String> offsets = new HashMap<>(2);
+        offsets.put(0, "offset0");
+        offsets.put(1, "offset1");
+        when(offsetService.getOffsets(Arrays.asList(0, 1))).thenReturn(offsets);
+        JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
+        expected.setJobName("testJob");
+        expected.setShardingTotalCount(3);
+        expected.setFetchDataCount(10);
+        expected.setShardingItems(Arrays.asList(0, 1));
+        expected.getShardingItemParameters().put(0, "A");
+        expected.getShardingItemParameters().put(1, "B");
+        expected.setOffsets(offsets);
+        assertThat(executionContextService.getJobExecutionShardingContext(), new ReflectionEquals(expected));
+        verify(configService).getShardingTotalCount();
+        verify(shardingService).getLocalHostShardingItems();
+        verify(configService).isFailover();
+        verify(configService).isMonitorExecution();
+        verify(configService).getFetchDataCount();
+        verify(configService).getShardingItemParameters();
+        verify(offsetService).getOffsets(Arrays.asList(0, 1));
     }
     
     @Test
     public void assertGetJobExecutionShardingContextWhenEnableFailover() {
-        getRegistryCenter().persist("/testJob/config/failover", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "3");
-        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "0=A,2=C");
-        getRegistryCenter().persist("/testJob/config/jobParameter", "para");
-        getRegistryCenter().persist("/testJob/config/fetchDataCount", "100");
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/sharding", "0,1");
-        getRegistryCenter().persist("/testJob/execution/2/failover", localHostService.getIp());
-        getRegistryCenter().persist("/testJob/execution/0", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2", "");
-        JobExecutionMultipleShardingContext actual = executionContextService.getJobExecutionShardingContext();
-        assertThat(actual.getJobName(), is("testJob"));
-        assertThat(actual.getShardingTotalCount(), is(3));
-        assertThat(actual.getShardingItems(), is(Arrays.asList(2)));
-        Map<Integer, String> expectedRunningItemParameters = new HashMap<Integer, String>(1);
-        expectedRunningItemParameters.put(2, "C");
-        assertThat(actual.getShardingItemParameters(), is(expectedRunningItemParameters));
-        assertThat(actual.getJobParameter(), is("para"));
-        assertThat(actual.getFetchDataCount(), is(100));
-        assertTrue(actual.isMonitorExecution());
-        assertTrue(actual.getOffsets().isEmpty());
+        when(configService.getShardingTotalCount()).thenReturn(3);
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(configService.isFailover()).thenReturn(true);
+        when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.<Integer>emptyList());
+        when(failoverService.getLocalHostTakeOffItems()).thenReturn(Collections.<Integer>emptyList());
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
+        when(configService.getFetchDataCount()).thenReturn(10);
+        when(configService.getShardingItemParameters()).thenReturn(Collections.<Integer, String>emptyMap());
+        Map<Integer, String> offsets = new HashMap<>(2);
+        offsets.put(0, "offset0");
+        offsets.put(1, "offset1");
+        when(offsetService.getOffsets(Arrays.asList(0, 1))).thenReturn(offsets);
+        JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
+        expected.setJobName("testJob");
+        expected.setShardingTotalCount(3);
+        expected.setFetchDataCount(10);
+        expected.setShardingItems(Arrays.asList(0, 1));
+        expected.setMonitorExecution(true);
+        expected.setOffsets(offsets);
+        assertThat(executionContextService.getJobExecutionShardingContext(), new ReflectionEquals(expected));
+        verify(configService).getShardingTotalCount();
+        verify(shardingService).getLocalHostShardingItems();
+        verify(configService).isFailover();
+        verify(failoverService).getLocalHostFailoverItems();
+        verify(failoverService).getLocalHostTakeOffItems();
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(configService).getFetchDataCount();
+        verify(configService).getShardingItemParameters();
+        verify(offsetService).getOffsets(Arrays.asList(0, 1));
     }
     
     @Test
     public void assertGetJobExecutionShardingContextWhenEnableFailoverAndForTakeOff() {
-        getRegistryCenter().persist("/testJob/config/failover", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "3");
-        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "0=A,2=C");
-        getRegistryCenter().persist("/testJob/config/jobParameter", "para");
-        getRegistryCenter().persist("/testJob/config/fetchDataCount", "100");
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/sharding", "0,1");
-        getRegistryCenter().persist("/testJob/execution/0/failover", "host0");
-        getRegistryCenter().persist("/testJob/execution/0", "");
-        getRegistryCenter().persist("/testJob/execution/1/completed", "");
-        getRegistryCenter().persist("/testJob/execution/2", "");
-        JobExecutionMultipleShardingContext actual = executionContextService.getJobExecutionShardingContext();
-        assertThat(actual.getJobName(), is("testJob"));
-        assertThat(actual.getShardingTotalCount(), is(3));
-        assertThat(actual.getShardingItems(), is(Arrays.asList(1)));
-        assertThat(actual.getShardingItemParameters(), is(Collections.EMPTY_MAP));
-        assertThat(actual.getJobParameter(), is("para"));
-        assertThat(actual.getFetchDataCount(), is(100));
-        assertTrue(actual.isMonitorExecution());
-        assertTrue(actual.getOffsets().isEmpty());
+        when(configService.getShardingTotalCount()).thenReturn(3);
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(configService.isFailover()).thenReturn(true);
+        when(failoverService.getLocalHostFailoverItems()).thenReturn(Arrays.asList(1));
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
+        when(configService.getFetchDataCount()).thenReturn(10);
+        Map<Integer, String> shardingItemParameters = new HashMap<>(3);
+        shardingItemParameters.put(0, "A");
+        shardingItemParameters.put(1, "B");
+        shardingItemParameters.put(2, "C");
+        when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
+        Map<Integer, String> offsets = new HashMap<>(1);
+        offsets.put(1, "offset1");
+        when(offsetService.getOffsets(Arrays.asList(1))).thenReturn(offsets);
+        JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
+        expected.setJobName("testJob");
+        expected.setShardingTotalCount(3);
+        expected.setFetchDataCount(10);
+        expected.setShardingItems(Arrays.asList(1));
+        expected.getShardingItemParameters().put(1, "B");
+        expected.setMonitorExecution(true);
+        expected.setOffsets(offsets);
+        assertThat(executionContextService.getJobExecutionShardingContext(), new ReflectionEquals(expected));
+        verify(configService).getShardingTotalCount();
+        verify(shardingService).getLocalHostShardingItems();
+        verify(configService).isFailover();
+        verify(failoverService).getLocalHostFailoverItems();
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(configService).getFetchDataCount();
+        verify(configService).getShardingItemParameters();
+        verify(offsetService).getOffsets(Arrays.asList(1));
     }
     
     @Test
     public void assertGetJobExecutionShardingContextWhenHasRunningItems() {
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "3");
-        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "0=A,2=C");
-        getRegistryCenter().persist("/testJob/config/jobParameter", "para");
-        getRegistryCenter().persist("/testJob/config/fetchDataCount", "100");
-        getRegistryCenter().persist("/testJob/config/monitorExecution", Boolean.TRUE.toString());
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/sharding", "0,1");
-        getRegistryCenter().persist("/testJob/execution/0/running", "");
-        getRegistryCenter().persist("/testJob/execution/1", "");
-        getRegistryCenter().persist("/testJob/execution/2", "");
-        JobExecutionMultipleShardingContext actual = executionContextService.getJobExecutionShardingContext();
-        assertThat(actual.getJobName(), is("testJob"));
-        assertThat(actual.getShardingTotalCount(), is(3));
-        assertThat(actual.getShardingItems(), is(Arrays.asList(1)));
-        assertThat(actual.getShardingItemParameters(), is(Collections.EMPTY_MAP));
-        assertThat(actual.getJobParameter(), is("para"));
-        assertThat(actual.getFetchDataCount(), is(100));
-        assertTrue(actual.isMonitorExecution());
-        assertTrue(actual.getOffsets().isEmpty());
-    }
-    
-    @Test
-    public void assertGetJobExecutionShardingContextWhenHaveOffsets() {
-        getRegistryCenter().persist("/testJob/config/shardingTotalCount", "3");
-        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "0=A,2=C");
-        getRegistryCenter().persist("/testJob/config/jobParameter", "para");
-        getRegistryCenter().persist("/testJob/config/fetchDataCount", "100");
-        getRegistryCenter().persist("/testJob/servers/" + localHostService.getIp() + "/sharding", "0,1");
-        getRegistryCenter().persist("/testJob/offset/0", "offset0");
-        getRegistryCenter().persist("/testJob/offset/1", "");
-        getRegistryCenter().persist("/testJob/offset/2", "offset2");
-        JobExecutionMultipleShardingContext actual = executionContextService.getJobExecutionShardingContext();
-        assertThat(actual.getJobName(), is("testJob"));
-        assertThat(actual.getShardingTotalCount(), is(3));
-        assertThat(actual.getShardingItems(), is(Arrays.asList(0, 1)));
-        Map<Integer, String> expectedRunningItemParameters = new HashMap<Integer, String>(1);
-        expectedRunningItemParameters.put(0, "A");
-        assertThat(actual.getShardingItemParameters(), is(expectedRunningItemParameters));
-        assertThat(actual.getJobParameter(), is("para"));
-        assertThat(actual.getFetchDataCount(), is(100));
-        assertFalse(actual.isMonitorExecution());
-        Map<Integer, String> offset = new HashMap<>(1);
-        offset.put(0, "offset0");
-        assertThat(actual.getOffsets(), is(offset));
+        when(configService.getShardingTotalCount()).thenReturn(3);
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
+        when(configService.isFailover()).thenReturn(true);
+        when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.<Integer>emptyList());
+        when(failoverService.getLocalHostTakeOffItems()).thenReturn(Collections.<Integer>emptyList());
+        when(configService.isMonitorExecution()).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
+        when(configService.getFetchDataCount()).thenReturn(10);
+        Map<Integer, String> shardingItemParameters = new HashMap<>(3);
+        shardingItemParameters.put(0, "A");
+        shardingItemParameters.put(1, "B");
+        shardingItemParameters.put(2, "C");
+        when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
+        Map<Integer, String> offsets = new HashMap<>(1);
+        offsets.put(0, "offset0");
+        when(offsetService.getOffsets(Arrays.asList(0))).thenReturn(offsets);
+        JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
+        expected.setJobName("testJob");
+        expected.setShardingTotalCount(3);
+        expected.setFetchDataCount(10);
+        expected.setShardingItems(Arrays.asList(0));
+        expected.getShardingItemParameters().put(0, "A");
+        expected.setMonitorExecution(true);
+        expected.setOffsets(offsets);
+        assertThat(executionContextService.getJobExecutionShardingContext(), new ReflectionEquals(expected));
+        verify(configService).getShardingTotalCount();
+        verify(shardingService).getLocalHostShardingItems();
+        verify(configService).isFailover();
+        verify(failoverService).getLocalHostFailoverItems();
+        verify(failoverService).getLocalHostTakeOffItems();
+        verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(configService).getFetchDataCount();
+        verify(configService).getShardingItemParameters();
+        verify(offsetService).getOffsets(Arrays.asList(0));
     }
 }

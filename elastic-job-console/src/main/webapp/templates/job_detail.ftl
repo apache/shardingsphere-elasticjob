@@ -55,6 +55,11 @@
                     <div class="col-sm-1">
                         <input type="number" id="maxTimeDiffSeconds" name="maxTimeDiffSeconds" class="form-control" data-toggle="tooltip" data-placement="bottom" title="如果时间误差超过配置秒数则作业启动时将抛异常。配置为-1表示不检查时间误差。" />
                     </div>
+                    
+                    <label for="monitorPort" class="col-sm-2 control-label">监听作业端口</label>
+                    <div class="col-sm-1">
+                        <input type="number" id="monitorPort" name="monitorPort" class="form-control" data-toggle="tooltip" data-placement="bottom" title="抓取作业注册信息监听服务端口。配置为-1表示不启用监听服务。" />
+                    </div>
                 </div>
                 
                 <div class="form-group">

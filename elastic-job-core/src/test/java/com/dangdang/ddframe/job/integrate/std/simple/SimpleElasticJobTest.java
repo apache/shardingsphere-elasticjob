@@ -23,11 +23,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractEnabledBaseStdJobTest;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
+import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.simple.SimpleElasticJob;
-import com.dangdang.ddframe.test.WaitingUtils;
 
-public final class SimpleElasticJobTest extends AbstractEnabledBaseStdJobTest {
+public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public SimpleElasticJobTest() {
         super(SimpleElasticJob.class);
@@ -41,11 +41,9 @@ public final class SimpleElasticJobTest extends AbstractEnabledBaseStdJobTest {
     
     @Test
     public void assertJobInit() {
-        initJob();
-        assertRegCenterCommonInfo();
         while (!SimpleElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/testJob/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
     }
 }

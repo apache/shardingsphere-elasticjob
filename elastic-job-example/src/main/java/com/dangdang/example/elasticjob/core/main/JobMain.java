@@ -28,7 +28,7 @@ import com.dangdang.example.elasticjob.core.job.ThroughputDataFlowJobDemo;
 
 public final class JobMain {
     
-    private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "elasticjob-example", 1000, 3000, 3);
+    private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:4181", "elasticjob-example", 1000, 3000, 3);
     
     private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
@@ -45,6 +45,8 @@ public final class JobMain {
     }
     
     public void init() {
+        zkConfig.setNestedPort(4181);
+        zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         regCenter.init();
         new JobScheduler(regCenter, jobConfig1).init();
         new JobScheduler(regCenter, jobConfig2).init();

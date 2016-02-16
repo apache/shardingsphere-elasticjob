@@ -135,6 +135,11 @@ public class JobConfiguration {
     private boolean misfire = true;
     
     /**
+     * 作业辅助监控端口.
+     */
+    private int monitorPort = -1;
+    
+    /**
      * 作业分片策略实现类全路径.
      * 
      * <p>

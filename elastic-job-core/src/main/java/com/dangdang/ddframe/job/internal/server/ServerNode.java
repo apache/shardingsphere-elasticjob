@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.internal.server;
 
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.storage.JobNodePath;
 
 /**
@@ -49,7 +48,7 @@ public final class ServerNode {
     
     static final String STOPED = ROOT + "/%s/stoped";
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final JobNodePath jobNodePath;
     

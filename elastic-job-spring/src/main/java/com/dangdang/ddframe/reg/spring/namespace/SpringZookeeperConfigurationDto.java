@@ -43,6 +43,10 @@ final class SpringZookeeperConfigurationDto {
     
     private String digest;
     
+    private String nestedPort;
+    
+    private String nestedDataDir;
+    
     private String localPropertiesPath;
     
     private String overwrite;

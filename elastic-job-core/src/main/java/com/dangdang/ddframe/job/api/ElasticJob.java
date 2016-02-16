@@ -18,10 +18,20 @@
 package com.dangdang.ddframe.job.api;
 
 import org.quartz.Job;
+import org.quartz.JobExecutionException;
 
 /**
  * 弹性化分布式作业接口.
  * 
  * @author zhangliang
  */
-public interface ElasticJob extends Job { }
+public interface ElasticJob extends Job, Stopable {
+    
+    /**
+     * 处理作业执行时异常.
+     * 
+     * @param jobExecutionException 作业执行时异常
+     * @throws JobExecutionException 作业执行时异常
+     */
+    void handleJobExecutionException(JobExecutionException jobExecutionException) throws JobExecutionException;
+}

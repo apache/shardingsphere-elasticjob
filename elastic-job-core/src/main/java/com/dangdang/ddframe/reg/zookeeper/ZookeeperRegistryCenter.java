@@ -22,7 +22,9 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -59,15 +61,18 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     @Getter(AccessLevel.PROTECTED)
     private ZookeeperConfiguration zkConfig;
     
+    private final Map<String, TreeCache> caches = new HashMap<>();
+    
     private CuratorFramework client;
     
-    private TreeCache cache;
-    
-    public ZookeeperRegistryCenter(final ZookeeperConfiguration zookeeperConfiguration) {
-        zkConfig = zookeeperConfiguration;
+    public ZookeeperRegistryCenter(final ZookeeperConfiguration zkConfig) {
+        this.zkConfig = zkConfig;
     }
     
     public void init() {
+        if (zkConfig.isUseNestedZookeeper()) {
+            NestedZookeeperServers.getInstance().startServerIfNotStarted(zkConfig.getNestedPort(), zkConfig.getNestedDataDir());
+        }
         log.debug("Elastic job: zookeeper registry center init, server lists is: {}.", zkConfig.getServerLists());
         Builder builder = CuratorFrameworkFactory.builder()
                 .connectString(zkConfig.getServerLists())
@@ -101,7 +106,6 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
             if (!Strings.isNullOrEmpty(zkConfig.getLocalPropertiesPath())) {
                 fillData();
             }
-            cacheData();
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -134,18 +138,17 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         return result;
     }
     
-    private void cacheData() throws Exception {
-        cache = new TreeCache(client, "/");
-        cache.start();
-    }
-    
     @Override
     public void close() {
-        if (null != cache) {
-            cache.close();
+        for (Entry<String, TreeCache> each : caches.entrySet()) {
+            each.getValue().close();
+            
         }
         waitForCacheClose();
         CloseableUtils.closeQuietly(client);
+        if (zkConfig.isUseNestedZookeeper()) {
+            NestedZookeeperServers.getInstance().closeServer(zkConfig.getNestedPort());
+        }
     }
     
     /* TODO 等待500ms, cache先关闭再关闭client, 否则会抛异常
@@ -163,14 +166,24 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     
     @Override
     public String get(final String key) {
-        if (null == cache) {
-            return null;
+        TreeCache cache = findTreeCache(key);
+        if (null == findTreeCache(key)) {
+            return getDirectly(key);
         }
         ChildData resultIncache = cache.getCurrentData(key);
         if (null != resultIncache) {
             return null == resultIncache.getData() ? null : new String(resultIncache.getData(), Charset.forName("UTF-8"));
         }
         return getDirectly(key);
+    }
+    
+    private TreeCache findTreeCache(final String key) {
+        for (Entry<String, TreeCache> entry : caches.entrySet()) {
+            if (key.startsWith(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
     
     @Override
@@ -299,7 +312,20 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     }
     
     @Override
-    public Object getRawCache() {
-        return cache;
+    public void addCacheData(final String cachePath) {
+        TreeCache cache = new TreeCache(client, cachePath);
+        try {
+            cache.start();
+        //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+        //CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+        caches.put(cachePath, cache);
+    }
+    
+    @Override
+    public Object getRawCache(final String cachePath) {
+        return caches.get(cachePath);
     }
 }
