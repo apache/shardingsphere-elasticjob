@@ -19,20 +19,34 @@ package com.dangdang.ddframe.job.api;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerKey;
 import org.unitils.util.ReflectionUtils;
 
+import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
@@ -42,6 +56,7 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
@@ -152,203 +167,210 @@ public final class JobSchedulerTest {
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
     }
-//    
-//    @Test
-//    public void assertGetNextFireTimeWhenSchedulerExceptionOccur() throws NoSuchFieldException, SchedulerException {
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
-//        JobKey jobKey = new JobKey("testJob");
-//        when(jobDetail.getKey()).thenReturn(jobKey);
-//        doThrow(SchedulerException.class).when(scheduler).getTriggersOfJob(jobKey);
-//        assertNull(jobScheduler.getNextFireTime());
-//    }
-//    
-//    @SuppressWarnings("unchecked")
-//    @Test
-//    public void assertGetNextFireTime() throws NoSuchFieldException, SchedulerException {
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
-//        JobKey jobKey = new JobKey("testJob");
-//        Trigger trigger1 = mock(Trigger.class);
-//        Trigger trigger2 = mock(Trigger.class);
-//        Trigger trigger3 = mock(Trigger.class);
-//        Trigger trigger4 = mock(Trigger.class);
-//        @SuppressWarnings("rawtypes")
-//        List triggers = Arrays.asList(trigger1, trigger2, trigger3, trigger4);
-//        when(trigger1.getNextFireTime()).thenReturn(null);
-//        when(trigger2.getNextFireTime()).thenReturn(new Date(1L));
-//        when(trigger3.getNextFireTime()).thenReturn(new Date(100L));
-//        when(trigger4.getNextFireTime()).thenReturn(new Date(0L));
-//        when(jobDetail.getKey()).thenReturn(jobKey);
-//        when(scheduler.getTriggersOfJob(jobKey)).thenReturn(triggers);
-//        assertThat(jobScheduler.getNextFireTime().getTime(), is(0L));
-//    }
-//    
-//    @Test(expected = JobException.class)
-//    public void assertStopJobFailure() throws NoSuchFieldException, SchedulerException {
-//        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        doThrow(SchedulerException.class).when(scheduler).pauseAll();
-//        try {
-//            jobScheduler.stopJob();
-//        } finally {
-//            verify(scheduler).pauseAll();
-//        }
-//    }
-//    
-//    @Test
-//    public void assertStopJobSuccess() throws NoSuchFieldException, SchedulerException {
-//        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        jobScheduler.stopJob();
-//        verify(scheduler).pauseAll();
-//    }
-//    
-//    @Test
-//    public void assertResumeManualStopedJobIfShutdown() throws NoSuchFieldException, SchedulerException {
-//        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-//        when(scheduler.isShutdown()).thenReturn(true);
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        jobScheduler.resumeManualStopedJob();
-//        verify(scheduler).isShutdown();
-//        verify(scheduler, times(0)).resumeAll();
-//    }
-//    
-//    @Test(expected = JobException.class)
-//    public void assertResumeManualStopedJobFailure() throws NoSuchFieldException, SchedulerException {
-//        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-//        when(scheduler.isShutdown()).thenReturn(false);
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        doThrow(SchedulerException.class).when(scheduler).resumeAll();
-//        try {
-//            jobScheduler.resumeManualStopedJob();
-//        } finally {
-//            verify(scheduler).isShutdown();
-//            verify(scheduler).resumeAll();
-//            verify(serverService, times(0)).clearJobStopedStatus();
-//        }
-//    }
-//    
-//    @Test
-//    public void assertResumeManualStopedJobSuccess() throws NoSuchFieldException, SchedulerException {
-//        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-//        when(scheduler.isShutdown()).thenReturn(false);
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        jobScheduler.resumeManualStopedJob();
-//        verify(scheduler).isShutdown();
-//        verify(scheduler).resumeAll();
-//        verify(serverService).clearJobStopedStatus();
-//    }
-//    
-//    @Test
-//    public void assertResumeCrashedJobIfIsJobStopedManually() throws NoSuchFieldException, SchedulerException {
-//        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-//        when(serverService.isJobStopedManually()).thenReturn(true);
-//        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-//        when(scheduler.isShutdown()).thenReturn(true);
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        jobScheduler.resumeCrashedJob();
-//        verify(serverService).persistServerOnline();
-//        verify(shardingService).getLocalHostShardingItems();
-//        verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
-//        verify(scheduler, times(0)).resumeAll();
-//    }
-//    
-//    @Test(expected = JobException.class)
-//    public void assertResumeCrashedJobFailure() throws NoSuchFieldException, SchedulerException {
-//        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-//        when(serverService.isJobStopedManually()).thenReturn(false);
-//        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-//        when(scheduler.isShutdown()).thenReturn(true);
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        doThrow(SchedulerException.class).when(scheduler).resumeAll();
-//        try {
-//            jobScheduler.resumeCrashedJob();
-//        } finally {
-//            verify(serverService).persistServerOnline();
-//            verify(shardingService).getLocalHostShardingItems();
-//            verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
-//            verify(scheduler).resumeAll();
-//        }
-//    }
-//    
-//    @Test
-//    public void assertResumeCrashedJobSuccess() throws NoSuchFieldException, SchedulerException {
-//        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-//        when(serverService.isJobStopedManually()).thenReturn(false);
-//        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-//        when(scheduler.isShutdown()).thenReturn(true);
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        jobScheduler.resumeCrashedJob();
-//        verify(serverService).persistServerOnline();
-//        verify(shardingService).getLocalHostShardingItems();
-//        verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
-//        verify(scheduler).resumeAll();
-//    }
-//    
-//    @Test(expected = JobException.class)
-//    public void assertTriggerJobFailure() throws NoSuchFieldException, SchedulerException {
-//        JobKey jobKey = new JobKey("testJob");
-//        when(jobDetail.getKey()).thenReturn(jobKey);
-//        doThrow(SchedulerException.class).when(scheduler).triggerJob(jobKey);
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
-//        try {
-//            jobScheduler.triggerJob();
-//        } finally {
-//            verify(jobDetail).getKey();
-//            verify(scheduler).triggerJob(jobKey);
-//        }
-//    }
-//    
-//    @Test
-//    public void assertTriggerJobSuccess() throws NoSuchFieldException, SchedulerException {
-//        JobKey jobKey = new JobKey("testJob");
-//        when(jobDetail.getKey()).thenReturn(jobKey);
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
-//        jobScheduler.triggerJob();
-//        verify(jobDetail).getKey();
-//        verify(scheduler).triggerJob(jobKey);
-//    }
-//    
-//    @Test(expected = JobException.class)
-//    public void assertShutdownFailure() throws NoSuchFieldException, SchedulerException {
-//        doThrow(SchedulerException.class).when(scheduler).shutdown();
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        try {
-//            jobScheduler.shutdown();
-//        } finally {
-//            verify(monitorService).close();
-//            verify(statisticsService).stopProcessCountJob();
-//            verify(scheduler).shutdown();
-//        }
-//    }
-//    
-//    @Test
-//    public void assertShutdownSuccess() throws NoSuchFieldException, SchedulerException {
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        jobScheduler.shutdown();
-//        verify(monitorService).close();
-//        verify(statisticsService).stopProcessCountJob();
-//        verify(scheduler).shutdown();
-//    }
-//    
-//    @Test(expected = JobException.class)
-//    public void assertRescheduleJobFailure() throws NoSuchFieldException, SchedulerException {
-//        doThrow(SchedulerException.class).when(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        try {
-//            jobScheduler.rescheduleJob("0/1 * * * * ?");
-//        } finally {
-//            verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
-//        }
-//    }
-//    
-//    @Test
-//    public void assertRescheduleJobSuccess() throws NoSuchFieldException, SchedulerException {
-//        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-//        jobScheduler.rescheduleJob("0/1 * * * * ?");
-//        verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
-//    }
+    
+    @Test
+    public void assertGetNextFireTimeWhenSchedulerExceptionOccur() throws NoSuchFieldException, SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
+        JobKey jobKey = new JobKey("testJob");
+        when(jobDetail.getKey()).thenReturn(jobKey);
+        doThrow(SchedulerException.class).when(scheduler).getTriggersOfJob(jobKey);
+        assertNull(jobScheduler.getNextFireTime());
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void assertGetNextFireTime() throws NoSuchFieldException, SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
+        JobKey jobKey = new JobKey("testJob");
+        Trigger trigger1 = mock(Trigger.class);
+        Trigger trigger2 = mock(Trigger.class);
+        Trigger trigger3 = mock(Trigger.class);
+        Trigger trigger4 = mock(Trigger.class);
+        @SuppressWarnings("rawtypes")
+        List triggers = Arrays.asList(trigger1, trigger2, trigger3, trigger4);
+        when(trigger1.getNextFireTime()).thenReturn(null);
+        when(trigger2.getNextFireTime()).thenReturn(new Date(1L));
+        when(trigger3.getNextFireTime()).thenReturn(new Date(100L));
+        when(trigger4.getNextFireTime()).thenReturn(new Date(0L));
+        when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.getTriggersOfJob(jobKey)).thenReturn(triggers);
+        assertThat(jobScheduler.getNextFireTime().getTime(), is(0L));
+    }
+    
+    @Test(expected = JobException.class)
+    public void assertStopJobFailure() throws NoSuchFieldException, SchedulerException {
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        doThrow(SchedulerException.class).when(scheduler).pauseAll();
+        try {
+            jobScheduler.stopJob();
+        } finally {
+            verify(scheduler).pauseAll();
+        }
+    }
+    
+    @Test
+    public void assertStopJobSuccess() throws NoSuchFieldException, SchedulerException {
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        jobScheduler.stopJob();
+        verify(scheduler).pauseAll();
+    }
+    
+    @Test
+    public void assertResumeManualStopedJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        when(scheduler.isShutdown()).thenReturn(true);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        jobScheduler.resumeManualStopedJob();
+        verify(scheduler).isShutdown();
+        verify(scheduler, times(0)).resumeAll();
+    }
+    
+    @Test(expected = JobException.class)
+    public void assertResumeManualStopedJobFailure() throws NoSuchFieldException, SchedulerException {
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        when(scheduler.isShutdown()).thenReturn(false);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        doThrow(SchedulerException.class).when(scheduler).resumeAll();
+        try {
+            jobScheduler.resumeManualStopedJob();
+        } finally {
+            verify(scheduler).isShutdown();
+            verify(scheduler).resumeAll();
+            verify(serverService, times(0)).clearJobStopedStatus();
+        }
+    }
+    
+    @Test
+    public void assertResumeManualStopedJobSuccess() throws NoSuchFieldException, SchedulerException {
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        when(scheduler.isShutdown()).thenReturn(false);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        jobScheduler.resumeManualStopedJob();
+        verify(scheduler).isShutdown();
+        verify(scheduler).resumeAll();
+        verify(serverService).clearJobStopedStatus();
+    }
+    
+    @Test
+    public void assertResumeCrashedJobIfIsJobStopedManually() throws NoSuchFieldException, SchedulerException {
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(serverService.isJobStopedManually()).thenReturn(true);
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        when(scheduler.isShutdown()).thenReturn(true);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        jobScheduler.resumeCrashedJob();
+        verify(serverService).persistServerOnline();
+        verify(shardingService).getLocalHostShardingItems();
+        verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
+        verify(scheduler, times(0)).resumeAll();
+    }
+    
+    @Test(expected = JobException.class)
+    public void assertResumeCrashedJobFailure() throws NoSuchFieldException, SchedulerException {
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(serverService.isJobStopedManually()).thenReturn(false);
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        when(scheduler.isShutdown()).thenReturn(true);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        doThrow(SchedulerException.class).when(scheduler).resumeAll();
+        try {
+            jobScheduler.resumeCrashedJob();
+        } finally {
+            verify(serverService).persistServerOnline();
+            verify(shardingService).getLocalHostShardingItems();
+            verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
+            verify(scheduler).resumeAll();
+        }
+    }
+    
+    @Test
+    public void assertResumeCrashedJobSuccess() throws NoSuchFieldException, SchedulerException {
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(serverService.isJobStopedManually()).thenReturn(false);
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        when(scheduler.isShutdown()).thenReturn(true);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        jobScheduler.resumeCrashedJob();
+        verify(serverService).persistServerOnline();
+        verify(shardingService).getLocalHostShardingItems();
+        verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
+        verify(scheduler).resumeAll();
+    }
+    
+    @Test(expected = JobException.class)
+    public void assertTriggerJobFailure() throws NoSuchFieldException, SchedulerException {
+        JobKey jobKey = new JobKey("testJob");
+        when(jobDetail.getKey()).thenReturn(jobKey);
+        doThrow(SchedulerException.class).when(scheduler).triggerJob(jobKey);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
+        try {
+            jobScheduler.triggerJob();
+        } finally {
+            verify(jobDetail).getKey();
+            verify(scheduler).triggerJob(jobKey);
+        }
+    }
+    
+    @Test
+    public void assertTriggerJobSuccess() throws NoSuchFieldException, SchedulerException {
+        JobKey jobKey = new JobKey("testJob");
+        when(jobDetail.getKey()).thenReturn(jobKey);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
+        jobScheduler.triggerJob();
+        verify(jobDetail).getKey();
+        verify(scheduler).triggerJob(jobKey);
+    }
+    
+    @Test(expected = JobException.class)
+    public void assertShutdownFailure() throws NoSuchFieldException, SchedulerException {
+        doThrow(SchedulerException.class).when(scheduler).shutdown();
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        try {
+            jobScheduler.shutdown();
+        } finally {
+            verify(monitorService).close();
+            verify(statisticsService).stopProcessCountJob();
+            verify(scheduler).shutdown();
+        }
+    }
+    
+    @Test
+    public void assertShutdownSuccess() throws NoSuchFieldException, SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        jobScheduler.shutdown();
+        verify(monitorService).close();
+        verify(statisticsService).stopProcessCountJob();
+        verify(scheduler).shutdown();
+    }
+    
+    @Test(expected = JobException.class)
+    public void assertRescheduleJobFailure() throws NoSuchFieldException, SchedulerException {
+        doThrow(SchedulerException.class).when(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        try {
+            jobScheduler.rescheduleJob("0/1 * * * * ?");
+        } finally {
+            verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
+        }
+    }
+    
+    @Test
+    public void assertRescheduleJobSuccess() throws NoSuchFieldException, SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        jobScheduler.rescheduleJob("0/1 * * * * ?");
+        verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
+    }
+    
+    @Test
+    public void assertSetField() throws NoSuchFieldException, SchedulerException {
+        jobScheduler.setField("fieldName", "fieldValue");
+        JobDetail jobDetail = ReflectionUtils.getFieldValue(jobScheduler, jobScheduler.getClass().getDeclaredField("jobDetail"));
+        assertThat(jobDetail.getJobDataMap().get("fieldName").toString(), is("fieldValue"));
+    }
 }

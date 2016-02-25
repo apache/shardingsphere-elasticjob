@@ -108,6 +108,7 @@ public class JobScheduler {
         statisticsService = new StatisticsService(coordinatorRegistryCenter, jobConfiguration);
         offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
         monitorService = new MonitorService(coordinatorRegistryCenter, jobConfiguration);
+        jobDetail = JobBuilder.newJob(jobConfiguration.getJobClass()).withIdentity(jobConfiguration.getJobName()).build();
     }
     
     /**
@@ -117,7 +118,7 @@ public class JobScheduler {
         log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
         coordinatorRegistryCenter.addCacheData("/" + jobConfiguration.getJobName());
         registerElasticEnv();
-        jobDetail = createJobDetail();
+        fillJobDetail();
         try {
             scheduler = initializeScheduler(jobDetail.getKey().toString());
             scheduleJob(createTrigger(configService.getCron()));
@@ -138,15 +139,13 @@ public class JobScheduler {
         monitorService.listen();
     }
     
-    private JobDetail createJobDetail() {
-        JobDetail result = JobBuilder.newJob(jobConfiguration.getJobClass()).withIdentity(jobConfiguration.getJobName()).build();
-        result.getJobDataMap().put("configService", configService);
-        result.getJobDataMap().put("shardingService", shardingService);
-        result.getJobDataMap().put("executionContextService", executionContextService);
-        result.getJobDataMap().put("executionService", executionService);
-        result.getJobDataMap().put("failoverService", failoverService);
-        result.getJobDataMap().put("offsetService", offsetService);
-        return result;
+    private void fillJobDetail() {
+        jobDetail.getJobDataMap().put("configService", configService);
+        jobDetail.getJobDataMap().put("shardingService", shardingService);
+        jobDetail.getJobDataMap().put("executionContextService", executionContextService);
+        jobDetail.getJobDataMap().put("executionService", executionService);
+        jobDetail.getJobDataMap().put("failoverService", failoverService);
+        jobDetail.getJobDataMap().put("offsetService", offsetService);
     }
     
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
@@ -300,5 +299,15 @@ public class JobScheduler {
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         } 
+    }
+    
+    /**
+     * 设置作业字段属性.
+     * 
+     * @param fieldName 字段名称
+     * @param fieldValue 字段值
+     */
+    public void setField(final String fieldName, final Object fieldValue) {
+        jobDetail.getJobDataMap().put(fieldName, fieldValue);
     }
 }

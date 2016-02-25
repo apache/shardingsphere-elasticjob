@@ -142,7 +142,6 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     public void close() {
         for (Entry<String, TreeCache> each : caches.entrySet()) {
             each.getValue().close();
-            
         }
         waitForCacheClose();
         CloseableUtils.closeQuietly(client);
