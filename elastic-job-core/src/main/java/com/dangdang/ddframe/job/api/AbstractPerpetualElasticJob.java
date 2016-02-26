@@ -31,7 +31,8 @@ import com.dangdang.ddframe.job.internal.job.dataflow.AbstractIndividualDataFlow
  * <p>
  * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
  * </p>
- * @see com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractThroughputIndividualDataFlowElasticJob
+ * @see com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob
+ * 
  * 
  * @author zhangliang
  * 

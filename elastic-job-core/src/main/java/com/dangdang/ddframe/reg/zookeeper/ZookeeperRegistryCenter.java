@@ -166,7 +166,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     @Override
     public String get(final String key) {
         TreeCache cache = findTreeCache(key);
-        if (null == findTreeCache(key)) {
+        if (null == cache) {
             return getDirectly(key);
         }
         ChildData resultIncache = cache.getCurrentData(key);

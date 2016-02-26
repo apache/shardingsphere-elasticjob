@@ -22,7 +22,7 @@
     </bean>
     
     <bean id="simpleElasticJob_no_namespace" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
-        <constructor-arg ref="regCenter"></constructor-arg>
+        <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
                 <constructor-arg name="jobName" value="simpleElasticJob_no_namespace" />
@@ -37,7 +37,7 @@
     </bean>
     
     <bean id="throughputDataFlowElasticJob_no_namespace" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
-        <constructor-arg ref="regCenter"></constructor-arg>
+        <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
                 <constructor-arg name="jobName" value="throughputDataFlowElasticJob_no_namespace" />

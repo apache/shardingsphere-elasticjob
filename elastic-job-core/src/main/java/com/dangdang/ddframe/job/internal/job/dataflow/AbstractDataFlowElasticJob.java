@@ -192,7 +192,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
-        log.trace("Elastic job: fetch data size: {}.", result != null ? result.size() : 0);
+        log.trace("Elastic job: fetch data size: {}.", result.size());
         return result;
     }
     

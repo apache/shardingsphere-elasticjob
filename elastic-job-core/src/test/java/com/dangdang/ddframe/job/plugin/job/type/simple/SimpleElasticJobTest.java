@@ -17,24 +17,6 @@
 
 package com.dangdang.ddframe.job.plugin.job.type.simple;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.quartz.JobExecutionException;
-import org.unitils.util.ReflectionUtils;
-
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
@@ -47,6 +29,22 @@ import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.quartz.JobExecutionException;
+import org.unitils.util.ReflectionUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public final class SimpleElasticJobTest {
     
@@ -175,7 +173,7 @@ public final class SimpleElasticJobTest {
         when(executionContextService.getJobExecutionShardingContext()).thenReturn(shardingContext);
         when(executionService.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
         when(configService.isMisfire()).thenReturn(true);
-        when(executionService.getMisfiredJobItems(shardingContext.getShardingItems())).thenReturn(Arrays.asList(0));
+        when(executionService.getMisfiredJobItems(shardingContext.getShardingItems())).thenReturn(Collections.singletonList(0));
         when(configService.isFailover()).thenReturn(false);
         simpleElasticJob.stop();
         simpleElasticJob.execute(null);
@@ -191,7 +189,7 @@ public final class SimpleElasticJobTest {
         when(executionContextService.getJobExecutionShardingContext()).thenReturn(shardingContext);
         when(executionService.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
         when(configService.isMisfire()).thenReturn(true);
-        when(executionService.getMisfiredJobItems(shardingContext.getShardingItems())).thenReturn(Arrays.asList(0));
+        when(executionService.getMisfiredJobItems(shardingContext.getShardingItems())).thenReturn(Collections.singletonList(0));
         when(shardingService.isNeedSharding()).thenReturn(true);
         when(configService.isFailover()).thenReturn(false);
         simpleElasticJob.execute(null);
@@ -208,7 +206,7 @@ public final class SimpleElasticJobTest {
         when(executionContextService.getJobExecutionShardingContext()).thenReturn(shardingContext);
         when(executionService.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
         when(configService.isMisfire()).thenReturn(true, false);
-        when(executionService.getMisfiredJobItems(shardingContext.getShardingItems())).thenReturn(Arrays.asList(0));
+        when(executionService.getMisfiredJobItems(shardingContext.getShardingItems())).thenReturn(Collections.singletonList(0));
         when(shardingService.isNeedSharding()).thenReturn(false);
         when(configService.isFailover()).thenReturn(false);
         simpleElasticJob.execute(null);

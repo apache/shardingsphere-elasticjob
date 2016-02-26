@@ -17,20 +17,19 @@
 
 package com.dangdang.ddframe.job.internal.schedule;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-
+import com.dangdang.ddframe.job.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import java.util.Collections;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public final class JobTriggerListenerTest {
     
@@ -55,9 +54,9 @@ public final class JobTriggerListenerTest {
     
     @Test
     public void assertTriggerMisfired() {
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0));
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Collections.singletonList(0));
         jobTriggerListener.triggerMisfired(null);
         verify(shardingService).getLocalHostShardingItems();
-        verify(executionService).setMisfire(Arrays.asList(0));
+        verify(executionService).setMisfire(Collections.singletonList(0));
     }
 }
