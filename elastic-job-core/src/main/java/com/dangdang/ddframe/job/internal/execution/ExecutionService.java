@@ -17,23 +17,21 @@
 
 package com.dangdang.ddframe.job.internal.execution;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.internal.util.BlockUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 执行作业的服务.
@@ -51,14 +49,11 @@ public class ExecutionService {
     
     private final ServerService serverService;
     
-    private final LeaderElectionService leaderElectionService;
-    
     public ExecutionService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
         serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -70,6 +65,7 @@ public class ExecutionService {
         if (!jobExecutionShardingContext.getShardingItems().isEmpty() && configService.isMonitorExecution()) {
             serverService.updateServerStatus(ServerStatus.RUNNING);
             for (int each : jobExecutionShardingContext.getShardingItems()) {
+                jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getCompletedNode(each));
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
                 JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobConfiguration.getJobName());
@@ -106,49 +102,6 @@ public class ExecutionService {
      */
     public void setNeedFixExecutionInfoFlag() {
         jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.NECESSARY);
-    }
-    
-    /**
-     * 清理作业上次运行时信息.
-     * 只会在主节点进行.
-     */
-    public void cleanPreviousExecutionInfo() {
-        if (!isExecutionNodeExisted()) {
-            return;
-        }
-        if (leaderElectionService.isLeader()) {
-            jobNodeStorage.fillEphemeralJobNode(ExecutionNode.CLEANING, "");
-            List<Integer> items = getAllItems();
-            for (int each : items) {
-                jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getCompletedNode(each));
-            }
-            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.NECESSARY)) {
-                fixExecutionInfo(items);
-            }
-            jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.CLEANING);
-        }
-        while (jobNodeStorage.isJobNodeExisted(ExecutionNode.CLEANING)) {
-            BlockUtils.waitingShortTime();
-        }
-    }
-    
-    private boolean isExecutionNodeExisted() {
-        return jobNodeStorage.isJobNodeExisted(ExecutionNode.ROOT);
-    }
-    
-    private void fixExecutionInfo(final List<Integer> items) {
-        int newShardingTotalCount = configService.getShardingTotalCount();
-        int currentShardingTotalCount = items.size();
-        if (newShardingTotalCount > currentShardingTotalCount) {
-            for (int i = currentShardingTotalCount; i < newShardingTotalCount; i++) {
-                jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.ROOT + "/" + i);
-            }
-        } else if (newShardingTotalCount < currentShardingTotalCount) {
-            for (int i = newShardingTotalCount; i < currentShardingTotalCount; i++) {
-                jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.ROOT + "/" + i);
-            }
-        }
-        jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.NECESSARY);
     }
     
     /**

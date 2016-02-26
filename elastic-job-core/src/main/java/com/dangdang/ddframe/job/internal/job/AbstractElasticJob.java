@@ -77,7 +77,6 @@ public abstract class AbstractElasticJob implements ElasticJob {
             log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
             return;
         }
-        executionService.cleanPreviousExecutionInfo();
         executeJobInternal(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
         while (configService.isMisfire() && !executionService.getMisfiredJobItems(shardingContext.getShardingItems()).isEmpty() && !stoped && !shardingService.isNeedSharding()) {

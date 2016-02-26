@@ -106,7 +106,6 @@ public final class SimpleElasticJobTest {
         verify(shardingService).shardingIfNecessary();
         verify(executionContextService).getJobExecutionShardingContext();
         verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-        verify(executionService, times(0)).cleanPreviousExecutionInfo();
         verify(jobCaller, times(0)).process();
     }
     
@@ -119,7 +118,6 @@ public final class SimpleElasticJobTest {
         verify(shardingService).shardingIfNecessary();
         verify(executionContextService).getJobExecutionShardingContext();
         verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-        verify(executionService).cleanPreviousExecutionInfo();
         verify(executionService, times(0)).registerJobBegin(shardingContext);
         verify(jobCaller, times(0)).process();
     }
@@ -136,7 +134,6 @@ public final class SimpleElasticJobTest {
             verify(shardingService).shardingIfNecessary();
             verify(executionContextService).getJobExecutionShardingContext();
             verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-            verify(executionService).cleanPreviousExecutionInfo();
             verify(executionService).registerJobBegin(shardingContext);
             verify(jobCaller).process();
             verify(executionService).registerJobCompleted(shardingContext);
@@ -214,7 +211,6 @@ public final class SimpleElasticJobTest {
         verify(shardingService).shardingIfNecessary();
         verify(executionContextService).getJobExecutionShardingContext();
         verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-        verify(executionService).cleanPreviousExecutionInfo();
         verify(executionService, times(2)).registerJobBegin(shardingContext);
         verify(jobCaller, times(2)).process();
         verify(executionService, times(2)).registerJobCompleted(shardingContext);
@@ -240,7 +236,6 @@ public final class SimpleElasticJobTest {
         verify(shardingService).shardingIfNecessary();
         verify(executionContextService).getJobExecutionShardingContext();
         verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-        verify(executionService).cleanPreviousExecutionInfo();
         verify(executionService).registerJobBegin(shardingContext);
         verify(jobCaller).process();
         verify(executionService).registerJobCompleted(shardingContext);
@@ -262,7 +257,6 @@ public final class SimpleElasticJobTest {
         verify(shardingService).shardingIfNecessary();
         verify(executionContextService).getJobExecutionShardingContext();
         verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-        verify(executionService).cleanPreviousExecutionInfo();
         verify(executionService).registerJobBegin(shardingContext);
         verify(jobCaller).process();
         verify(executionService).registerJobCompleted(shardingContext);
