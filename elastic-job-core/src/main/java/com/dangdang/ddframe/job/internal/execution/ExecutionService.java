@@ -259,6 +259,23 @@ public final class ExecutionService {
         return jobNodeStorage.isJobNodeExisted(ExecutionNode.getCompletedNode(item));
     }
     
+    /**
+     * 判断是否所有分片都执行完毕
+     * @return  是否所有分片都执行完毕
+     */
+    public boolean isAllCompleted() {
+    	boolean returnFlag = true;
+    	List<Integer> list =  getAllItems() ;
+    	for(int index=0;index<list.size();index++){
+    		if(!jobNodeStorage.isJobNodeExisted(ExecutionNode.getCompletedNode(list.get(index)))){
+    			returnFlag = false;
+    			break;
+    		}
+    	}
+    	
+        return returnFlag;
+    }
+    
     private List<Integer> getAllItems() {
         return Lists.transform(jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT), new Function<String, Integer>() {
             
