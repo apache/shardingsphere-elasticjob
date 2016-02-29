@@ -8,6 +8,7 @@ weight=1
 
 ## 1.0.5-SNAPSHOT
 1. 调整作业执行节点完成状态清理策略，将原来的由主节点统一清理所有上次运行状态，改为由每次作业触发时清理自己所属分片的上次运行状态
+1. 之前的DataFlowElasticJob由于使用newCachedThreadPool，可能会导致线程过多冲垮线程池。现在于DataFlowElasticJob接口增加getExecutorService方法，使用方可通过覆盖该方法自行提供ExecutorService，默认为newCachedThreadPool
 
 ## 1.0.4
 1. 精简项目模块，移除elastic-job-test模块
