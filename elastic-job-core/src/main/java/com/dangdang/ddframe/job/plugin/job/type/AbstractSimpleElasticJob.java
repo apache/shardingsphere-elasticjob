@@ -45,10 +45,20 @@ public abstract class AbstractSimpleElasticJob extends AbstractElasticJob {
         }
     }
     
+    @Override
+    protected  void afterAllShardingFinishedInternal(){
+    	afterAllShardingFinished();
+    }
+    
     /**
      * 执行作业.
      * 
      * @param shardingContext 作业分片规则配置上下文
      */
     public abstract void process(final JobExecutionMultipleShardingContext shardingContext);
+    
+    
+    public  void afterAllShardingFinished(){
+    	
+    }
 }

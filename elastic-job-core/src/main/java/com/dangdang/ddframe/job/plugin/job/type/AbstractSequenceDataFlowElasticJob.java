@@ -52,6 +52,18 @@ public abstract class AbstractSequenceDataFlowElasticJob<T> extends AbstractData
         }
     }
     
+    @Override
+    protected  void afterAllShardingFinishedInternal(){
+    	if (!isStreamingProcess()) {
+    		afterAllUnStreamingShardingFinished();
+        }
+    }
+    
+    @Override
+	public void afterAllUnStreamingShardingFinished() {
+		
+	}
+    
     private void executeStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         Map<Integer, List<T>> data = concurrentFetchData(shardingContext);
         while (!data.isEmpty() && !isStoped() && !getShardingService().isNeedSharding()) {

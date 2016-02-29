@@ -89,7 +89,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
             failoverService.failoverIfNecessary();
         }
         if(executionService.isAllCompleted()){
-        	afterAllShardingComplete();
+        	afterAllShardingFinishedInternal();
         	log.debug("Elastic job: all sharding completed.");
         }
         log.debug("Elastic job: execute all completed, job execution context:{}.", context);
@@ -111,11 +111,9 @@ public abstract class AbstractElasticJob implements ElasticJob {
     protected abstract void executeJob(final JobExecutionMultipleShardingContext shardingContext);
     
     /**
-     * 处理所有分片都执行完后的动作
+     * 所有分片都成功执行完后，执行此方法
      */
-    public  void afterAllShardingComplete(){
-    	//默认什么不都执行
-    }
+    protected abstract  void afterAllShardingFinishedInternal();
     
     /**
      * 停止运行中的作业.

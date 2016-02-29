@@ -65,4 +65,9 @@ public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingCon
      * @param offset 数据处理位置
      */
     void updateOffset(final int item, final String offset);
+    
+    /**
+     * 在非steaming类型的job每次所有的分片都成功执行完后，执行此操作 
+     */
+    void afterAllUnStreamingShardingFinished();
 }

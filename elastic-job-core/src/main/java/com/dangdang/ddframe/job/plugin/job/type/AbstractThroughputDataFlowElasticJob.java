@@ -49,6 +49,18 @@ public abstract class AbstractThroughputDataFlowElasticJob<T> extends AbstractDa
         }
     }
     
+    @Override
+    protected  void afterAllShardingFinishedInternal(){
+    	if (!isStreamingProcess()) {
+    		afterAllUnStreamingShardingFinished();
+        }
+    }
+
+    @Override
+	public void afterAllUnStreamingShardingFinished() {
+		
+	}
+    
     private void executeStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         List<T> data = fetchDataWithLog(shardingContext);
         while (null != data && !data.isEmpty() && !isStoped() && !getShardingService().isNeedSharding()) {
