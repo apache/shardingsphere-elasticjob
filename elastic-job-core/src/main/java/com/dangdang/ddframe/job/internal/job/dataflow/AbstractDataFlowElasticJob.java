@@ -17,6 +17,15 @@
 
 package com.dangdang.ddframe.job.internal.job.dataflow;
 
+import com.dangdang.ddframe.job.api.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
+import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.quartz.JobExecutionException;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -26,19 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.quartz.JobExecutionException;
-
-import com.dangdang.ddframe.job.api.DataFlowElasticJob;
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
-import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
-import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
-import com.google.common.collect.Lists;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 用于处理数据流程的作业抽象类.
@@ -51,12 +47,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecutionShardingContext> extends AbstractElasticJob implements DataFlowElasticJob<T, C> {
     
-    @Getter(AccessLevel.PROTECTED)
-    private final ExecutorService executorService = Executors.newCachedThreadPool();
+    private final ExecutorService executorService;
     
-    private DataFlowType dataFlowType;
+    private final DataFlowType dataFlowType;
     
     public AbstractDataFlowElasticJob() {
+        executorService = getExecutorService();
         dataFlowType = getDataFlowType();
     }
     
@@ -147,7 +143,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         List<List<T>> splitedData = Lists.partition(data, data.size() / threadCount);
         final CountDownLatch latch = new CountDownLatch(splitedData.size());
         for (final List<T> each : splitedData) {
-            getExecutorService().submit(new Runnable() {
+            executorService.submit(new Runnable() {
                 
                 @Override
                 public void run() {
@@ -171,7 +167,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         final Map<Integer, List<T>> result = new ConcurrentHashMap<>(items.size());
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
-            getExecutorService().submit(new Runnable() {
+            executorService.submit(new Runnable() {
                 
                 @Override
                 public void run() {
@@ -200,7 +196,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     private void processDataForSequence(final JobExecutionMultipleShardingContext shardingContext, final Map<Integer, List<T>> data) {
         final CountDownLatch latch = new CountDownLatch(data.size());
         for (final Entry<Integer, List<T>> each : data.entrySet()) {
-            getExecutorService().submit(new Runnable() {
+            executorService.submit(new Runnable() {
                 
                 @Override
                 public void run() {
@@ -224,6 +220,11 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     @Override
     public final void updateOffset(final int item, final String offset) {
         getOffsetService().updateOffset(item, offset);
+    }
+    
+    @Override
+    public ExecutorService getExecutorService() {
+        return Executors.newCachedThreadPool();
     }
     
     @Override
