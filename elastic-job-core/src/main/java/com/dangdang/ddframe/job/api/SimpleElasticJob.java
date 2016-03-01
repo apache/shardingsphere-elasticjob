@@ -8,7 +8,7 @@ package com.dangdang.ddframe.job.api;
 public interface SimpleElasticJob extends ElasticJob {
 
 	/**
-	 * 所有分片都执行完毕后，处理收尾任务
+	 * 所有分片都执行完毕后，处理收尾任务.
 	 */
     public void afterAllShardingFinished();
 }
