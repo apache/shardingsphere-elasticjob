@@ -253,9 +253,9 @@ public final class ConfigurationServiceTest extends AbstractBaseJobTest {
         protected void executeJob(final JobExecutionMultipleShardingContext jobExecutionShardingContext) {
         }
 
-		@Override
-		protected void afterAllShardingFinishedInternal() {
-		}
+        @Override
+        protected void afterAllShardingFinishedInternal() {
+        }
     }
     
     @Getter

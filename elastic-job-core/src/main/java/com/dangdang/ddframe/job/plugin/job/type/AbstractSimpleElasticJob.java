@@ -60,6 +60,5 @@ public abstract class AbstractSimpleElasticJob extends AbstractElasticJob implem
     
     @Override
     public  void afterAllShardingFinished(){
-    	
     }
 }

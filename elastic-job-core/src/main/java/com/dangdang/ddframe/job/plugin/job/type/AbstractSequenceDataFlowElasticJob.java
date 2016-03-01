@@ -61,7 +61,6 @@ public abstract class AbstractSequenceDataFlowElasticJob<T> extends AbstractData
     
     @Override
 	public void afterAllUnStreamingShardingFinished() {
-		
 	}
     
     private void executeStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {

@@ -58,7 +58,6 @@ public abstract class AbstractThroughputDataFlowElasticJob<T> extends AbstractDa
 
     @Override
 	public void afterAllUnStreamingShardingFinished() {
-		
 	}
     
     private void executeStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {

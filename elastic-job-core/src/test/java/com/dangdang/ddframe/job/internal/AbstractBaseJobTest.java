@@ -72,8 +72,6 @@ public abstract class AbstractBaseJobTest {
 
 		@Override
 		protected void afterAllShardingFinishedInternal() {
-			// TODO Auto-generated method stub
-			
 		}
     }
 }
