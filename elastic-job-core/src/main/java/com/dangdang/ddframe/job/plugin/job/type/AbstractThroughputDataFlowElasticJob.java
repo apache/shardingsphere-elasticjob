@@ -52,13 +52,13 @@ public abstract class AbstractThroughputDataFlowElasticJob<T> extends AbstractDa
     @Override
     protected  void afterAllShardingFinishedInternal(){
     	if (!isStreamingProcess()) {
-    		afterAllUnStreamingShardingFinished();
+            afterAllUnStreamingShardingFinished();
         }
     }
 
     @Override
-	public void afterAllUnStreamingShardingFinished() {
-	}
+    public void afterAllUnStreamingShardingFinished() {
+    }
     
     private void executeStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         List<T> data = fetchDataWithLog(shardingContext);

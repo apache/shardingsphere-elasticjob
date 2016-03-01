@@ -71,7 +71,7 @@ public abstract class AbstractBaseJobTest {
         }
 
 		@Override
-		protected void afterAllShardingFinishedInternal() {
-		}
+        protected void afterAllShardingFinishedInternal() {
+	    }
     }
 }

@@ -60,8 +60,8 @@ public abstract class AbstractSequenceDataFlowElasticJob<T> extends AbstractData
     }
     
     @Override
-	public void afterAllUnStreamingShardingFinished() {
-	}
+    public void afterAllUnStreamingShardingFinished() {
+    }
     
     private void executeStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         Map<Integer, List<T>> data = concurrentFetchData(shardingContext);
