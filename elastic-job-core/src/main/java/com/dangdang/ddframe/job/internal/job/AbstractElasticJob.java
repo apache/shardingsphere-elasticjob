@@ -111,9 +111,9 @@ public abstract class AbstractElasticJob implements ElasticJob {
     protected abstract void executeJob(final JobExecutionMultipleShardingContext shardingContext);
     
     /**
-     * 所有分片都成功执行完后，执行此方法
+     * 所有分片都成功执行完后，执行此方法.
      */
-    protected abstract  void afterAllShardingFinishedInternal();
+    protected abstract void afterAllShardingFinishedInternal();
     
     /**
      * 停止运行中的作业.

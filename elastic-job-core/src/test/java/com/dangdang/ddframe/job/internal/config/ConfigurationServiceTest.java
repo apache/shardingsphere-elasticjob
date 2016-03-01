@@ -255,8 +255,6 @@ public final class ConfigurationServiceTest extends AbstractBaseJobTest {
 
 		@Override
 		protected void afterAllShardingFinishedInternal() {
-			// TODO Auto-generated method stub
-			
 		}
     }
     

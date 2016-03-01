@@ -54,8 +54,8 @@ public abstract class AbstractSequenceDataFlowElasticJob<T> extends AbstractData
     
     @Override
     protected  void afterAllShardingFinishedInternal(){
-    	if (!isStreamingProcess()) {
-    		afterAllUnStreamingShardingFinished();
+        if (!isStreamingProcess()) {
+            afterAllUnStreamingShardingFinished();
         }
     }
     

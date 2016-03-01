@@ -260,20 +260,21 @@ public final class ExecutionService {
     }
     
     /**
-     * 判断是否所有分片都执行完毕
+     * 判断是否所有分片都执行完毕.
      * @return  是否所有分片都执行完毕
      */
     public boolean isAllCompleted() {
-    	boolean returnFlag = true;
-    	List<Integer> list =  getAllItems() ;
-    	for(int index=0;index<list.size();index++){
-    		if(!jobNodeStorage.isJobNodeExisted(ExecutionNode.getCompletedNode(list.get(index)))){
-    			returnFlag = false;
+    	boolean result = true;
+    	List<Integer> list =  getAllItems();
+    	
+    	for(Integer item : list){
+    		if(!jobNodeStorage.isJobNodeExisted(ExecutionNode.getCompletedNode(item))){
+    			result = false;
     			break;
     		}
     	}
     	
-        return returnFlag;
+        return result;
     }
     
     private List<Integer> getAllItems() {

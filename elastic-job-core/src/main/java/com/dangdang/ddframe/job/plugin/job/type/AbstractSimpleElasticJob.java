@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.plugin.job.type;
 import lombok.extern.slf4j.Slf4j;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.SimpleElasticJob;
 import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 
 /**
@@ -32,7 +33,7 @@ import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
  * @author zhangliang, caohao
  */
 @Slf4j
-public abstract class AbstractSimpleElasticJob extends AbstractElasticJob {
+public abstract class AbstractSimpleElasticJob extends AbstractElasticJob implements SimpleElasticJob {
     
     @Override
     protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
@@ -57,7 +58,7 @@ public abstract class AbstractSimpleElasticJob extends AbstractElasticJob {
      */
     public abstract void process(final JobExecutionMultipleShardingContext shardingContext);
     
-    
+    @Override
     public  void afterAllShardingFinished(){
     	
     }
