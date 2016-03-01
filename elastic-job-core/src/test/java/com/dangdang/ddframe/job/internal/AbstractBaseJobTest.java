@@ -70,8 +70,8 @@ public abstract class AbstractBaseJobTest {
         protected void executeJob(final JobExecutionMultipleShardingContext jobExecutionShardingContext) {
         }
 
-		@Override
+        @Override
         protected void afterAllShardingFinishedInternal() {
-	    }
+        }
     }
 }
