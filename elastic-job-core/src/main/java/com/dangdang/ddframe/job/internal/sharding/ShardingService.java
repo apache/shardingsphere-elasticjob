@@ -110,7 +110,7 @@ public class ShardingService {
     }
     
     private void blockUntilShardingCompleted() {
-        while (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING)) {
+        while (!leaderElectionService.isLeader() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
             log.debug("Elastic job: sleep short time until sharding completed.");
             BlockUtils.waitingShortTime();
         }
@@ -143,7 +143,7 @@ public class ShardingService {
     public List<Integer> getLocalHostShardingItems() {
         String ip = localHostService.getIp();
         if (!jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode(ip))) {
-            return Collections.<Integer>emptyList();
+            return Collections.emptyList();
         }
         return ItemUtils.toItemList(jobNodeStorage.getJobNodeDataDirectly(ShardingNode.getShardingNode(ip)));
     }

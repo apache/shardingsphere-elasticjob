@@ -18,6 +18,8 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractBatchThroughputDataFlowElasticJob;
@@ -53,5 +55,10 @@ public class ThroughputDataFlowJobDemo extends AbstractBatchThroughputDataFlowEl
     @Override
     public boolean isStreamingProcess() {
         return true;
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return Executors.newFixedThreadPool(10);
     }
 }

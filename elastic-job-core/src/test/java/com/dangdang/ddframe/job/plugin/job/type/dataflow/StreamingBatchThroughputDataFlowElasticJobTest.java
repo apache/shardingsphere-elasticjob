@@ -113,7 +113,7 @@ public final class StreamingBatchThroughputDataFlowElasticJobTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsStoped() throws JobExecutionException {
-        when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1));
+        when(jobCaller.fetchData()).thenReturn(Collections.<Object>singletonList(1));
         streamingBatchThroughputDataFlowElasticJob.stop();
         streamingBatchThroughputDataFlowElasticJob.execute(null);
         verify(jobCaller).fetchData();
@@ -125,7 +125,7 @@ public final class StreamingBatchThroughputDataFlowElasticJobTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsNeedSharding() throws JobExecutionException {
-        when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1));
+        when(jobCaller.fetchData()).thenReturn(Collections.<Object>singletonList(1));
         when(shardingService.isNeedSharding()).thenReturn(true);
         streamingBatchThroughputDataFlowElasticJob.execute(null);
         verify(shardingService).isNeedSharding();
@@ -137,7 +137,7 @@ public final class StreamingBatchThroughputDataFlowElasticJobTest {
     @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
-        when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3), Collections.<Object>emptyList());
+        when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3), Collections.emptyList());
         when(shardingService.isNeedSharding()).thenReturn(false);
         when(jobCaller.processData(1)).thenReturn(false);
         when(jobCaller.processData(2)).thenReturn(true);

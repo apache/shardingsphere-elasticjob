@@ -126,7 +126,7 @@ public final class UnstreamingBatchThroughputDataFlowElasticJobTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndDataIsOne() throws JobExecutionException {
-        when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1));
+        when(jobCaller.fetchData()).thenReturn(Collections.<Object>singletonList(1));
         when(jobCaller.processData(1)).thenReturn(true);
         when(configService.getConcurrentDataProcessThreadCount()).thenReturn(2);
         unstreamingBatchThroughputDataFlowElasticJob.execute(null);

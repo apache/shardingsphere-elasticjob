@@ -260,7 +260,6 @@
                     <artifactId>maven-surefire-report-plugin</artifactId>
                     <version>${maven-surefire-report-plugin.version}</version>
                     <configuration>
-                        <forkMode>once</forkMode>
                         <argLine>-XX:-UseSplitVerifier</argLine>
                     </configuration>
                 </plugin>
@@ -458,9 +457,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>${maven-jxr-plugin.version}</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -485,7 +490,6 @@
                 <version>${maven-pmd-plugin.version}</version>
                 <configuration>
                     <aggregate>true</aggregate>
-                    <linkXref>true</linkXref>
                     <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
                     <targetJdk>${java.version}</targetJdk>
                 </configuration>

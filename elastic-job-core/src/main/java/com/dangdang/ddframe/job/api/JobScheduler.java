@@ -196,13 +196,13 @@ public class JobScheduler {
      * @return 下次作业触发时间
      */
     public Date getNextFireTime() {
-        Date result = null;
         List<? extends Trigger> triggers;
         try {
             triggers = scheduler.getTriggersOfJob(jobDetail.getKey());
         } catch (final SchedulerException ex) {
-            return result;
+            return null;
         }
+        Date result = null;
         for (Trigger each : triggers) {
             Date nextFireTime = each.getNextFireTime();
             if (null == nextFireTime) {

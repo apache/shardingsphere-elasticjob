@@ -118,7 +118,7 @@ public class CuratorRepositoryImpl implements CuratorRepository {
     @Override
     public void create(final String znode) {
         try {
-            SessionCuratorClient.getCuratorClient().create().forPath(znode, new String("").getBytes());
+            SessionCuratorClient.getCuratorClient().create().forPath(znode, "".getBytes());
         } catch (final NodeExistsException ex) {
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {

@@ -174,7 +174,7 @@ public final class FailoverServiceTest {
         when(jobNodeStorage.isJobNodeExisted("execution/2/failover")).thenReturn(false);
         when(jobNodeStorage.getJobNodeDataDirectly("execution/0/failover")).thenReturn("mockedIP");
         when(jobNodeStorage.getJobNodeDataDirectly("execution/1/failover")).thenReturn("otherIP");
-        assertThat(failoverService.getLocalHostFailoverItems(), is(Arrays.asList(0)));
+        assertThat(failoverService.getLocalHostFailoverItems(), is(Collections.singletonList(0)));
         verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
         verify(localHostService).getIp();
         verify(jobNodeStorage).isJobNodeExisted("execution/0/failover");

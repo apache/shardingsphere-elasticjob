@@ -37,7 +37,7 @@ public abstract class AbstractIndividualDataFlowElasticJob<T, C extends Abstract
     protected final void processDataWithStatistics(final C shardingContext, final List<T> data) {
         Exception firstException = null;
         for (T each : data) {
-            boolean isSuccess = false;
+            boolean isSuccess;
             try {
                 isSuccess = processData(shardingContext, each);
             // CHECKSTYLE:OFF

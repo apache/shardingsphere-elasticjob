@@ -83,7 +83,7 @@ public class LocalHostService {
     }
     
     private boolean isV6IpAddress(final InetAddress ipAddress) {
-        return -1 != ipAddress.getHostAddress().indexOf(":");
+        return ipAddress.getHostAddress().contains(":");
     }
     
     /**

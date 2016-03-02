@@ -176,7 +176,7 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
         when(configService.isFailover()).thenReturn(true);
-        when(failoverService.getLocalHostFailoverItems()).thenReturn(Arrays.asList(1));
+        when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.singletonList(1));
         when(configService.isMonitorExecution()).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
         when(configService.getFetchDataCount()).thenReturn(10);
@@ -187,12 +187,12 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
         Map<Integer, String> offsets = new HashMap<>(1);
         offsets.put(1, "offset1");
-        when(offsetService.getOffsets(Arrays.asList(1))).thenReturn(offsets);
+        when(offsetService.getOffsets(Collections.singletonList(1))).thenReturn(offsets);
         JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
         expected.setJobName("testJob");
         expected.setShardingTotalCount(3);
         expected.setFetchDataCount(10);
-        expected.setShardingItems(Arrays.asList(1));
+        expected.setShardingItems(Collections.singletonList(1));
         expected.getShardingItemParameters().put(1, "B");
         expected.setMonitorExecution(true);
         expected.setOffsets(offsets);
@@ -205,7 +205,7 @@ public final class ExecutionContextServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
         verify(configService).getFetchDataCount();
         verify(configService).getShardingItemParameters();
-        verify(offsetService).getOffsets(Arrays.asList(1));
+        verify(offsetService).getOffsets(Collections.singletonList(1));
     }
     
     @Test
@@ -226,12 +226,12 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
         Map<Integer, String> offsets = new HashMap<>(1);
         offsets.put(0, "offset0");
-        when(offsetService.getOffsets(Arrays.asList(0))).thenReturn(offsets);
+        when(offsetService.getOffsets(Collections.singletonList(0))).thenReturn(offsets);
         JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
         expected.setJobName("testJob");
         expected.setShardingTotalCount(3);
         expected.setFetchDataCount(10);
-        expected.setShardingItems(Arrays.asList(0));
+        expected.setShardingItems(Collections.singletonList(0));
         expected.getShardingItemParameters().put(0, "A");
         expected.setMonitorExecution(true);
         expected.setOffsets(offsets);
@@ -246,6 +246,6 @@ public final class ExecutionContextServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
         verify(configService).getFetchDataCount();
         verify(configService).getShardingItemParameters();
-        verify(offsetService).getOffsets(Arrays.asList(0));
+        verify(offsetService).getOffsets(Collections.singletonList(0));
     }
 }

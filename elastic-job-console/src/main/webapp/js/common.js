@@ -1,6 +1,6 @@
 $(function() {
     $("[data-toggle='tooltip']").tooltip()
-})
+});
 
 function showSuccessDialog() {
     $("#success-dialog").modal("show");

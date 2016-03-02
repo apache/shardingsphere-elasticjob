@@ -17,13 +17,12 @@
 
 package com.dangdang.ddframe.reg.exception;
 
-import org.apache.zookeeper.KeeperException.ConnectionLossException;
-import org.apache.zookeeper.KeeperException.NoNodeException;
-import org.apache.zookeeper.KeeperException.NodeExistsException;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.zookeeper.KeeperException.ConnectionLossException;
+import org.apache.zookeeper.KeeperException.NoNodeException;
+import org.apache.zookeeper.KeeperException.NodeExistsException;
 
 /**
  * 抛出RegException的异常处理类.
@@ -50,9 +49,6 @@ public final class RegExceptionHandler {
     }
     
     private static boolean isIgnoredException(final Throwable cause) {
-        if (null == cause) {
-            return false;
-        }
-        return cause instanceof ConnectionLossException || cause instanceof NoNodeException || cause instanceof NodeExistsException;
+        return null != cause && (cause instanceof ConnectionLossException || cause instanceof NoNodeException || cause instanceof NodeExistsException);
     }
 }

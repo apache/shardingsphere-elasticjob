@@ -62,7 +62,6 @@ public class ElasticJobAssert {
         verify(shardingService).shardingIfNecessary();
         verify(executionContextService).getJobExecutionShardingContext();
         verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-        verify(executionService).cleanPreviousExecutionInfo();
         verify(executionService).registerJobBegin(shardingContext);
         verify(executionService).registerJobCompleted(shardingContext);
         verify(configService).isMisfire();

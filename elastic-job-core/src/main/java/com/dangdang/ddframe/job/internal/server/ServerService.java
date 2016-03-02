@@ -146,10 +146,7 @@ public class ServerService {
             return false;
         }
         String statusNode = ServerNode.getStatusNode(localHostService.getIp());
-        if (jobNodeStorage.isJobNodeExisted(statusNode) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(statusNode))) {
-            return true;
-        }
-        return false;
+        return jobNodeStorage.isJobNodeExisted(statusNode) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(statusNode));
     }
     
     /**
