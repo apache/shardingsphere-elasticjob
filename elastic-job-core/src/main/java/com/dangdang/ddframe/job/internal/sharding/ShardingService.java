@@ -110,7 +110,7 @@ public class ShardingService {
     }
     
     private void blockUntilShardingCompleted() {
-        while (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING)) {
+        while (!leaderElectionService.isLeader() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
             log.debug("Elastic job: sleep short time until sharding completed.");
             BlockUtils.waitingShortTime();
         }
