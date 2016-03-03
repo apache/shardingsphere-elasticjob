@@ -17,11 +17,6 @@
 
 package com.dangdang.ddframe.job.internal.sharding;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
@@ -31,12 +26,20 @@ import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyFactory;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.internal.storage.TransactionExecutionCallback;
 import com.dangdang.ddframe.job.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.internal.util.ItemUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 作业分片服务.
@@ -59,6 +62,8 @@ public class ShardingService {
     private final ServerService serverService;
     
     private final ExecutionService executionService;
+
+    private final JobNodePath jobNodePath;
     
     public ShardingService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         jobName = jobConfiguration.getJobName();
@@ -67,6 +72,7 @@ public class ShardingService {
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
         serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
         executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
+        jobNodePath = new JobNodePath(jobConfiguration.getJobName());
     }
     
     /**
@@ -100,12 +106,10 @@ public class ShardingService {
         }
         log.debug("Elastic job: sharding begin.");
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
-        clearShardingInfo();
+        jobNodeStorage.executeInTransaction(new ClearShardingInfoInfoTransactionExecutionCallback());
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(configService.getJobShardingStrategyClass());
         JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, configService.getShardingTotalCount(), configService.getShardingItemParameters());
-        persistShardingInfo(jobShardingStrategy.sharding(serverService.getAvailableServers(), option));
-        jobNodeStorage.removeJobNodeIfExisted(ShardingNode.NECESSARY);
-        jobNodeStorage.removeJobNodeIfExisted(ShardingNode.PROCESSING);
+        jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
         log.debug("Elastic job: sharding completed.");
     }
     
@@ -123,18 +127,6 @@ public class ShardingService {
         }
     }
     
-    private void clearShardingInfo() {
-        for (String each : serverService.getAllServers()) {
-            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getShardingNode(each));
-        }
-    }
-    
-    private void persistShardingInfo(final Map<String, List<Integer>> shardingItems) {
-        for (Entry<String, List<Integer>> entry : shardingItems.entrySet()) {
-            jobNodeStorage.replaceJobNode(ShardingNode.getShardingNode(entry.getKey()), ItemUtils.toItemsString(entry.getValue()));
-        }
-    }
-    
     /**
      * 获取运行在本作业服务器的分片序列号.
      * 
@@ -146,5 +138,31 @@ public class ShardingService {
             return Collections.emptyList();
         }
         return ItemUtils.toItemList(jobNodeStorage.getJobNodeDataDirectly(ShardingNode.getShardingNode(ip)));
+    }
+    
+    class ClearShardingInfoInfoTransactionExecutionCallback implements TransactionExecutionCallback {
+        
+        @Override
+        public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
+            for (String each : serverService.getAllServers()) {
+                String shardingNode = jobNodePath.getFullPath(ShardingNode.getShardingNode(each));
+                curatorTransactionFinal.check().forPath(shardingNode).and().delete().forPath(shardingNode).and();
+            }
+        }
+    }
+    
+    @RequiredArgsConstructor
+    class PersistShardingInfoTransactionExecutionCallback implements TransactionExecutionCallback {
+        
+        private final Map<String, List<Integer>> shardingItems;
+        
+        @Override
+        public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
+            for (Entry<String, List<Integer>> entry : shardingItems.entrySet()) {
+                curatorTransactionFinal.create().forPath(jobNodePath.getFullPath(ShardingNode.getShardingNode(entry.getKey())), ItemUtils.toItemsString(entry.getValue()).getBytes()).and();
+            }
+            curatorTransactionFinal.delete().forPath(jobNodePath.getFullPath(ShardingNode.NECESSARY)).and();
+            curatorTransactionFinal.delete().forPath(jobNodePath.getFullPath(ShardingNode.PROCESSING)).and();
+        }
     }
 }

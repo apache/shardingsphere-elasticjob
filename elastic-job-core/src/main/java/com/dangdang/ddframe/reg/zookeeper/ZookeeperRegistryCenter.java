@@ -69,6 +69,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         this.zkConfig = zkConfig;
     }
     
+    @Override
     public void init() {
         if (zkConfig.isUseNestedZookeeper()) {
             NestedZookeeperServers.getInstance().startServerIfNotStarted(zkConfig.getNestedPort(), zkConfig.getNestedDataDir());

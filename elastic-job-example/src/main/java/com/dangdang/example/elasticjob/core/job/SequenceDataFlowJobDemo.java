@@ -18,6 +18,7 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
@@ -35,7 +36,7 @@ public class SequenceDataFlowJobDemo extends AbstractIndividualSequenceDataFlowE
     @Override
     public List<Foo> fetchData(final JobExecutionSingleShardingContext context) {
         printContext.printFetchDataMessage(context.getShardingItem());
-        return fooRepository.findActive(Arrays.asList(context.getShardingItem()));
+        return fooRepository.findActive(Collections.singletonList(context.getShardingItem()));
     }
     
     @Override

@@ -18,6 +18,7 @@
 package com.dangdang.example.elasticjob.spring.job;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -41,7 +42,7 @@ public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasti
     @Override
     public List<Foo> fetchData(final JobExecutionSingleShardingContext context) {
         printContext.printFetchDataMessage(context.getShardingItem());
-        return fooRepository.findActive(Arrays.asList(context.getShardingItem()));
+        return fooRepository.findActive(Collections.singletonList(context.getShardingItem()));
     }
     
     @Override

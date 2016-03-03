@@ -17,10 +17,6 @@
 
 package com.dangdang.ddframe.job.internal;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManagerTest;
 import com.dangdang.ddframe.job.internal.config.ConfigurationNodeTest;
 import com.dangdang.ddframe.job.internal.config.ConfigurationServiceTest;
@@ -54,12 +50,17 @@ import com.dangdang.ddframe.job.internal.statistics.ProcessCountJobTest;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatisticsTest;
 import com.dangdang.ddframe.job.internal.statistics.StatisticsServiceTest;
 import com.dangdang.ddframe.job.internal.storage.JobNodePathTest;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorageTest;
 import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
 import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtilsTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
     JobNodePathTest.class, 
+    JobNodeStorageTest.class, 
     ItemUtilsTest.class,
     SensitiveInfoUtilsTest.class, 
     LocalHostServiceTest.class, 

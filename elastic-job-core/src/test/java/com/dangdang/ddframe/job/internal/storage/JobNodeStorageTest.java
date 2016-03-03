@@ -15,19 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.internal.storage;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.transaction.CuratorTransaction;
+import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
+import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+import org.apache.curator.framework.api.transaction.TransactionCheckBuilder;
+import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
 import org.apache.curator.framework.listen.Listenable;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
@@ -38,9 +36,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import java.util.Arrays;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public final class JobNodeStorageTest {
     
@@ -176,6 +180,72 @@ public final class JobNodeStorageTest {
     public void assertReplaceJobNode() {
         jobNodeStorage.replaceJobNode("config/cron", "0/1 * * * * ?");
         verify(coordinatorRegistryCenter).persist("/testJob/config/cron", "0/1 * * * * ?");
+    }
+    
+    @Test
+    public void assertExecuteInTransactionSuccess() throws Exception {
+        CuratorFramework client = mock(CuratorFramework.class);
+        CuratorTransaction curatorTransaction = mock(CuratorTransaction.class);
+        TransactionCheckBuilder transactionCheckBuilder = mock(TransactionCheckBuilder.class);
+        CuratorTransactionBridge curatorTransactionBridge = mock(CuratorTransactionBridge.class);
+        CuratorTransactionFinal curatorTransactionFinal = mock(CuratorTransactionFinal.class);
+        when(coordinatorRegistryCenter.getRawClient()).thenReturn(client);
+        when(client.inTransaction()).thenReturn(curatorTransaction);
+        when(curatorTransaction.check()).thenReturn(transactionCheckBuilder);
+        when(transactionCheckBuilder.forPath("/")).thenReturn(curatorTransactionBridge);
+        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
+        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
+        when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
+        when(transactionCreateBuilder.forPath("/test_transaction")).thenReturn(curatorTransactionBridge);
+        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
+        jobNodeStorage.executeInTransaction(new TransactionExecutionCallback() {
+            
+            @Override
+            public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
+                curatorTransactionFinal.create().forPath("/test_transaction").and();
+            }
+        });
+        verify(coordinatorRegistryCenter).getRawClient();
+        verify(client).inTransaction();
+        verify(curatorTransaction).check();
+        verify(transactionCheckBuilder).forPath("/");
+        verify(curatorTransactionBridge, times(2)).and();
+        verify(curatorTransactionFinal).create();
+        verify(transactionCreateBuilder).forPath("/test_transaction");
+        verify(curatorTransactionFinal).commit();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void assertExecuteInTransactionFailure() throws Exception {
+        CuratorFramework client = mock(CuratorFramework.class);
+        CuratorTransaction curatorTransaction = mock(CuratorTransaction.class);
+        TransactionCheckBuilder transactionCheckBuilder = mock(TransactionCheckBuilder.class);
+        CuratorTransactionBridge curatorTransactionBridge = mock(CuratorTransactionBridge.class);
+        CuratorTransactionFinal curatorTransactionFinal = mock(CuratorTransactionFinal.class);
+        when(coordinatorRegistryCenter.getRawClient()).thenReturn(client);
+        when(client.inTransaction()).thenReturn(curatorTransaction);
+        when(curatorTransaction.check()).thenReturn(transactionCheckBuilder);
+        when(transactionCheckBuilder.forPath("/")).thenReturn(curatorTransactionBridge);
+        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
+        TransactionCreateBuilder transactionCreateBuilder = mock(TransactionCreateBuilder.class);
+        when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
+        when(transactionCreateBuilder.forPath("/test_transaction")).thenReturn(curatorTransactionBridge);
+        when(curatorTransactionBridge.and()).thenThrow(new RuntimeException());
+        jobNodeStorage.executeInTransaction(new TransactionExecutionCallback() {
+
+            @Override
+            public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
+                curatorTransactionFinal.create().forPath("/test_transaction").and();
+            }
+        });
+        verify(coordinatorRegistryCenter).getRawClient();
+        verify(client).inTransaction();
+        verify(curatorTransaction).check();
+        verify(transactionCheckBuilder).forPath("/");
+        verify(curatorTransactionBridge, times(2)).and();
+        verify(curatorTransactionFinal).create();
+        verify(transactionCreateBuilder).forPath("/test_transaction");
+        verify(curatorTransactionFinal, times(0)).commit();
     }
     
     @Test
