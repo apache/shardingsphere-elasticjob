@@ -35,7 +35,7 @@ public class MyElasticJob extends AbstractSimpleElasticJob {
 作业执行时会将`fetchData`的数据传递给`processData`处理，其中`processData`得到的数据是通过多线程（线程池大小可配）拆分的。如果采用流式作业处理方式，建议`processData`处理数据后更新其状态，避免`fetchData`再次抓取到，从而使得作业永远不会停止。`processData`的返回值用于表示数据是否处理成功，抛出异常或者返回`false`将会在统计信息中归入失败次数，返回`true`则归入成功次数。
 
 ```java
-public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<Foo> {
+public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
     
     @Override
     public List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
