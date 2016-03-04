@@ -95,7 +95,7 @@ public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<F
 ```
 
 ### 批量处理
-为了提高数据处理效率，数据流类型作业提供了批量处理数据的功能。之前逐条处理数据的两个抽象类分别是`AbstractIndividualSequenceDataFlowElasticJob`和`AbstractIndividualSequenceDataFlowElasticJob`，批量处理则使用另外两个接口`AbstractBatchSequenceDataFlowElasticJob`和`AbstractBatchSequenceDataFlowElasticJob`。不同之处在于`processData`方法的返回值从`boolean`类型变为`int`类型，用于表示一批数据处理的成功数量，第二个入参则转变为`List`数据集合。
+为了提高数据处理效率，数据流类型作业提供了批量处理数据的功能。之前逐条处理数据的两个抽象类分别是`AbstractIndividualThroughputDataFlowElasticJob`和`AbstractIndividualSequenceDataFlowElasticJob`，批量处理则使用另外两个接口`AbstractBatchThroughputDataFlowElasticJob`和`AbstractBatchSequenceDataFlowElasticJob`。不同之处在于`processData`方法的返回值从`boolean`类型变为`int`类型，用于表示一批数据处理的成功数量，第二个入参则转变为`List`数据集合。
 
 ### 异常处理
 
