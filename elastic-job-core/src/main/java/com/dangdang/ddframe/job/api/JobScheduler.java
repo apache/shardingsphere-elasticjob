@@ -17,10 +17,26 @@
 
 package com.dangdang.ddframe.job.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-
+import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.internal.config.ConfigurationService;
+import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
+import com.dangdang.ddframe.job.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.internal.failover.FailoverService;
+import com.dangdang.ddframe.job.internal.guarantee.GuaranteeService;
+import com.dangdang.ddframe.job.internal.listener.ListenerManager;
+import com.dangdang.ddframe.job.internal.monitor.MonitorService;
+import com.dangdang.ddframe.job.internal.offset.OffsetService;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
+import com.dangdang.ddframe.job.internal.server.ServerService;
+import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Joiner;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
@@ -32,24 +48,10 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.listener.ListenerManager;
-import com.dangdang.ddframe.job.internal.monitor.MonitorService;
-import com.dangdang.ddframe.job.internal.offset.OffsetService;
-import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
-import com.dangdang.ddframe.job.internal.server.ServerService;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * 作业调度器.
@@ -89,15 +91,19 @@ public class JobScheduler {
     private final OffsetService offsetService;
     
     private final MonitorService monitorService;
+
+    private List<ElasticJobListener> elasticJobListeners;
     
     private Scheduler scheduler;
     
     private JobDetail jobDetail;
     
-    public JobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
+    public JobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final ElasticJobListener... elasticJobListeners) {
         this.jobConfiguration = jobConfiguration;
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
-        listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration);
+        this.elasticJobListeners = Arrays.asList(elasticJobListeners);
+        setGuaranteeServiceForElasticJobListeners();
+        listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration, this.elasticJobListeners);
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
         serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
@@ -109,6 +115,15 @@ public class JobScheduler {
         offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
         monitorService = new MonitorService(coordinatorRegistryCenter, jobConfiguration);
         jobDetail = JobBuilder.newJob(jobConfiguration.getJobClass()).withIdentity(jobConfiguration.getJobName()).build();
+    }
+    
+    private void setGuaranteeServiceForElasticJobListeners() {
+        GuaranteeService guaranteeService = new GuaranteeService(coordinatorRegistryCenter, jobConfiguration);
+        for (ElasticJobListener each : elasticJobListeners) {
+            if (each instanceof AbstractDistributeOnceElasticJobListener) {
+                ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
+            }
+        }
     }
     
     /**
@@ -146,6 +161,7 @@ public class JobScheduler {
         jobDetail.getJobDataMap().put("executionService", executionService);
         jobDetail.getJobDataMap().put("failoverService", failoverService);
         jobDetail.getJobDataMap().put("offsetService", offsetService);
+        jobDetail.getJobDataMap().put("elasticJobListeners", elasticJobListeners);
     }
     
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {

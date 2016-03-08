@@ -17,15 +17,15 @@
 
 package com.dangdang.ddframe.job.exception;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-    JobConflictExceptionTest.class, 
-    TimeDiffIntolerableExceptionTest.class, 
-    JobTimeoutExceptionTest.class
-    })
-public final class AllExceptionTests {
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public final class JobTimeoutExceptionTest {
+    
+    @Test
+    public void assertGetMessage() {
+        assertThat(new JobTimeoutException(5000L).getMessage(), is("Job timeout. timeout mills is 5000."));
+    }
 }

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.listener.DistributeOnceElasticJobListenerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -24,7 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     JobExecutionMultipleShardingContextTest.class, 
-    JobSchedulerTest.class
+    JobSchedulerTest.class,
+    DistributeOnceElasticJobListenerTest.class
     })
 public final class AllApiTests {
 }

@@ -17,20 +17,12 @@
 
 package com.dangdang.ddframe.job.integrate;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.quartz.SchedulerException;
-import org.unitils.util.ReflectionUtils;
-
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
+import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
@@ -40,9 +32,18 @@ import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
-
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.quartz.SchedulerException;
+import org.unitils.util.ReflectionUtils;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBaseTest {
     
@@ -70,7 +71,27 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         jobConfig = new JobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
-        jobScheduler = new JobScheduler(regCenter, jobConfig);
+        jobScheduler = new JobScheduler(regCenter, jobConfig, new ElasticJobListener() {
+            
+            @Override
+            public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+                regCenter.persist("/" + jobName + "/listener/every", "test");
+            }
+            
+            @Override
+            public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+            }
+        }, new AbstractDistributeOnceElasticJobListener(500000L, 500000L) {
+            
+            @Override
+            public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
+                regCenter.persist("/" + jobName + "/listener/once", "test");
+            }
+            
+            @Override
+            public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+            }
+        });
         this.disabled = disabled;
         monitorPort = -1;
         leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
@@ -130,5 +151,10 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");
         assertTrue(leaderElectionService.isLeader());
+    }
+    
+    protected void assertRegCenterListenerInfo() {
+        assertThat(regCenter.get("/" + jobName + "/listener/once"), is("test"));
+        assertThat(regCenter.get("/" + jobName + "/listener/every"), is("test"));
     }
 }

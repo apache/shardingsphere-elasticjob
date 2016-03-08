@@ -118,6 +118,87 @@ public class XXXSimpleJob extends AbstractSimpleElasticJob {
 
 ```
 
+### 任务监听配置
+可以通过配置多个任务监听器，在任务执行前和执行后执行监听的方法。监听器分为每台作业节点均执行和分布式场景中仅单一节点执行两种。
+
+#### 每台作业节点均执行的监听
+若作业处理作业服务器的文件，处理完成后删除文件，可考虑使用每个节点均执行清理任务。此类型任务实现简单，且无需考虑全局分布式任务是否完成，请尽量使用此类型监听器。
+
+步骤：
+
+1. 定义监听器
+
+```java
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
+
+public class MyElasticJobListener implements AbstractDistributeOnceElasticJobListener {
+    
+    @Override
+    public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+        // do something ...
+    }
+    
+    @Override
+    public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+        // do something ...
+    }
+}
+```
+
+2. 将监听器作为参数传入`JobScheduler`
+
+```java
+public class JobMain {
+    
+    public static void main(final String[] args) {
+        new JobScheduler(regCenter, jobConfig, new MyElasticJobListener()).init();    
+    }
+}
+```
+
+#### 分布式场景中仅单一节点执行的监听
+若作业处理数据库数据，处理完成后只需一个节点完成数据清理任务即可。此类型任务处理复杂，需同步分布式环境下作业的状态同步，提供了超时设置来避免作业不同步导致的死锁，请谨慎使用。
+
+步骤：
+
+1. 定义监听器
+
+```java
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+
+public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+    
+    public MyDistributeOnceElasticJobListener(final long startTimeoutMills, final long completeTimeoutMills) {
+        super(startTimeoutMills, completeTimeoutMills);
+    }
+    
+    @Override
+    public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
+        // do something ...
+    }
+    
+    @Override
+    public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+        // do something ...
+    }
+}
+```
+
+2. 将监听器作为参数传入`JobScheduler`
+
+```java
+public class JobMain {
+
+    public static void main(final String[] args) {
+        long startTimeoutMills = 5000L;
+        long completeTimeoutMills = 10000L;    
+        new JobScheduler(regCenter, jobConfig, new MyDistributeOnceElasticJobListener(startTimeoutMills, completeTimeoutMills)).init();
+    }
+}
+```
+
 ## 作业配置
 
 与`Spring`容器配合使用作业，可以将作业`Bean`配置为`Spring Bean`，可在作业中通过依赖注入使用`Spring`容器管理的数据源等对象。可用`placeholder`占位符从属性文件中取值。

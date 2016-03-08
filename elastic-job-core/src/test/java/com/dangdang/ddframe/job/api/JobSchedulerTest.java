@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.api;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -29,10 +30,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -126,6 +130,18 @@ public final class JobSchedulerTest {
         ReflectionUtils.setFieldValue(jobScheduler, "statisticsService", statisticsService);
         ReflectionUtils.setFieldValue(jobScheduler, "offsetService", offsetService);
         ReflectionUtils.setFieldValue(jobScheduler, "monitorService", monitorService);
+    }
+    
+    @Test
+    public void assertScheduleWithElasticJobListeners() {
+        JobScheduler jobScheduler = new JobScheduler(coordinatorRegistryCenter, jobConfig, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
+        List<ElasticJobListener> actual = ReflectionUtils.getFieldValue(jobScheduler, ReflectionUtils.getFieldWithName(JobScheduler.class, "elasticJobListeners", false));
+        assertThat(actual.size(), is(2));
+        assertThat(actual.get(0), instanceOf(TestElasticJobListener.class));
+        assertThat(actual.get(1), instanceOf(TestDistributeOnceElasticJobListener.class));
+        Field field = ReflectionUtils.getFieldWithName(TestDistributeOnceElasticJobListener.class, "guaranteeService", false);
+        field.setAccessible(true);
+        assertNotNull(field);
     }
     
     @Test
@@ -372,5 +388,31 @@ public final class JobSchedulerTest {
         jobScheduler.setField("fieldName", "fieldValue");
         JobDetail jobDetail = ReflectionUtils.getFieldValue(jobScheduler, jobScheduler.getClass().getDeclaredField("jobDetail"));
         assertThat(jobDetail.getJobDataMap().get("fieldName").toString(), is("fieldValue"));
+    }
+    
+    static class TestElasticJobListener implements ElasticJobListener {
+        
+        @Override
+        public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+        }
+        
+        @Override
+        public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+        }
+    }
+    
+    static class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+        
+        TestDistributeOnceElasticJobListener() {
+            super(500000L, 500000L);
+        }
+        
+        @Override
+        public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
+        }
+            
+        @Override
+        public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+        }
     }
 }

@@ -17,22 +17,25 @@
 
 package com.dangdang.ddframe.job.internal.listener;
 
-import static org.mockito.Mockito.verify;
-
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager;
+import com.dangdang.ddframe.job.internal.election.ElectionListenerManager;
+import com.dangdang.ddframe.job.internal.execution.ExecutionListenerManager;
+import com.dangdang.ddframe.job.internal.failover.FailoverListenerManager;
+import com.dangdang.ddframe.job.internal.guarantee.GuaranteeListenerManager;
+import com.dangdang.ddframe.job.internal.server.JobOperationListenerManager;
+import com.dangdang.ddframe.job.internal.sharding.ShardingListenerManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager;
-import com.dangdang.ddframe.job.internal.election.ElectionListenerManager;
-import com.dangdang.ddframe.job.internal.execution.ExecutionListenerManager;
-import com.dangdang.ddframe.job.internal.failover.FailoverListenerManager;
-import com.dangdang.ddframe.job.internal.server.JobOperationListenerManager;
-import com.dangdang.ddframe.job.internal.sharding.ShardingListenerManager;
+import java.util.Collections;
+
+import static org.mockito.Mockito.verify;
 
 public class ListenerManagerTest {
     
@@ -54,7 +57,10 @@ public class ListenerManagerTest {
     @Mock
     private ConfigurationListenerManager configurationListenerManager;
     
-    private final ListenerManager listenerManager = new ListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    @Mock
+    private GuaranteeListenerManager guaranteeListenerManager;
+    
+    private final ListenerManager listenerManager = new ListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"), Collections.<ElasticJobListener>emptyList());
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -65,6 +71,7 @@ public class ListenerManagerTest {
         ReflectionUtils.setFieldValue(listenerManager, "failoverListenerManager", failoverListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "jobOperationListenerManager", jobOperationListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "configurationListenerManager", configurationListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "guaranteeListenerManager", guaranteeListenerManager);
     }
     
     @Test
@@ -76,5 +83,6 @@ public class ListenerManagerTest {
         verify(failoverListenerManager).start();
         verify(jobOperationListenerManager).start();
         verify(configurationListenerManager).start();
+        verify(guaranteeListenerManager).start();
     }
 }
