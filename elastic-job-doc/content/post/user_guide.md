@@ -126,7 +126,7 @@ public class XXXSimpleJob extends AbstractSimpleElasticJob {
 
 步骤：
 
-1. 定义监听器
+* 定义监听器
 
 ```java
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
@@ -146,7 +146,7 @@ public class MyElasticJobListener implements AbstractDistributeOnceElasticJobLis
 }
 ```
 
-2. 将监听器作为参数传入`JobScheduler`
+* 将监听器作为参数传入`JobScheduler`
 
 ```java
 public class JobMain {
@@ -162,7 +162,7 @@ public class JobMain {
 
 步骤：
 
-1. 定义监听器
+* 定义监听器
 
 ```java
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
@@ -186,7 +186,7 @@ public final class TestDistributeOnceElasticJobListener extends AbstractDistribu
 }
 ```
 
-2. 将监听器作为参数传入`JobScheduler`
+* 将监听器作为参数传入`JobScheduler`
 
 ```java
 public class JobMain {
