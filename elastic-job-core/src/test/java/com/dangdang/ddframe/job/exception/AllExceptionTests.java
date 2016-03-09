@@ -24,7 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     JobConflictExceptionTest.class, 
-    TimeDiffIntolerableExceptionTest.class
+    TimeDiffIntolerableExceptionTest.class, 
+    JobTimeoutExceptionTest.class
     })
 public final class AllExceptionTests {
 }

@@ -15,10 +15,17 @@
  * </p>
  */
 
-package com.dangdang.example.elasticjob.fixture.entity;
+package com.dangdang.ddframe.job.exception;
 
-public enum FooStatus {
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public final class JobTimeoutExceptionTest {
     
-    ACTIVE,
-    INACTIVE
+    @Test
+    public void assertGetMessage() {
+        assertThat(new JobTimeoutException(5000L).getMessage(), is("Job timeout. timeout mills is 5000."));
+    }
 }

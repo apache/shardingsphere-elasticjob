@@ -17,18 +17,16 @@
 
 package com.dangdang.example.elasticjob.spring.job;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Component;
-
 import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractBatchSequenceDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasticJob<Foo> {
@@ -41,7 +39,7 @@ public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasti
     @Override
     public List<Foo> fetchData(final JobExecutionSingleShardingContext context) {
         printContext.printFetchDataMessage(context.getShardingItem());
-        return fooRepository.findActive(Arrays.asList(context.getShardingItem()));
+        return fooRepository.findActive(Collections.singletonList(context.getShardingItem()));
     }
     
     @Override

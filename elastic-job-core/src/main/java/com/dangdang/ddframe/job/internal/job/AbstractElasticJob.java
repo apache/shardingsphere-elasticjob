@@ -17,11 +17,10 @@
 
 package com.dangdang.ddframe.job.internal.job;
 
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
@@ -29,11 +28,15 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 弹性化分布式作业的基类.
@@ -67,6 +70,9 @@ public abstract class AbstractElasticJob implements ElasticJob {
     @Getter(AccessLevel.PROTECTED)
     private OffsetService offsetService;
     
+    @Setter
+    private List<ElasticJobListener> elasticJobListeners = new ArrayList<>();
+    
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
         log.trace("Elastic job: job execute begin, job execution context:{}.", context);
@@ -76,6 +82,15 @@ public abstract class AbstractElasticJob implements ElasticJob {
         if (executionService.misfireIfNecessary(shardingContext.getShardingItems())) {
             log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
             return;
+        }
+        if (!elasticJobListeners.isEmpty()) {
+            for (ElasticJobListener each : elasticJobListeners) {
+                try {
+                    each.beforeJobExecuted(shardingContext); 
+                } catch (final JobException ex) {
+                    handleJobExecutionException(new JobExecutionException(ex));
+                }
+            }
         }
         executeJobInternal(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
@@ -87,6 +102,15 @@ public abstract class AbstractElasticJob implements ElasticJob {
         }
         if (configService.isFailover() && !stoped) {
             failoverService.failoverIfNecessary();
+        }
+        if (!elasticJobListeners.isEmpty()) {
+            for (ElasticJobListener each : elasticJobListeners) {
+                try {
+                    each.afterJobExecuted(shardingContext);
+                } catch (final JobException ex) {
+                    handleJobExecutionException(new JobExecutionException(ex));
+                }
+            }
         }
         log.trace("Elastic job: execute all completed, job execution context:{}.", context);
     }

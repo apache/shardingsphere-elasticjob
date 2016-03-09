@@ -26,7 +26,7 @@ import java.util.Enumeration;
 import com.dangdang.ddframe.job.exception.JobException;
 
 /**
- * 获取真实本机网络的实现类.
+ * 获取真实本机网络的服务.
  * 
  * @author zhangliang
  */

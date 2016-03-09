@@ -15,10 +15,21 @@
  * </p>
  */
 
-package com.dangdang.example.elasticjob.fixture.entity;
+package com.dangdang.ddframe.job.internal.env;
 
-public enum FooStatus {
-    
-    ACTIVE,
-    INACTIVE
+/**
+ * 获取时间的服务.
+ * 
+ * @author zhangliang
+ */
+public class TimeService {
+
+    /**
+     * 获取当前时间的毫秒数.
+     * 
+     * @return 当前时间的毫秒数
+     */
+    public long getCurrentMillis() {
+        return System.currentTimeMillis();
+    }
 }

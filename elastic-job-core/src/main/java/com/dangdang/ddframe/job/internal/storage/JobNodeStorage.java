@@ -17,19 +17,19 @@
 
 package com.dangdang.ddframe.job.internal.storage;
 
-import java.util.List;
-
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+import lombok.Getter;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.state.ConnectionStateListener;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-
-import lombok.Getter;
+import java.util.List;
 
 /**
  * 作业节点数据访问类.
@@ -158,6 +158,23 @@ public class JobNodeStorage {
     public void replaceJobNode(final String node, final Object value) {
         coordinatorRegistryCenter.persist(jobNodePath.getFullPath(node), value.toString());
     }
+
+    /**
+     * 在事务中执行操作.
+     * 
+     * @param callback 执行操作的回调
+     */
+    public void executeInTransaction(final TransactionExecutionCallback callback) {
+        try {
+            CuratorTransactionFinal curatorTransactionFinal = getClient().inTransaction().check().forPath("/").and();
+            callback.execute(curatorTransactionFinal);
+            curatorTransactionFinal.commit();
+        //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+        //CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+    }
     
     /**
      * 在主节点执行操作.
@@ -173,11 +190,15 @@ public class JobNodeStorage {
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
-            if (ex instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            } else {
-                throw new JobException(ex);
-            }
+            handleException(ex);
+        }
+    }
+    
+    private void handleException(final Exception ex) {
+        if (ex instanceof InterruptedException) {
+            Thread.currentThread().interrupt();
+        } else {
+            throw new JobException(ex);
         }
     }
     

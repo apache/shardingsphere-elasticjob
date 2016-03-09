@@ -18,13 +18,17 @@
 package com.dangdang.ddframe.job.internal.listener;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.internal.election.ElectionListenerManager;
 import com.dangdang.ddframe.job.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.internal.failover.FailoverListenerManager;
+import com.dangdang.ddframe.job.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.internal.sharding.ShardingListenerManager;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
+import java.util.List;
 
 /**
  * 作业注册中心的监听器管理者.
@@ -44,14 +48,17 @@ public class ListenerManager {
     private final JobOperationListenerManager jobOperationListenerManager;
     
     private final ConfigurationListenerManager configurationListenerManager;
+
+    private final GuaranteeListenerManager guaranteeListenerManager;
     
-    public ListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
+    public ListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
         electionListenerManager = new ElectionListenerManager(coordinatorRegistryCenter, jobConfiguration);
         shardingListenerManager = new ShardingListenerManager(coordinatorRegistryCenter, jobConfiguration);
         executionListenerManager = new ExecutionListenerManager(coordinatorRegistryCenter, jobConfiguration);
         failoverListenerManager = new FailoverListenerManager(coordinatorRegistryCenter, jobConfiguration);
         jobOperationListenerManager = new JobOperationListenerManager(coordinatorRegistryCenter, jobConfiguration);
         configurationListenerManager = new ConfigurationListenerManager(coordinatorRegistryCenter, jobConfiguration);
+        guaranteeListenerManager = new GuaranteeListenerManager(coordinatorRegistryCenter, jobConfiguration, elasticJobListeners);
     }
     
     /**
@@ -64,5 +71,6 @@ public class ListenerManager {
         failoverListenerManager.start();
         jobOperationListenerManager.start();
         configurationListenerManager.start();
+        guaranteeListenerManager.start();
     }
 }

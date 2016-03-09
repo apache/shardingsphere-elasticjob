@@ -35,7 +35,7 @@ public class MyElasticJob extends AbstractSimpleElasticJob {
 作业执行时会将`fetchData`的数据传递给`processData`处理，其中`processData`得到的数据是通过多线程（线程池大小可配）拆分的。如果采用流式作业处理方式，建议`processData`处理数据后更新其状态，避免`fetchData`再次抓取到，从而使得作业永远不会停止。`processData`的返回值用于表示数据是否处理成功，抛出异常或者返回`false`将会在统计信息中归入失败次数，返回`true`则归入成功次数。
 
 ```java
-public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<Foo> {
+public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
     
     @Override
     public List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
@@ -95,7 +95,7 @@ public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<F
 ```
 
 ### 批量处理
-为了提高数据处理效率，数据流类型作业提供了批量处理数据的功能。之前逐条处理数据的两个抽象类分别是`AbstractIndividualSequenceDataFlowElasticJob`和`AbstractIndividualSequenceDataFlowElasticJob`，批量处理则使用另外两个接口`AbstractBatchSequenceDataFlowElasticJob`和`AbstractBatchSequenceDataFlowElasticJob`。不同之处在于`processData`方法的返回值从`boolean`类型变为`int`类型，用于表示一批数据处理的成功数量，第二个入参则转变为`List`数据集合。
+为了提高数据处理效率，数据流类型作业提供了批量处理数据的功能。之前逐条处理数据的两个抽象类分别是`AbstractIndividualThroughputDataFlowElasticJob`和`AbstractIndividualSequenceDataFlowElasticJob`，批量处理则使用另外两个接口`AbstractBatchThroughputDataFlowElasticJob`和`AbstractBatchSequenceDataFlowElasticJob`。不同之处在于`processData`方法的返回值从`boolean`类型变为`int`类型，用于表示一批数据处理的成功数量，第二个入参则转变为`List`数据集合。
 
 ### 异常处理
 
@@ -116,6 +116,87 @@ public class XXXSimpleJob extends AbstractSimpleElasticJob {
     }
 }
 
+```
+
+### 任务监听配置
+可以通过配置多个任务监听器，在任务执行前和执行后执行监听的方法。监听器分为每台作业节点均执行和分布式场景中仅单一节点执行两种。
+
+#### 每台作业节点均执行的监听
+若作业处理作业服务器的文件，处理完成后删除文件，可考虑使用每个节点均执行清理任务。此类型任务实现简单，且无需考虑全局分布式任务是否完成，请尽量使用此类型监听器。
+
+步骤：
+
+* 定义监听器
+
+```java
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
+
+public class MyElasticJobListener implements AbstractDistributeOnceElasticJobListener {
+    
+    @Override
+    public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+        // do something ...
+    }
+    
+    @Override
+    public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+        // do something ...
+    }
+}
+```
+
+* 将监听器作为参数传入`JobScheduler`
+
+```java
+public class JobMain {
+    
+    public static void main(final String[] args) {
+        new JobScheduler(regCenter, jobConfig, new MyElasticJobListener()).init();    
+    }
+}
+```
+
+#### 分布式场景中仅单一节点执行的监听
+若作业处理数据库数据，处理完成后只需一个节点完成数据清理任务即可。此类型任务处理复杂，需同步分布式环境下作业的状态同步，提供了超时设置来避免作业不同步导致的死锁，请谨慎使用。
+
+步骤：
+
+* 定义监听器
+
+```java
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+
+public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+    
+    public MyDistributeOnceElasticJobListener(final long startTimeoutMills, final long completeTimeoutMills) {
+        super(startTimeoutMills, completeTimeoutMills);
+    }
+    
+    @Override
+    public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
+        // do something ...
+    }
+    
+    @Override
+    public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+        // do something ...
+    }
+}
+```
+
+* 将监听器作为参数传入`JobScheduler`
+
+```java
+public class JobMain {
+
+    public static void main(final String[] args) {
+        long startTimeoutMills = 5000L;
+        long completeTimeoutMills = 10000L;    
+        new JobScheduler(regCenter, jobConfig, new MyDistributeOnceElasticJobListener(startTimeoutMills, completeTimeoutMills)).init();
+    }
+}
 ```
 
 ## 作业配置
