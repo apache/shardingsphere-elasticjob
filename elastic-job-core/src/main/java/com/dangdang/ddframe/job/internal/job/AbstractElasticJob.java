@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.internal.job;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
@@ -86,9 +85,11 @@ public abstract class AbstractElasticJob implements ElasticJob {
         if (!elasticJobListeners.isEmpty()) {
             for (ElasticJobListener each : elasticJobListeners) {
                 try {
-                    each.beforeJobExecuted(shardingContext); 
-                } catch (final JobException ex) {
-                    handleJobExecutionException(new JobExecutionException(ex));
+                    each.beforeJobExecuted(shardingContext);
+                //CHECKSTYLE:OFF
+                } catch (final Throwable cause) {
+                //CHECKSTYLE:ON
+                    handleJobExecutionException(new JobExecutionException(cause));
                 }
             }
         }
@@ -107,8 +108,10 @@ public abstract class AbstractElasticJob implements ElasticJob {
             for (ElasticJobListener each : elasticJobListeners) {
                 try {
                     each.afterJobExecuted(shardingContext);
-                } catch (final JobException ex) {
-                    handleJobExecutionException(new JobExecutionException(ex));
+                //CHECKSTYLE:OFF
+                } catch (final Throwable cause) {
+                //CHECKSTYLE:ON
+                    handleJobExecutionException(new JobExecutionException(cause));
                 }
             }
         }
@@ -124,9 +127,9 @@ public abstract class AbstractElasticJob implements ElasticJob {
         try {
             executeJob(shardingContext);
         //CHECKSTYLE:OFF
-        } catch (final Exception ex) {
+        } catch (final Throwable cause) {
         //CHECKSTYLE:ON
-            handleJobExecutionException(new JobExecutionException(ex));
+            handleJobExecutionException(new JobExecutionException(cause));
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             executionService.registerJobCompleted(shardingContext);

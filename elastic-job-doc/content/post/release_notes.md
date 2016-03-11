@@ -13,6 +13,7 @@ weight=1
 1. [ISSUE #2](https://github.com/dangdangdotcom/elastic-job/issues/2) 增加前置和后置任务
 1. [ISSUE #60](https://github.com/dangdangdotcom/elastic-job/issues/60) 可于DataFlow类型作业定制化线程池配置
 1. [ISSUE #62](https://github.com/dangdangdotcom/elastic-job/issues/61) 作业状态清理提速
+1. [ISSUE #65](https://github.com/dangdangdotcom/elastic-job/issues/65) 增加前置和后置任务Spring命名空间支持
 
 ### 缺陷修正
 

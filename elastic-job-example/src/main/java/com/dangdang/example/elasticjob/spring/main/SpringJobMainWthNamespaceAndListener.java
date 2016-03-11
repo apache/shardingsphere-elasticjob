@@ -15,21 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job;
+package com.dangdang.example.elasticjob.spring.main;
 
-import com.dangdang.ddframe.job.spring.WithNamespaceAndListenerTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.dangdang.ddframe.job.spring.WithNamespaceTest;
-import com.dangdang.ddframe.job.spring.WithoutNamespaceTest;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-    WithNamespaceTest.class,
-    WithNamespaceAndListenerTest.class,
-    WithoutNamespaceTest.class
-    })
-public class AllSpringJobTests {
+public final class SpringJobMainWthNamespaceAndListener {
+    
+    private SpringJobMainWthNamespaceAndListener() {
+    }
+    
+    // CHECKSTYLE:OFF
+    @SuppressWarnings("resource")
+    public static void main(final String[] args) {
+    // CHECKSTYLE:ON
+        new ClassPathXmlApplicationContext("classpath:META-INF/withNamespaceAndListener.xml");
+    }
 }

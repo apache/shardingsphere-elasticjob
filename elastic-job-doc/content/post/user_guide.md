@@ -206,6 +206,7 @@ public class JobMain {
 ### Spring命名空间配置
 
 ```xml
+
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -226,6 +227,12 @@ public class JobMain {
     
     <!-- 配置作业B-->
     <job:bean id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/10 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="10" />
+    
+    <!-- 配置作业C-->
+    <job:bean id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C">
+        <job:listener class="xx.MySimpleJobListener"/>
+        <job:listener class="xx.MyOnceSimpleJobListener" startedTimeoutMillseconds="1000" completedTimeoutMillseconds="2000" />
+    </job:bean>
 </beans>
 ```
 
@@ -252,6 +259,16 @@ public class JobMain {
 |description                     |String |否     |     | 作业描述信息                                                                |
 | disabled                       |boolean|否     |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动             |
 | overwrite                      |boolean|否     |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准        |
+
+#### job:listener命名空间属性详细说明
+
+job:listener必须配置为job:bean的子元素
+
+| 属性名                          | 类型  |是否必填|缺省值| 描述                                                                       |
+| ------------------------------ |:------|:------|:----|:---------------------------------------------------------------------------|
+|class                           |String |`是`   |     | 前置后置任务监听实现类，需实现`ElasticJobListener`接口                                             |
+|startedTimeoutMillseconds       |int    |否     |     | AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行前的执行方法的超时时间<br />单位：毫秒|
+|completedTimeoutMillseconds     |int    |否     |     | AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行后的执行方法的超时时间<br />单位：毫秒|
 
 #### reg:bean命名空间属性详细说明
 
