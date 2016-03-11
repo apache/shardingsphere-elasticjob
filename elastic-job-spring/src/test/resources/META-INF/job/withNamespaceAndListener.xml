@@ -17,7 +17,7 @@
     <reg:zookeeper id="regCenter" serverLists="localhost:3181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
     
     <job:bean id="simpleElasticJob_namespace_listener" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob" regCenter="regCenter" cron="${simpleElasticJob.cron}" shardingTotalCount="${simpleElasticJob.shardingTotalCount}" shardingItemParameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
-        <job:listener class="com.dangdang.ddframe.job.fixture.SimpleOnceListener" startedTimeoutMillseconds="1000" completedTimeoutMillseconds="2000" />
+        <job:listener class="com.dangdang.ddframe.job.fixture.SimpleOnceListener" startedTimeoutMilliseconds="1000" completedTimeoutMilliseconds="2000" />
         <job:listener class="com.dangdang.ddframe.job.fixture.SimpleListener" />
     </job:bean>
     <job:bean id="throughputDataFlowElasticJob_namespace_listener" class="com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/1 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="3" fetchDataCount="100" description="中文描述" overwrite="true" />

@@ -30,24 +30,24 @@ public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener
     @Resource
     private FooService fooService;
     
-    private final long startedTimeoutMillseconds;
+    private final long startedTimeoutMilliseconds;
     
-    private final long completedTimeoutMillseconds;
+    private final long completedTimeoutMilliseconds;
     
-    public SimpleOnceListener(final long startedTimeoutMillseconds, final long completedTimeoutMillseconds) {
-        super(startedTimeoutMillseconds, completedTimeoutMillseconds);
-        this.startedTimeoutMillseconds = startedTimeoutMillseconds;
-        this.completedTimeoutMillseconds = completedTimeoutMillseconds;
+    public SimpleOnceListener(final long startedTimeoutMilliseconds, final long completedTimeoutMilliseconds) {
+        super(startedTimeoutMilliseconds, completedTimeoutMilliseconds);
+        this.startedTimeoutMilliseconds = startedTimeoutMilliseconds;
+        this.completedTimeoutMilliseconds = completedTimeoutMilliseconds;
     }
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
-        assertThat(startedTimeoutMillseconds, is(1000L));
+        assertThat(startedTimeoutMilliseconds, is(1000L));
         assertThat(fooService.foo(), is("this is fooService."));
     }
     
     @Override
     public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
-        assertThat(completedTimeoutMillseconds, is(2000L));
+        assertThat(completedTimeoutMilliseconds, is(2000L));
     }
 }

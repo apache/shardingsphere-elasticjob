@@ -30,11 +30,11 @@ import lombok.Setter;
  */
 public abstract class AbstractDistributeOnceElasticJobListener implements ElasticJobListener {
     
-    private final long startedTimeoutMillseconds;
+    private final long startedTimeoutMilliseconds;
 
     private final Object startedWait = new Object();
     
-    private final long completedTimeoutMillseconds;
+    private final long completedTimeoutMilliseconds;
 
     private final Object completedWait = new Object();
     
@@ -43,16 +43,16 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     
     private TimeService timeService = new TimeService();
     
-    public AbstractDistributeOnceElasticJobListener(final long startedTimeoutMillseconds, final long completedTimeoutMillseconds) {
-        if (startedTimeoutMillseconds <= 0L) {
-            this.startedTimeoutMillseconds = Long.MAX_VALUE;
+    public AbstractDistributeOnceElasticJobListener(final long startedTimeoutMilliseconds, final long completedTimeoutMilliseconds) {
+        if (startedTimeoutMilliseconds <= 0L) {
+            this.startedTimeoutMilliseconds = Long.MAX_VALUE;
         } else {
-            this.startedTimeoutMillseconds = startedTimeoutMillseconds;
+            this.startedTimeoutMilliseconds = startedTimeoutMilliseconds;
         }
-        if (completedTimeoutMillseconds <= 0L) {
-            this.completedTimeoutMillseconds = Long.MAX_VALUE; 
+        if (completedTimeoutMilliseconds <= 0L) {
+            this.completedTimeoutMilliseconds = Long.MAX_VALUE; 
         } else {
-            this.completedTimeoutMillseconds = completedTimeoutMillseconds;
+            this.completedTimeoutMilliseconds = completedTimeoutMilliseconds;
         }
     }
     
@@ -67,14 +67,14 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         long before = timeService.getCurrentMillis();
         try {
             synchronized (startedWait) {
-                startedWait.wait(startedTimeoutMillseconds);
+                startedWait.wait(startedTimeoutMilliseconds);
             }
         } catch (final InterruptedException ex) {
             Thread.interrupted();
         }
-        if (timeService.getCurrentMillis() - before >= startedTimeoutMillseconds) {
+        if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
             guaranteeService.clearAllStartedInfo();
-            throw new JobTimeoutException(startedTimeoutMillseconds);
+            throw new JobTimeoutException(startedTimeoutMilliseconds);
         }
     }
     
@@ -89,14 +89,14 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         long before = timeService.getCurrentMillis();
         try {
             synchronized (completedWait) {
-                completedWait.wait(completedTimeoutMillseconds);
+                completedWait.wait(completedTimeoutMilliseconds);
             }
         } catch (final InterruptedException ex) {
             Thread.interrupted();
         }
-        if (timeService.getCurrentMillis() - before >= completedTimeoutMillseconds) {
+        if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
             guaranteeService.clearAllCompletedInfo();
-            throw new JobTimeoutException(completedTimeoutMillseconds);
+            throw new JobTimeoutException(completedTimeoutMilliseconds);
         }
     }
     

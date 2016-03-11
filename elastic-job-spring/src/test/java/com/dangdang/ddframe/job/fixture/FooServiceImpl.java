@@ -19,7 +19,8 @@ package com.dangdang.ddframe.job.fixture;
 
 public class FooServiceImpl implements FooService {
     
+    @Override
     public String foo() {
-        return "this is foo."; 
+        return "this is fooService."; 
     }
 }

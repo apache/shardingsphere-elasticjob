@@ -87,8 +87,8 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
             try {
                 Class listenerClass = Class.forName(className);
                 if (AbstractDistributeOnceElasticJobListener.class.isAssignableFrom(listenerClass)) {
-                    factory.addConstructorArgValue(each.getAttribute("startedTimeoutMillseconds"));
-                    factory.addConstructorArgValue(each.getAttribute("completedTimeoutMillseconds"));
+                    factory.addConstructorArgValue(each.getAttribute("startedTimeoutMilliseconds"));
+                    factory.addConstructorArgValue(each.getAttribute("completedTimeoutMilliseconds"));
                 }
             } catch (final ClassNotFoundException ex) {
                 throw new RuntimeException(ex);

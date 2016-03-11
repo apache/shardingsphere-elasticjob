@@ -106,7 +106,7 @@ public class MonitorService {
             if (null != cmdLine && DUMP_COMMAND.equalsIgnoreCase(cmdLine)) {
                 List<String> result = new ArrayList<>();
                 dumpDirectly("/" + jobName, result);
-                outputMessage(writer, Joiner.on("\n").join(SensitiveInfoUtils.filterSenstiveIps(result)) + "\n");
+                outputMessage(writer, Joiner.on("\n").join(SensitiveInfoUtils.filterSensitiveIps(result)) + "\n");
             }
         } catch (final IOException ex) {
             log.warn(ex.getMessage());

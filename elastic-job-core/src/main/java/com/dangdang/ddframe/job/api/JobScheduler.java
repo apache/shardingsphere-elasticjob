@@ -64,7 +64,7 @@ public class JobScheduler {
     
     private static final String SCHEDULER_INSTANCE_NAME_SUFFIX = "Scheduler";
     
-    private static final String CRON_TRIGGER_INDENTITY_SUFFIX = "Trigger";
+    private static final String CRON_TRIGGER_IDENTITY_SUFFIX = "Trigger";
     
     private final JobConfiguration jobConfiguration;
     
@@ -195,7 +195,7 @@ public class JobScheduler {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
         }
         return TriggerBuilder.newTrigger()
-                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX))
+                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX))
                 .withSchedule(cronScheduleBuilder).build();
     }
     
@@ -311,7 +311,7 @@ public class JobScheduler {
      */
     public void rescheduleJob(final String cronExpression) {
         try {
-            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX)), createTrigger(cronExpression));
+            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX)), createTrigger(cronExpression));
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         } 

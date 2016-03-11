@@ -164,7 +164,7 @@ public final class UnstreamingBatchThroughputDataFlowElasticJobTest {
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyForMultipleTherad() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmptyForMultipleThread() throws JobExecutionException {
         when(jobCaller.fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3, 4));
         when(jobCaller.processData(1)).thenReturn(true);
         when(jobCaller.processData(2)).thenReturn(true);

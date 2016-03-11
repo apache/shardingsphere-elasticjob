@@ -59,12 +59,12 @@ public class LeaderElectionService {
      * @return 当前节点是否是主节点
      */
     public Boolean isLeader() {
-        String locaLhostIp = localHostService.getIp();
+        String localHostIp = localHostService.getIp();
         while (!hasLeader()) {
-            log.info("Elastic job: leader node is electing, waiting for 100 ms at server '{}'", locaLhostIp);
+            log.info("Elastic job: leader node is electing, waiting for 100 ms at server '{}'", localHostIp);
             BlockUtils.waitingShortTime();
         }
-        return locaLhostIp.equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST));
+        return localHostIp.equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST));
     }
     
     /**

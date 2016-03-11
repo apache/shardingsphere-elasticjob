@@ -85,7 +85,7 @@ public final class SimpleElasticJobTest {
     }
     
     @Test(expected = TimeDiffIntolerableException.class)
-    public void assertExecuteWhenCheckMaxTimeDiffSecondsUntolerable() throws JobExecutionException {
+    public void assertExecuteWhenCheckMaxTimeDiffSecondsIntolerable() throws JobExecutionException {
         doThrow(TimeDiffIntolerableException.class).when(configService).checkMaxTimeDiffSecondsTolerable();
         try {
             simpleElasticJob.execute(null);

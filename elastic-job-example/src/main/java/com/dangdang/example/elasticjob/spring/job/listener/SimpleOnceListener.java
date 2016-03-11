@@ -30,14 +30,14 @@ public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener
     @Resource
     private FooService fooService;
     
-    private final long startedTimeoutMillseconds;
+    private final long startedTimeoutMilliseconds;
     
-    private final long completedTimeoutMillseconds;
+    private final long completedTimeoutMilliseconds;
     
-    public SimpleOnceListener(final long startedTimeoutMillseconds, final long completedTimeoutMillseconds) {
-        super(startedTimeoutMillseconds, completedTimeoutMillseconds);
-        this.startedTimeoutMillseconds = startedTimeoutMillseconds;
-        this.completedTimeoutMillseconds = completedTimeoutMillseconds;
+    public SimpleOnceListener(final long startedTimeoutMilliseconds, final long completedTimeoutMilliseconds) {
+        super(startedTimeoutMilliseconds, completedTimeoutMilliseconds);
+        this.startedTimeoutMilliseconds = startedTimeoutMilliseconds;
+        this.completedTimeoutMilliseconds = completedTimeoutMilliseconds;
     }
     
     @Override
@@ -47,6 +47,6 @@ public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener
     
     @Override
     public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
-        System.out.println("doAfterJobExecutedAtLastCompleted:" + startedTimeoutMillseconds + "," + completedTimeoutMillseconds);
+        System.out.println("doAfterJobExecutedAtLastCompleted:" + startedTimeoutMilliseconds + "," + completedTimeoutMilliseconds);
     }
 }

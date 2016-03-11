@@ -10,8 +10,8 @@
     <xsd:element name="listener">
         <xsd:complexType>
             <xsd:attribute name="class" type="xsd:string" use="required" />
-            <xsd:attribute name="startedTimeoutMillseconds" type="xsd:string"/>
-            <xsd:attribute name="completedTimeoutMillseconds" type="xsd:string"/>
+            <xsd:attribute name="startedTimeoutMilliseconds" type="xsd:string"/>
+            <xsd:attribute name="completedTimeoutMilliseconds" type="xsd:string"/>
         </xsd:complexType>
     </xsd:element>
     

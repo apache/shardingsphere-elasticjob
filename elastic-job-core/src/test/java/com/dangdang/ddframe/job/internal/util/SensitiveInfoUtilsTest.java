@@ -32,28 +32,28 @@ public final class SensitiveInfoUtilsTest {
         List<String> content = new ArrayList<>();
         content.add("/simpleElasticDemoJob/servers");
         content.add("/simpleElasticDemoJob/leader");
-        assertThat(SensitiveInfoUtils.filterSenstiveIps(content), is(content));
+        assertThat(SensitiveInfoUtils.filterSensitiveIps(content), is(content));
     }
     
     @Test
-    public void assertFilterContentWithSentiveIp() {
+    public void assertFilterContentWithSenitiveIp() {
         List<String> content = new ArrayList<>();
         content.add("/simpleElasticDemoJob/servers/127.0.0.1");
         content.add("/simpleElasticDemoJob/servers/192.168.0.1/hostName | 192.168.0.1");
         List<String> expected = new ArrayList<>();
         expected.add("/simpleElasticDemoJob/servers/ip1");
         expected.add("/simpleElasticDemoJob/servers/ip2/hostName | ip2");
-        assertThat(SensitiveInfoUtils.filterSenstiveIps(content), is(expected));
+        assertThat(SensitiveInfoUtils.filterSensitiveIps(content), is(expected));
     }
     
     @Test
-    public void assertFilterContentWithSentiveIp2() {
+    public void assertFilterContentWithSeniiveIp2() {
         List<String> content = new ArrayList<>();
         content.add("/simpleElasticDemoJob/servers/127.0.0.1");
         content.add("/simpleElasticDemoJob/servers/192.168.0.1/desc | 127.0.0.1");
         List<String> expected = new ArrayList<>();
         expected.add("/simpleElasticDemoJob/servers/ip1");
         expected.add("/simpleElasticDemoJob/servers/ip2/desc | ip1");
-        assertThat(SensitiveInfoUtils.filterSenstiveIps(content), is(expected));
+        assertThat(SensitiveInfoUtils.filterSensitiveIps(content), is(expected));
     }
 }

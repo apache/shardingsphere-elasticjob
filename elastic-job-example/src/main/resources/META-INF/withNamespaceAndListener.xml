@@ -20,6 +20,6 @@
     
     <job:bean id="simpleElasticJob" class="com.dangdang.example.elasticjob.spring.job.SimpleJobDemo" regCenter="regCenter" shardingTotalCount="${simpleJob.shardingTotalCount}" cron="${simpleJob.cron}" shardingItemParameters="${simpleJob.shardingItemParameters}" monitorExecution="${simpleJob.monitorExecution}" monitorPort="${simpleJob.monitorPort}" failover="${simpleJob.failover}" description="${simpleJob.description}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}">
         <job:listener class="com.dangdang.example.elasticjob.spring.job.listener.SimpleListener" />
-        <job:listener class="com.dangdang.example.elasticjob.spring.job.listener.SimpleOnceListener" startedTimeoutMillseconds="1000" completedTimeoutMillseconds="2000" />
+        <job:listener class="com.dangdang.example.elasticjob.spring.job.listener.SimpleOnceListener" startedTimeoutMilliseconds="1000" completedTimeoutMilliseconds="2000" />
     </job:bean>
 </beans>
