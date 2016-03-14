@@ -17,23 +17,10 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.guarantee.GuaranteeService;
-import com.dangdang.ddframe.job.internal.listener.ListenerManager;
-import com.dangdang.ddframe.job.internal.monitor.MonitorService;
-import com.dangdang.ddframe.job.internal.offset.OffsetService;
+import com.dangdang.ddframe.job.internal.schedule.InternalServicesFacade;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
-import com.dangdang.ddframe.job.internal.server.ServerService;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
@@ -70,60 +57,17 @@ public class JobScheduler {
     
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     
-    private final ListenerManager listenerManager;
-    
-    private final ConfigurationService configService;
-    
-    private final LeaderElectionService leaderElectionService;
-    
-    private final ServerService serverService;
-    
-    private final ShardingService shardingService;
-    
-    private final ExecutionContextService executionContextService;
-    
-    private final ExecutionService executionService;
-    
-    private final FailoverService failoverService;
-    
-    private final StatisticsService statisticsService;
-    
-    private final OffsetService offsetService;
-    
-    private final MonitorService monitorService;
+    private final InternalServicesFacade internalServicesFacade;
 
-    private List<ElasticJobListener> elasticJobListeners;
+    private final JobDetail jobDetail;
     
     private Scheduler scheduler;
-    
-    private JobDetail jobDetail;
     
     public JobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final ElasticJobListener... elasticJobListeners) {
         this.jobConfiguration = jobConfiguration;
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
-        this.elasticJobListeners = Arrays.asList(elasticJobListeners);
-        setGuaranteeServiceForElasticJobListeners();
-        listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration, this.elasticJobListeners);
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        executionContextService = new ExecutionContextService(coordinatorRegistryCenter, jobConfiguration);
-        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
-        failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
-        statisticsService = new StatisticsService(coordinatorRegistryCenter, jobConfiguration);
-        offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
-        monitorService = new MonitorService(coordinatorRegistryCenter, jobConfiguration);
+        internalServicesFacade = new InternalServicesFacade(coordinatorRegistryCenter, jobConfiguration, Arrays.asList(elasticJobListeners));
         jobDetail = JobBuilder.newJob(jobConfiguration.getJobClass()).withIdentity(jobConfiguration.getJobName()).build();
-    }
-    
-    private void setGuaranteeServiceForElasticJobListeners() {
-        GuaranteeService guaranteeService = new GuaranteeService(coordinatorRegistryCenter, jobConfiguration);
-        for (ElasticJobListener each : elasticJobListeners) {
-            if (each instanceof AbstractDistributeOnceElasticJobListener) {
-                ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
-            }
-        }
     }
     
     /**
@@ -132,43 +76,22 @@ public class JobScheduler {
     public void init() {
         log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
         coordinatorRegistryCenter.addCacheData("/" + jobConfiguration.getJobName());
-        registerElasticEnv();
-        fillJobDetail();
+        internalServicesFacade.registerStartUpInfo();
+        internalServicesFacade.fillJobDetail(jobDetail.getJobDataMap());
         try {
             scheduler = initializeScheduler(jobDetail.getKey().toString());
-            scheduleJob(createTrigger(configService.getCron()));
+            scheduleJob(createTrigger(internalServicesFacade.getCron()));
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
         JobRegistry.getInstance().addJobScheduler(jobConfiguration.getJobName(), this);
     }
     
-    private void registerElasticEnv() {
-        listenerManager.startAllListeners();
-        leaderElectionService.leaderElection();
-        configService.persistJobConfiguration();
-        serverService.persistServerOnline();
-        serverService.clearJobStopedStatus();
-        statisticsService.startProcessCountJob();
-        shardingService.setReshardingFlag();
-        monitorService.listen();
-    }
-    
-    private void fillJobDetail() {
-        jobDetail.getJobDataMap().put("configService", configService);
-        jobDetail.getJobDataMap().put("shardingService", shardingService);
-        jobDetail.getJobDataMap().put("executionContextService", executionContextService);
-        jobDetail.getJobDataMap().put("executionService", executionService);
-        jobDetail.getJobDataMap().put("failoverService", failoverService);
-        jobDetail.getJobDataMap().put("offsetService", offsetService);
-        jobDetail.getJobDataMap().put("elasticJobListeners", elasticJobListeners);
-    }
-    
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
         StdSchedulerFactory factory = new StdSchedulerFactory();
         factory.initialize(getBaseQuartzProperties(jobName));
         Scheduler result = factory.getScheduler();
-        result.getListenerManager().addTriggerListener(new JobTriggerListener(executionService, shardingService));
+        result.getListenerManager().addTriggerListener(internalServicesFacade.newJobTriggerListener());
         return result;
     }
     
@@ -177,7 +100,7 @@ public class JobScheduler {
         result.put("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
-        if (!configService.isMisfire()) {
+        if (!internalServicesFacade.isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
         prepareEnvironments(result);
@@ -189,7 +112,7 @@ public class JobScheduler {
     
     private CronTrigger createTrigger(final String cronExpression) {
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-        if (configService.isMisfire()) {
+        if (internalServicesFacade.isMisfire()) {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
         } else {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
@@ -248,7 +171,7 @@ public class JobScheduler {
     /**
      * 恢复手工停止的作业.
      */
-    public void resumeManualStopedJob() {
+    public void resumeManualStoppedJob() {
         try {
             if (scheduler.isShutdown()) {
                 return;
@@ -258,7 +181,7 @@ public class JobScheduler {
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
-        serverService.clearJobStopedStatus();
+        internalServicesFacade.clearJobStoppedStatus();
     }
     
     /**
@@ -269,9 +192,8 @@ public class JobScheduler {
      * </p>
      */
     public void resumeCrashedJob() {
-        serverService.persistServerOnline();
-        executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
-        if (serverService.isJobStopedManually()) {
+        internalServicesFacade.resumeCrashedJobInfo();
+        if (internalServicesFacade.isJobStoppedManually()) {
             return;
         }
         JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).resume();
@@ -297,9 +219,8 @@ public class JobScheduler {
      * 关闭调度器.
      */
     public void shutdown() {
+        internalServicesFacade.releaseJobResource();
         try {
-            monitorService.close();
-            statisticsService.stopProcessCountJob();
             scheduler.shutdown();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);

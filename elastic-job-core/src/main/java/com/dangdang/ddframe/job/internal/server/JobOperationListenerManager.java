@@ -80,7 +80,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
                 jobScheduler.stopJob();
             }
             if (Type.NODE_REMOVED == event.getType()) {
-                jobScheduler.resumeManualStopedJob();
+                jobScheduler.resumeManualStoppedJob();
             }
         }
     }

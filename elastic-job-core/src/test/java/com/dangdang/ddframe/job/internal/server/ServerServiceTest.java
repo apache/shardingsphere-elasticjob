@@ -108,15 +108,15 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertClearJobStopedStatus() {
-        serverService.clearJobStopedStatus();
+    public void assertClearJobStoppedStatus() {
+        serverService.clearJobStoppedStatus();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/stoped");
     }
     
     @Test
-    public void assertIsJobStopedManually() {
+    public void assertIsJobStoppedManually() {
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/stoped")).thenReturn(true);
-        assertTrue(serverService.isJobStopedManually());
+        assertTrue(serverService.isJobStoppedManually());
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/stoped");
     }
     
@@ -163,7 +163,7 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertIsServerReadyWhenServerStoped() {
+    public void assertIsServerReadyWhenServerStopped() {
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/stoped")).thenReturn(true);
         assertFalse(serverService.isServerReady());

@@ -91,7 +91,7 @@ public final class JobOperationListenerManagerTest {
         jobOperationListenerManager.new JobStopedStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/servers/" + ip + "/other", null, "".getBytes())), "/testJob/servers/" + ip + "/other");
         verify(jobScheduler, times(0)).stopJob();
-        verify(jobScheduler, times(0)).resumeManualStopedJob();
+        verify(jobScheduler, times(0)).resumeManualStoppedJob();
     }
     
     @Test
@@ -99,7 +99,7 @@ public final class JobOperationListenerManagerTest {
         jobOperationListenerManager.new JobStopedStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/servers/" + ip + "/stoped", null, "".getBytes())), "/testJob/servers/" + ip + "/stoped");
         verify(jobScheduler, times(0)).stopJob();
-        verify(jobScheduler, times(0)).resumeManualStopedJob();
+        verify(jobScheduler, times(0)).resumeManualStoppedJob();
     }
     
     @Test
@@ -108,7 +108,7 @@ public final class JobOperationListenerManagerTest {
         jobOperationListenerManager.new JobStopedStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/servers/" + ip + "/stoped", null, "".getBytes())), "/testJob/servers/" + ip + "/stoped");
         verify(jobScheduler, times(0)).stopJob();
-        verify(jobScheduler, times(0)).resumeManualStopedJob();
+        verify(jobScheduler, times(0)).resumeManualStoppedJob();
     }
     
     @Test
@@ -117,7 +117,7 @@ public final class JobOperationListenerManagerTest {
         jobOperationListenerManager.new JobStopedStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/servers/" + ip + "/stoped", null, "".getBytes())), "/testJob/servers/" + ip + "/stoped");
         verify(jobScheduler).stopJob();
-        verify(jobScheduler, times(0)).resumeManualStopedJob();
+        verify(jobScheduler, times(0)).resumeManualStoppedJob();
     }
     
     @Test
@@ -126,6 +126,6 @@ public final class JobOperationListenerManagerTest {
         jobOperationListenerManager.new JobStopedStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/testJob/servers/" + ip + "/stoped", null, "".getBytes())), "/testJob/servers/" + ip + "/stoped");
         verify(jobScheduler, times(0)).stopJob();
-        verify(jobScheduler).resumeManualStopedJob();
+        verify(jobScheduler).resumeManualStoppedJob();
     }
 }

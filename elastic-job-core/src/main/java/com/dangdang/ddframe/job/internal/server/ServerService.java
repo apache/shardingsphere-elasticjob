@@ -80,7 +80,7 @@ public class ServerService {
     /**
      * 清除停止作业的标记.
      */
-    public void clearJobStopedStatus() {
+    public void clearJobStoppedStatus() {
         jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStopedNode(localHostService.getIp()));
     }
     
@@ -89,7 +89,7 @@ public class ServerService {
      * 
      * @return 是否是手工停止的作业
      */
-    public boolean isJobStopedManually() {
+    public boolean isJobStoppedManually() {
         return jobNodeStorage.isJobNodeExisted(ServerNode.getStopedNode(localHostService.getIp()));
     }
     

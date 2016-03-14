@@ -17,26 +17,12 @@
 
 package com.dangdang.ddframe.job.api;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
-import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.schedule.InternalServicesFacade;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -50,22 +36,21 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.listener.ListenerManager;
-import com.dangdang.ddframe.job.internal.monitor.MonitorService;
-import com.dangdang.ddframe.job.internal.offset.OffsetService;
-import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
-import com.dangdang.ddframe.job.internal.server.ServerService;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public final class JobSchedulerTest {
     
@@ -73,37 +58,7 @@ public final class JobSchedulerTest {
     private CoordinatorRegistryCenter coordinatorRegistryCenter;
     
     @Mock
-    private ListenerManager listenerManager;
-    
-    @Mock
-    private ConfigurationService configService;
-    
-    @Mock
-    private LeaderElectionService leaderElectionService;
-    
-    @Mock
-    private ServerService serverService;
-    
-    @Mock
-    private ShardingService shardingService;
-    
-    @Mock
-    private ExecutionContextService executionContextService;
-    
-    @Mock
-    private ExecutionService executionService;
-    
-    @Mock
-    private FailoverService failoverService;
-    
-    @Mock
-    private StatisticsService statisticsService;
-    
-    @Mock
-    private OffsetService offsetService;
-    
-    @Mock
-    private MonitorService monitorService;
+    private InternalServicesFacade internalServicesFacade;
     
     @Mock
     private Scheduler scheduler;
@@ -119,69 +74,40 @@ public final class JobSchedulerTest {
     public void initMocks() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "coordinatorRegistryCenter", coordinatorRegistryCenter);
-        ReflectionUtils.setFieldValue(jobScheduler, "listenerManager", listenerManager);
-        ReflectionUtils.setFieldValue(jobScheduler, "configService", configService);
-        ReflectionUtils.setFieldValue(jobScheduler, "leaderElectionService", leaderElectionService);
-        ReflectionUtils.setFieldValue(jobScheduler, "serverService", serverService);
-        ReflectionUtils.setFieldValue(jobScheduler, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(jobScheduler, "executionContextService", executionContextService);
-        ReflectionUtils.setFieldValue(jobScheduler, "executionService", executionService);
-        ReflectionUtils.setFieldValue(jobScheduler, "failoverService", failoverService);
-        ReflectionUtils.setFieldValue(jobScheduler, "statisticsService", statisticsService);
-        ReflectionUtils.setFieldValue(jobScheduler, "offsetService", offsetService);
-        ReflectionUtils.setFieldValue(jobScheduler, "monitorService", monitorService);
-    }
-    
-    @Test
-    public void assertScheduleWithElasticJobListeners() {
-        JobScheduler jobScheduler = new JobScheduler(coordinatorRegistryCenter, jobConfig, new TestElasticJobListener(), new TestDistributeOnceElasticJobListener());
-        List<ElasticJobListener> actual = ReflectionUtils.getFieldValue(jobScheduler, ReflectionUtils.getFieldWithName(JobScheduler.class, "elasticJobListeners", false));
-        assertThat(actual.size(), is(2));
-        assertThat(actual.get(0), instanceOf(TestElasticJobListener.class));
-        assertThat(actual.get(1), instanceOf(TestDistributeOnceElasticJobListener.class));
-        Field field = ReflectionUtils.getFieldWithName(TestDistributeOnceElasticJobListener.class, "guaranteeService", false);
-        field.setAccessible(true);
-        assertNotNull(field);
+        ReflectionUtils.setFieldValue(jobScheduler, "internalServicesFacade", internalServicesFacade);
     }
     
     @Test
     public void assertInitIfIsMisfire() throws NoSuchFieldException, SchedulerException {
-        when(configService.getCron()).thenReturn("* * 0/10 * * ? 2050");
-        when(configService.isMisfire()).thenReturn(true);
+        mockInit(true);
         jobScheduler.init();
         assertInit();
     }
     
     @Test
     public void assertInitIfIsNotMisfire() throws NoSuchFieldException, SchedulerException {
-        when(configService.getCron()).thenReturn("* * 0/10 * * ? 2050");
-        when(configService.isMisfire()).thenReturn(false);
+        mockInit(false);
         jobScheduler.init();
         assertInit();
+    }
+    
+    private void mockInit(final boolean isMisfire) {
+        when(internalServicesFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
+        when(internalServicesFacade.getCron()).thenReturn("* * 0/10 * * ? 2050");
+        when(internalServicesFacade.isMisfire()).thenReturn(isMisfire);
     }
     
     private void assertInit() throws NoSuchFieldException, SchedulerException {
         JobDetail jobDetail = ReflectionUtils.getFieldValue(jobScheduler, jobScheduler.getClass().getDeclaredField("jobDetail"));
         assertThat(jobDetail.getKey().getName(), is("testJob"));
-        assertThat((ConfigurationService) jobDetail.getJobDataMap().get("configService"), is(configService));
-        assertThat((ShardingService) jobDetail.getJobDataMap().get("shardingService"), is(shardingService));
-        assertThat((ExecutionContextService) jobDetail.getJobDataMap().get("executionContextService"), is(executionContextService));
-        assertThat((ExecutionService) jobDetail.getJobDataMap().get("executionService"), is(executionService));
-        assertThat((FailoverService) jobDetail.getJobDataMap().get("failoverService"), is(failoverService));
-        assertThat((OffsetService) jobDetail.getJobDataMap().get("offsetService"), is(offsetService));
         Scheduler scheduler = ReflectionUtils.getFieldValue(jobScheduler, jobScheduler.getClass().getDeclaredField("scheduler"));
         assertThat(scheduler.getListenerManager().getTriggerListeners().size(), is(1));
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
         verify(coordinatorRegistryCenter).addCacheData("/testJob");
-        verify(listenerManager).startAllListeners();
-        verify(leaderElectionService).leaderElection();
-        verify(configService).persistJobConfiguration();
-        verify(serverService).persistServerOnline();
-        verify(serverService).clearJobStopedStatus();
-        verify(statisticsService).startProcessCountJob();
-        verify(shardingService).setReshardingFlag();
-        verify(monitorService).listen();
+        verify(internalServicesFacade).registerStartUpInfo();
+        verify(internalServicesFacade).fillJobDetail(jobDetail.getJobDataMap());
+        verify(internalServicesFacade).newJobTriggerListener();
     }
     
     @Test
@@ -236,59 +162,55 @@ public final class JobSchedulerTest {
     }
     
     @Test
-    public void assertResumeManualStopedJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+    public void assertResumeManualStoppedJobIfShutdown() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.resumeManualStopedJob();
+        jobScheduler.resumeManualStoppedJob();
         verify(scheduler).isShutdown();
         verify(scheduler, times(0)).resumeAll();
     }
     
     @Test(expected = JobException.class)
-    public void assertResumeManualStopedJobFailure() throws NoSuchFieldException, SchedulerException {
+    public void assertResumeManualStoppedJobFailure() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(false);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         doThrow(SchedulerException.class).when(scheduler).resumeAll();
         try {
-            jobScheduler.resumeManualStopedJob();
+            jobScheduler.resumeManualStoppedJob();
         } finally {
             verify(scheduler).isShutdown();
             verify(scheduler).resumeAll();
-            verify(serverService, times(0)).clearJobStopedStatus();
+            verify(internalServicesFacade, times(0)).clearJobStoppedStatus();
         }
     }
     
     @Test
-    public void assertResumeManualStopedJobSuccess() throws NoSuchFieldException, SchedulerException {
+    public void assertResumeManualStoppedJobSuccess() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(false);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.resumeManualStopedJob();
+        jobScheduler.resumeManualStoppedJob();
         verify(scheduler).isShutdown();
         verify(scheduler).resumeAll();
-        verify(serverService).clearJobStopedStatus();
+        verify(internalServicesFacade).clearJobStoppedStatus();
     }
     
     @Test
-    public void assertResumeCrashedJobIfIsJobStopedManually() throws NoSuchFieldException, SchedulerException {
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-        when(serverService.isJobStopedManually()).thenReturn(true);
+    public void assertResumeCrashedJobIfIsJobStoppedManually() throws NoSuchFieldException, SchedulerException {
+        when(internalServicesFacade.isJobStoppedManually()).thenReturn(true);
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         jobScheduler.resumeCrashedJob();
-        verify(serverService).persistServerOnline();
-        verify(shardingService).getLocalHostShardingItems();
-        verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
+        verify(internalServicesFacade).resumeCrashedJobInfo();
         verify(scheduler, times(0)).resumeAll();
     }
     
     @Test(expected = JobException.class)
     public void assertResumeCrashedJobFailure() throws NoSuchFieldException, SchedulerException {
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-        when(serverService.isJobStopedManually()).thenReturn(false);
+        when(internalServicesFacade.isJobStoppedManually()).thenReturn(false);
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
@@ -296,24 +218,19 @@ public final class JobSchedulerTest {
         try {
             jobScheduler.resumeCrashedJob();
         } finally {
-            verify(serverService).persistServerOnline();
-            verify(shardingService).getLocalHostShardingItems();
-            verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
+            verify(internalServicesFacade).resumeCrashedJobInfo();
             verify(scheduler).resumeAll();
         }
     }
     
     @Test
     public void assertResumeCrashedJobSuccess() throws NoSuchFieldException, SchedulerException {
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-        when(serverService.isJobStopedManually()).thenReturn(false);
+        when(internalServicesFacade.isJobStoppedManually()).thenReturn(false);
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         jobScheduler.resumeCrashedJob();
-        verify(serverService).persistServerOnline();
-        verify(shardingService).getLocalHostShardingItems();
-        verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
+        verify(internalServicesFacade).resumeCrashedJobInfo();
         verify(scheduler).resumeAll();
     }
     
@@ -350,8 +267,7 @@ public final class JobSchedulerTest {
         try {
             jobScheduler.shutdown();
         } finally {
-            verify(monitorService).close();
-            verify(statisticsService).stopProcessCountJob();
+            verify(internalServicesFacade).releaseJobResource();
             verify(scheduler).shutdown();
         }
     }
@@ -360,8 +276,7 @@ public final class JobSchedulerTest {
     public void assertShutdownSuccess() throws NoSuchFieldException, SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         jobScheduler.shutdown();
-        verify(monitorService).close();
-        verify(statisticsService).stopProcessCountJob();
+        verify(internalServicesFacade).releaseJobResource();
         verify(scheduler).shutdown();
     }
     
@@ -388,31 +303,5 @@ public final class JobSchedulerTest {
         jobScheduler.setField("fieldName", "fieldValue");
         JobDetail jobDetail = ReflectionUtils.getFieldValue(jobScheduler, jobScheduler.getClass().getDeclaredField("jobDetail"));
         assertThat(jobDetail.getJobDataMap().get("fieldName").toString(), is("fieldValue"));
-    }
-    
-    static class TestElasticJobListener implements ElasticJobListener {
-        
-        @Override
-        public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
-        }
-        
-        @Override
-        public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
-        }
-    }
-    
-    static class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
-        
-        TestDistributeOnceElasticJobListener() {
-            super(500000L, 500000L);
-        }
-        
-        @Override
-        public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
-        }
-            
-        @Override
-        public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
-        }
     }
 }

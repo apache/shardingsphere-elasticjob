@@ -31,11 +31,11 @@ import lombok.Setter;
 public abstract class AbstractDistributeOnceElasticJobListener implements ElasticJobListener {
     
     private final long startedTimeoutMilliseconds;
-
+    
     private final Object startedWait = new Object();
     
     private final long completedTimeoutMilliseconds;
-
+    
     private final Object completedWait = new Object();
     
     @Setter

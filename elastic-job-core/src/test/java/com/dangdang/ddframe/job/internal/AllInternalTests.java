@@ -40,6 +40,7 @@ import com.dangdang.ddframe.job.internal.monitor.MonitorServiceDisableTest;
 import com.dangdang.ddframe.job.internal.monitor.MonitorServiceEnableTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetNodeTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetServiceTest;
+import com.dangdang.ddframe.job.internal.schedule.InternalServicesFacadeTest;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistryTest;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListenerTest;
 import com.dangdang.ddframe.job.internal.server.JobOperationListenerManagerTest;
@@ -100,7 +101,8 @@ import org.junit.runners.Suite.SuiteClasses;
     MonitorServiceEnableTest.class, 
     MonitorServiceDisableTest.class, 
     GuaranteeNodeTest.class,
-    GuaranteeServiceTest.class
+    GuaranteeServiceTest.class, 
+    InternalServicesFacadeTest.class
     })
 public final class AllInternalTests {
 }
