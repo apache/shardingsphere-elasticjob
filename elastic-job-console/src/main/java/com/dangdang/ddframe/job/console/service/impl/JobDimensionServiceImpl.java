@@ -113,23 +113,23 @@ public class JobDimensionServiceImpl implements JobDimensionService {
     
     @Override
     public void updateJobSettings(final JobSettings jobSettings) {
-        updateIfchanged(jobSettings.getJobName(), "shardingTotalCount", jobSettings.getShardingTotalCount());
-        updateIfchanged(jobSettings.getJobName(), "cron", jobSettings.getCron());
-        updateIfchanged(jobSettings.getJobName(), "shardingItemParameters", jobSettings.getShardingItemParameters());
-        updateIfchanged(jobSettings.getJobName(), "jobParameter", jobSettings.getJobParameter());
-        updateIfchanged(jobSettings.getJobName(), "monitorExecution", jobSettings.isMonitorExecution());
-        updateIfchanged(jobSettings.getJobName(), "processCountIntervalSeconds", jobSettings.getProcessCountIntervalSeconds());
-        updateIfchanged(jobSettings.getJobName(), "concurrentDataProcessThreadCount", jobSettings.getConcurrentDataProcessThreadCount());
-        updateIfchanged(jobSettings.getJobName(), "fetchDataCount", jobSettings.getFetchDataCount());
-        updateIfchanged(jobSettings.getJobName(), "maxTimeDiffSeconds", jobSettings.getMaxTimeDiffSeconds());
-        updateIfchanged(jobSettings.getJobName(), "monitorPort", jobSettings.getMonitorPort());
-        updateIfchanged(jobSettings.getJobName(), "failover", jobSettings.isFailover());
-        updateIfchanged(jobSettings.getJobName(), "misfire", jobSettings.isMisfire());
-        updateIfchanged(jobSettings.getJobName(), "jobShardingStrategyClass", jobSettings.getJobShardingStrategyClass());
-        updateIfchanged(jobSettings.getJobName(), "description", jobSettings.getDescription());
+        updateIfChanged(jobSettings.getJobName(), "shardingTotalCount", jobSettings.getShardingTotalCount());
+        updateIfChanged(jobSettings.getJobName(), "cron", jobSettings.getCron());
+        updateIfChanged(jobSettings.getJobName(), "shardingItemParameters", jobSettings.getShardingItemParameters());
+        updateIfChanged(jobSettings.getJobName(), "jobParameter", jobSettings.getJobParameter());
+        updateIfChanged(jobSettings.getJobName(), "monitorExecution", jobSettings.isMonitorExecution());
+        updateIfChanged(jobSettings.getJobName(), "processCountIntervalSeconds", jobSettings.getProcessCountIntervalSeconds());
+        updateIfChanged(jobSettings.getJobName(), "concurrentDataProcessThreadCount", jobSettings.getConcurrentDataProcessThreadCount());
+        updateIfChanged(jobSettings.getJobName(), "fetchDataCount", jobSettings.getFetchDataCount());
+        updateIfChanged(jobSettings.getJobName(), "maxTimeDiffSeconds", jobSettings.getMaxTimeDiffSeconds());
+        updateIfChanged(jobSettings.getJobName(), "monitorPort", jobSettings.getMonitorPort());
+        updateIfChanged(jobSettings.getJobName(), "failover", jobSettings.isFailover());
+        updateIfChanged(jobSettings.getJobName(), "misfire", jobSettings.isMisfire());
+        updateIfChanged(jobSettings.getJobName(), "jobShardingStrategyClass", jobSettings.getJobShardingStrategyClass());
+        updateIfChanged(jobSettings.getJobName(), "description", jobSettings.getDescription());
     }
     
-    private void updateIfchanged(final String jobName, final String nodeName, final Object value) {
+    private void updateIfChanged(final String jobName, final String nodeName, final Object value) {
         String configNodePath = JobNodePath.getConfigNodePath(jobName, nodeName);
         String originalValue = curatorRepository.getData(configNodePath);
         if (null != originalValue && !originalValue.equals(value.toString())) {
@@ -171,11 +171,11 @@ public class JobDimensionServiceImpl implements JobDimensionService {
     
     @Override
     public Collection<ExecutionInfo> getExecutionInfo(final String jobName) {
-        String executionRootpath = JobNodePath.getExecutionNodePath(jobName);
-        if (!curatorRepository.checkExists(executionRootpath)) {
+        String executionRootPath = JobNodePath.getExecutionNodePath(jobName);
+        if (!curatorRepository.checkExists(executionRootPath)) {
             return Collections.emptyList();
         }
-        List<String> items = curatorRepository.getChildren(executionRootpath);
+        List<String> items = curatorRepository.getChildren(executionRootPath);
         List<ExecutionInfo> result = new ArrayList<>(items.size());
         for (String each : items) {
             result.add(getExecutionInfo(jobName, each));

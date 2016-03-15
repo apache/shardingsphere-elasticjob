@@ -46,7 +46,7 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
     @Override
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         Map<String, String> serverHostMap = new HashMap<>();
-        Map<String, Boolean> serverAlivedCountMap = new HashMap<>();
+        Map<String, Boolean> serverAliveCountMap = new HashMap<>();
         Map<String, Boolean> serverCrashedCountMap = new HashMap<>();
         List<String> jobs = curatorRepository.getChildren("/");
         for (String jobName : jobs) {
@@ -54,7 +54,7 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
             for (String server : servers) {
                 serverHostMap.put(server, curatorRepository.getData(JobNodePath.getServerNodePath(jobName, server, "hostName")));
                 if (curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, server, "status"))) {
-                    serverAlivedCountMap.put(server, true);
+                    serverAliveCountMap.put(server, true);
                 } else {
                     serverCrashedCountMap.put(server, true);
                 }
@@ -62,7 +62,7 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         }
         List<ServerBriefInfo> result = new ArrayList<>();
         for (Entry<String, String> entry : serverHostMap.entrySet()) {
-            result.add(getServerBriefInfo(serverAlivedCountMap, serverCrashedCountMap, entry));
+            result.add(getServerBriefInfo(serverAliveCountMap, serverCrashedCountMap, entry));
         }
         Collections.sort(result);
         return result;

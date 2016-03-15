@@ -104,9 +104,9 @@ public final class JobSchedulerTest {
         assertThat(scheduler.getListenerManager().getTriggerListeners().size(), is(1));
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
+        assertThat((SchedulerFacade) jobDetail.getJobDataMap().get("schedulerFacade"), is(schedulerFacade));
         verify(coordinatorRegistryCenter).addCacheData("/testJob");
         verify(schedulerFacade).registerStartUpInfo();
-        verify(schedulerFacade).fillJobDetail(jobDetail.getJobDataMap());
         verify(schedulerFacade).newJobTriggerListener();
     }
     

@@ -30,6 +30,7 @@ import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
+import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
 
@@ -48,26 +49,30 @@ public class ElasticJobAssert {
         return result;
     }
     
-    public static void prepareForIsNotMisfireAndIsNotFailover(final ConfigurationService configService, final ExecutionContextService executionContextService, 
-            final ExecutionService executionService, final JobExecutionMultipleShardingContext shardingContext) {
-        when(executionContextService.getJobExecutionShardingContext()).thenReturn(shardingContext);
-        when(executionService.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
-        when(configService.isMisfire()).thenReturn(false);
-        when(configService.isFailover()).thenReturn(false);
+    public static void prepareForIsNotMisfire(final SchedulerFacade schedulerFacade, final JobExecutionMultipleShardingContext shardingContext) {
+        when(schedulerFacade.getShardingContext()).thenReturn(shardingContext);
+        when(schedulerFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
+        when(schedulerFacade.isExecuteMisfired(false, shardingContext.getShardingItems())).thenReturn(false);
     }
     
-    public static void verifyForIsNotMisfireAndIsNotFailover(final ConfigurationService configService, final ShardingService shardingService, final ExecutionContextService executionContextService, 
-            final ExecutionService executionService, final FailoverService failoverService, final JobExecutionMultipleShardingContext shardingContext) {
-        verify(configService).checkMaxTimeDiffSecondsTolerable();
-        verify(shardingService).shardingIfNecessary();
-        verify(executionContextService).getJobExecutionShardingContext();
-        verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-        verify(executionService).registerJobBegin(shardingContext);
-        verify(executionService).registerJobCompleted(shardingContext);
-        verify(configService).isMisfire();
-        verify(configService, times(2)).isFailover();
-        verify(failoverService, times(0)).updateFailoverComplete(shardingContext.getShardingItems());
-        verify(failoverService, times(0)).failoverIfNecessary();
+    public static void verifyForIsNotMisfireAndNotStopped(final SchedulerFacade schedulerFacade, final JobExecutionMultipleShardingContext shardingContext) {
+        verifyForIsNotMisfire(schedulerFacade, shardingContext, false);
+    }
+    
+    public static void verifyForIsNotMisfireAndStopped(final SchedulerFacade schedulerFacade, final JobExecutionMultipleShardingContext shardingContext) {
+        verifyForIsNotMisfire(schedulerFacade, shardingContext, true);
+    }
+    
+    private static void verifyForIsNotMisfire(final SchedulerFacade schedulerFacade, final JobExecutionMultipleShardingContext shardingContext, final boolean stopped) {
+        verify(schedulerFacade).checkMaxTimeDiffSecondsTolerable();
+        verify(schedulerFacade).getShardingContext();
+        verify(schedulerFacade).misfireIfNecessary(shardingContext.getShardingItems());
+        verify(schedulerFacade).beforeJobExecuted(shardingContext);
+        verify(schedulerFacade).registerJobBegin(shardingContext);
+        verify(schedulerFacade).registerJobCompleted(shardingContext);
+        verify(schedulerFacade).isExecuteMisfired(stopped, shardingContext.getShardingItems());
+        verify(schedulerFacade).failoverIfNecessary(stopped);
+        verify(schedulerFacade).afterJobExecuted(shardingContext);
     }
     
     public static void assertProcessCountStatistics(final int successCount, final int failureCount) {

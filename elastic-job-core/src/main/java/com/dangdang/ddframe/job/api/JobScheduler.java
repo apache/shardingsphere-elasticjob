@@ -77,7 +77,7 @@ public class JobScheduler {
         log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
         coordinatorRegistryCenter.addCacheData("/" + jobConfiguration.getJobName());
         schedulerFacade.registerStartUpInfo();
-        schedulerFacade.fillJobDetail(jobDetail.getJobDataMap());
+        jobDetail.getJobDataMap().put("schedulerFacade", schedulerFacade);
         try {
             scheduler = initializeScheduler(jobDetail.getKey().toString());
             scheduleJob(createTrigger(schedulerFacade.getCron()));

@@ -98,7 +98,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeThroughputStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         List<T> data = fetchDataForThroughput(shardingContext);
-        while (null != data && !data.isEmpty() && !isStopped() && !getShardingService().isNeedSharding()) {
+        while (null != data && !data.isEmpty() && getSchedulerFacade().isEligibleForJobRunning(isStopped())) {
             processDataForThroughput(shardingContext, data);
             data = fetchDataForThroughput(shardingContext);
         }
@@ -113,7 +113,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeSequenceStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         Map<Integer, List<T>> data = fetchDataForSequence(shardingContext);
-        while (!data.isEmpty() && !isStopped() && !getShardingService().isNeedSharding()) {
+        while (!data.isEmpty() && getSchedulerFacade().isEligibleForJobRunning(isStopped())) {
             processDataForSequence(shardingContext, data);
             data = fetchDataForSequence(shardingContext);
         }
@@ -135,14 +135,14 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     @SuppressWarnings("unchecked")
     private void processDataForThroughput(final JobExecutionMultipleShardingContext shardingContext, final List<T> data) {
-        int threadCount = getConfigService().getConcurrentDataProcessThreadCount();
+        int threadCount = getSchedulerFacade().getConcurrentDataProcessThreadCount();
         if (threadCount <= 1 || data.size() <= threadCount) {
             processDataWithStatistics((C) shardingContext, data);
             return;
         }
-        List<List<T>> splittedData = Lists.partition(data, data.size() / threadCount);
-        final CountDownLatch latch = new CountDownLatch(splittedData.size());
-        for (final List<T> each : splittedData) {
+        List<List<T>> splitData = Lists.partition(data, data.size() / threadCount);
+        final CountDownLatch latch = new CountDownLatch(splitData.size());
+        for (final List<T> each : splitData) {
             executorService.submit(new Runnable() {
                 
                 @Override
@@ -219,7 +219,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     @Override
     public final void updateOffset(final int item, final String offset) {
-        getOffsetService().updateOffset(item, offset);
+        getSchedulerFacade().updateOffset(item, offset);
     }
     
     @Override

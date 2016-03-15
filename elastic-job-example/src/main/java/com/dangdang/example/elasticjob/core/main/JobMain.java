@@ -57,7 +57,7 @@ public final class JobMain {
     
     class SimpleDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
         
-        public SimpleDistributeOnceElasticJobListener() {
+        SimpleDistributeOnceElasticJobListener() {
             super(1000L, 1000L);
         }
         

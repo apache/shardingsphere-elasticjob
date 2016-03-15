@@ -19,23 +19,13 @@ package com.dangdang.ddframe.job.internal.job;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 弹性化分布式作业的基类.
@@ -50,70 +40,39 @@ public abstract class AbstractElasticJob implements ElasticJob {
     private volatile boolean stopped;
     
     @Getter(AccessLevel.PROTECTED)
-    private ConfigurationService configService;
-    
-    @Setter
-    @Getter(AccessLevel.PROTECTED)
-    private ShardingService shardingService;
-    
-    @Setter
-    private ExecutionContextService executionContextService;
-    
-    @Setter
-    private ExecutionService executionService;
-    
-    @Setter
-    private FailoverService failoverService;
-    
-    @Setter
-    @Getter(AccessLevel.PROTECTED)
-    private OffsetService offsetService;
-    
-    @Setter
-    private List<ElasticJobListener> elasticJobListeners = new ArrayList<>();
+    private SchedulerFacade schedulerFacade;
     
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
         log.trace("Elastic job: job execute begin, job execution context:{}.", context);
-        configService.checkMaxTimeDiffSecondsTolerable();
-        shardingService.shardingIfNecessary();
-        JobExecutionMultipleShardingContext shardingContext = executionContextService.getJobExecutionShardingContext();
-        if (executionService.misfireIfNecessary(shardingContext.getShardingItems())) {
+        schedulerFacade.checkMaxTimeDiffSecondsTolerable();
+        JobExecutionMultipleShardingContext shardingContext = schedulerFacade.getShardingContext();
+        if (schedulerFacade.misfireIfNecessary(shardingContext.getShardingItems())) {
             log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
             return;
         }
-        if (!elasticJobListeners.isEmpty()) {
-            for (ElasticJobListener each : elasticJobListeners) {
-                try {
-                    each.beforeJobExecuted(shardingContext);
-                //CHECKSTYLE:OFF
-                } catch (final Throwable cause) {
-                //CHECKSTYLE:ON
-                    handleJobExecutionException(new JobExecutionException(cause));
-                }
-            }
+        try {
+            schedulerFacade.beforeJobExecuted(shardingContext);
+            //CHECKSTYLE:OFF
+        } catch (final Throwable cause) {
+            //CHECKSTYLE:ON
+            handleJobExecutionException(new JobExecutionException(cause));
         }
         executeJobInternal(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
-        while (configService.isMisfire() && !executionService.getMisfiredJobItems(shardingContext.getShardingItems()).isEmpty() && !stopped && !shardingService.isNeedSharding()) {
+        while (schedulerFacade.isExecuteMisfired(stopped, shardingContext.getShardingItems())) {
             log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
-            executionService.clearMisfire(shardingContext.getShardingItems());
+            schedulerFacade.clearMisfire(shardingContext.getShardingItems());
             executeJobInternal(shardingContext);
             log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
-        if (configService.isFailover() && !stopped) {
-            failoverService.failoverIfNecessary();
-        }
-        if (!elasticJobListeners.isEmpty()) {
-            for (ElasticJobListener each : elasticJobListeners) {
-                try {
-                    each.afterJobExecuted(shardingContext);
-                //CHECKSTYLE:OFF
-                } catch (final Throwable cause) {
-                //CHECKSTYLE:ON
-                    handleJobExecutionException(new JobExecutionException(cause));
-                }
-            }
+        schedulerFacade.failoverIfNecessary(stopped);
+        try {
+            schedulerFacade.afterJobExecuted(shardingContext);
+            //CHECKSTYLE:OFF
+        } catch (final Throwable cause) {
+            //CHECKSTYLE:ON
+            handleJobExecutionException(new JobExecutionException(cause));
         }
         log.trace("Elastic job: execute all completed, job execution context:{}.", context);
     }
@@ -123,7 +82,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
             log.trace("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
             return;
         }
-        executionService.registerJobBegin(shardingContext);
+        schedulerFacade.registerJobBegin(shardingContext);
         try {
             executeJob(shardingContext);
         //CHECKSTYLE:OFF
@@ -132,10 +91,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
             handleJobExecutionException(new JobExecutionException(cause));
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
-            executionService.registerJobCompleted(shardingContext);
-            if (configService.isFailover()) {
-                failoverService.updateFailoverComplete(shardingContext.getShardingItems());
-            }
+            schedulerFacade.registerJobCompleted(shardingContext);
         }
     }
     
@@ -156,8 +112,8 @@ public abstract class AbstractElasticJob implements ElasticJob {
         stopped = false;
     }
     
-    public final void setConfigService(final ConfigurationService configService) {
-        this.configService = configService;
-        JobRegistry.getInstance().addJobInstance(configService.getJobName(), this);
+    public final void setSchedulerFacade(final SchedulerFacade schedulerFacade) {
+        this.schedulerFacade = schedulerFacade;
+        JobRegistry.getInstance().addJobInstance(schedulerFacade.getJobName(), this);
     }
 }

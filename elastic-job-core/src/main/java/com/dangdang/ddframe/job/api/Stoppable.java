@@ -22,7 +22,7 @@ package com.dangdang.ddframe.job.api;
  * 
  * @author caohao
  */
-public interface Stopable {
+public interface Stoppable {
     
     /**
      * 停止运行中的作业或目标.

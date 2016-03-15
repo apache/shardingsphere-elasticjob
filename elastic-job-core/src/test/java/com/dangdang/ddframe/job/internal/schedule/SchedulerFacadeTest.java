@@ -33,11 +33,11 @@ import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
+import lombok.RequiredArgsConstructor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quartz.JobDataMap;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -49,6 +49,7 @@ import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -87,13 +88,17 @@ public class SchedulerFacadeTest {
     @Mock
     private ListenerManager listenerManager;
     
+    @Mock
+    private Caller caller;
+    
     private JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
-    private SchedulerFacade schedulerFacade = new SchedulerFacade(null, jobConfig, Arrays.asList(new TestElasticJobListener(), new TestDistributeOnceElasticJobListener()));
+    private SchedulerFacade schedulerFacade;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
+        schedulerFacade = new SchedulerFacade(null, jobConfig, Collections.<ElasticJobListener> singletonList(new TestElasticJobListener(caller)));
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
@@ -105,10 +110,12 @@ public class SchedulerFacadeTest {
         ReflectionUtils.setFieldValue(schedulerFacade, "offsetService", offsetService);
         ReflectionUtils.setFieldValue(schedulerFacade, "monitorService", monitorService);
         ReflectionUtils.setFieldValue(schedulerFacade, "listenerManager", listenerManager);
+        
     }
     
     @Test
     public void testNew() throws NoSuchFieldException {
+        SchedulerFacade schedulerFacade = new SchedulerFacade(null, jobConfig, Arrays.asList(new TestElasticJobListener(caller), new TestDistributeOnceElasticJobListener()));
         List<ElasticJobListener> actual = ReflectionUtils.getFieldValue(schedulerFacade, ReflectionUtils.getFieldWithName(SchedulerFacade.class, "elasticJobListeners", false));
         assertThat(actual.size(), is(2));
         assertThat(actual.get(0), instanceOf(TestElasticJobListener.class));
@@ -127,19 +134,6 @@ public class SchedulerFacadeTest {
         verify(statisticsService).startProcessCountJob();
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
-    }
-    
-    @Test
-    public void testFillJobDetail() {
-        JobDataMap actual = new JobDataMap();
-        schedulerFacade.fillJobDetail(actual);
-        assertThat((ConfigurationService) actual.get("configService"), is(configService));
-        assertThat((ShardingService) actual.get("shardingService"), is(shardingService));
-        assertThat((ExecutionContextService) actual.get("executionContextService"), is(executionContextService));
-        assertThat((ExecutionService) actual.get("executionService"), is(executionService));
-        assertThat((FailoverService) actual.get("failoverService"), is(failoverService));
-        assertThat((OffsetService) actual.get("offsetService"), is(offsetService));
-        assertThat(((List) actual.get("elasticJobListeners")).size(), is(2));
     }
     
     @Test
@@ -171,6 +165,12 @@ public class SchedulerFacadeTest {
     }
     
     @Test
+    public void testGetJobName() {
+        when(configService.getJobName()).thenReturn("testJob");
+        assertThat(schedulerFacade.getJobName(), is("testJob"));
+    }
+    
+    @Test
     public void testGetCron() {
         when(configService.getCron()).thenReturn("0 * * * * *");
         assertThat(schedulerFacade.getCron(), is("0 * * * * *"));
@@ -181,23 +181,124 @@ public class SchedulerFacadeTest {
         when(configService.isMisfire()).thenReturn(true);
         assertTrue(schedulerFacade.isMisfire());
     }
+
+    @Test
+    public void testCheckMaxTimeDiffSecondsTolerable() {
+        schedulerFacade.checkMaxTimeDiffSecondsTolerable();
+        verify(configService).checkMaxTimeDiffSecondsTolerable();
+    }
     
     @Test
     public void testNewJobTriggerListener() {
         assertThat(schedulerFacade.newJobTriggerListener(), instanceOf(JobTriggerListener.class));
     }
     
+    @Test
+    public void testFailoverIfUnnecessary() {
+        when(configService.isFailover()).thenReturn(false);
+        schedulerFacade.failoverIfNecessary(false);
+        verify(failoverService, times(0)).failoverIfNecessary();
+    }
+    
+    @Test
+    public void testFailoverIfNecessaryButIsStopped() {
+        when(configService.isFailover()).thenReturn(true);
+        schedulerFacade.failoverIfNecessary(true);
+        verify(failoverService, times(0)).failoverIfNecessary();
+    }
+    
+    @Test
+    public void testFailoverIfNecessary() {
+        when(configService.isFailover()).thenReturn(true);
+        schedulerFacade.failoverIfNecessary(false);
+        verify(failoverService).failoverIfNecessary();
+    }
+    
+    @Test
+    public void testRegisterJobBegin() {
+        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        schedulerFacade.registerJobBegin(shardingContext);
+        verify(executionService).registerJobBegin(shardingContext);
+    }
+    
+    @Test
+    public void testRegisterJobCompletedWhenFailoverDisabled() {
+        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        when(configService.isFailover()).thenReturn(false);
+        schedulerFacade.registerJobCompleted(shardingContext);
+        verify(executionService).registerJobCompleted(shardingContext);
+        verify(failoverService, times(0)).updateFailoverComplete(shardingContext.getShardingItems());
+    }
+    
+    @Test
+    public void testRegisterJobCompletedWhenFailoverEnabled() {
+        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        when(configService.isFailover()).thenReturn(true);
+        schedulerFacade.registerJobCompleted(shardingContext);
+        verify(executionService).registerJobCompleted(shardingContext);
+        verify(failoverService).updateFailoverComplete(shardingContext.getShardingItems());
+    }
+    
+    @Test
+    public void testGetShardingContext() {
+        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        when(executionContextService.getJobExecutionShardingContext()).thenReturn(shardingContext);
+        assertThat(schedulerFacade.getShardingContext(), is(shardingContext));
+        verify(shardingService).shardingIfNecessary();
+    }
+    
+    @Test
+    public void testMisfireIfNecessary() {
+        when(executionService.misfireIfNecessary(Arrays.asList(0, 1))).thenReturn(true);
+        assertThat(schedulerFacade.misfireIfNecessary(Arrays.asList(0, 1)), is(true));
+    }
+    
+    @Test
+    public void testClearMisfire() {
+        schedulerFacade.clearMisfire(Arrays.asList(0, 1));
+        verify(executionService).clearMisfire(Arrays.asList(0, 1));
+    }
+    
+    @Test
+    public void testIsNeedSharding() {
+        when(shardingService.isNeedSharding()).thenReturn(true);
+        assertThat(schedulerFacade.isNeedSharding(), is(true));
+    }
+    
+    @Test
+    public void testUpdateOffset() {
+        schedulerFacade.updateOffset(0, "offset0");
+        verify(offsetService).updateOffset(0, "offset0");
+    }
+    
+    @Test
+    public void testBeforeJobExecuted() {
+        schedulerFacade.beforeJobExecuted(new JobExecutionMultipleShardingContext());
+        verify(caller).before();
+    }
+    
+    @Test
+    public void testAfterJobExecuted() {
+        schedulerFacade.afterJobExecuted(new JobExecutionMultipleShardingContext());
+        verify(caller).after();
+    }
+    
+    @RequiredArgsConstructor
     static class TestElasticJobListener implements ElasticJobListener {
+        
+        private final Caller caller;
         
         @Override
         public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+            caller.before();
         }
         
         @Override
         public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+            caller.after();
         }
     }
-
+    
     static class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
         
         TestDistributeOnceElasticJobListener() {
@@ -211,5 +312,12 @@ public class SchedulerFacadeTest {
         @Override
         public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
         }
+    }
+    
+    interface Caller {
+        
+        void before();
+        
+        void after();
     }
 }
