@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class InternalServicesFacade {
+public class SchedulerFacade {
     
     private final ConfigurationService configService;
     
@@ -68,7 +68,7 @@ public class InternalServicesFacade {
     
     private final ListenerManager listenerManager;
     
-    public InternalServicesFacade(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
+    public SchedulerFacade(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
         serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);

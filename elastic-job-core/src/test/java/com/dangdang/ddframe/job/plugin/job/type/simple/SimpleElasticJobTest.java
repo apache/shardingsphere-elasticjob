@@ -269,13 +269,13 @@ public final class SimpleElasticJobTest {
     @Test
     public void assertStop() throws JobExecutionException, InvocationTargetException, NoSuchMethodException {
         simpleElasticJob.stop();
-        assertTrue((Boolean) ReflectionUtils.invokeMethod(simpleElasticJob, AbstractElasticJob.class.getDeclaredMethod("isStoped")));
+        assertTrue((Boolean) ReflectionUtils.invokeMethod(simpleElasticJob, AbstractElasticJob.class.getDeclaredMethod("isStopped")));
     }
     
     @Test
     public void assertResume() throws JobExecutionException, InvocationTargetException, NoSuchMethodException {
         simpleElasticJob.stop();
         simpleElasticJob.resume();
-        assertFalse((Boolean) ReflectionUtils.invokeMethod(simpleElasticJob, AbstractElasticJob.class.getDeclaredMethod("isStoped")));
+        assertFalse((Boolean) ReflectionUtils.invokeMethod(simpleElasticJob, AbstractElasticJob.class.getDeclaredMethod("isStopped")));
     }
 }

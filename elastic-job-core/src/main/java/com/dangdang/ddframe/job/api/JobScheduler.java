@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.api;
 
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.internal.schedule.InternalServicesFacade;
+import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
@@ -57,7 +57,7 @@ public class JobScheduler {
     
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     
-    private final InternalServicesFacade internalServicesFacade;
+    private final SchedulerFacade schedulerFacade;
 
     private final JobDetail jobDetail;
     
@@ -66,7 +66,7 @@ public class JobScheduler {
     public JobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final ElasticJobListener... elasticJobListeners) {
         this.jobConfiguration = jobConfiguration;
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
-        internalServicesFacade = new InternalServicesFacade(coordinatorRegistryCenter, jobConfiguration, Arrays.asList(elasticJobListeners));
+        schedulerFacade = new SchedulerFacade(coordinatorRegistryCenter, jobConfiguration, Arrays.asList(elasticJobListeners));
         jobDetail = JobBuilder.newJob(jobConfiguration.getJobClass()).withIdentity(jobConfiguration.getJobName()).build();
     }
     
@@ -76,11 +76,11 @@ public class JobScheduler {
     public void init() {
         log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
         coordinatorRegistryCenter.addCacheData("/" + jobConfiguration.getJobName());
-        internalServicesFacade.registerStartUpInfo();
-        internalServicesFacade.fillJobDetail(jobDetail.getJobDataMap());
+        schedulerFacade.registerStartUpInfo();
+        schedulerFacade.fillJobDetail(jobDetail.getJobDataMap());
         try {
             scheduler = initializeScheduler(jobDetail.getKey().toString());
-            scheduleJob(createTrigger(internalServicesFacade.getCron()));
+            scheduleJob(createTrigger(schedulerFacade.getCron()));
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -91,7 +91,7 @@ public class JobScheduler {
         StdSchedulerFactory factory = new StdSchedulerFactory();
         factory.initialize(getBaseQuartzProperties(jobName));
         Scheduler result = factory.getScheduler();
-        result.getListenerManager().addTriggerListener(internalServicesFacade.newJobTriggerListener());
+        result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
         return result;
     }
     
@@ -100,7 +100,7 @@ public class JobScheduler {
         result.put("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
-        if (!internalServicesFacade.isMisfire()) {
+        if (!schedulerFacade.isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
         prepareEnvironments(result);
@@ -112,7 +112,7 @@ public class JobScheduler {
     
     private CronTrigger createTrigger(final String cronExpression) {
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-        if (internalServicesFacade.isMisfire()) {
+        if (schedulerFacade.isMisfire()) {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
         } else {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
@@ -181,7 +181,7 @@ public class JobScheduler {
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
-        internalServicesFacade.clearJobStoppedStatus();
+        schedulerFacade.clearJobStoppedStatus();
     }
     
     /**
@@ -192,8 +192,8 @@ public class JobScheduler {
      * </p>
      */
     public void resumeCrashedJob() {
-        internalServicesFacade.resumeCrashedJobInfo();
-        if (internalServicesFacade.isJobStoppedManually()) {
+        schedulerFacade.resumeCrashedJobInfo();
+        if (schedulerFacade.isJobStoppedManually()) {
             return;
         }
         JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).resume();
@@ -219,7 +219,7 @@ public class JobScheduler {
      * 关闭调度器.
      */
     public void shutdown() {
-        internalServicesFacade.releaseJobResource();
+        schedulerFacade.releaseJobResource();
         try {
             scheduler.shutdown();
         } catch (final SchedulerException ex) {

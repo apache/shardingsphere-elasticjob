@@ -52,7 +52,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class InternalServicesFacadeTest {
+public class SchedulerFacadeTest {
     
     @Mock
     private ConfigurationService configService;
@@ -89,27 +89,27 @@ public class InternalServicesFacadeTest {
     
     private JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
-    private InternalServicesFacade internalServicesFacade = new InternalServicesFacade(null, jobConfig, Arrays.asList(new TestElasticJobListener(), new TestDistributeOnceElasticJobListener()));
+    private SchedulerFacade schedulerFacade = new SchedulerFacade(null, jobConfig, Arrays.asList(new TestElasticJobListener(), new TestDistributeOnceElasticJobListener()));
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "configService", configService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "leaderElectionService", leaderElectionService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "serverService", serverService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "executionContextService", executionContextService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "executionService", executionService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "failoverService", failoverService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "statisticsService", statisticsService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "offsetService", offsetService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "monitorService", monitorService);
-        ReflectionUtils.setFieldValue(internalServicesFacade, "listenerManager", listenerManager);
+        ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "shardingService", shardingService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "executionContextService", executionContextService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "executionService", executionService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "failoverService", failoverService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "statisticsService", statisticsService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "offsetService", offsetService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "monitorService", monitorService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "listenerManager", listenerManager);
     }
     
     @Test
     public void testNew() throws NoSuchFieldException {
-        List<ElasticJobListener> actual = ReflectionUtils.getFieldValue(internalServicesFacade, ReflectionUtils.getFieldWithName(InternalServicesFacade.class, "elasticJobListeners", false));
+        List<ElasticJobListener> actual = ReflectionUtils.getFieldValue(schedulerFacade, ReflectionUtils.getFieldWithName(SchedulerFacade.class, "elasticJobListeners", false));
         assertThat(actual.size(), is(2));
         assertThat(actual.get(0), instanceOf(TestElasticJobListener.class));
         assertThat(actual.get(1), instanceOf(TestDistributeOnceElasticJobListener.class));
@@ -118,7 +118,7 @@ public class InternalServicesFacadeTest {
     
     @Test
     public void testRegisterStartUpInfo() {
-        internalServicesFacade.registerStartUpInfo();
+        schedulerFacade.registerStartUpInfo();
         verify(listenerManager).startAllListeners();
         verify(leaderElectionService).leaderElection();
         verify(configService).persistJobConfiguration();
@@ -132,7 +132,7 @@ public class InternalServicesFacadeTest {
     @Test
     public void testFillJobDetail() {
         JobDataMap actual = new JobDataMap();
-        internalServicesFacade.fillJobDetail(actual);
+        schedulerFacade.fillJobDetail(actual);
         assertThat((ConfigurationService) actual.get("configService"), is(configService));
         assertThat((ShardingService) actual.get("shardingService"), is(shardingService));
         assertThat((ExecutionContextService) actual.get("executionContextService"), is(executionContextService));
@@ -144,7 +144,7 @@ public class InternalServicesFacadeTest {
     
     @Test
     public void testReleaseJobResource() {
-        internalServicesFacade.releaseJobResource();
+        schedulerFacade.releaseJobResource();
         verify(monitorService).close();
         verify(statisticsService).stopProcessCountJob();
     }
@@ -152,7 +152,7 @@ public class InternalServicesFacadeTest {
     @Test
     public void testResumeCrashedJobInfo() {
         when(shardingService.getLocalHostShardingItems()).thenReturn(Collections.<Integer>emptyList());
-        internalServicesFacade.resumeCrashedJobInfo();
+        schedulerFacade.resumeCrashedJobInfo();
         verify(serverService).persistServerOnline();
         verify(shardingService).getLocalHostShardingItems();
         verify(executionService).clearRunningInfo(Collections.<Integer>emptyList());
@@ -160,31 +160,31 @@ public class InternalServicesFacadeTest {
     
     @Test
     public void testClearJobStoppedStatus() {
-        internalServicesFacade.clearJobStoppedStatus();
+        schedulerFacade.clearJobStoppedStatus();
         verify(serverService).clearJobStoppedStatus();
     }
     
     @Test
     public void testIsJobStoppedManually() {
         when(serverService.isJobStoppedManually()).thenReturn(true);
-        assertTrue(internalServicesFacade.isJobStoppedManually());
+        assertTrue(schedulerFacade.isJobStoppedManually());
     }
     
     @Test
     public void testGetCron() {
         when(configService.getCron()).thenReturn("0 * * * * *");
-        assertThat(internalServicesFacade.getCron(), is("0 * * * * *"));
+        assertThat(schedulerFacade.getCron(), is("0 * * * * *"));
     }
     
     @Test
     public void testIsMisfire() {
         when(configService.isMisfire()).thenReturn(true);
-        assertTrue(internalServicesFacade.isMisfire());
+        assertTrue(schedulerFacade.isMisfire());
     }
     
     @Test
     public void testNewJobTriggerListener() {
-        assertThat(internalServicesFacade.newJobTriggerListener(), instanceOf(JobTriggerListener.class));
+        assertThat(schedulerFacade.newJobTriggerListener(), instanceOf(JobTriggerListener.class));
     }
     
     static class TestElasticJobListener implements ElasticJobListener {

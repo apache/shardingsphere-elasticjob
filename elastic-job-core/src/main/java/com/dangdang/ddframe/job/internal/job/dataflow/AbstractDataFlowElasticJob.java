@@ -98,7 +98,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeThroughputStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         List<T> data = fetchDataForThroughput(shardingContext);
-        while (null != data && !data.isEmpty() && !isStoped() && !getShardingService().isNeedSharding()) {
+        while (null != data && !data.isEmpty() && !isStopped() && !getShardingService().isNeedSharding()) {
             processDataForThroughput(shardingContext, data);
             data = fetchDataForThroughput(shardingContext);
         }
@@ -113,7 +113,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeSequenceStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         Map<Integer, List<T>> data = fetchDataForSequence(shardingContext);
-        while (!data.isEmpty() && !isStoped() && !getShardingService().isNeedSharding()) {
+        while (!data.isEmpty() && !isStopped() && !getShardingService().isNeedSharding()) {
             processDataForSequence(shardingContext, data);
             data = fetchDataForSequence(shardingContext);
         }

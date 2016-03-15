@@ -47,7 +47,7 @@ import java.util.List;
 public abstract class AbstractElasticJob implements ElasticJob {
     
     @Getter(AccessLevel.PROTECTED)
-    private volatile boolean stoped;
+    private volatile boolean stopped;
     
     @Getter(AccessLevel.PROTECTED)
     private ConfigurationService configService;
@@ -95,13 +95,13 @@ public abstract class AbstractElasticJob implements ElasticJob {
         }
         executeJobInternal(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
-        while (configService.isMisfire() && !executionService.getMisfiredJobItems(shardingContext.getShardingItems()).isEmpty() && !stoped && !shardingService.isNeedSharding()) {
+        while (configService.isMisfire() && !executionService.getMisfiredJobItems(shardingContext.getShardingItems()).isEmpty() && !stopped && !shardingService.isNeedSharding()) {
             log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
             executionService.clearMisfire(shardingContext.getShardingItems());
             executeJobInternal(shardingContext);
             log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
-        if (configService.isFailover() && !stoped) {
+        if (configService.isFailover() && !stopped) {
             failoverService.failoverIfNecessary();
         }
         if (!elasticJobListeners.isEmpty()) {
@@ -148,12 +148,12 @@ public abstract class AbstractElasticJob implements ElasticJob {
     
     @Override
     public final void stop() {
-        stoped = true;
+        stopped = true;
     }
     
     @Override
     public final void resume() {
-        stoped = false;
+        stopped = false;
     }
     
     public final void setConfigService(final ConfigurationService configService) {

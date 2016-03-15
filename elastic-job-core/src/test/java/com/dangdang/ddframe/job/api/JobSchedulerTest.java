@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.api;
 
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.schedule.InternalServicesFacade;
+import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -58,7 +58,7 @@ public final class JobSchedulerTest {
     private CoordinatorRegistryCenter coordinatorRegistryCenter;
     
     @Mock
-    private InternalServicesFacade internalServicesFacade;
+    private SchedulerFacade schedulerFacade;
     
     @Mock
     private Scheduler scheduler;
@@ -74,7 +74,7 @@ public final class JobSchedulerTest {
     public void initMocks() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "coordinatorRegistryCenter", coordinatorRegistryCenter);
-        ReflectionUtils.setFieldValue(jobScheduler, "internalServicesFacade", internalServicesFacade);
+        ReflectionUtils.setFieldValue(jobScheduler, "schedulerFacade", schedulerFacade);
     }
     
     @Test
@@ -92,9 +92,9 @@ public final class JobSchedulerTest {
     }
     
     private void mockInit(final boolean isMisfire) {
-        when(internalServicesFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
-        when(internalServicesFacade.getCron()).thenReturn("* * 0/10 * * ? 2050");
-        when(internalServicesFacade.isMisfire()).thenReturn(isMisfire);
+        when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
+        when(schedulerFacade.getCron()).thenReturn("* * 0/10 * * ? 2050");
+        when(schedulerFacade.isMisfire()).thenReturn(isMisfire);
     }
     
     private void assertInit() throws NoSuchFieldException, SchedulerException {
@@ -105,9 +105,9 @@ public final class JobSchedulerTest {
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
         verify(coordinatorRegistryCenter).addCacheData("/testJob");
-        verify(internalServicesFacade).registerStartUpInfo();
-        verify(internalServicesFacade).fillJobDetail(jobDetail.getJobDataMap());
-        verify(internalServicesFacade).newJobTriggerListener();
+        verify(schedulerFacade).registerStartUpInfo();
+        verify(schedulerFacade).fillJobDetail(jobDetail.getJobDataMap());
+        verify(schedulerFacade).newJobTriggerListener();
     }
     
     @Test
@@ -182,7 +182,7 @@ public final class JobSchedulerTest {
         } finally {
             verify(scheduler).isShutdown();
             verify(scheduler).resumeAll();
-            verify(internalServicesFacade, times(0)).clearJobStoppedStatus();
+            verify(schedulerFacade, times(0)).clearJobStoppedStatus();
         }
     }
     
@@ -194,23 +194,23 @@ public final class JobSchedulerTest {
         jobScheduler.resumeManualStoppedJob();
         verify(scheduler).isShutdown();
         verify(scheduler).resumeAll();
-        verify(internalServicesFacade).clearJobStoppedStatus();
+        verify(schedulerFacade).clearJobStoppedStatus();
     }
     
     @Test
     public void assertResumeCrashedJobIfIsJobStoppedManually() throws NoSuchFieldException, SchedulerException {
-        when(internalServicesFacade.isJobStoppedManually()).thenReturn(true);
+        when(schedulerFacade.isJobStoppedManually()).thenReturn(true);
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         jobScheduler.resumeCrashedJob();
-        verify(internalServicesFacade).resumeCrashedJobInfo();
+        verify(schedulerFacade).resumeCrashedJobInfo();
         verify(scheduler, times(0)).resumeAll();
     }
     
     @Test(expected = JobException.class)
     public void assertResumeCrashedJobFailure() throws NoSuchFieldException, SchedulerException {
-        when(internalServicesFacade.isJobStoppedManually()).thenReturn(false);
+        when(schedulerFacade.isJobStoppedManually()).thenReturn(false);
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
@@ -218,19 +218,19 @@ public final class JobSchedulerTest {
         try {
             jobScheduler.resumeCrashedJob();
         } finally {
-            verify(internalServicesFacade).resumeCrashedJobInfo();
+            verify(schedulerFacade).resumeCrashedJobInfo();
             verify(scheduler).resumeAll();
         }
     }
     
     @Test
     public void assertResumeCrashedJobSuccess() throws NoSuchFieldException, SchedulerException {
-        when(internalServicesFacade.isJobStoppedManually()).thenReturn(false);
+        when(schedulerFacade.isJobStoppedManually()).thenReturn(false);
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         jobScheduler.resumeCrashedJob();
-        verify(internalServicesFacade).resumeCrashedJobInfo();
+        verify(schedulerFacade).resumeCrashedJobInfo();
         verify(scheduler).resumeAll();
     }
     
@@ -267,7 +267,7 @@ public final class JobSchedulerTest {
         try {
             jobScheduler.shutdown();
         } finally {
-            verify(internalServicesFacade).releaseJobResource();
+            verify(schedulerFacade).releaseJobResource();
             verify(scheduler).shutdown();
         }
     }
@@ -276,7 +276,7 @@ public final class JobSchedulerTest {
     public void assertShutdownSuccess() throws NoSuchFieldException, SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         jobScheduler.shutdown();
-        verify(internalServicesFacade).releaseJobResource();
+        verify(schedulerFacade).releaseJobResource();
         verify(scheduler).shutdown();
     }
     
