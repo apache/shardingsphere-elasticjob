@@ -154,11 +154,11 @@ function renderExecution() {
         $("#execution tbody").empty();
         for (var i = 0;i < data.length;i++) {
             var status = data[i].status;
-            var falioverIp = null == data[i].failoverIp ? "-" : data[i].failoverIp;
+            var failoverIp = null == data[i].failoverIp ? "-" : data[i].failoverIp;
             var lastBeginTime = null == data[i].lastBeginTime ? null : new Date(data[i].lastBeginTime).toLocaleString();
             var lastCompleteTime = null == data[i].lastCompleteTime ? null : new Date(data[i].lastCompleteTime).toLocaleString();
             var nextFireTime = null == data[i].nextFireTime ? null : new Date(data[i].nextFireTime).toLocaleString();
-            var baseTd = "<td>" + data[i].item + "</td><td>" + status + "</td><td>" + falioverIp + "</td><td>" + lastBeginTime + "</td><td>" + lastCompleteTime + "</td><td>" + nextFireTime + "</td>";
+            var baseTd = "<td>" + data[i].item + "</td><td>" + status + "</td><td>" + failoverIp + "</td><td>" + lastBeginTime + "</td><td>" + lastCompleteTime + "</td><td>" + nextFireTime + "</td>";
             var trClass = "";
             if ("RUNNING" === status) {
                 trClass = "success";

@@ -29,6 +29,8 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * </p>
  * @see com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler
  * @author caohao
+ * 
+ * @deprecated .
  */
 @Deprecated
 public class SpringJobController extends SpringJobScheduler {

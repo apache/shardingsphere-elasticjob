@@ -17,10 +17,13 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
+import com.dangdang.ddframe.job.internal.guarantee.GuaranteeService;
+import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
@@ -53,38 +56,52 @@ public class JobScheduler {
     
     private static final String CRON_TRIGGER_IDENTITY_SUFFIX = "Trigger";
     
-    private final JobConfiguration jobConfiguration;
+    private final String jobName;
     
-    private final CoordinatorRegistryCenter coordinatorRegistryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     private final SchedulerFacade schedulerFacade;
+    
+    private final JobFacade jobFacade;
     
     private final JobDetail jobDetail;
     
     private Scheduler scheduler;
     
-    public JobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final ElasticJobListener... elasticJobListeners) {
-        this.jobConfiguration = jobConfiguration;
-        this.coordinatorRegistryCenter = coordinatorRegistryCenter;
-        schedulerFacade = new SchedulerFacade(coordinatorRegistryCenter, jobConfiguration, Arrays.asList(elasticJobListeners));
-        jobDetail = JobBuilder.newJob(jobConfiguration.getJobClass()).withIdentity(jobConfiguration.getJobName()).build();
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+        jobName = jobConfig.getJobName();
+        this.regCenter = regCenter;
+        List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
+        setGuaranteeServiceForElasticJobListeners(regCenter, jobConfig, elasticJobListenerList);
+        schedulerFacade = new SchedulerFacade(regCenter, jobConfig, elasticJobListenerList);
+        jobFacade = new JobFacade(regCenter, jobConfig, elasticJobListenerList);
+        jobDetail = JobBuilder.newJob(jobConfig.getJobClass()).withIdentity(jobName).build();
+    }
+    
+    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners) {
+        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobConfig);
+        for (ElasticJobListener each : elasticJobListeners) {
+            if (each instanceof AbstractDistributeOnceElasticJobListener) {
+                ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
+            }
+        }
     }
     
     /**
      * 初始化作业.
      */
     public void init() {
-        log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
-        coordinatorRegistryCenter.addCacheData("/" + jobConfiguration.getJobName());
+        log.debug("Elastic job: job controller init, job name is: {}.", jobName);
+        regCenter.addCacheData("/" + jobName);
         schedulerFacade.registerStartUpInfo();
-        jobDetail.getJobDataMap().put("schedulerFacade", schedulerFacade);
+        jobDetail.getJobDataMap().put("jobFacade", jobFacade);
         try {
             scheduler = initializeScheduler(jobDetail.getKey().toString());
             scheduleJob(createTrigger(schedulerFacade.getCron()));
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
-        JobRegistry.getInstance().addJobScheduler(jobConfiguration.getJobName(), this);
+        JobRegistry.getInstance().addJobScheduler(jobName, this);
     }
     
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
@@ -118,7 +135,7 @@ public class JobScheduler {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
         }
         return TriggerBuilder.newTrigger()
-                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX))
+                .withIdentity(Joiner.on("_").join(jobName, CRON_TRIGGER_IDENTITY_SUFFIX))
                 .withSchedule(cronScheduleBuilder).build();
     }
     
@@ -161,7 +178,7 @@ public class JobScheduler {
      */
     public void stopJob() {
         try {
-            JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).stop();
+            JobRegistry.getInstance().getJobInstance(jobName).stop();
             scheduler.pauseAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
@@ -176,7 +193,7 @@ public class JobScheduler {
             if (scheduler.isShutdown()) {
                 return;
             }
-            JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).resume();
+            JobRegistry.getInstance().getJobInstance(jobName).resume();
             scheduler.resumeAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
@@ -196,7 +213,7 @@ public class JobScheduler {
         if (schedulerFacade.isJobStoppedManually()) {
             return;
         }
-        JobRegistry.getInstance().getJobInstance(jobConfiguration.getJobName()).resume();
+        JobRegistry.getInstance().getJobInstance(jobName).resume();
         try {
             scheduler.resumeAll();
         } catch (final SchedulerException ex) {
@@ -232,7 +249,7 @@ public class JobScheduler {
      */
     public void rescheduleJob(final String cronExpression) {
         try {
-            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX)), createTrigger(cronExpression));
+            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobName, CRON_TRIGGER_IDENTITY_SUFFIX)), createTrigger(cronExpression));
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         } 

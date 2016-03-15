@@ -68,11 +68,11 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         return result;
     }
     
-    private ServerBriefInfo getServerBriefInfo(final Map<String, Boolean> serverAlivedCountMap, final Map<String, Boolean> serverCrashedCountMap, final Entry<String, String> entry) {
+    private ServerBriefInfo getServerBriefInfo(final Map<String, Boolean> serverAliveCountMap, final Map<String, Boolean> serverCrashedCountMap, final Entry<String, String> entry) {
         ServerBriefInfo result = new ServerBriefInfo();
         result.setServerIp(entry.getKey());
         result.setServerHostName(entry.getValue());
-        if (!serverAlivedCountMap.containsKey(entry.getKey())) {
+        if (!serverAliveCountMap.containsKey(entry.getKey())) {
             result.setStatus(ServerBriefStatus.ALL_CRASHED);
         } else if (!serverCrashedCountMap.containsKey(entry.getKey())) {
             result.setStatus(ServerBriefStatus.OK);
@@ -104,8 +104,8 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         result.setSharding(curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "sharding")));
         String status = curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "status"));
         boolean disabled = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
-        boolean stoped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
-        result.setStatus(ServerStatus.getServerStatus(status, disabled, stoped));
+        boolean stopped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+        result.setStatus(ServerStatus.getServerStatus(status, disabled, stopped));
         String leaderIp = curatorRepository.getData(JobNodePath.getLeaderNodePath(jobName, "election/host"));
         result.setLeader(serverIp.equals(leaderIp));
         result.setLeaderStoped(curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "stoped")));

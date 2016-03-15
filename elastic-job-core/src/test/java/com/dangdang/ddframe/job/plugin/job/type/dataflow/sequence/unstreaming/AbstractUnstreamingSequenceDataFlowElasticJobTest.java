@@ -47,7 +47,7 @@ public abstract class AbstractUnstreamingSequenceDataFlowElasticJobTest extends 
         verify(getJobCaller()).processData(2);
         verify(getJobCaller()).processData(3);
         verify(getJobCaller()).processData(4);
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(2, 2);
     }
 }

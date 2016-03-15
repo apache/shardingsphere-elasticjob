@@ -37,6 +37,8 @@ import com.dangdang.ddframe.job.internal.job.dataflow.AbstractIndividualDataFlow
  * @author zhangliang
  * 
  * @param <T> 数据流作业处理的数据实体类型
+ * 
+ * @deprecated .
  */
 @Deprecated
 public abstract class AbstractSequencePerpetualElasticJob<T> extends AbstractIndividualDataFlowElasticJob<T, JobExecutionSingleShardingContext> {

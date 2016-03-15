@@ -34,7 +34,7 @@ public abstract class AbstractStreamingSequenceDataFlowElasticJobTest extends Ab
     @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
-        when(getSchedulerFacade().isEligibleForJobRunning(false)).thenReturn(true);
+        when(getJobFacade().isEligibleForJobRunning(false)).thenReturn(true);
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2), Collections.emptyList());
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4), Collections.emptyList());
         when(getJobCaller().processData(1)).thenReturn(true);
@@ -48,7 +48,7 @@ public abstract class AbstractStreamingSequenceDataFlowElasticJobTest extends Ab
         verify(getJobCaller()).processData(2);
         verify(getJobCaller()).processData(3);
         verify(getJobCaller()).processData(4);
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(2, 2);
     }
 }

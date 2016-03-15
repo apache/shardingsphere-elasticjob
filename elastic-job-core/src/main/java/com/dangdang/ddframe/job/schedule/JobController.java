@@ -29,6 +29,8 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * @see com.dangdang.ddframe.job.api.JobScheduler
  * @author zhangliang
  * @author caohao
+ * 
+ * @deprecated .
  */
 @Deprecated
 public class JobController extends com.dangdang.ddframe.job.api.JobScheduler {

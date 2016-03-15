@@ -31,11 +31,11 @@ public final class TestDistributeOnceElasticJobListener extends AbstractDistribu
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
-        caller.call();
+        caller.before();
     }
     
     @Override
     public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
-        caller.call();
+        caller.after();
     }
 }

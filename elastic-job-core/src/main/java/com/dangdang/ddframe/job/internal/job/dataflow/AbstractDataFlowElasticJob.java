@@ -98,7 +98,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeThroughputStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         List<T> data = fetchDataForThroughput(shardingContext);
-        while (null != data && !data.isEmpty() && getSchedulerFacade().isEligibleForJobRunning(isStopped())) {
+        while (null != data && !data.isEmpty() && getJobFacade().isEligibleForJobRunning(isStopped())) {
             processDataForThroughput(shardingContext, data);
             data = fetchDataForThroughput(shardingContext);
         }
@@ -113,7 +113,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeSequenceStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         Map<Integer, List<T>> data = fetchDataForSequence(shardingContext);
-        while (!data.isEmpty() && getSchedulerFacade().isEligibleForJobRunning(isStopped())) {
+        while (!data.isEmpty() && getJobFacade().isEligibleForJobRunning(isStopped())) {
             processDataForSequence(shardingContext, data);
             data = fetchDataForSequence(shardingContext);
         }
@@ -135,7 +135,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     @SuppressWarnings("unchecked")
     private void processDataForThroughput(final JobExecutionMultipleShardingContext shardingContext, final List<T> data) {
-        int threadCount = getSchedulerFacade().getConcurrentDataProcessThreadCount();
+        int threadCount = getJobFacade().getConcurrentDataProcessThreadCount();
         if (threadCount <= 1 || data.size() <= threadCount) {
             processDataWithStatistics((C) shardingContext, data);
             return;
@@ -219,7 +219,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     @Override
     public final void updateOffset(final int item, final String offset) {
-        getSchedulerFacade().updateOffset(item, offset);
+        getJobFacade().updateOffset(item, offset);
     }
     
     @Override

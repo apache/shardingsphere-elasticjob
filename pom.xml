@@ -512,7 +512,7 @@
     
     <repositories>
         <repository>
-            <id>henryyan-mavenrepo</id>
+            <id>alfresco-maven-repo</id>
             <url>https://maven.alfresco.com/nexus/content/groups/public/</url>
         </repository>
         <repository>

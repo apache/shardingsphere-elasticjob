@@ -19,5 +19,7 @@ package com.dangdang.ddframe.job.api.listener.fixture;
 
 public interface ElasticJobListenerCaller {
     
-    void call();
+    void before();
+    
+    void after();
 }

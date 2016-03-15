@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.internal.job;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -40,19 +40,19 @@ public abstract class AbstractElasticJob implements ElasticJob {
     private volatile boolean stopped;
     
     @Getter(AccessLevel.PROTECTED)
-    private SchedulerFacade schedulerFacade;
+    private JobFacade jobFacade;
     
     @Override
     public final void execute(final JobExecutionContext context) throws JobExecutionException {
         log.trace("Elastic job: job execute begin, job execution context:{}.", context);
-        schedulerFacade.checkMaxTimeDiffSecondsTolerable();
-        JobExecutionMultipleShardingContext shardingContext = schedulerFacade.getShardingContext();
-        if (schedulerFacade.misfireIfNecessary(shardingContext.getShardingItems())) {
+        jobFacade.checkMaxTimeDiffSecondsTolerable();
+        JobExecutionMultipleShardingContext shardingContext = jobFacade.getShardingContext();
+        if (jobFacade.misfireIfNecessary(shardingContext.getShardingItems())) {
             log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
             return;
         }
         try {
-            schedulerFacade.beforeJobExecuted(shardingContext);
+            jobFacade.beforeJobExecuted(shardingContext);
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
@@ -60,15 +60,15 @@ public abstract class AbstractElasticJob implements ElasticJob {
         }
         executeJobInternal(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
-        while (schedulerFacade.isExecuteMisfired(stopped, shardingContext.getShardingItems())) {
+        while (jobFacade.isExecuteMisfired(stopped, shardingContext.getShardingItems())) {
             log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
-            schedulerFacade.clearMisfire(shardingContext.getShardingItems());
+            jobFacade.clearMisfire(shardingContext.getShardingItems());
             executeJobInternal(shardingContext);
             log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
-        schedulerFacade.failoverIfNecessary(stopped);
+        jobFacade.failoverIfNecessary(stopped);
         try {
-            schedulerFacade.afterJobExecuted(shardingContext);
+            jobFacade.afterJobExecuted(shardingContext);
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
@@ -82,7 +82,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
             log.trace("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
             return;
         }
-        schedulerFacade.registerJobBegin(shardingContext);
+        jobFacade.registerJobBegin(shardingContext);
         try {
             executeJob(shardingContext);
         //CHECKSTYLE:OFF
@@ -91,7 +91,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
             handleJobExecutionException(new JobExecutionException(cause));
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
-            schedulerFacade.registerJobCompleted(shardingContext);
+            jobFacade.registerJobCompleted(shardingContext);
         }
     }
     
@@ -112,8 +112,8 @@ public abstract class AbstractElasticJob implements ElasticJob {
         stopped = false;
     }
     
-    public final void setSchedulerFacade(final SchedulerFacade schedulerFacade) {
-        this.schedulerFacade = schedulerFacade;
-        JobRegistry.getInstance().addJobInstance(schedulerFacade.getJobName(), this);
+    public final void setJobFacade(final JobFacade jobFacade) {
+        this.jobFacade = jobFacade;
+        JobRegistry.getInstance().addJobInstance(jobFacade.getJobName(), this);
     }
 }

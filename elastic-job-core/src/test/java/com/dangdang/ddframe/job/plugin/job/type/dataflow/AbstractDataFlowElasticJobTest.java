@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.plugin.job.type.dataflow;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.internal.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
+import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
 import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
@@ -39,7 +39,7 @@ public abstract class AbstractDataFlowElasticJobTest {
     private JobCaller jobCaller;
     
     @Mock
-    private SchedulerFacade schedulerFacade;
+    private JobFacade jobFacade;
     
     private JobExecutionMultipleShardingContext shardingContext;
     
@@ -48,11 +48,11 @@ public abstract class AbstractDataFlowElasticJobTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(schedulerFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
+        when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
         dataFlowElasticJob = createDataFlowElasticJob(jobCaller);
-        dataFlowElasticJob.setSchedulerFacade(schedulerFacade);
+        dataFlowElasticJob.setJobFacade(jobFacade);
         shardingContext = ElasticJobAssert.getShardingContext();
-        ElasticJobAssert.prepareForIsNotMisfire(schedulerFacade, shardingContext);
+        ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
     }
     
     @After

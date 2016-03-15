@@ -40,7 +40,7 @@ public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends 
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
@@ -50,7 +50,7 @@ public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends 
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
@@ -61,17 +61,17 @@ public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends 
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfireAndStopped(getSchedulerFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfireAndStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsNeedSharding() throws JobExecutionException {
         when(getJobCaller().fetchData()).thenReturn(Collections.<Object>singletonList(1));
-        when(getSchedulerFacade().isEligibleForJobRunning(false)).thenReturn(false);
+        when(getJobFacade().isEligibleForJobRunning(false)).thenReturn(false);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller(), times(0)).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
 }

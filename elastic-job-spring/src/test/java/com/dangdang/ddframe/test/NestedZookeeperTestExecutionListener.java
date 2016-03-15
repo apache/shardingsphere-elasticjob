@@ -24,7 +24,7 @@ import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServers;
 
 public final class NestedZookeeperTestExecutionListener extends AbstractTestExecutionListener {
     
-    private final int port = 3181;
+    private final static int port = 3181;
     
     private final String testTempDirectory = String.format("target/test_zk_data/%s/", System.nanoTime());
     

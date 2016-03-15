@@ -41,7 +41,7 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
         when(getJobCaller().fetchData()).thenReturn(null);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller(), times(0)).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
@@ -50,7 +50,7 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
         when(getJobCaller().fetchData()).thenReturn(Collections.emptyList());
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller(), times(0)).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
@@ -59,12 +59,12 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().processData(1)).thenReturn(true);
         when(getJobCaller().processData(2)).thenReturn(true);
-        when(getSchedulerFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
+        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
-        verify(getSchedulerFacade()).getConcurrentDataProcessThreadCount();
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(2, 0);
     }
     
@@ -72,11 +72,11 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
     public void assertExecuteWhenFetchDataIsNotEmptyAndDataIsOne() throws JobExecutionException {
         when(getJobCaller().fetchData()).thenReturn(Collections.<Object>singletonList(1));
         when(getJobCaller().processData(1)).thenReturn(true);
-        when(getSchedulerFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
+        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).processData(1);
-        verify(getSchedulerFacade()).getConcurrentDataProcessThreadCount();
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(1, 0);
     }
     
@@ -84,12 +84,12 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
     public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOneAndProcessFailureWithException() throws JobExecutionException {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         doThrow(NullPointerException.class).when(getJobCaller()).processData(any());
-        when(getSchedulerFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
+        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
-        verify(getSchedulerFacade()).getConcurrentDataProcessThreadCount();
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 2);
     }
     
@@ -98,12 +98,12 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().processData(1)).thenReturn(true, true);
         when(getJobCaller().processData(2)).thenReturn(false, false);
-        when(getSchedulerFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
+        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
-        verify(getSchedulerFacade()).getConcurrentDataProcessThreadCount();
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(1, 1);
     }
     
@@ -114,20 +114,20 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
         when(getJobCaller().processData(2)).thenReturn(true);
         when(getJobCaller().processData(3)).thenReturn(true);
         when(getJobCaller().processData(4)).thenReturn(true);
-        when(getSchedulerFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
+        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobCaller()).processData(3);
         verify(getJobCaller()).processData(4);
-        verify(getSchedulerFacade()).getConcurrentDataProcessThreadCount();
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getSchedulerFacade(), getShardingContext());
+        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
+        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(4, 0);
     }
     
     @Test
     public void assertUpdateOffset() {
         getDataFlowElasticJob().updateOffset(0, "offset1");
-        verify(getSchedulerFacade()).updateOffset(0, "offset1");
+        verify(getJobFacade()).updateOffset(0, "offset1");
     }
 }

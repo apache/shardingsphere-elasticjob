@@ -33,6 +33,8 @@ import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
  * 
  * @author zhangliang
  * @author caohao
+ * 
+ * @deprecated .
  */
 @Deprecated
 public abstract class AbstractOneOffElasticJob extends AbstractSimpleElasticJob { }
