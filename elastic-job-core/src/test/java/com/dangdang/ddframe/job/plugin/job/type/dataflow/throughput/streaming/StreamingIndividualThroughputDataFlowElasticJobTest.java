@@ -42,14 +42,14 @@ public final class StreamingIndividualThroughputDataFlowElasticJobTest extends A
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2), Collections.emptyList());
-        when(getJobFacade().isEligibleForJobRunning(false)).thenReturn(true);
+        when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
         when(getJobCaller().processData(1)).thenReturn(false);
         when(getJobCaller().processData(2)).thenReturn(true);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller(), times(2)).fetchData();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(1, 1);
     }
 }

@@ -58,7 +58,6 @@ public abstract class AbstractDataFlowElasticJobTest {
     @After
     public void tearDown() throws NoSuchFieldException {
         ProcessCountStatistics.reset(ElasticJobAssert.JOB_NAME);
-        dataFlowElasticJob.resume();
     }
     
     protected abstract AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller);

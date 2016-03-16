@@ -12,7 +12,7 @@
         <project.build.locale>zh_CN</project.build.locale>
         <project.nexus.address>maven.dangdang.com</project.nexus.address>
         
-        <elastic-job.version>1.0.5-SNAPSHOT</elastic-job.version>
+        <elastic-job.version>1.0.6-SNAPSHOT</elastic-job.version>
         
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.1.2</logback.version>

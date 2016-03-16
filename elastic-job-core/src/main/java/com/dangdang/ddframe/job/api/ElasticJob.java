@@ -25,7 +25,7 @@ import org.quartz.JobExecutionException;
  * 
  * @author zhangliang
  */
-public interface ElasticJob extends Job, Stoppable {
+public interface ElasticJob extends Job {
     
     /**
      * 处理作业执行时异常.

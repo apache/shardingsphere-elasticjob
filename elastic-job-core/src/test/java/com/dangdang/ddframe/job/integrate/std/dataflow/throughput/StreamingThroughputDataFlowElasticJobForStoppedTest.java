@@ -27,9 +27,9 @@ import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
 
-public final class StreamingThroughputDataFlowElasticJobForStopedTest extends AbstractBaseStdJobAutoInitTest {
+public final class StreamingThroughputDataFlowElasticJobForStoppedTest extends AbstractBaseStdJobAutoInitTest {
     
-    public StreamingThroughputDataFlowElasticJobForStopedTest() {
+    public StreamingThroughputDataFlowElasticJobForStoppedTest() {
         super(StreamingThroughputDataFlowElasticJob.class);
     }
     

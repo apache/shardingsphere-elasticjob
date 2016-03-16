@@ -25,6 +25,7 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
+import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
@@ -41,6 +42,8 @@ public class JobFacade {
     
     private final ShardingService shardingService;
     
+    private final ServerService serverService;
+    
     private final ExecutionContextService executionContextService;
     
     private final ExecutionService executionService;
@@ -54,6 +57,7 @@ public class JobFacade {
     public JobFacade(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
         shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
+        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
         executionContextService = new ExecutionContextService(coordinatorRegistryCenter, jobConfiguration);
         executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
         failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
@@ -93,11 +97,9 @@ public class JobFacade {
     
     /**
      * 如果需要失效转移, 则设置作业失效转移.
-     * 
-     * @param stopped 作业是否需要停止
      */
-    public void failoverIfNecessary(final boolean stopped) {
-        if (configService.isFailover() && !stopped) {
+    public void failoverIfNecessary() {
+        if (configService.isFailover() && !serverService.isJobStoppedManually()) {
             failoverService.failoverIfNecessary();
         }
     }
@@ -155,12 +157,11 @@ public class JobFacade {
     /**
      * 判断作业是否需要执行错过的任务.
      * 
-     * @param stopped 作业是否需要停止
      * @param shardingItems 任务分片项集合
      * @return 作业是否需要执行错过的任务
      */
-    public boolean isExecuteMisfired(final boolean stopped, final List<Integer> shardingItems) {
-        return isEligibleForJobRunning(stopped) && configService.isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
+    public boolean isExecuteMisfired(final List<Integer> shardingItems) {
+        return isEligibleForJobRunning() && configService.isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
     }
     
     /**
@@ -168,11 +169,10 @@ public class JobFacade {
      * 
      * <p>如果作业停止或需要重分片则作业将不会继续运行.</p>
      * 
-     * @param stopped 作业是否需要停止
      * @return 作业是否符合继续运行的条件
      */
-    public boolean isEligibleForJobRunning(final boolean stopped) {
-        return !stopped && !shardingService.isNeedSharding();
+    public boolean isEligibleForJobRunning() {
+        return !serverService.isJobStoppedManually() && !shardingService.isNeedSharding();
     }
     
     /**判断是否需要重分片.
@@ -192,7 +192,7 @@ public class JobFacade {
     public void updateOffset(final int item, final String offset) {
         offsetService.updateOffset(item, offset);
     }
-
+    
     /**
      * 作业执行前的执行的方法.
      *

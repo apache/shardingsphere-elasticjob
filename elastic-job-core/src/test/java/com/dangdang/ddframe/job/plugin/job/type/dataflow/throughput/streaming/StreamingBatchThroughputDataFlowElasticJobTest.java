@@ -42,7 +42,7 @@ public final class StreamingBatchThroughputDataFlowElasticJobTest extends Abstra
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3), Collections.emptyList());
-        when(getJobFacade().isEligibleForJobRunning(false)).thenReturn(true);
+        when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
         when(getJobCaller().processData(1)).thenReturn(false);
         when(getJobCaller().processData(2)).thenReturn(true);
         when(getJobCaller().processData(3)).thenThrow(new NullPointerException());
@@ -50,7 +50,7 @@ public final class StreamingBatchThroughputDataFlowElasticJobTest extends Abstra
         verify(getJobCaller(), times(2)).fetchData();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(getJobFacade(), getShardingContext());
+        ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(1, 2);
     }
 

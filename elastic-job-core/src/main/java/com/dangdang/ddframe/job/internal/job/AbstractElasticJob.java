@@ -37,9 +37,6 @@ import org.quartz.JobExecutionException;
 public abstract class AbstractElasticJob implements ElasticJob {
     
     @Getter(AccessLevel.PROTECTED)
-    private volatile boolean stopped;
-    
-    @Getter(AccessLevel.PROTECTED)
     private JobFacade jobFacade;
     
     @Override
@@ -60,13 +57,13 @@ public abstract class AbstractElasticJob implements ElasticJob {
         }
         executeJobInternal(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
-        while (jobFacade.isExecuteMisfired(stopped, shardingContext.getShardingItems())) {
+        while (jobFacade.isExecuteMisfired(shardingContext.getShardingItems())) {
             log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
             jobFacade.clearMisfire(shardingContext.getShardingItems());
             executeJobInternal(shardingContext);
             log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
-        jobFacade.failoverIfNecessary(stopped);
+        jobFacade.failoverIfNecessary();
         try {
             jobFacade.afterJobExecuted(shardingContext);
             //CHECKSTYLE:OFF
@@ -100,16 +97,6 @@ public abstract class AbstractElasticJob implements ElasticJob {
     @Override
     public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
         throw jobExecutionException;
-    }
-    
-    @Override
-    public final void stop() {
-        stopped = true;
-    }
-    
-    @Override
-    public final void resume() {
-        stopped = false;
     }
     
     public final void setJobFacade(final JobFacade jobFacade) {

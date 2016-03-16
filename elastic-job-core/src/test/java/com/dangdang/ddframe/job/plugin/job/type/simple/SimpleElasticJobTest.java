@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.plugin.job.type.simple;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
-import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.FooSimpleElasticJob;
@@ -29,12 +28,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.quartz.JobExecutionException;
-import org.unitils.util.ReflectionUtils;
 
-import java.lang.reflect.InvocationTargetException;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,7 +50,6 @@ public final class SimpleElasticJobTest {
         when(jobFacade.getJobName()).thenReturn("testJob");
         simpleElasticJob = new FooSimpleElasticJob(jobCaller);
         simpleElasticJob.setJobFacade(jobFacade);
-        simpleElasticJob.resume();
     }
     
     @Test(expected = TimeDiffIntolerableException.class)
@@ -115,7 +108,7 @@ public final class SimpleElasticJobTest {
         JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         simpleElasticJob.execute(null);
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(jobFacade, shardingContext);
+        ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
         verify(jobCaller).process();
     }
     
@@ -123,20 +116,20 @@ public final class SimpleElasticJobTest {
     public void assertExecuteWhenRunOnceWithMisfireIsEmpty() throws JobExecutionException {
         JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.isExecuteMisfired(false, shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
         simpleElasticJob.execute(null);
-        ElasticJobAssert.verifyForIsNotMisfireAndNotStopped(jobFacade, shardingContext);
+        ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
         verify(jobCaller).process();
     }
     
     @Test
-    public void assertExecuteWhenRunOnceWithMisfireIsNotEmptyButIsStopped() throws JobExecutionException {
+    public void assertExecuteWhenRunOnceWithMisfireIsNotEmptyButIsNotEligibleForJobRunning() throws JobExecutionException {
         JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.isExecuteMisfired(true, shardingContext.getShardingItems())).thenReturn(false);
-        simpleElasticJob.stop();
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.isEligibleForJobRunning()).thenReturn(false);
         simpleElasticJob.execute(null);
-        ElasticJobAssert.verifyForIsNotMisfireAndStopped(jobFacade, shardingContext);
+        ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
         verify(jobCaller).process();
         verify(jobFacade, times(0)).clearMisfire(shardingContext.getShardingItems());
     }
@@ -146,7 +139,7 @@ public final class SimpleElasticJobTest {
         JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(false, shardingContext.getShardingItems())).thenReturn(true, false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(true, false);
         when(jobFacade.isNeedSharding()).thenReturn(false);
         simpleElasticJob.execute(null);
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
@@ -175,25 +168,12 @@ public final class SimpleElasticJobTest {
         JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(false, shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
         doThrow(RuntimeException.class).when(jobFacade).afterJobExecuted(shardingContext);
         try {
             simpleElasticJob.execute(null);
         } finally {
             verify(jobCaller).process();
         }
-    }
-    
-    @Test
-    public void assertStop() throws JobExecutionException, InvocationTargetException, NoSuchMethodException {
-        simpleElasticJob.stop();
-        assertTrue((Boolean) ReflectionUtils.invokeMethod(simpleElasticJob, AbstractElasticJob.class.getDeclaredMethod("isStopped")));
-    }
-    
-    @Test
-    public void assertResume() throws JobExecutionException, InvocationTargetException, NoSuchMethodException {
-        simpleElasticJob.stop();
-        simpleElasticJob.resume();
-        assertFalse((Boolean) ReflectionUtils.invokeMethod(simpleElasticJob, AbstractElasticJob.class.getDeclaredMethod("isStopped")));
     }
 }

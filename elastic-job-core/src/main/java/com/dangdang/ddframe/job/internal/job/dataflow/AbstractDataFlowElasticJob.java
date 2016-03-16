@@ -98,7 +98,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeThroughputStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         List<T> data = fetchDataForThroughput(shardingContext);
-        while (null != data && !data.isEmpty() && getJobFacade().isEligibleForJobRunning(isStopped())) {
+        while (null != data && !data.isEmpty() && getJobFacade().isEligibleForJobRunning()) {
             processDataForThroughput(shardingContext, data);
             data = fetchDataForThroughput(shardingContext);
         }
@@ -113,7 +113,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeSequenceStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         Map<Integer, List<T>> data = fetchDataForSequence(shardingContext);
-        while (!data.isEmpty() && getJobFacade().isEligibleForJobRunning(isStopped())) {
+        while (!data.isEmpty() && getJobFacade().isEligibleForJobRunning()) {
             processDataForSequence(shardingContext, data);
             data = fetchDataForSequence(shardingContext);
         }
@@ -155,11 +155,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
                 }
             });
         }
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        latchAwait(latch);
     }
     
     private Map<Integer, List<T>> fetchDataForSequence(final JobExecutionMultipleShardingContext shardingContext) {
@@ -183,11 +179,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
                 }
             });
         }
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        latchAwait(latch);
         log.trace("Elastic job: fetch data size: {}.", result.size());
         return result;
     }
@@ -208,11 +200,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
                 }
             });
         }
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        latchAwait(latch);
     }
     
     protected abstract void processDataWithStatistics(C shardingContext, List<T> data);
@@ -230,5 +218,13 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     @Override
     public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
         log.error("Elastic job: exception occur in job processing...", jobExecutionException.getCause());
+    }
+    
+    private void latchAwait(final CountDownLatch latch) {
+        try {
+            latch.await();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

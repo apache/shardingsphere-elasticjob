@@ -190,75 +190,36 @@ public final class JobSchedulerTest {
     }
     
     @Test
-    public void assertResumeManualStoppedJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+    public void assertResumeJobIfShutdown() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.resumeManualStoppedJob();
+        jobScheduler.resumeJob();
         verify(scheduler).isShutdown();
         verify(scheduler, times(0)).resumeAll();
     }
     
     @Test(expected = JobException.class)
-    public void assertResumeManualStoppedJobFailure() throws NoSuchFieldException, SchedulerException {
+    public void assertResumeJobFailure() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(false);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         doThrow(SchedulerException.class).when(scheduler).resumeAll();
         try {
-            jobScheduler.resumeManualStoppedJob();
+            jobScheduler.resumeJob();
         } finally {
             verify(scheduler).isShutdown();
             verify(scheduler).resumeAll();
-            verify(schedulerFacade, times(0)).clearJobStoppedStatus();
         }
     }
     
     @Test
-    public void assertResumeManualStoppedJobSuccess() throws NoSuchFieldException, SchedulerException {
+    public void assertResumeJobSuccess() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(false);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.resumeManualStoppedJob();
+        jobScheduler.resumeJob();
         verify(scheduler).isShutdown();
-        verify(scheduler).resumeAll();
-        verify(schedulerFacade).clearJobStoppedStatus();
-    }
-    
-    @Test
-    public void assertResumeCrashedJobIfIsJobStoppedManually() throws NoSuchFieldException, SchedulerException {
-        when(schedulerFacade.isJobStoppedManually()).thenReturn(true);
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        when(scheduler.isShutdown()).thenReturn(true);
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.resumeCrashedJob();
-        verify(schedulerFacade).resumeCrashedJobInfo();
-        verify(scheduler, times(0)).resumeAll();
-    }
-    
-    @Test(expected = JobException.class)
-    public void assertResumeCrashedJobFailure() throws NoSuchFieldException, SchedulerException {
-        when(schedulerFacade.isJobStoppedManually()).thenReturn(false);
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        when(scheduler.isShutdown()).thenReturn(true);
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        doThrow(SchedulerException.class).when(scheduler).resumeAll();
-        try {
-            jobScheduler.resumeCrashedJob();
-        } finally {
-            verify(schedulerFacade).resumeCrashedJobInfo();
-            verify(scheduler).resumeAll();
-        }
-    }
-    
-    @Test
-    public void assertResumeCrashedJobSuccess() throws NoSuchFieldException, SchedulerException {
-        when(schedulerFacade.isJobStoppedManually()).thenReturn(false);
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        when(scheduler.isShutdown()).thenReturn(true);
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.resumeCrashedJob();
-        verify(schedulerFacade).resumeCrashedJobInfo();
         verify(scheduler).resumeAll();
     }
     

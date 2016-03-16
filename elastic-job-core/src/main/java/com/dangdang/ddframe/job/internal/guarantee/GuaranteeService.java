@@ -29,11 +29,11 @@ import java.util.Collection;
  * @author zhangliang
  */
 public class GuaranteeService {
-
+    
     private final JobConfiguration jobConfiguration;
     
     private final JobNodeStorage jobNodeStorage;
-
+    
     public GuaranteeService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);

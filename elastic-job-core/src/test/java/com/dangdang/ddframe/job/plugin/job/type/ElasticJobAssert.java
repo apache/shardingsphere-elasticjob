@@ -45,26 +45,17 @@ public class ElasticJobAssert {
     public static void prepareForIsNotMisfire(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext) {
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(false, shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
     }
     
-    public static void verifyForIsNotMisfireAndNotStopped(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext) {
-        verifyForIsNotMisfire(jobFacade, shardingContext, false);
-    }
-    
-    public static void verifyForIsNotMisfireAndStopped(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext) {
-        verifyForIsNotMisfire(jobFacade, shardingContext, true);
-    }
-    
-    private static void verifyForIsNotMisfire(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext, final boolean stopped) {
+    public static void verifyForIsNotMisfire(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext) {
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems());
         verify(jobFacade).beforeJobExecuted(shardingContext);
         verify(jobFacade).registerJobBegin(shardingContext);
         verify(jobFacade).registerJobCompleted(shardingContext);
-        verify(jobFacade).isExecuteMisfired(stopped, shardingContext.getShardingItems());
-        verify(jobFacade).failoverIfNecessary(stopped);
+        verify(jobFacade).isExecuteMisfired(shardingContext.getShardingItems());
         verify(jobFacade).afterJobExecuted(shardingContext);
     }
     

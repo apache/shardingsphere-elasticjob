@@ -88,30 +88,6 @@ public class SchedulerFacade {
     }
     
     /**
-     * 恢复因服务器崩溃而停止的作业信息.
-     */
-    public void resumeCrashedJobInfo() {
-        serverService.persistServerOnline();
-        executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
-    }
-    
-    /**
-     * 清除停止作业的标记.
-     */
-    public void clearJobStoppedStatus() {
-        serverService.clearJobStoppedStatus();
-    }
-    
-    /**
-     * 判断是否是手工停止的作业.
-     *
-     * @return 是否是手工停止的作业
-     */
-    public boolean isJobStoppedManually() {
-        return serverService.isJobStoppedManually();
-    }
-    
-    /**
      * 获取作业启动时间的cron表达式.
      *
      * @return 作业启动时间的cron表达式

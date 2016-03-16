@@ -121,6 +121,12 @@ public final class ServerServiceTest {
     }
     
     @Test
+    public void assertStop() {
+        serverService.stop();
+        verify(jobNodeStorage).createJobNodeIfNeeded("servers/mockedIP/stoped");
+    }
+    
+    @Test
     public void assertUpdateServerStatus() {
         serverService.updateServerStatus(ServerStatus.RUNNING);
         verify(jobNodeStorage).updateJobNode("servers/mockedIP/status", ServerStatus.RUNNING);

@@ -165,8 +165,8 @@ public class JobDimensionServiceImpl implements JobDimensionService {
     private ServerStatus getServerStatus(final String jobName, final String serverIp) {
         String status = curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "status"));
         boolean disabled = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
-        boolean stoped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
-        return ServerStatus.getServerStatus(status, disabled, stoped);
+        boolean stopped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+        return ServerStatus.getServerStatus(status, disabled, stopped);
     }
     
     @Override

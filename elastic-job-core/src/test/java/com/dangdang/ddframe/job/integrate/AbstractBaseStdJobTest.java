@@ -81,7 +81,7 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
             @Override
             public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
             }
-        }, new AbstractDistributeOnceElasticJobListener(500000L, 500000L) {
+        }, new AbstractDistributeOnceElasticJobListener(-1L, -1L) {
             
             @Override
             public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {

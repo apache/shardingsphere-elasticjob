@@ -24,17 +24,12 @@ import com.dangdang.ddframe.job.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.api.listener.fixture.TestElasticJobListener;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.listener.ListenerManager;
-import com.dangdang.ddframe.job.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
-import lombok.RequiredArgsConstructor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -56,9 +51,6 @@ public class JobFacadeTest {
     private ConfigurationService configService;
     
     @Mock
-    private LeaderElectionService leaderElectionService;
-    
-    @Mock
     private ServerService serverService;
     
     @Mock
@@ -74,16 +66,7 @@ public class JobFacadeTest {
     private FailoverService failoverService;
     
     @Mock
-    private StatisticsService statisticsService;
-    
-    @Mock
     private OffsetService offsetService;
-    
-    @Mock
-    private MonitorService monitorService;
-    
-    @Mock
-    private ListenerManager listenerManager;
     
     @Mock
     private ElasticJobListenerCaller caller;
@@ -97,6 +80,7 @@ public class JobFacadeTest {
         MockitoAnnotations.initMocks(this);
         jobFacade = new JobFacade(null, jobConfig, Collections.<ElasticJobListener> singletonList(new TestElasticJobListener(caller)));
         ReflectionUtils.setFieldValue(jobFacade, "configService", configService);
+        ReflectionUtils.setFieldValue(jobFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(jobFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(jobFacade, "executionContextService", executionContextService);
         ReflectionUtils.setFieldValue(jobFacade, "executionService", executionService);
@@ -119,21 +103,23 @@ public class JobFacadeTest {
     @Test
     public void testFailoverIfUnnecessary() {
         when(configService.isFailover()).thenReturn(false);
-        jobFacade.failoverIfNecessary(false);
+        jobFacade.failoverIfNecessary();
         verify(failoverService, times(0)).failoverIfNecessary();
     }
     
     @Test
     public void testFailoverIfNecessaryButIsStopped() {
         when(configService.isFailover()).thenReturn(true);
-        jobFacade.failoverIfNecessary(true);
+        when(serverService.isJobStoppedManually()).thenReturn(true);
+        jobFacade.failoverIfNecessary();
         verify(failoverService, times(0)).failoverIfNecessary();
     }
     
     @Test
     public void testFailoverIfNecessary() {
         when(configService.isFailover()).thenReturn(true);
-        jobFacade.failoverIfNecessary(false);
+        when(serverService.isJobStoppedManually()).thenReturn(false);
+        jobFacade.failoverIfNecessary();
         verify(failoverService).failoverIfNecessary();
     }
     

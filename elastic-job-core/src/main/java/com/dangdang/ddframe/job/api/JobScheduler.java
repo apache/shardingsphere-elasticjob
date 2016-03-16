@@ -178,7 +178,6 @@ public class JobScheduler {
      */
     public void stopJob() {
         try {
-            JobRegistry.getInstance().getJobInstance(jobName).stop();
             scheduler.pauseAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
@@ -186,36 +185,13 @@ public class JobScheduler {
     }
     
     /**
-     * 恢复手工停止的作业.
+     * 恢复作业.
      */
-    public void resumeManualStoppedJob() {
+    public void resumeJob() {
         try {
-            if (scheduler.isShutdown()) {
-                return;
+            if (!scheduler.isShutdown()) {
+                scheduler.resumeAll();
             }
-            JobRegistry.getInstance().getJobInstance(jobName).resume();
-            scheduler.resumeAll();
-        } catch (final SchedulerException ex) {
-            throw new JobException(ex);
-        }
-        schedulerFacade.clearJobStoppedStatus();
-    }
-    
-    /**
-     * 恢复因服务器崩溃而停止的作业.
-     * 
-     * <p>
-     * 不会恢复手工设置停止运行的作业.
-     * </p>
-     */
-    public void resumeCrashedJob() {
-        schedulerFacade.resumeCrashedJobInfo();
-        if (schedulerFacade.isJobStoppedManually()) {
-            return;
-        }
-        JobRegistry.getInstance().getJobInstance(jobName).resume();
-        try {
-            scheduler.resumeAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }

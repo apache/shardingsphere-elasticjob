@@ -22,12 +22,9 @@ import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.internal.monitor.MonitorService;
-import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
@@ -61,19 +58,10 @@ public class SchedulerFacadeTest {
     private ShardingService shardingService;
     
     @Mock
-    private ExecutionContextService executionContextService;
-    
-    @Mock
     private ExecutionService executionService;
     
     @Mock
-    private FailoverService failoverService;
-    
-    @Mock
     private StatisticsService statisticsService;
-    
-    @Mock
-    private OffsetService offsetService;
     
     @Mock
     private MonitorService monitorService;
@@ -117,27 +105,6 @@ public class SchedulerFacadeTest {
         schedulerFacade.releaseJobResource();
         verify(monitorService).close();
         verify(statisticsService).stopProcessCountJob();
-    }
-    
-    @Test
-    public void testResumeCrashedJobInfo() {
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Collections.<Integer>emptyList());
-        schedulerFacade.resumeCrashedJobInfo();
-        verify(serverService).persistServerOnline();
-        verify(shardingService).getLocalHostShardingItems();
-        verify(executionService).clearRunningInfo(Collections.<Integer>emptyList());
-    }
-    
-    @Test
-    public void testClearJobStoppedStatus() {
-        schedulerFacade.clearJobStoppedStatus();
-        verify(serverService).clearJobStoppedStatus();
-    }
-    
-    @Test
-    public void testIsJobStoppedManually() {
-        when(serverService.isJobStoppedManually()).thenReturn(true);
-        assertTrue(schedulerFacade.isJobStoppedManually());
     }
     
     @Test

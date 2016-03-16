@@ -108,7 +108,7 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         result.setStatus(ServerStatus.getServerStatus(status, disabled, stopped));
         String leaderIp = curatorRepository.getData(JobNodePath.getLeaderNodePath(jobName, "election/host"));
         result.setLeader(serverIp.equals(leaderIp));
-        result.setLeaderStoped(curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "stoped")));
+        result.setLeaderStopped(curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "stoped")));
         return result;
     }
 }
