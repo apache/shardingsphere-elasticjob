@@ -106,7 +106,7 @@ public class ShardingService {
         }
         log.debug("Elastic job: sharding begin.");
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
-        jobNodeStorage.executeInTransaction(new ClearShardingInfoInfoTransactionExecutionCallback());
+        clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(configService.getJobShardingStrategyClass());
         JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, configService.getShardingTotalCount(), configService.getShardingItemParameters());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
@@ -127,6 +127,12 @@ public class ShardingService {
         }
     }
     
+    private void clearShardingInfo() {
+        for (String each : serverService.getAllServers()) {
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getShardingNode(each));
+        }
+    }
+    
     /**
      * 获取运行在本作业服务器的分片序列号.
      * 
@@ -138,17 +144,6 @@ public class ShardingService {
             return Collections.emptyList();
         }
         return ItemUtils.toItemList(jobNodeStorage.getJobNodeDataDirectly(ShardingNode.getShardingNode(ip)));
-    }
-    
-    class ClearShardingInfoInfoTransactionExecutionCallback implements TransactionExecutionCallback {
-        
-        @Override
-        public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
-            for (String each : serverService.getAllServers()) {
-                String shardingNode = jobNodePath.getFullPath(ShardingNode.getShardingNode(each));
-                curatorTransactionFinal.check().forPath(shardingNode).and().delete().forPath(shardingNode).and();
-            }
-        }
     }
     
     @RequiredArgsConstructor

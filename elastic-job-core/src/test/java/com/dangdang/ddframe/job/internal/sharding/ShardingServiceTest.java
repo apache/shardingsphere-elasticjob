@@ -126,6 +126,7 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(configService.isMonitorExecution()).thenReturn(true);
+        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
         when(executionService.hasRunningItems()).thenReturn(true, false);
         when(configService.getJobShardingStrategyClass()).thenReturn(AverageAllocationJobShardingStrategy.class.getCanonicalName());
         when(configService.getShardingTotalCount()).thenReturn(3);
@@ -135,11 +136,13 @@ public final class ShardingServiceTest {
         verify(leaderElectionService).isLeader();
         verify(configService).isMonitorExecution();
         verify(executionService, times(2)).hasRunningItems();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/sharding");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
         verify(configService).getJobShardingStrategyClass();
         verify(configService).getShardingTotalCount();
         verify(configService).getShardingItemParameters();
-        verify(jobNodeStorage, times(2)).executeInTransaction(any(TransactionExecutionCallback.class));
+        verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
     
     @Test
@@ -147,6 +150,7 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(configService.isMonitorExecution()).thenReturn(false);
+        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
         when(configService.getJobShardingStrategyClass()).thenReturn(AverageAllocationJobShardingStrategy.class.getCanonicalName());
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(configService.getShardingItemParameters()).thenReturn(Collections.<Integer, String>emptyMap());
@@ -154,11 +158,13 @@ public final class ShardingServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
         verify(leaderElectionService).isLeader();
         verify(configService).isMonitorExecution();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/sharding");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
         verify(configService).getJobShardingStrategyClass();
         verify(configService).getShardingTotalCount();
         verify(configService).getShardingItemParameters();
-        verify(jobNodeStorage, times(2)).executeInTransaction(any(TransactionExecutionCallback.class));
+        verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
     
     @Test
@@ -175,29 +181,6 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/sharding")).thenReturn(false);
         assertThat(shardingService.getLocalHostShardingItems(), is(Collections.EMPTY_LIST));
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/sharding");
-    }
-    
-    @Test
-    public void assertClearShardingInfoInfoTransactionExecutionCallback() throws Exception {
-        when(serverService.getAllServers()).thenReturn(Collections.singletonList("host0"));
-        CuratorTransactionFinal curatorTransactionFinal = mock(CuratorTransactionFinal.class);
-        TransactionCheckBuilder transactionCheckBuilder = mock(TransactionCheckBuilder.class);
-        TransactionDeleteBuilder transactionDeleteBuilder = mock(TransactionDeleteBuilder.class);
-        CuratorTransactionBridge curatorTransactionBridge = mock(CuratorTransactionBridge.class);
-        when(curatorTransactionFinal.check()).thenReturn(transactionCheckBuilder);
-        when(transactionCheckBuilder.forPath("/testJob/servers/host0/sharding")).thenReturn(curatorTransactionBridge);
-        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        when(curatorTransactionFinal.delete()).thenReturn(transactionDeleteBuilder);
-        when(transactionDeleteBuilder.forPath("/testJob/servers/host0/sharding")).thenReturn(curatorTransactionBridge);
-        when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
-        ShardingService.ClearShardingInfoInfoTransactionExecutionCallback actual = shardingService.new ClearShardingInfoInfoTransactionExecutionCallback();
-        actual.execute(curatorTransactionFinal);
-        verify(serverService).getAllServers();
-        verify(curatorTransactionFinal).check();
-        verify(transactionCheckBuilder).forPath("/testJob/servers/host0/sharding");
-        verify(curatorTransactionFinal).delete();
-        verify(transactionDeleteBuilder).forPath("/testJob/servers/host0/sharding");
-        verify(curatorTransactionBridge, times(2)).and();
     }
     
     @Test
