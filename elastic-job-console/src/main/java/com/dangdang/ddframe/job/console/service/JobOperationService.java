@@ -32,4 +32,6 @@ public interface JobOperationService {
     void resumeAllJobsByServer(String serverIp);
     
     void shutdownJob(String jobName, String serverIp);
+    
+    boolean removeJob(String jobName, String serverIp);
 }

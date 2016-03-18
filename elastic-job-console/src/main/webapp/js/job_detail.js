@@ -15,6 +15,7 @@ $(function() {
     bindResumeButtons();
     bindResumeAllButton();
     bindShutdownButtons();
+    bindRemoveButtons();
 });
 
 function renderSettings() {
@@ -81,18 +82,21 @@ function renderServers() {
                 leaderStatus = status;
             }
             var baseTd = "<td>" + data[i].ip + "</td><td>" + data[i].hostName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td><td>" + (true === leader ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>") + "</td>";
-            var operationTd;
-            if ("SHUTDOWN" === status) {
-                operationTd = "-";
-            } else if ("STOPED" === status) {
-                operationTd = "<button operation='resume' class='btn btn-success' ip='" + data[i].ip + "' leader='" + leader + "'>恢复</button>";
-            } else if ("DISABLED" !== status && "CRASHED" !== status) {
-                operationTd = "<button operation='stop' class='btn btn-warning' ip='" + data[i].ip + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button>";
-            } else {
-                operationTd = "-";
+            var operationTd = "";
+            var resumeButton = "<button operation='resume' class='btn btn-success' ip='" + data[i].ip + "' leader='" + leader + "'>恢复</button>";
+            var stopButton = "<button operation='stop' class='btn btn-warning' ip='" + data[i].ip + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button>";
+            var shutdownButton = "<button operation='shutdown' class='btn btn-danger' ip='" + data[i].ip + "'>关闭</button>";
+            var removeButton = "<button operation='remove' class='btn btn-danger' ip='" + data[i].ip + "'>删除</button>";
+            if ("STOPED" === status) {
+                operationTd = resumeButton + "&nbsp;";
+            } else if ("DISABLED" !== status && "CRASHED" !== status && "SHUTDOWN" !== status) {
+                operationTd = stopButton + "&nbsp;";
             }
-            if ("-" !== operationTd) {
-                operationTd = operationTd + "&nbsp;<button operation='shutdown' class='btn btn-danger' ip='" + data[i].ip + "'>关闭</button>";
+            if ("SHUTDOWN" !== status) {
+                operationTd = operationTd + shutdownButton + "&nbsp;";
+            }
+            if ("SHUTDOWN" === status || "CRASHED" === status) {
+                operationTd = operationTd + removeButton;
             }
             operationTd = "<td>" + operationTd + "</td>";
             var trClass = "";
@@ -183,6 +187,16 @@ function bindShutdownButtons() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
         var jobName = $("#job-name").text();
         $.post("job/shutdown", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+            renderServers();
+            showSuccessDialog();
+        });
+    });
+}
+
+function bindRemoveButtons() {
+    $(document).on("click", "button[operation='remove']", function(event) {
+        var jobName = $("#job-name").text();
+        $.post("job/remove", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
             renderServers();
             showSuccessDialog();
         });

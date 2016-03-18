@@ -86,7 +86,9 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         List<String> jobs = curatorRepository.getChildren("/");
         Collection<JobServer> result = new ArrayList<>(jobs.size());
         for (String each : jobs) {
-            result.add(getJob(serverIp, each));
+            if (curatorRepository.checkExists(JobNodePath.getServerNodePath(each, serverIp))) {
+                result.add(getJob(serverIp, each));
+            }
         }
         return result;
     }

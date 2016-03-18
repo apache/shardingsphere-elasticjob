@@ -142,7 +142,7 @@ public class CuratorRepositoryImpl implements CuratorRepository {
     public void delete(final String znode) {
         try {
             if (null != SessionCuratorClient.getCuratorClient().checkExists().forPath(znode)) {
-                SessionCuratorClient.getCuratorClient().delete().forPath(znode);
+                SessionCuratorClient.getCuratorClient().delete().deletingChildrenIfNeeded().forPath(znode);
             }
         } catch (final NoNodeException ex) {
         //CHECKSTYLE:OFF

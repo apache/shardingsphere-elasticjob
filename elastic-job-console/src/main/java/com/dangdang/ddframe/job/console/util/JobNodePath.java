@@ -30,6 +30,10 @@ public final class JobNodePath {
         return String.format("/%s/servers", jobName);
     }
     
+    public static String getServerNodePath(final String jobName, final String serverIp) {
+        return String.format("%s/%s", getServerNodePath(jobName), serverIp);
+    }
+    
     public static String getServerNodePath(final String jobName, final String serverIp, final String nodeName) {
         return String.format("%s/%s/%s", getServerNodePath(jobName), serverIp, nodeName);
     }

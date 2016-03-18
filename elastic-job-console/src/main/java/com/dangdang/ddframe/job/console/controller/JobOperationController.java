@@ -67,4 +67,9 @@ public class JobOperationController {
     public void shutdownJob(final JobServer jobServer) {
         jobOperationService.shutdownJob(jobServer.getJobName(), jobServer.getIp());
     }
+    
+    @RequestMapping(value = "remove", method = RequestMethod.POST)
+    public void removeJob(final JobServer jobServer) {
+        jobOperationService.removeJob(jobServer.getJobName(), jobServer.getIp());
+    }
 }

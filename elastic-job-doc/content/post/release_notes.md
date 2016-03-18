@@ -11,6 +11,7 @@ weight=1
 ### 功能提升
 
 1. [ISSUE #71](https://github.com/dangdangdotcom/elastic-job/issues/71) 作业关闭功能（shutdown）
+1. [ISSUE #72](https://github.com/dangdangdotcom/elastic-job/issues/72) 关闭的作业可删除
 
 ### 缺陷修正
 
