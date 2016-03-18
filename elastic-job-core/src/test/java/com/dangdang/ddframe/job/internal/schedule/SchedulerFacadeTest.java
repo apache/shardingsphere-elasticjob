@@ -88,6 +88,12 @@ public class SchedulerFacadeTest {
     }
     
     @Test
+    public void testClearPreviousServerStatus() {
+        schedulerFacade.clearPreviousServerStatus();
+        verify(serverService).clearPreviousServerStatus();
+    }
+    
+    @Test
     public void testRegisterStartUpInfo() {
         schedulerFacade.registerStartUpInfo();
         verify(listenerManager).startAllListeners();

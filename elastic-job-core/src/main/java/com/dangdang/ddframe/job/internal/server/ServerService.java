@@ -47,6 +47,14 @@ public class ServerService {
     }
     
     /**
+     * 每次作业启动前清理上次运行状态.
+     */
+    public void clearPreviousServerStatus() {
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStatusNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getShutdownNode(localHostService.getIp()));
+    }
+    
+    /**
      * 持久化作业服务器上线相关信息.
      */
     public void persistServerOnline() {

@@ -66,6 +66,13 @@ public class SchedulerFacade {
     }
     
     /**
+     * 每次作业启动前清理上次运行状态.
+     */
+    public void clearPreviousServerStatus() {
+        serverService.clearPreviousServerStatus();
+    }
+    
+    /**
      * 注册Elastic-Job启动信息.
      */
     public void registerStartUpInfo() {

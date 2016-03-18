@@ -117,6 +117,9 @@ public class MonitorService {
         for (String each : coordinatorRegistryCenter.getChildrenKeys(path)) {
             String zkPath = path + "/" + each;
             String zkValue = coordinatorRegistryCenter.get(zkPath);
+            if (null == zkValue) {
+                zkValue = "";
+            }
             TreeCache treeCache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + jobName);
             ChildData treeCacheData = treeCache.getCurrentData(zkPath);
             String treeCachePath =  null == treeCacheData ? "" : treeCacheData.getPath();

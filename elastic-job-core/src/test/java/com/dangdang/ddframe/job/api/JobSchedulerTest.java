@@ -126,6 +126,7 @@ public final class JobSchedulerTest {
     }
     
     private void assertInit() throws NoSuchFieldException, SchedulerException {
+        verify(schedulerFacade).clearPreviousServerStatus();
         JobDetail jobDetail = ReflectionUtils.getFieldValue(jobScheduler, jobScheduler.getClass().getDeclaredField("jobDetail"));
         assertThat(jobDetail.getKey().getName(), is("testJob"));
         Scheduler scheduler = ReflectionUtils.getFieldValue(jobScheduler, jobScheduler.getClass().getDeclaredField("scheduler"));

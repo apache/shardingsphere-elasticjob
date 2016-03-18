@@ -67,6 +67,13 @@ public final class ServerServiceTest {
     }
     
     @Test
+    public void assertClearPreviousServerStatus() {
+        serverService.clearPreviousServerStatus();
+        verify(jobNodeStorage).removeJobNodeIfExisted(ServerNode.getStatusNode("mockedIP"));
+        verify(jobNodeStorage).removeJobNodeIfExisted(ServerNode.getShutdownNode("mockedIP"));
+    }
+    
+    @Test
     public void assertPersistServerOnlineWhenOverwriteDisabled() {
         when(leaderElectionService.hasLeader()).thenReturn(true);
         jobConfig.setOverwrite(false);

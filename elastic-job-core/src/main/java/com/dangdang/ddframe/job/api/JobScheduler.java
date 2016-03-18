@@ -92,6 +92,7 @@ public class JobScheduler {
      */
     public void init() {
         log.debug("Elastic job: job controller init, job name is: {}.", jobName);
+        schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + jobName);
         schedulerFacade.registerStartUpInfo();
         jobDetail.getJobDataMap().put("jobFacade", jobFacade);
