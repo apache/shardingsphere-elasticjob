@@ -79,4 +79,9 @@ public class JobOperationServiceImpl implements JobOperationService {
             curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
         }
     }
+    
+    @Override
+    public void shutdownJob(final String jobName, final String serverIp) {
+        curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"));
+    }
 }

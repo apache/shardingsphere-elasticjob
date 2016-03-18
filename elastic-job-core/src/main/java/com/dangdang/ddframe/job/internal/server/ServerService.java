@@ -53,13 +53,10 @@ public class ServerService {
         if (!leaderElectionService.hasLeader()) {
             leaderElectionService.leaderElection();
         }
-        persistHostName();
-        persistDisabled();
-        ephemeralPersistServerReady();
-    }
-    
-    private void persistHostName() {
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ServerNode.getHostNameNode(localHostService.getIp()), localHostService.getHostName());
+        persistDisabled();
+        jobNodeStorage.fillEphemeralJobNode(ServerNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getShutdownNode(localHostService.getIp()));
     }
     
     private void persistDisabled() {
@@ -71,10 +68,6 @@ public class ServerService {
         } else {
             jobNodeStorage.removeJobNodeIfExisted(ServerNode.getDisabledNode(localHostService.getIp()));
         }
-    }
-    
-    private void ephemeralPersistServerReady() {
-        jobNodeStorage.fillEphemeralJobNode(ServerNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
     }
     
     /**
@@ -94,10 +87,10 @@ public class ServerService {
     }
     
     /**
-     * 停止作业.
+     * 处理服务器关机的相关信息.
      */
-    public void stop() {
-        jobNodeStorage.createJobNodeIfNeeded(ServerNode.getStoppedNode(localHostService.getIp()));
+    public void processServerShutdown() {
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStatusNode(localHostService.getIp()));
     }
     
     /**

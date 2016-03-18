@@ -62,6 +62,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     public void start() {
         addConnectionStateListener(new ConnectionLostListener());
         addDataListener(new JobStoppedStatusJobListener());
+        addDataListener(new JobShutdownStatusJobListener());
     }
     
     class ConnectionLostListener implements ConnectionStateListener {
@@ -98,6 +99,21 @@ public class JobOperationListenerManager extends AbstractListenerManager {
             if (Type.NODE_REMOVED == event.getType()) {
                 jobScheduler.resumeJob();
                 serverService.clearJobStoppedStatus();
+            }
+        }
+    }
+    
+    class JobShutdownStatusJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (!serverNode.isJobShutdownPath(path)) {
+                return;
+            }
+            JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
+            if (null != jobScheduler && Type.NODE_ADDED == event.getType()) {
+                jobScheduler.shutdown();
+                serverService.processServerShutdown();
             }
         }
     }

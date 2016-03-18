@@ -17,18 +17,6 @@
 
 package com.dangdang.ddframe.job.console.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.dangdang.ddframe.job.console.domain.JobServer;
 import com.dangdang.ddframe.job.console.domain.JobServer.ServerStatus;
 import com.dangdang.ddframe.job.console.domain.ServerBriefInfo;
@@ -36,6 +24,16 @@ import com.dangdang.ddframe.job.console.domain.ServerBriefInfo.ServerBriefStatus
 import com.dangdang.ddframe.job.console.repository.zookeeper.CuratorRepository;
 import com.dangdang.ddframe.job.console.service.ServerDimensionService;
 import com.dangdang.ddframe.job.console.util.JobNodePath;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @Service
 public class ServerDimensionServiceImpl implements ServerDimensionService {
@@ -53,7 +51,8 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
             List<String> servers = curatorRepository.getChildren(JobNodePath.getServerNodePath(jobName));
             for (String server : servers) {
                 serverHostMap.put(server, curatorRepository.getData(JobNodePath.getServerNodePath(jobName, server, "hostName")));
-                if (curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, server, "status"))) {
+                if (!curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, server, "shutdown"))
+                        && curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, server, "status"))) {
                     serverAliveCountMap.put(server, true);
                 } else {
                     serverCrashedCountMap.put(server, true);
@@ -105,7 +104,8 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         String status = curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "status"));
         boolean disabled = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
         boolean stopped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
-        result.setStatus(ServerStatus.getServerStatus(status, disabled, stopped));
+        boolean shutdown = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"));
+        result.setStatus(ServerStatus.getServerStatus(status, disabled, stopped, shutdown));
         String leaderIp = curatorRepository.getData(JobNodePath.getLeaderNodePath(jobName, "election/host"));
         result.setLeader(serverIp.equals(leaderIp));
         result.setLeaderStopped(curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "stoped")));

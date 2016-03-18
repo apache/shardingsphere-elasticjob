@@ -5,6 +5,7 @@ $(function() {
     bindResumeButtons();
     bindStopAllButton();
     bindResumeAllButton();
+    bindShutdownButtons();
 });
 
 function renderJobs() {
@@ -16,17 +17,23 @@ function renderJobs() {
             var leader = data[i].leader;
             var baseTd = "<td>" + data[i].jobName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td><td>" + (true === leader ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>") + "</td>";
             var operationTd;
-            if ("STOPED" === status) {
+            if ("SHUTDOWN" === status) {
+                operationTd = "-";
+            } else if ("STOPED" === status) {
                 if (data[i].leaderStoped && !leader) {
-                    operationTd = "<td><button operation='resume' class='btn btn-success disabled' job-name='" + data[i].jobName + "' disabled title='先恢复主节点才能恢复从节点作业'>恢复</button></td>";
+                    operationTd = "<button operation='resume' class='btn btn-success disabled' job-name='" + data[i].jobName + "' disabled title='先恢复主节点才能恢复从节点作业'>恢复</button>";
                 } else {
-                    operationTd = "<td><button operation='resume' class='btn btn-success' job-name='" + data[i].jobName + "'>恢复</button></td>";
+                    operationTd = "<button operation='resume' class='btn btn-success' job-name='" + data[i].jobName + "'>恢复</button>";
                 }
             } else if ("DISABLED" !== status && "CRASHED" !== status) {
-                operationTd = "<td><button operation='stop' class='btn btn-danger' job-name='" + data[i].jobName + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button></td>";
+                operationTd = "<button operation='stop' class='btn btn-warning' job-name='" + data[i].jobName + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button>";
             } else {
-                operationTd = "<td>-</td>";
+                operationTd = "";
             }
+            if ("-" !== operationTd) {
+                operationTd = operationTd + "&nbsp;<button operation='shutdown' class='btn btn-danger' job-name='" + data[i].jobName + "'>关闭</button>";
+            }
+            operationTd = "<td>" + operationTd + "</td>";
             var trClass = "";
             if ("READY" === status) {
                 trClass = "info";
@@ -34,7 +41,7 @@ function renderJobs() {
                 trClass = "success";
             } else if ("DISABLED" === status || "STOPED" === status) {
                 trClass = "warning";
-            } else if ("CRASHED" === status) {
+            } else if ("CRASHED" === status || "SHUTDOWN" === status) {
                 trClass = "danger";
             }
             $("#jobs tbody").append("<tr class='" + trClass + "'>" + baseTd + operationTd + "</tr>");
@@ -88,5 +95,17 @@ function bindResumeAllButton() {
             renderJobs();
             showSuccessDialog();
         });
+    });
+}
+
+function bindShutdownButtons() {
+    $(document).on("click", "button[operation='shutdown']", function(event) {
+        $.post("job/shutdown", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
+            renderJobs();
+            showSuccessDialog();
+        });
+    });
+    $(document).on("click", "button[operation='shutdown']", function(event) {
+        $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
     });
 }

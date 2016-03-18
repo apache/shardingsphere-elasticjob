@@ -48,6 +48,8 @@ public final class ServerNode {
     
     static final String STOPPED = ROOT + "/%s/stoped";
     
+    static final String SHUTDOWN = ROOT + "/%s/shutdown";
+    
     private final LocalHostService localHostService = new LocalHostService();
     
     private final JobNodePath jobNodePath;
@@ -80,6 +82,18 @@ public final class ServerNode {
         return String.format(STOPPED, ip);
     }
     
+    static String getShutdownNode(final String ip) {
+        return String.format(SHUTDOWN, ip);
+    }
+    
+    boolean isJobStoppedPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.STOPPED, localHostService.getIp())));
+    }
+    
+    boolean isJobShutdownPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.SHUTDOWN, localHostService.getIp())));
+    }
+    
     /**
      * 判断给定路径是否为作业服务器状态路径.
      * 
@@ -98,14 +112,5 @@ public final class ServerNode {
      */
     public boolean isServerDisabledPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.DISABLED_APPENDIX);
-    }
-    
-    /**
-     * 判断给定路径是否为作业停止状态路径.
-     * 
-     * @return 是否为作业停止状态路径.
-     */
-    public boolean isJobStoppedPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.STOPPED, localHostService.getIp())));
     }
 }

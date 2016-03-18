@@ -14,6 +14,7 @@ $(function() {
     bindStopAllButtons();
     bindResumeButtons();
     bindResumeAllButton();
+    bindShutdownButtons();
 });
 
 function renderSettings() {
@@ -81,13 +82,19 @@ function renderServers() {
             }
             var baseTd = "<td>" + data[i].ip + "</td><td>" + data[i].hostName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td><td>" + (true === leader ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>") + "</td>";
             var operationTd;
-            if ("STOPED" === status) {
-                operationTd = "<td><button operation='resume' class='btn btn-success' ip='" + data[i].ip + "' leader='" + leader + "'>恢复</button></td>";
+            if ("SHUTDOWN" === status) {
+                operationTd = "-";
+            } else if ("STOPED" === status) {
+                operationTd = "<button operation='resume' class='btn btn-success' ip='" + data[i].ip + "' leader='" + leader + "'>恢复</button>";
             } else if ("DISABLED" !== status && "CRASHED" !== status) {
-                operationTd = "<td><button operation='stop' class='btn btn-danger' ip='" + data[i].ip + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button></td>";
+                operationTd = "<button operation='stop' class='btn btn-warning' ip='" + data[i].ip + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button>";
             } else {
-                operationTd = "<td>-</td>";
+                operationTd = "-";
             }
+            if ("-" !== operationTd) {
+                operationTd = operationTd + "&nbsp;<button operation='shutdown' class='btn btn-danger' ip='" + data[i].ip + "'>关闭</button>";
+            }
+            operationTd = "<td>" + operationTd + "</td>";
             var trClass = "";
             if ("READY" === status) {
                 trClass = "info";
@@ -95,7 +102,7 @@ function renderServers() {
                 trClass = "success";
             } else if ("DISABLED" === status || "STOPED" === status) {
                 trClass = "warning";
-            } else if ("CRASHED" === status) {
+            } else if ("CRASHED" === status || "SHUTDOWN" === status) {
                 trClass = "danger";
             }
             $("#servers tbody").append("<tr class='" + trClass + "'>" + baseTd + operationTd + "</tr>");
@@ -169,5 +176,15 @@ function renderExecution() {
             }
             $("#execution tbody").append("<tr class='" + trClass + "'>" + baseTd + "</tr>");
         }
+    });
+}
+
+function bindShutdownButtons() {
+    $(document).on("click", "button[operation='shutdown']", function(event) {
+        var jobName = $("#job-name").text();
+        $.post("job/shutdown", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+            renderServers();
+            showSuccessDialog();
+        });
     });
 }

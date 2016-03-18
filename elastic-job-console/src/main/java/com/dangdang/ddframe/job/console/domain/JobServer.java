@@ -53,9 +53,13 @@ public final class JobServer implements Serializable {
         RUNNING, 
         DISABLED, 
         STOPED, 
-        CRASHED;
+        CRASHED, 
+        SHUTDOWN;
         
-        public static ServerStatus getServerStatus(final String status, final boolean disabled, final boolean stopped) {
+        public static ServerStatus getServerStatus(final String status, final boolean disabled, final boolean stopped, final boolean shutdown) {
+            if (shutdown) {
+                return ServerStatus.SHUTDOWN;
+            }
             if (Strings.isNullOrEmpty(status)) {
                 return ServerStatus.CRASHED;
             }

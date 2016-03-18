@@ -178,7 +178,9 @@ public class JobScheduler {
      */
     public void stopJob() {
         try {
-            scheduler.pauseAll();
+            if (!scheduler.isShutdown()) {
+                scheduler.pauseAll();
+            }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -202,7 +204,9 @@ public class JobScheduler {
      */
     public void triggerJob() {
         try {
-            scheduler.triggerJob(jobDetail.getKey());
+            if (!scheduler.isShutdown()) {
+                scheduler.triggerJob(jobDetail.getKey());
+            }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -214,7 +218,9 @@ public class JobScheduler {
     public void shutdown() {
         schedulerFacade.releaseJobResource();
         try {
-            scheduler.shutdown();
+            if (!scheduler.isShutdown()) {
+                scheduler.shutdown();
+            }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -225,7 +231,9 @@ public class JobScheduler {
      */
     public void rescheduleJob(final String cronExpression) {
         try {
-            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobName, CRON_TRIGGER_IDENTITY_SUFFIX)), createTrigger(cronExpression));
+            if (!scheduler.isShutdown()) {
+                scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobName, CRON_TRIGGER_IDENTITY_SUFFIX)), createTrigger(cronExpression));
+            }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         } 

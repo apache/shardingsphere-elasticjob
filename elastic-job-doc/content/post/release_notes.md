@@ -6,6 +6,16 @@ weight=1
 
 # Release Notes
 
+## 1.0.6-SNAPSHOT
+
+### 功能提升
+
+1. [ISSUE #71](https://github.com/dangdangdotcom/elastic-job/issues/71) 作业关闭功能（shutdown）
+
+### 缺陷修正
+
+1. [ISSUE #69](https://github.com/dangdangdotcom/elastic-job/issues/69) 分片时如在Zk中有的作业服务器sharding节点不存在将导致无法重新分片
+
 ## 1.0.5
 
 ### 功能提升

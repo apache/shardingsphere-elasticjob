@@ -73,10 +73,11 @@ public final class ServerServiceTest {
         serverService.persistServerOnline();
         verify(leaderElectionService).hasLeader();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
-        verify(localHostService, times(2)).getIp();
+        verify(localHostService, times(3)).getIp();
         verify(localHostService).getHostName();
         verify(jobNodeStorage).getJobConfiguration();
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
     }
     
     @Test
@@ -87,11 +88,12 @@ public final class ServerServiceTest {
         verify(leaderElectionService).hasLeader();
         verify(leaderElectionService).leaderElection();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
-        verify(localHostService, times(3)).getIp();
+        verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
         verify(jobNodeStorage, times(2)).getJobConfiguration();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/disabled", "");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
     }
     
     @Test
@@ -100,7 +102,7 @@ public final class ServerServiceTest {
         serverService.persistServerOnline();
         verify(leaderElectionService).hasLeader();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
-        verify(localHostService, times(3)).getIp();
+        verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
         verify(jobNodeStorage, times(2)).getJobConfiguration();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/disabled");
@@ -121,9 +123,9 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertStop() {
-        serverService.stop();
-        verify(jobNodeStorage).createJobNodeIfNeeded("servers/mockedIP/stoped");
+    public void assertProcessServerShutdown() {
+        serverService.processServerShutdown();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/status");
     }
     
     @Test

@@ -62,4 +62,9 @@ public class JobOperationController {
     public void resumeAllJobs(final JobServer jobServer) {
         jobOperationService.resumeAllJobsByServer(jobServer.getIp());
     }
+    
+    @RequestMapping(value = "shutdown", method = RequestMethod.POST)
+    public void shutdownJob(final JobServer jobServer) {
+        jobOperationService.shutdownJob(jobServer.getJobName(), jobServer.getIp());
+    }
 }

@@ -169,6 +169,16 @@ public final class JobSchedulerTest {
         assertThat(jobScheduler.getNextFireTime().getTime(), is(0L));
     }
     
+    @Test
+    public void assertStopJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
+        when(scheduler.isShutdown()).thenReturn(true);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        jobScheduler.stopJob();
+        verify(scheduler).isShutdown();
+        verify(scheduler, times(0)).pauseAll();
+    }
+    
     @Test(expected = JobException.class)
     public void assertStopJobFailure() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
@@ -185,6 +195,7 @@ public final class JobSchedulerTest {
     public void assertStopJobSuccess() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        when(scheduler.isShutdown()).thenReturn(false);
         jobScheduler.stopJob();
         verify(scheduler).pauseAll();
     }
@@ -223,6 +234,18 @@ public final class JobSchedulerTest {
         verify(scheduler).resumeAll();
     }
     
+    @Test
+    public void assertTriggerJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+        JobKey jobKey = new JobKey("testJob");
+        when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.isShutdown()).thenReturn(true);
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
+        jobScheduler.triggerJob();
+        verify(jobDetail, times(0)).getKey();
+        verify(scheduler, times(0)).triggerJob(jobKey);
+    }
+    
     @Test(expected = JobException.class)
     public void assertTriggerJobFailure() throws NoSuchFieldException, SchedulerException {
         JobKey jobKey = new JobKey("testJob");
@@ -242,11 +265,21 @@ public final class JobSchedulerTest {
     public void assertTriggerJobSuccess() throws NoSuchFieldException, SchedulerException {
         JobKey jobKey = new JobKey("testJob");
         when(jobDetail.getKey()).thenReturn(jobKey);
+        when(scheduler.isShutdown()).thenReturn(false);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         ReflectionUtils.setFieldValue(jobScheduler, "jobDetail", jobDetail);
         jobScheduler.triggerJob();
         verify(jobDetail).getKey();
         verify(scheduler).triggerJob(jobKey);
+    }
+    
+    @Test
+    public void assertShutdownJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        when(scheduler.isShutdown()).thenReturn(true);
+        jobScheduler.shutdown();
+        verify(schedulerFacade).releaseJobResource();
+        verify(scheduler, times(0)).shutdown();
     }
     
     @Test(expected = JobException.class)
@@ -264,9 +297,18 @@ public final class JobSchedulerTest {
     @Test
     public void assertShutdownSuccess() throws NoSuchFieldException, SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        when(scheduler.isShutdown()).thenReturn(false);
         jobScheduler.shutdown();
         verify(schedulerFacade).releaseJobResource();
         verify(scheduler).shutdown();
+    }
+    
+    @Test
+    public void assertRescheduleJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        when(scheduler.isShutdown()).thenReturn(true);
+        jobScheduler.rescheduleJob("0/1 * * * * ?");
+        verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
     }
     
     @Test(expected = JobException.class)
@@ -283,6 +325,7 @@ public final class JobSchedulerTest {
     @Test
     public void assertRescheduleJobSuccess() throws NoSuchFieldException, SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
+        when(scheduler.isShutdown()).thenReturn(false);
         jobScheduler.rescheduleJob("0/1 * * * * ?");
         verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
     }

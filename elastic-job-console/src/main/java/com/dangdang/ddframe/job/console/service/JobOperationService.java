@@ -30,4 +30,6 @@ public interface JobOperationService {
     void stopAllJobsByServer(String serverIp);
     
     void resumeAllJobsByServer(String serverIp);
+    
+    void shutdownJob(String jobName, String serverIp);
 }

@@ -78,7 +78,7 @@ public final class JobOperationListenerManagerTest {
     public void assertStart() {
         jobOperationListenerManager.start();
         verify(jobNodeStorage).addConnectionStateListener(Matchers.<ConnectionLostListener>any());
-        verify(jobNodeStorage).addDataListener(Matchers.<JobStoppedStatusJobListener>any());
+        verify(jobNodeStorage, times(2)).addDataListener(Matchers.<JobStoppedStatusJobListener>any());
     }
     
     @Test
@@ -160,5 +160,36 @@ public final class JobOperationListenerManagerTest {
         verify(jobScheduler, times(0)).stopJob();
         verify(jobScheduler).resumeJob();
         verify(serverService).clearJobStoppedStatus();
+    }
+    
+    @Test
+    public void assertJobShutdownStatusJobListenerWhenIsNotJobShutdownPath() {
+        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/servers/" + ip + "/other", null, "".getBytes())), "/testJob/servers/" + ip + "/other");
+        verify(jobScheduler, times(0)).shutdown();
+    }
+    
+    @Test
+    public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathButJobIsNotExisted() {
+        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/servers/" + ip + "/shutdown", null, "".getBytes())), "/testJob/servers/" + ip + "/shutdown");
+        verify(jobScheduler, times(0)).shutdown();
+    }
+    
+    @Test
+    public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathAndUpdate() {
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
+        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/servers/" + ip + "/shutdown", null, "".getBytes())), "/testJob/servers/" + ip + "/shutdown");
+        verify(jobScheduler, times(0)).shutdown();
+    }
+    
+    @Test
+    public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathAndAdd() {
+        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
+        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/servers/" + ip + "/shutdown", null, "".getBytes())), "/testJob/servers/" + ip + "/shutdown");
+        verify(jobScheduler).shutdown();
+        verify(serverService).processServerShutdown();
     }
 }

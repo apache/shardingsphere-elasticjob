@@ -77,6 +77,7 @@ public class JobDimensionServiceImpl implements JobDimensionService {
                     manuallyDisabledCount++;
                     break;
                 case CRASHED:
+                case SHUTDOWN:
                     crashedCount++;
                     break;
                 default:
@@ -166,7 +167,8 @@ public class JobDimensionServiceImpl implements JobDimensionService {
         String status = curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "status"));
         boolean disabled = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
         boolean stopped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
-        return ServerStatus.getServerStatus(status, disabled, stopped);
+        boolean shutdown = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"));
+        return ServerStatus.getServerStatus(status, disabled, stopped, shutdown);
     }
     
     @Override
