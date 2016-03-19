@@ -32,9 +32,9 @@
 
 * **分布式：** 重写Quartz基于数据库的分布式功能，改用Zookeeper实现注册中心。
 
-* **并行调度：** 采用任务分片方式实现。将一个任务拆分为n个独立的任务项，由分布式的服务器并行执行各自分配到的分片项。
+* **并行调度：** 采用任务分片方式实现。将一个任务拆分为多个独立的任务项，由分布式的服务器并行执行各自分配到的分片项。
 
-* **弹性扩容缩容：** 将任务拆分为n个任务项后，各个服务器分别执行各自分配到的任务项。一旦有新的服务器加入集群，或现有服务器下线，elastic-job将在保留本次任务执行不变的情况下，下次任务开始前触发任务重分片。
+* **弹性扩容缩容：** 将任务拆分为多个子任务项后，各个服务器分别执行各自分配到的任务项。一旦有新的服务器加入集群，或现有服务器下线，elastic-job将在保留本次任务执行不变的情况下，下次任务开始前触发任务重分片。
 
 * **集中管理：** 采用基于Zookeeper的注册中心，集中管理和协调分布式作业的状态，分配和监听。外部系统可直接根据Zookeeper的数据管理和监控elastic-job。
 
@@ -120,25 +120,11 @@ elastic-job已经发布到中央仓库，可以在pom.xml文件中直接引入ma
 * **作业开发**
 
 ```java
-public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
-
+public class MyElasticJob extends AbstractSimpleElasticJob {
+    
     @Override
-    protected List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
-        Map<Integer, String> offset = context.getOffsets();
-        List<Foo> result = // get data from database by sharding items and by offset
-        return result;
-    }
-
-    @Override
-    protected boolean processData(JobExecutionMultipleShardingContext context, Foo data) {
-        // process data
-        // ...
-
-        // store offset
-        for (int each : context.getShardingItems()) {
-            updateOffset(each, "your offset, maybe id");
-        }
-        return true;
+    public void process(JobExecutionMultipleShardingContext context) {
+        // do something by sharding items
     }
 }
 ```
@@ -162,6 +148,6 @@ public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
     <reg:zookeeper id="regCenter" serverLists=" yourhost:2181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
 
     <!-- 配置作业-->
-    <job:bean id="oneOffElasticJob" class="xxx.MyElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
+    <job:bean id="myElasticJob" class="xxx.MyElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
 </beans>
 ```
