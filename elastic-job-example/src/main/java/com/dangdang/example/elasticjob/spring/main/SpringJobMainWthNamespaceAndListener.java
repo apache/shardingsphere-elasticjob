@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,15 +19,15 @@ package com.dangdang.example.elasticjob.spring.main;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public final class SpringJobMainWthoutNamespace {
+public final class SpringJobMainWthNamespaceAndListener {
     
-    private SpringJobMainWthoutNamespace() {
+    private SpringJobMainWthNamespaceAndListener() {
     }
     
     // CHECKSTYLE:OFF
     @SuppressWarnings("resource")
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        new ClassPathXmlApplicationContext("classpath:META-INF/withoutNamespace.xml");
+        new ClassPathXmlApplicationContext("classpath:META-INF/withNamespaceAndListener.xml");
     }
 }

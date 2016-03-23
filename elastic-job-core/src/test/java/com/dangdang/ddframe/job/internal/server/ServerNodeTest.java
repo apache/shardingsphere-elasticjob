@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,8 +58,13 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertStopedNode() {
-        assertThat(ServerNode.getStopedNode("host0"), is("servers/host0/stoped"));
+    public void assertStoppedNode() {
+        assertThat(ServerNode.getStoppedNode("host0"), is("servers/host0/stoped"));
+    }
+    
+    @Test
+    public void assertShutdownNode() {
+        assertThat(ServerNode.getShutdownNode("host0"), is("servers/host0/shutdown"));
     }
     
     @Test
@@ -77,7 +82,12 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertIsJobStopedPath() {
-        assertTrue(serverNode.isJobStopedPath("/testJob/servers/" + localHostService.getIp() + "/stoped"));
+    public void assertIsJobStoppedPath() {
+        assertTrue(serverNode.isJobStoppedPath("/testJob/servers/" + localHostService.getIp() + "/stoped"));
+    }
+    
+    @Test
+    public void assertIsJobShutdownPath() {
+        assertTrue(serverNode.isJobShutdownPath("/testJob/servers/" + localHostService.getIp() + "/shutdown"));
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SensitiveInfoUtils {
     
-    public static List<String> filterSenstiveIps(final List<String> result) {
+    public static List<String> filterSensitiveIps(final List<String> result) {
         final Map<String, String> fakeIpMap = new HashMap<>();
         final String fakeIpSample = "ip";
         final AtomicInteger step = new AtomicInteger();

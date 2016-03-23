@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,8 @@ import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
  * 
  * @author zhangliang
  * @author caohao
+ * 
+ * @deprecated .
  */
 @Deprecated
 public abstract class AbstractOneOffElasticJob extends AbstractSimpleElasticJob { }

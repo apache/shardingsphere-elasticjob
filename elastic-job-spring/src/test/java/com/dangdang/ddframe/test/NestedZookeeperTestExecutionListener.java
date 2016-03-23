@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServers;
 
 public final class NestedZookeeperTestExecutionListener extends AbstractTestExecutionListener {
     
-    private final int port = 3181;
+    private final static int port = 3181;
     
     private final String testTempDirectory = String.format("target/test_zk_data/%s/", System.nanoTime());
     

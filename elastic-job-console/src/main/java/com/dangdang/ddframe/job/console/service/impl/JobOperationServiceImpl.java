@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -78,5 +78,19 @@ public class JobOperationServiceImpl implements JobOperationService {
             }
             curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
         }
+    }
+    
+    @Override
+    public void shutdownJob(final String jobName, final String serverIp) {
+        curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"));
+    }
+    
+    @Override
+    public boolean removeJob(final String jobName, final String serverIp) {
+        if (!curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "status")) || curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"))) {
+            curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp));
+            return true;
+        }
+        return false;
     }
 }

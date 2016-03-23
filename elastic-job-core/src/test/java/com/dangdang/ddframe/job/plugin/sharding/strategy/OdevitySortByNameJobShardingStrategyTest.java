@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,7 @@ public final class OdevitySortByNameJobShardingStrategyTest {
     private OdevitySortByNameJobShardingStrategy odevitySortByNameJobShardingStrategy = new OdevitySortByNameJobShardingStrategy();
     
     @Test
-    public void assertshardingByAsc() {
+    public void assertShardingByAsc() {
         Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
         expected.put("host0", Collections.singletonList(0));
         expected.put("host1", Collections.singletonList(1));
@@ -45,7 +45,7 @@ public final class OdevitySortByNameJobShardingStrategyTest {
     }
     
     @Test
-    public void assertshardingByDesc() {
+    public void assertShardingByDesc() {
         Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
         expected.put("host2", Collections.singletonList(0));
         expected.put("host1", Collections.singletonList(1));

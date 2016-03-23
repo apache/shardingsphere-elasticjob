@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,9 @@ public final class ServerNode {
     
     static final String PROCESS_FAILURE_COUNT = ROOT + "/%s/processFailureCount";
     
-    static final String STOPED = ROOT + "/%s/stoped";
+    static final String STOPPED = ROOT + "/%s/stoped";
+    
+    static final String SHUTDOWN = ROOT + "/%s/shutdown";
     
     private final LocalHostService localHostService = new LocalHostService();
     
@@ -76,8 +78,20 @@ public final class ServerNode {
         return String.format(PROCESS_FAILURE_COUNT, ip);
     }
     
-    static String getStopedNode(final String ip) {
-        return String.format(STOPED, ip);
+    static String getStoppedNode(final String ip) {
+        return String.format(STOPPED, ip);
+    }
+    
+    static String getShutdownNode(final String ip) {
+        return String.format(SHUTDOWN, ip);
+    }
+    
+    boolean isJobStoppedPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.STOPPED, localHostService.getIp())));
+    }
+    
+    boolean isJobShutdownPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.SHUTDOWN, localHostService.getIp())));
     }
     
     /**
@@ -98,14 +112,5 @@ public final class ServerNode {
      */
     public boolean isServerDisabledPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.DISABLED_APPENDIX);
-    }
-    
-    /**
-     * 判断给定路径是否为作业停止状态路径.
-     * 
-     * @return 是否为作业停止状态路径.
-     */
-    public boolean isJobStopedPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.STOPED, localHostService.getIp())));
     }
 }

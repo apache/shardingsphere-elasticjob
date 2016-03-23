@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,5 +61,15 @@ public class JobOperationController {
     @RequestMapping(value = "resumeAll/ip", method = RequestMethod.POST)
     public void resumeAllJobs(final JobServer jobServer) {
         jobOperationService.resumeAllJobsByServer(jobServer.getIp());
+    }
+    
+    @RequestMapping(value = "shutdown", method = RequestMethod.POST)
+    public void shutdownJob(final JobServer jobServer) {
+        jobOperationService.shutdownJob(jobServer.getJobName(), jobServer.getIp());
+    }
+    
+    @RequestMapping(value = "remove", method = RequestMethod.POST)
+    public void removeJob(final JobServer jobServer) {
+        jobOperationService.removeJob(jobServer.getJobName(), jobServer.getIp());
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,19 +47,24 @@ public class ServerService {
     }
     
     /**
+     * 每次作业启动前清理上次运行状态.
+     */
+    public void clearPreviousServerStatus() {
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStatusNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getShutdownNode(localHostService.getIp()));
+    }
+    
+    /**
      * 持久化作业服务器上线相关信息.
      */
     public void persistServerOnline() {
         if (!leaderElectionService.hasLeader()) {
             leaderElectionService.leaderElection();
         }
-        persistHostName();
-        persistDisabled();
-        ephemeralPersistServerReady();
-    }
-    
-    private void persistHostName() {
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ServerNode.getHostNameNode(localHostService.getIp()), localHostService.getHostName());
+        persistDisabled();
+        jobNodeStorage.fillEphemeralJobNode(ServerNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getShutdownNode(localHostService.getIp()));
     }
     
     private void persistDisabled() {
@@ -73,15 +78,11 @@ public class ServerService {
         }
     }
     
-    private void ephemeralPersistServerReady() {
-        jobNodeStorage.fillEphemeralJobNode(ServerNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
-    }
-    
     /**
      * 清除停止作业的标记.
      */
-    public void clearJobStopedStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStopedNode(localHostService.getIp()));
+    public void clearJobStoppedStatus() {
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStoppedNode(localHostService.getIp()));
     }
     
     /**
@@ -89,8 +90,15 @@ public class ServerService {
      * 
      * @return 是否是手工停止的作业
      */
-    public boolean isJobStopedManually() {
-        return jobNodeStorage.isJobNodeExisted(ServerNode.getStopedNode(localHostService.getIp()));
+    public boolean isJobStoppedManually() {
+        return jobNodeStorage.isJobNodeExisted(ServerNode.getStoppedNode(localHostService.getIp()));
+    }
+    
+    /**
+     * 处理服务器关机的相关信息.
+     */
+    public void processServerShutdown() {
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStatusNode(localHostService.getIp()));
     }
     
     /**
@@ -142,7 +150,7 @@ public class ServerService {
         if (jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(localHostService.getIp()))) {
             return false;
         }
-        if (jobNodeStorage.isJobNodeExisted(ServerNode.getStopedNode(localHostService.getIp()))) {
+        if (jobNodeStorage.isJobNodeExisted(ServerNode.getStoppedNode(localHostService.getIp()))) {
             return false;
         }
         String statusNode = ServerNode.getStatusNode(localHostService.getIp());

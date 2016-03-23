@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.spring.schedule;
 
 import java.util.Properties;
 
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -37,6 +38,10 @@ public class SpringJobScheduler extends JobScheduler implements ApplicationConte
     
     public SpringJobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         super(coordinatorRegistryCenter, jobConfiguration);
+    }
+    
+    public SpringJobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final ElasticJobListener[] elasticJobListeners) {
+        super(coordinatorRegistryCenter, jobConfiguration, elasticJobListeners);
     }
     
     @Override

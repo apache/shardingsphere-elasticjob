@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,7 +57,7 @@ public final class JobMain {
     
     class SimpleDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
         
-        public SimpleDistributeOnceElasticJobListener() {
+        SimpleDistributeOnceElasticJobListener() {
             super(1000L, 1000L);
         }
         

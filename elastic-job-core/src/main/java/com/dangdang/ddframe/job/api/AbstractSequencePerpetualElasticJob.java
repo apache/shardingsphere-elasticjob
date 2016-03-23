@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,6 +37,8 @@ import com.dangdang.ddframe.job.internal.job.dataflow.AbstractIndividualDataFlow
  * @author zhangliang
  * 
  * @param <T> 数据流作业处理的数据实体类型
+ * 
+ * @deprecated .
  */
 @Deprecated
 public abstract class AbstractSequencePerpetualElasticJob<T> extends AbstractIndividualDataFlowElasticJob<T, JobExecutionSingleShardingContext> {

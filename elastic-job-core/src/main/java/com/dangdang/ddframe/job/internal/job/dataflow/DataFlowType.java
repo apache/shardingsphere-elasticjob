@@ -6,7 +6,7 @@ package com.dangdang.ddframe.job.internal.job.dataflow;
  * @author zhangliang
  */
 public enum DataFlowType {
-    
-    THROUGHTPUT, 
+
+    THROUGHPUT, 
     SEQUENCE
 }

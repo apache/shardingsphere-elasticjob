@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,18 @@
 
 package com.dangdang.ddframe.job.console.controller;
 
-import java.util.Collection;
-
-import javax.annotation.Resource;
-
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.dangdang.ddframe.job.console.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.console.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.console.domain.JobServer;
 import com.dangdang.ddframe.job.console.domain.JobSettings;
 import com.dangdang.ddframe.job.console.service.JobDimensionService;
-import com.dangdang.ddframe.job.console.service.JobOperationService;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("job")
@@ -39,9 +36,6 @@ public class JobController {
     
     @Resource
     private JobDimensionService jobDimensionService;
-    
-    @Resource
-    private JobOperationService jobOperationService;
     
     @RequestMapping(value = "jobs", method = RequestMethod.GET)
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {

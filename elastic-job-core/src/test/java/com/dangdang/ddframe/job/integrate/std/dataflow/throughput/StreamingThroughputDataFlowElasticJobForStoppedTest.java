@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,9 +27,9 @@ import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
 
-public final class StreamingThroughputDataFlowElasticJobForStopedTest extends AbstractBaseStdJobAutoInitTest {
+public final class StreamingThroughputDataFlowElasticJobForStoppedTest extends AbstractBaseStdJobAutoInitTest {
     
-    public StreamingThroughputDataFlowElasticJobForStopedTest() {
+    public StreamingThroughputDataFlowElasticJobForStoppedTest() {
         super(StreamingThroughputDataFlowElasticJob.class);
     }
     

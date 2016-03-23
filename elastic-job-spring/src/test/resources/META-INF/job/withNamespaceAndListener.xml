@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg" 
+    xmlns:job="http://www.dangdang.com/schema/ddframe/job" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd 
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context.xsd 
+                        http://www.dangdang.com/schema/ddframe/reg 
+                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd 
+                        http://www.dangdang.com/schema/ddframe/job 
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd 
+                        ">
+    <context:property-placeholder location="classpath:conf/job/conf.properties" />
+    <reg:zookeeper id="regCenter" serverLists="localhost:3181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
+    
+    <job:bean id="simpleElasticJob_namespace_listener" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob" regCenter="regCenter" cron="${simpleElasticJob.cron}" shardingTotalCount="${simpleElasticJob.shardingTotalCount}" shardingItemParameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
+        <job:listener class="com.dangdang.ddframe.job.fixture.SimpleOnceListener" startedTimeoutMilliseconds="1000" completedTimeoutMilliseconds="2000" />
+        <job:listener class="com.dangdang.ddframe.job.fixture.SimpleListener" />
+    </job:bean>
+    <job:bean id="throughputDataFlowElasticJob_namespace_listener" class="com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/1 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="3" fetchDataCount="100" description="中文描述" overwrite="true" />
+    
+    <bean id="simpleElasticJobBean" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob">
+        <property name="springValue" value="simple" />
+    </bean>
+    
+    <bean id="foo" class="com.dangdang.ddframe.job.fixture.FooServiceImpl" />
+</beans>

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,18 +17,6 @@
 
 package com.dangdang.ddframe.job.console.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-
 import com.dangdang.ddframe.job.console.domain.JobServer;
 import com.dangdang.ddframe.job.console.domain.JobServer.ServerStatus;
 import com.dangdang.ddframe.job.console.domain.ServerBriefInfo;
@@ -36,6 +24,16 @@ import com.dangdang.ddframe.job.console.domain.ServerBriefInfo.ServerBriefStatus
 import com.dangdang.ddframe.job.console.repository.zookeeper.CuratorRepository;
 import com.dangdang.ddframe.job.console.service.ServerDimensionService;
 import com.dangdang.ddframe.job.console.util.JobNodePath;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @Service
 public class ServerDimensionServiceImpl implements ServerDimensionService {
@@ -46,15 +44,16 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
     @Override
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         Map<String, String> serverHostMap = new HashMap<>();
-        Map<String, Boolean> serverAlivedCountMap = new HashMap<>();
+        Map<String, Boolean> serverAliveCountMap = new HashMap<>();
         Map<String, Boolean> serverCrashedCountMap = new HashMap<>();
         List<String> jobs = curatorRepository.getChildren("/");
         for (String jobName : jobs) {
             List<String> servers = curatorRepository.getChildren(JobNodePath.getServerNodePath(jobName));
             for (String server : servers) {
                 serverHostMap.put(server, curatorRepository.getData(JobNodePath.getServerNodePath(jobName, server, "hostName")));
-                if (curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, server, "status"))) {
-                    serverAlivedCountMap.put(server, true);
+                if (!curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, server, "shutdown"))
+                        && curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, server, "status"))) {
+                    serverAliveCountMap.put(server, true);
                 } else {
                     serverCrashedCountMap.put(server, true);
                 }
@@ -62,17 +61,17 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         }
         List<ServerBriefInfo> result = new ArrayList<>();
         for (Entry<String, String> entry : serverHostMap.entrySet()) {
-            result.add(getServerBriefInfo(serverAlivedCountMap, serverCrashedCountMap, entry));
+            result.add(getServerBriefInfo(serverAliveCountMap, serverCrashedCountMap, entry));
         }
         Collections.sort(result);
         return result;
     }
     
-    private ServerBriefInfo getServerBriefInfo(final Map<String, Boolean> serverAlivedCountMap, final Map<String, Boolean> serverCrashedCountMap, final Entry<String, String> entry) {
+    private ServerBriefInfo getServerBriefInfo(final Map<String, Boolean> serverAliveCountMap, final Map<String, Boolean> serverCrashedCountMap, final Entry<String, String> entry) {
         ServerBriefInfo result = new ServerBriefInfo();
         result.setServerIp(entry.getKey());
         result.setServerHostName(entry.getValue());
-        if (!serverAlivedCountMap.containsKey(entry.getKey())) {
+        if (!serverAliveCountMap.containsKey(entry.getKey())) {
             result.setStatus(ServerBriefStatus.ALL_CRASHED);
         } else if (!serverCrashedCountMap.containsKey(entry.getKey())) {
             result.setStatus(ServerBriefStatus.OK);
@@ -87,7 +86,9 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         List<String> jobs = curatorRepository.getChildren("/");
         Collection<JobServer> result = new ArrayList<>(jobs.size());
         for (String each : jobs) {
-            result.add(getJob(serverIp, each));
+            if (curatorRepository.checkExists(JobNodePath.getServerNodePath(each, serverIp))) {
+                result.add(getJob(serverIp, each));
+            }
         }
         return result;
     }
@@ -104,11 +105,12 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         result.setSharding(curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "sharding")));
         String status = curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "status"));
         boolean disabled = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
-        boolean stoped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
-        result.setStatus(ServerStatus.getServerStatus(status, disabled, stoped));
+        boolean stopped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+        boolean shutdown = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"));
+        result.setStatus(ServerStatus.getServerStatus(status, disabled, stopped, shutdown));
         String leaderIp = curatorRepository.getData(JobNodePath.getLeaderNodePath(jobName, "election/host"));
         result.setLeader(serverIp.equals(leaderIp));
-        result.setLeaderStoped(curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "stoped")));
+        result.setLeaderStopped(curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "stoped")));
         return result;
     }
 }

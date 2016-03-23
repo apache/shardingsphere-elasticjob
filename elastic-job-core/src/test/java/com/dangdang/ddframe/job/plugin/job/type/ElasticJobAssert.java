@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,24 +17,18 @@
 
 package com.dangdang.ddframe.job.plugin.job.type;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.internal.schedule.JobFacade;
+import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ElasticJobAssert {
@@ -48,26 +42,21 @@ public class ElasticJobAssert {
         return result;
     }
     
-    public static void prepareForIsNotMisfireAndIsNotFailover(final ConfigurationService configService, final ExecutionContextService executionContextService, 
-            final ExecutionService executionService, final JobExecutionMultipleShardingContext shardingContext) {
-        when(executionContextService.getJobExecutionShardingContext()).thenReturn(shardingContext);
-        when(executionService.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
-        when(configService.isMisfire()).thenReturn(false);
-        when(configService.isFailover()).thenReturn(false);
+    public static void prepareForIsNotMisfire(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext) {
+        when(jobFacade.getShardingContext()).thenReturn(shardingContext);
+        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
     }
     
-    public static void verifyForIsNotMisfireAndIsNotFailover(final ConfigurationService configService, final ShardingService shardingService, final ExecutionContextService executionContextService, 
-            final ExecutionService executionService, final FailoverService failoverService, final JobExecutionMultipleShardingContext shardingContext) {
-        verify(configService).checkMaxTimeDiffSecondsTolerable();
-        verify(shardingService).shardingIfNecessary();
-        verify(executionContextService).getJobExecutionShardingContext();
-        verify(executionService).misfireIfNecessary(shardingContext.getShardingItems());
-        verify(executionService).registerJobBegin(shardingContext);
-        verify(executionService).registerJobCompleted(shardingContext);
-        verify(configService).isMisfire();
-        verify(configService, times(2)).isFailover();
-        verify(failoverService, times(0)).updateFailoverComplete(shardingContext.getShardingItems());
-        verify(failoverService, times(0)).failoverIfNecessary();
+    public static void verifyForIsNotMisfire(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext) {
+        verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
+        verify(jobFacade).getShardingContext();
+        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems());
+        verify(jobFacade).beforeJobExecuted(shardingContext);
+        verify(jobFacade).registerJobBegin(shardingContext);
+        verify(jobFacade).registerJobCompleted(shardingContext);
+        verify(jobFacade).isExecuteMisfired(shardingContext.getShardingItems());
+        verify(jobFacade).afterJobExecuted(shardingContext);
     }
     
     public static void assertProcessCountStatistics(final int successCount, final int failureCount) {

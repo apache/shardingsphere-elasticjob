@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,11 +31,11 @@ public final class TestDistributeOnceElasticJobListener extends AbstractDistribu
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
-        caller.call();
+        caller.before();
     }
     
     @Override
     public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
-        caller.call();
+        caller.after();
     }
 }

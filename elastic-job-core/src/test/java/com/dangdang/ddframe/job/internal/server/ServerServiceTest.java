@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,16 +67,24 @@ public final class ServerServiceTest {
     }
     
     @Test
+    public void assertClearPreviousServerStatus() {
+        serverService.clearPreviousServerStatus();
+        verify(jobNodeStorage).removeJobNodeIfExisted(ServerNode.getStatusNode("mockedIP"));
+        verify(jobNodeStorage).removeJobNodeIfExisted(ServerNode.getShutdownNode("mockedIP"));
+    }
+    
+    @Test
     public void assertPersistServerOnlineWhenOverwriteDisabled() {
         when(leaderElectionService.hasLeader()).thenReturn(true);
         jobConfig.setOverwrite(false);
         serverService.persistServerOnline();
         verify(leaderElectionService).hasLeader();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
-        verify(localHostService, times(2)).getIp();
+        verify(localHostService, times(3)).getIp();
         verify(localHostService).getHostName();
         verify(jobNodeStorage).getJobConfiguration();
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
     }
     
     @Test
@@ -87,11 +95,12 @@ public final class ServerServiceTest {
         verify(leaderElectionService).hasLeader();
         verify(leaderElectionService).leaderElection();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
-        verify(localHostService, times(3)).getIp();
+        verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
         verify(jobNodeStorage, times(2)).getJobConfiguration();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/disabled", "");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
     }
     
     @Test
@@ -100,7 +109,7 @@ public final class ServerServiceTest {
         serverService.persistServerOnline();
         verify(leaderElectionService).hasLeader();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
-        verify(localHostService, times(3)).getIp();
+        verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
         verify(jobNodeStorage, times(2)).getJobConfiguration();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/disabled");
@@ -108,16 +117,22 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertClearJobStopedStatus() {
-        serverService.clearJobStopedStatus();
+    public void assertClearJobStoppedStatus() {
+        serverService.clearJobStoppedStatus();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/stoped");
     }
     
     @Test
-    public void assertIsJobStopedManually() {
+    public void assertIsJobStoppedManually() {
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/stoped")).thenReturn(true);
-        assertTrue(serverService.isJobStopedManually());
+        assertTrue(serverService.isJobStoppedManually());
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/stoped");
+    }
+    
+    @Test
+    public void assertProcessServerShutdown() {
+        serverService.processServerShutdown();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/status");
     }
     
     @Test
@@ -163,7 +178,7 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertIsServerReadyWhenServerStoped() {
+    public void assertIsServerReadyWhenServerStopped() {
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/stoped")).thenReturn(true);
         assertFalse(serverService.isServerReady());

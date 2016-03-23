@@ -206,6 +206,7 @@ public class JobMain {
 ### Spring命名空间配置
 
 ```xml
+
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -226,43 +227,59 @@ public class JobMain {
     
     <!-- 配置作业B-->
     <job:bean id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/10 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="10" />
+    
+    <!-- 配置作业C-->
+    <job:bean id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C">
+        <job:listener class="xx.MySimpleJobListener"/>
+        <job:listener class="xx.MyOnceSimpleJobListener" startedTimeoutMilliseconds="1000" completedTimeoutMilliseconds="2000" />
+    </job:bean>
 </beans>
 ```
 
 #### job:bean命名空间属性详细说明
 
-| 属性名                          | 类型  |是否必填|缺省值| 描述                                                                       |
-| ------------------------------ |:------|:------|:----|:---------------------------------------------------------------------------|
+| 属性名                          | 类型  |是否必填 |缺省值| 描述                                                                       |
+| ------------------------------ |:------|:-------|:----|:---------------------------------------------------------------------------|
 |id                              |String |`是`    |     | 作业名称                                                                    |
-|class                           |String |`是`    |     | 作业实现类，需实现`ElasticJob`接口                                             |
-|regCenter                       |String |`是`    |     | 注册中心`Bean`的引用，需引用`reg:zookeeper`的声明                                |
+|class                           |String |`是`    |     | 作业实现类，需实现`ElasticJob`接口                                            |
+|regCenter                       |String |`是`    |     | 注册中心`Bean`的引用，需引用`reg:zookeeper`的声明                              |
 |cron                            |String |`是`    |     | `cron`表达式，用于配置作业触发时间                                             |
-|shardingTotalCount              |int    |`是`    |     | 作业分片总数                                                                |
-|shardingItemParameters          |String |否     |     | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从`0`开始，不可大于或等于作业分片总数<br />如：<br/>`0=a,1=b,2=c`|
-|jobParameter                    |String |否     |     | 作业自定义参数<br />可以配置多个相同的作业，但是用不同的参数作为不同的调度实例     |
-|monitorExecution                |boolean|否     |true | 监控作业运行时状态<br />每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率。因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。<br />每次作业执行时间和间隔时间均较长的情况，建议监控作业运行时状态，可保证数据不会重复选取。|
-|monitorPort                     |int    |否     |-1   | 作业监控端口。<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump" \| nc 127.0.0.1 9888|
-|processCountIntervalSeconds     |int    |否     |300  | 统计作业处理数据数量的间隔时间<br />单位：秒<br />仅对`DataFlow`类型作业有效       |
-|concurrentDataProcessThreadCount|int    |否     |1    | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效       |
-|fetchDataCount                  |int    |否     |0    | 每次抓取的数据量                                                            |
-| maxTimeDiffSeconds             |int    |否     |-1   | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为`-1`表示不校验时间误差|
-|failover                        |boolean|否     |false| 是否开启失效转移<br />仅`monitorExecution`开启，失效转移才有效                   |
-|misfire                         |boolean|否     |true | 是否开启错过任务重新执行                                                     |
-|jobShardingStrategyClass        |String |否     |true | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](http://dangdangdotcom.github.io/elastic-job/post/job_strategy)     |
-|description                     |String |否     |     | 作业描述信息                                                                |
-| disabled                       |boolean|否     |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动             |
-| overwrite                      |boolean|否     |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准        |
+|shardingTotalCount              |int    |`是`    |     | 作业分片总数                                                                 |
+|shardingItemParameters          |String |否      |     | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从`0`开始，不可大于或等于作业分片总数<br />如：<br/>`0=a,1=b,2=c`|
+|jobParameter                    |String |否      |     | 作业自定义参数<br />可以配置多个相同的作业，但是用不同的参数作为不同的调度实例     |
+|monitorExecution                |boolean|否      |true | 监控作业运行时状态<br />每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率。因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。<br />每次作业执行时间和间隔时间均较长的情况，建议监控作业运行时状态，可保证数据不会重复选取。|
+|monitorPort                     |int    |否      |-1   | 作业监控端口。<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump" \| nc 127.0.0.1 9888|
+|processCountIntervalSeconds     |int    |否      |300  | 统计作业处理数据数量的间隔时间<br />单位：秒<br />仅对`DataFlow`类型作业有效       |
+|concurrentDataProcessThreadCount|int    |否      |1    | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效      |
+|fetchDataCount                  |int    |否      |0    | 每次抓取的数据量                                                              |
+|maxTimeDiffSeconds              |int    |否      |-1   | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为`-1`表示不校验时间误差|
+|failover                        |boolean|否      |false| 是否开启失效转移<br />仅`monitorExecution`开启，失效转移才有效                   |
+|misfire                         |boolean|否      |true | 是否开启错过任务重新执行                                                       |
+|jobShardingStrategyClass        |String |否      |true | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](http://dangdangdotcom.github.io/elastic-job/post/job_strategy)     |
+|description                     |String |否      |     | 作业描述信息                                                                 |
+|disabled                        |boolean|否      |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
+|overwrite                       |boolean|否      |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
+
+#### job:listener命名空间属性详细说明
+
+`job:listener`必须配置为`job:bean`的子元素
+
+| 属性名                          | 类型  |是否必填|缺省值         | 描述                                                                       |
+| ------------------------------ |:------|:------|:-------------|:---------------------------------------------------------------------------|
+|class                           |String |`是`   |              | 前置后置任务监听实现类，需实现`ElasticJobListener`接口                                             |
+|startedTimeoutMilliseconds      |long    |否    |Long.MAX_VALUE| AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行前的执行方法的超时时间<br />单位：毫秒|
+|completedTimeoutMilliseconds    |long    |否    |Long.MAX_VALUE| AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行后的执行方法的超时时间<br />单位：毫秒|
 
 #### reg:bean命名空间属性详细说明
 
 | 属性名                          |类型   |是否必填|缺省值|描述                                                                        |
 | ------------------------------ |:------|:------|:----|:---------------------------------------------------------------------------|
-|id                              |String |`是`    |     | 注册中心在`Spring`容器中的主键                                                  |
-|serverLists                     |String |`是`    |     | 连接`Zookeeper`服务器的列表<br />包括IP地址和端口号<br />多个地址用逗号分隔<br />如: host1:2181,host2:2181|
-|namespace                       |String |`是`    |     | `Zookeeper`的命名空间                                                         |
-|baseSleepTimeMilliseconds       |int    |`是`    |     | 等待重试的间隔时间的初始值<br />单位：毫秒                                      |
-|maxSleepTimeMilliseconds        |int    |`是`    |     | 等待重试的间隔时间的最大值<br />单位：毫秒                                      |
-|maxRetries                      |int    |`是`    |     | 最大重试次数                                                                 |
+|id                              |String |`是`   |     | 注册中心在`Spring`容器中的主键                                                  |
+|serverLists                     |String |`是`   |     | 连接`Zookeeper`服务器的列表<br />包括IP地址和端口号<br />多个地址用逗号分隔<br />如: host1:2181,host2:2181|
+|namespace                       |String |`是`   |     | `Zookeeper`的命名空间                                                         |
+|baseSleepTimeMilliseconds       |int    |`是`   |     | 等待重试的间隔时间的初始值<br />单位：毫秒                                      |
+|maxSleepTimeMilliseconds        |int    |`是`   |     | 等待重试的间隔时间的最大值<br />单位：毫秒                                      |
+|maxRetries                      |int    |`是`   |     | 最大重试次数                                                                 |
 |sessionTimeoutMilliseconds      |int    |否     |60000| 会话超时时间<br />单位：毫秒                                                  |
 |connectionTimeoutMilliseconds   |int    |否     |15000| 连接超时时间<br />单位：毫秒                                                  |
 |digest                          |String |否     |无验证| 连接`Zookeeper`的权限令牌<br />缺省为不需要权限验证                              |

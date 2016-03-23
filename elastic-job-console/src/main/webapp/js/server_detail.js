@@ -5,6 +5,8 @@ $(function() {
     bindResumeButtons();
     bindStopAllButton();
     bindResumeAllButton();
+    bindShutdownButtons();
+    bindRemoveButtons();
 });
 
 function renderJobs() {
@@ -15,18 +17,28 @@ function renderJobs() {
             var status = data[i].status;
             var leader = data[i].leader;
             var baseTd = "<td>" + data[i].jobName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td><td>" + (true === leader ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>") + "</td>";
-            var operationTd;
+            var operationTd = "";
+            var resumeButton = "<button operation='resume' class='btn btn-success' job-name='" + data[i].jobName + "'>恢复</button>";
+            var resumeWithWarningButton = "<button operation='resume' class='btn btn-success disabled' job-name='" + data[i].jobName + "' disabled title='先恢复主节点才能恢复从节点作业'>恢复</button>";
+            var stopButton = "<button operation='stop' class='btn btn-warning' job-name='" + data[i].jobName + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button>";
+            var shutdownButton = "<button operation='shutdown' class='btn btn-danger' job-name='" + data[i].jobName + "'>关闭</button>";
+            var removeButton = "<button operation='remove' class='btn btn-danger' job-name='" + data[i].jobName + "'>删除</button>";
             if ("STOPED" === status) {
                 if (data[i].leaderStoped && !leader) {
-                    operationTd = "<td><button operation='resume' class='btn btn-success disabled' job-name='" + data[i].jobName + "' disabled title='先恢复主节点才能恢复从节点作业'>恢复</button></td>";
+                    operationTd = resumeWithWarningButton + "&nbsp;";
                 } else {
-                    operationTd = "<td><button operation='resume' class='btn btn-success' job-name='" + data[i].jobName + "'>恢复</button></td>";
+                    operationTd = resumeButton + "&nbsp;";
                 }
-            } else if ("DISABLED" !== status && "CRASHED" !== status) {
-                operationTd = "<td><button operation='stop' class='btn btn-danger' job-name='" + data[i].jobName + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button></td>";
-            } else {
-                operationTd = "<td>-</td>";
+            } else if ("DISABLED" !== status && "CRASHED" !== status && "SHUTDOWN" !== status) {
+                operationTd = stopButton + "&nbsp;";
             }
+            if ("SHUTDOWN" !== status) {
+                operationTd = operationTd + shutdownButton + "&nbsp;";
+            }
+            if ("SHUTDOWN" === status || "CRASHED" === status) {
+                operationTd = operationTd + removeButton;
+            }
+            operationTd = "<td>" + operationTd + "</td>";
             var trClass = "";
             if ("READY" === status) {
                 trClass = "info";
@@ -34,7 +46,7 @@ function renderJobs() {
                 trClass = "success";
             } else if ("DISABLED" === status || "STOPED" === status) {
                 trClass = "warning";
-            } else if ("CRASHED" === status) {
+            } else if ("CRASHED" === status || "SHUTDOWN" === status) {
                 trClass = "danger";
             }
             $("#jobs tbody").append("<tr class='" + trClass + "'>" + baseTd + operationTd + "</tr>");
@@ -88,5 +100,29 @@ function bindResumeAllButton() {
             renderJobs();
             showSuccessDialog();
         });
+    });
+}
+
+function bindShutdownButtons() {
+    $(document).on("click", "button[operation='shutdown']", function(event) {
+        $.post("job/shutdown", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
+            renderJobs();
+            showSuccessDialog();
+        });
+    });
+    $(document).on("click", "button[operation='shutdown']", function(event) {
+        $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
+    });
+}
+
+function bindRemoveButtons() {
+    $(document).on("click", "button[operation='remove']", function(event) {
+        $.post("job/remove", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
+            renderJobs();
+            showSuccessDialog();
+        });
+    });
+    $(document).on("click", "button[operation='remove']", function(event) {
+        $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
     });
 }

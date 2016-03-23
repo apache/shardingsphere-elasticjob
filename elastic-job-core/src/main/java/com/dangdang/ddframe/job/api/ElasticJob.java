@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import org.quartz.JobExecutionException;
  * 
  * @author zhangliang
  */
-public interface ElasticJob extends Job, Stopable {
+public interface ElasticJob extends Job {
     
     /**
      * 处理作业执行时异常.

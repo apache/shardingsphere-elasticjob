@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,7 +64,7 @@ public final class DistributeOnceElasticJobListenerTest {
         when(guaranteeService.isAllStarted()).thenReturn(true);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContext);
         verify(guaranteeService).registerStart(Arrays.asList(0, 1));
-        verify(elasticJobListenerCaller).call();
+        verify(elasticJobListenerCaller).before();
         verify(guaranteeService).clearAllStartedInfo();
     }
     
@@ -91,7 +91,7 @@ public final class DistributeOnceElasticJobListenerTest {
         when(guaranteeService.isAllCompleted()).thenReturn(true);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContext);
         verify(guaranteeService).registerComplete(Arrays.asList(0, 1));
-        verify(elasticJobListenerCaller).call();
+        verify(elasticJobListenerCaller).after();
         verify(guaranteeService).clearAllCompletedInfo();
     }
     

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -170,9 +170,9 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         if (null == cache) {
             return getDirectly(key);
         }
-        ChildData resultIncache = cache.getCurrentData(key);
-        if (null != resultIncache) {
-            return null == resultIncache.getData() ? null : new String(resultIncache.getData(), Charset.forName("UTF-8"));
+        ChildData resultInCache = cache.getCurrentData(key);
+        if (null != resultInCache) {
+            return null == resultInCache.getData() ? null : new String(resultInCache.getData(), Charset.forName("UTF-8"));
         }
         return getDirectly(key);
     }

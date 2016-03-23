@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,21 @@
 
 package com.dangdang.ddframe.job.plugin;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.StreamingBatchSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.StreamingBatchThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.StreamingIndividualSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.StreamingIndividualThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.UnstreamingBatchSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.UnstreamingBatchThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.UnstreamingIndividualSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.UnstreamingIndividualThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.sequence.streaming.StreamingBatchSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.sequence.streaming.StreamingIndividualSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.sequence.unstreaming.UnstreamingBatchSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.sequence.unstreaming.UnstreamingIndividualSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.throughput.streaming.StreamingBatchThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.throughput.streaming.StreamingIndividualThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.throughput.unstreaming.UnstreamingBatchThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.throughput.unstreaming.UnstreamingIndividualThroughputDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.plugin.job.type.simple.SimpleElasticJobTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobShardingStrategyTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({

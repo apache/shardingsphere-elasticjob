@@ -15,7 +15,7 @@
     <tbody>
     </tbody>
 </table>
-<button id="stop-all-jobs-btn" class="btn btn-danger">全部暂停</button>
+<button id="stop-all-jobs-btn" class="btn btn-warning">全部暂停</button>
 <button id="resume-all-jobs-btn" class="btn btn-success">全部恢复</button>
 <span id="chosen-job-name" class="hide"></span>
 <@dashboard.successDialog "success-dialog" />

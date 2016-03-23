@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.api.listener.fixture;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import lombok.RequiredArgsConstructor;
 
@@ -29,11 +28,11 @@ public final class TestElasticJobListener implements ElasticJobListener {
     
     @Override
     public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
-        caller.call();
+        caller.before();
     }
     
     @Override
     public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
-        caller.call();
+        caller.after();
     }
 }

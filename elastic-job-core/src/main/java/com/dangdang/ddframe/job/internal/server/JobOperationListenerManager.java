@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.internal.server;
 
+import com.dangdang.ddframe.job.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
@@ -41,35 +43,50 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
+    private final ServerService serverService;
+    
+    private final ShardingService shardingService;
+    
+    private final ExecutionService executionService;
+    
     public JobOperationListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         super(coordinatorRegistryCenter, jobConfiguration);
         jobName = jobConfiguration.getJobName();
         serverNode = new ServerNode(jobName);
+        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
+        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
+        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     @Override
     public void start() {
         addConnectionStateListener(new ConnectionLostListener());
-        addDataListener(new JobStopedStatusJobListener());
+        addDataListener(new JobStoppedStatusJobListener());
+        addDataListener(new JobShutdownStatusJobListener());
     }
     
     class ConnectionLostListener implements ConnectionStateListener {
         
         @Override
         public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
+            JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
             if (ConnectionState.LOST == newState) {
-                JobRegistry.getInstance().getJobScheduler(jobName).stopJob();
+                jobScheduler.stopJob();
             } else if (ConnectionState.RECONNECTED == newState) {
-                JobRegistry.getInstance().getJobScheduler(jobName).resumeCrashedJob();
+                serverService.persistServerOnline();
+                executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
+                if (!serverService.isJobStoppedManually()) {
+                    jobScheduler.resumeJob();
+                }
             }
         }
     }
     
-    class JobStopedStatusJobListener extends AbstractJobListener {
+    class JobStoppedStatusJobListener extends AbstractJobListener {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (!serverNode.isJobStopedPath(path)) {
+            if (!serverNode.isJobStoppedPath(path)) {
                 return;
             }
             JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
@@ -80,7 +97,23 @@ public class JobOperationListenerManager extends AbstractListenerManager {
                 jobScheduler.stopJob();
             }
             if (Type.NODE_REMOVED == event.getType()) {
-                jobScheduler.resumeManualStopedJob();
+                jobScheduler.resumeJob();
+                serverService.clearJobStoppedStatus();
+            }
+        }
+    }
+    
+    class JobShutdownStatusJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (!serverNode.isJobShutdownPath(path)) {
+                return;
+            }
+            JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
+            if (null != jobScheduler && Type.NODE_ADDED == event.getType()) {
+                jobScheduler.shutdown();
+                serverService.processServerShutdown();
             }
         }
     }

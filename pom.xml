@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Elastic-Job - distributed scheduled job solution</description>
@@ -512,7 +512,7 @@
     
     <repositories>
         <repository>
-            <id>henryyan-mavenrepo</id>
+            <id>alfresco-maven-repo</id>
             <url>https://maven.alfresco.com/nexus/content/groups/public/</url>
         </repository>
         <repository>
@@ -540,7 +540,7 @@
     <url>https://github.com/dangdangdotcom/elastic-job</url>
     <licenses> 
         <license>
-            <name>Apache Licene 2.0</name>
+            <name>Apache License 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>

@@ -6,13 +6,25 @@ weight=1
 
 # Release Notes
 
-## 1.0.5-SNAPSHOT
+## 1.0.6-SNAPSHOT
+
+### 功能提升
+
+1. [ISSUE #71](https://github.com/dangdangdotcom/elastic-job/issues/71) 作业关闭功能（shutdown）
+1. [ISSUE #72](https://github.com/dangdangdotcom/elastic-job/issues/72) 关闭的作业可删除
+
+### 缺陷修正
+
+1. [ISSUE #69](https://github.com/dangdangdotcom/elastic-job/issues/69) 分片时如在Zk中有的作业服务器sharding节点不存在将导致无法重新分片
+
+## 1.0.5
 
 ### 功能提升
 
 1. [ISSUE #2](https://github.com/dangdangdotcom/elastic-job/issues/2) 增加前置和后置任务
 1. [ISSUE #60](https://github.com/dangdangdotcom/elastic-job/issues/60) 可于DataFlow类型作业定制化线程池配置
 1. [ISSUE #62](https://github.com/dangdangdotcom/elastic-job/issues/61) 作业状态清理提速
+1. [ISSUE #65](https://github.com/dangdangdotcom/elastic-job/issues/65) 增加前置和后置任务Spring命名空间支持
 
 ### 缺陷修正
 

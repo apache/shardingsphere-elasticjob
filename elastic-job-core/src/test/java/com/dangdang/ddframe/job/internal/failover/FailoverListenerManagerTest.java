@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -99,7 +99,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedButDisableFaliover() {
+    public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedButDisableFailover() {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.isFailover()).thenReturn(false);
         failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
@@ -110,7 +110,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFalioverButHasRunningItems() {
+    public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFailoverButHasRunningItems() {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.isFailover()).thenReturn(true);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
@@ -126,7 +126,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFalioverAndHasNotRunningItems() {
+    public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFailoverAndHasNotRunningItems() {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.isFailover()).thenReturn(true);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
@@ -165,7 +165,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedButDisableFaliover() {
+    public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedButDisableFailover() {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.isFailover()).thenReturn(false);
         failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
@@ -176,7 +176,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFalioverButHasRunningItems() {
+    public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFailoverButHasRunningItems() {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.isFailover()).thenReturn(true);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
@@ -192,7 +192,7 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFalioverAndHasNotRunningItems() {
+    public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFailoverAndHasNotRunningItems() {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.isFailover()).thenReturn(true);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));

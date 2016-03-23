@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,7 +53,7 @@ public class FooRepository {
     private List<Foo> findActive(final int shardingItem) {
         List<Foo> result = new ArrayList<>(10);
         for (int i = 0; i < 10; i++) {
-            Foo foo = map.get(Long.valueOf(shardingItem * 10 + i));
+            Foo foo = map.get((long) (shardingItem * 10 + i));
             if (FooStatus.ACTIVE == foo.getStatus()) {
                 result.add(foo);
             }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.JobTimeoutException;
 import com.dangdang.ddframe.job.internal.env.TimeService;
 import com.dangdang.ddframe.job.internal.guarantee.GuaranteeService;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -29,21 +28,33 @@ import lombok.Setter;
  * 
  * @author zhangliang
  */
-@RequiredArgsConstructor
 public abstract class AbstractDistributeOnceElasticJobListener implements ElasticJobListener {
     
-    private final long startedTimeoutMills;
-
+    private final long startedTimeoutMilliseconds;
+    
     private final Object startedWait = new Object();
     
-    private final long completedTimeoutMills;
-
+    private final long completedTimeoutMilliseconds;
+    
     private final Object completedWait = new Object();
     
     @Setter
     private GuaranteeService guaranteeService;
     
     private TimeService timeService = new TimeService();
+    
+    public AbstractDistributeOnceElasticJobListener(final long startedTimeoutMilliseconds, final long completedTimeoutMilliseconds) {
+        if (startedTimeoutMilliseconds <= 0L) {
+            this.startedTimeoutMilliseconds = Long.MAX_VALUE;
+        } else {
+            this.startedTimeoutMilliseconds = startedTimeoutMilliseconds;
+        }
+        if (completedTimeoutMilliseconds <= 0L) {
+            this.completedTimeoutMilliseconds = Long.MAX_VALUE; 
+        } else {
+            this.completedTimeoutMilliseconds = completedTimeoutMilliseconds;
+        }
+    }
     
     @Override
     public final void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
@@ -56,14 +67,14 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         long before = timeService.getCurrentMillis();
         try {
             synchronized (startedWait) {
-                startedWait.wait(startedTimeoutMills);
+                startedWait.wait(startedTimeoutMilliseconds);
             }
         } catch (final InterruptedException ex) {
             Thread.interrupted();
         }
-        if (timeService.getCurrentMillis() - before >= startedTimeoutMills) {
+        if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
             guaranteeService.clearAllStartedInfo();
-            throw new JobTimeoutException(startedTimeoutMills);
+            throw new JobTimeoutException(startedTimeoutMilliseconds);
         }
     }
     
@@ -78,14 +89,14 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         long before = timeService.getCurrentMillis();
         try {
             synchronized (completedWait) {
-                completedWait.wait(completedTimeoutMills);
+                completedWait.wait(completedTimeoutMilliseconds);
             }
         } catch (final InterruptedException ex) {
             Thread.interrupted();
         }
-        if (timeService.getCurrentMillis() - before >= completedTimeoutMills) {
+        if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
             guaranteeService.clearAllCompletedInfo();
-            throw new JobTimeoutException(completedTimeoutMills);
+            throw new JobTimeoutException(completedTimeoutMilliseconds);
         }
     }
     

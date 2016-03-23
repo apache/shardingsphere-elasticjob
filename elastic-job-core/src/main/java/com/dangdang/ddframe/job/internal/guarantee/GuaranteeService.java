@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,11 +29,11 @@ import java.util.Collection;
  * @author zhangliang
  */
 public class GuaranteeService {
-
+    
     private final JobConfiguration jobConfiguration;
     
     private final JobNodeStorage jobNodeStorage;
-
+    
     public GuaranteeService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
