@@ -25,13 +25,13 @@ weight=5
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-core</artifactId>
-    <version>${lasted.release.version}</version>
+    <version>${latest.release.version}</version>
 </dependency>
 
 <!-- 使用springframework自定义命名空间时引入 -->
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-spring</artifactId>
-    <version>${lasted.release.version}</version>
+    <version>${latest.release.version}</version>
 </dependency>
 ```

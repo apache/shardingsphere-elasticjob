@@ -77,6 +77,7 @@ weight=10
 | lastBeginTime                    | 否      | 该分片项最近一次的开始执行时间                                                  |
 | nextFireTime                     | 否      | 该分片项下次作业触发时间                                                       |
 | lastCompleteTime                 | 否      | 该分片项最近一次的结束执行时间                                                  |
+| misfire                          | 否      | 是否开启错过任务重新执行                                                        |
 
 ### leader节点
 
