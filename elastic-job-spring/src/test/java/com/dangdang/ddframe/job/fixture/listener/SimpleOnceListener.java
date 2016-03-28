@@ -1,24 +1,28 @@
 /*
- * Copyright 1999-2015 dangdang.com.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * *
+ *  * Copyright 1999-2015 dangdang.com.
+ *  * <p>
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  * 
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  * 
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *  * </p>
+ *  
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * </p>
  */
 
-package com.dangdang.ddframe.job.fixture;
+package com.dangdang.ddframe.job.fixture.listener;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.fixture.service.FooService;
 
 import javax.annotation.Resource;
 
@@ -42,12 +46,12 @@ public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
-        assertThat(startedTimeoutMilliseconds, is(1000L));
+        assertThat(startedTimeoutMilliseconds, is(10000L));
         assertThat(fooService.foo(), is("this is fooService."));
     }
     
     @Override
     public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
-        assertThat(completedTimeoutMilliseconds, is(2000L));
+        assertThat(completedTimeoutMilliseconds, is(20000L));
     }
 }
