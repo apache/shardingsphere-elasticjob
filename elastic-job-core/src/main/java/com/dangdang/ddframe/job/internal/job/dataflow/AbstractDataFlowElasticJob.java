@@ -97,6 +97,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     }
     
     private void executeThroughputStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
+        // TODO isEligibleForJobRunning应该在fetchData之前也做判断, fetchData应与processData成对执行
         List<T> data = fetchDataForThroughput(shardingContext);
         while (null != data && !data.isEmpty() && getJobFacade().isEligibleForJobRunning()) {
             processDataForThroughput(shardingContext, data);
