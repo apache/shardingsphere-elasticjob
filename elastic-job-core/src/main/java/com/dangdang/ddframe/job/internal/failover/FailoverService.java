@@ -154,7 +154,6 @@ public class FailoverService {
             log.debug("Elastic job: failover job begin, crashed item:{}.", crashedItem);
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
-            // TODO bug, failover时,重新触发作业,会导致重新分片. 需要考虑不重新触发作业,或者不重新分片
             JobRegistry.getInstance().getJobScheduler(jobConfiguration.getJobName()).triggerJob();
         }
     }
