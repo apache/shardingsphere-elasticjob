@@ -6,7 +6,7 @@ weight=1
 
 # Release Notes
 
-## 1.0.6-SNAPSHOT
+## 1.0.6
 
 ### 功能提升
 
