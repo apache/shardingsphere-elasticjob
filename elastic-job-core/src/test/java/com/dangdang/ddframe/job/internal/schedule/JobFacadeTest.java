@@ -30,6 +30,8 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.google.common.collect.Interner;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,6 +40,7 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -149,9 +152,33 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testGetShardingContext() {
+    public void testGetShardingContextWhenIsFailoverEnableAndFailover() {
         JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
-        when(executionContextService.getJobExecutionShardingContext()).thenReturn(shardingContext);
+        when(configService.isFailover()).thenReturn(true);
+        when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.singletonList(1));
+        when(executionContextService.getJobExecutionShardingContext(Collections.singletonList(1))).thenReturn(shardingContext);
+        assertThat(jobFacade.getShardingContext(), is(shardingContext));
+        verify(shardingService, times(0)).shardingIfNecessary();
+    }
+    
+    @Test
+    public void testGetShardingContextWhenIsFailoverEnableAndNotFailover() {
+        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        when(configService.isFailover()).thenReturn(true);
+        when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.<Integer>emptyList());
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
+        when(failoverService.getLocalHostTakeOffItems()).thenReturn(Collections.singletonList(0));
+        when(executionContextService.getJobExecutionShardingContext(Collections.singletonList(1))).thenReturn(shardingContext);
+        assertThat(jobFacade.getShardingContext(), is(shardingContext));
+        verify(shardingService).shardingIfNecessary();
+    }
+    
+    @Test
+    public void testGetShardingContextWhenIsFailoverDisable() {
+        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        when(configService.isFailover()).thenReturn(false);
+        when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
+        when(executionContextService.getJobExecutionShardingContext(Lists.newArrayList(0, 1))).thenReturn(shardingContext);
         assertThat(jobFacade.getShardingContext(), is(shardingContext));
         verify(shardingService).shardingIfNecessary();
     }

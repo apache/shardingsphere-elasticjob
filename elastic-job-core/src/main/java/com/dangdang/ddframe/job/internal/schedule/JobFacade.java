@@ -131,8 +131,19 @@ public class JobFacade {
      * @return 当前作业服务器运行时分片上下文
      */
     public JobExecutionMultipleShardingContext getShardingContext() {
+        boolean isFailover = configService.isFailover();
+        if (isFailover) {
+            List<Integer> failoverItems = failoverService.getLocalHostFailoverItems();
+            if (!failoverItems.isEmpty()) {
+                return executionContextService.getJobExecutionShardingContext(failoverItems);
+            }
+        }
         shardingService.shardingIfNecessary();
-        return executionContextService.getJobExecutionShardingContext();
+        List<Integer> shardingItems = shardingService.getLocalHostShardingItems();
+        if (isFailover) {
+            shardingItems.removeAll(failoverService.getLocalHostTakeOffItems());
+        }
+        return executionContextService.getJobExecutionShardingContext(shardingItems);
     }
     
     /**

@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionException;
 
 import java.lang.reflect.ParameterizedType;
@@ -98,23 +99,29 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     private void executeThroughputStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         List<T> data = fetchDataForThroughput(shardingContext);
-        while (null != data && !data.isEmpty() && getJobFacade().isEligibleForJobRunning()) {
+        while (!CollectionUtils.isEmpty(data)) {
             processDataForThroughput(shardingContext, data);
+            if (!getJobFacade().isEligibleForJobRunning()) {
+                break;
+            }
             data = fetchDataForThroughput(shardingContext);
         }
     }
     
     private void executeThroughputOneOffJob(final JobExecutionMultipleShardingContext shardingContext) {
         List<T> data = fetchDataForThroughput(shardingContext);
-        if (null != data && !data.isEmpty()) {
+        if (!CollectionUtils.isEmpty(data)) {
             processDataForThroughput(shardingContext, data);
         }
     }
     
     private void executeSequenceStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
         Map<Integer, List<T>> data = fetchDataForSequence(shardingContext);
-        while (!data.isEmpty() && getJobFacade().isEligibleForJobRunning()) {
+        while (!data.isEmpty()) {
             processDataForSequence(shardingContext, data);
+            if (!getJobFacade().isEligibleForJobRunning()) {
+                break;
+            }
             data = fetchDataForSequence(shardingContext);
         }
     }

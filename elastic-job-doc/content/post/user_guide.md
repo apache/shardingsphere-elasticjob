@@ -30,12 +30,12 @@ public class MyElasticJob extends AbstractSimpleElasticJob {
 
 #### ThroughputDataFlow类型作业
 
-`ThroughputDataFlow`类型作业意为高吞吐的数据流作业。需要继承`AbstractThroughputDataFlowElasticJob`并可以指定返回值泛型，该类提供`3`个方法可覆盖，分别用于抓取数据，处理数据和指定是否流式处理数据。可以获取数据处理成功失败次数等辅助监控信息。如果流式处理数据，`fetchData`方法的返回值只有为`null`或长度为空时，作业才会停止执行，否则作业会一直运行下去；非流式处理数据则只会在每次作业执行过程中执行一次`fetchData`方法和`processData`方法，即完成本次作业。流式数据处理参照`TbSchedule`设计，适用于不间歇的数据处理。
+`ThroughputDataFlow`类型作业意为高吞吐的数据流作业。需要继承`AbstractIndividualThroughputDataFlowElasticJob`并可以指定返回值泛型，该类提供`3`个方法可覆盖，分别用于抓取数据，处理数据和指定是否流式处理数据。可以获取数据处理成功失败次数等辅助监控信息。如果流式处理数据，`fetchData`方法的返回值只有为`null`或长度为空时，作业才会停止执行，否则作业会一直运行下去；非流式处理数据则只会在每次作业执行过程中执行一次`fetchData`方法和`processData`方法，即完成本次作业。流式数据处理参照`TbSchedule`设计，适用于不间歇的数据处理。
 
 作业执行时会将`fetchData`的数据传递给`processData`处理，其中`processData`得到的数据是通过多线程（线程池大小可配）拆分的。如果采用流式作业处理方式，建议`processData`处理数据后更新其状态，避免`fetchData`再次抓取到，从而使得作业永远不会停止。`processData`的返回值用于表示数据是否处理成功，抛出异常或者返回`false`将会在统计信息中归入失败次数，返回`true`则归入成功次数。
 
 ```java
-public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
+public class MyElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<Foo> {
     
     @Override
     public List<Foo> fetchData(JobExecutionMultipleShardingContext context) {

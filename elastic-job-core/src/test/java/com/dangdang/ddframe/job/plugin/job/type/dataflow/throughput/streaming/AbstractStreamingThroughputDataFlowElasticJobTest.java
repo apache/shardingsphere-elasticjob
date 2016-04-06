@@ -60,8 +60,8 @@ public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends 
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(false);
         getDataFlowElasticJob().execute(null);
         verify(getJobCaller()).fetchData();
-        verify(getJobCaller(), times(0)).processData(any());
+        verify(getJobCaller()).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-        ElasticJobAssert.assertProcessCountStatistics(0, 0);
+        ElasticJobAssert.assertProcessCountStatistics(0, 1);
     }
 }

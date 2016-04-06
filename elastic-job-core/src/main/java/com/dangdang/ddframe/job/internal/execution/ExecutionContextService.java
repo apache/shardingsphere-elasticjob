@@ -17,18 +17,16 @@
 
 package com.dangdang.ddframe.job.internal.execution;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 作业运行时上下文服务.
@@ -43,42 +41,26 @@ public class ExecutionContextService {
     
     private final ConfigurationService configService;
     
-    private final ShardingService shardingService;
-    
-    private final FailoverService failoverService;
-    
     private final OffsetService offsetService;
     
     public ExecutionContextService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
         offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
      * 获取当前作业服务器运行时分片上下文.
      * 
+     * @param shardingItems 分片项
      * @return 当前作业服务器运行时分片上下文
      */
-    public JobExecutionMultipleShardingContext getJobExecutionShardingContext() {
+    public JobExecutionMultipleShardingContext getJobExecutionShardingContext(final List<Integer> shardingItems) {
         JobExecutionMultipleShardingContext result = new JobExecutionMultipleShardingContext();
         result.setJobName(jobConfiguration.getJobName());
         result.setShardingTotalCount(configService.getShardingTotalCount());
-        List<Integer> shardingItems = shardingService.getLocalHostShardingItems();
-        if (configService.isFailover()) {
-            List<Integer> failoverItems = failoverService.getLocalHostFailoverItems();
-            if (!failoverItems.isEmpty()) {
-                result.setShardingItems(failoverItems);
-            } else {
-                shardingItems.removeAll(failoverService.getLocalHostTakeOffItems());
-                result.setShardingItems(shardingItems);
-            }
-        } else {
-            result.setShardingItems(shardingItems);
-        }
+        result.setShardingItems(shardingItems);
         boolean isMonitorExecution = configService.isMonitorExecution();
         if (isMonitorExecution) {
             removeRunningItems(shardingItems);

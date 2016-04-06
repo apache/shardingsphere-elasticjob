@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job</artifactId>
-    <version>1.0.6-SNAPSHOT</version>
+    <version>1.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Elastic-Job - distributed scheduled job solution</description>
@@ -25,6 +25,7 @@
         <quartz.version>2.2.1</quartz.version>
         <curator.version>2.10.0</curator.version>
         <springframework.version>4.1.1.RELEASE</springframework.version>
+        <aspectj.version>1.8.0</aspectj.version>
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.1.2</logback.version>
         <jackson.version>2.4.4</jackson.version>
@@ -216,6 +217,12 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${springframework.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
