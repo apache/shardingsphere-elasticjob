@@ -78,6 +78,7 @@ public final class ExecutionServiceTest {
         ReflectionUtils.setFieldValue(executionService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(executionService, "configService", configService);
         ReflectionUtils.setFieldValue(executionService, "serverService", serverService);
+        ReflectionUtils.setFieldValue(executionService, "leaderElectionService", leaderElectionService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
         when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
@@ -109,9 +110,6 @@ public final class ExecutionServiceTest {
         executionService.registerJobBegin(jobExecutionShardingContext);
         verify(configService).isMonitorExecution();
         verify(serverService).updateServerStatus(ServerStatus.RUNNING);
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
         verify(jobNodeStorage).fillEphemeralJobNode("execution/0/running", "");
         verify(jobNodeStorage).fillEphemeralJobNode("execution/1/running", "");
         verify(jobNodeStorage).fillEphemeralJobNode("execution/2/running", "");
@@ -130,9 +128,6 @@ public final class ExecutionServiceTest {
         executionService.registerJobBegin(jobExecutionShardingContext);
         verify(configService).isMonitorExecution();
         verify(serverService).updateServerStatus(ServerStatus.RUNNING);
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
         verify(jobNodeStorage).fillEphemeralJobNode("execution/0/running", "");
         verify(jobNodeStorage).fillEphemeralJobNode("execution/1/running", "");
         verify(jobNodeStorage).fillEphemeralJobNode("execution/2/running", "");
@@ -168,6 +163,112 @@ public final class ExecutionServiceTest {
         verify(jobNodeStorage).replaceJobNode(eq("execution/0/lastCompleteTime"), anyLong());
         verify(jobNodeStorage).replaceJobNode(eq("execution/1/lastCompleteTime"), anyLong());
         verify(jobNodeStorage).replaceJobNode(eq("execution/2/lastCompleteTime"), anyLong());
+    }
+    
+    @Test
+    public void assertCleanPreviousExecutionInfoWhenNotMonitorExecution() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(false);
+        executionService.cleanPreviousExecutionInfo();
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService, times(0)).isLeader();
+    }
+    
+    @Test
+    public void assertCleanPreviousExecutionInfoWhenIsNotLeader() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/cleaning")).thenReturn(true, false);
+        executionService.cleanPreviousExecutionInfo();
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage, times(2)).isJobNodeExisted("leader/execution/cleaning");
+    }
+    
+    @Test
+    public void assertCleanPreviousExecutionInfoWhenIsLeaderButNotNeedFixExecutionInfo() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(false);
+        executionService.cleanPreviousExecutionInfo();
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
+    }
+    
+    @Test
+    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesGreater() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
+        when(configService.getShardingTotalCount()).thenReturn(4);
+        executionService.cleanPreviousExecutionInfo();
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
+        verify(configService).getShardingTotalCount();
+        verify(jobNodeStorage).createJobNodeIfNeeded("execution/3");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
+    }
+    
+    @Test
+    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesLess() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
+        when(configService.getShardingTotalCount()).thenReturn(2);
+        executionService.cleanPreviousExecutionInfo();
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
+        verify(configService).getShardingTotalCount();
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
+    }
+    
+    @Test
+    public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesEqual() {
+        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(leaderElectionService.isLeader()).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
+        when(configService.getShardingTotalCount()).thenReturn(3);
+        executionService.cleanPreviousExecutionInfo();
+        verify(jobNodeStorage).isJobNodeExisted("execution");
+        verify(leaderElectionService).isLeader();
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
+        verify(configService).getShardingTotalCount();
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test

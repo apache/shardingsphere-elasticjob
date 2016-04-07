@@ -30,7 +30,6 @@ import com.dangdang.ddframe.job.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-import com.google.common.collect.Interner;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +39,6 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -205,6 +203,12 @@ public class JobFacadeTest {
     public void testUpdateOffset() {
         jobFacade.updateOffset(0, "offset0");
         verify(offsetService).updateOffset(0, "offset0");
+    }
+    
+    @Test
+    public void testCleanPreviousExecutionInfo() {
+        jobFacade.cleanPreviousExecutionInfo();
+        verify(executionService).cleanPreviousExecutionInfo();
     }
     
     @Test
