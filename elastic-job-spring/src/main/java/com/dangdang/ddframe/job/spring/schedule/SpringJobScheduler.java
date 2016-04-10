@@ -45,7 +45,7 @@ public class SpringJobScheduler extends JobScheduler implements ApplicationConte
         super(coordinatorRegistryCenter, jobConfiguration, getTargetElasticJobListeners(elasticJobListeners));
     }
     
-    private static ElasticJobListener[] getTargetElasticJobListeners(ElasticJobListener[] elasticJobListeners) {
+    private static ElasticJobListener[] getTargetElasticJobListeners(final ElasticJobListener[] elasticJobListeners) {
         final ElasticJobListener[] result = new ElasticJobListener[elasticJobListeners.length];
         for (int i = 0; i < elasticJobListeners.length; i++) {
             result[i] = (ElasticJobListener) AopTargetUtils.getTarget(elasticJobListeners[i]);

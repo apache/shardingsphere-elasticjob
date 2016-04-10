@@ -205,6 +205,14 @@ public class JobFacade {
     }
     
     /**
+     * 清理作业上次运行时信息.
+     * 只会在主节点进行.
+     */
+    public void cleanPreviousExecutionInfo() {
+        executionService.cleanPreviousExecutionInfo();
+    }
+    
+    /**
      * 作业执行前的执行的方法.
      *
      * @param shardingContext 分片上下文

@@ -12,6 +12,7 @@ weight=1
 
 1. [ISSUE #71](https://github.com/dangdangdotcom/elastic-job/issues/71) 作业关闭功能（shutdown）
 1. [ISSUE #72](https://github.com/dangdangdotcom/elastic-job/issues/72) 关闭的作业可删除
+1. [ISSUE #81](https://github.com/dangdangdotcom/elastic-job/issues/81) 使用集中清理作业上次结束状态代替各自清理，各自清理可能导致作业机下线而产生未清理的结束状态
 
 ### 缺陷修正
 

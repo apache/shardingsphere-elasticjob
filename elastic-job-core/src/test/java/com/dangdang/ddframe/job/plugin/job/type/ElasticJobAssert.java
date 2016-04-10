@@ -52,6 +52,7 @@ public class ElasticJobAssert {
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems());
+        verify(jobFacade).cleanPreviousExecutionInfo();
         verify(jobFacade).beforeJobExecuted(shardingContext);
         verify(jobFacade).registerJobBegin(shardingContext);
         verify(jobFacade).registerJobCompleted(shardingContext);
