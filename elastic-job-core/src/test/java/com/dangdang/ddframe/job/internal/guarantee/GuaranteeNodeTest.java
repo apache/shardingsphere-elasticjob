@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.internal.guarantee;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertFalse;

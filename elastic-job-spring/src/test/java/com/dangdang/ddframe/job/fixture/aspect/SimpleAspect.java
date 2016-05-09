@@ -31,10 +31,10 @@ import org.aspectj.lang.annotation.Pointcut;
 public class SimpleAspect {
     
     @Pointcut("execution(* com.dangdang.ddframe.job.fixture..*(..))")
-    public void aspect(){
+    public void aspect() {
     }
     
     @Before("aspect()")
-    public void before(JoinPoint joinPoint){
+    public void before(final JoinPoint joinPoint) {
     }
 }

@@ -21,10 +21,7 @@
 package com.dangdang.ddframe.job.fixture.listener;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
-
-import javax.annotation.Resource;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -32,12 +29,12 @@ import static org.junit.Assert.assertThat;
 public class SimpleListener implements ElasticJobListener {
     
     @Override
-    public void beforeJobExecuted(JobExecutionMultipleShardingContext shardingContext) {
+    public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
         assertThat(shardingContext.getJobName(), is("simpleElasticJob_namespace_listener"));
     }
     
     @Override
-    public void afterJobExecuted(JobExecutionMultipleShardingContext shardingContext) {
+    public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
         assertThat(shardingContext.getJobName(), is("simpleElasticJob_namespace_listener"));
     }
 }

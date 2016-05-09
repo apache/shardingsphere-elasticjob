@@ -29,12 +29,12 @@ import static org.junit.Assert.assertThat;
 public class SimpleJdkDynamicProxyListener implements ElasticJobListener {
     
     @Override
-    public void beforeJobExecuted(JobExecutionMultipleShardingContext shardingContext) {
+    public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
         assertThat(shardingContext.getJobName(), is("simpleElasticJob_namespace_listener_jdk_proxy"));
     }
     
     @Override
-    public void afterJobExecuted(JobExecutionMultipleShardingContext shardingContext) {
+    public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
         assertThat(shardingContext.getJobName(), is("simpleElasticJob_namespace_listener_jdk_proxy"));
     }
 }

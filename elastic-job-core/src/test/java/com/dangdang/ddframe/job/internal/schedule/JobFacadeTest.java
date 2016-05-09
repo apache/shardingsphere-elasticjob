@@ -79,7 +79,7 @@ public class JobFacadeTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        jobFacade = new JobFacade(null, jobConfig, Collections.<ElasticJobListener> singletonList(new TestElasticJobListener(caller)));
+        jobFacade = new JobFacade(null, jobConfig, Collections.<ElasticJobListener>singletonList(new TestElasticJobListener(caller)));
         ReflectionUtils.setFieldValue(jobFacade, "configService", configService);
         ReflectionUtils.setFieldValue(jobFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(jobFacade, "shardingService", shardingService);
