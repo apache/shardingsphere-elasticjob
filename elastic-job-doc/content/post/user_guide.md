@@ -302,7 +302,7 @@ public class JobMain {
         </constructor-arg>
     </bean>
     <!-- 配置作业-->
-    <bean id="xxxJob" class="com.dangdang.ddframe.job.api.JobScheduler" init-method="init">
+    <bean id="xxxJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
             <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
