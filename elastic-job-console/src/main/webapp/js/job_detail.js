@@ -10,8 +10,8 @@ $(function() {
     $('[href="#execution_info"]').click(function(event) {
         renderExecution();
     });
-    bindStopButtons();
-    bindStopAllButtons();
+    bindPauseButtons();
+    bindPauseAllButtons();
     bindResumeButtons();
     bindResumeAllButton();
     bindShutdownButtons();
@@ -86,15 +86,15 @@ function renderServers() {
             var baseTd = "<td>" + data[i].ip + "</td><td>" + data[i].hostName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td><td>" + (true === leader ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>") + "</td>";
             var operationTd = "";
             var resumeButton = "<button operation='resume' class='btn btn-success' ip='" + data[i].ip + "' leader='" + leader + "'>恢复</button>";
-            var stopButton = "<button operation='stop' class='btn btn-warning' ip='" + data[i].ip + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button>";
+            var pauseButton = "<button operation='pause' class='btn btn-warning' ip='" + data[i].ip + "'" + (leader ? "data-toggle='modal' data-target='#pause-leader-confirm-dialog'" : "") + ">暂停</button>";
             var shutdownButton = "<button operation='shutdown' class='btn btn-danger' ip='" + data[i].ip + "'>关闭</button>";
             var removeButton = "<button operation='remove' class='btn btn-danger' ip='" + data[i].ip + "'>删除</button>";
             var disableButton = "<button operation='disable' class='btn btn-danger' ip='" + data[i].ip + "'>失效</button>";
             var enableButton = "<button operation='enable' class='btn btn-success' ip='" + data[i].ip + "'>生效</button>";
-            if ("STOPED" === status) {
+            if ("PAUSED" === status) {
                 operationTd = resumeButton + "&nbsp;";
             } else if ("DISABLED" !== status && "CRASHED" !== status && "SHUTDOWN" !== status) {
-                operationTd = stopButton + "&nbsp;";
+                operationTd = pauseButton + "&nbsp;";
             }
             if ("SHUTDOWN" !== status) {
                 operationTd = operationTd + shutdownButton + "&nbsp;";
@@ -113,14 +113,14 @@ function renderServers() {
                 trClass = "info";
             } else if ("RUNNING" === status) {
                 trClass = "success";
-            } else if ("DISABLED" === status || "STOPED" === status) {
+            } else if ("DISABLED" === status || "PAUSED" === status) {
                 trClass = "warning";
             } else if ("CRASHED" === status || "SHUTDOWN" === status) {
                 trClass = "danger";
             }
             $("#servers tbody").append("<tr class='" + trClass + "'>" + baseTd + operationTd + "</tr>");
         }
-        if ("STOPED" === leaderStatus) {
+        if ("PAUSED" === leaderStatus) {
             $("button[operation='resume'][leader='false']").attr("disabled", true);
             $("button[operation='resume'][leader='false']").addClass("disabled");
             $("button[operation='resume'][leader='false']").attr("title", "先恢复主节点才能恢复从节点作业");
@@ -128,21 +128,21 @@ function renderServers() {
     });
 }
 
-function bindStopButtons() {
-    $(document).on("click", "button[operation='stop'][data-toggle!='modal']", function(event) {
+function bindPauseButtons() {
+    $(document).on("click", "button[operation='pause'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/stop", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+        $.post("job/pause", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
             renderServers();
             showSuccessDialog();
         });
     });
 }
 
-function bindStopAllButtons() {
-    $(document).on("click", "#stop-leader-confirm-dialog-confirm-btn,#stop-all-jobs-btn", function(event) {
+function bindPauseAllButtons() {
+    $(document).on("click", "#pause-leader-confirm-dialog-confirm-btn,#pause-all-jobs-btn", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/stopAll/name", {jobName : jobName}, function (data) {
-            $("#stop-leader-confirm-dialog").modal("hide");
+        $.post("job/pauseAll/name", {jobName : jobName}, function (data) {
+            $("#pause-leader-confirm-dialog").modal("hide");
             renderServers();
             showSuccessDialog();
         });

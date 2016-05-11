@@ -65,7 +65,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     @Override
     public void start() {
         addConnectionStateListener(new ConnectionLostListener());
-        addDataListener(new JobStoppedStatusJobListener());
+        addDataListener(new JobPausedStatusJobListener());
         addDataListener(new JobShutdownStatusJobListener());
     }
     
@@ -75,21 +75,21 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
             JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
             if (ConnectionState.LOST == newState) {
-                jobScheduler.stopJob();
+                jobScheduler.pauseJob();
             } else if (ConnectionState.RECONNECTED == newState) {
                 if (!leaderElectionService.hasLeader()) {
                     leaderElectionService.leaderElection();
                 }
                 serverService.persistServerOnline();
                 executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
-                if (!serverService.isJobStoppedManually()) {
+                if (!serverService.isJobPausedManually()) {
                     jobScheduler.resumeJob();
                 }
             }
         }
     }
     
-    class JobStoppedStatusJobListener extends AbstractJobListener {
+    class JobPausedStatusJobListener extends AbstractJobListener {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
@@ -101,11 +101,11 @@ public class JobOperationListenerManager extends AbstractListenerManager {
                 return;
             }
             if (Type.NODE_ADDED == event.getType()) {
-                jobScheduler.stopJob();
+                jobScheduler.pauseJob();
             }
             if (Type.NODE_REMOVED == event.getType()) {
                 jobScheduler.resumeJob();
-                serverService.clearJobStoppedStatus();
+                serverService.clearJobPausedStatus();
             }
         }
     }

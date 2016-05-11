@@ -100,7 +100,7 @@ public class SchedulerFacadeTest {
         verify(leaderElectionService).leaderForceElection();
         verify(configService).persistJobConfiguration();
         verify(serverService).persistServerOnline();
-        verify(serverService).clearJobStoppedStatus();
+        verify(serverService).clearJobPausedStatus();
         verify(statisticsService).startProcessCountJob();
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();

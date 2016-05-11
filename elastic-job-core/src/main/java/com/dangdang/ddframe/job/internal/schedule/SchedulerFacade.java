@@ -80,7 +80,7 @@ public class SchedulerFacade {
         leaderElectionService.leaderForceElection();
         configService.persistJobConfiguration();
         serverService.persistServerOnline();
-        serverService.clearJobStoppedStatus();
+        serverService.clearJobPausedStatus();
         statisticsService.startProcessCountJob();
         shardingService.setReshardingFlag();
         monitorService.listen();

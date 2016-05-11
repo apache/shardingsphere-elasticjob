@@ -159,7 +159,7 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
             assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
             assertThat(regCenter.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));
         }
-        assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/stoped"));
+        assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/paused"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");
     }

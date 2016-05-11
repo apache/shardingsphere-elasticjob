@@ -46,17 +46,17 @@ public final class JobServer implements Serializable {
     
     private boolean leader;
     
-    private boolean leaderStopped;
+    private boolean leaderPaused;
     
     public enum ServerStatus {
         READY, 
         RUNNING, 
-        DISABLED, 
-        STOPED, 
+        DISABLED,
+        PAUSED, 
         CRASHED, 
         SHUTDOWN;
         
-        public static ServerStatus getServerStatus(final String status, final boolean disabled, final boolean stopped, final boolean shutdown) {
+        public static ServerStatus getServerStatus(final String status, final boolean disabled, final boolean paused, final boolean shutdown) {
             if (shutdown) {
                 return ServerStatus.SHUTDOWN;
             }
@@ -66,8 +66,8 @@ public final class JobServer implements Serializable {
             if (disabled) {
                 return ServerStatus.DISABLED;
             }
-            if (stopped) {
-                return ServerStatus.STOPED;
+            if (paused) {
+                return ServerStatus.PAUSED;
             }
             return ServerStatus.valueOf(status);
         }

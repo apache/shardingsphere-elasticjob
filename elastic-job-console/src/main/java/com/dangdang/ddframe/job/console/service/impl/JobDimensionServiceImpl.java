@@ -73,7 +73,7 @@ public class JobDimensionServiceImpl implements JobDimensionService {
                     okCount++;
                     break;
                 case DISABLED:
-                case STOPED:
+                case PAUSED:
                     manuallyDisabledCount++;
                     break;
                 case CRASHED:
@@ -166,9 +166,9 @@ public class JobDimensionServiceImpl implements JobDimensionService {
     private ServerStatus getServerStatus(final String jobName, final String serverIp) {
         String status = curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "status"));
         boolean disabled = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
-        boolean stopped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+        boolean paused = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "paused"));
         boolean shutdown = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"));
-        return ServerStatus.getServerStatus(status, disabled, stopped, shutdown);
+        return ServerStatus.getServerStatus(status, disabled, paused, shutdown);
     }
     
     @Override

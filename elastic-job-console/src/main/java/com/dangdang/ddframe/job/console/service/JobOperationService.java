@@ -19,15 +19,15 @@ package com.dangdang.ddframe.job.console.service;
 
 public interface JobOperationService {
     
-    void stopJob(String jobName, String serverIp);
+    void pauseJob(String jobName, String serverIp);
     
     void resumeJob(String jobName, String serverIp);
     
-    void stopAllJobsByJobName(String jobName);
+    void pauseAllJobsByJobName(String jobName);
     
     void resumeAllJobsByJobName(String jobName);
     
-    void stopAllJobsByServer(String serverIp);
+    void pauseAllJobsByServer(String serverIp);
     
     void resumeAllJobsByServer(String serverIp);
     

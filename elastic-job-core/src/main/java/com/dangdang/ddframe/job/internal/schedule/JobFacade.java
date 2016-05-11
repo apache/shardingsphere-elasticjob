@@ -99,7 +99,7 @@ public class JobFacade {
      * 如果需要失效转移, 则设置作业失效转移.
      */
     public void failoverIfNecessary() {
-        if (configService.isFailover() && !serverService.isJobStoppedManually()) {
+        if (configService.isFailover() && !serverService.isJobPausedManually()) {
             failoverService.failoverIfNecessary();
         }
     }
@@ -183,7 +183,7 @@ public class JobFacade {
      * @return 作业是否符合继续运行的条件
      */
     public boolean isEligibleForJobRunning() {
-        return !serverService.isJobStoppedManually() && !shardingService.isNeedSharding();
+        return !serverService.isJobPausedManually() && !shardingService.isNeedSharding();
     }
     
     /**判断是否需要重分片.

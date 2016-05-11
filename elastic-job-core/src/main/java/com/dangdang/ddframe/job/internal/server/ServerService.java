@@ -72,19 +72,19 @@ public class ServerService {
     }
     
     /**
-     * 清除停止作业的标记.
+     * 清除暂停作业的标记.
      */
-    public void clearJobStoppedStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStoppedNode(localHostService.getIp()));
+    public void clearJobPausedStatus() {
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getPausedNode(localHostService.getIp()));
     }
     
     /**
-     * 判断是否是手工停止的作业.
+     * 判断是否是手工暂停的作业.
      * 
-     * @return 是否是手工停止的作业
+     * @return 是否是手工暂停的作业
      */
-    public boolean isJobStoppedManually() {
-        return jobNodeStorage.isJobNodeExisted(ServerNode.getStoppedNode(localHostService.getIp()));
+    public boolean isJobPausedManually() {
+        return jobNodeStorage.isJobNodeExisted(ServerNode.getPausedNode(localHostService.getIp()));
     }
     
     /**
@@ -137,7 +137,7 @@ public class ServerService {
      * @return 作业服务器是否可用
      */
     public boolean isAvailableServer(final String ip) {
-        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getStoppedNode(ip))
+        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getPausedNode(ip))
                 && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip));
     }
     

@@ -109,9 +109,9 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testFailoverIfNecessaryButIsStopped() {
+    public void testFailoverIfNecessaryButIsPaused() {
         when(configService.isFailover()).thenReturn(true);
-        when(serverService.isJobStoppedManually()).thenReturn(true);
+        when(serverService.isJobPausedManually()).thenReturn(true);
         jobFacade.failoverIfNecessary();
         verify(failoverService, times(0)).failoverIfNecessary();
     }
@@ -119,7 +119,7 @@ public class JobFacadeTest {
     @Test
     public void testFailoverIfNecessary() {
         when(configService.isFailover()).thenReturn(true);
-        when(serverService.isJobStoppedManually()).thenReturn(false);
+        when(serverService.isJobPausedManually()).thenReturn(false);
         jobFacade.failoverIfNecessary();
         verify(failoverService).failoverIfNecessary();
     }

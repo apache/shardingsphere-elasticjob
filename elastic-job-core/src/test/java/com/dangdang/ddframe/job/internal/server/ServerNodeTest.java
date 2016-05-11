@@ -58,8 +58,8 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertStoppedNode() {
-        assertThat(ServerNode.getStoppedNode("host0"), is("servers/host0/stoped"));
+    public void assertPausedNode() {
+        assertThat(ServerNode.getPausedNode("host0"), is("servers/host0/paused"));
     }
     
     @Test
@@ -69,7 +69,7 @@ public final class ServerNodeTest {
     
     @Test
     public void assertIsLocalJobPausedPath() {
-        assertTrue(serverNode.isLocalJobPausedPath("/testJob/servers/" + localHostService.getIp() + "/stoped"));
+        assertTrue(serverNode.isLocalJobPausedPath("/testJob/servers/" + localHostService.getIp() + "/paused"));
     }
     
     @Test

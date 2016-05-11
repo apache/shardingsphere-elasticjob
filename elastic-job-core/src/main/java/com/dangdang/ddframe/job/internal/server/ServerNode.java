@@ -46,7 +46,7 @@ public class ServerNode {
     
     static final String PROCESS_FAILURE_COUNT = ROOT + "/%s/processFailureCount";
     
-    static final String STOPPED = ROOT + "/%s/stoped";
+    static final String PAUSED = ROOT + "/%s/paused";
     
     static final String SHUTDOWN_APPENDIX = "shutdown";
     
@@ -80,8 +80,8 @@ public class ServerNode {
         return String.format(PROCESS_FAILURE_COUNT, ip);
     }
     
-    static String getStoppedNode(final String ip) {
-        return String.format(STOPPED, ip);
+    static String getPausedNode(final String ip) {
+        return String.format(PAUSED, ip);
     }
     
     static String getShutdownNode(final String ip) {
@@ -95,7 +95,7 @@ public class ServerNode {
      * @return 是否为作业服务器暂停路径
      */
     public boolean isLocalJobPausedPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.STOPPED, localHostService.getIp())));
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.PAUSED, localHostService.getIp())));
     }
     
     /**

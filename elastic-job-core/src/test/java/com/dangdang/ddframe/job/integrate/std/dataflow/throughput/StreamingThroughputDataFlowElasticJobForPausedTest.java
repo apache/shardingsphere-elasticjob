@@ -27,9 +27,9 @@ import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
 
-public final class StreamingThroughputDataFlowElasticJobForStoppedTest extends AbstractBaseStdJobAutoInitTest {
+public final class StreamingThroughputDataFlowElasticJobForPausedTest extends AbstractBaseStdJobAutoInitTest {
     
-    public StreamingThroughputDataFlowElasticJobForStoppedTest() {
+    public StreamingThroughputDataFlowElasticJobForPausedTest() {
         super(StreamingThroughputDataFlowElasticJob.class);
     }
     
@@ -40,12 +40,12 @@ public final class StreamingThroughputDataFlowElasticJobForStoppedTest extends A
     }
     
     @Test
-    public void assertClearStopJobStatusWhenRestartingJob() {
+    public void assertClearPausedJobStatusWhenRestartingJob() {
         while (!StreamingThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        getRegCenter().persist("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/stoped", "");
+        getRegCenter().persist("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/paused", "");
         initJob();
-        assertFalse(getRegCenter().isExisted("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/stoped"));
+        assertFalse(getRegCenter().isExisted("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/paused"));
     }
 }

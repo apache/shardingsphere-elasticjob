@@ -8,9 +8,16 @@ weight=1
 
 ## 1.0.7-SNAPSHOT
 
+### 结构调整
+
+1. [ISSUE #88](https://github.com/dangdangdotcom/elastic-job/issues/88) stop作业改名为pause
+
 ### 功能提升
 
+1. [ISSUE #84](https://github.com/dangdangdotcom/elastic-job/issues/84) 控制台提供作业启用/禁用按钮操作
 1. [ISSUE #87](https://github.com/dangdangdotcom/elastic-job/issues/87) 调整主节点选举流程，作业关闭，禁用和暂停将触发主节点选举
+
+
 
 ## 1.0.6
 
