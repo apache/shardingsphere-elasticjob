@@ -42,6 +42,7 @@ import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -136,21 +137,31 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
         jobScheduler.init();
     }
     
-    protected void assertRegCenterCommonInfo() {
-        assertThat(regCenter.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));
+    protected void assertRegCenterCommonInfoWithEnabled() {
+        assertRegCenterCommonInfo();
+        assertTrue(leaderElectionService.isLeader());
+    }
+    
+    protected void assertRegCenterCommonInfoWithDisabled() {
+        assertRegCenterCommonInfo();
+        assertFalse(leaderElectionService.isLeader());
+    }
+    
+    private void assertRegCenterCommonInfo() {
         assertThat(regCenter.get("/" + jobName + "/config/shardingTotalCount"), is("3"));
         assertThat(regCenter.get("/" + jobName + "/config/shardingItemParameters"), is("0=A,1=B,2=C"));
         assertThat(regCenter.get("/" + jobName + "/config/cron"), is("0/1 * * * * ?"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
             assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
+            assertNull(regCenter.get("/" + jobName + "/leader/election/host"));
         } else {
             assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
+            assertThat(regCenter.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));
         }
         assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/stoped"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), is(ServerStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");
-        assertTrue(leaderElectionService.isLeader());
     }
     
     protected void assertRegCenterListenerInfo() {

@@ -17,15 +17,14 @@
 
 package com.dangdang.ddframe.job.internal.server;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 作业服务器节点服务.
@@ -39,11 +38,8 @@ public class ServerService {
     
     private final LocalHostService localHostService = new LocalHostService();
     
-    private final LeaderElectionService leaderElectionService;
-    
     public ServerService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -58,9 +54,6 @@ public class ServerService {
      * 持久化作业服务器上线相关信息.
      */
     public void persistServerOnline() {
-        if (!leaderElectionService.hasLeader()) {
-            leaderElectionService.leaderElection();
-        }
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ServerNode.getHostNameNode(localHostService.getIp()), localHostService.getHostName());
         persistDisabled();
         jobNodeStorage.fillEphemeralJobNode(ServerNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
@@ -138,7 +131,8 @@ public class ServerService {
     }
     
     private Boolean isAvailableServer(final String ip) {
-        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip));
+        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) 
+                && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip));
     }
     
     /**
@@ -151,6 +145,9 @@ public class ServerService {
             return false;
         }
         if (jobNodeStorage.isJobNodeExisted(ServerNode.getStoppedNode(localHostService.getIp()))) {
+            return false;
+        }
+        if (jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(localHostService.getIp()))) {
             return false;
         }
         String statusNode = ServerNode.getStatusNode(localHostService.getIp());

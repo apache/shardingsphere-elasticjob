@@ -19,11 +19,12 @@ package com.dangdang.ddframe.job.internal.election;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.internal.util.BlockUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -36,17 +37,27 @@ public class LeaderElectionService {
     
     private final LocalHostService localHostService = new LocalHostService();
     
+    private final ServerService serverService;
+    
     private final JobNodeStorage jobNodeStorage;
     
     public LeaderElectionService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
+        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
+    }
+    
+    /**
+     * 强制选举主节点.
+     */
+    public void leaderForceElection() {
+        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback(true));
     }
     
     /**
      * 选举主节点.
      */
     public void leaderElection() {
-        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback());
+        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback(false));
     }
     
     /**
@@ -60,7 +71,7 @@ public class LeaderElectionService {
      */
     public Boolean isLeader() {
         String localHostIp = localHostService.getIp();
-        while (!hasLeader()) {
+        while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
             log.info("Elastic job: leader node is electing, waiting for 100 ms at server '{}'", localHostIp);
             BlockUtils.waitingShortTime();
         }
@@ -81,11 +92,21 @@ public class LeaderElectionService {
         return jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST);
     }
     
+    /**
+     * 删除主节点供重新选举.
+     */
+    public void removeLeader() {
+        jobNodeStorage.removeJobNodeIfExisted(ElectionNode.LEADER_HOST);
+    }
+    
+    @RequiredArgsConstructor
     class LeaderElectionExecutionCallback implements LeaderExecutionCallback {
         
+        private final boolean isForceElect;
+    
         @Override
         public void execute() {
-            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST)) {
+            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST) && (isForceElect || serverService.isServerReady())) {
                 jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST, localHostService.getIp());
             }
         }

@@ -68,6 +68,21 @@ public final class ServerNodeTest {
     }
     
     @Test
+    public void assertIsLocalJobPausedPath() {
+        assertTrue(serverNode.isLocalJobPausedPath("/testJob/servers/" + localHostService.getIp() + "/stoped"));
+    }
+    
+    @Test
+    public void assertIsLocalJobShutdownPath() {
+        assertTrue(serverNode.isLocalJobShutdownPath("/testJob/servers/" + localHostService.getIp() + "/shutdown"));
+    }
+    
+    @Test
+    public void assertIsLocalServerDisabledPath() {
+        assertTrue(serverNode.isLocalServerDisabledPath("/testJob/servers/" + localHostService.getIp() + "/disabled"));
+    }
+    
+    @Test
     public void assertIsServerStatusPath() {
         assertTrue(serverNode.isServerStatusPath("/testJob/servers/host0/status"));
         assertFalse(serverNode.isServerStatusPath("/otherJob/servers/host0/status"));
@@ -79,15 +94,5 @@ public final class ServerNodeTest {
         assertTrue(serverNode.isServerDisabledPath("/testJob/servers/host0/disabled"));
         assertFalse(serverNode.isServerDisabledPath("/otherJob/servers/host0/status"));
         assertFalse(serverNode.isServerDisabledPath("/testJob/servers/host0/status"));
-    }
-    
-    @Test
-    public void assertIsJobStoppedPath() {
-        assertTrue(serverNode.isJobStoppedPath("/testJob/servers/" + localHostService.getIp() + "/stoped"));
-    }
-    
-    @Test
-    public void assertIsJobShutdownPath() {
-        assertTrue(serverNode.isJobShutdownPath("/testJob/servers/" + localHostService.getIp() + "/shutdown"));
     }
 }

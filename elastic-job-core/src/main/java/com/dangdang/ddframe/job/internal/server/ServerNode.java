@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.internal.storage.JobNodePath;
  * 
  * @author zhangliang
  */
-public final class ServerNode {
+public class ServerNode {
     
     /**
      * 作业服务器信息根节点.
@@ -86,12 +86,34 @@ public final class ServerNode {
         return String.format(SHUTDOWN, ip);
     }
     
-    boolean isJobStoppedPath(final String path) {
+    /**
+     * 判断给定路径是否为作业服务器暂停路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器暂停路径
+     */
+    public boolean isLocalJobPausedPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.STOPPED, localHostService.getIp())));
     }
     
-    boolean isJobShutdownPath(final String path) {
+    /**
+     * 判断给定路径是否为作业服务器关闭路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器关闭路径
+     */
+    public boolean isLocalJobShutdownPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.SHUTDOWN, localHostService.getIp())));
+    }
+    
+    /**
+     * 判断给定路径是否为作业服务器禁用路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器禁用路径
+     */
+    public boolean isLocalServerDisabledPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.DISABLED, localHostService.getIp())));
     }
     
     /**

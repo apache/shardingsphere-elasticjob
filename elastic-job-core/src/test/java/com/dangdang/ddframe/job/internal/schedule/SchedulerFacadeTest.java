@@ -97,7 +97,7 @@ public class SchedulerFacadeTest {
     public void testRegisterStartUpInfo() {
         schedulerFacade.registerStartUpInfo();
         verify(listenerManager).startAllListeners();
-        verify(leaderElectionService).leaderElection();
+        verify(leaderElectionService).leaderForceElection();
         verify(configService).persistJobConfiguration();
         verify(serverService).persistServerOnline();
         verify(serverService).clearJobStoppedStatus();

@@ -17,6 +17,18 @@
 
 package com.dangdang.ddframe.job.internal.server;
 
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
+
+import java.util.Arrays;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -25,20 +37,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.unitils.util.ReflectionUtils;
-
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
-
 public final class ServerServiceTest {
     
     @Mock
@@ -46,9 +44,6 @@ public final class ServerServiceTest {
     
     @Mock
     private LocalHostService localHostService;
-    
-    @Mock
-    private LeaderElectionService leaderElectionService;
     
     private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
@@ -59,7 +54,6 @@ public final class ServerServiceTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(serverService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(serverService, "localHostService", localHostService);
-        ReflectionUtils.setFieldValue(serverService, "leaderElectionService", leaderElectionService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
         when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
@@ -75,10 +69,8 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineWhenOverwriteDisabled() {
-        when(leaderElectionService.hasLeader()).thenReturn(true);
         jobConfig.setOverwrite(false);
         serverService.persistServerOnline();
-        verify(leaderElectionService).hasLeader();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(3)).getIp();
         verify(localHostService).getHostName();
@@ -89,11 +81,8 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
-        when(leaderElectionService.hasLeader()).thenReturn(false);
         jobConfig.setDisabled(true);
         serverService.persistServerOnline();
-        verify(leaderElectionService).hasLeader();
-        verify(leaderElectionService).leaderElection();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
@@ -105,9 +94,7 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
-        when(leaderElectionService.hasLeader()).thenReturn(true);
         serverService.persistServerOnline();
-        verify(leaderElectionService).hasLeader();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
@@ -188,14 +175,28 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertIsServerReadyWhenServerCrashed() {
+    public void assertIsServerReadyWhenServerShutdown() {
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/stoped")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/status")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/shutdown")).thenReturn(true);
         assertFalse(serverService.isServerReady());
         verify(localHostService, times(3)).getIp();
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/stoped");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/shutdown");
+    }
+    
+    @Test
+    public void assertIsServerReadyWhenServerCrashed() {
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/stoped")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/shutdown")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/status")).thenReturn(false);
+        assertFalse(serverService.isServerReady());
+        verify(localHostService, times(4)).getIp();
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/stoped");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/shutdown");
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/status");
     }
     
@@ -203,12 +204,14 @@ public final class ServerServiceTest {
     public void assertIsServerReadyWhenServerRunning() {
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/stoped")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/shutdown")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/status")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("servers/mockedIP/status")).thenReturn("RUNNING");
         assertFalse(serverService.isServerReady());
-        verify(localHostService, times(3)).getIp();
+        verify(localHostService, times(4)).getIp();
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/stoped");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/shutdown");
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/status");
         verify(jobNodeStorage).getJobNodeData("servers/mockedIP/status");
     }
@@ -217,12 +220,14 @@ public final class ServerServiceTest {
     public void assertIsServerReadyWhenServerReady() {
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/stoped")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/shutdown")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/status")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("servers/mockedIP/status")).thenReturn("READY");
         assertTrue(serverService.isServerReady());
-        verify(localHostService, times(3)).getIp();
+        verify(localHostService, times(4)).getIp();
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/stoped");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/shutdown");
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/status");
         verify(jobNodeStorage).getJobNodeData("servers/mockedIP/status");
     }

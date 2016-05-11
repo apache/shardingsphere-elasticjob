@@ -21,6 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -50,6 +51,9 @@ public final class JobOperationListenerManagerTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
+    private LeaderElectionService leaderElectionService;
+    
+    @Mock
     private ServerService serverService;
     
     @Mock
@@ -68,6 +72,7 @@ public final class JobOperationListenerManagerTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(jobOperationListenerManager, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "serverService", serverService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "executionService", executionService);

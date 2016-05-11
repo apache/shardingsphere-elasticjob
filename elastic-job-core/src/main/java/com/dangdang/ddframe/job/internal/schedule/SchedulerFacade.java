@@ -77,7 +77,7 @@ public class SchedulerFacade {
      */
     public void registerStartUpInfo() {
         listenerManager.startAllListeners();
-        leaderElectionService.leaderElection();
+        leaderElectionService.leaderForceElection();
         configService.persistJobConfiguration();
         serverService.persistServerOnline();
         serverService.clearJobStoppedStatus();
