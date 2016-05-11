@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.internal.election;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.election.ElectionListenerManager.LeaderElectionJobListener;
 import com.dangdang.ddframe.job.internal.server.ServerNode;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -31,11 +31,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.election.ElectionListenerManager.LeaderElectionJobListener;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public final class ElectionListenerManagerTest {
     
@@ -48,9 +46,6 @@ public final class ElectionListenerManagerTest {
     @Mock
     private LeaderElectionService leaderElectionService;
     
-    @Mock
-    private ShardingService shardingService;
-    
     private final ElectionListenerManager electionListenerManager = new ElectionListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
     
     @Before
@@ -59,7 +54,6 @@ public final class ElectionListenerManagerTest {
         ReflectionUtils.setFieldValue(electionListenerManager, electionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
         ReflectionUtils.setFieldValue(electionListenerManager, "serverNode", serverNode);
         ReflectionUtils.setFieldValue(electionListenerManager, "leaderElectionService", leaderElectionService);
-        ReflectionUtils.setFieldValue(electionListenerManager, "shardingService", shardingService);
     }
     
     @Test
@@ -98,7 +92,6 @@ public final class ElectionListenerManagerTest {
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/testJob/leader/election/host", null, "localhost".getBytes())), "/testJob/leader/election/host");
         verify(leaderElectionService).hasLeader();
         verify(leaderElectionService).leaderElection();
-        verify(shardingService).setReshardingFlag();
     }
     
     @Test

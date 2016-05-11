@@ -30,7 +30,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
@@ -88,27 +87,27 @@ public final class LeaderElectionServiceTest {
     }
     
     @Test
-    public void assertLeaderElectionExecutionCallbackWithoutLeaderAndServerIsReady() {
+    public void assertLeaderElectionExecutionCallbackWithoutLeaderAndIsAvailableServer() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(false);
-        when(serverService.isServerReady()).thenReturn(true);
+        when(serverService.isAvailableServer("mockedIP")).thenReturn(true);
         leaderElectionService.new LeaderElectionExecutionCallback(false).execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/election/host");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/election/host", "mockedIP");
     }
     
     @Test
-    public void assertLeaderElectionExecutionCallbackWithoutLeaderAndServerIsNotReady() {
+    public void assertLeaderElectionExecutionCallbackWithoutLeaderAndIsNotAvailableServer() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(false);
-        when(serverService.isServerReady()).thenReturn(false);
+        when(serverService.isAvailableServer("mockedIP")).thenReturn(false);
         leaderElectionService.new LeaderElectionExecutionCallback(false).execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/election/host");
         verify(jobNodeStorage, times(0)).fillEphemeralJobNode("leader/election/host", "mockedIP");
     }
     
     @Test
-    public void assertLeaderForceElectionExecutionCallbackWithoutLeaderAndServerIsNotReady() {
+    public void assertLeaderForceElectionExecutionCallbackWithoutLeaderAndIsNotAvailableServer() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(false);
-        when(serverService.isServerReady()).thenReturn(false);
+        when(serverService.isAvailableServer("mockedIP")).thenReturn(false);
         leaderElectionService.new LeaderElectionExecutionCallback(true).execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/election/host");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/election/host", "mockedIP");

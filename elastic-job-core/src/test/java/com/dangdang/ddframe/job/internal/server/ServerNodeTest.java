@@ -95,4 +95,11 @@ public final class ServerNodeTest {
         assertFalse(serverNode.isServerDisabledPath("/otherJob/servers/host0/status"));
         assertFalse(serverNode.isServerDisabledPath("/testJob/servers/host0/status"));
     }
+    
+    @Test
+    public void assertIsServerShutdownPath() {
+        assertTrue(serverNode.isServerShutdownPath("/testJob/servers/host0/shutdown"));
+        assertFalse(serverNode.isServerShutdownPath("/otherJob/servers/host0/status"));
+        assertFalse(serverNode.isServerShutdownPath("/testJob/servers/host0/status"));
+    }
 }

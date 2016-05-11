@@ -130,8 +130,14 @@ public class ServerService {
         return result;
     }
     
-    private Boolean isAvailableServer(final String ip) {
-        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) 
+    /**
+     * 判断作业服务器是否可用.
+     * 
+     * @param ip 作业服务器IP地址.
+     * @return 作业服务器是否可用
+     */
+    public boolean isAvailableServer(final String ip) {
+        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getStoppedNode(ip))
                 && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip));
     }
     
@@ -140,18 +146,9 @@ public class ServerService {
      * 
      * @return 当前服务器是否是等待执行的状态
      */
-    public boolean isServerReady() {
-        if (jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(localHostService.getIp()))) {
-            return false;
-        }
-        if (jobNodeStorage.isJobNodeExisted(ServerNode.getStoppedNode(localHostService.getIp()))) {
-            return false;
-        }
-        if (jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(localHostService.getIp()))) {
-            return false;
-        }
-        String statusNode = ServerNode.getStatusNode(localHostService.getIp());
-        return jobNodeStorage.isJobNodeExisted(statusNode) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(statusNode));
+    public boolean isLocalhostServerReady() {
+        String ip = localHostService.getIp();
+        return isAvailableServer(ip) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(ServerNode.getStatusNode(ip)));
     }
     
     /**

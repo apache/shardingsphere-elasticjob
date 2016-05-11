@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.internal.server.ServerNode;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +38,6 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     private final LeaderElectionService leaderElectionService;
     
-    private final ShardingService shardingService;
-    
     private final ElectionNode electionNode;
     
     private final ServerNode serverNode;
@@ -48,7 +45,6 @@ public class ElectionListenerManager extends AbstractListenerManager {
     public ElectionListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         super(coordinatorRegistryCenter, jobConfiguration);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
         electionNode = new ElectionNode(jobConfiguration.getJobName());
         serverNode = new ServerNode(jobConfiguration.getJobName());
     }
@@ -66,7 +62,6 @@ public class ElectionListenerManager extends AbstractListenerManager {
             if ((eventHelper.isLeaderCrashed() || eventHelper.isServerEnabled() || eventHelper.isServerResumed()) && !leaderElectionService.hasLeader()) {
                 log.debug("Elastic job: leader crashed, elect a new leader now.");
                 leaderElectionService.leaderElection();
-                shardingService.setReshardingFlag();
                 log.debug("Elastic job: leader election completed.");
                 return;
             }

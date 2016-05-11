@@ -48,7 +48,9 @@ public class ServerNode {
     
     static final String STOPPED = ROOT + "/%s/stoped";
     
-    static final String SHUTDOWN = ROOT + "/%s/shutdown";
+    static final String SHUTDOWN_APPENDIX = "shutdown";
+    
+    static final String SHUTDOWN = ROOT + "/%s/" + SHUTDOWN_APPENDIX;
     
     private final LocalHostService localHostService = new LocalHostService();
     
@@ -134,5 +136,15 @@ public class ServerNode {
      */
     public boolean isServerDisabledPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.DISABLED_APPENDIX);
+    }
+    
+    /**
+     * 判断给定路径是否为作业服务器关闭路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器关闭路径
+     */
+    public boolean isServerShutdownPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.SHUTDOWN_APPENDIX);
     }
 }
