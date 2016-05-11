@@ -72,4 +72,14 @@ public class JobOperationController {
     public void removeJob(final JobServer jobServer) {
         jobOperationService.removeJob(jobServer.getJobName(), jobServer.getIp());
     }
+
+    @RequestMapping(value = "disable", method = RequestMethod.POST)
+    public void disableJob(final JobServer jobServer) {
+        jobOperationService.disableJob(jobServer.getJobName(), jobServer.getIp());
+    }
+
+    @RequestMapping(value = "enable", method = RequestMethod.POST)
+    public void enableJob(final JobServer jobServer) {
+        jobOperationService.enableJob(jobServer.getJobName(), jobServer.getIp());
+    }
 }

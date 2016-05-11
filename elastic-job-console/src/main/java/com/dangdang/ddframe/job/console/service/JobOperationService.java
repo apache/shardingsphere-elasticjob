@@ -34,4 +34,8 @@ public interface JobOperationService {
     void shutdownJob(String jobName, String serverIp);
     
     boolean removeJob(String jobName, String serverIp);
+
+    void disableJob(String jobName, String serverIp);
+
+    void enableJob(String jobName, String serverIp);
 }
