@@ -93,4 +93,14 @@ public class JobOperationServiceImpl implements JobOperationService {
         }
         return false;
     }
+
+    @Override
+    public void disableJob(final String jobName, final String serverIp) {
+        curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
+    }
+
+    @Override
+    public void enableJob(final String jobName, final String serverIp) {
+        curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
+    }
 }

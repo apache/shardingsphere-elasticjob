@@ -16,6 +16,8 @@ $(function() {
     bindResumeAllButton();
     bindShutdownButtons();
     bindRemoveButtons();
+    bindDisableButtons();
+    bindEnableButtons();
 });
 
 function renderSettings() {
@@ -87,6 +89,8 @@ function renderServers() {
             var stopButton = "<button operation='stop' class='btn btn-warning' ip='" + data[i].ip + "'" + (leader ? "data-toggle='modal' data-target='#stop-leader-confirm-dialog'" : "") + ">暂停</button>";
             var shutdownButton = "<button operation='shutdown' class='btn btn-danger' ip='" + data[i].ip + "'>关闭</button>";
             var removeButton = "<button operation='remove' class='btn btn-danger' ip='" + data[i].ip + "'>删除</button>";
+            var disableButton = "<button operation='disable' class='btn btn-danger' ip='" + data[i].ip + "'>失效</button>";
+            var enableButton = "<button operation='enable' class='btn btn-success' ip='" + data[i].ip + "'>生效</button>";
             if ("STOPED" === status) {
                 operationTd = resumeButton + "&nbsp;";
             } else if ("DISABLED" !== status && "CRASHED" !== status && "SHUTDOWN" !== status) {
@@ -96,7 +100,12 @@ function renderServers() {
                 operationTd = operationTd + shutdownButton + "&nbsp;";
             }
             if ("SHUTDOWN" === status || "CRASHED" === status) {
-                operationTd = operationTd + removeButton;
+                operationTd = operationTd + removeButton + "&nbsp;";
+            }
+            if("DISABLED" == status) {
+                operationTd = operationTd + enableButton;
+            } else if ("CRASHED" !== status && "SHUTDOWN" !== status){
+                operationTd = operationTd + disableButton;
             }
             operationTd = "<td>" + operationTd + "</td>";
             var trClass = "";
@@ -197,6 +206,26 @@ function bindRemoveButtons() {
     $(document).on("click", "button[operation='remove']", function(event) {
         var jobName = $("#job-name").text();
         $.post("job/remove", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+            renderServers();
+            showSuccessDialog();
+        });
+    });
+}
+
+function bindDisableButtons() {
+    $(document).on("click", "button[operation='disable']", function(event) {
+        var jobName = $("#job-name").text();
+        $.post("job/disable", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+            renderServers();
+            showSuccessDialog();
+        });
+    });
+}
+
+function bindEnableButtons() {
+    $(document).on("click", "button[operation='enable']", function(event) {
+        var jobName = $("#job-name").text();
+        $.post("job/enable", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
             renderServers();
             showSuccessDialog();
         });
