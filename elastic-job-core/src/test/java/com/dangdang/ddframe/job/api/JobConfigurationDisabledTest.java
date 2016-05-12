@@ -58,4 +58,11 @@ public class JobConfigurationDisabledTest {
         assertTrue(jobConfiguration.isDisabled());
     }
 
+    @Test
+    public void testDisabled6() {
+        jobConfiguration.setAllow("10.168.1.1");
+        jobConfiguration.init();
+        assertTrue(jobConfiguration.isDisabled());
+    }
+
 }
