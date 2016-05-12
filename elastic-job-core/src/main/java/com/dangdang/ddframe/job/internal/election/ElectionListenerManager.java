@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.internal.server.ServerNode;
+import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,8 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     private final LeaderElectionService leaderElectionService;
     
+    private final ServerService serverService;
+    
     private final ElectionNode electionNode;
     
     private final ServerNode serverNode;
@@ -45,6 +48,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
     public ElectionListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         super(coordinatorRegistryCenter, jobConfiguration);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
+        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
         electionNode = new ElectionNode(jobConfiguration.getJobName());
         serverNode = new ServerNode(jobConfiguration.getJobName());
     }
@@ -59,13 +63,13 @@ public class ElectionListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             EventHelper eventHelper = new EventHelper(path, event);
-            if ((eventHelper.isLeaderCrashed() || eventHelper.isServerEnabled() || eventHelper.isServerResumed()) && !leaderElectionService.hasLeader()) {
+            if (eventHelper.isLeaderCrashedOrServerOn() && !leaderElectionService.hasLeader() && !serverService.getAvailableServers().isEmpty()) {
                 log.debug("Elastic job: leader crashed, elect a new leader now.");
                 leaderElectionService.leaderElection();
                 log.debug("Elastic job: leader election completed.");
                 return;
             }
-            if ((eventHelper.isServerDisabled() || eventHelper.isServerPaused() || eventHelper.isServerShutdown()) && leaderElectionService.isLeader()) {
+            if (eventHelper.isServerOff() && leaderElectionService.isLeader()) {
                 leaderElectionService.removeLeader();
             }
         }
@@ -76,28 +80,36 @@ public class ElectionListenerManager extends AbstractListenerManager {
             private final String path;
             
             private final TreeCacheEvent event;
-    
-            boolean isLeaderCrashed() {
+            
+            boolean isLeaderCrashedOrServerOn() {
+                return isLeaderCrashed() || isServerEnabled() || isServerResumed();
+            }
+            
+            private boolean isLeaderCrashed() {
                 return electionNode.isLeaderHostPath(path) && Type.NODE_REMOVED == event.getType();
             }
     
-            boolean isServerEnabled() {
+            private boolean isServerEnabled() {
                 return serverNode.isLocalServerDisabledPath(path) && Type.NODE_REMOVED == event.getType();
             }
-    
-            boolean isServerResumed() {
+            
+            private boolean isServerResumed() {
                 return serverNode.isLocalJobPausedPath(path) && Type.NODE_REMOVED == event.getType();
             }
-    
-            boolean isServerDisabled() {
+            
+            boolean isServerOff() {
+                return isServerDisabled() || isServerPaused() || isServerShutdown();
+            }
+            
+            private boolean isServerDisabled() {
                 return serverNode.isLocalServerDisabledPath(path) && Type.NODE_ADDED == event.getType();
             }
-    
-            boolean isServerPaused() {
+            
+            private boolean isServerPaused() {
                 return serverNode.isLocalJobPausedPath(path) && Type.NODE_ADDED == event.getType();
             }
-    
-            boolean isServerShutdown() {
+            
+            private boolean isServerShutdown() {
                 return serverNode.isLocalJobShutdownPath(path) && Type.NODE_ADDED == event.getType();
             }
         }
