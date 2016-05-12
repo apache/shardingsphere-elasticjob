@@ -193,23 +193,22 @@ public class JobConfiguration {
      *  根据黑白名单设置是否disabled
      */
     private void initDisabled() {
-        boolean disabled = isDisabled();
         if (disabled) {
             //配置中设定的disabled优先级最高
             return;
         }
-        LocalIPFilter ipFilter = new LocalIPFilter(getAllow(), getDeny());
+        LocalIPFilter ipFilter = new LocalIPFilter(allow, deny);
         boolean allowed = ipFilter.isAllowed();
         boolean denied = ipFilter.isDenied();
 
         if (denied) {
             //如果在黑名单，设为disabled=true，优先级高于白名单
-            setDisabled(true);
+            disabled = true;
             return;
         }
         if (!allowed) {
             //不在白名单，设置disable=true
-            setDisabled(true);
+            disabled = true;
         }
         //没有设置disable=true && （不在黑名单 || 黑名单为空） && （在白名单 || 白名单为空）， 则disable=false
     }
