@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.api.listener.fixture.TestElasticJobListener;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.schedule.JobFacade;
-import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
 import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -168,71 +167,6 @@ public final class JobSchedulerTest {
         when(jobDetail.getKey()).thenReturn(jobKey);
         when(scheduler.getTriggersOfJob(jobKey)).thenReturn(triggers);
         assertThat(jobScheduler.getNextFireTime().getTime(), is(0L));
-    }
-    
-    @Test
-    public void assertPauseJobIfShutdown() throws NoSuchFieldException, SchedulerException {
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        when(scheduler.isShutdown()).thenReturn(true);
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.pauseJob();
-        verify(scheduler).isShutdown();
-        verify(scheduler, times(0)).pauseAll();
-    }
-    
-    @Test(expected = JobException.class)
-    public void assertPauseJobFailure() throws NoSuchFieldException, SchedulerException {
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        doThrow(SchedulerException.class).when(scheduler).pauseAll();
-        try {
-            jobScheduler.pauseJob();
-        } finally {
-            verify(scheduler).pauseAll();
-        }
-    }
-    
-    @Test
-    public void assertPauseJobSuccess() throws NoSuchFieldException, SchedulerException {
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        when(scheduler.isShutdown()).thenReturn(false);
-        jobScheduler.pauseJob();
-        verify(scheduler).pauseAll();
-    }
-    
-    @Test
-    public void assertResumeJobIfShutdown() throws NoSuchFieldException, SchedulerException {
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        when(scheduler.isShutdown()).thenReturn(true);
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.resumeJob();
-        verify(scheduler).isShutdown();
-        verify(scheduler, times(0)).resumeAll();
-    }
-    
-    @Test(expected = JobException.class)
-    public void assertResumeJobFailure() throws NoSuchFieldException, SchedulerException {
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        when(scheduler.isShutdown()).thenReturn(false);
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        doThrow(SchedulerException.class).when(scheduler).resumeAll();
-        try {
-            jobScheduler.resumeJob();
-        } finally {
-            verify(scheduler).isShutdown();
-            verify(scheduler).resumeAll();
-        }
-    }
-    
-    @Test
-    public void assertResumeJobSuccess() throws NoSuchFieldException, SchedulerException {
-        JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
-        when(scheduler.isShutdown()).thenReturn(false);
-        ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.resumeJob();
-        verify(scheduler).isShutdown();
-        verify(scheduler).resumeAll();
     }
     
     @Test
