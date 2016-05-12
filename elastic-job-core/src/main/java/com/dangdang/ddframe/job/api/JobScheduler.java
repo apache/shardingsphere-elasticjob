@@ -176,9 +176,9 @@ public class JobScheduler {
     }
     
     /**
-     * 停止作业.
+     * 暂停作业.
      */
-    public void stopJob() {
+    public void pauseJob() {
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.pauseAll();

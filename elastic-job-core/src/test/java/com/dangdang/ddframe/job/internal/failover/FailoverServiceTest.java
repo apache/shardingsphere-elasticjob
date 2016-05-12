@@ -116,11 +116,11 @@ public final class FailoverServiceTest {
     public void assertFailoverIfUnnecessaryWhenServerIsNotReady() {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(serverService.isServerReady()).thenReturn(false);
+        when(serverService.isLocalhostServerReady()).thenReturn(false);
         failoverService.failoverIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage).getJobNodeChildrenKeys("leader/failover/items");
-        verify(serverService).isServerReady();
+        verify(serverService).isLocalhostServerReady();
         verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/failover/latch"), Matchers.<FailoverLeaderExecutionCallback>any());
     }
     
@@ -128,11 +128,11 @@ public final class FailoverServiceTest {
     public void assertFailoverIfNecessary() {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(serverService.isServerReady()).thenReturn(true);
+        when(serverService.isLocalhostServerReady()).thenReturn(true);
         failoverService.failoverIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage).getJobNodeChildrenKeys("leader/failover/items");
-        verify(serverService).isServerReady();
+        verify(serverService).isLocalhostServerReady();
         verify(jobNodeStorage).executeInLeader(eq("leader/failover/latch"), Matchers.<FailoverLeaderExecutionCallback>any());
     }
     
@@ -148,12 +148,12 @@ public final class FailoverServiceTest {
     public void assertFailoverLeaderExecutionCallbackIfNecessary() {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(serverService.isServerReady()).thenReturn(true);
+        when(serverService.isLocalhostServerReady()).thenReturn(true);
         JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
         failoverService.new FailoverLeaderExecutionCallback().execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage, times(2)).getJobNodeChildrenKeys("leader/failover/items");
-        verify(serverService).isServerReady();
+        verify(serverService).isLocalhostServerReady();
         verify(jobNodeStorage).fillEphemeralJobNode("execution/0/failover", "mockedIP");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/failover/items/0");
         verify(jobScheduler).triggerJob();

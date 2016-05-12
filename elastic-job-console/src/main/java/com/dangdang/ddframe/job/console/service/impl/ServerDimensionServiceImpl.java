@@ -105,12 +105,12 @@ public class ServerDimensionServiceImpl implements ServerDimensionService {
         result.setSharding(curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "sharding")));
         String status = curatorRepository.getData(JobNodePath.getServerNodePath(jobName, serverIp, "status"));
         boolean disabled = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
-        boolean stopped = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+        boolean paused = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "paused"));
         boolean shutdown = curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"));
-        result.setStatus(ServerStatus.getServerStatus(status, disabled, stopped, shutdown));
+        result.setStatus(ServerStatus.getServerStatus(status, disabled, paused, shutdown));
         String leaderIp = curatorRepository.getData(JobNodePath.getLeaderNodePath(jobName, "election/host"));
         result.setLeader(serverIp.equals(leaderIp));
-        result.setLeaderStopped(curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "stoped")));
+        result.setLeaderPaused(curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "paused")));
         return result;
     }
 }

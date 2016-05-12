@@ -62,7 +62,7 @@ weight=10
 | sharding                         | 否      | 该作业服务器分到的作业分片项<br />多个分片项用逗号分隔<br />如：`0, 1, 2`代表该服务器执行第`1, 2, 3`片分片 |
 | processSuccessCount              | 否      | 统计一段时间内处理数据成功的数量<br />统计间隔可通过`config\processCountIntervalSeconds`配置 |
 | processFailureCount              | 否      | 统计一段时间内处理数据失败的数量<br />统计间隔可通过`config\processCountIntervalSeconds`配置 |
-| stoped                           | 否      | 暂停作业的标记，暂停的作业不会终止调度器运行。作业程序再次启动时不会清理此标记                   |
+| paused                           | 否      | 暂停作业的标记，暂停的作业不会终止调度器运行。作业程序再次启动时不会清理此标记                   |
 | shutdown                         | 否      | 关闭作业的标记，关闭的作业将停止调度，并可通过控制台删除。只有作业程序再次启动时才会清理此标记     |
 
 ### execution节点

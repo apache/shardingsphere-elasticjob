@@ -17,17 +17,17 @@
 
 package com.dangdang.ddframe.job.internal.election;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.internal.server.ServerNode;
+import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 主节点选举监听管理器.
@@ -39,15 +39,18 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     private final LeaderElectionService leaderElectionService;
     
-    private final ShardingService shardingService;
+    private final ServerService serverService;
     
     private final ElectionNode electionNode;
+    
+    private final ServerNode serverNode;
     
     public ElectionListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         super(coordinatorRegistryCenter, jobConfiguration);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
+        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
         electionNode = new ElectionNode(jobConfiguration.getJobName());
+        serverNode = new ServerNode(jobConfiguration.getJobName());
     }
     
     @Override
@@ -59,11 +62,55 @@ public class ElectionListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (electionNode.isLeaderHostPath(path) && Type.NODE_REMOVED == event.getType() && !leaderElectionService.hasLeader()) {
+            EventHelper eventHelper = new EventHelper(path, event);
+            if (eventHelper.isLeaderCrashedOrServerOn() && !leaderElectionService.hasLeader() && !serverService.getAvailableServers().isEmpty()) {
                 log.debug("Elastic job: leader crashed, elect a new leader now.");
                 leaderElectionService.leaderElection();
-                shardingService.setReshardingFlag();
                 log.debug("Elastic job: leader election completed.");
+                return;
+            }
+            if (eventHelper.isServerOff() && leaderElectionService.isLeader()) {
+                leaderElectionService.removeLeader();
+            }
+        }
+        
+        @RequiredArgsConstructor
+        final class EventHelper {
+            
+            private final String path;
+            
+            private final TreeCacheEvent event;
+            
+            boolean isLeaderCrashedOrServerOn() {
+                return isLeaderCrashed() || isServerEnabled() || isServerResumed();
+            }
+            
+            private boolean isLeaderCrashed() {
+                return electionNode.isLeaderHostPath(path) && Type.NODE_REMOVED == event.getType();
+            }
+    
+            private boolean isServerEnabled() {
+                return serverNode.isLocalServerDisabledPath(path) && Type.NODE_REMOVED == event.getType();
+            }
+            
+            private boolean isServerResumed() {
+                return serverNode.isLocalJobPausedPath(path) && Type.NODE_REMOVED == event.getType();
+            }
+            
+            boolean isServerOff() {
+                return isServerDisabled() || isServerPaused() || isServerShutdown();
+            }
+            
+            private boolean isServerDisabled() {
+                return serverNode.isLocalServerDisabledPath(path) && Type.NODE_ADDED == event.getType();
+            }
+            
+            private boolean isServerPaused() {
+                return serverNode.isLocalJobPausedPath(path) && Type.NODE_ADDED == event.getType();
+            }
+            
+            private boolean isServerShutdown() {
+                return serverNode.isLocalJobShutdownPath(path) && Type.NODE_ADDED == event.getType();
             }
         }
     }

@@ -171,33 +171,33 @@ public final class JobSchedulerTest {
     }
     
     @Test
-    public void assertStopJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+    public void assertPauseJobIfShutdown() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         when(scheduler.isShutdown()).thenReturn(true);
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
-        jobScheduler.stopJob();
+        jobScheduler.pauseJob();
         verify(scheduler).isShutdown();
         verify(scheduler, times(0)).pauseAll();
     }
     
     @Test(expected = JobException.class)
-    public void assertStopJobFailure() throws NoSuchFieldException, SchedulerException {
+    public void assertPauseJobFailure() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         doThrow(SchedulerException.class).when(scheduler).pauseAll();
         try {
-            jobScheduler.stopJob();
+            jobScheduler.pauseJob();
         } finally {
             verify(scheduler).pauseAll();
         }
     }
     
     @Test
-    public void assertStopJobSuccess() throws NoSuchFieldException, SchedulerException {
+    public void assertPauseJobSuccess() throws NoSuchFieldException, SchedulerException {
         JobRegistry.getInstance().addJobInstance("testJob", new TestJob());
         ReflectionUtils.setFieldValue(jobScheduler, "scheduler", scheduler);
         when(scheduler.isShutdown()).thenReturn(false);
-        jobScheduler.stopJob();
+        jobScheduler.pauseJob();
         verify(scheduler).pauseAll();
     }
     

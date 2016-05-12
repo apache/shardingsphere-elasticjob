@@ -49,7 +49,7 @@ public class DashboardController {
     
     @RequestMapping(value = "registry_center_page", method = RequestMethod.GET)
     public String registryCenterPage(final ModelMap model) {
-        model.put("activedTab", 1);
+        model.put("activeTab", 1);
         return "registry_center";
     }
     
@@ -67,13 +67,13 @@ public class DashboardController {
     
     @RequestMapping(value = "overview", method = RequestMethod.GET)
     public String overview(final ModelMap model) {
-        model.put("activedTab", 0);
+        model.put("activeTab", 0);
         return "overview";
     }
     
     @RequestMapping(value = "help", method = RequestMethod.GET)
     public String help(final ModelMap model) {
-        model.put("activedTab", 2);
+        model.put("activeTab", 2);
         return "help";
     }
 }

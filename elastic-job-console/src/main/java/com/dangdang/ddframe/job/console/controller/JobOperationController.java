@@ -33,9 +33,9 @@ public class JobOperationController {
     @Resource
     private JobOperationService jobOperationService;
     
-    @RequestMapping(value = "stop", method = RequestMethod.POST)
-    public void stopJob(final JobServer jobServer) {
-        jobOperationService.stopJob(jobServer.getJobName(), jobServer.getIp());
+    @RequestMapping(value = "pause", method = RequestMethod.POST)
+    public void pauseJob(final JobServer jobServer) {
+        jobOperationService.pauseJob(jobServer.getJobName(), jobServer.getIp());
     }
     
     @RequestMapping(value = "resume", method = RequestMethod.POST)
@@ -43,9 +43,9 @@ public class JobOperationController {
         jobOperationService.resumeJob(jobServer.getJobName(), jobServer.getIp());
     }
     
-    @RequestMapping(value = "stopAll/name", method = RequestMethod.POST)
-    public void stopAllJobsByJobName(final JobServer jobServer) {
-        jobOperationService.stopAllJobsByJobName(jobServer.getJobName());
+    @RequestMapping(value = "pauseAll/name", method = RequestMethod.POST)
+    public void pauseAllJobsByJobName(final JobServer jobServer) {
+        jobOperationService.pauseAllJobsByJobName(jobServer.getJobName());
     }
     
     @RequestMapping(value = "resumeAll/name", method = RequestMethod.POST)
@@ -53,9 +53,9 @@ public class JobOperationController {
         jobOperationService.resumeAllJobsByJobName(jobServer.getJobName());
     }
     
-    @RequestMapping(value = "stopAll/ip", method = RequestMethod.POST)
-    public void stopAllJobs(final JobServer jobServer) {
-        jobOperationService.stopAllJobsByServer(jobServer.getIp());
+    @RequestMapping(value = "pauseAll/ip", method = RequestMethod.POST)
+    public void pauseAllJobs(final JobServer jobServer) {
+        jobOperationService.pauseAllJobsByServer(jobServer.getIp());
     }
     
     @RequestMapping(value = "resumeAll/ip", method = RequestMethod.POST)
