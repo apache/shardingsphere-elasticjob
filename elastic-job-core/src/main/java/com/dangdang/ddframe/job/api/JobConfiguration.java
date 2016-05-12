@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.internal.network.LocalIPFilter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -164,4 +165,52 @@ public class JobConfiguration {
      * 如果可覆盖, 每次启动作业都以本地配置为准.
      */
     private boolean overwrite;
+
+    /**
+     *  任务执行服务器IP白名单
+     *  <p>
+     *      使用','分隔符分隔多个IP地址，IP地址可以后加'/子网掩码有效位数'来指定IP网段。
+     *  </p>
+     */
+    private String allow = null;
+
+    /**
+     *  任务执行服务器IP黑名单，黑名单优先级高于白名单
+     *  <p>
+     *      使用','分隔符分隔多个IP地址，IP地址可以后加'/子网掩码有效位数'来指定IP网段。
+     *  </p>
+     */
+    private String deny = null;
+
+    /**
+     *  初始化
+     */
+    public void init() {
+        initDisabled();
+    }
+
+    /**
+     *  根据黑白名单设置是否disabled
+     */
+    private void initDisabled() {
+        boolean disabled = isDisabled();
+        if (disabled) {
+            //配置中设定的disabled优先级最高
+            return;
+        }
+        LocalIPFilter ipFilter = new LocalIPFilter(getAllow(), getDeny());
+        boolean allowed = ipFilter.isAllowed();
+        boolean denied = ipFilter.isDenied();
+
+        if (denied) {
+            //如果在黑名单，设为disabled=true，优先级高于白名单
+            setDisabled(true);
+            return;
+        }
+        if (!allowed) {
+            //不在白名单，设置disable=true
+            setDisabled(true);
+        }
+        //没有设置disable=true && （不在黑名单 || 黑名单为空） && （在白名单 || 白名单为空）， 则disable=false
+    }
 }

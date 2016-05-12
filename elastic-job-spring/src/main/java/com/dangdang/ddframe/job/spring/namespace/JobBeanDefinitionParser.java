@@ -72,6 +72,8 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
         addPropertyValueIfNotEmpty("description", element, factory);
         addPropertyValueIfNotEmpty("disabled", element, factory);
         addPropertyValueIfNotEmpty("overwrite", element, factory);
+        addPropertyValueIfNotEmpty("allow", element, factory);
+        addPropertyValueIfNotEmpty("deny", element, factory);
         String result = element.getAttribute("id") + "Conf";
         parserContext.getRegistry().registerBeanDefinition(result, factory.getBeanDefinition());
         return result;

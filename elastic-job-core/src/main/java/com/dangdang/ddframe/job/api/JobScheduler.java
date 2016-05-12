@@ -69,6 +69,7 @@ public class JobScheduler {
     private Scheduler scheduler;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+        jobConfig.init();
         jobName = jobConfig.getJobName();
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
@@ -77,7 +78,7 @@ public class JobScheduler {
         jobFacade = new JobFacade(regCenter, jobConfig, elasticJobListenerList);
         jobDetail = JobBuilder.newJob(jobConfig.getJobClass()).withIdentity(jobName).build();
     }
-    
+
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners) {
         GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobConfig);
         for (ElasticJobListener each : elasticJobListeners) {
