@@ -40,6 +40,8 @@
                     <xsd:attribute name="description" type="xsd:string" />
                     <xsd:attribute name="disabled" type="xsd:string" />
                     <xsd:attribute name="overwrite" type="xsd:string" />
+                    <xsd:attribute name="allow" type="xsd:string" />
+                    <xsd:attribute name="deny" type="xsd:string" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

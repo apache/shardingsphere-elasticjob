@@ -26,7 +26,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     JobExecutionMultipleShardingContextTest.class, 
     JobSchedulerTest.class,
-    DistributeOnceElasticJobListenerTest.class
+    DistributeOnceElasticJobListenerTest.class,
+    JobConfigurationDisabledTest.class
     })
 public final class AllApiTests {
 }
