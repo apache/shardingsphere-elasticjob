@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.internal.job;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.internal.schedule.JobFacade;
-import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +101,5 @@ public abstract class AbstractElasticJob implements ElasticJob {
     
     public final void setJobFacade(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
-        JobRegistry.getInstance().addJobInstance(jobFacade.getJobName(), this);
     }
 }

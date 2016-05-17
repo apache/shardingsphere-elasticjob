@@ -17,14 +17,12 @@
 
 package com.dangdang.ddframe.job.internal.schedule;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobScheduler;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 作业注册表.
@@ -38,8 +36,6 @@ public final class JobRegistry {
     private static volatile JobRegistry instance;
     
     private Map<String, JobScheduler> schedulerMap = new ConcurrentHashMap<>();
-    
-    private ConcurrentHashMap<String, ElasticJob> instanceMap = new ConcurrentHashMap<>();
     
     /**
      * 获取作业注册表实例.
@@ -75,25 +71,5 @@ public final class JobRegistry {
      */
     public JobScheduler getJobScheduler(final String jobName) {
         return schedulerMap.get(jobName);
-    }
-    
-    /**
-     * 添加作业实例.
-     * 
-     * @param jobName 作业名称
-     * @param job 作业实例
-     */
-    public void addJobInstance(final String jobName, final ElasticJob job) {
-        instanceMap.putIfAbsent(jobName, job);
-    }
-    
-    /**
-     * 获取作业实例.
-     * 
-     * @param jobName 作业名称
-     * @return 作业实例
-     */
-    public ElasticJob getJobInstance(final String jobName) {
-        return instanceMap.get(jobName);
     }
 }
