@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,39 +32,39 @@ public class JobOperationServiceImpl implements JobOperationService {
     private CuratorRepository curatorRepository;
     
     @Override
-    public void stopJob(final String jobName, final String serverIp) {
-        curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+    public void pauseJob(final String jobName, final String serverIp) {
+        curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "paused"));
     }
     
     @Override
     public void resumeJob(final String jobName, final String serverIp) {
-        curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+        curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp, "paused"));
     }
     
     @Override
-    public void stopAllJobsByJobName(final String jobName) {
+    public void pauseAllJobsByJobName(final String jobName) {
         for (String each : curatorRepository.getChildren(JobNodePath.getServerNodePath(jobName))) {
-            curatorRepository.create(JobNodePath.getServerNodePath(jobName, each, "stoped"));
+            curatorRepository.create(JobNodePath.getServerNodePath(jobName, each, "paused"));
         }
     }
     
     @Override
     public void resumeAllJobsByJobName(final String jobName) {
         for (String each : curatorRepository.getChildren(JobNodePath.getServerNodePath(jobName))) {
-            curatorRepository.delete(JobNodePath.getServerNodePath(jobName, each, "stoped"));
+            curatorRepository.delete(JobNodePath.getServerNodePath(jobName, each, "paused"));
         }
     }
     
     @Override
-    public void stopAllJobsByServer(final String serverIp) {
+    public void pauseAllJobsByServer(final String serverIp) {
         for (String jobName : curatorRepository.getChildren("/")) {
             String leaderIp = curatorRepository.getData(JobNodePath.getLeaderNodePath(jobName, "election/host"));
             if (serverIp.equals(leaderIp)) {
-                for (String toBeStopedIp : curatorRepository.getChildren(JobNodePath.getServerNodePath(jobName))) {
-                    curatorRepository.create(JobNodePath.getServerNodePath(jobName, toBeStopedIp, "stoped"));
+                for (String toBePausedIp : curatorRepository.getChildren(JobNodePath.getServerNodePath(jobName))) {
+                    curatorRepository.create(JobNodePath.getServerNodePath(jobName, toBePausedIp, "paused"));
                 }
             } else {
-                curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+                curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "paused"));
             }
         }
     }
@@ -73,10 +73,34 @@ public class JobOperationServiceImpl implements JobOperationService {
     public void resumeAllJobsByServer(final String serverIp) {
         for (String jobName : curatorRepository.getChildren("/")) {
             String leaderIp = curatorRepository.getData(JobNodePath.getLeaderNodePath(jobName, "election/host"));
-            if (!serverIp.equals(leaderIp) && curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "stoped"))) {
+            if (!serverIp.equals(leaderIp) && curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, leaderIp, "paused"))) {
                 continue;
             }
-            curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp, "stoped"));
+            curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp, "paused"));
         }
+    }
+    
+    @Override
+    public void shutdownJob(final String jobName, final String serverIp) {
+        curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"));
+    }
+    
+    @Override
+    public boolean removeJob(final String jobName, final String serverIp) {
+        if (!curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "status")) || curatorRepository.checkExists(JobNodePath.getServerNodePath(jobName, serverIp, "shutdown"))) {
+            curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp));
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void disableJob(final String jobName, final String serverIp) {
+        curatorRepository.create(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
+    }
+
+    @Override
+    public void enableJob(final String jobName, final String serverIp) {
+        curatorRepository.delete(JobNodePath.getServerNodePath(jobName, serverIp, "disabled"));
     }
 }

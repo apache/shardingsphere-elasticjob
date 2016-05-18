@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,6 +58,14 @@ public final class SpringZookeeperRegistryCenter extends ZookeeperRegistryCenter
         String digest = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getDigest());
         if (!Strings.isNullOrEmpty(digest)) {
             getZkConfig().setDigest(digest);
+        }
+        String nestedPort = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getNestedPort());
+        if (!Strings.isNullOrEmpty(nestedPort)) {
+            getZkConfig().setNestedPort(Integer.parseInt(nestedPort));
+        }
+        String nestedDataDir = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getNestedDataDir());
+        if (!Strings.isNullOrEmpty(nestedDataDir)) {
+            getZkConfig().setNestedDataDir(nestedDataDir);
         }
         String localPropertiesPath = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getLocalPropertiesPath());
         if (!Strings.isNullOrEmpty(localPropertiesPath)) {

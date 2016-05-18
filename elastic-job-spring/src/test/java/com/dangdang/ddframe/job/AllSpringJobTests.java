@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,18 @@
 
 package com.dangdang.ddframe.job;
 
+import com.dangdang.ddframe.job.spring.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.job.spring.WithNamespaceTest;
-import com.dangdang.ddframe.job.spring.WithoutNamespaceTest;
-import com.dangdang.ddframe.job.spring.failure.ClassNotElasticJobTest;
-import com.dangdang.ddframe.job.spring.failure.ClassNotFoundTest;
-
 @RunWith(Suite.class)
 @SuiteClasses({
-    WithNamespaceTest.class, 
-    WithoutNamespaceTest.class, 
-    ClassNotFoundTest.class, 
-    ClassNotElasticJobTest.class
+    WithNamespaceTest.class,
+    WithNamespaceAndListenerTest.class,
+    WithNamespaceAndListenerAndJdkDynamicProxyTest.class,
+    WithNamespaceAndListenerAndCglibTest.class,
+    WithoutNamespaceTest.class
     })
 public class AllSpringJobTests {
 }

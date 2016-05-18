@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -133,6 +133,11 @@ public class JobConfiguration {
      * 是否开启misfire.
      */
     private boolean misfire = true;
+    
+    /**
+     * 作业辅助监控端口.
+     */
+    private int monitorPort = -1;
     
     /**
      * 作业分片策略实现类全路径.

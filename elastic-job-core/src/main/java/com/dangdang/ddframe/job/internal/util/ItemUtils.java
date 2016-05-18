@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,17 +24,18 @@ import java.util.List;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 分片项工具类.
  * 
  * @author zhangliang
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ItemUtils {
     
     private static final String DELIMITER = ",";
-    
-    private ItemUtils() {
-    }
     
     /**
      * 根据分片项字符串获取分片项列表.

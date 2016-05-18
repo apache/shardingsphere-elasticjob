@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +17,11 @@
 
 package com.dangdang.ddframe.job.internal.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BlockUtils {
-    
-    private BlockUtils() {
-    }
     
     public static void waitingShortTime() {
         sleep(100L);

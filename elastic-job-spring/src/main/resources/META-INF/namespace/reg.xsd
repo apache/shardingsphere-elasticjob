@@ -41,6 +41,8 @@
                     <xsd:attribute name="sessionTimeoutMilliseconds" type="xsd:string" />
                     <xsd:attribute name="connectionTimeoutMilliseconds" type="xsd:string" />
                     <xsd:attribute name="digest" type="xsd:string" />
+                    <xsd:attribute name="nestedPort" type="xsd:string" />
+                    <xsd:attribute name="nestedDataDir" type="xsd:string" />
                     <xsd:attribute name="localPropertiesPath" type="xsd:string" />
                     <xsd:attribute name="overwrite" type="xsd:string" />
                 </xsd:extension>

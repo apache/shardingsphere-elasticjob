@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,19 +17,18 @@
 
 package com.dangdang.ddframe.job.internal.server;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 
 public final class ServerNodeTest {
     
-    private LocalHostService localHostService = new RealLocalHostService();
+    private LocalHostService localHostService = new LocalHostService();
     
     private ServerNode serverNode = new ServerNode("testJob");
     
@@ -59,8 +58,28 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertStopedNode() {
-        assertThat(ServerNode.getStopedNode("host0"), is("servers/host0/stoped"));
+    public void assertPausedNode() {
+        assertThat(ServerNode.getPausedNode("host0"), is("servers/host0/paused"));
+    }
+    
+    @Test
+    public void assertShutdownNode() {
+        assertThat(ServerNode.getShutdownNode("host0"), is("servers/host0/shutdown"));
+    }
+    
+    @Test
+    public void assertIsLocalJobPausedPath() {
+        assertTrue(serverNode.isLocalJobPausedPath("/testJob/servers/" + localHostService.getIp() + "/paused"));
+    }
+    
+    @Test
+    public void assertIsLocalJobShutdownPath() {
+        assertTrue(serverNode.isLocalJobShutdownPath("/testJob/servers/" + localHostService.getIp() + "/shutdown"));
+    }
+    
+    @Test
+    public void assertIsLocalServerDisabledPath() {
+        assertTrue(serverNode.isLocalServerDisabledPath("/testJob/servers/" + localHostService.getIp() + "/disabled"));
     }
     
     @Test
@@ -78,7 +97,9 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertIsJobStopedPath() {
-        assertTrue(serverNode.isJobStopedPath("/testJob/servers/" + localHostService.getIp() + "/stoped"));
+    public void assertIsServerShutdownPath() {
+        assertTrue(serverNode.isServerShutdownPath("/testJob/servers/host0/shutdown"));
+        assertFalse(serverNode.isServerShutdownPath("/otherJob/servers/host0/status"));
+        assertFalse(serverNode.isServerShutdownPath("/testJob/servers/host0/status"));
     }
 }

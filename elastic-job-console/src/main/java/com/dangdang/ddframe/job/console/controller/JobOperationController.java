@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,9 +33,9 @@ public class JobOperationController {
     @Resource
     private JobOperationService jobOperationService;
     
-    @RequestMapping(value = "stop", method = RequestMethod.POST)
-    public void stopJob(final JobServer jobServer) {
-        jobOperationService.stopJob(jobServer.getJobName(), jobServer.getIp());
+    @RequestMapping(value = "pause", method = RequestMethod.POST)
+    public void pauseJob(final JobServer jobServer) {
+        jobOperationService.pauseJob(jobServer.getJobName(), jobServer.getIp());
     }
     
     @RequestMapping(value = "resume", method = RequestMethod.POST)
@@ -43,9 +43,9 @@ public class JobOperationController {
         jobOperationService.resumeJob(jobServer.getJobName(), jobServer.getIp());
     }
     
-    @RequestMapping(value = "stopAll/name", method = RequestMethod.POST)
-    public void stopAllJobsByJobName(final JobServer jobServer) {
-        jobOperationService.stopAllJobsByJobName(jobServer.getJobName());
+    @RequestMapping(value = "pauseAll/name", method = RequestMethod.POST)
+    public void pauseAllJobsByJobName(final JobServer jobServer) {
+        jobOperationService.pauseAllJobsByJobName(jobServer.getJobName());
     }
     
     @RequestMapping(value = "resumeAll/name", method = RequestMethod.POST)
@@ -53,13 +53,33 @@ public class JobOperationController {
         jobOperationService.resumeAllJobsByJobName(jobServer.getJobName());
     }
     
-    @RequestMapping(value = "stopAll/ip", method = RequestMethod.POST)
-    public void stopAllJobs(final JobServer jobServer) {
-        jobOperationService.stopAllJobsByServer(jobServer.getIp());
+    @RequestMapping(value = "pauseAll/ip", method = RequestMethod.POST)
+    public void pauseAllJobs(final JobServer jobServer) {
+        jobOperationService.pauseAllJobsByServer(jobServer.getIp());
     }
     
     @RequestMapping(value = "resumeAll/ip", method = RequestMethod.POST)
     public void resumeAllJobs(final JobServer jobServer) {
         jobOperationService.resumeAllJobsByServer(jobServer.getIp());
+    }
+    
+    @RequestMapping(value = "shutdown", method = RequestMethod.POST)
+    public void shutdownJob(final JobServer jobServer) {
+        jobOperationService.shutdownJob(jobServer.getJobName(), jobServer.getIp());
+    }
+    
+    @RequestMapping(value = "remove", method = RequestMethod.POST)
+    public void removeJob(final JobServer jobServer) {
+        jobOperationService.removeJob(jobServer.getJobName(), jobServer.getIp());
+    }
+
+    @RequestMapping(value = "disable", method = RequestMethod.POST)
+    public void disableJob(final JobServer jobServer) {
+        jobOperationService.disableJob(jobServer.getJobName(), jobServer.getIp());
+    }
+
+    @RequestMapping(value = "enable", method = RequestMethod.POST)
+    public void enableJob(final JobServer jobServer) {
+        jobOperationService.enableJob(jobServer.getJobName(), jobServer.getIp());
     }
 }

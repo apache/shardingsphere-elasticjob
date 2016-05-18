@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -118,7 +118,7 @@ public class CuratorRepositoryImpl implements CuratorRepository {
     @Override
     public void create(final String znode) {
         try {
-            SessionCuratorClient.getCuratorClient().create().forPath(znode, new String("").getBytes());
+            SessionCuratorClient.getCuratorClient().create().forPath(znode, "".getBytes());
         } catch (final NodeExistsException ex) {
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
@@ -142,7 +142,7 @@ public class CuratorRepositoryImpl implements CuratorRepository {
     public void delete(final String znode) {
         try {
             if (null != SessionCuratorClient.getCuratorClient().checkExists().forPath(znode)) {
-                SessionCuratorClient.getCuratorClient().delete().forPath(znode);
+                SessionCuratorClient.getCuratorClient().delete().deletingChildrenIfNeeded().forPath(znode);
             }
         } catch (final NoNodeException ex) {
         //CHECKSTYLE:OFF

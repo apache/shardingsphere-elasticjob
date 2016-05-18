@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +33,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author caohao
  */
-public final class ConfigurationListenerManager extends AbstractListenerManager {
+public class ConfigurationListenerManager extends AbstractListenerManager {
     
     private final ConfigurationNode configNode;
     
@@ -47,22 +47,20 @@ public final class ConfigurationListenerManager extends AbstractListenerManager 
     
     @Override
     public void start() {
-        listenCronSettingChanged();
+        addDataListener(new CronSettingChangedJobListener());
     }
     
-    void listenCronSettingChanged() {
-        addDataListener(new AbstractJobListener() {
-            
-            @Override
-            protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
-                    String cronExpression = new String(event.getData().getData());
-                    JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
-                    if (null != jobScheduler) {
-                        jobScheduler.rescheduleJob(cronExpression);
-                    }
+    class CronSettingChangedJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
+                String cronExpression = new String(event.getData().getData());
+                JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
+                if (null != jobScheduler) {
+                    jobScheduler.rescheduleJob(cronExpression);
                 }
             }
-        });
+        }
     }
 }

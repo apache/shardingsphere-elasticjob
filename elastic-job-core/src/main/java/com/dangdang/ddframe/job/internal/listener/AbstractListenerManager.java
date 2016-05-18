@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,10 @@ public abstract class AbstractListenerManager {
     protected AbstractListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
     }
-    
+
+    /**
+     * 开启监听器.
+     */
     public abstract void start();
     
     protected void addDataListener(final TreeCacheListener listener) {

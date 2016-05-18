@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,17 +17,20 @@
 
 package com.dangdang.ddframe.job.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-
+import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.internal.guarantee.GuaranteeService;
+import com.dangdang.ddframe.job.internal.schedule.JobFacade;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
-
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -35,129 +38,78 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionContextService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
-import com.dangdang.ddframe.job.internal.listener.ListenerManager;
-import com.dangdang.ddframe.job.internal.offset.OffsetService;
-import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
-import com.dangdang.ddframe.job.internal.server.ServerService;
-import com.dangdang.ddframe.job.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.internal.statistics.StatisticsService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * 作业调度器.
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
  */
 @Slf4j
 public class JobScheduler {
     
     private static final String SCHEDULER_INSTANCE_NAME_SUFFIX = "Scheduler";
     
-    private static final String CRON_TRIGGER_INDENTITY_SUFFIX = "Trigger";
+    private static final String CRON_TRIGGER_IDENTITY_SUFFIX = "Trigger";
     
-    private final JobConfiguration jobConfiguration;
+    private final String jobName;
     
-    private final ListenerManager listenerManager;
+    private final CoordinatorRegistryCenter regCenter;
     
-    private final ConfigurationService configService;
+    private final SchedulerFacade schedulerFacade;
     
-    private final LeaderElectionService leaderElectionService;
+    private final JobFacade jobFacade;
     
-    private final ServerService serverService;
-    
-    private final ShardingService shardingService;
-    
-    private final ExecutionContextService executionContextService;
-    
-    private final ExecutionService executionService;
-    
-    private final FailoverService failoverService;
-    
-    private final StatisticsService statisticsService;
-    
-    private final OffsetService offsetService;
+    private final JobDetail jobDetail;
     
     private Scheduler scheduler;
     
-    private JobDetail jobDetail;
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
+        jobName = jobConfig.getJobName();
+        this.regCenter = regCenter;
+        List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
+        setGuaranteeServiceForElasticJobListeners(regCenter, jobConfig, elasticJobListenerList);
+        schedulerFacade = new SchedulerFacade(regCenter, jobConfig, elasticJobListenerList);
+        jobFacade = new JobFacade(regCenter, jobConfig, elasticJobListenerList);
+        jobDetail = JobBuilder.newJob(jobConfig.getJobClass()).withIdentity(jobName).build();
+    }
     
-    public JobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        this.jobConfiguration = jobConfiguration;
-        listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration);
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        executionContextService = new ExecutionContextService(coordinatorRegistryCenter, jobConfiguration);
-        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
-        failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
-        statisticsService = new StatisticsService(coordinatorRegistryCenter, jobConfiguration);
-        offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
+    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners) {
+        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobConfig);
+        for (ElasticJobListener each : elasticJobListeners) {
+            if (each instanceof AbstractDistributeOnceElasticJobListener) {
+                ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
+            }
+        }
     }
     
     /**
      * 初始化作业.
      */
     public void init() {
-        log.debug("Elastic job: job controller init, job name is: {}.", jobConfiguration.getJobName());
-        registerElasticEnv();
-        jobDetail = createJobDetail();
+        log.debug("Elastic job: job controller init, job name is: {}.", jobName);
+        schedulerFacade.clearPreviousServerStatus();
+        regCenter.addCacheData("/" + jobName);
+        schedulerFacade.registerStartUpInfo();
+        jobDetail.getJobDataMap().put("jobFacade", jobFacade);
         try {
             scheduler = initializeScheduler(jobDetail.getKey().toString());
-            scheduleJob(createTrigger(configService.getCron()));
+            scheduleJob(createTrigger(schedulerFacade.getCron()));
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
-        JobRegistry.getInstance().addJob(jobConfiguration.getJobName(), this);
-    }
-    
-    private void registerElasticEnv() {
-        listenerManager.startAllListeners();
-        leaderElectionService.leaderElection();
-        configService.persistJobConfiguration();
-        serverService.persistServerOnline();
-        serverService.clearJobStopedStatus();
-        statisticsService.startProcessCountJob();
-        shardingService.setReshardingFlag();
-    }
-    
-    private JobDetail createJobDetail() {
-        JobDetail result = JobBuilder.newJob(jobConfiguration.getJobClass()).withIdentity(jobConfiguration.getJobName()).build();
-        result.getJobDataMap().put("configService", configService);
-        result.getJobDataMap().put("shardingService", shardingService);
-        result.getJobDataMap().put("executionContextService", executionContextService);
-        result.getJobDataMap().put("executionService", executionService);
-        result.getJobDataMap().put("failoverService", failoverService);
-        result.getJobDataMap().put("offsetService", offsetService);
-        return result;
-    }
-    
-    private CronTrigger createTrigger(final String cronExpression) {
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-        if (configService.isMisfire()) {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
-        } else {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
-        }
-        return TriggerBuilder.newTrigger()
-                .withIdentity(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX))
-                .withSchedule(cronScheduleBuilder).build();
+        JobRegistry.getInstance().addJobScheduler(jobName, this);
     }
     
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
         StdSchedulerFactory factory = new StdSchedulerFactory();
         factory.initialize(getBaseQuartzProperties(jobName));
         Scheduler result = factory.getScheduler();
-        result.getListenerManager().addTriggerListener(new JobTriggerListener(executionService, shardingService));
+        result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
         return result;
     }
     
@@ -166,7 +118,7 @@ public class JobScheduler {
         result.put("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
-        if (!configService.isMisfire()) {
+        if (!schedulerFacade.isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
         prepareEnvironments(result);
@@ -174,6 +126,18 @@ public class JobScheduler {
     }
     
     protected void prepareEnvironments(final Properties props) {
+    }
+    
+    private CronTrigger createTrigger(final String cronExpression) {
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
+        if (schedulerFacade.isMisfire()) {
+            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
+        } else {
+            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
+        }
+        return TriggerBuilder.newTrigger()
+                .withIdentity(Joiner.on("_").join(jobName, CRON_TRIGGER_IDENTITY_SUFFIX))
+                .withSchedule(cronScheduleBuilder).build();
     }
     
     private void scheduleJob(final CronTrigger trigger) throws SchedulerException {
@@ -189,13 +153,13 @@ public class JobScheduler {
      * @return 下次作业触发时间
      */
     public Date getNextFireTime() {
-        Date result = null;
         List<? extends Trigger> triggers;
         try {
             triggers = scheduler.getTriggersOfJob(jobDetail.getKey());
         } catch (final SchedulerException ex) {
-            return result;
+            return null;
         }
+        Date result = null;
         for (Trigger each : triggers) {
             Date nextFireTime = each.getNextFireTime();
             if (null == nextFireTime) {
@@ -211,48 +175,26 @@ public class JobScheduler {
     }
     
     /**
-     * 停止作业.
+     * 暂停作业.
      */
-    public void stopJob() {
+    public void pauseJob() {
         try {
-            for (JobExecutionContext each : scheduler.getCurrentlyExecutingJobs()) {
-                if (each.getJobInstance() instanceof AbstractElasticJob) {
-                    ((AbstractElasticJob) each.getJobInstance()).stop();
-                }
+            if (!scheduler.isShutdown()) {
+                scheduler.pauseAll();
             }
-            scheduler.pauseAll();
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
     }
     
     /**
-     * 恢复手工停止的作业.
+     * 恢复作业.
      */
-    public void resumeManualStopedJob() {
+    public void resumeJob() {
         try {
-            scheduler.resumeAll();
-        } catch (final SchedulerException ex) {
-            throw new JobException(ex);
-        }
-        serverService.clearJobStopedStatus();
-    }
-    
-    /**
-     * 恢复因服务器崩溃而停止的作业.
-     * 
-     * <p>
-     * 不会恢复手工设置停止运行的作业.
-     * </p>
-     */
-    public void resumeCrashedJob() {
-        serverService.persistServerOnline();
-        executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
-        if (serverService.isJobStopedManually()) {
-            return;
-        }
-        try {
-            scheduler.resumeAll();
+            if (!scheduler.isShutdown()) {
+                scheduler.resumeAll();
+            }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -263,7 +205,9 @@ public class JobScheduler {
      */
     public void triggerJob() {
         try {
-            scheduler.triggerJob(jobDetail.getKey());
+            if (!scheduler.isShutdown()) {
+                scheduler.triggerJob(jobDetail.getKey());
+            }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -273,8 +217,11 @@ public class JobScheduler {
      * 关闭调度器.
      */
     public void shutdown() {
+        schedulerFacade.releaseJobResource();
         try {
-            scheduler.shutdown();
+            if (!scheduler.isShutdown()) {
+                scheduler.shutdown();
+            }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -285,9 +232,21 @@ public class JobScheduler {
      */
     public void rescheduleJob(final String cronExpression) {
         try {
-            scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobConfiguration.getJobName(), CRON_TRIGGER_INDENTITY_SUFFIX)), createTrigger(cronExpression));
+            if (!scheduler.isShutdown()) {
+                scheduler.rescheduleJob(TriggerKey.triggerKey(Joiner.on("_").join(jobName, CRON_TRIGGER_IDENTITY_SUFFIX)), createTrigger(cronExpression));
+            }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         } 
+    }
+    
+    /**
+     * 设置作业字段属性.
+     * 
+     * @param fieldName 字段名称
+     * @param fieldValue 字段值
+     */
+    public void setField(final String fieldName, final Object fieldValue) {
+        jobDetail.getJobDataMap().put(fieldName, fieldValue);
     }
 }

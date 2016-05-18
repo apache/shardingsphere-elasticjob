@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
 
 /**
  * 简单的分布式作业.
@@ -29,9 +29,12 @@ import com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob;
  * <p>
  * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
  * </p>
- * @see com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob
+ * @see com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob
  * 
- * @author zhangliang, caohao
+ * @author zhangliang
+ * @author caohao
+ * 
+ * @deprecated .
  */
 @Deprecated
 public abstract class AbstractOneOffElasticJob extends AbstractSimpleElasticJob { }

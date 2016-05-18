@@ -6,11 +6,22 @@
         elementFormDefault="qualified"
         attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+
+    <xsd:element name="listener">
+        <xsd:complexType>
+            <xsd:attribute name="class" type="xsd:string" use="required" />
+            <xsd:attribute name="startedTimeoutMilliseconds" type="xsd:string"/>
+            <xsd:attribute name="completedTimeoutMilliseconds" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
     
     <xsd:element name="bean">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
+                    <xsd:sequence>
+                        <xsd:element ref="listener" minOccurs="0" maxOccurs="unbounded" />
+                    </xsd:sequence>
                     <xsd:attribute name="class" type="xsd:string" use="required" />
                     <xsd:attribute name="regCenter" type="xsd:string" use="required" />
                     <xsd:attribute name="cron" type="xsd:string" use="required" />
@@ -18,6 +29,7 @@
                     <xsd:attribute name="shardingItemParameters" type="xsd:string" />
                     <xsd:attribute name="jobParameter" type="xsd:string" />
                     <xsd:attribute name="monitorExecution" type="xsd:string" />
+                    <xsd:attribute name="monitorPort" type="xsd:string" />
                     <xsd:attribute name="processCountIntervalSeconds" type="xsd:string" />
                     <xsd:attribute name="concurrentDataProcessThreadCount" type="xsd:string" />
                     <xsd:attribute name="fetchDataCount" type="xsd:string" />

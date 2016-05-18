@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,10 @@ public final class JobNodePath {
     
     public static String getServerNodePath(final String jobName) {
         return String.format("/%s/servers", jobName);
+    }
+    
+    public static String getServerNodePath(final String jobName, final String serverIp) {
+        return String.format("%s/%s", getServerNodePath(jobName), serverIp);
     }
     
     public static String getServerNodePath(final String jobName, final String serverIp, final String nodeName) {

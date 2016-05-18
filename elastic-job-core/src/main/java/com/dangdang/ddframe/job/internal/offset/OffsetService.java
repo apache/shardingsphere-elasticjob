@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ import com.google.common.base.Strings;
  * 
  * @author zhangliang
  */
-public final class OffsetService {
+public class OffsetService {
     
     private final JobNodeStorage jobNodeStorage;
     

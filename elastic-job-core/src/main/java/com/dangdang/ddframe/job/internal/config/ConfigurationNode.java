@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,6 +55,8 @@ public final class ConfigurationNode {
     static final String JOB_SHARDING_STRATEGY_CLASS = ROOT + "/jobShardingStrategyClass";
     
     static final String DESCRIPTION = ROOT + "/description";
+    
+    static final String MONITOR_PORT = ROOT + "/monitorPort";
     
     private final JobNodePath jobNodePath;
     

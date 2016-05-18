@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,42 +18,47 @@
 package com.dangdang.ddframe.job.internal.statistics;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.quartz.JobExecutionException;
+import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
-import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.server.ServerService;
 
-public final class ProcessCountJobTest extends AbstractBaseJobTest {
+public final class ProcessCountJobTest {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    @Mock
+    private ServerService serverService;
     
-    private final ProcessCountJob processCountJob = new ProcessCountJob(getRegistryCenter(), getJobConfig());
+    private final ProcessCountJob processCountJob = new ProcessCountJob(null, new JobConfiguration(ProcessCountJobTest.class.getName(), TestJob.class, 3, "0/1 * * * * ?"));
     
     @Before
-    public void setUp() {
-        ProcessCountStatistics.incrementProcessSuccessCount("testJob");
-        ProcessCountStatistics.incrementProcessSuccessCount("otherTestJob");
-        ProcessCountStatistics.incrementProcessFailureCount("testJob");
-        ProcessCountStatistics.incrementProcessFailureCount("otherTestJob");
+    public void setUp() throws NoSuchFieldException {
+        MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(processCountJob, "serverService", serverService);
     }
     
     @Test
     public void assertRun() throws JobExecutionException {
+        ProcessCountStatistics.incrementProcessSuccessCount(ProcessCountJobTest.class.getName());
+        ProcessCountStatistics.incrementProcessSuccessCount(ProcessCountJobTest.class.getName());
+        ProcessCountStatistics.incrementProcessFailureCount(ProcessCountJobTest.class.getName());
+        ProcessCountStatistics.incrementProcessFailureCount(ProcessCountJobTest.class.getName());
+        ProcessCountStatistics.incrementProcessSuccessCount(ProcessCountJobTest.class.getName() + "_otherTestJob");
+        ProcessCountStatistics.incrementProcessFailureCount(ProcessCountJobTest.class.getName() + "_otherTestJob");
         processCountJob.run();
-        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/processSuccessCount"), is("1"));
-        assertFalse(getRegistryCenter().isExisted("/otherTestJob/servers/" + localHostService.getIp() + "/processSuccessCount"));
-        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/processFailureCount"), is("1"));
-        assertFalse(getRegistryCenter().isExisted("/otherTestJob/servers/" + localHostService.getIp() + "/processFailureCount"));
-        processCountJob.run();
-        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/processSuccessCount"), is("0"));
-        assertFalse(getRegistryCenter().isExisted("/otherTestJob/servers/" + localHostService.getIp() + "/processSuccessCount"));
-        assertThat(getRegistryCenter().get("/testJob/servers/" + localHostService.getIp() + "/processFailureCount"), is("0"));
-        assertFalse(getRegistryCenter().isExisted("/otherTestJob/servers/" + localHostService.getIp() + "/processFailureCount"));
+        verify(serverService).persistProcessSuccessCount(2);
+        verify(serverService).persistProcessFailureCount(2);
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(ProcessCountJobTest.class.getName()), is(0));
+        assertThat(ProcessCountStatistics.getProcessFailureCount(ProcessCountJobTest.class.getName()), is(0));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(ProcessCountJobTest.class.getName() + "_otherTestJob"), is(1));
+        assertThat(ProcessCountStatistics.getProcessFailureCount(ProcessCountJobTest.class.getName() + "_otherTestJob"), is(1));
     }
 }

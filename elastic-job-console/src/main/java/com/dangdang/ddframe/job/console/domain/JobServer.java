@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,24 +46,28 @@ public final class JobServer implements Serializable {
     
     private boolean leader;
     
-    private boolean leaderStoped;
+    private boolean leaderPaused;
     
     public enum ServerStatus {
         READY, 
         RUNNING, 
-        DISABLED, 
-        STOPED, 
-        CRASHED;
+        DISABLED,
+        PAUSED, 
+        CRASHED, 
+        SHUTDOWN;
         
-        public static ServerStatus getServerStatus(final String status, final boolean disabled, final boolean stoped) {
+        public static ServerStatus getServerStatus(final String status, final boolean disabled, final boolean paused, final boolean shutdown) {
+            if (shutdown) {
+                return ServerStatus.SHUTDOWN;
+            }
             if (Strings.isNullOrEmpty(status)) {
                 return ServerStatus.CRASHED;
             }
             if (disabled) {
                 return ServerStatus.DISABLED;
             }
-            if (stoped) {
-                return ServerStatus.STOPED;
+            if (paused) {
+                return ServerStatus.PAUSED;
             }
             return ServerStatus.valueOf(status);
         }

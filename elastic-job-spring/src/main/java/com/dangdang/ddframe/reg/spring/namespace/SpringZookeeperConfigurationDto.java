@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +42,10 @@ final class SpringZookeeperConfigurationDto {
     private String connectionTimeoutMilliseconds;
     
     private String digest;
+    
+    private String nestedPort;
+    
+    private String nestedDataDir;
     
     private String localPropertiesPath;
     

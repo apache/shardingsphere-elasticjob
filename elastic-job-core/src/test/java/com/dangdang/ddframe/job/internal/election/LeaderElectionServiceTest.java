@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,59 +17,126 @@
 
 package com.dangdang.ddframe.job.internal.election;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.election.LeaderElectionService.LeaderElectionExecutionCallback;
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import com.dangdang.ddframe.job.internal.server.ServerService;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
-import com.dangdang.ddframe.job.internal.env.FakeLocalHostService;
-import com.dangdang.ddframe.test.WaitingUtils;
+import java.util.Collections;
 
-public final class LeaderElectionServiceTest extends AbstractBaseJobTest {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+public final class LeaderElectionServiceTest {
     
-    private final LeaderElectionService leaderElectionService = new LeaderElectionService(getRegistryCenter(), getJobConfig());
+    @Mock
+    private JobNodeStorage jobNodeStorage;
+    
+    @Mock
+    private LocalHostService localHostService;
+    
+    @Mock
+    private ServerService serverService;
+    
+    private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    
+    private final LeaderElectionService leaderElectionService = new LeaderElectionService(null, jobConfig);
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        ReflectionUtils.setFieldValue(leaderElectionService, "localHostService", new FakeLocalHostService("host0"));
+        MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(leaderElectionService, "jobNodeStorage", jobNodeStorage);
+        ReflectionUtils.setFieldValue(leaderElectionService, "localHostService", localHostService);
+        ReflectionUtils.setFieldValue(leaderElectionService, "serverService", serverService);
+        when(localHostService.getIp()).thenReturn("mockedIP");
+        when(localHostService.getHostName()).thenReturn("mockedHostName");
+        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        jobConfig.setOverwrite(true);
+    }
+    
+    @Test
+    public void assertLeaderForceElection() {
+        leaderElectionService.leaderForceElection();
+        verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test
     public void assertLeaderElection() {
         leaderElectionService.leaderElection();
-        assertThat(getRegistryCenter().getDirectly("/testJob/leader/election/host"), is("host0"));
-        LeaderElectionService otherLeaderElectionService = new LeaderElectionService(getRegistryCenter(), getJobConfig());
-        otherLeaderElectionService.leaderElection();
-        assertThat(getRegistryCenter().getDirectly("/testJob/leader/election/host"), is("host0"));
+        verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+    }
+    
+    @Test
+    public void assertLeaderElectionExecutionCallbackWithLeader() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(true);
+        leaderElectionService.new LeaderElectionExecutionCallback(false).execute();
+        verify(jobNodeStorage).isJobNodeExisted("leader/election/host");
+        verify(jobNodeStorage, times(0)).fillEphemeralJobNode("leader/election/host", "mockedIP");
+    }
+    
+    @Test
+    public void assertLeaderElectionExecutionCallbackWithoutLeaderAndIsAvailableServer() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(false);
+        when(serverService.isAvailableServer("mockedIP")).thenReturn(true);
+        leaderElectionService.new LeaderElectionExecutionCallback(false).execute();
+        verify(jobNodeStorage).isJobNodeExisted("leader/election/host");
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/election/host", "mockedIP");
+    }
+    
+    @Test
+    public void assertLeaderElectionExecutionCallbackWithoutLeaderAndIsNotAvailableServer() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(false);
+        when(serverService.isAvailableServer("mockedIP")).thenReturn(false);
+        leaderElectionService.new LeaderElectionExecutionCallback(false).execute();
+        verify(jobNodeStorage).isJobNodeExisted("leader/election/host");
+        verify(jobNodeStorage, times(0)).fillEphemeralJobNode("leader/election/host", "mockedIP");
+    }
+    
+    @Test
+    public void assertLeaderForceElectionExecutionCallbackWithoutLeaderAndIsNotAvailableServer() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(false);
+        when(serverService.isAvailableServer("mockedIP")).thenReturn(false);
+        leaderElectionService.new LeaderElectionExecutionCallback(true).execute();
+        verify(jobNodeStorage).isJobNodeExisted("leader/election/host");
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/election/host", "mockedIP");
     }
     
     @Test
     public void assertIsLeader() {
-        new Thread() {
-            
-            @Override
-            public void run() {
-                WaitingUtils.waitingShortTime();
-                getRegistryCenter().persist("/testJob/leader/election/host", "host0");
-            }
-        }.start();
+        when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(false, true);
+        when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("mockedIP"));
+        when(jobNodeStorage.getJobNodeData("leader/election/host")).thenReturn("mockedIP");
         assertTrue(leaderElectionService.isLeader());
-        assertFalse(new LeaderElectionService(getRegistryCenter(), getJobConfig()).isLeader());
+    }
+    
+    @Test
+    public void assertIsNotLeader() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(false);
+        when(serverService.getAvailableServers()).thenReturn(Collections.<String>emptyList());
+        assertFalse(leaderElectionService.isLeader());
     }
     
     @Test
     public void assertHasLeader() {
-        getRegistryCenter().persist("/testJob/leader/election/host", "host0");
+        when(jobNodeStorage.isJobNodeExisted("leader/election/host")).thenReturn(true);
         assertTrue(leaderElectionService.hasLeader());
     }
     
     @Test
-    public void assertHasNotLeader() {
-        assertFalse(leaderElectionService.hasLeader());
+    public void assertRemoveLeader() {
+        leaderElectionService.removeLeader();
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/election/host");
     }
 }

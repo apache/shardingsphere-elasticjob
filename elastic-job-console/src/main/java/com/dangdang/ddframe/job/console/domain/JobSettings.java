@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,6 +49,8 @@ public final class JobSettings implements Serializable {
     private int fetchDataCount;
     
     private int maxTimeDiffSeconds;
+    
+    private int monitorPort = -1;
     
     private boolean failover;
     

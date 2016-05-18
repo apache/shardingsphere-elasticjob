@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.api;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
 
@@ -41,15 +42,6 @@ public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingCon
     List<T> fetchData(final C shardingContext);
     
     /**
-     * 处理数据.
-     * 
-     * @param shardingContext 作业分片规则配置上下文
-     * @param data 待处理的数据
-     * @return 数据是否处理成功
-     */
-    boolean processData(final C shardingContext, final T data);
-    
-    /**
      * 配置是否流式处理数据.
      * 如果流式处理数据, 则fetchData不返回空结果将持续执行作业.
      * 如果非流式处理数据, 则处理数据完成后作业结束.
@@ -65,4 +57,9 @@ public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingCon
      * @param offset 数据处理位置
      */
     void updateOffset(final int item, final String offset);
+
+    /**
+     * 获取线程执行服务.
+     */
+    ExecutorService getExecutorService();
 }

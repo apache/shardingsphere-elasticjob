@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,15 +25,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
-public final class StreamingThroughputDataFlowElasticJob extends AbstractThroughputDataFlowElasticJob<String> {
+public final class StreamingThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
-    private static Set<String> processedData = new CopyOnWriteArraySet<>();
+    private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     
-    private static Map<Integer, String> offsets = new ConcurrentHashMap<>();
+    private static volatile Map<Integer, String> offsets = new ConcurrentHashMap<>();
     
-    private static List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
+    private static volatile List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
     
     @Override
     public List<String> fetchData(final JobExecutionMultipleShardingContext context) {

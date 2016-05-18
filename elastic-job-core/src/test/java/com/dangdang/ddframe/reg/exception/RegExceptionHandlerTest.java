@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,9 @@
 
 package com.dangdang.ddframe.reg.exception;
 
+import org.apache.zookeeper.KeeperException.ConnectionLossException;
+import org.apache.zookeeper.KeeperException.NoNodeException;
+import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -32,5 +35,35 @@ public final class RegExceptionHandlerTest {
     @Test(expected = RegException.class)
     public void assertHandleExceptionWithOtherException() {
         RegExceptionHandler.handleException(new RuntimeException());
+    }
+    
+    @Test
+    public void assertHandleExceptionWithConnectionLossException() {
+        RegExceptionHandler.handleException(new ConnectionLossException());
+    }
+    
+    @Test
+    public void assertHandleExceptionWithNoNodeException() {
+        RegExceptionHandler.handleException(new NoNodeException());
+    }
+    
+    @Test
+    public void assertHandleExceptionWithNoNodeExistsException() {
+        RegExceptionHandler.handleException(new NodeExistsException());
+    }
+    
+    @Test
+    public void assertHandleExceptionWithCausedConnectionLossException() {
+        RegExceptionHandler.handleException(new RuntimeException(new ConnectionLossException()));
+    }
+    
+    @Test
+    public void assertHandleExceptionWithCausedNoNodeException() {
+        RegExceptionHandler.handleException(new RuntimeException(new NoNodeException()));
+    }
+    
+    @Test
+    public void assertHandleExceptionWithCausedNoNodeExistsException() {
+        RegExceptionHandler.handleException(new RuntimeException(new NodeExistsException()));
     }
 }

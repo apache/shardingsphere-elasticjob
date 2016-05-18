@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,15 +19,23 @@ package com.dangdang.ddframe.job.console.service;
 
 public interface JobOperationService {
     
-    void stopJob(String jobName, String serverIp);
+    void pauseJob(String jobName, String serverIp);
     
     void resumeJob(String jobName, String serverIp);
     
-    void stopAllJobsByJobName(String jobName);
+    void pauseAllJobsByJobName(String jobName);
     
     void resumeAllJobsByJobName(String jobName);
     
-    void stopAllJobsByServer(String serverIp);
+    void pauseAllJobsByServer(String serverIp);
     
     void resumeAllJobsByServer(String serverIp);
+    
+    void shutdownJob(String jobName, String serverIp);
+    
+    boolean removeJob(String jobName, String serverIp);
+
+    void disableJob(String jobName, String serverIp);
+
+    void enableJob(String jobName, String serverIp);
 }

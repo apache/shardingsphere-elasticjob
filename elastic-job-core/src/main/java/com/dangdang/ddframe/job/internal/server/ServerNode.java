@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.internal.server;
 
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.storage.JobNodePath;
 
 /**
@@ -26,7 +25,7 @@ import com.dangdang.ddframe.job.internal.storage.JobNodePath;
  * 
  * @author zhangliang
  */
-public final class ServerNode {
+public class ServerNode {
     
     /**
      * 作业服务器信息根节点.
@@ -47,9 +46,13 @@ public final class ServerNode {
     
     static final String PROCESS_FAILURE_COUNT = ROOT + "/%s/processFailureCount";
     
-    static final String STOPED = ROOT + "/%s/stoped";
+    static final String PAUSED = ROOT + "/%s/paused";
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    static final String SHUTDOWN_APPENDIX = "shutdown";
+    
+    static final String SHUTDOWN = ROOT + "/%s/" + SHUTDOWN_APPENDIX;
+    
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final JobNodePath jobNodePath;
     
@@ -77,8 +80,42 @@ public final class ServerNode {
         return String.format(PROCESS_FAILURE_COUNT, ip);
     }
     
-    static String getStopedNode(final String ip) {
-        return String.format(STOPED, ip);
+    static String getPausedNode(final String ip) {
+        return String.format(PAUSED, ip);
+    }
+    
+    static String getShutdownNode(final String ip) {
+        return String.format(SHUTDOWN, ip);
+    }
+    
+    /**
+     * 判断给定路径是否为作业服务器暂停路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器暂停路径
+     */
+    public boolean isLocalJobPausedPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.PAUSED, localHostService.getIp())));
+    }
+    
+    /**
+     * 判断给定路径是否为作业服务器关闭路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器关闭路径
+     */
+    public boolean isLocalJobShutdownPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.SHUTDOWN, localHostService.getIp())));
+    }
+    
+    /**
+     * 判断给定路径是否为作业服务器禁用路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器禁用路径
+     */
+    public boolean isLocalServerDisabledPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.DISABLED, localHostService.getIp())));
     }
     
     /**
@@ -102,11 +139,12 @@ public final class ServerNode {
     }
     
     /**
-     * 判断给定路径是否为作业停止状态路径.
-     * 
-     * @return 是否为作业停止状态路径.
+     * 判断给定路径是否为作业服务器关闭路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器关闭路径
      */
-    public boolean isJobStopedPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.STOPED, localHostService.getIp())));
+    public boolean isServerShutdownPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.SHUTDOWN_APPENDIX);
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,5 +20,5 @@ package com.dangdang.example.elasticjob.fixture.entity;
 public enum FooStatus {
     
     ACTIVE,
-    INACTIVE;
+    INACTIVE
 }

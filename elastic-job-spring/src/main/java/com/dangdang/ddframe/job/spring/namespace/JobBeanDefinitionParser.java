@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,15 +17,20 @@
 
 package com.dangdang.ddframe.job.spring.namespace;
 
+import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler;
 import com.google.common.base.Strings;
+
+import java.util.List;
 
 /**
  * 分布式作业的命名空间解析器.
@@ -43,11 +48,12 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
         factory.setDestroyMethodName("shutdown");
         factory.addConstructorArgReference(element.getAttribute("regCenter"));
         factory.addConstructorArgReference(createJobConfiguration(element, parserContext));
+        factory.addConstructorArgValue(createJobListeners(element));
         return factory.getBeanDefinition();
     }
     
     private String createJobConfiguration(final Element element, final ParserContext parserContext) {
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobConfiguration.class);
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition("com.dangdang.ddframe.job.api.JobConfiguration");
         factory.addConstructorArgValue(element.getAttribute("id"));
         factory.addConstructorArgValue(element.getAttribute("class"));
         factory.addConstructorArgValue(element.getAttribute("shardingTotalCount"));
@@ -55,6 +61,7 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
         addPropertyValueIfNotEmpty("shardingItemParameters", element, factory);
         addPropertyValueIfNotEmpty("jobParameter", element, factory);
         addPropertyValueIfNotEmpty("monitorExecution", element, factory);
+        addPropertyValueIfNotEmpty("monitorPort", element, factory);
         addPropertyValueIfNotEmpty("processCountIntervalSeconds", element, factory);
         addPropertyValueIfNotEmpty("concurrentDataProcessThreadCount", element, factory);
         addPropertyValueIfNotEmpty("fetchDataCount", element, factory);
@@ -67,6 +74,27 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
         addPropertyValueIfNotEmpty("overwrite", element, factory);
         String result = element.getAttribute("id") + "Conf";
         parserContext.getRegistry().registerBeanDefinition(result, factory.getBeanDefinition());
+        return result;
+    }
+    
+    private List<BeanDefinition> createJobListeners(final Element element) {
+        List<Element> listenerElements = DomUtils.getChildElementsByTagName(element, "listener");
+        List<BeanDefinition> result = new ManagedList<>(listenerElements.size());
+        for (Element each : listenerElements) {
+            String className = each.getAttribute("class");
+            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(className);
+            factory.setScope(BeanDefinition.SCOPE_PROTOTYPE);
+            try {
+                Class listenerClass = Class.forName(className);
+                if (AbstractDistributeOnceElasticJobListener.class.isAssignableFrom(listenerClass)) {
+                    factory.addConstructorArgValue(each.getAttribute("startedTimeoutMilliseconds"));
+                    factory.addConstructorArgValue(each.getAttribute("completedTimeoutMilliseconds"));
+                }
+            } catch (final ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+            result.add(factory.getBeanDefinition());
+        }
         return result;
     }
     
