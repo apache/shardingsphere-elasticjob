@@ -104,6 +104,13 @@ public class ServerService {
     }
     
     /**
+     * 删除服务器状态.
+     */
+    public void removeServerStatus() {
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStatusNode(localHostService.getIp()));
+    }
+    
+    /**
      * 获取所有的作业服务器列表.
      * 
      * @return 所有的作业服务器列表

@@ -1,7 +1,6 @@
 $(function() {
     renderJobs();
     bindPauseButtons();
-    bindPauseLeaderButtons();
     bindResumeButtons();
     bindPauseAllButton();
     bindResumeAllButton();
@@ -15,20 +14,14 @@ function renderJobs() {
         for (var i = 0;i < data.length;i++) {
             var ip = data[i].ip;
             var status = data[i].status;
-            var leader = data[i].leader;
-            var baseTd = "<td>" + data[i].jobName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td><td>" + (true === leader ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>") + "</td>";
+            var baseTd = "<td>" + data[i].jobName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td>";
             var operationTd = "";
             var resumeButton = "<button operation='resume' class='btn btn-success' job-name='" + data[i].jobName + "'>恢复</button>";
-            var resumeWithWarningButton = "<button operation='resume' class='btn btn-success disabled' job-name='" + data[i].jobName + "' disabled title='先恢复主节点才能恢复从节点作业'>恢复</button>";
-            var pauseButton = "<button operation='pause' class='btn btn-warning' job-name='" + data[i].jobName + "'" + (leader ? "data-toggle='modal' data-target='#pause-leader-confirm-dialog'" : "") + ">暂停</button>";
+            var pauseButton = "<button operation='pause' class='btn btn-warning' job-name='" + data[i].jobName + "'" + ">暂停</button>";
             var shutdownButton = "<button operation='shutdown' class='btn btn-danger' job-name='" + data[i].jobName + "'>关闭</button>";
             var removeButton = "<button operation='remove' class='btn btn-danger' job-name='" + data[i].jobName + "'>删除</button>";
             if ("PAUSED" === status) {
-                if (data[i].leaderPaused && !leader) {
-                    operationTd = resumeWithWarningButton + "&nbsp;";
-                } else {
-                    operationTd = resumeButton + "&nbsp;";
-                }
+                operationTd = resumeButton + "&nbsp;";
             } else if ("DISABLED" !== status && "CRASHED" !== status && "SHUTDOWN" !== status) {
                 operationTd = pauseButton + "&nbsp;";
             }
@@ -63,16 +56,6 @@ function bindPauseButtons() {
     });
     $(document).on("click", "button[operation='pause'][data-toggle='modal']", function(event) {
         $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
-    });
-}
-
-function bindPauseLeaderButtons() {
-    $(document).on("click", "#pause-leader-confirm-dialog-confirm-btn,#pause-all-jobs-btn", function(event) {
-        $.post("job/pauseAll/name", {jobName : $("#chosen-job-name").text()}, function (data) {
-            $("#pause-leader-confirm-dialog").modal("hide");
-            renderJobs();
-            showSuccessDialog();
-        });
     });
 }
 

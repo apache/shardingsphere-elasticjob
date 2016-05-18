@@ -129,6 +129,12 @@ public final class ServerServiceTest {
     }
     
     @Test
+    public void assertRemoveServerStatus() {
+        serverService.removeServerStatus();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/status");
+    }
+    
+    @Test
     public void assertGetAllServers() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3"));
         assertThat(serverService.getAllServers(), is(Arrays.asList("host0", "host1", "host2", "host3")));

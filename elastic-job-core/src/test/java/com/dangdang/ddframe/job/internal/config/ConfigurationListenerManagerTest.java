@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.internal.config;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -30,7 +31,6 @@ import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager.CronSettingChangedJobListener;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
@@ -42,7 +42,7 @@ public final class ConfigurationListenerManagerTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private JobScheduler jobScheduler;
+    private JobScheduleController jobScheduleController;
     
     private final ConfigurationListenerManager configurationListenerManager = new ConfigurationListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
     
@@ -62,28 +62,28 @@ public final class ConfigurationListenerManagerTest {
     public void assertCronSettingChangedJobListenerWhenIsNotCronPath() {
         configurationListenerManager.new CronSettingChangedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/config/other", null, "*/10 * * * * *".getBytes())), "/testJob/config/other");
-        verify(jobScheduler, times(0)).rescheduleJob("*/10 * * * * *");
+        verify(jobScheduleController, times(0)).rescheduleJob("*/10 * * * * *");
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathButNotUpdate() {
         configurationListenerManager.new CronSettingChangedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/config/cron", null, "*/10 * * * * *".getBytes())), "/testJob/config/cron");
-        verify(jobScheduler, times(0)).rescheduleJob("*/10 * * * * *");
+        verify(jobScheduleController, times(0)).rescheduleJob("*/10 * * * * *");
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateButCannotFindJob() {
         configurationListenerManager.new CronSettingChangedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/config/cron", null, "*/10 * * * * *".getBytes())), "/testJob/config/cron");
-        verify(jobScheduler, times(0)).rescheduleJob("*/10 * * * * *");
+        verify(jobScheduleController, times(0)).rescheduleJob("*/10 * * * * *");
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateAndFindJob() {
-        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduleController("testJob", jobScheduleController);
         configurationListenerManager.new CronSettingChangedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/config/cron", null, "*/10 * * * * *".getBytes())), "/testJob/config/cron");
-        verify(jobScheduler).rescheduleJob("*/10 * * * * *");
+        verify(jobScheduleController).rescheduleJob("*/10 * * * * *");
     }
 }

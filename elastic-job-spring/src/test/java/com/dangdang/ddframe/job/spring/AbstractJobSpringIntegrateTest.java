@@ -56,8 +56,8 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     
     @After
     public void tearDown() {
-        JobRegistry.getInstance().getJobScheduler(simpleJobName).shutdown();
-        JobRegistry.getInstance().getJobScheduler(throughputDataFlowJobName).shutdown();
+        JobRegistry.getInstance().getJobScheduleController(simpleJobName).shutdown();
+        JobRegistry.getInstance().getJobScheduleController(throughputDataFlowJobName).shutdown();
     }
     
     @Test

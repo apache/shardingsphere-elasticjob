@@ -11,6 +11,12 @@
     
     <dependencies>
         <dependency>
+            <groupId>com.dangdang</groupId>
+            <artifactId>elastic-job-api-core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

@@ -29,8 +29,8 @@ import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOp
 import com.dangdang.ddframe.job.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.internal.storage.TransactionExecutionCallback;
-import com.dangdang.ddframe.job.internal.util.BlockUtils;
-import com.dangdang.ddframe.job.internal.util.ItemUtils;
+import com.dangdang.ddframe.job.internal.reg.BlockUtils;
+import com.dangdang.ddframe.job.internal.reg.ItemUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

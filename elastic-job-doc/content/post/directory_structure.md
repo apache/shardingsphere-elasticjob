@@ -10,6 +10,10 @@ weight=4
 
 `elastic-job`核心模块，只通过`Quartz`和`Curator`就可执行分布式作业。
 
+## elastic-job-api
+
+`elastic-job`生命周期操作的API，可独立使用。
+
 ## elastic-job-spring
 
 `elastic-job`对`spring`支持的模块，包括命名空间，依赖注入，占位符等。

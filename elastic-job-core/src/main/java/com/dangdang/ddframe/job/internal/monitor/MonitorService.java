@@ -32,7 +32,7 @@ import org.apache.curator.framework.recipes.cache.TreeCache;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtils;
+import com.dangdang.ddframe.job.internal.reg.SensitiveInfoUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 

@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.internal.schedule;
 
-import com.dangdang.ddframe.job.api.JobScheduler;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -28,8 +27,8 @@ public final class JobRegistryTest {
     
     @Test
     public void assertAddJobScheduler() {
-        JobScheduler jobScheduler = mock(JobScheduler.class);
-        JobRegistry.getInstance().addJobScheduler("testJob_AddJobScheduler", jobScheduler);
-        assertThat(JobRegistry.getInstance().getJobScheduler("testJob_AddJobScheduler"), is(jobScheduler));
+        JobScheduleController jobScheduleController = mock(JobScheduleController.class);
+        JobRegistry.getInstance().addJobScheduleController("testJob_AddJobScheduler", jobScheduleController);
+        assertThat(JobRegistry.getInstance().getJobScheduleController("testJob_AddJobScheduler"), is(jobScheduleController));
     }
 }

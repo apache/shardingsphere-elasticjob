@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -103,7 +104,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         client = builder.build();
         client.start();
         try {
-            client.blockUntilConnected();
+            client.blockUntilConnected(zkConfig.getMaxSleepTimeMilliseconds(), TimeUnit.MILLISECONDS);
             if (!Strings.isNullOrEmpty(zkConfig.getLocalPropertiesPath())) {
                 fillData();
             }

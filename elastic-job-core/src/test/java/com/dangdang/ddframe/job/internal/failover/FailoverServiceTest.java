@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 
+import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -35,7 +36,6 @@ import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService.FailoverLeaderExecutionCallback;
@@ -59,7 +59,7 @@ public final class FailoverServiceTest {
     private ShardingService shardingService;
     
     @Mock
-    private JobScheduler jobScheduler;
+    private JobScheduleController jobScheduleController;
     
     private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
@@ -149,14 +149,14 @@ public final class FailoverServiceTest {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
         when(serverService.isLocalhostServerReady()).thenReturn(true);
-        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
+        JobRegistry.getInstance().addJobScheduleController("testJob", jobScheduleController);
         failoverService.new FailoverLeaderExecutionCallback().execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage, times(2)).getJobNodeChildrenKeys("leader/failover/items");
         verify(serverService).isLocalhostServerReady();
         verify(jobNodeStorage).fillEphemeralJobNode("execution/0/failover", "mockedIP");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/failover/items/0");
-        verify(jobScheduler).triggerJob();
+        verify(jobScheduleController).triggerJob();
     }
     
     @Test

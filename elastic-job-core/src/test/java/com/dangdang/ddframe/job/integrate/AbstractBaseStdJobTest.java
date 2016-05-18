@@ -26,6 +26,7 @@ import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
 import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
@@ -126,9 +127,9 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
     @After
     public void tearDown() throws SchedulerException, NoSuchFieldException {
         ProcessCountStatistics.reset(jobName);
-        JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
-        if (null != jobScheduler) {
-            JobRegistry.getInstance().getJobScheduler(jobName).shutdown();
+        JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+        if (null != jobScheduleController) {
+            JobRegistry.getInstance().getJobScheduleController(jobName).shutdown();
         }
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
     }

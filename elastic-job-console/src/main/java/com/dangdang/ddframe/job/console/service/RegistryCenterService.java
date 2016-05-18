@@ -17,20 +17,20 @@
 
 package com.dangdang.ddframe.job.console.service;
 
-import java.util.Collection;
-
-import com.dangdang.ddframe.job.console.domain.RegistryCenterClient;
 import com.dangdang.ddframe.job.console.domain.RegistryCenterConfiguration;
+import com.google.common.base.Optional;
+
+import java.util.Collection;
 
 public interface RegistryCenterService {
     
     Collection<RegistryCenterConfiguration> loadAll();
     
+    RegistryCenterConfiguration load(String name);
+    
+    Optional<RegistryCenterConfiguration> loadActivated();
+    
     boolean add(RegistryCenterConfiguration config);
     
     void delete(String name);
-    
-    RegistryCenterClient connect(String name);
-    
-    RegistryCenterClient connectActivated();
 }

@@ -92,6 +92,7 @@ public class SchedulerFacade {
     public void releaseJobResource() {
         monitorService.close();
         statisticsService.stopProcessCountJob();
+        serverService.removeServerStatus();
     }
     
     /**

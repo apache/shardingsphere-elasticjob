@@ -48,6 +48,6 @@ public class SequenceDataFlowJobDemo extends AbstractIndividualSequenceDataFlowE
     
     @Override
     public boolean isStreamingProcess() {
-        return true;
+        return false;
     }
 }

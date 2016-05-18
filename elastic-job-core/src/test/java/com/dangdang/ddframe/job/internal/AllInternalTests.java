@@ -41,9 +41,10 @@ import com.dangdang.ddframe.job.internal.monitor.MonitorServiceEnableTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetNodeTest;
 import com.dangdang.ddframe.job.internal.offset.OffsetServiceTest;
 import com.dangdang.ddframe.job.internal.schedule.JobFacadeTest;
-import com.dangdang.ddframe.job.internal.schedule.SchedulerFacadeTest;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistryTest;
+import com.dangdang.ddframe.job.internal.schedule.JobScheduleControllerTest;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListenerTest;
+import com.dangdang.ddframe.job.internal.schedule.SchedulerFacadeTest;
 import com.dangdang.ddframe.job.internal.server.JobOperationListenerManagerTest;
 import com.dangdang.ddframe.job.internal.server.ServerNodeTest;
 import com.dangdang.ddframe.job.internal.server.ServerServiceTest;
@@ -56,8 +57,8 @@ import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatisticsTest;
 import com.dangdang.ddframe.job.internal.statistics.StatisticsServiceTest;
 import com.dangdang.ddframe.job.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorageTest;
-import com.dangdang.ddframe.job.internal.util.ItemUtilsTest;
-import com.dangdang.ddframe.job.internal.util.SensitiveInfoUtilsTest;
+import com.dangdang.ddframe.job.internal.reg.ItemUtilsTest;
+import com.dangdang.ddframe.job.internal.reg.SensitiveInfoUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -95,7 +96,8 @@ import org.junit.runners.Suite.SuiteClasses;
     ProcessCountJobTest.class, 
     ProcessCountStatisticsTest.class, 
     JobShardingStrategyFactoryTest.class, 
-    JobRegistryTest.class, 
+    JobRegistryTest.class,
+    JobScheduleControllerTest.class, 
     JobTriggerListenerTest.class, 
     ListenerManagerTest.class, 
     JobListenerTest.class, 
