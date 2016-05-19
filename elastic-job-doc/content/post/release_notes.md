@@ -6,7 +6,7 @@ weight=1
 
 # Release Notes
 
-## 1.0.7-SNAPSHOT
+## 1.0.7
 
 ### 结构调整
 
