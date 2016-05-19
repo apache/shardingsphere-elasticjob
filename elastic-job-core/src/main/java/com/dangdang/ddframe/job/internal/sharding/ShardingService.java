@@ -22,6 +22,8 @@ import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.internal.reg.BlockUtils;
+import com.dangdang.ddframe.job.internal.reg.ItemUtils;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyFactory;
@@ -29,8 +31,6 @@ import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategyOp
 import com.dangdang.ddframe.job.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.internal.storage.TransactionExecutionCallback;
-import com.dangdang.ddframe.job.internal.reg.BlockUtils;
-import com.dangdang.ddframe.job.internal.reg.ItemUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

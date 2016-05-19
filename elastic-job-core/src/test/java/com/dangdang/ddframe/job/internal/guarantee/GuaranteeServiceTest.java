@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.internal.guarantee;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,9 @@ public final class GuaranteeServiceTest {
     @Mock
     private JobNodeStorage jobNodeStorage;
     
+    @Mock
+    private ConfigurationService configService;
+    
     private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
     private final GuaranteeService guaranteeService = new GuaranteeService(null, jobConfig);
@@ -46,6 +50,7 @@ public final class GuaranteeServiceTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(guaranteeService, "jobNodeStorage", jobNodeStorage);
+        ReflectionUtils.setFieldValue(guaranteeService, "configService", configService);
         when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
         jobConfig.setOverwrite(true);
     }
@@ -73,6 +78,7 @@ public final class GuaranteeServiceTest {
     @Test
     public void testIsAllStarted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
+        when(configService.getShardingTotalCount()).thenReturn(3);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1", "2"));
         assertTrue(guaranteeService.isAllStarted());
     }
@@ -106,6 +112,7 @@ public final class GuaranteeServiceTest {
     @Test
     public void testIsAllCompleted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
+        when(configService.getShardingTotalCount()).thenReturn(3);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1", "2"));
         assertTrue(guaranteeService.isAllCompleted());
     }

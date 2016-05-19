@@ -103,7 +103,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         client = builder.build();
         client.start();
         try {
-            client.blockUntilConnected(zkConfig.getMaxSleepTimeMilliseconds(), TimeUnit.MILLISECONDS);
+            client.blockUntilConnected(zkConfig.getMaxSleepTimeMilliseconds() * zkConfig.getMaxRetries(), TimeUnit.MILLISECONDS);
             if (!client.getZookeeperClient().isConnected()) {
                 throw new KeeperException.OperationTimeoutException();
             }

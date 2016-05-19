@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.internal.guarantee;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
@@ -30,13 +31,13 @@ import java.util.Collection;
  */
 public class GuaranteeService {
     
-    private final JobConfiguration jobConfiguration;
-    
     private final JobNodeStorage jobNodeStorage;
     
+    private final ConfigurationService configService;
+    
     public GuaranteeService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        this.jobConfiguration = jobConfiguration;
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
+        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -56,7 +57,7 @@ public class GuaranteeService {
      * @return 是否所有的任务均启动完毕
      */
     public boolean isAllStarted() {
-        return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT) && jobConfiguration.getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
+        return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT) && configService.getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
     }
     
     /**
@@ -83,7 +84,7 @@ public class GuaranteeService {
      * @return 是否所有的任务均执行完毕
      */
     public boolean isAllCompleted() {
-        return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT) && jobConfiguration.getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
+        return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT) && configService.getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
     }
     
     /**

@@ -23,7 +23,9 @@ package com.dangdang.ddframe.job.exception;
  * @author zhangliang
  */
 public final class JobTimeoutException extends JobException {
-
+    
+    private static final long serialVersionUID = 315323919916960589L;
+    
     /**
      * 作业超时抛出的异常.
      * 
