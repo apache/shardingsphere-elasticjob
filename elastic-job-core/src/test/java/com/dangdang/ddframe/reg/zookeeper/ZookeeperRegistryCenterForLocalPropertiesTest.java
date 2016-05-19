@@ -17,18 +17,17 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-
+import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
+import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
+import com.dangdang.ddframe.reg.exception.RegException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
-import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
-import com.dangdang.ddframe.reg.exception.RegException;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterForLocalPropertiesTest extends AbstractNestedZookeeperBaseTest {
     
@@ -87,11 +86,11 @@ public final class ZookeeperRegistryCenterForLocalPropertiesTest extends Abstrac
     }
     
     private ZookeeperRegistryCenter createZookeeperRegistryCenter() {
-        return new ZookeeperRegistryCenter(new ZookeeperConfiguration(ZK_CONNECTION_STRING, getCurrentRunningMethodName(), 1000, 3000, 3));
+        return new ZookeeperRegistryCenter(new ZookeeperConfiguration(ZK_CONNECTION_STRING, getCurrentRunningMethodName()));
     }
     
     private void createInitData() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, getCurrentRunningMethodName(), 1000, 3000, 3);
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, getCurrentRunningMethodName());
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();

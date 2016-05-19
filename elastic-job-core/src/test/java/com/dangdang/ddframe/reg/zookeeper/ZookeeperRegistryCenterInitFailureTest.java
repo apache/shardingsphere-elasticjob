@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.console.exception;
+package com.dangdang.ddframe.reg.zookeeper;
 
-public final class NoRegistryCenterException extends RuntimeException {
+import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
+import com.dangdang.ddframe.reg.exception.RegException;
+import org.junit.Test;
+
+public final class ZookeeperRegistryCenterInitFailureTest extends AbstractNestedZookeeperBaseTest {
     
-    private static final long serialVersionUID = -7230151498491198890L;
+    @Test(expected = RegException.class)
+    public void assertInitFailure() {
+        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:1", ZookeeperRegistryCenterInitFailureTest.class.getName(), 100, 200, 1));
+        zkRegCenter.init();
+    }
 }

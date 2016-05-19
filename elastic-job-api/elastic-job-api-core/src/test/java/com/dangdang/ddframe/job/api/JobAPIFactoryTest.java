@@ -17,31 +17,32 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.AbstractNestedZookeeperBaseTest;
 import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public final class JobAPIFactoryTest {
+public final class JobAPIFactoryTest extends AbstractNestedZookeeperBaseTest {
     
     @Test
     public void assertCreateJobSettingsAPI() {
-        assertThat(JobAPIFactory.createJobSettingsAPI("zkStr", "namespace", Optional.<String>absent()), instanceOf(JobSettingsAPI.class));
+        assertThat(JobAPIFactory.createJobSettingsAPI(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()), instanceOf(JobSettingsAPI.class));
     }
     
     @Test
     public void assertCreateJobOperateAPI() {
-        assertThat(JobAPIFactory.createJobOperateAPI("zkStr", "namespace", Optional.<String>absent()), instanceOf(JobOperateAPI.class));
+        assertThat(JobAPIFactory.createJobOperateAPI(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()), instanceOf(JobOperateAPI.class));
     }
     
     @Test
     public void assertCreateJobStatisticsAPI() {
-        assertThat(JobAPIFactory.createJobStatisticsAPI("zkStr", "namespace", Optional.<String>absent()), instanceOf(JobStatisticsAPI.class));
+        assertThat(JobAPIFactory.createJobStatisticsAPI(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()), instanceOf(JobStatisticsAPI.class));
     }
     
     @Test
     public void assertCreateServerStatisticsAPI() {
-        assertThat(JobAPIFactory.createServerStatisticsAPI("zkStr", "namespace", Optional.<String>absent()), instanceOf(ServerStatisticsAPI.class));
+        assertThat(JobAPIFactory.createServerStatisticsAPI(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()), instanceOf(ServerStatisticsAPI.class));
     }
 }

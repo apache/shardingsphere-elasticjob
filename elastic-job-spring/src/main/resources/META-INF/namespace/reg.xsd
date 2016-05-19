@@ -15,9 +15,9 @@
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="serverLists" type="xsd:string" use="required" />
                     <xsd:attribute name="namespace" type="xsd:string" use="required" />
-                    <xsd:attribute name="baseSleepTimeMilliseconds" type="xsd:positiveInteger" use="required" />
-                    <xsd:attribute name="maxSleepTimeMilliseconds" type="xsd:positiveInteger" use="required" />
-                    <xsd:attribute name="maxRetries" type="xsd:positiveInteger" use="required" />
+                    <xsd:attribute name="baseSleepTimeMilliseconds" type="xsd:positiveInteger" />
+                    <xsd:attribute name="maxSleepTimeMilliseconds" type="xsd:positiveInteger" />
+                    <xsd:attribute name="maxRetries" type="xsd:positiveInteger" />
                     <xsd:attribute name="sessionTimeoutMilliseconds" type="xsd:positiveInteger" />
                     <xsd:attribute name="connectionTimeoutMilliseconds" type="xsd:positiveInteger" />
                     <xsd:attribute name="digest" type="xsd:string" />
@@ -35,9 +35,9 @@
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="serverLists" type="xsd:string" use="required" />
                     <xsd:attribute name="namespace" type="xsd:string" use="required" />
-                    <xsd:attribute name="baseSleepTimeMilliseconds" type="xsd:string" use="required" />
-                    <xsd:attribute name="maxSleepTimeMilliseconds" type="xsd:string" use="required" />
-                    <xsd:attribute name="maxRetries" type="xsd:string" use="required" />
+                    <xsd:attribute name="baseSleepTimeMilliseconds" type="xsd:string" />
+                    <xsd:attribute name="maxSleepTimeMilliseconds" type="xsd:string" />
+                    <xsd:attribute name="maxRetries" type="xsd:string" />
                     <xsd:attribute name="sessionTimeoutMilliseconds" type="xsd:string" />
                     <xsd:attribute name="connectionTimeoutMilliseconds" type="xsd:string" />
                     <xsd:attribute name="digest" type="xsd:string" />

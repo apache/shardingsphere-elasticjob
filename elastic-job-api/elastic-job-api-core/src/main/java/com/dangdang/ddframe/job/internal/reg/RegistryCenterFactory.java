@@ -57,7 +57,7 @@ public final class RegistryCenterFactory {
         if (registryCenterMap.containsKey(hashCode)) {
             return registryCenterMap.get(hashCode);
         }
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace, 1000, 3000, 3);
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
         if (digest.isPresent()) {
             zkConfig.setDigest(digest.get());
         }

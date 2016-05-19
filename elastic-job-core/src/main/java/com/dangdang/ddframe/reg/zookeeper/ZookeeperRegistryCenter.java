@@ -17,6 +17,27 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
+import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.CuratorFrameworkFactory.Builder;
+import org.apache.curator.framework.api.ACLProvider;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.TreeCache;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.utils.CloseableUtils;
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.ZooDefs;
+import org.apache.zookeeper.data.ACL;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -28,28 +49,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.CuratorFrameworkFactory.Builder;
-import org.apache.curator.framework.api.ACLProvider;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCache;
-import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.curator.utils.CloseableUtils;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.data.ACL;
-
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基于Zookeeper的注册中心.
@@ -105,6 +104,9 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         client.start();
         try {
             client.blockUntilConnected(zkConfig.getMaxSleepTimeMilliseconds(), TimeUnit.MILLISECONDS);
+            if (!client.getZookeeperClient().isConnected()) {
+                throw new KeeperException.OperationTimeoutException();
+            }
             if (!Strings.isNullOrEmpty(zkConfig.getLocalPropertiesPath())) {
                 fillData();
             }

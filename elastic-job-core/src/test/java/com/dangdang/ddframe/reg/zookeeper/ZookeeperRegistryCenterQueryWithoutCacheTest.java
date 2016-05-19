@@ -17,23 +17,22 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
+import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
-
 public final class ZookeeperRegistryCenterQueryWithoutCacheTest extends AbstractNestedZookeeperBaseTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName(), 1000, 3000, 3);
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     

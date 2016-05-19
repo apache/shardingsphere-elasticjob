@@ -264,27 +264,27 @@ public class JobMain {
 
 `job:listener`必须配置为`job:bean`的子元素
 
-| 属性名                          | 类型  |是否必填|缺省值         | 描述                                                                       |
-| ------------------------------ |:------|:------|:-------------|:---------------------------------------------------------------------------|
-|class                           |String |`是`   |              | 前置后置任务监听实现类，需实现`ElasticJobListener`接口                                             |
+| 属性名                          | 类型  |是否必填|缺省值         | 描述                                                                                             |
+| ------------------------------ |:------|:------|:-------------|:------------------------------------------------------------------------------------------------|
+|class                           |String |`是`   |              | 前置后置任务监听实现类，需实现`ElasticJobListener`接口                                               |
 |startedTimeoutMilliseconds      |long    |否    |Long.MAX_VALUE| AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行前的执行方法的超时时间<br />单位：毫秒|
 |completedTimeoutMilliseconds    |long    |否    |Long.MAX_VALUE| AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行后的执行方法的超时时间<br />单位：毫秒|
 
 #### reg:bean命名空间属性详细说明
 
-| 属性名                          |类型   |是否必填|缺省值|描述                                                                        |
-| ------------------------------ |:------|:------|:----|:---------------------------------------------------------------------------|
-|id                              |String |`是`   |     | 注册中心在`Spring`容器中的主键                                                  |
+| 属性名                          |类型   |是否必填|缺省值|描述                                                                                                |
+| ------------------------------ |:------|:------|:----|:--------------------------------------------------------------------------------------------------|
+|id                              |String |`是`   |     | 注册中心在`Spring`容器中的主键                                                                        |
 |serverLists                     |String |`是`   |     | 连接`Zookeeper`服务器的列表<br />包括IP地址和端口号<br />多个地址用逗号分隔<br />如: host1:2181,host2:2181|
-|namespace                       |String |`是`   |     | `Zookeeper`的命名空间                                                         |
-|baseSleepTimeMilliseconds       |int    |`是`   |     | 等待重试的间隔时间的初始值<br />单位：毫秒                                      |
-|maxSleepTimeMilliseconds        |int    |`是`   |     | 等待重试的间隔时间的最大值<br />单位：毫秒                                      |
-|maxRetries                      |int    |`是`   |     | 最大重试次数                                                                 |
-|sessionTimeoutMilliseconds      |int    |否     |60000| 会话超时时间<br />单位：毫秒                                                  |
-|connectionTimeoutMilliseconds   |int    |否     |15000| 连接超时时间<br />单位：毫秒                                                  |
-|digest                          |String |否     |无验证| 连接`Zookeeper`的权限令牌<br />缺省为不需要权限验证                              |
-|nestedPort                      |int    |否     |-1   | 内嵌`Zookeeper`的端口号<br />-1表示不开启内嵌`Zookeeper`                          |
-|nestedDataDir                   |String |否     |     | 内嵌`Zookeeper`的数据存储路径<br />为空表示不开启内嵌`Zookeeper`                   |
+|namespace                       |String |`是`   |     | `Zookeeper`的命名空间                                                                               |
+|baseSleepTimeMilliseconds       |int    |否     |1000 | 等待重试的间隔时间的初始值<br />单位：毫秒                                                              |
+|maxSleepTimeMilliseconds        |int    |否     |3000 | 等待重试的间隔时间的最大值<br />单位：毫秒                                                              |
+|maxRetries                      |int    |否     |3    | 最大重试次数                                                                                        |
+|sessionTimeoutMilliseconds      |int    |否     |60000| 会话超时时间<br />单位：毫秒                                                                          |
+|connectionTimeoutMilliseconds   |int    |否     |15000| 连接超时时间<br />单位：毫秒                                                                          |
+|digest                          |String |否     |无验证| 连接`Zookeeper`的权限令牌<br />缺省为不需要权限验证                                                     |
+|nestedPort                      |int    |否     |-1   | 内嵌`Zookeeper`的端口号<br />-1表示不开启内嵌`Zookeeper`                                               |
+|nestedDataDir                   |String |否     |     | 内嵌`Zookeeper`的数据存储路径<br />为空表示不开启内嵌`Zookeeper`                                        |
 
 ### 基于Spring但不使用命名空间
 

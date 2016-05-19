@@ -17,28 +17,50 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class ZookeeperConfigurationTest {
     
     @Test
-    public void assertIsNotUseNestedZookeeperWhenPortIsNegative() throws Exception {
+    public void assertNewZookeeperConfigurationForServerListsAndNamespace() {
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "myNamespace");
+        assertThat(zkConfig.getServerLists(), is("localhost:2181"));
+        assertThat(zkConfig.getNamespace(), is("myNamespace"));
+        assertThat(zkConfig.getBaseSleepTimeMilliseconds(), is(1000));
+        assertThat(zkConfig.getMaxSleepTimeMilliseconds(), is(3000));
+        assertThat(zkConfig.getMaxRetries(), is(3));
+    }
+    
+    @Test
+    public void assertNewZookeeperConfigurationForMaxConstructor() {
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "myNamespace", 2000, 6000, 6);
+        assertThat(zkConfig.getServerLists(), is("localhost:2181"));
+        assertThat(zkConfig.getNamespace(), is("myNamespace"));
+        assertThat(zkConfig.getBaseSleepTimeMilliseconds(), is(2000));
+        assertThat(zkConfig.getMaxSleepTimeMilliseconds(), is(6000));
+        assertThat(zkConfig.getMaxRetries(), is(6));
+    }
+    
+    @Test
+    public void assertIsNotUseNestedZookeeperWhenPortIsNegative() {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration();
         assertFalse(zkConfig.isUseNestedZookeeper());
     }
     
     @Test
-    public void assertIsNotUseNestedZookeeperWhenDataDirIsNull() throws Exception {
+    public void assertIsNotUseNestedZookeeperWhenDataDirIsNull() {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration();
         zkConfig.setNestedPort(3181);
         assertFalse(zkConfig.isUseNestedZookeeper());
     }
     
     @Test
-    public void assertIsNotUseNestedZookeeperWhenDataDirIsEmpty() throws Exception {
+    public void assertIsNotUseNestedZookeeperWhenDataDirIsEmpty() {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration();
         zkConfig.setNestedPort(3181);
         zkConfig.setNestedDataDir("");
@@ -46,7 +68,7 @@ public final class ZookeeperConfigurationTest {
     }
     
     @Test
-    public void assertIsUseNestedZookeeper() throws Exception {
+    public void assertIsUseNestedZookeeper() {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration();
         zkConfig.setNestedPort(3181);
         zkConfig.setNestedDataDir("target");

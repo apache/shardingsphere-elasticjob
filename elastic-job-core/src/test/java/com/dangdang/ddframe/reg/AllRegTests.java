@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.reg;
 
+import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterInitFailureTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -45,7 +46,8 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterQueryWithoutCac
     ZookeeperRegistryCenterMiscellaneousTest.class, 
     ZookeeperRegistryCenterNestedTest.class, 
     RegExceptionHandlerTest.class, 
-    LocalPropertiesFileNotFoundExceptionTest.class
+    LocalPropertiesFileNotFoundExceptionTest.class,
+    ZookeeperRegistryCenterInitFailureTest.class
     })
 public final class AllRegTests {
 }

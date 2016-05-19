@@ -32,7 +32,7 @@ import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 
 public final class ZookeeperRegistryCenterForAuthTest extends AbstractNestedZookeeperBaseTest {
     
-    private ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterForAuthTest.class.getName(), 1000, 3000, 3);
+    private ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterForAuthTest.class.getName());
     
     private ZookeeperRegistryCenter zkRegCenter;
     

@@ -51,18 +51,18 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
      * 等待重试的间隔时间的初始值.
      * 单位毫秒.
      */
-    private int baseSleepTimeMilliseconds;
+    private int baseSleepTimeMilliseconds = 1000;
     
     /**
      * 等待重试的间隔时间的最大值.
      * 单位毫秒.
      */
-    private int maxSleepTimeMilliseconds;
+    private int maxSleepTimeMilliseconds = 3000;
     
     /**
      * 最大重试次数.
      */
-    private int maxRetries;
+    private int maxRetries = 3;
     
     /**
      * 会话超时时间.
@@ -93,6 +93,17 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
      * 为空表示不开启内嵌Zookeeper.
      */
     private String nestedDataDir;
+    
+    /**
+     * 包含了必需属性的构造器.
+     *
+     * @param serverLists 连接Zookeeper服务器的列表
+     * @param namespace 命名空间
+     */
+    public ZookeeperConfiguration(final String serverLists, final String namespace) {
+        this.serverLists = serverLists;
+        this.namespace = namespace;
+    }
     
     /**
      * 包含了必需属性的构造器.

@@ -17,18 +17,18 @@
 
 package com.dangdang.ddframe.job.console.controller;
 
-import java.util.Collection;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
-
+import com.dangdang.ddframe.job.console.domain.RegistryCenterConfiguration;
+import com.dangdang.ddframe.job.console.service.RegistryCenterService;
+import com.dangdang.ddframe.job.internal.reg.RegistryCenterFactory;
+import com.dangdang.ddframe.reg.exception.RegException;
 import com.google.common.base.Optional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dangdang.ddframe.job.console.domain.RegistryCenterConfiguration;
-import com.dangdang.ddframe.job.console.service.RegistryCenterService;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("registry_center")
@@ -65,6 +65,11 @@ public class RegistryCenterController {
     
     private boolean setRegistryCenterNameToSession(final RegistryCenterConfiguration regCenterConfig, final HttpSession session) {
         session.setAttribute(REG_CENTER_CONFIG_KEY, regCenterConfig);
+        try {
+            RegistryCenterFactory.createCoordinatorRegistryCenter(regCenterConfig.getZkAddressList(), regCenterConfig.getNamespace(), Optional.fromNullable(regCenterConfig.getDigest()));
+        } catch (final RegException ex) {
+            return false;
+        }
         return true;
     }
 }

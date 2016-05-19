@@ -49,7 +49,7 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBaseTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, "zkRegTestCenter", 1000, 3000, 3);
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, "zkRegTestCenter");
     
     @Getter(value = AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
