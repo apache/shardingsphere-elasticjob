@@ -10,6 +10,7 @@
     <modules>
         <module>elastic-job-core</module>
         <module>elastic-job-spring</module>
+        <module>elastic-job-api</module>
         <module>elastic-job-console</module>
     </modules>
     

@@ -76,17 +76,12 @@ function bindSubmitJobSettingsForm() {
 function renderServers() {
     $.get("job/servers", {jobName : $("#job-name").text()}, function (data) {
         $("#servers tbody").empty();
-        var leaderStatus;
         for (var i = 0;i < data.length;i++) {
             var status = data[i].status;
-            var leader = data[i].leader;
-            if (leader) {
-                leaderStatus = status;
-            }
-            var baseTd = "<td>" + data[i].ip + "</td><td>" + data[i].hostName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td><td>" + (true === leader ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>") + "</td>";
+            var baseTd = "<td>" + data[i].ip + "</td><td>" + data[i].hostName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td>";
             var operationTd = "";
-            var resumeButton = "<button operation='resume' class='btn btn-success' ip='" + data[i].ip + "' leader='" + leader + "'>恢复</button>";
-            var pauseButton = "<button operation='pause' class='btn btn-warning' ip='" + data[i].ip + "'" + (leader ? "data-toggle='modal' data-target='#pause-leader-confirm-dialog'" : "") + ">暂停</button>";
+            var resumeButton = "<button operation='resume' class='btn btn-success' ip='" + data[i].ip + "'>恢复</button>";
+            var pauseButton = "<button operation='pause' class='btn btn-warning' ip='" + data[i].ip + "'" + ">暂停</button>";
             var shutdownButton = "<button operation='shutdown' class='btn btn-danger' ip='" + data[i].ip + "'>关闭</button>";
             var removeButton = "<button operation='remove' class='btn btn-danger' ip='" + data[i].ip + "'>删除</button>";
             var disableButton = "<button operation='disable' class='btn btn-danger' ip='" + data[i].ip + "'>失效</button>";
@@ -120,11 +115,6 @@ function renderServers() {
             }
             $("#servers tbody").append("<tr class='" + trClass + "'>" + baseTd + operationTd + "</tr>");
         }
-        if ("PAUSED" === leaderStatus) {
-            $("button[operation='resume'][leader='false']").attr("disabled", true);
-            $("button[operation='resume'][leader='false']").addClass("disabled");
-            $("button[operation='resume'][leader='false']").attr("title", "先恢复主节点才能恢复从节点作业");
-        }
     });
 }
 
@@ -139,10 +129,9 @@ function bindPauseButtons() {
 }
 
 function bindPauseAllButtons() {
-    $(document).on("click", "#pause-leader-confirm-dialog-confirm-btn,#pause-all-jobs-btn", function(event) {
+    $(document).on("click", "#pause-all-jobs-btn", function(event) {
         var jobName = $("#job-name").text();
         $.post("job/pauseAll/name", {jobName : jobName}, function (data) {
-            $("#pause-leader-confirm-dialog").modal("hide");
             renderServers();
             showSuccessDialog();
         });

@@ -154,7 +154,7 @@ public class FailoverService {
             log.debug("Elastic job: failover job begin, crashed item:{}.", crashedItem);
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
-            JobRegistry.getInstance().getJobScheduler(jobConfiguration.getJobName()).triggerJob();
+            JobRegistry.getInstance().getJobScheduleController(jobConfiguration.getJobName()).triggerJob();
         }
     }
 }

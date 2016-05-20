@@ -45,7 +45,6 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
     //CHECKSTYLE:ON
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
         factory.setInitMethodName("init");
-        factory.setDestroyMethodName("shutdown");
         factory.addConstructorArgReference(element.getAttribute("regCenter"));
         factory.addConstructorArgReference(createJobConfiguration(element, parserContext));
         factory.addConstructorArgValue(createJobListeners(element));

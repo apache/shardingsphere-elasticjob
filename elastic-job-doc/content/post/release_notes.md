@@ -12,6 +12,9 @@ weight=1
 
 1. [ISSUE #88](https://github.com/dangdangdotcom/elastic-job/issues/88) stop作业改名为pause
 
+### 新功能
+1. [ISSUE #91](https://github.com/dangdangdotcom/elastic-job/issues/91) 作业生命周期操作API
+
 ### 功能提升
 
 1. [ISSUE #84](https://github.com/dangdangdotcom/elastic-job/issues/84) 控制台提供作业启用/禁用按钮操作

@@ -22,11 +22,11 @@ import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import com.google.common.base.Optional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dangdang.ddframe.job.console.domain.RegistryCenterClient;
 import com.dangdang.ddframe.job.console.domain.RegistryCenterConfiguration;
 import com.dangdang.ddframe.job.console.service.RegistryCenterService;
 
@@ -34,14 +34,17 @@ import com.dangdang.ddframe.job.console.service.RegistryCenterService;
 @RequestMapping("registry_center")
 public class RegistryCenterController {
     
-    public static final String CURATOR_CLIENT_KEY = "curator_client_key";
+    public static final String REG_CENTER_CONFIG_KEY = "reg_center_config_key";
     
     @Resource
     private RegistryCenterService registryCenterService;
     
     @RequestMapping(method = RequestMethod.GET)
     public Collection<RegistryCenterConfiguration> load(final HttpSession session) {
-        setClientToSession(registryCenterService.connectActivated(), session);
+        Optional<RegistryCenterConfiguration> regCenterConfig = registryCenterService.loadActivated();
+        if (regCenterConfig.isPresent()) {
+            setRegistryCenterNameToSession(regCenterConfig.get(), session);
+        }
         return registryCenterService.loadAll();
     }
     
@@ -57,14 +60,11 @@ public class RegistryCenterController {
     
     @RequestMapping(value = "connect", method = RequestMethod.POST)
     public boolean connect(final RegistryCenterConfiguration config, final HttpSession session) {
-        return setClientToSession(registryCenterService.connect(config.getName()), session);
+        return setRegistryCenterNameToSession(registryCenterService.load(config.getName()), session);
     }
     
-    private boolean setClientToSession(final RegistryCenterClient client, final HttpSession session) {
-        boolean result = client.isConnected();
-        if (result) {
-            session.setAttribute(CURATOR_CLIENT_KEY, client);
-        }
-        return result;
+    private boolean setRegistryCenterNameToSession(final RegistryCenterConfiguration regCenterConfig, final HttpSession session) {
+        session.setAttribute(REG_CENTER_CONFIG_KEY, regCenterConfig);
+        return true;
     }
 }

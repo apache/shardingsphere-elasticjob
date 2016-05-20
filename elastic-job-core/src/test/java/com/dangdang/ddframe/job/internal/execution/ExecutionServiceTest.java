@@ -30,6 +30,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,7 +39,6 @@ import org.unitils.util.ReflectionUtils;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
@@ -66,7 +66,7 @@ public final class ExecutionServiceTest {
     private LeaderElectionService leaderElectionService;
     
     @Mock
-    private JobScheduler jobScheduler;
+    private JobScheduleController jobScheduleController;
     
     private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
@@ -103,8 +103,8 @@ public final class ExecutionServiceTest {
     @Test
     public void assertRegisterJobBeginWithoutNextFireTime() {
         when(configService.isMonitorExecution()).thenReturn(true);
-        when(jobScheduler.getNextFireTime()).thenReturn(null);
-        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
+        when(jobScheduleController.getNextFireTime()).thenReturn(null);
+        JobRegistry.getInstance().addJobScheduleController("testJob", jobScheduleController);
         JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
         jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
         executionService.registerJobBegin(jobExecutionShardingContext);
@@ -121,8 +121,8 @@ public final class ExecutionServiceTest {
     @Test
     public void assertRegisterJobBeginWithNextFireTime() {
         when(configService.isMonitorExecution()).thenReturn(true);
-        when(jobScheduler.getNextFireTime()).thenReturn(new Date(0L));
-        JobRegistry.getInstance().addJobScheduler("testJob", jobScheduler);
+        when(jobScheduleController.getNextFireTime()).thenReturn(new Date(0L));
+        JobRegistry.getInstance().addJobScheduleController("testJob", jobScheduleController);
         JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
         jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
         executionService.registerJobBegin(jobExecutionShardingContext);

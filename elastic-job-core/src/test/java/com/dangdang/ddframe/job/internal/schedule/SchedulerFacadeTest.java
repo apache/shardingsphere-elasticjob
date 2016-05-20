@@ -111,6 +111,7 @@ public class SchedulerFacadeTest {
         schedulerFacade.releaseJobResource();
         verify(monitorService).close();
         verify(statisticsService).stopProcessCountJob();
+        verify(serverService).removeServerStatus();
     }
     
     @Test

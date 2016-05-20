@@ -30,4 +30,19 @@ public final class JobNodePathTest {
     public void assertGetFullPath() {
         assertThat(jobNodePath.getFullPath("node"), is("/testJob/node"));
     }
+    
+    @Test
+    public void assertGetServerNodePath() {
+        assertThat(jobNodePath.getServerNodePath(), is("/testJob/servers"));
+    }
+    
+    @Test
+    public void assertGetServerNodePathForServerIp() {
+        assertThat(jobNodePath.getServerNodePath("ip0"), is("/testJob/servers/ip0"));
+    }
+    
+    @Test
+    public void assertGetServerNodePathForServerIpAndNameNode() {
+        assertThat(jobNodePath.getServerNodePath("ip0", "node"), is("/testJob/servers/ip0/node"));
+    }
 }

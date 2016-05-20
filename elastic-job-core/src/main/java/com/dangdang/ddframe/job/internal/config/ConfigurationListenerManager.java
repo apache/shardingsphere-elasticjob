@@ -17,16 +17,15 @@
 
 package com.dangdang.ddframe.job.internal.config;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 配置文件监听管理器.
@@ -56,7 +55,7 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
                 String cronExpression = new String(event.getData().getData());
-                JobScheduler jobScheduler = JobRegistry.getInstance().getJobScheduler(jobName);
+                JobScheduleController jobScheduler = JobRegistry.getInstance().getJobScheduleController(jobName);
                 if (null != jobScheduler) {
                     jobScheduler.rescheduleJob(cronExpression);
                 }
