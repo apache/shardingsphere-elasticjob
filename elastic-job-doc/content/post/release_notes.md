@@ -6,7 +6,7 @@ weight=1
 
 # Release Notes
 
-## 1.0.8-SNAPSHOT
+## 1.0.8
 ### 新功能
 1. [ISSUE #95](https://github.com/dangdangdotcom/elastic-job/issues/95) 增加脚本类型作业支持
 
