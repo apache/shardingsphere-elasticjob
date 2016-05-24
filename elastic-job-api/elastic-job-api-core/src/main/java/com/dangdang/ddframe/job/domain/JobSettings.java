@@ -64,4 +64,6 @@ public final class JobSettings implements Serializable {
     private String jobShardingStrategyClass;
     
     private String description;
+    
+    private String scriptCommandLine;
 }

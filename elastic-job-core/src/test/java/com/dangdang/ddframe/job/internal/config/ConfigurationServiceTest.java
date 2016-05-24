@@ -17,24 +17,6 @@
 
 package com.dangdang.ddframe.job.internal.config;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.unitils.util.ReflectionUtils;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
@@ -42,6 +24,23 @@ import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public final class ConfigurationServiceTest {
     
@@ -91,6 +90,7 @@ public final class ConfigurationServiceTest {
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, jobConfig.getJobShardingStrategyClass());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, jobConfig.getDescription());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, jobConfig.getMonitorPort());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, jobConfig.getScriptCommandLine());
     }
     
     @Test

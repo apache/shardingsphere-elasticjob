@@ -49,6 +49,7 @@ weight=10
 | failover                         | 否      | 是否开启失效转移                                                               |
 | misfire                          | 否      | 是否开启错过任务重新执行                                                        |
 | description                      | 否      | 作业描述信息                                                                   |
+| scriptCommandLine                | 否      | 脚本型作业作业执行命令行                                                        |
 
 ### servers节点
 

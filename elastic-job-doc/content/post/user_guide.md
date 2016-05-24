@@ -10,7 +10,11 @@ weight=6
 
 ### 作业类型
 
-目前提供`2`种作业类型，分别是`Simple`和`DataFlow`。`DataFlow`类型用于处理数据流，它又提供`2`种作业类型，分别是`ThroughputDataFlow`和`SequenceDataFlow`。需要继承相应的抽象类。
+目前提供`3`种作业类型，分别是`Simple`, `DataFlow`和`Script`。
+
+`DataFlow`类型用于处理数据流，它又提供`2`种作业类型，分别是`ThroughputDataFlow`和`SequenceDataFlow`。需要继承相应的抽象类。
+
+`Script`类型用于处理脚本，可直接使用，无需编码。
 
 方法参数`shardingContext`包含作业配置，分片和运行时信息。可通过`getShardingTotalCount()`, `getShardingItems()`等方法分别获取分片总数，运行在本作业服务器的分片序列号集合等。
 
@@ -94,29 +98,26 @@ public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<F
 }
 ```
 
+#### Script类型作业
+
+`Script`类型作业意为脚本类型作业，支持`shell`，`python`，`perl`等所有类型脚本。只需通过控制台/代码配置scriptCommandLine即可。执行脚本路径可以包含参数，最后一个参数为作业运行时信息.
+
+```
+#!/bin/bash
+echo sharding execution context is $*
+```
+
+作业运行时输出
+
+`sharding execution context is {"shardingItems":[0,1,2,3,4,5,6,7,8,9],"shardingItemParameters":{},"offsets":{},"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","monitorExecution":true,"fetchDataCount":1}`
+
 ### 批量处理
+
 为了提高数据处理效率，数据流类型作业提供了批量处理数据的功能。之前逐条处理数据的两个抽象类分别是`AbstractIndividualThroughputDataFlowElasticJob`和`AbstractIndividualSequenceDataFlowElasticJob`，批量处理则使用另外两个接口`AbstractBatchThroughputDataFlowElasticJob`和`AbstractBatchSequenceDataFlowElasticJob`。不同之处在于`processData`方法的返回值从`boolean`类型变为`int`类型，用于表示一批数据处理的成功数量，第二个入参则转变为`List`数据集合。
 
 ### 异常处理
 
 `elastic-job`在最上层接口提供了`handleJobExecutionException`方法，使用作业时可以覆盖此方法，并使用`quartz`提供的`JobExecutionException`控制异常后作业的声明周期。默认实现是直接将异常抛出。示例：
-
-```java
-public class XXXSimpleJob extends AbstractSimpleElasticJob {
-    
-    @Override
-    public void process(final JobExecutionMultipleShardingContext context) {
-        int zero = 0;
-        10 / zero;
-    }
-    
-    @Override
-    public void handleJobExecutionException(JobExecutionException jobExecutionException) throws JobExecutionException {
-        jobExecutionException.unscheduleAllTriggers();
-    }
-}
-
-```
 
 ### 任务监听配置
 可以通过配置多个任务监听器，在任务执行前和执行后执行监听的方法。监听器分为每台作业节点均执行和分布式场景中仅单一节点执行两种。
@@ -241,7 +242,7 @@ public class JobMain {
 | 属性名                          | 类型  |是否必填 |缺省值| 描述                                                                       |
 | ------------------------------ |:------|:-------|:----|:---------------------------------------------------------------------------|
 |id                              |String |`是`    |     | 作业名称                                                                    |
-|class                           |String |`是`    |     | 作业实现类，需实现`ElasticJob`接口                                            |
+|class                           |String |否      |     | 作业实现类，需实现`ElasticJob`接口，脚本型作业不需要配置                         |
 |regCenter                       |String |`是`    |     | 注册中心`Bean`的引用，需引用`reg:zookeeper`的声明                              |
 |cron                            |String |`是`    |     | `cron`表达式，用于配置作业触发时间                                             |
 |shardingTotalCount              |int    |`是`    |     | 作业分片总数                                                                 |
@@ -259,6 +260,7 @@ public class JobMain {
 |description                     |String |否      |     | 作业描述信息                                                                 |
 |disabled                        |boolean|否      |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
 |overwrite                       |boolean|否      |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
+|scriptCommandLine               |String |否      |     | 脚本型作业执行命令行，仅对Script型作业有效                                      |
 
 #### job:listener命名空间属性详细说明
 
@@ -329,6 +331,7 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.example.elasticjob.core.job.SimpleJobDemo;
 import com.dangdang.example.elasticjob.core.job.ThroughputDataFlowJobDemo;
 import com.dangdang.example.elasticjob.core.job.SequenceDataFlowJobDemo;
+import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob;
 
 public class JobDemo {
     
@@ -338,14 +341,17 @@ public class JobDemo {
     // 定义Zookeeper注册中心
     private CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
-    // 定义作业1配置对象
-    private JobConfiguration jobConfig1 = new JobConfiguration("simpleJob", SimpleJobDemo.class, 10, "0/5 * * * * ?");
+    // 定义简单作业配置对象
+    private JobConfiguration simpleJobConfig = new JobConfiguration("simpleJob", SimpleJobDemo.class, 10, "0/5 * * * * ?");
     
-    // 定义作业2配置对象
-    private JobConfiguration jobConfig2 = new JobConfiguration("throughputDataFlowJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    // 定义高吞吐的数据流作业配置对象
+    private JobConfiguration throughputDataFlowJobConfig = new JobConfiguration("throughputDataFlowJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
-    // 定义作业3配置对象
-    private JobConfiguration jobConfig3 = new JobConfiguration("sequenceDataFlowJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    // 定义顺序的数据流作业配置对象
+    private JobConfiguration sequenceDataFlowJobConfig = new JobConfiguration("sequenceDataFlowJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    
+    // 定义脚本作业配置对象
+    private JobConfiguration scriptJobConfig = new JobConfiguration("scriptJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
     public static void main(final String[] args) {
         new JobDemo().init();
@@ -354,12 +360,14 @@ public class JobDemo {
     private void init() {
         // 连接注册中心
         regCenter.init();
-        // 启动作业1
-        new JobScheduler(regCenter, jobConfig1).init();
-        // 启动作业2
-        new JobScheduler(regCenter, jobConfig2).init();
-        // 启动作业3
-        new JobScheduler(regCenter, jobConfig3).init();
+        // 启动简单作业
+        new JobScheduler(regCenter, simpleJobConfig).init();
+        // 启动高吞吐的数据流作业
+        new JobScheduler(regCenter, throughputDataFlowJobConfig).init();
+        // 启动顺序的数据流作业
+        new JobScheduler(regCenter, sequenceDataFlowJobConfig).init();
+        // 启动脚本作业
+        new JobScheduler(regCenter, scriptJobConfig).init();
     }
 }
 ```

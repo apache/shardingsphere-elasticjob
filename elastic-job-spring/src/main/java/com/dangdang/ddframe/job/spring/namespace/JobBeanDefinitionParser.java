@@ -18,6 +18,9 @@
 package com.dangdang.ddframe.job.spring.namespace;
 
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -26,9 +29,6 @@ import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
-
-import com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler;
-import com.google.common.base.Strings;
 
 import java.util.List;
 
@@ -53,8 +53,14 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
     private String createJobConfiguration(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition("com.dangdang.ddframe.job.api.JobConfiguration");
+        String className = element.getAttribute("class");
+        //TODO 增加作业类型,job:dataflow,job:simple,job:script,job:sequence
+        if (Strings.isNullOrEmpty(className)) {
+            Preconditions.checkNotNull(element.getAttribute("scriptCommandLine"), "Cannot find script command line.");
+            className = "com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob";
+        }
         factory.addConstructorArgValue(element.getAttribute("id"));
-        factory.addConstructorArgValue(element.getAttribute("class"));
+        factory.addConstructorArgValue(className);
         factory.addConstructorArgValue(element.getAttribute("shardingTotalCount"));
         factory.addConstructorArgValue(element.getAttribute("cron"));
         addPropertyValueIfNotEmpty("shardingItemParameters", element, factory);
@@ -71,6 +77,7 @@ public class JobBeanDefinitionParser extends AbstractBeanDefinitionParser {
         addPropertyValueIfNotEmpty("description", element, factory);
         addPropertyValueIfNotEmpty("disabled", element, factory);
         addPropertyValueIfNotEmpty("overwrite", element, factory);
+        addPropertyValueIfNotEmpty("scriptCommandLine", element, factory);
         String result = element.getAttribute("id") + "Conf";
         parserContext.getRegistry().registerBeanDefinition(result, factory.getBeanDefinition());
         return result;

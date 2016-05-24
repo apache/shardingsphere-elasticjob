@@ -57,6 +57,8 @@ public final class ConfigurationNode {
     static final String DESCRIPTION = ROOT + "/description";
     
     static final String MONITOR_PORT = ROOT + "/monitorPort";
+
+    static final String SCRIPT_COMMAND_LINE = ROOT + "/scriptCommandLine";
     
     private final JobNodePath jobNodePath;
     

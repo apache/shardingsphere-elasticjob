@@ -49,6 +49,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
             JobNodePath jobNodePath = new JobNodePath(each);
             JobBriefInfo jobBriefInfo = new JobBriefInfo();
             jobBriefInfo.setJobName(each);
+            jobBriefInfo.setJobClass(registryCenter.get(jobNodePath.getConfigNodePath("jobClass")));
             jobBriefInfo.setDescription(registryCenter.get(jobNodePath.getConfigNodePath("description")));
             jobBriefInfo.setStatus(getJobStatus(each));
             jobBriefInfo.setCron(registryCenter.get(jobNodePath.getConfigNodePath("cron")));

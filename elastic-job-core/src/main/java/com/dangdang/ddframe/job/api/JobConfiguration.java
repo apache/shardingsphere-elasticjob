@@ -164,4 +164,13 @@ public class JobConfiguration {
      * 如果可覆盖, 每次启动作业都以本地配置为准.
      */
     private boolean overwrite;
+
+    /**
+     * 作业执行脚本命令行.
+     *
+     * <p>
+     * 只对脚本类型作业起作用.
+     * </p>
+     */
+    private String scriptCommandLine = "";
 }

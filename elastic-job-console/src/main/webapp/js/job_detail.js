@@ -40,6 +40,7 @@ function renderSettings() {
         if (!data.monitorExecution) {
             $("#execution_info_tab").addClass("disabled");
         }
+        $("#scriptCommandLine").attr("value", data.scriptCommandLine);
     });
 }
 
@@ -61,8 +62,9 @@ function bindSubmitJobSettingsForm() {
         var misfire = $("#misfire").prop("checked");
         var shardingItemParameters = $("#shardingItemParameters").val();
         var jobShardingStrategyClass = $("#jobShardingStrategyClass").val();
+        var scriptCommandLine = $("#scriptCommandLine").val();
         var description = $("#description").val();
-        $.post("job/settings", {jobName: jobName, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, fetchDataCount: fetchDataCount, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, description: description}, function(data) {
+        $.post("job/settings", {jobName: jobName, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, fetchDataCount: fetchDataCount, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, description: description, scriptCommandLine: scriptCommandLine}, function(data) {
             showSuccessDialog();
             if (monitorExecution) {
                 $("#execution_info_tab").removeClass("disabled");

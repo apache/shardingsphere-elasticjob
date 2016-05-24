@@ -87,7 +87,20 @@ public class JobFacade {
     public int getConcurrentDataProcessThreadCount() {
         return configService.getConcurrentDataProcessThreadCount();
     }
-    
+
+    /**
+     * 获取脚本型作业执行命令行.
+     *
+     * <p>
+     * 仅脚本作业有效.
+     * </p>
+     *
+     * @return 脚本型作业执行命令行
+     */
+    public String getScriptCommandLine() {
+        return configService.getScriptCommandLine();
+    }
+
     /**
      * 检查本机与注册中心的时间误差秒数是否在允许范围.
      */

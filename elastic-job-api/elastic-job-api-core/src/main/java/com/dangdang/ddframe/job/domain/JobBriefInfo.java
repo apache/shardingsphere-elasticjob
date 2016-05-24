@@ -35,6 +35,8 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     
     private String jobName;
     
+    private String jobClass;
+    
     private JobStatus status;
     
     private String description;

@@ -17,19 +17,18 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
+import com.google.gson.Gson;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.beanutils.BeanUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.beanutils.BeanUtils;
-
-import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 作业运行时多片分片上下文.
@@ -83,5 +82,9 @@ public final class JobExecutionMultipleShardingContext extends AbstractJobExecut
             "jobName: %s, shardingTotalCount: %s, shardingItems: %s, shardingItemParameters: %s, jobParameter: %s",
                 getJobName(), getShardingTotalCount(), shardingItems, shardingItemParameters, getJobParameter()
             );
+    }
+    
+    public String toScriptArguments() {
+        return new Gson().toJson(this);
     }
 }

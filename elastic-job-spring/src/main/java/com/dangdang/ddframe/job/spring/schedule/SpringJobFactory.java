@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.spring.schedule;
 
+import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob;
 import lombok.extern.slf4j.Slf4j;
 
 import org.quartz.Job;
@@ -37,6 +38,7 @@ import com.google.common.base.Preconditions;
  * 基于Spring Bean的作业工厂.
  * 
  * @author zhangliang
+ * @author caohao
  */
 @Slf4j
 public final class SpringJobFactory extends PropertySettingJobFactory {
@@ -57,6 +59,9 @@ public final class SpringJobFactory extends PropertySettingJobFactory {
                     job = each;
                     break;
                 }
+            }
+            if (ScriptElasticJob.class == bundle.getJobDetail().getJobClass()) {
+                return super.newJob(bundle, scheduler);
             }
             if (null == job) {
                 throw new NoSuchBeanDefinitionException("");

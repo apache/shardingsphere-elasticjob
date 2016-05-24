@@ -99,6 +99,14 @@
                         <textarea id="description" name="description" class="form-control"></textarea>
                     </div>
                 </div>
+                <#if jobClass == "com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob">
+                <div class="form-group">
+                    <label for="scriptCommandLine" class="col-sm-2 control-label">脚本作业全路径</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="scriptCommandLine" name="scriptCommandLine" class="form-control" data-toggle="tooltip" data-placement="bottom" title="执行脚本的全路径名称，可以包含参数" />
+                    </div>
+                </div>
+                </#if>
                 <button type="reset" class="btn btn-inverse">重置</button>
                 <button type="submit" class="btn btn-primary">更新</button>
             </form>

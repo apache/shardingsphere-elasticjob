@@ -25,6 +25,7 @@ import com.dangdang.ddframe.job.plugin.job.type.dataflow.throughput.streaming.St
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.throughput.streaming.StreamingIndividualThroughputDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.throughput.unstreaming.UnstreamingBatchThroughputDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.throughput.unstreaming.UnstreamingIndividualThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJobTest;
 import com.dangdang.ddframe.job.plugin.job.type.simple.SimpleElasticJobTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategyTest;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
@@ -46,7 +47,8 @@ import org.junit.runners.Suite.SuiteClasses;
     UnstreamingBatchSequenceDataFlowElasticJobTest.class, 
     AverageAllocationJobShardingStrategyTest.class, 
     OdevitySortByNameJobShardingStrategyTest.class, 
-    RotateServerByNameJobShardingStrategyTest.class
+    RotateServerByNameJobShardingStrategyTest.class,
+    ScriptElasticJobTest.class
     })
 public final class AllPluginTests {
 }

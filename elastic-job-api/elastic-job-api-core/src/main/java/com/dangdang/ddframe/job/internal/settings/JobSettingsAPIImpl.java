@@ -57,6 +57,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setMisfire(Boolean.valueOf(registryCenter.get(jobNodePath.getConfigNodePath("misfire"))));
         result.setJobShardingStrategyClass(registryCenter.get(jobNodePath.getConfigNodePath("jobShardingStrategyClass")));
         result.setDescription(registryCenter.get(jobNodePath.getConfigNodePath("description")));
+        result.setScriptCommandLine(registryCenter.get(jobNodePath.getConfigNodePath("scriptCommandLine")));
         return result;
     }
     
@@ -77,6 +78,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         updateIfChanged(jobNodePath.getConfigNodePath("misfire"), jobSettings.isMisfire());
         updateIfChanged(jobNodePath.getConfigNodePath("jobShardingStrategyClass"), jobSettings.getJobShardingStrategyClass());
         updateIfChanged(jobNodePath.getConfigNodePath("description"), jobSettings.getDescription());
+        updateIfChanged(jobNodePath.getConfigNodePath("scriptCommandLine"), jobSettings.getScriptCommandLine());
     }
     
     private void updateIfChanged(final String nodePath, final Object value) {

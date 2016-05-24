@@ -17,10 +17,6 @@
 
 package com.dangdang.ddframe.job.internal.config;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
@@ -28,6 +24,10 @@ import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Strings;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 弹性化分布式作业配置服务.
@@ -76,6 +76,7 @@ public class ConfigurationService {
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, jobNodeStorage.getJobConfiguration().getJobShardingStrategyClass());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, jobNodeStorage.getJobConfiguration().getDescription());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, jobNodeStorage.getJobConfiguration().getMonitorPort());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, jobNodeStorage.getJobConfiguration().getScriptCommandLine());
     }
     
     /**
@@ -230,4 +231,18 @@ public class ConfigurationService {
     public String getJobName() {
         return jobNodeStorage.getJobConfiguration().getJobName();
     }
+
+    /**
+     * 获取作业执行脚本命令行.
+     *
+     * <p>
+     * 仅脚本型作业有效.
+     * </p>
+     *
+     * @return 脚本型作业执行脚本命令行
+     */
+    public String getScriptCommandLine() {
+        return jobNodeStorage.getJobNodeData(ConfigurationNode.SCRIPT_COMMAND_LINE);
+    }
+
 }

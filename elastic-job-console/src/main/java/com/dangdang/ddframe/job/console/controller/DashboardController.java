@@ -54,8 +54,9 @@ public class DashboardController {
     }
     
     @RequestMapping(value = "job_detail", method = RequestMethod.GET)
-    public String jobDetail(@RequestParam final String jobName, final ModelMap model) {
+    public String jobDetail(@RequestParam final String jobName, @RequestParam final String jobClass, final ModelMap model) {
         model.put("jobName", jobName);
+        model.put("jobClass", jobClass);
         return "job_detail";
     }
     
