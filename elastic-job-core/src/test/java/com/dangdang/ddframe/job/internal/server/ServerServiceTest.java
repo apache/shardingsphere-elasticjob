@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.internal.server;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
@@ -45,7 +46,7 @@ public final class ServerServiceTest {
     @Mock
     private LocalHostService localHostService;
     
-    private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private final JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
     private final ServerService serverService = new ServerService(null, jobConfig);
     

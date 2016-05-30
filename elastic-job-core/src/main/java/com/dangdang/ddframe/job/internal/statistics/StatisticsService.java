@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.internal.statistics;
 
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.internal.config.ConfigurationService;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 /**
  * 作业统计信息服务.

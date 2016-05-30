@@ -17,9 +17,10 @@
 
 package com.dangdang.ddframe.job.internal.execution;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
+import com.dangdang.ddframe.job.internal.job.JobType;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -67,7 +68,9 @@ public class ExecutionContextService {
         }
         result.setJobParameter(configService.getJobParameter());
         result.setMonitorExecution(isMonitorExecution);
-        result.setFetchDataCount(configService.getFetchDataCount());
+        if (JobType.DATA_FLOW.equals(configService.getJobType())) {
+            result.setFetchDataCount(configService.getFetchDataCount());    
+        }
         if (result.getShardingItems().isEmpty()) {
             return result;
         }

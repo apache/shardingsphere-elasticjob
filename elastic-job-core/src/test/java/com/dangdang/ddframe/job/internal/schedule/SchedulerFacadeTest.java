@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.internal.schedule;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.fixture.TestDataFlowJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.internal.job.JobType;
 import com.dangdang.ddframe.job.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.internal.server.ServerService;
@@ -69,7 +71,7 @@ public class SchedulerFacadeTest {
     @Mock
     private ListenerManager listenerManager;
     
-    private JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private JobConfiguration jobConfig = new DataFlowJobConfiguration("testJob", TestDataFlowJob.class, 3, "0/1 * * * * ?");
     
     private SchedulerFacade schedulerFacade;
     
@@ -77,6 +79,7 @@ public class SchedulerFacadeTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         schedulerFacade = new SchedulerFacade(null, jobConfig, Collections.<ElasticJobListener>emptyList());
+        when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
@@ -100,8 +103,8 @@ public class SchedulerFacadeTest {
         verify(leaderElectionService).leaderForceElection();
         verify(configService).persistJobConfiguration();
         verify(serverService).persistServerOnline();
-        verify(serverService).clearJobPausedStatus();
         verify(statisticsService).startProcessCountJob();
+        verify(serverService).clearJobPausedStatus();
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
     }

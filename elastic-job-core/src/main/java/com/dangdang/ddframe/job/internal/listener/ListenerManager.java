@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.internal.listener;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.internal.election.ElectionListenerManager;

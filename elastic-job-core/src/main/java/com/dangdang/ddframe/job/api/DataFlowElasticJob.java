@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-
-import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
 
 /**
  * 保用于处理数据流程的作业接口.

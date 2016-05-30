@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.internal.statistics;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 

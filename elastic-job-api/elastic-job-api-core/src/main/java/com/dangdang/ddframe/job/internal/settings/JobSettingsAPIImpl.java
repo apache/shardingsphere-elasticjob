@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.internal.settings;
 
 import com.dangdang.ddframe.job.api.JobSettingsAPI;
 import com.dangdang.ddframe.job.domain.JobSettings;
+import com.dangdang.ddframe.job.internal.job.JobType;
 import com.dangdang.ddframe.job.internal.storage.JobNodePath;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Strings;
@@ -28,6 +29,7 @@ import lombok.RequiredArgsConstructor;
  * 作业配置的实现类.
  *
  * @author zhangliang
+ * @author caohao
  */
 @RequiredArgsConstructor
 public final class JobSettingsAPIImpl implements JobSettingsAPI {
@@ -38,16 +40,26 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     public JobSettings getJobSettings(final String jobName) {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
+        String jobType = registryCenter.get(jobNodePath.getConfigNodePath("jobType"));
+        buildSimpleJobSettings(jobName, result, jobNodePath, jobType);
+        if (JobType.DATA_FLOW.name().equals(jobType)) {
+            buildDataFlowJobSettings(result, jobNodePath);
+        }
+        if (JobType.SCRIPT.name().equals(jobType)) {
+            buildScriptJobSettings(result, jobNodePath);
+        }
+        return result;
+    }
+    
+    public void buildSimpleJobSettings(final String jobName, final JobSettings result, final JobNodePath jobNodePath, final String jobType) {
         result.setJobName(jobName);
+        result.setJobType(jobType);
         result.setJobClass(registryCenter.get(jobNodePath.getConfigNodePath("jobClass")));
         result.setShardingTotalCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("shardingTotalCount"))));
         result.setCron(registryCenter.get(jobNodePath.getConfigNodePath("cron")));
         result.setShardingItemParameters(registryCenter.get(jobNodePath.getConfigNodePath("shardingItemParameters")));
         result.setJobParameter(registryCenter.get(jobNodePath.getConfigNodePath("jobParameter")));
         result.setMonitorExecution(Boolean.valueOf(registryCenter.get(jobNodePath.getConfigNodePath("monitorExecution"))));
-        result.setProcessCountIntervalSeconds(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("processCountIntervalSeconds"))));
-        result.setConcurrentDataProcessThreadCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("concurrentDataProcessThreadCount"))));
-        result.setFetchDataCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("fetchDataCount"))));
         result.setMaxTimeDiffSeconds(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("maxTimeDiffSeconds"))));
         String monitorPort = registryCenter.get(jobNodePath.getConfigNodePath("monitorPort"));
         if (!Strings.isNullOrEmpty(monitorPort)) {
@@ -57,8 +69,16 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setMisfire(Boolean.valueOf(registryCenter.get(jobNodePath.getConfigNodePath("misfire"))));
         result.setJobShardingStrategyClass(registryCenter.get(jobNodePath.getConfigNodePath("jobShardingStrategyClass")));
         result.setDescription(registryCenter.get(jobNodePath.getConfigNodePath("description")));
+    }
+    
+    public void buildDataFlowJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
+        result.setProcessCountIntervalSeconds(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("processCountIntervalSeconds"))));
+        result.setConcurrentDataProcessThreadCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("concurrentDataProcessThreadCount"))));
+        result.setFetchDataCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("fetchDataCount"))));
+    }
+    
+    public void buildScriptJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
         result.setScriptCommandLine(registryCenter.get(jobNodePath.getConfigNodePath("scriptCommandLine")));
-        return result;
     }
     
     @Override

@@ -17,10 +17,14 @@
 
 package com.dangdang.ddframe.job.integrate;
 
+import com.dangdang.ddframe.job.api.DataFlowElasticJob;
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
+import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
@@ -29,6 +33,7 @@ import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
+import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob;
 import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
@@ -72,7 +77,7 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
     private final String jobName = System.nanoTime() + "_testJob";
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
-        jobConfig = new JobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
+        jobConfig = initJobConfig(elasticJobClass);
         jobScheduler = new JobScheduler(regCenter, jobConfig, new ElasticJobListener() {
             
             @Override
@@ -100,11 +105,21 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
     }
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
-        jobConfig = new JobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
+        jobConfig = initJobConfig(elasticJobClass);
         jobScheduler = new JobScheduler(regCenter, jobConfig);
         disabled = false;
         this.monitorPort = monitorPort;
         leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
+    }
+    
+    private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
+        if (DataFlowElasticJob.class.isAssignableFrom(elasticJobClass)) {
+            return new DataFlowJobConfiguration(jobName, (Class<? extends DataFlowElasticJob>)elasticJobClass, 3, "0/1 * * * * ?");
+        } else if (ScriptElasticJob.class.isAssignableFrom(elasticJobClass)) {
+            return new ScriptJobConfiguration(jobName, 3, "0/1 * * * * ?", AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
+        } else {
+            return new SimpleJobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
+        }
     }
     
     @BeforeClass

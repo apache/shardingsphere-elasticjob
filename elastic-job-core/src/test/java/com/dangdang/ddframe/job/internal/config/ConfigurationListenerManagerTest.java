@@ -17,10 +17,12 @@
 
 package com.dangdang.ddframe.job.internal.config;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager.CronSettingChangedJobListener;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -30,11 +32,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.config.ConfigurationListenerManager.CronSettingChangedJobListener;
-import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public final class ConfigurationListenerManagerTest {
     
@@ -44,7 +43,7 @@ public final class ConfigurationListenerManagerTest {
     @Mock
     private JobScheduleController jobScheduleController;
     
-    private final ConfigurationListenerManager configurationListenerManager = new ConfigurationListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    private final ConfigurationListenerManager configurationListenerManager = new ConfigurationListenerManager(null, new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
     
     @Before
     public void setUp() throws NoSuchFieldException {

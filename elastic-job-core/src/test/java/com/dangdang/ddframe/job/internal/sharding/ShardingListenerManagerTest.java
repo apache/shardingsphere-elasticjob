@@ -17,9 +17,12 @@
 
 package com.dangdang.ddframe.job.internal.sharding;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import com.dangdang.ddframe.job.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -29,12 +32,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
-import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public final class ShardingListenerManagerTest {
     
@@ -49,7 +48,7 @@ public final class ShardingListenerManagerTest {
     
     private String ip = new LocalHostService().getIp();
     
-    private final ShardingListenerManager shardingListenerManager = new ShardingListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    private final ShardingListenerManager shardingListenerManager = new ShardingListenerManager(null, new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
     
     @Before
     public void setUp() throws NoSuchFieldException {

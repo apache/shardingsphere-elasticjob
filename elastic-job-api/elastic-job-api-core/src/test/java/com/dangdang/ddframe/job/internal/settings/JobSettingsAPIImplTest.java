@@ -64,6 +64,7 @@ public class JobSettingsAPIImplTest {
     
     private void createExpected() {
         when(registryCenter.get("/testJob/config/jobClass")).thenReturn("TestJob");
+        when(registryCenter.get("/testJob/config/jobType")).thenReturn("DATA_FLOW");
         when(registryCenter.get("/testJob/config/shardingTotalCount")).thenReturn("1");
         when(registryCenter.get("/testJob/config/cron")).thenReturn("0/30 * * * * *");
         when(registryCenter.get("/testJob/config/shardingItemParameters")).thenReturn("0=A");
@@ -81,15 +82,13 @@ public class JobSettingsAPIImplTest {
     
     private void assertJobSettings(JobSettings jobSettings) {
         assertThat(jobSettings.getJobName(), is("testJob"));
+        assertThat(jobSettings.getJobType(), is("DATA_FLOW"));
         assertThat(jobSettings.getJobClass(), is("TestJob"));
         assertThat(jobSettings.getShardingTotalCount(), is(1));
         assertThat(jobSettings.getCron(), is("0/30 * * * * *"));
         assertThat(jobSettings.getShardingItemParameters(), is("0=A"));
         assertThat(jobSettings.getJobParameter(), is("param"));
         assertThat(jobSettings.isMonitorExecution(), is(true));
-        assertThat(jobSettings.getProcessCountIntervalSeconds(), is(300));
-        assertThat(jobSettings.getConcurrentDataProcessThreadCount(), is(10));
-        assertThat(jobSettings.getFetchDataCount(), is(100));
         assertThat(jobSettings.getMaxTimeDiffSeconds(), is(60000));
         assertThat(jobSettings.isFailover(), is(true));
         assertThat(jobSettings.isMisfire(), is(true));

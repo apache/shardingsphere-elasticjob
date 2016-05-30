@@ -24,7 +24,7 @@
     <bean id="simpleElasticJob_no_namespace" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
-            <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
+            <bean class="com.dangdang.ddframe.job.api.config.SimpleJobConfiguration">
                 <constructor-arg name="jobName" value="simpleElasticJob_no_namespace" />
                 <constructor-arg name="jobClass" value="com.dangdang.ddframe.job.fixture.SimpleElasticJob" />
                 <constructor-arg name="shardingTotalCount" value="${simpleElasticJob.shardingTotalCount}" />
@@ -39,7 +39,7 @@
     <bean id="throughputDataFlowElasticJob_no_namespace" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
-            <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
+            <bean class="com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration">
                 <constructor-arg name="jobName" value="throughputDataFlowElasticJob_no_namespace" />
                 <constructor-arg name="jobClass" value="com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob" />
                 <constructor-arg name="shardingTotalCount" value="3" />

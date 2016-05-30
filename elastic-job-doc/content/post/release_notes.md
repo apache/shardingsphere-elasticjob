@@ -6,10 +6,16 @@ weight=1
 
 # Release Notes
 
-## 1.0.9-SNAPSHOT
+## 1.1.0-SNAPSHOT
+
+### 结构调整
+
+1. [ISSUE #97](https://github.com/dangdangdotcom/elastic-job/issues/97) JobConfiguration重构为SimpleJobConfiguration，DataFlowJobConfiguration，ScriptJobConfiguration 
 
 ## 1.0.8
+
 ### 新功能
+
 1. [ISSUE #95](https://github.com/dangdangdotcom/elastic-job/issues/95) 增加脚本类型作业支持
 
 ## 1.0.7

@@ -17,11 +17,13 @@
 
 package com.dangdang.ddframe.job.internal.execution;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import com.dangdang.ddframe.job.internal.job.JobType;
 import com.dangdang.ddframe.job.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.google.common.collect.Lists;
@@ -55,7 +57,7 @@ public final class ExecutionContextServiceTest {
     @Mock
     private OffsetService offsetService;
     
-    private final JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private final JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
     private final ExecutionContextService executionContextService = new ExecutionContextService(null, jobConfig);
     
@@ -75,6 +77,7 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(configService.isFailover()).thenReturn(false);
         when(configService.isMonitorExecution()).thenReturn(false);
+        when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
         when(configService.getFetchDataCount()).thenReturn(10);
         JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
         expected.setJobName("testJob");
@@ -91,6 +94,7 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(configService.isFailover()).thenReturn(false);
         when(configService.isMonitorExecution()).thenReturn(false);
+        when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
         when(configService.getFetchDataCount()).thenReturn(10);
         Map<Integer, String> shardingItemParameters = new HashMap<>(3);
         shardingItemParameters.put(0, "A");
@@ -124,6 +128,7 @@ public final class ExecutionContextServiceTest {
         when(configService.isMonitorExecution()).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
+        when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
         when(configService.getFetchDataCount()).thenReturn(10);
         Map<Integer, String> shardingItemParameters = new HashMap<>(3);
         shardingItemParameters.put(0, "A");

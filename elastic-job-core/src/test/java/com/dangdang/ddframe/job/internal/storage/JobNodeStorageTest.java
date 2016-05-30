@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.internal.storage;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
@@ -51,7 +52,7 @@ public final class JobNodeStorageTest {
     @Mock
     private CoordinatorRegistryCenter coordinatorRegistryCenter;
     
-    private JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
     private JobNodeStorage jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfig);
     

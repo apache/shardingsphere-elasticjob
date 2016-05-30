@@ -17,14 +17,17 @@
 
 package com.dangdang.ddframe.job.internal.server;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.internal.server.JobOperationListenerManager.ConnectionLostListener;
+import com.dangdang.ddframe.job.internal.server.JobOperationListenerManager.JobPausedStatusJobListener;
 import com.dangdang.ddframe.job.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.state.ConnectionState;
@@ -35,15 +38,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.internal.server.JobOperationListenerManager.ConnectionLostListener;
-import com.dangdang.ddframe.job.internal.server.JobOperationListenerManager.JobPausedStatusJobListener;
-import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
-
 import java.util.Arrays;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public final class JobOperationListenerManagerTest {
     
@@ -67,7 +66,7 @@ public final class JobOperationListenerManagerTest {
     
     private String ip = new LocalHostService().getIp();
     
-    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
     
     @Before
     public void setUp() throws NoSuchFieldException {

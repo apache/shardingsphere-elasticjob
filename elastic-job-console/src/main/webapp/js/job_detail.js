@@ -22,6 +22,7 @@ $(function() {
 
 function renderSettings() {
     $.get("job/settings", {jobName : $("#job-name").text()}, function (data) {
+        $("#jobType").attr("value", data.jobType);
         $("#jobClass").attr("value", data.jobClass);
         $("#shardingTotalCount").attr("value", data.shardingTotalCount);
         $("#cron").attr("value", data.cron);
@@ -48,6 +49,7 @@ function bindSubmitJobSettingsForm() {
     $("#job-settings-form").submit(function(event) {
         event.preventDefault();
         var jobName = $("#job-name").text();
+        var jobType = $("#jobType").val();
         var jobClass = $("#jobClass").val();
         var shardingTotalCount = $("#shardingTotalCount").val();
         var jobParameter = $("#jobParameter").val();
@@ -64,7 +66,7 @@ function bindSubmitJobSettingsForm() {
         var jobShardingStrategyClass = $("#jobShardingStrategyClass").val();
         var scriptCommandLine = $("#scriptCommandLine").val();
         var description = $("#description").val();
-        $.post("job/settings", {jobName: jobName, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, fetchDataCount: fetchDataCount, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, description: description, scriptCommandLine: scriptCommandLine}, function(data) {
+        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, fetchDataCount: fetchDataCount, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, description: description, scriptCommandLine: scriptCommandLine}, function(data) {
             showSuccessDialog();
             if (monitorExecution) {
                 $("#execution_info_tab").removeClass("disabled");

@@ -19,7 +19,7 @@
 
 package com.dangdang.ddframe.job.integrate.std.integrated;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.fixture.ScriptElasticJobHelper;
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.WaitingUtils;
@@ -31,21 +31,16 @@ import static org.junit.Assert.assertThat;
 
 public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
-    private String scriptCommandLine = ScriptElasticJobTest.class.getResource("/script/test.sh").getPath();
     
     public ScriptElasticJobTest() {
         super(ScriptElasticJob.class);
-    }
-    
-    @Override
-    protected void setJobConfig(final JobConfiguration jobConfig) {
-        jobConfig.setScriptCommandLine(scriptCommandLine);
     }
     
     @Test
     public void assertJobInit() {
         ScriptElasticJobHelper.buildScriptCommandLine();
         WaitingUtils.waitingShortTime();
+        String scriptCommandLine = ((ScriptJobConfiguration) getJobConfig()).getScriptCommandLine();
         assertThat(getRegCenter().get("/" + getJobName() + "/config/scriptCommandLine"), is(scriptCommandLine));
     }
 }

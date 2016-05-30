@@ -28,6 +28,8 @@ public final class ConfigurationNode {
     
     static final String ROOT = "config";
     
+    static final String JOB_TYPE = ROOT + "/jobType";
+    
     static final String JOB_CLASS = ROOT + "/jobClass";
     
     static final String SHARDING_TOTAL_COUNT = ROOT + "/shardingTotalCount";

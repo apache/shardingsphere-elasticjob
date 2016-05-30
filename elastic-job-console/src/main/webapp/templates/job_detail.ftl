@@ -15,7 +15,12 @@
                         <input type="text" id="jobClass" name="jobClass" class="form-control" disabled />
                     </div>
                 </div>
-                
+                <div class="form-group">
+                    <label for="jobType" class="col-sm-2 control-label">作业类型</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="jobType" name="jobType" class="form-control" disabled />
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="shardingTotalCount" class="col-sm-2 control-label">作业分片总数</label>
                     <div class="col-sm-1">
@@ -32,7 +37,7 @@
                         <input type="text" id="cron" name="cron" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业启动时间的cron表达式" required />
                     </div>
                 </div>
-                
+                <#if jobType == "DATA_FLOW">
                 <div class="form-group">
                     <label for="concurrentDataProcessThreadCount" class="col-sm-2 control-label">处理数据的并发线程数</label>
                     <div class="col-sm-1">
@@ -49,7 +54,7 @@
                         <input type="number" id="fetchDataCount" name="fetchDataCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="可在不重启作业的情况下灵活配置抓取数据量" />
                     </div>
                 </div>
-                
+                </#if>
                 <div class="form-group">
                     <label for="maxTimeDiffSeconds" class="col-sm-2 control-label">最大容忍的本机与注册中心的时间误差秒数</label>
                     <div class="col-sm-1">
@@ -99,7 +104,7 @@
                         <textarea id="description" name="description" class="form-control"></textarea>
                     </div>
                 </div>
-                <#if jobClass == "com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob">
+                <#if jobType == "SCRIPT">
                 <div class="form-group">
                     <label for="scriptCommandLine" class="col-sm-2 control-label">脚本作业全路径</label>
                     <div class="col-sm-9">

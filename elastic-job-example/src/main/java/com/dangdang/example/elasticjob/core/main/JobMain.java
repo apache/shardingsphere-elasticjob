@@ -17,11 +17,13 @@
 
 package com.dangdang.example.elasticjob.core.main;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
+import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
-import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
@@ -37,13 +39,13 @@ public final class JobMain {
     
     private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
-    private final JobConfiguration simpleJobConfig = new JobConfiguration("simpleElasticDemoJob", SimpleJobDemo.class, 10, "0/30 * * * * ?");
+    private final JobConfiguration simpleJobConfig = new SimpleJobConfiguration("simpleElasticDemoJob", SimpleJobDemo.class, 10, "0/30 * * * * ?");
     
-    private final JobConfiguration throughputJobConfig = new JobConfiguration("throughputDataFlowElasticDemoJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    private final JobConfiguration throughputJobConfig = new DataFlowJobConfiguration("throughputDataFlowElasticDemoJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
-    private final JobConfiguration sequenceJobConfig = new JobConfiguration("sequenceDataFlowElasticDemoJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    private final JobConfiguration sequenceJobConfig = new DataFlowJobConfiguration("sequenceDataFlowElasticDemoJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
-    private final JobConfiguration scriptElasticJobConfig = new JobConfiguration("scriptElasticDemoJob", ScriptElasticJob.class, 10, "0/5 * * * * ?");
+    private final JobConfiguration scriptElasticJobConfig = new ScriptJobConfiguration("scriptElasticDemoJob", 10, "0/5 * * * * ?", buildScriptCommandLine());
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
@@ -58,7 +60,6 @@ public final class JobMain {
         new JobScheduler(regCenter, simpleJobConfig, new SimpleDistributeOnceElasticJobListener()).init();
         new JobScheduler(regCenter, throughputJobConfig).init();
         new JobScheduler(regCenter, sequenceJobConfig).init();
-        scriptElasticJobConfig.setScriptCommandLine(buildScriptCommandLine());
         new JobScheduler(regCenter, scriptElasticJobConfig).init();
     }
     

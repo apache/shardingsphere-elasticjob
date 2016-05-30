@@ -223,21 +223,24 @@ public class JobMain {
     <!--配置作业注册中心 -->
     <reg:zookeeper id="regCenter" serverLists=" yourhost:2181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
     
-    <!-- 配置作业A-->
-    <job:bean id="simpleElasticJob" class="xxx.MySimpleElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
+    <!-- 配置简单作业-->
+    <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
     
-    <!-- 配置作业B-->
-    <job:bean id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/10 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="10" />
+    <!-- 配置数据流作业-->
+    <job:dataflow id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/10 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="10" />
     
-    <!-- 配置作业C-->
-    <job:bean id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C">
+    <!-- 配置简单作业-->
+    <job:script id="scriptElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" scriptCommandLine="/your/file/path/demo.sh" />
+    
+    <!-- 配置带监听的简单作业-->
+    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C">
         <job:listener class="xx.MySimpleJobListener"/>
         <job:listener class="xx.MyOnceSimpleJobListener" startedTimeoutMilliseconds="1000" completedTimeoutMilliseconds="2000" />
-    </job:bean>
+    </job:simple>
 </beans>
 ```
 
-#### job:bean命名空间属性详细说明
+#### job:simple命名空间属性详细说明
 
 | 属性名                          | 类型  |是否必填 |缺省值| 描述                                                                       |
 | ------------------------------ |:------|:-------|:----|:---------------------------------------------------------------------------|
@@ -260,6 +263,23 @@ public class JobMain {
 |description                     |String |否      |     | 作业描述信息                                                                 |
 |disabled                        |boolean|否      |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
 |overwrite                       |boolean|否      |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
+
+#### job:dataflow命名空间属性详细说明
+
+job:dataflow命名空间拥有job:simple命名空间的全部属性，以下仅列出特有属性
+
+| 属性名                          | 类型  |是否必填 |缺省值| 描述                                                                       |
+| ------------------------------ |:------|:-------|:----|:---------------------------------------------------------------------------|
+|processCountIntervalSeconds     |int    |否      |300  | 统计作业处理数据数量的间隔时间<br />单位：秒<br />仅对`DataFlow`类型作业有效      |
+|concurrentDataProcessThreadCount|int    |否      |1    | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效     |
+|fetchDataCount                  |int    |否      |0    | 每次抓取的数据量                                                             |
+
+#### job:script命名空间属性详细说明，基本属性参照job:simple命名空间属性详细说明
+
+job:script命名空间拥有job:simple命名空间的全部属性，以下仅列出特有属性
+
+| 属性名                          | 类型  |是否必填 |缺省值| 描述                                                                       |
+| ------------------------------ |:------|:-------|:----|:---------------------------------------------------------------------------|
 |scriptCommandLine               |String |否      |     | 脚本型作业执行命令行，仅对Script型作业有效                                      |
 
 #### job:listener命名空间属性详细说明
@@ -307,7 +327,7 @@ public class JobMain {
     <bean id="xxxJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
-            <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
+            <bean class="com.dangdang.ddframe.job.api.config.JobConfiguration">
                 <constructor-arg name="jobName" value="xxxJob" />
                 <constructor-arg name="jobClass" value="xxxDemoJob" />
                 <constructor-arg name="shardingTotalCount" value="10" />
@@ -323,7 +343,7 @@ public class JobMain {
 如果不使用Spring框架，可以用如下方式启动作业。
 
 ```java
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.JobScheduler;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
@@ -342,16 +362,16 @@ public class JobDemo {
     private CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
     // 定义简单作业配置对象
-    private JobConfiguration simpleJobConfig = new JobConfiguration("simpleJob", SimpleJobDemo.class, 10, "0/5 * * * * ?");
+    private JobConfiguration simpleJobConfig = new SimpleJobConfiguration("simpleJob", SimpleJobDemo.class, 10, "0/5 * * * * ?");
     
     // 定义高吞吐的数据流作业配置对象
-    private JobConfiguration throughputDataFlowJobConfig = new JobConfiguration("throughputDataFlowJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    private JobConfiguration throughputDataFlowJobConfig = new DataFLowJobConfiguration("throughputDataFlowJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
     // 定义顺序的数据流作业配置对象
-    private JobConfiguration sequenceDataFlowJobConfig = new JobConfiguration("sequenceDataFlowJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    private JobConfiguration sequenceDataFlowJobConfig = new DataFlowJobConfiguration("sequenceDataFlowJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
     // 定义脚本作业配置对象
-    private JobConfiguration scriptJobConfig = new JobConfiguration("scriptJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    private JobConfiguration scriptJobConfig = new ScriptJobConfiguration("scriptJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
     
     public static void main(final String[] args) {
         new JobDemo().init();

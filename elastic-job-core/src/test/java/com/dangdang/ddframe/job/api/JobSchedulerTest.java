@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.fixture.ElasticJobListenerCaller;
@@ -67,7 +69,7 @@ public final class JobSchedulerTest {
     @Mock
     private ElasticJobListenerCaller caller;
     
-    private JobConfiguration jobConfig = new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
     
     private JobScheduler jobScheduler = new JobScheduler(regCenter, jobConfig);
     

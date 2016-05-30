@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.internal.guarantee;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.fixture.TestJob;
@@ -53,7 +53,7 @@ public final class GuaranteeListenerManagerTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        guaranteeListenerManager = new GuaranteeListenerManager(null, new JobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"),
+        guaranteeListenerManager = new GuaranteeListenerManager(null, new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"),
                 Arrays.asList(elasticJobListener, distributeOnceElasticJobListener));
         ReflectionUtils.setFieldValue(guaranteeListenerManager, guaranteeListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
     }

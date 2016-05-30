@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import org.junit.After;
 import org.junit.Before;
 
