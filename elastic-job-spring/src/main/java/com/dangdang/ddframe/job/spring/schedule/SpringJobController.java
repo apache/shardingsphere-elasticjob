@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.spring.schedule;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 
@@ -29,6 +29,8 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * </p>
  * @see com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler
  * @author caohao
+ * 
+ * @deprecated .
  */
 @Deprecated
 public class SpringJobController extends SpringJobScheduler {

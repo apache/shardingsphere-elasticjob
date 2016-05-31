@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,55 +17,49 @@
 
 package com.dangdang.ddframe.job.console.controller;
 
-import java.util.Collection;
-
-import javax.annotation.Resource;
-
+import com.dangdang.ddframe.job.console.service.JobAPIService;
+import com.dangdang.ddframe.job.domain.ExecutionInfo;
+import com.dangdang.ddframe.job.domain.JobBriefInfo;
+import com.dangdang.ddframe.job.domain.JobSettings;
+import com.dangdang.ddframe.job.domain.ServerInfo;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dangdang.ddframe.job.console.domain.ExecutionInfo;
-import com.dangdang.ddframe.job.console.domain.JobBriefInfo;
-import com.dangdang.ddframe.job.console.domain.JobServer;
-import com.dangdang.ddframe.job.console.domain.JobSettings;
-import com.dangdang.ddframe.job.console.service.JobDimensionService;
-import com.dangdang.ddframe.job.console.service.JobOperationService;
+import javax.annotation.Resource;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("job")
 public class JobController {
     
     @Resource
-    private JobDimensionService jobDimensionService;
-    
-    @Resource
-    private JobOperationService jobOperationService;
+    private JobAPIService jobAPIService;
     
     @RequestMapping(value = "jobs", method = RequestMethod.GET)
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {
-        return jobDimensionService.getAllJobsBriefInfo();
+        return jobAPIService.getJobStatisticsAPI().getAllJobsBriefInfo();
     }
     
     @RequestMapping(value = "settings", method = RequestMethod.GET)
     public JobSettings getJobSettings(final JobSettings jobSettings, final ModelMap model) {
         model.put("jobName", jobSettings.getJobName());
-        return jobDimensionService.getJobSettings(jobSettings.getJobName());
+        return jobAPIService.getJobSettingsAPI().getJobSettings(jobSettings.getJobName());
     }
     
     @RequestMapping(value = "settings", method = RequestMethod.POST)
     public void updateJobSettings(final JobSettings jobSettings) {
-        jobDimensionService.updateJobSettings(jobSettings);
+        jobAPIService.getJobSettingsAPI().updateJobSettings(jobSettings);
     }
     
     @RequestMapping(value = "servers", method = RequestMethod.GET)
-    public Collection<JobServer> getServers(final JobServer jobServer) {
-        return jobDimensionService.getServers(jobServer.getJobName());
+    public Collection<ServerInfo> getServers(final ServerInfo jobServer) {
+        return jobAPIService.getJobStatisticsAPI().getServers(jobServer.getJobName());
     }
     
     @RequestMapping(value = "execution", method = RequestMethod.GET)
     public Collection<ExecutionInfo> getExecutionInfo(final JobSettings config) {
-        return jobDimensionService.getExecutionInfo(config.getJobName());
+        return jobAPIService.getJobStatisticsAPI().getExecutionInfo(config.getJobName());
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
@@ -32,7 +32,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class ExecutionListenerManager extends AbstractListenerManager {
+public class ExecutionListenerManager extends AbstractListenerManager {
     
     private final ExecutionService executionService;
     
@@ -46,20 +46,18 @@ public final class ExecutionListenerManager extends AbstractListenerManager {
     
     @Override
     public void start() {
-        listenMonitorExecutionChanged();
+        addDataListener(new MonitorExecutionChangedJobListener());
     }
     
-    void listenMonitorExecutionChanged() {
-        addDataListener(new AbstractJobListener() {
-            
-            @Override
-            protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (configNode.isMonitorExecutionPath(path) && Type.NODE_UPDATED == event.getType()) {
-                    if (!Boolean.valueOf(new String(event.getData().getData()))) {
-                        executionService.removeExecutionInfo();
-                    }
+    class MonitorExecutionChangedJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (configNode.isMonitorExecutionPath(path) && Type.NODE_UPDATED == event.getType()) {
+                if (!Boolean.valueOf(new String(event.getData().getData()))) {
+                    executionService.removeExecutionInfo();
                 }
             }
-        });
+        }
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,15 +24,16 @@ import org.springframework.aop.support.AopUtils;
 
 import com.dangdang.ddframe.job.exception.JobException;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 基于Spring AOP获取目标对象.
  * 
  * @author caohao
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AopTargetUtils {
-    
-    private AopTargetUtils() {
-    }
     
     /**
      * 获取目标对象.
@@ -64,7 +65,6 @@ public final class AopTargetUtils {
         } catch (final IllegalAccessException ex) {
             throw new JobException(ex);
         }
-        
     }
     
     private static Object getProxyTargetObjectForCglibAndSpring4(final Object proxy) {

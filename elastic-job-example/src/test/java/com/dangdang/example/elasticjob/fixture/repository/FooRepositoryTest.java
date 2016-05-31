@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -33,12 +34,12 @@ public final class FooRepositoryTest {
     
     @Test
     public void assertFindActiveForShardingItems0() {
-        assertFoo(Arrays.asList(0), Arrays.asList(0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L));
+        assertFoo(Collections.singletonList(0), Arrays.asList(0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L));
     }
     
     @Test
     public void assertFindActiveForShardingItems1() {
-        assertFoo(Arrays.asList(1), Arrays.asList(10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L));
+        assertFoo(Collections.singletonList(1), Arrays.asList(10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L));
     }
     
     @Test

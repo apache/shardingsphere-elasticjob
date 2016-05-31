@@ -34,9 +34,7 @@
         <property name="order" value="1" /> 
         <property name="suffix" value=".ftl" />
         <property name="contentType" value="text/html;charset=utf-8" />
-        <property name="viewClass">
-            <value>org.springframework.web.servlet.view.freemarker.FreeMarkerView</value>
-        </property>
+        <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
         <property name="requestContextAttribute" value="rc" />
     </bean>
     
@@ -46,11 +44,11 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/job/**"/>
-            <bean class="com.dangdang.ddframe.job.console.interceptor.CuratorSessionClientInterceptor" />
+            <bean class="com.dangdang.ddframe.job.console.interceptor.SessionRegistryCenterConfigurationInterceptor" />
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/server/**"/>
-            <bean class="com.dangdang.ddframe.job.console.interceptor.CuratorSessionClientInterceptor" />
+            <bean class="com.dangdang.ddframe.job.console.interceptor.SessionRegistryCenterConfigurationInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
 </beans>

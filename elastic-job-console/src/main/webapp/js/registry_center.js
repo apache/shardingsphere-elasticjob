@@ -33,10 +33,10 @@ function bindConnectButtons() {
         $.post("registry_center/connect", {name : regName}, function (data) {
             if (data) {
                 $("#activated-reg-center").text(regName);
-                var connectBtns = $('button[operation="connect"]');
-                connectBtns.text("连接");
-                connectBtns.addClass("btn-primary");
-                connectBtns.attr("disabled", false);
+                var connectButtons = $('button[operation="connect"]');
+                connectButtons.text("连接");
+                connectButtons.addClass("btn-primary");
+                connectButtons.attr("disabled", false);
                 currentConnectBtn.attr("disabled", true);
                 currentConnectBtn.removeClass("btn-primary");
                 currentConnectBtn.text("已连");

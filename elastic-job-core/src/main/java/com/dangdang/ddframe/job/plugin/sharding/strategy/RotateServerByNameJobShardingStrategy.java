@@ -23,11 +23,11 @@ public class RotateServerByNameJobShardingStrategy implements JobShardingStrateg
     
     private List<String> rotateServerList(final List<String> serversList, final String jobName) {
         int serverSize = serversList.size();
-        int offset = jobName.hashCode() % serverSize;
+        int offset = Math.abs(jobName.hashCode()) % serverSize;
         if (0 == offset) {
             return serversList;
         }
-        List<String> result = new ArrayList<String>(serverSize);
+        List<String> result = new ArrayList<>(serverSize);
         for (int i = 0; i < serverSize; i++) {
             int index = (i + offset) % serverSize;
             result.add(serversList.get(index));

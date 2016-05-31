@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,20 @@
 
 package com.dangdang.ddframe.job.internal.offset;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Elastic Job数据处理位置节点名称的常量类.
  * 
  * @author zhangliang
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class OffsetNode {
     
     static final String ROOT = "offset";
     
     private static final String ITEM = ROOT + "/%s";
-    
-    private OffsetNode() {
-    }
     
     /**
      * 获取分片数据处理位置节点路径.

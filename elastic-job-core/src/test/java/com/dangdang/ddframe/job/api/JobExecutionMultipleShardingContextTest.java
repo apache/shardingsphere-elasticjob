@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +42,11 @@ public final class JobExecutionMultipleShardingContextTest {
         assertThat(actual.getShardingItem(), is(0));
         assertThat(actual.getShardingItemParameter(), is("param0"));
         assertThat(actual.getOffset(), is("offset0"));
+    }
+    
+    @Test
+    public void assertToString() {
+        assertThat(createShardingContext().toString(), is("jobName: testJob, shardingTotalCount: 10, shardingItems: [0, 1], shardingItemParameters: {0=param0}, jobParameter: null"));
     }
     
     private JobExecutionMultipleShardingContext createShardingContext() {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,5 +29,20 @@ public final class JobNodePathTest {
     @Test
     public void assertGetFullPath() {
         assertThat(jobNodePath.getFullPath("node"), is("/testJob/node"));
+    }
+    
+    @Test
+    public void assertGetServerNodePath() {
+        assertThat(jobNodePath.getServerNodePath(), is("/testJob/servers"));
+    }
+    
+    @Test
+    public void assertGetServerNodePathForServerIp() {
+        assertThat(jobNodePath.getServerNodePath("ip0"), is("/testJob/servers/ip0"));
+    }
+    
+    @Test
+    public void assertGetServerNodePathForServerIpAndNameNode() {
+        assertThat(jobNodePath.getServerNodePath("ip0", "node"), is("/testJob/servers/ip0/node"));
     }
 }

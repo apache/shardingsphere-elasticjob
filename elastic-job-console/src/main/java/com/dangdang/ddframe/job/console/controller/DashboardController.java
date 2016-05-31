@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,9 @@
 
 package com.dangdang.ddframe.job.console.controller;
 
-import javax.annotation.Resource;
-
+import com.dangdang.ddframe.job.console.domain.RegistryCenterConfiguration;
+import com.dangdang.ddframe.job.console.service.RegistryCenterService;
+import com.google.common.base.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +27,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.dangdang.ddframe.job.console.domain.RegistryCenterClient;
-import com.dangdang.ddframe.job.console.service.RegistryCenterService;
+import javax.annotation.Resource;
 
 @Controller
 @RequestMapping("/")
-@SessionAttributes(RegistryCenterController.CURATOR_CLIENT_KEY)
+@SessionAttributes(RegistryCenterController.REG_CENTER_CONFIG_KEY)
 public class DashboardController {
     
     @Resource
@@ -39,23 +39,24 @@ public class DashboardController {
     
     @RequestMapping(method = RequestMethod.GET)
     public String homepage(final ModelMap model) {
-        RegistryCenterClient client = registryCenterService.connectActivated();
-        if (!client.isConnected()) {
-            return "redirect:registry_center_page";
+        Optional<RegistryCenterConfiguration> activatedRegCenterConfig = registryCenterService.loadActivated();
+        if (activatedRegCenterConfig.isPresent()) {
+            model.put(RegistryCenterController.REG_CENTER_CONFIG_KEY, activatedRegCenterConfig.get());
+            return "redirect:overview";
         }
-        model.put(RegistryCenterController.CURATOR_CLIENT_KEY, client);
-        return "redirect:overview";
+        return "redirect:registry_center_page";
     }
     
     @RequestMapping(value = "registry_center_page", method = RequestMethod.GET)
     public String registryCenterPage(final ModelMap model) {
-        model.put("activedTab", 1);
+        model.put("activeTab", 1);
         return "registry_center";
     }
     
     @RequestMapping(value = "job_detail", method = RequestMethod.GET)
-    public String jobDetail(@RequestParam final String jobName, final ModelMap model) {
+    public String jobDetail(@RequestParam final String jobName, @RequestParam final String jobType, final ModelMap model) {
         model.put("jobName", jobName);
+        model.put("jobType", jobType);
         return "job_detail";
     }
     
@@ -67,13 +68,13 @@ public class DashboardController {
     
     @RequestMapping(value = "overview", method = RequestMethod.GET)
     public String overview(final ModelMap model) {
-        model.put("activedTab", 0);
+        model.put("activeTab", 0);
         return "overview";
     }
     
     @RequestMapping(value = "help", method = RequestMethod.GET)
     public String help(final ModelMap model) {
-        model.put("activedTab", 2);
+        model.put("activeTab", 2);
         return "help";
     }
 }

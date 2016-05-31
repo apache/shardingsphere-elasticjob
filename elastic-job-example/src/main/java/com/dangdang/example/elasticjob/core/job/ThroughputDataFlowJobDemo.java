@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,16 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractBatchThroughputDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 
-public class ThroughputDataFlowJobDemo extends AbstractThroughputDataFlowElasticJob<Foo> {
+public class ThroughputDataFlowJobDemo extends AbstractBatchThroughputDataFlowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(ThroughputDataFlowJobDemo.class);
     
@@ -38,20 +40,25 @@ public class ThroughputDataFlowJobDemo extends AbstractThroughputDataFlowElastic
     }
     
     @Override
-    public boolean processData(final JobExecutionMultipleShardingContext context, final Foo data) {
+    public int processData(final JobExecutionMultipleShardingContext context, final List<Foo> data) {
         printContext.printProcessDataMessage(data);
-        if (9 == data.getId() % 10) {
-            return false;
+        int successCount = 0;
+        for (Foo each : data) {
+            if (9 != each.getId() % 10) {
+                successCount++;
+                fooRepository.setInactive(each.getId());
+            }
         }
-        fooRepository.setInactive(data.getId());
-        for (int each : context.getShardingItems()) {
-            updateOffset(each, String.valueOf(data.getId()));
-        }
-        return true;
+        return successCount;
     }
     
     @Override
     public boolean isStreamingProcess() {
         return true;
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return Executors.newFixedThreadPool(10);
     }
 }

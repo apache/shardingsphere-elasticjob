@@ -8,7 +8,7 @@ function renderJobsOverview() {
         $("#jobs-overview-tbl tbody").empty();
         for (var i = 0;i < data.length;i++) {
             var status = data[i].status;
-            var baseTd = "<td>" + "<a href='job_detail?jobName=" + data[i].jobName + "'>" + data[i].jobName + "</a>" + "</td><td>" + status + "</td><td>" + data[i].cron + "</td><td>" + data[i].description + "</td>";
+            var baseTd = "<td>" + "<a href='job_detail?jobName=" + data[i].jobName + "&jobType=" + data[i].jobType + "'>" + data[i].jobName + "</a>" + "</td><td>" + status + "</td><td>" + data[i].cron + "</td><td>" + data[i].description + "</td>";
             var trClass = "";
             if ("OK" === status) {
                 trClass = "success";

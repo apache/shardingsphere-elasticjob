@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,25 +17,30 @@
 
 package com.dangdang.ddframe.job.internal.schedule;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-import com.dangdang.ddframe.job.api.JobScheduler;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 作业注册表.
  * 
  * @author zhangliang
+ * @author caohao
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobRegistry {
     
     private static volatile JobRegistry instance;
     
-    private ConcurrentMap<String, JobScheduler> map = new ConcurrentHashMap<>();
+    private Map<String, JobScheduleController> schedulerMap = new ConcurrentHashMap<>();
     
-    private JobRegistry() {
-    }
-    
+    /**
+     * 获取作业注册表实例.
+     * 
+     * @return 作业注册表实例
+     */
     public static JobRegistry getInstance() {
         if (null == instance) {
             synchronized (JobRegistry.class) {
@@ -48,21 +53,22 @@ public final class JobRegistry {
     }
     
     /**
-     * 添加作业.
+     * 添加作业调度控制器.
      * 
      * @param jobName 作业名称
-     * @param jobScheduler 作业控制器
+     * @param jobScheduleController 作业调度控制器
      */
-    public void addJob(final String jobName, final JobScheduler jobScheduler) {
-        map.put(jobName, jobScheduler);
+    public void addJobScheduleController(final String jobName, final JobScheduleController jobScheduleController) {
+        schedulerMap.put(jobName, jobScheduleController);
     }
     
     /**
-     * 获取作业.
+     * 获取作业调度控制器.
      * 
      * @param jobName 作业名称
+     * @return 作业调度控制器
      */
-    public JobScheduler getJob(final String jobName) {
-        return map.get(jobName);
+    public JobScheduleController getJobScheduleController(final String jobName) {
+        return schedulerMap.get(jobName);
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,23 +17,22 @@
 
 package com.dangdang.ddframe.job.internal.config;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobScheduler;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 配置文件监听管理器.
  * 
  * @author caohao
  */
-public final class ConfigurationListenerManager extends AbstractListenerManager {
+public class ConfigurationListenerManager extends AbstractListenerManager {
     
     private final ConfigurationNode configNode;
     
@@ -47,22 +46,20 @@ public final class ConfigurationListenerManager extends AbstractListenerManager 
     
     @Override
     public void start() {
-        listenCronSettingChanged();
+        addDataListener(new CronSettingChangedJobListener());
     }
     
-    void listenCronSettingChanged() {
-        addDataListener(new AbstractJobListener() {
-            
-            @Override
-            protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
-                    String cronExpression = new String(event.getData().getData());
-                    JobScheduler jobScheduler = JobRegistry.getInstance().getJob(jobName);
-                    if (null != jobScheduler) {
-                        jobScheduler.rescheduleJob(cronExpression);
-                    }
+    class CronSettingChangedJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
+                String cronExpression = new String(event.getData().getData());
+                JobScheduleController jobScheduler = JobRegistry.getInstance().getJobScheduleController(jobName);
+                if (null != jobScheduler) {
+                    jobScheduler.rescheduleJob(cronExpression);
                 }
             }
-        });
+        }
     }
 }

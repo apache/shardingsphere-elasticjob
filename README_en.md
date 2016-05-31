@@ -1,13 +1,14 @@
 ##Elastic-Job - distributed scheduled job solution
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/images/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+**License:** [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
+**Maven Central:** [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
   Elastic-Job is extracted from dd-job which is a component of ddframe. Elastic-Job just removed monitor and integrated standards parts from dd-job. It based on matured open-source productions like Quartz, Zookeeper and its client Curator.
   
   Other components of ddframe also can open-source independently. Dangdang has already released DubboX, which is core component of dd-soa.
   
   The relationship between Elastic-Job and ddframe is in this picture:
   
-  ![Evolution diagram of ddframe](http://dangdangdotcom.github.io/elastic-job/images/ddframe.jpg)
+  ![Evolution diagram of ddframe](http://dangdangdotcom.github.io/elastic-job/img/ddframe.jpg)
 
 ##Contributors
 * Zhang Liang [Dangdang](http://www.dangdang.com/) zhangliang@dangdang.com
@@ -28,7 +29,7 @@
 * **Data processed concurrently:** Use concurrent threads processing fetched data, to improve throughput.
 * **Idempotency:** Judge duplicate task items, restrict repeatable task items execute. Because enable idempotency need monitor job execution status, the performance for instantaneous jobs maybe low.
 * **Failure tolerance:** If job servers lost connection from registry center, job will stop immediately which to prevent registry center assign crashed task items to other job servers, but current job servers still running, then cause duplicated task items running.
-* **Data offset store:**Store offset of last procesed data into Zookeeper.
+* **Data offset store:** Store offset of last processed data into Zookeeper.
 * **Spring support:** Integrate spring framework, customized namespace, place-holder supported etc.
 * **Web console:** Support web console to manage jobs and register centers.
 
@@ -67,14 +68,14 @@ Elastic-Job has deployed to Maven Central Repository, add dependencies in your p
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-core</artifactId>
-    <version>1.0.2</version>
+    <version>${lasted.release.version}</version>
 </dependency>
 
 <!-- add elastic-job spring module, use namespace -->
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-spring</artifactId>
-    <version>1.0.2</version>
+    <version>${lasted.release.version}</version>
 </dependency>
 ```
 * **Job development**
@@ -115,6 +116,6 @@ public class MyElasticJob extends AbstractThroughputDataFlowElasticJob<Foo> {
     <reg:zookeeper id="regCenter" serverLists=" yourhost:2181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
     
     <!--configure job -->
-    <job:bean id="oneOffElasticJob" class="xxx.MyElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
+    <job:simple id="oneOffElasticJob" class="xxx.MyElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
 </beans>
 ```

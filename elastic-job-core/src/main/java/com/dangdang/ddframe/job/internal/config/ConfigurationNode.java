@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,8 @@ public final class ConfigurationNode {
     
     static final String ROOT = "config";
     
+    static final String JOB_TYPE = ROOT + "/jobType";
+    
     static final String JOB_CLASS = ROOT + "/jobClass";
     
     static final String SHARDING_TOTAL_COUNT = ROOT + "/shardingTotalCount";
@@ -55,6 +57,10 @@ public final class ConfigurationNode {
     static final String JOB_SHARDING_STRATEGY_CLASS = ROOT + "/jobShardingStrategyClass";
     
     static final String DESCRIPTION = ROOT + "/description";
+    
+    static final String MONITOR_PORT = ROOT + "/monitorPort";
+
+    static final String SCRIPT_COMMAND_LINE = ROOT + "/scriptCommandLine";
     
     private final JobNodePath jobNodePath;
     

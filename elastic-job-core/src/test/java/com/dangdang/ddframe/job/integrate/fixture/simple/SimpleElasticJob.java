@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.integrate.fixture.simple;
 import lombok.Getter;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
 
 public final class SimpleElasticJob extends AbstractSimpleElasticJob {
     

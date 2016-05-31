@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.internal.listener;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.state.ConnectionStateListener;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
@@ -36,7 +36,10 @@ public abstract class AbstractListenerManager {
     protected AbstractListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
     }
-    
+
+    /**
+     * 开启监听器.
+     */
     public abstract void start();
     
     protected void addDataListener(final TreeCacheListener listener) {

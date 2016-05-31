@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,9 @@
 
 package com.dangdang.ddframe.reg.exception;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.zookeeper.KeeperException.ConnectionLossException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
@@ -29,10 +30,8 @@ import org.apache.zookeeper.KeeperException.NodeExistsException;
  * @author zhangliang
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RegExceptionHandler {
-    
-    private RegExceptionHandler() {
-    }
     
     /**
      * 处理掉中断和连接失效异常并继续抛出RegException.
@@ -50,9 +49,6 @@ public final class RegExceptionHandler {
     }
     
     private static boolean isIgnoredException(final Throwable cause) {
-        if (null == cause) {
-            return false;
-        }
-        return cause instanceof ConnectionLossException || cause instanceof NoNodeException || cause instanceof NodeExistsException;
+        return null != cause && (cause instanceof ConnectionLossException || cause instanceof NoNodeException || cause instanceof NodeExistsException);
     }
 }

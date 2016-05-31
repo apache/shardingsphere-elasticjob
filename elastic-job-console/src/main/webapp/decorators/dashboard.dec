@@ -16,13 +16,13 @@
                     <a class="navbar-brand" href="#">Elastic Job Console</a>
                 </div>
                 <div class="navbar-header">
-                    <span class="navbar-brand">当前注册中心：<span id="activated-reg-center"><#if curator_client_key??>${curator_client_key.name}<#else>未连接</#if></span></span>
+                    <span class="navbar-brand">当前注册中心：<span id="activated-reg-center"><#if reg_center_config_key??>${reg_center_config_key.name}<#else>未连接</#if></span></span>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li <#if activedTab?? && 0=activedTab>class="active"</#if>><a href="overview">总览</a></li>
-                        <li <#if activedTab?? && 1=activedTab>class="active"</#if>><a href="registry_center_page">注册中心管理</a></li>
-                        <li <#if activedTab?? && 2=activedTab>class="active"</#if>><a href="help">帮助</a></li>
+                        <li <#if activeTab?? && 0=activeTab>class="active"</#if>><a href="overview">总览</a></li>
+                        <li <#if activeTab?? && 1=activeTab>class="active"</#if>><a href="registry_center_page">注册中心管理</a></li>
+                        <li <#if activeTab?? && 2=activeTab>class="active"</#if>><a href="help">帮助</a></li>
                     </ul>
                 </div>
             </div>

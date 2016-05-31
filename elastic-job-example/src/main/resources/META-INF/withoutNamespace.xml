@@ -18,6 +18,8 @@
                 <property name="baseSleepTimeMilliseconds" value="${baseSleepTimeMilliseconds}" />
                 <property name="maxSleepTimeMilliseconds" value="${maxSleepTimeMilliseconds}" />
                 <property name="maxRetries" value="${maxRetries}" />
+                <property name="nestedPort" value="${nestedPort}" />
+                <property name="nestedDataDir" value="${nestedDataDir}" />
             </bean>
         </constructor-arg>
     </bean>
@@ -25,13 +27,14 @@
     <bean id="simpleJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
-            <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
+            <bean class="com.dangdang.ddframe.job.api.config.SimpleJobConfiguration">
                 <constructor-arg name="jobName" value="simpleJob" />
                 <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.SimpleJobDemo" />
                 <constructor-arg name="shardingTotalCount" value="${simpleJob.shardingTotalCount}" />
                 <constructor-arg name="cron" value="${simpleJob.cron}" />
                 <property name="shardingItemParameters" value="${simpleJob.shardingItemParameters}" />
                 <property name="monitorExecution" value="${simpleJob.monitorExecution}" />
+                <property name="monitorPort" value="${simpleJob.monitorPort}" />
                 <property name="failover" value="${simpleJob.failover}" />
                 <property name="description" value="${simpleJob.description}" />
                 <property name="disabled" value="${simpleJob.disabled}" />
@@ -43,7 +46,7 @@
     <bean id="throughputDataFlowJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
-            <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
+            <bean class="com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration">
                 <constructor-arg name="jobName" value="throughputDataFlowJob" />
                 <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.ThroughputDataFlowJobDemo" />
                 <constructor-arg name="shardingTotalCount" value="${throughputDataFlowJob.shardingTotalCount}" />
@@ -63,7 +66,7 @@
     <bean id="sequenceDataFlowJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
         <constructor-arg ref="regCenter" />
         <constructor-arg>
-            <bean class="com.dangdang.ddframe.job.api.JobConfiguration">
+            <bean class="com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration">
                 <constructor-arg name="jobName" value="sequenceDataFlowJob" />
                 <constructor-arg name="jobClass" value="com.dangdang.example.elasticjob.spring.job.SequenceDataFlowJobDemo" />
                 <constructor-arg name="shardingTotalCount" value="${sequenceDataFlowJob.shardingTotalCount}" />

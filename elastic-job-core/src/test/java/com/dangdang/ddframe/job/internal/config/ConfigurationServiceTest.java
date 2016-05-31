@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,251 +17,271 @@
 
 package com.dangdang.ddframe.job.internal.config;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import com.dangdang.ddframe.job.api.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.exception.JobConflictException;
+import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
+import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.zookeeper.data.Stat;
-import org.junit.Test;
-
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.exception.JobConflictException;
-import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
-import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
-import com.dangdang.ddframe.job.internal.AbstractBaseJobTest;
-import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
-import com.dangdang.ddframe.job.internal.sharding.strategy.JobShardingStrategy;
-
-public final class ConfigurationServiceTest extends AbstractBaseJobTest {
+public final class ConfigurationServiceTest {
     
-    private final ConfigurationService configService = new ConfigurationService(getRegistryCenter(), getJobConfig());
+    @Mock
+    private JobNodeStorage jobNodeStorage;
     
-    @Test
-    public void assertPersistNewJobConfiguration() {
-        configService.persistJobConfiguration();
-        assertJobConfiguration(getJobConfig());
+    private final JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    
+    private final ConfigurationService configService = new ConfigurationService(null, jobConfig);
+    
+    @Before
+    public void initMocks() throws NoSuchFieldException {
+        MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(configService, "jobNodeStorage", jobNodeStorage);
     }
     
     @Test(expected = JobConflictException.class)
     public void assertPersistJobConfigurationForJobConflict() {
-        configService.persistJobConfiguration();
-        ConfigurationService configServiceForConflict = new ConfigurationService(getRegistryCenter(), new JobConfiguration("testJob", ConflictJob.class, 3, "0/1 * * * * ?"));
-        configServiceForConflict.persistJobConfiguration();
+        when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.JOB_CLASS)).thenReturn(true);
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS)).thenReturn("ConflictJob");
+        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        try {
+            configService.persistJobConfiguration();
+        } finally {
+            verify(jobNodeStorage).isJobNodeExisted(ConfigurationNode.JOB_CLASS);
+            verify(jobNodeStorage).getJobNodeData(ConfigurationNode.JOB_CLASS);
+            verify(jobNodeStorage, times(2)).getJobConfiguration();
+        }
     }
     
     @Test
-    public void assertPersistJobConfigurationForOverwrite() throws Exception {
+    public void assertPersistNewJobConfiguration() {
+        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
         configService.persistJobConfiguration();
-        ConfigurationVersion originalConfigVersion = new ConfigurationVersion(getVersion("shardingTotalCount"), getVersion("shardingItemParameters"), getVersion("cron"));
-        JobConfiguration jobConfig = createJobConfigurationForOverwrite();
-        ConfigurationService configServiceForOverwrite = new ConfigurationService(getRegistryCenter(), jobConfig);
-        configServiceForOverwrite.persistJobConfiguration();
-        ConfigurationVersion targetConfigVersion = new ConfigurationVersion(getVersion("shardingTotalCount"), getVersion("shardingItemParameters"), getVersion("cron"));
-        assertTrue(originalConfigVersion.getShardingTotalCountVersion() < targetConfigVersion.getShardingTotalCountVersion());
-        assertTrue(originalConfigVersion.getShardingItemParametersVersion() < targetConfigVersion.getShardingItemParametersVersion());
-        assertTrue(originalConfigVersion.getCronVersion() == targetConfigVersion.getCronVersion());
-        assertJobConfiguration(jobConfig);
-    }
-    
-    private JobConfiguration createJobConfigurationForOverwrite() {
-        JobConfiguration result = new JobConfiguration("testJob", TestJob.class, 1, "0/1 * * * * ?");
-        result.setShardingItemParameters("0=A");
-        result.setOverwrite(true);
-        return result;
+        verifyPersistJobConfiguration();
     }
     
     @Test
-    public void assertPersistJobConfigurationForNotOverwrite() throws Exception {
+    public void assertPersistExistedJobConfiguration() {
+        when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.JOB_CLASS)).thenReturn(true);
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS)).thenReturn(TestJob.class.getCanonicalName());
+        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
         configService.persistJobConfiguration();
-        ConfigurationVersion originalConfigVersion = new ConfigurationVersion(getVersion("shardingTotalCount"), getVersion("shardingItemParameters"), getVersion("cron"));
-        ConfigurationService configServiceForNotOverwrite = new ConfigurationService(getRegistryCenter(), createJobConfigurationForNotOverwrite());
-        configServiceForNotOverwrite.persistJobConfiguration();
-        ConfigurationVersion targetConfigVersion = new ConfigurationVersion(getVersion("shardingTotalCount"), getVersion("shardingItemParameters"), getVersion("cron"));
-        assertTrue(originalConfigVersion.getShardingTotalCountVersion() == targetConfigVersion.getShardingTotalCountVersion());
-        assertTrue(originalConfigVersion.getShardingItemParametersVersion() == targetConfigVersion.getShardingItemParametersVersion());
-        assertTrue(originalConfigVersion.getCronVersion() == targetConfigVersion.getCronVersion());
-        assertJobConfiguration(getJobConfig());
+        verifyPersistJobConfiguration();
     }
     
-    private JobConfiguration createJobConfigurationForNotOverwrite() {
-        JobConfiguration result = createJobConfigurationForOverwrite();
-        result.setOverwrite(false);
-        return result;
-    }
-    
-    private void assertJobConfiguration(final JobConfiguration jobConfiguration) {
-        assertThat(getRegistryCenter().getDirectly("/testJob/config/jobClass"), is(jobConfiguration.getJobClass().getCanonicalName()));
-        assertThat(Integer.parseInt(getRegistryCenter().getDirectly("/testJob/config/shardingTotalCount")), is(jobConfiguration.getShardingTotalCount()));
-        assertThat(getRegistryCenter().getDirectly("/testJob/config/shardingItemParameters"), is(jobConfiguration.getShardingItemParameters()));
-        assertThat(getRegistryCenter().getDirectly("/testJob/config/jobParameter"), is(jobConfiguration.getJobParameter()));
-        assertThat(getRegistryCenter().getDirectly("/testJob/config/cron"), is(jobConfiguration.getCron()));
-        assertThat(Boolean.valueOf(getRegistryCenter().getDirectly("/testJob/config/monitorExecution")), is(jobConfiguration.isMonitorExecution()));
-        assertThat(Integer.parseInt(getRegistryCenter().getDirectly("/testJob/config/processCountIntervalSeconds")), is(jobConfiguration.getProcessCountIntervalSeconds()));
-        assertThat(Integer.parseInt(getRegistryCenter().getDirectly("/testJob/config/concurrentDataProcessThreadCount")), is(jobConfiguration.getConcurrentDataProcessThreadCount()));
-        assertThat(Integer.parseInt(getRegistryCenter().getDirectly("/testJob/config/fetchDataCount")), is(jobConfiguration.getFetchDataCount()));
-        assertThat(Boolean.valueOf(getRegistryCenter().getDirectly("/testJob/config/failover")), is(jobConfiguration.isFailover()));
-        assertThat(Boolean.valueOf(getRegistryCenter().getDirectly("/testJob/config/misfire")), is(jobConfiguration.isMisfire()));
-        assertThat(getRegistryCenter().getDirectly("/testJob/config/jobShardingStrategyClass"), is(jobConfiguration.getJobShardingStrategyClass()));
-        assertThat(getRegistryCenter().getDirectly("/testJob/config/description"), is(jobConfiguration.getDescription()));
-    }
-    
-    private int getVersion(final String path) throws Exception {
-        CuratorFramework client = (CuratorFramework) getRegistryCenter().getRawClient();
-        Stat stat = new Stat();
-        client.getZookeeperClient().getZooKeeper().getData("/zkRegTestCenter/testJob/config/" + path, false, stat);
-        return stat.getVersion();
+    private void verifyPersistJobConfiguration() {
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_CLASS, TestJob.class.getCanonicalName());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, jobConfig.getShardingTotalCount());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, jobConfig.getShardingItemParameters());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, jobConfig.getJobParameter());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, jobConfig.getCron());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, jobConfig.isMonitorExecution());
+        if (DataFlowElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
+            DataFlowJobConfiguration dataFlowJobConfiguration = (DataFlowJobConfiguration) jobConfig;
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, dataFlowJobConfiguration.getProcessCountIntervalSeconds());
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, dataFlowJobConfiguration.getConcurrentDataProcessThreadCount());
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, dataFlowJobConfiguration.getFetchDataCount());
+        }
+        if (ScriptElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
+            ScriptJobConfiguration scriptJobConfiguration = ((ScriptJobConfiguration) jobConfig);
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, scriptJobConfiguration.getScriptCommandLine());
+        }
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MAX_TIME_DIFF_SECONDS, jobConfig.getMaxTimeDiffSeconds());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, jobConfig.isFailover());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, jobConfig.isMisfire());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, jobConfig.getJobShardingStrategyClass());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, jobConfig.getDescription());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, jobConfig.getMonitorPort());
     }
     
     @Test
     public void assertGetShardingTotalCount() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.SHARDING_TOTAL_COUNT)).thenReturn("3");
         assertThat(configService.getShardingTotalCount(), is(3));
+        verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.SHARDING_TOTAL_COUNT);
     }
     
     @Test
     public void assertGetShardingItemParametersWhenIsEmpty() {
-        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "");
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS)).thenReturn("");
         assertThat(configService.getShardingItemParameters(), is(Collections.EMPTY_MAP));
+        verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS);
     }
     
     @Test(expected = ShardingItemParametersException.class)
-    public void assertGetShardingItemParametersWhenPairFormatError() {
-        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "xxx-xxx");
-        configService.getShardingItemParameters();
+    public void assertGetShardingItemParametersWhenPairFormatInvalid() {
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS)).thenReturn("xxx-xxx");
+        try {
+            configService.getShardingItemParameters();
+        } finally {
+            verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS);
+        }
     }
     
     @Test(expected = ShardingItemParametersException.class)
     public void assertGetShardingItemParametersWhenItemIsNotNumber() {
-        getRegistryCenter().persist("/testJob/config/shardingItemParameters", "xxx=xxx");
-        configService.getShardingItemParameters();
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS)).thenReturn("xxx=xxx");
+        try {
+            configService.getShardingItemParameters();
+        } finally {
+            verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS);
+        }
     }
     
     @Test
     public void assertGetShardingItemParameters() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS)).thenReturn("0=A,1=B,2=C");
         Map<Integer, String> expected = new HashMap<>(3);
         expected.put(0, "A");
         expected.put(1, "B");
         expected.put(2, "C");
         assertThat(configService.getShardingItemParameters(), is(expected));
+        verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS);
     }
     
     @Test
     public void assertGetJobParameter() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.JOB_PARAMETER)).thenReturn("para");
         assertThat(configService.getJobParameter(), is("para"));
+        verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.JOB_PARAMETER);
     }
     
     @Test
     public void assertGetCron() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.CRON)).thenReturn("0/1 * * * * ?");
         assertThat(configService.getCron(), is("0/1 * * * * ?"));
+        verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.CRON);
     }
     
     @Test
     public void assertIsMonitorExecution() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_EXECUTION)).thenReturn("true");
         assertTrue(configService.isMonitorExecution());
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MONITOR_EXECUTION);
     }
     
     @Test
     public void assertGetProcessCountIntervalSeconds() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS)).thenReturn("300");
         assertThat(configService.getProcessCountIntervalSeconds(), is(300));
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS);
     }
     
     @Test
     public void assertGetConcurrentDataProcessThreadCount() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT)).thenReturn("1");
         assertThat(configService.getConcurrentDataProcessThreadCount(), is(1));
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT);
     }
     
     @Test
     public void assertGetFetchDataCount() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT)).thenReturn("1");
         assertThat(configService.getFetchDataCount(), is(1));
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT);
     }
     
     @Test
     public void assertIsMaxTimeDiffSecondsTolerableWithDefaultValue() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MAX_TIME_DIFF_SECONDS)).thenReturn("-1");
         configService.checkMaxTimeDiffSecondsTolerable();
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MAX_TIME_DIFF_SECONDS);
     }
     
     @Test
     public void assertIsMaxTimeDiffSecondsTolerable() {
-        getJobConfig().setMaxTimeDiffSeconds(60);
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MAX_TIME_DIFF_SECONDS)).thenReturn("60");
+        when(jobNodeStorage.getRegistryCenterTime()).thenReturn(System.currentTimeMillis());
         configService.checkMaxTimeDiffSecondsTolerable();
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MAX_TIME_DIFF_SECONDS);
+        verify(jobNodeStorage).getRegistryCenterTime();
     }
     
     @Test(expected = TimeDiffIntolerableException.class)
     public void assertIsNotMaxTimeDiffSecondsTolerable() {
-        getJobConfig().setMaxTimeDiffSeconds(-60);
-        configService.persistJobConfiguration();
-        configService.checkMaxTimeDiffSecondsTolerable();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MAX_TIME_DIFF_SECONDS)).thenReturn("60");
+        when(jobNodeStorage.getRegistryCenterTime()).thenReturn(0L);
+        try {
+            configService.checkMaxTimeDiffSecondsTolerable();
+        } finally {
+            verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MAX_TIME_DIFF_SECONDS);
+            verify(jobNodeStorage).getRegistryCenterTime();
+        }
     }
     
     @Test
     public void assertIsNotFailoverWhenNotMonitorExecution() {
-        getJobConfig().setMonitorExecution(false);
-        getJobConfig().setFailover(true);
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_EXECUTION)).thenReturn("false");
         assertFalse(configService.isFailover());
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MONITOR_EXECUTION);
     }
     
     @Test
     public void assertIsNotFailoverWhenMonitorExecution() {
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_EXECUTION)).thenReturn("true");
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.FAILOVER)).thenReturn("false");
         assertFalse(configService.isFailover());
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MONITOR_EXECUTION);
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.FAILOVER);
     }
     
     @Test
     public void assertIsFailover() {
-        getJobConfig().setFailover(true);
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_EXECUTION)).thenReturn("true");
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.FAILOVER)).thenReturn("true");
         assertTrue(configService.isFailover());
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MONITOR_EXECUTION);
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.FAILOVER);
     }
     
     @Test
     public void assertIsMisfire() {
-        getJobConfig().setMisfire(true);
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MISFIRE)).thenReturn("true");
         assertTrue(configService.isMisfire());
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MISFIRE);
     }
     
     @Test
     public void assertGetJobShardingStrategyClass() {
-        getJobConfig().setJobShardingStrategyClass(JobShardingStrategy.class.getName());
-        configService.persistJobConfiguration();
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS)).thenReturn(JobShardingStrategy.class.getName());
         assertThat(configService.getJobShardingStrategyClass(), is(JobShardingStrategy.class.getName()));
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS);
     }
     
-    class ConflictJob extends AbstractElasticJob {
-        
-        @Override
-        protected void executeJob(final JobExecutionMultipleShardingContext jobExecutionShardingContext) {
-        }
+    @Test
+    public void assertGetMonitorPort() {
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_PORT)).thenReturn("8888");
+        assertThat(configService.getMonitorPort(), is(8888));
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MONITOR_PORT);
     }
     
-    @Getter
-    @RequiredArgsConstructor
-    class ConfigurationVersion {
-        
-        private final int shardingTotalCountVersion;
-        
-        private final int shardingItemParametersVersion;
-        
-        private final int cronVersion;
+    @Test
+    public void assertGetJobName() {
+        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        assertThat(configService.getJobName(), is("testJob"));
+        verify(jobNodeStorage).getJobConfiguration();
     }
 }

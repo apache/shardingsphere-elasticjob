@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,15 +17,14 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Properties;
-
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
+import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.CuratorFrameworkFactory.Builder;
@@ -35,18 +34,21 @@ import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.utils.CloseableUtils;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
 
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 基于Zookeeper的注册中心.
@@ -59,15 +61,19 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     @Getter(AccessLevel.PROTECTED)
     private ZookeeperConfiguration zkConfig;
     
+    private final Map<String, TreeCache> caches = new HashMap<>();
+    
     private CuratorFramework client;
     
-    private TreeCache cache;
-    
-    public ZookeeperRegistryCenter(final ZookeeperConfiguration zookeeperConfiguration) {
-        zkConfig = zookeeperConfiguration;
+    public ZookeeperRegistryCenter(final ZookeeperConfiguration zkConfig) {
+        this.zkConfig = zkConfig;
     }
     
+    @Override
     public void init() {
+        if (zkConfig.isUseNestedZookeeper()) {
+            NestedZookeeperServers.getInstance().startServerIfNotStarted(zkConfig.getNestedPort(), zkConfig.getNestedDataDir());
+        }
         log.debug("Elastic job: zookeeper registry center init, server lists is: {}.", zkConfig.getServerLists());
         Builder builder = CuratorFrameworkFactory.builder()
                 .connectString(zkConfig.getServerLists())
@@ -97,11 +103,13 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         client = builder.build();
         client.start();
         try {
-            client.blockUntilConnected();
+            client.blockUntilConnected(zkConfig.getMaxSleepTimeMilliseconds() * zkConfig.getMaxRetries(), TimeUnit.MILLISECONDS);
+            if (!client.getZookeeperClient().isConnected()) {
+                throw new KeeperException.OperationTimeoutException();
+            }
             if (!Strings.isNullOrEmpty(zkConfig.getLocalPropertiesPath())) {
                 fillData();
             }
-            cacheData();
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -134,18 +142,16 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         return result;
     }
     
-    private void cacheData() throws Exception {
-        cache = new TreeCache(client, "/");
-        cache.start();
-    }
-    
     @Override
     public void close() {
-        if (null != cache) {
-            cache.close();
+        for (Entry<String, TreeCache> each : caches.entrySet()) {
+            each.getValue().close();
         }
         waitForCacheClose();
         CloseableUtils.closeQuietly(client);
+        if (zkConfig.isUseNestedZookeeper()) {
+            NestedZookeeperServers.getInstance().closeServer(zkConfig.getNestedPort());
+        }
     }
     
     /* TODO 等待500ms, cache先关闭再关闭client, 否则会抛异常
@@ -163,14 +169,24 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     
     @Override
     public String get(final String key) {
+        TreeCache cache = findTreeCache(key);
         if (null == cache) {
-            return null;
+            return getDirectly(key);
         }
-        ChildData resultIncache = cache.getCurrentData(key);
-        if (null != resultIncache) {
-            return null == resultIncache.getData() ? null : new String(resultIncache.getData(), Charset.forName("UTF-8"));
+        ChildData resultInCache = cache.getCurrentData(key);
+        if (null != resultInCache) {
+            return null == resultInCache.getData() ? null : new String(resultInCache.getData(), Charset.forName("UTF-8"));
         }
         return getDirectly(key);
+    }
+    
+    private TreeCache findTreeCache(final String key) {
+        for (Entry<String, TreeCache> entry : caches.entrySet()) {
+            if (key.startsWith(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
     
     @Override
@@ -299,7 +315,20 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     }
     
     @Override
-    public Object getRawCache() {
-        return cache;
+    public void addCacheData(final String cachePath) {
+        TreeCache cache = new TreeCache(client, cachePath);
+        try {
+            cache.start();
+        //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+        //CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+        caches.put(cachePath + "/", cache);
+    }
+    
+    @Override
+    public Object getRawCache(final String cachePath) {
+        return caches.get(cachePath + "/");
     }
 }

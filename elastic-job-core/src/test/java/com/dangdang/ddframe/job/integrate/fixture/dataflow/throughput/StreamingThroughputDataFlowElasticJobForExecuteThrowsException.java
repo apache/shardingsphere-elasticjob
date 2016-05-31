@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,16 +17,16 @@
 
 package com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput;
 
-import java.util.Arrays;
-import java.util.List;
-
-import lombok.Getter;
-
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
+import lombok.Getter;
+import org.quartz.JobExecutionException;
 
-public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException extends AbstractThroughputDataFlowElasticJob<String> {
+import java.util.Collections;
+import java.util.List;
+
+public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
     @Getter
     private static volatile boolean completed;
@@ -36,7 +36,7 @@ public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException exte
         if (completed) {
             return null;
         }
-        return Arrays.asList("data");
+        return Collections.singletonList("data");
     }
     
     @Override
@@ -48,6 +48,10 @@ public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException exte
     @Override
     public boolean isStreamingProcess() {
         return true;
+    }
+    
+    @Override
+    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
     }
     
     public static void reset() {

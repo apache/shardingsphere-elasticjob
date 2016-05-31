@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,26 +17,28 @@
 
 package com.dangdang.ddframe.job.internal.statistics;
 
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.internal.config.ConfigurationService;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.internal.config.ConfigurationService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 /**
  * 作业统计信息服务.
  * 
  * @author zhangliang
  */
-public final class StatisticsService {
+public class StatisticsService {
     
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     
     private final JobConfiguration jobConfiguration;
     
     private final ConfigurationService configService;
+    
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
     
     public StatisticsService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
@@ -50,8 +52,14 @@ public final class StatisticsService {
     public void startProcessCountJob() {
         int processCountIntervalSeconds = configService.getProcessCountIntervalSeconds();
         if (processCountIntervalSeconds > 0) {
-            ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
-            service.scheduleAtFixedRate(new ProcessCountJob(coordinatorRegistryCenter, jobConfiguration), processCountIntervalSeconds, processCountIntervalSeconds, TimeUnit.SECONDS);
+            scheduledExecutorService.scheduleAtFixedRate(new ProcessCountJob(coordinatorRegistryCenter, jobConfiguration), processCountIntervalSeconds, processCountIntervalSeconds, TimeUnit.SECONDS);
         }
+    }
+    
+    /**
+     * 停止统计处理数据数量的作业.
+     */
+    public void stopProcessCountJob() {
+        scheduledExecutorService.shutdown();
     }
 }

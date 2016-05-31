@@ -47,7 +47,7 @@ function renderJobsForDashboardNav() {
         var $jobsDimension = $("#jobs-dimension");
         $jobsDimension.empty();
         for (var i = 0; i < data.length; i++) {
-            var liContent = "<a href='job_detail?jobName=" + data[i].jobName + "' data-placement='right' title='" + data[i].description + "'>" + data[i].jobName + "</a>";
+            var liContent = "<a href='job_detail?jobName=" + data[i].jobName + "&jobType=" + data[i].jobType + "' data-placement='right' title='" + data[i].description + "'>" + data[i].jobName + "</a>";
             if (currentJob && currentJob === data[i].jobName) {
                 $jobsDimension.append("<li class='open'>" + liContent + "</li>");
             } else {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,24 +17,27 @@
 
 package com.dangdang.ddframe.job.internal.config;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
+import com.dangdang.ddframe.job.internal.job.JobType;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Strings;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 弹性化分布式作业配置服务.
  * 
  * @author zhangliang
  */
-public final class ConfigurationService {
+public class ConfigurationService {
     
     private final JobNodeStorage jobNodeStorage;
     
@@ -61,20 +64,50 @@ public final class ConfigurationService {
     }
     
     private void registerJobInfo() {
+        fillSimpleJobInfo();
+        if (JobType.DATA_FLOW == jobNodeStorage.getJobConfiguration().getJobType()) {
+            fillDataFlowJobInfo();
+        }
+        if (JobType.SCRIPT == jobNodeStorage.getJobConfiguration().getJobType()) {
+            fillScriptJobInfo();
+        }
+    }
+    
+    private void fillSimpleJobInfo() {
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_TYPE, jobNodeStorage.getJobConfiguration().getJobType());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_CLASS, jobNodeStorage.getJobConfiguration().getJobClass().getCanonicalName());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, jobNodeStorage.getJobConfiguration().getShardingTotalCount());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, jobNodeStorage.getJobConfiguration().getShardingItemParameters());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, jobNodeStorage.getJobConfiguration().getJobParameter());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, jobNodeStorage.getJobConfiguration().getCron());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, jobNodeStorage.getJobConfiguration().isMonitorExecution());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, jobNodeStorage.getJobConfiguration().getProcessCountIntervalSeconds());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, jobNodeStorage.getJobConfiguration().getConcurrentDataProcessThreadCount());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, jobNodeStorage.getJobConfiguration().getFetchDataCount());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MAX_TIME_DIFF_SECONDS, jobNodeStorage.getJobConfiguration().getMaxTimeDiffSeconds());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, jobNodeStorage.getJobConfiguration().isFailover());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, jobNodeStorage.getJobConfiguration().isMisfire());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, jobNodeStorage.getJobConfiguration().getJobShardingStrategyClass());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, jobNodeStorage.getJobConfiguration().getDescription());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, jobNodeStorage.getJobConfiguration().getMonitorPort());
+    }
+    
+    private void fillDataFlowJobInfo() {
+        DataFlowJobConfiguration jobConfiguration = (DataFlowJobConfiguration) jobNodeStorage.getJobConfiguration();
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, jobConfiguration.getProcessCountIntervalSeconds());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, jobConfiguration.getConcurrentDataProcessThreadCount());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, jobConfiguration.getFetchDataCount());
+    }
+
+    private void fillScriptJobInfo() {
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, ((ScriptJobConfiguration) jobNodeStorage.getJobConfiguration()).getScriptCommandLine());
+    }
+    
+    
+    /**
+     * 获取作业类型.
+     *
+     * @return 作业类型
+     */
+    public JobType getJobType() {
+        return jobNodeStorage.getJobConfiguration().getJobType();
     }
     
     /**
@@ -149,9 +182,14 @@ public final class ConfigurationService {
     }
     
     /**
-     * 获取统计作业处理数据数量的间隔时间.
+     * 获取同时处理数据的并发线程数.
      * 
-     * @return 统计作业处理数据数量的间隔时间
+     * <p>
+     * 不能小于1.
+     * 仅ThroughputDataFlow作业有效.
+     * </p>
+     * 
+     * @return 同时处理数据的并发线程数
      */
     public int getConcurrentDataProcessThreadCount() {
         return Integer.parseInt(jobNodeStorage.getJobNodeData(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT));
@@ -206,4 +244,36 @@ public final class ConfigurationService {
     public String getJobShardingStrategyClass() {
         return jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS);
     }
+    
+    /**
+     * 获取作业监控端口.
+     * 
+     * @return 作业监控端口
+     */
+    public int getMonitorPort() {
+        return Integer.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_PORT));
+    }
+    
+    /**
+     * 获取作业名称.
+     * 
+     * @return 作业名称
+     */
+    public String getJobName() {
+        return jobNodeStorage.getJobConfiguration().getJobName();
+    }
+
+    /**
+     * 获取作业执行脚本命令行.
+     *
+     * <p>
+     * 仅脚本型作业有效.
+     * </p>
+     *
+     * @return 脚本型作业执行脚本命令行
+     */
+    public String getScriptCommandLine() {
+        return jobNodeStorage.getJobNodeData(ConfigurationNode.SCRIPT_COMMAND_LINE);
+    }
+
 }

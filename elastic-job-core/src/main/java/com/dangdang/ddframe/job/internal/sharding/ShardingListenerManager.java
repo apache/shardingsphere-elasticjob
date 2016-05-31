@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.internal.listener.AbstractJobListener;
@@ -34,7 +34,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
  * 
  * @author zhangliang
  */
-public final class ShardingListenerManager extends AbstractListenerManager {
+public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ShardingService shardingService;
     
@@ -54,36 +54,32 @@ public final class ShardingListenerManager extends AbstractListenerManager {
     
     @Override
     public void start() {
-        listenShardingTotalCountChanged();
-        listenServersChanged();
+        addDataListener(new ShardingTotalCountChangedJobListener());
+        addDataListener(new ListenServersChangedJobListener());
     }
     
-    void listenShardingTotalCountChanged() {
-        addDataListener(new AbstractJobListener() {
-            
-            @Override
-            protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (configurationNode.isShardingTotalCountPath(path)) {
-                    shardingService.setReshardingFlag();
-                    executionService.setNeedFixExecutionInfoFlag();
-                }
+    class ShardingTotalCountChangedJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (configurationNode.isShardingTotalCountPath(path)) {
+                shardingService.setReshardingFlag();
+                executionService.setNeedFixExecutionInfoFlag();
             }
-        });
+        }
     }
     
-    void listenServersChanged() {
-        addDataListener(new AbstractJobListener() {
-            
-            @Override
-            protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-                if (isServersCrashed(event, path) || serverNode.isServerDisabledPath(path)) {
-                    shardingService.setReshardingFlag();
-                }
+    class ListenServersChangedJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (isServersCrashed(event, path) || serverNode.isServerDisabledPath(path) || serverNode.isServerShutdownPath(path)) {
+                shardingService.setReshardingFlag();
             }
-            
-            private boolean isServersCrashed(final TreeCacheEvent event, final String path) {
-                return Type.NODE_UPDATED != event.getType() && serverNode.isServerStatusPath(path);
-            }
-        });
+        }
+        
+        private boolean isServersCrashed(final TreeCacheEvent event, final String path) {
+            return serverNode.isServerStatusPath(path) && Type.NODE_UPDATED != event.getType();
+        }
     }
 }

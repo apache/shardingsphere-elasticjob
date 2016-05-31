@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import com.dangdang.ddframe.reg.base.AbstractRegistryCenterConfiguration;
+import com.google.common.base.Strings;
 
 /**
  * 基于Zookeeper的注册中心配置.
@@ -50,18 +51,18 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
      * 等待重试的间隔时间的初始值.
      * 单位毫秒.
      */
-    private int baseSleepTimeMilliseconds;
+    private int baseSleepTimeMilliseconds = 1000;
     
     /**
      * 等待重试的间隔时间的最大值.
      * 单位毫秒.
      */
-    private int maxSleepTimeMilliseconds;
+    private int maxSleepTimeMilliseconds = 3000;
     
     /**
      * 最大重试次数.
      */
-    private int maxRetries;
+    private int maxRetries = 3;
     
     /**
      * 会话超时时间.
@@ -82,6 +83,29 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
     private String digest;
     
     /**
+     * 内嵌Zookeeper的端口号.
+     * -1表示不开启内嵌Zookeeper.
+     */
+    private int nestedPort = -1;
+    
+    /**
+     * 内嵌Zookeeper的数据存储路径.
+     * 为空表示不开启内嵌Zookeeper.
+     */
+    private String nestedDataDir;
+    
+    /**
+     * 包含了必需属性的构造器.
+     *
+     * @param serverLists 连接Zookeeper服务器的列表
+     * @param namespace 命名空间
+     */
+    public ZookeeperConfiguration(final String serverLists, final String namespace) {
+        this.serverLists = serverLists;
+        this.namespace = namespace;
+    }
+    
+    /**
      * 包含了必需属性的构造器.
      * 
      * @param serverLists 连接Zookeeper服务器的列表
@@ -96,5 +120,14 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
         this.baseSleepTimeMilliseconds = baseSleepTimeMilliseconds;
         this.maxSleepTimeMilliseconds = maxSleepTimeMilliseconds;
         this.maxRetries = maxRetries;
+    }
+    
+    /**
+     * 判断是否需要开启内嵌Zookeeper.
+     * 
+     * @return 是否需要开启内嵌Zookeeper
+     */
+    public boolean isUseNestedZookeeper() {
+        return -1 != nestedPort && !Strings.isNullOrEmpty(nestedDataDir);
     }
 }

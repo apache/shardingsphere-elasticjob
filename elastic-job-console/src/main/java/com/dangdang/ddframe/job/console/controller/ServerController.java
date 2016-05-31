@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,38 +17,32 @@
 
 package com.dangdang.ddframe.job.console.controller;
 
-import java.util.Collection;
-
-import javax.annotation.Resource;
-
+import com.dangdang.ddframe.job.console.service.JobAPIService;
+import com.dangdang.ddframe.job.domain.ServerBriefInfo;
+import com.dangdang.ddframe.job.domain.ServerInfo;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dangdang.ddframe.job.console.domain.JobServer;
-import com.dangdang.ddframe.job.console.domain.ServerBriefInfo;
-import com.dangdang.ddframe.job.console.service.JobOperationService;
-import com.dangdang.ddframe.job.console.service.ServerDimensionService;
+import javax.annotation.Resource;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("server")
 public class ServerController {
     
     @Resource
-    private ServerDimensionService serverDimensionService;
-    
-    @Resource
-    private JobOperationService jobOperationService;
+    private JobAPIService jobAPIService;
     
     @RequestMapping(value = "servers", method = RequestMethod.GET)
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
-        return serverDimensionService.getAllServersBriefInfo();
+        return jobAPIService.getServerStatisticsAPI().getAllServersBriefInfo();
     }
     
     @RequestMapping(value = "jobs", method = RequestMethod.GET)
-    public Collection<JobServer> getJobs(final JobServer jobServer, final ModelMap model) {
+    public Collection<ServerInfo> getJobs(final ServerInfo jobServer, final ModelMap model) {
         model.put("serverIp", jobServer.getIp());
-        return serverDimensionService.getJobs(jobServer.getIp());
+        return jobAPIService.getServerStatisticsAPI().getJobs(jobServer.getIp());
     }
 }

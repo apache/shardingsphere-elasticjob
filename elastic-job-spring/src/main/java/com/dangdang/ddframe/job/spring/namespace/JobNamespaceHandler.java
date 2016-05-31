@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,9 @@
 
 package com.dangdang.ddframe.job.spring.namespace;
 
+import com.dangdang.ddframe.job.spring.namespace.parser.DataFlowJobBeanDefinitionParser;
+import com.dangdang.ddframe.job.spring.namespace.parser.ScriptJobBeanDefinitionParser;
+import com.dangdang.ddframe.job.spring.namespace.parser.SimpleJobBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
@@ -28,6 +31,8 @@ public class JobNamespaceHandler extends NamespaceHandlerSupport {
     
     @Override
     public void init() {
-        registerBeanDefinitionParser("bean", new JobBeanDefinitionParser());
+        registerBeanDefinitionParser("simple", new SimpleJobBeanDefinitionParser());
+        registerBeanDefinitionParser("dataflow", new DataFlowJobBeanDefinitionParser());
+        registerBeanDefinitionParser("script", new ScriptJobBeanDefinitionParser());
     }
 }

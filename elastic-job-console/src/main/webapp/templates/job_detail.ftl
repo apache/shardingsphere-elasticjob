@@ -15,7 +15,12 @@
                         <input type="text" id="jobClass" name="jobClass" class="form-control" disabled />
                     </div>
                 </div>
-                
+                <div class="form-group">
+                    <label for="jobType" class="col-sm-2 control-label">作业类型</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="jobType" name="jobType" class="form-control" disabled />
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="shardingTotalCount" class="col-sm-2 control-label">作业分片总数</label>
                     <div class="col-sm-1">
@@ -32,7 +37,7 @@
                         <input type="text" id="cron" name="cron" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业启动时间的cron表达式" required />
                     </div>
                 </div>
-                
+                <#if jobType == "DATA_FLOW">
                 <div class="form-group">
                     <label for="concurrentDataProcessThreadCount" class="col-sm-2 control-label">处理数据的并发线程数</label>
                     <div class="col-sm-1">
@@ -49,11 +54,16 @@
                         <input type="number" id="fetchDataCount" name="fetchDataCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="可在不重启作业的情况下灵活配置抓取数据量" />
                     </div>
                 </div>
-                
+                </#if>
                 <div class="form-group">
                     <label for="maxTimeDiffSeconds" class="col-sm-2 control-label">最大容忍的本机与注册中心的时间误差秒数</label>
                     <div class="col-sm-1">
                         <input type="number" id="maxTimeDiffSeconds" name="maxTimeDiffSeconds" class="form-control" data-toggle="tooltip" data-placement="bottom" title="如果时间误差超过配置秒数则作业启动时将抛异常。配置为-1表示不检查时间误差。" />
+                    </div>
+                    
+                    <label for="monitorPort" class="col-sm-2 control-label">监听作业端口</label>
+                    <div class="col-sm-1">
+                        <input type="number" id="monitorPort" name="monitorPort" class="form-control" data-toggle="tooltip" data-placement="bottom" title="抓取作业注册信息监听服务端口。配置为-1表示不启用监听服务。" />
                     </div>
                 </div>
                 
@@ -94,6 +104,14 @@
                         <textarea id="description" name="description" class="form-control"></textarea>
                     </div>
                 </div>
+                <#if jobType == "SCRIPT">
+                <div class="form-group">
+                    <label for="scriptCommandLine" class="col-sm-2 control-label">脚本作业全路径</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="scriptCommandLine" name="scriptCommandLine" class="form-control" data-toggle="tooltip" data-placement="bottom" title="执行脚本的全路径名称，可以包含参数" />
+                    </div>
+                </div>
+                </#if>
                 <button type="reset" class="btn btn-inverse">重置</button>
                 <button type="submit" class="btn btn-primary">更新</button>
             </form>
@@ -108,14 +126,13 @@
                         <th>最近处理成功数</th>
                         <th>最近处理失败数</th>
                         <th>分片项</th>
-                        <th>主节点？</th>
                         <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
-            <button id="stop-all-jobs-btn" class="btn btn-danger">全部暂停</button>
+            <button id="pause-all-jobs-btn" class="btn btn-warning">全部暂停</button>
             <button id="resume-all-jobs-btn" class="btn btn-success">全部恢复</button>
         </div>
         <div role="tabpanel" class="tab-pane" id="execution_info">
@@ -138,7 +155,6 @@
 </div>
 <@dashboard.successDialog "success-dialog" />
 <@dashboard.failureDialog "connect-reg-center-failure-dialog" "连接失败，请检查注册中心配置" />
-<@dashboard.confirmDialog "stop-leader-confirm-dialog" "暂停主节点将导致其他作业节点一起暂停，确认要暂停全部作业节点吗？" />
 <script src="lib/jquery/jquery-2.1.4.min.js"></script>
 <script src="lib/bootstrap/js/bootstrap.min.js"></script>
 <script src="js/common.js"></script>

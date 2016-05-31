@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,11 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.internal.env.RealLocalHostService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.server.ServerService;
@@ -34,15 +31,17 @@ import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 作业失效转移服务.
  * 
  * @author zhangliang
  */
 @Slf4j
-public final class FailoverService {
+public class FailoverService {
     
-    private final LocalHostService localHostService = new RealLocalHostService();
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final JobConfiguration jobConfiguration;
     
@@ -81,24 +80,11 @@ public final class FailoverService {
         if (!needFailover()) {
             return;
         }
-        jobNodeStorage.executeInLeader(FailoverNode.LATCH, new LeaderExecutionCallback() {
-            
-            @Override
-            public void execute() {
-                if (!needFailover()) {
-                    return;
-                }
-                int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
-                log.debug("Elastic job: failover job begin, crashed item:{}.", crashedItem);
-                jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
-                jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
-                JobRegistry.getInstance().getJob(jobConfiguration.getJobName()).triggerJob();
-            }
-        });
+        jobNodeStorage.executeInLeader(FailoverNode.LATCH, new FailoverLeaderExecutionCallback());
     }
     
     private boolean needFailover() {
-        return jobNodeStorage.isJobNodeExisted(FailoverNode.ITEMS_ROOT) && !jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).isEmpty() && serverService.isServerReady();
+        return jobNodeStorage.isJobNodeExisted(FailoverNode.ITEMS_ROOT) && !jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).isEmpty() && serverService.isLocalhostServerReady();
     }
     
     /**
@@ -154,6 +140,21 @@ public final class FailoverService {
     public void removeFailoverInfo() {
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT)) {
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(Integer.parseInt(each)));
+        }
+    }
+    
+    class FailoverLeaderExecutionCallback implements LeaderExecutionCallback {
+        
+        @Override
+        public void execute() {
+            if (!needFailover()) {
+                return;
+            }
+            int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
+            log.debug("Elastic job: failover job begin, crashed item:{}.", crashedItem);
+            jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
+            jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
+            JobRegistry.getInstance().getJobScheduleController(jobConfiguration.getJobName()).triggerJob();
         }
     }
 }

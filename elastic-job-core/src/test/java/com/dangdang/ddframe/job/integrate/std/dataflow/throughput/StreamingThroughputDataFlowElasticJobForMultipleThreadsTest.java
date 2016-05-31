@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,21 @@
 
 package com.dangdang.ddframe.job.integrate.std.dataflow.throughput;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
+import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
+import com.dangdang.ddframe.job.integrate.WaitingUtils;
+import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.integrate.AbstractEnabledBaseStdJobTest;
-import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
-import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.test.WaitingUtils;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-public final class StreamingThroughputDataFlowElasticJobForMultipleThreadsTest extends AbstractEnabledBaseStdJobTest {
+public final class StreamingThroughputDataFlowElasticJobForMultipleThreadsTest extends AbstractBaseStdJobAutoInitTest {
     
     public StreamingThroughputDataFlowElasticJobForMultipleThreadsTest() {
         super(StreamingThroughputDataFlowElasticJob.class);
@@ -42,16 +43,18 @@ public final class StreamingThroughputDataFlowElasticJobForMultipleThreadsTest e
         StreamingThroughputDataFlowElasticJob.reset();
     }
     
+    @Override
+    protected void setJobConfig(final JobConfiguration jobConfig) {
+        ((DataFlowJobConfiguration)jobConfig).setConcurrentDataProcessThreadCount(3);
+    }
+    
     @Test
     public void assertJobInit() {
-        getJobConfig().setConcurrentDataProcessThreadCount(3);
-        initJob();
-        assertRegCenterCommonInfo();
         while (!StreamingThroughputDataFlowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/testJob/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount("testJob"), is(10));
-        assertThat(ProcessCountStatistics.getProcessFailureCount("testJob"), is(0));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(ProcessCountStatistics.getProcessSuccessCount(getJobName()) >= 10);
+        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,14 +44,14 @@ public final class AverageAllocationJobShardingStrategyTest {
     public void shardingForOneServer() {
         Map<String, List<Integer>> expected = new LinkedHashMap<>(1);
         expected.put("host0", Arrays.asList(0, 1, 2));
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0"), getJobShardingStrategyOption(3)), is(expected));
+        assertThat(jobShardingStrategy.sharding(Collections.singletonList("host0"), getJobShardingStrategyOption(3)), is(expected));
     }
     
     @Test
     public void shardingForServersMoreThanShardingCount() {
         Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Arrays.asList(0));
-        expected.put("host1", Arrays.asList(1));
+        expected.put("host0", Collections.singletonList(0));
+        expected.put("host1", Collections.singletonList(1));
         expected.put("host2", Collections.<Integer>emptyList());
         assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(2)), is(expected));
     }

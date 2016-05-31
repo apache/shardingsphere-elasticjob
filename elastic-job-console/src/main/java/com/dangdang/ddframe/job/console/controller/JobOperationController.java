@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,49 +17,69 @@
 
 package com.dangdang.ddframe.job.console.controller;
 
-import javax.annotation.Resource;
-
+import com.dangdang.ddframe.job.console.service.JobAPIService;
+import com.dangdang.ddframe.job.domain.ServerInfo;
+import com.google.common.base.Optional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dangdang.ddframe.job.console.domain.JobServer;
-import com.dangdang.ddframe.job.console.service.JobOperationService;
+import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("job")
 public class JobOperationController {
     
     @Resource
-    private JobOperationService jobOperationService;
+    private JobAPIService jobAPIService;
     
-    @RequestMapping(value = "stop", method = RequestMethod.POST)
-    public void stopJob(final JobServer jobServer) {
-        jobOperationService.stopJob(jobServer.getJobName(), jobServer.getIp());
+    @RequestMapping(value = "pause", method = RequestMethod.POST)
+    public void pauseJob(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().pause(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
     }
     
     @RequestMapping(value = "resume", method = RequestMethod.POST)
-    public void resumeJob(final JobServer jobServer) {
-        jobOperationService.resumeJob(jobServer.getJobName(), jobServer.getIp());
+    public void resumeJob(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().resume(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
     }
     
-    @RequestMapping(value = "stopAll/name", method = RequestMethod.POST)
-    public void stopAllJobsByJobName(final JobServer jobServer) {
-        jobOperationService.stopAllJobsByJobName(jobServer.getJobName());
+    @RequestMapping(value = "pauseAll/name", method = RequestMethod.POST)
+    public void pauseAllJobsByJobName(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().pause(Optional.of(jobServer.getJobName()), Optional.<String>absent());
     }
     
     @RequestMapping(value = "resumeAll/name", method = RequestMethod.POST)
-    public void resumeAllJobsByJobName(final JobServer jobServer) {
-        jobOperationService.resumeAllJobsByJobName(jobServer.getJobName());
+    public void resumeAllJobsByJobName(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().resume(Optional.of(jobServer.getJobName()), Optional.<String>absent());
     }
     
-    @RequestMapping(value = "stopAll/ip", method = RequestMethod.POST)
-    public void stopAllJobs(final JobServer jobServer) {
-        jobOperationService.stopAllJobsByServer(jobServer.getIp());
+    @RequestMapping(value = "pauseAll/ip", method = RequestMethod.POST)
+    public void pauseAllJobs(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().pause(Optional.<String>absent(), Optional.of(jobServer.getIp()));
     }
     
     @RequestMapping(value = "resumeAll/ip", method = RequestMethod.POST)
-    public void resumeAllJobs(final JobServer jobServer) {
-        jobOperationService.resumeAllJobsByServer(jobServer.getIp());
+    public void resumeAllJobs(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().resume(Optional.<String>absent(), Optional.of(jobServer.getIp()));
+    }
+    
+    @RequestMapping(value = "shutdown", method = RequestMethod.POST)
+    public void shutdownJob(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+    }
+    
+    @RequestMapping(value = "remove", method = RequestMethod.POST)
+    public void removeJob(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().remove(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+    }
+
+    @RequestMapping(value = "disable", method = RequestMethod.POST)
+    public void disableJob(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+    }
+
+    @RequestMapping(value = "enable", method = RequestMethod.POST)
+    public void enableJob(final ServerInfo jobServer) {
+        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
     }
 }

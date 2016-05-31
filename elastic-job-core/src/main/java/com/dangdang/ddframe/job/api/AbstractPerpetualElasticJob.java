@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 1999-2015 dangdang.com.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.internal.job.dataflow.AbstractIndividualDataFlowElasticJob;
 
 /**
  * 不断获取最新数据的高吞吐量处理数据流程作业.
@@ -31,14 +31,17 @@ import com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasti
  * <p>
  * <strong>包结构调整, 作业类型全部迁移至plugin包. 未来版本将删除, 请从旧版本升级的程序升级.</strong>
  * </p>
- * @see com.dangdang.ddframe.job.plugin.job.type.AbstractThroughputDataFlowElasticJob
+ * @see com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob
+ * 
  * 
  * @author zhangliang
  * 
  * @param <T> 数据流作业处理的数据实体类型
+ * 
+ * @deprecated .
  */
 @Deprecated
-public abstract class AbstractPerpetualElasticJob<T> extends AbstractThroughputDataFlowElasticJob<T> {
+public abstract class AbstractPerpetualElasticJob<T> extends AbstractIndividualDataFlowElasticJob<T, JobExecutionMultipleShardingContext> {
     
     @Override
     public boolean isStreamingProcess() {
