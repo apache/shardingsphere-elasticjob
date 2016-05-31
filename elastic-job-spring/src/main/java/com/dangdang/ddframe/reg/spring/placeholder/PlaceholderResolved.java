@@ -29,21 +29,21 @@ import org.springframework.core.env.PropertySourcesPropertyResolver;
 
 /**
  * 处理占位符的类.
- * 
+ *
  * @author zhangliang
  */
 @Slf4j
 public final class PlaceholderResolved {
-    
+
     private final Map<String, PropertySourcesPlaceholderConfigurer> placeholderMap;
-    
+
     public PlaceholderResolved(final ListableBeanFactory beanFactory) {
         placeholderMap = beanFactory.getBeansOfType(PropertySourcesPlaceholderConfigurer.class);
     }
-    
+
     /**
      * 获取处理占位符后的文本值.
-     * 
+     *
      * @param text 含有占位符的文本
      * @return 处理占位符后的文本值
      */
@@ -55,16 +55,13 @@ public final class PlaceholderResolved {
         for (Entry<String, PropertySourcesPlaceholderConfigurer> entry : placeholderMap.entrySet()) {
             PropertySourcesPropertyResolver propertyResolver;
             try {
-                propertyResolver = new PropertySourcesPropertyResolver(entry.getValue().getAppliedPropertySources());
+//                propertyResolver = new PropertySourcesPropertyResolver(entry.getValue().getAppliedPropertySources());
+                propertyResolver = getPropertyResolverBeforeSpring4(entry.getValue());
             } catch (final IllegalStateException ex) {
                 continue;
-            } catch (final NoSuchMethodError ex) {
-                try {
-                    propertyResolver = getPropertyResolverBeforeSpring4(entry.getValue());
-                } catch (final ReflectiveOperationException e) {
-                    log.warn("Cannot get placeholder resolver.");
-                    return text;
-                }
+            } catch (final ReflectiveOperationException e) {
+                log.warn("Cannot get placeholder resolver.");
+                return text;
             }
             try {
                 return propertyResolver.resolveRequiredPlaceholders(text);
@@ -77,7 +74,7 @@ public final class PlaceholderResolved {
         }
         throw missingException;
     }
-    
+
     private PropertySourcesPropertyResolver getPropertyResolverBeforeSpring4(final PropertySourcesPlaceholderConfigurer placeholderConfigurer) throws ReflectiveOperationException {
         return new PropertySourcesPropertyResolver((PropertySources) PropertySourcesPlaceholderConfigurer.class.getField("propertySources").get(placeholderConfigurer));
     }
