@@ -8,7 +8,11 @@
     <artifactId>elastic-job-console</artifactId>
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
-    
+
+    <properties>
+        <tomcat7-maven-plugin.version>2.1</tomcat7-maven-plugin.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.dangdang</groupId>
@@ -103,4 +107,25 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>${tomcat7-maven-plugin.version}</version>
+                <configuration>
+                    <path>/</path>
+                    <port>8080</port>
+                    <uriEncoding>UTF-8</uriEncoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
