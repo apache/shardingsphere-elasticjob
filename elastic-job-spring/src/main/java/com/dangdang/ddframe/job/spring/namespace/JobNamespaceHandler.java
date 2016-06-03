@@ -17,15 +17,15 @@
 
 package com.dangdang.ddframe.job.spring.namespace;
 
-import com.dangdang.ddframe.job.spring.namespace.parser.DataFlowJobBeanDefinitionParser;
-import com.dangdang.ddframe.job.spring.namespace.parser.ScriptJobBeanDefinitionParser;
-import com.dangdang.ddframe.job.spring.namespace.parser.SimpleJobBeanDefinitionParser;
+import com.dangdang.ddframe.job.spring.namespace.parser.dataflow.DataFlowJobBeanDefinitionParser;
+import com.dangdang.ddframe.job.spring.namespace.parser.script.ScriptJobBeanDefinitionParser;
+import com.dangdang.ddframe.job.spring.namespace.parser.simple.SimpleJobBeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * 分布式作业的命名空间处理器.
  * 
- * @author zhangliang
+ * @author caohao
  */
 public class JobNamespaceHandler extends NamespaceHandlerSupport {
     

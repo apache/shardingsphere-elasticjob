@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.internal.config;
 
 import com.dangdang.ddframe.job.api.DataFlowElasticJob;
-import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
@@ -52,7 +52,7 @@ public final class ConfigurationServiceTest {
     @Mock
     private JobNodeStorage jobNodeStorage;
     
-    private final JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
     
     private final ConfigurationService configService = new ConfigurationService(null, jobConfig);
     
@@ -106,7 +106,8 @@ public final class ConfigurationServiceTest {
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, dataFlowJobConfiguration.getFetchDataCount());
         }
         if (ScriptElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
-            ScriptJobConfiguration scriptJobConfiguration = ((ScriptJobConfiguration) jobConfig);
+            @SuppressWarnings("unchecked")
+            ScriptJobConfiguration scriptJobConfiguration = (ScriptJobConfiguration) jobConfig;
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, scriptJobConfiguration.getScriptCommandLine());
         }
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MAX_TIME_DIFF_SECONDS, jobConfig.getMaxTimeDiffSeconds());

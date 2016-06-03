@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.internal.failover;
 
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.failover.FailoverService.FailoverLeaderExecutionCallback;
@@ -61,7 +61,7 @@ public final class FailoverServiceTest {
     @Mock
     private JobScheduleController jobScheduleController;
     
-    private final JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").overwrite(true).build();
     
     private final FailoverService failoverService = new FailoverService(null, jobConfig);
     
@@ -75,7 +75,6 @@ public final class FailoverServiceTest {
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
         when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
-        jobConfig.setOverwrite(true);
     }
     
     @Test

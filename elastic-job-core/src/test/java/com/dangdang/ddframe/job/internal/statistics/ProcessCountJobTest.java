@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.internal.statistics;
 
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.server.ServerService;
 import org.junit.Before;
@@ -36,7 +36,9 @@ public final class ProcessCountJobTest {
     @Mock
     private ServerService serverService;
     
-    private final ProcessCountJob processCountJob = new ProcessCountJob(null, new SimpleJobConfiguration(ProcessCountJobTest.class.getName(), TestJob.class, 3, "0/1 * * * * ?"));
+    private final ProcessCountJob processCountJob = new ProcessCountJob(null, 
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder(ProcessCountJobTest.class.getName(), 
+                    TestJob.class, 3, "0/1 * * * * ?").build());
     
     @Before
     public void setUp() throws NoSuchFieldException {

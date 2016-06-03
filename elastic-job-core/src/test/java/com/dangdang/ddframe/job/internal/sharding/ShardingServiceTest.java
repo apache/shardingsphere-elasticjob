@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.internal.sharding;
 
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
@@ -73,7 +73,7 @@ public final class ShardingServiceTest {
     @Mock
     private ServerService serverService;
     
-    private final JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
     
     private final ShardingService shardingService = new ShardingService(null, jobConfig);
     

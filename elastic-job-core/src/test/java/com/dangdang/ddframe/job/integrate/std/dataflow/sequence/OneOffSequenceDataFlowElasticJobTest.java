@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.integrate.std.dataflow.sequence;
 
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.util.JobConfigurationFieldUtil;
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.sequence.OneOffSequenceDataFlowElasticJob;
@@ -44,7 +45,7 @@ public final class OneOffSequenceDataFlowElasticJobTest extends AbstractBaseStdJ
     
     @Override
     protected void setJobConfig(final JobConfiguration jobConfig) {
-        jobConfig.setMisfire(false);
+        JobConfigurationFieldUtil.setFieldValue(jobConfig, "misfire", false);
     }
     
     @Test

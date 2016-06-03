@@ -16,10 +16,10 @@
  *
  */
 
-package com.dangdang.ddframe.job.spring.namespace.parser;
+package com.dangdang.ddframe.job.spring.namespace.parser.common;
 
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.spring.namespace.parser.script.ScriptJobConfigurationDto;
 import com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -34,17 +34,15 @@ import org.w3c.dom.Element;
 import java.util.List;
 
 /**
- * 分布式作业的命名空间解析器.
+ * 基本作业的命名空间解析器.
  * 
  * @author zhangliang
  * @author caohao
  */
-abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefinitionParser {
+public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
     @Override
-    //CHECKSTYLE:OFF
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
-    //CHECKSTYLE:ON
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
         factory.setInitMethodName("init");
         factory.addConstructorArgReference(element.getAttribute("regCenter"));
@@ -54,12 +52,16 @@ abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefinitionPar
     }
     
     private String createJobConfiguration(final Element element, final ParserContext parserContext) {
-        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(getJobConfigurationClass());
-        String className = element.getAttribute("class");
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(getJobConfigurationDTO());
         factory.addConstructorArgValue(element.getAttribute("id"));
-        factory.addConstructorArgValue(className);
+        if (!getJobConfigurationDTO().isAssignableFrom(ScriptJobConfigurationDto.class)) {
+            factory.addConstructorArgValue(element.getAttribute("class"));
+        }
         factory.addConstructorArgValue(element.getAttribute("shardingTotalCount"));
         factory.addConstructorArgValue(element.getAttribute("cron"));
+        if (getJobConfigurationDTO().isAssignableFrom(ScriptJobConfigurationDto.class)) {
+            factory.addConstructorArgValue(element.getAttribute("cron"));    
+        }
         addPropertyValueIfNotEmpty("shardingItemParameters", element, factory);
         addPropertyValueIfNotEmpty("jobParameter", element, factory);
         addPropertyValueIfNotEmpty("monitorExecution", element, factory);
@@ -78,7 +80,7 @@ abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefinitionPar
         return result;
     }
     
-    protected abstract Class<? extends JobConfiguration> getJobConfigurationClass();
+    protected abstract Class<? extends AbstractJobConfigurationDto> getJobConfigurationDTO();
     
     protected abstract void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory);
     
@@ -103,7 +105,7 @@ abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefinitionPar
         return result;
     }
     
-    void addPropertyValueIfNotEmpty(final String propertyName, final Element element, final BeanDefinitionBuilder factory) {
+    protected void addPropertyValueIfNotEmpty(final String propertyName, final Element element, final BeanDefinitionBuilder factory) {
         String propertyValue = element.getAttribute(propertyName);
         if (!Strings.isNullOrEmpty(propertyValue)) {
             factory.addPropertyValue(propertyName, propertyValue);

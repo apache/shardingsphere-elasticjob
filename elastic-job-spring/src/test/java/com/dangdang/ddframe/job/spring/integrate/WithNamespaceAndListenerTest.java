@@ -4,30 +4,26 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * </p>
+ *
  */
 
-package com.dangdang.example.elasticjob.spring.main;
+package com.dangdang.ddframe.job.spring.integrate;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
 
-public final class SpringJobMainWithoutNamespace {
+@ContextConfiguration(locations = "classpath:META-INF/job/withNamespaceAndListener.xml")
+public class WithNamespaceAndListenerTest extends AbstractJobSpringIntegrateTest {
     
-    private SpringJobMainWithoutNamespace() {
-    }
-    
-    // CHECKSTYLE:OFF
-    @SuppressWarnings("resource")
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        new ClassPathXmlApplicationContext("classpath:META-INF/withoutNamespace.xml");
+    public WithNamespaceAndListenerTest() {
+        super("simpleElasticJob_namespace_listener", "throughputDataFlowElasticJob_namespace_listener");
     }
 }

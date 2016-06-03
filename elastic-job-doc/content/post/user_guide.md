@@ -229,7 +229,7 @@ public class JobMain {
     <!-- 配置数据流作业-->
     <job:dataflow id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/10 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="10" />
     
-    <!-- 配置简单作业-->
+    <!-- 配置脚本作业-->
     <job:script id="scriptElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" scriptCommandLine="/your/file/path/demo.sh" />
     
     <!-- 配置带监听的简单作业-->
@@ -255,7 +255,7 @@ public class JobMain {
 |monitorPort                     |int    |否      |-1   | 作业监控端口。<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump" \| nc 127.0.0.1 9888|
 |processCountIntervalSeconds     |int    |否      |300  | 统计作业处理数据数量的间隔时间<br />单位：秒<br />仅对`DataFlow`类型作业有效       |
 |concurrentDataProcessThreadCount|int    |否      |1    | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效      |
-|fetchDataCount                  |int    |否      |0    | 每次抓取的数据量                                                              |
+|fetchDataCount                  |int    |否      |1    | 每次抓取的数据量                                                              |
 |maxTimeDiffSeconds              |int    |否      |-1   | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为`-1`表示不校验时间误差|
 |failover                        |boolean|否      |false| 是否开启失效转移<br />仅`monitorExecution`开启，失效转移才有效                   |
 |misfire                         |boolean|否      |true | 是否开启错过任务重新执行                                                       |
@@ -272,7 +272,7 @@ job:dataflow命名空间拥有job:simple命名空间的全部属性，以下仅�
 | ------------------------------ |:------|:-------|:----|:---------------------------------------------------------------------------|
 |processCountIntervalSeconds     |int    |否      |300  | 统计作业处理数据数量的间隔时间<br />单位：秒<br />仅对`DataFlow`类型作业有效      |
 |concurrentDataProcessThreadCount|int    |否      |1    | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效     |
-|fetchDataCount                  |int    |否      |0    | 每次抓取的数据量                                                             |
+|fetchDataCount                  |int    |否      |1    | 每次抓取的数据量                                                             |
 
 #### job:script命名空间属性详细说明，基本属性参照job:simple命名空间属性详细说明
 
@@ -308,36 +308,6 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 |nestedPort                      |int    |否     |-1   | 内嵌`Zookeeper`的端口号<br />-1表示不开启内嵌`Zookeeper`                                               |
 |nestedDataDir                   |String |否     |     | 内嵌`Zookeeper`的数据存储路径<br />为空表示不开启内嵌`Zookeeper`                                        |
 
-### 基于Spring但不使用命名空间
-
-```xml
-    <!-- 配置作业注册中心 -->
-    <bean id="regCenter" class="com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter" init-method="init">
-        <constructor-arg>
-            <bean class="com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration">
-                <property name="serverLists" value="${xxx}" />
-                <property name="namespace" value="${xxx}" />
-                <property name="baseSleepTimeMilliseconds" value="${xxx}" />
-                <property name="maxSleepTimeMilliseconds" value="${xxx}" />
-                <property name="maxRetries" value="${xxx}" />
-            </bean>
-        </constructor-arg>
-    </bean>
-    <!-- 配置作业-->
-    <bean id="xxxJob" class="com.dangdang.ddframe.job.spring.schedule.SpringJobScheduler" init-method="init">
-        <constructor-arg ref="regCenter" />
-        <constructor-arg>
-            <bean class="com.dangdang.ddframe.job.api.config.JobConfiguration">
-                <constructor-arg name="jobName" value="xxxJob" />
-                <constructor-arg name="jobClass" value="xxxDemoJob" />
-                <constructor-arg name="shardingTotalCount" value="10" />
-                <constructor-arg name="cron" value="0/10 * * * * ?" />
-                <property name="shardingItemParameters" value="${xxx}" />
-            </bean>
-        </constructor-arg>
-    </bean>
-```
-
 ### 不使用Spring配置
 
 如果不使用Spring框架，可以用如下方式启动作业。
@@ -362,16 +332,20 @@ public class JobDemo {
     private CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     
     // 定义简单作业配置对象
-    private JobConfiguration simpleJobConfig = new SimpleJobConfiguration("simpleJob", SimpleJobDemo.class, 10, "0/5 * * * * ?");
+    private final SimpleJobConfiguration simpleJobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleElasticDemoJob", 
+                    SimpleJobDemo.class, 10, "0/30 * * * * ?").build();
     
     // 定义高吞吐的数据流作业配置对象
-    private JobConfiguration throughputDataFlowJobConfig = new DataFLowJobConfiguration("throughputDataFlowJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    private final DataFlowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("throughputDataFlowElasticDemoJob", 
+                    ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
     
     // 定义顺序的数据流作业配置对象
-    private JobConfiguration sequenceDataFlowJobConfig = new DataFlowJobConfiguration("sequenceDataFlowJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    private final DataFlowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("sequenceDataFlowElasticDemoJob", 
+                    SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
     
     // 定义脚本作业配置对象
-    private JobConfiguration scriptJobConfig = new ScriptJobConfiguration("scriptJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
+    private final ScriptJobConfiguration scriptJobConfig = JobConfigurationFactory.createScriptJobConfigurationBuilder("scriptElasticDemoJob", 
+                    10, "0/5 * * * * ?", "test.sh").build();
     
     public static void main(final String[] args) {
         new JobDemo().init();
@@ -383,9 +357,9 @@ public class JobDemo {
         // 启动简单作业
         new JobScheduler(regCenter, simpleJobConfig).init();
         // 启动高吞吐的数据流作业
-        new JobScheduler(regCenter, throughputDataFlowJobConfig).init();
+        new JobScheduler(regCenter, throughputJobConfig).init();
         // 启动顺序的数据流作业
-        new JobScheduler(regCenter, sequenceDataFlowJobConfig).init();
+        new JobScheduler(regCenter, sequenceJobConfig).init();
         // 启动脚本作业
         new JobScheduler(regCenter, scriptJobConfig).init();
     }

@@ -17,19 +17,19 @@
 
 package com.dangdang.ddframe.job.integrate.std.dataflow.throughput;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.util.JobConfigurationFieldUtil;
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.OneOffThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class OneOffThroughputDataFlowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
@@ -45,7 +45,7 @@ public final class OneOffThroughputDataFlowElasticJobTest extends AbstractBaseSt
     
     @Override
     protected void setJobConfig(final JobConfiguration jobConfig) {
-        jobConfig.setMisfire(false);
+        JobConfigurationFieldUtil.setFieldValue(jobConfig, "misfire", false);
     }
     
     @Test

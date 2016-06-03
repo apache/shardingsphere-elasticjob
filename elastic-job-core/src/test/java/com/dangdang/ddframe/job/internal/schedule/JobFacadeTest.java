@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.internal.schedule;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.api.listener.fixture.TestElasticJobListener;
@@ -73,7 +73,7 @@ public class JobFacadeTest {
     @Mock
     private ElasticJobListenerCaller caller;
     
-    private JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
     
     private JobFacade jobFacade;
     

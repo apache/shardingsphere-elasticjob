@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.integrate.std.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
@@ -41,11 +39,6 @@ public final class StreamingThroughputDataFlowElasticJobForMultipleThreadsTest e
     @After
     public void reset() {
         StreamingThroughputDataFlowElasticJob.reset();
-    }
-    
-    @Override
-    protected void setJobConfig(final JobConfiguration jobConfig) {
-        ((DataFlowJobConfiguration)jobConfig).setConcurrentDataProcessThreadCount(3);
     }
     
     @Test

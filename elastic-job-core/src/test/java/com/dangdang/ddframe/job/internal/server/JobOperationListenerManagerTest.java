@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.internal.server;
 
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
@@ -66,7 +66,8 @@ public final class JobOperationListenerManagerTest {
     
     private String ip = new LocalHostService().getIp();
     
-    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, 
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build());
     
     @Before
     public void setUp() throws NoSuchFieldException {

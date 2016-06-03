@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.internal.election;
 
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.election.ElectionListenerManager.LeaderElectionJobListener;
 import com.dangdang.ddframe.job.internal.server.ServerNode;
@@ -52,7 +52,8 @@ public final class ElectionListenerManagerTest {
     @Mock
     private ServerService serverService;
     
-    private final ElectionListenerManager electionListenerManager = new ElectionListenerManager(null, new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    private final ElectionListenerManager electionListenerManager = new ElectionListenerManager(null, 
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build());
     
     @Before
     public void setUp() throws NoSuchFieldException {

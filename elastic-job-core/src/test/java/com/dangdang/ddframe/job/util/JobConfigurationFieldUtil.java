@@ -16,24 +16,21 @@
  *
  */
 
-package com.dangdang.ddframe.job.api.config;
+package com.dangdang.ddframe.job.util;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.internal.job.JobType;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import org.unitils.util.ReflectionUtils;
 
-/**
- * 简单作业配置信息.
- * 
- * @author zhangliang
- * @author caohao
- */
-public class SimpleJobConfiguration<T extends ElasticJob> extends BaseJobConfiguration<T> {
-
-    public SimpleJobConfiguration(final String jobName, final Class<T> jobClass, final int shardingTotalCount, final String cron) {
-        super(jobName, jobClass, shardingTotalCount, cron);
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class JobConfigurationFieldUtil {
+    
+    public static void setFieldValue(final JobConfiguration jobConfig, final String fieldName, final Object fieldValue) {
+        try {
+            ReflectionUtils.setFieldValue(jobConfig, jobConfig.getClass().getSuperclass().getDeclaredField(fieldName), fieldValue);
+        } catch (final NoSuchFieldException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

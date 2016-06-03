@@ -19,10 +19,10 @@ package com.dangdang.example.elasticjob.core.main;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
-import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.config.impl.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.config.impl.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
@@ -38,32 +38,37 @@ public final class JobMain {
     private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:4181", "elasticjob-example");
     
     private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
-    
-    private final JobConfiguration simpleJobConfig = new SimpleJobConfiguration("simpleElasticDemoJob", SimpleJobDemo.class, 10, "0/30 * * * * ?");
-    
-    private final JobConfiguration throughputJobConfig = new DataFlowJobConfiguration("throughputDataFlowElasticDemoJob", ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?");
-    
-    private final JobConfiguration sequenceJobConfig = new DataFlowJobConfiguration("sequenceDataFlowElasticDemoJob", SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?");
-    
-    private final JobConfiguration scriptElasticJobConfig = new ScriptJobConfiguration("scriptElasticDemoJob", 10, "0/5 * * * * ?", buildScriptCommandLine());
-    
+
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
         new JobMain().init();
     }
-    
-    public void init() {
+
+    private void init() {
         zkConfig.setNestedPort(4181);
         zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         regCenter.init();
+
+        final SimpleJobConfiguration simpleJobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleElasticDemoJob", 
+                SimpleJobDemo.class, 10, "0/30 * * * * ?").build();
+
+        final DataFlowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("throughputDataFlowElasticDemoJob", 
+                ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
+
+        final DataFlowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("sequenceDataFlowElasticDemoJob", 
+                SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
+
+        final ScriptJobConfiguration scriptJobConfig = JobConfigurationFactory.createScriptJobConfigurationBuilder("scriptElasticDemoJob", 10, "0/5 * * * * ?", 
+                buildScriptCommandLine()).build();
+    
         new JobScheduler(regCenter, simpleJobConfig, new SimpleDistributeOnceElasticJobListener()).init();
         new JobScheduler(regCenter, throughputJobConfig).init();
         new JobScheduler(regCenter, sequenceJobConfig).init();
-        new JobScheduler(regCenter, scriptElasticJobConfig).init();
+        new JobScheduler(regCenter, scriptJobConfig).init();
     }
     
-    class SimpleDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+    private class SimpleDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
         
         SimpleDistributeOnceElasticJobListener() {
             super(1000L, 1000L);

@@ -21,10 +21,8 @@ import com.dangdang.ddframe.job.api.DataFlowElasticJob;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobScheduler;
-import com.dangdang.ddframe.job.api.config.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
@@ -34,6 +32,7 @@ import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
 import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
 import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
@@ -77,6 +76,7 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
     private final String jobName = System.nanoTime() + "_testJob";
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
+        this.disabled = disabled;
         jobConfig = initJobConfig(elasticJobClass);
         jobScheduler = new JobScheduler(regCenter, jobConfig, new ElasticJobListener() {
             
@@ -99,26 +99,41 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
             public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
             }
         });
-        this.disabled = disabled;
         monitorPort = -1;
         leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
     }
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
+        this.monitorPort = monitorPort;
         jobConfig = initJobConfig(elasticJobClass);
         jobScheduler = new JobScheduler(regCenter, jobConfig);
         disabled = false;
-        this.monitorPort = monitorPort;
         leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
     }
     
+    @SuppressWarnings("unchecked")
     private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
         if (DataFlowElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return new DataFlowJobConfiguration(jobName, (Class<? extends DataFlowElasticJob>)elasticJobClass, 3, "0/1 * * * * ?");
+            return JobConfigurationFactory.createDataFlowJobConfigurationBuilder(jobName, (Class<? extends DataFlowElasticJob>) elasticJobClass, 3, "0/1 * * * * ?")
+                    .monitorPort(monitorPort)
+                    .shardingItemParameters("0=A,1=B,2=C")
+                    .disabled(disabled)
+                    .overwrite(true)
+                    .build();
         } else if (ScriptElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return new ScriptJobConfiguration(jobName, 3, "0/1 * * * * ?", AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
+            return JobConfigurationFactory.createScriptJobConfigurationBuilder(jobName, 3, "0/1 * * * * ?", AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath())
+                    .monitorPort(monitorPort)
+                    .shardingItemParameters("0=A,1=B,2=C")
+                    .disabled(disabled)
+                    .overwrite(true)
+                    .build();
         } else {
-            return new SimpleJobConfiguration(jobName, elasticJobClass, 3, "0/1 * * * * ?");
+            return JobConfigurationFactory.createSimpleJobConfigurationBuilder(jobName, (Class<? extends AbstractSimpleElasticJob>) elasticJobClass, 3, "0/1 * * * * ?")
+                    .monitorPort(monitorPort)
+                    .shardingItemParameters("0=A,1=B,2=C")
+                    .disabled(disabled)
+                    .overwrite(true)
+                    .build();
         }
     }
     
@@ -132,10 +147,6 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
     @Before
     public void setUp() {
         ProcessCountStatistics.reset(jobName);
-        jobConfig.setShardingItemParameters("0=A,1=B,2=C");
-        jobConfig.setDisabled(disabled);
-        jobConfig.setMonitorPort(monitorPort);
-        jobConfig.setOverwrite(true);
         regCenter.init();
     }
     
@@ -153,7 +164,7 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
         jobScheduler.init();
     }
     
-    protected void assertRegCenterCommonInfoWithEnabled() {
+    void assertRegCenterCommonInfoWithEnabled() {
         assertRegCenterCommonInfo();
         assertTrue(leaderElectionService.isLeader());
     }
@@ -180,7 +191,7 @@ public abstract class AbstractBaseStdJobTest extends AbstractNestedZookeeperBase
         regCenter.remove("/" + jobName + "/leader/election");
     }
     
-    protected void assertRegCenterListenerInfo() {
+    void assertRegCenterListenerInfo() {
         assertThat(regCenter.get("/" + jobName + "/listener/once"), is("test"));
         assertThat(regCenter.get("/" + jobName + "/listener/every"), is("test"));
     }

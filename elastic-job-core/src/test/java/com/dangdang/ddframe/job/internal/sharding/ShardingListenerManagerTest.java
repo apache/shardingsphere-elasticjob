@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.internal.sharding;
 
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.internal.execution.ExecutionService;
@@ -48,7 +48,8 @@ public final class ShardingListenerManagerTest {
     
     private String ip = new LocalHostService().getIp();
     
-    private final ShardingListenerManager shardingListenerManager = new ShardingListenerManager(null, new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    private final ShardingListenerManager shardingListenerManager = new ShardingListenerManager(null, 
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build());
     
     @Before
     public void setUp() throws NoSuchFieldException {

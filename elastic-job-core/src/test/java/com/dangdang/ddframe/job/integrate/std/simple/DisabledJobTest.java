@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.job.integrate.std.simple;
 
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
+import com.dangdang.ddframe.job.integrate.fixture.simple.SimpleElasticJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
-import com.dangdang.ddframe.job.integrate.fixture.simple.SimpleElasticJob;
 
 public final class DisabledJobTest extends AbstractBaseStdJobTest {
     

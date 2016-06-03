@@ -18,11 +18,12 @@
 package com.dangdang.ddframe.job.fixture;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
+import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
 
-public class TestJob extends AbstractElasticJob {
+public class TestJob extends AbstractSimpleElasticJob {
     
     @Override
-    protected void executeJob(final JobExecutionMultipleShardingContext jobExecutionShardingContext) {
+    public void process(final JobExecutionMultipleShardingContext shardingContext) {
+        
     }
 }

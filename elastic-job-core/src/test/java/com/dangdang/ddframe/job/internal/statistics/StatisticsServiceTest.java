@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.internal.statistics;
 
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public final class StatisticsServiceTest {
     @Mock
     private ScheduledExecutorService scheduledExecutorService;
     
-    private final JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
     
     private final StatisticsService statisticsService = new StatisticsService(null, jobConfig);
     

@@ -20,7 +20,7 @@
 package com.dangdang.ddframe.job.plugin.job.type.integrated;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.fixture.ScriptElasticJobHelper;
+import com.dangdang.ddframe.job.util.ScriptElasticJobUtil;
 import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public class ScriptElasticJobTest {
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         scriptElasticJob = new ScriptElasticJob();
         scriptElasticJob.setJobFacade(jobFacade);
-        scriptCommandLine = ScriptElasticJobHelper.buildScriptCommandLine();
+        scriptCommandLine = ScriptElasticJobUtil.buildScriptCommandLine();
     }
     
     @Test(expected = JobExecutionException.class)

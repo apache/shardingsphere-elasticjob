@@ -17,18 +17,16 @@
 
 package com.dangdang.ddframe.job;
 
-import com.dangdang.ddframe.job.spring.*;
+import com.dangdang.ddframe.job.spring.integrate.AllSpringIntegrateTests;
+import com.dangdang.ddframe.job.spring.namespace.AllSpringNamespaceTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    WithNamespaceTest.class,
-    WithNamespaceAndListenerTest.class,
-    WithNamespaceAndListenerAndJdkDynamicProxyTest.class,
-    WithNamespaceAndListenerAndCglibTest.class,
-    WithoutNamespaceTest.class
+    AllSpringIntegrateTests.class, 
+    AllSpringNamespaceTests.class
     })
 public class AllSpringJobTests {
 }

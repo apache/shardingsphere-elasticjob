@@ -16,26 +16,28 @@
  *
  */
 
-package com.dangdang.ddframe.job.spring.namespace.parser;
+package com.dangdang.ddframe.job.spring.namespace.parser.dataflow;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.spring.namespace.parser.common.AbstractJobBeanDefinitionParser;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.w3c.dom.Element;
 
 /**
- * 简单作业的命名空间解析器.
+ * 数据流作业的命名空间解析器.
  * 
  * @author caohao
  */
-public class SimpleJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
+public class DataFlowJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
     
     @Override
-    protected Class<SimpleJobConfiguration> getJobConfigurationClass() {
-        return SimpleJobConfiguration.class;
+    protected Class<DataFlowJobConfigurationDto> getJobConfigurationDTO() {
+        return DataFlowJobConfigurationDto.class;
     }
     
     @Override
     protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
+        addPropertyValueIfNotEmpty("processCountIntervalSeconds", element, factory);
+        addPropertyValueIfNotEmpty("concurrentDataProcessThreadCount", element, factory);
+        addPropertyValueIfNotEmpty("fetchDataCount", element, factory);
     }
 }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.spring.schedule;
 
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.spring.namespace.parser.common.AbstractJobConfigurationDto;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 
@@ -35,7 +35,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 @Deprecated
 public class SpringJobController extends SpringJobScheduler {
     
-    public SpringJobController(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        super(coordinatorRegistryCenter, jobConfiguration);
+    public SpringJobController(final CoordinatorRegistryCenter coordinatorRegistryCenter, final AbstractJobConfigurationDto jobConfigurationDto) {
+        super(coordinatorRegistryCenter, jobConfigurationDto);
     }
 }

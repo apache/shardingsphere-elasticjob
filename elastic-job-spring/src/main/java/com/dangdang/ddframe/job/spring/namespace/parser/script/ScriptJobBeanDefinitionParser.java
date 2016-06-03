@@ -16,10 +16,9 @@
  *
  */
 
-package com.dangdang.ddframe.job.spring.namespace.parser;
+package com.dangdang.ddframe.job.spring.namespace.parser.script;
 
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.spring.namespace.parser.common.AbstractJobBeanDefinitionParser;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.w3c.dom.Element;
 
@@ -31,8 +30,8 @@ import org.w3c.dom.Element;
 public class ScriptJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
     
     @Override
-    protected Class<ScriptJobConfiguration> getJobConfigurationClass() {
-        return ScriptJobConfiguration.class;
+    protected Class<ScriptJobConfigurationDto> getJobConfigurationDTO() {
+        return ScriptJobConfigurationDto.class;
     }
     
     @Override

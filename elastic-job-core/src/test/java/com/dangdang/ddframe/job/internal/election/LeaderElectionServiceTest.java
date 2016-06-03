@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.internal.election;
 
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService.LeaderElectionExecutionCallback;
 import com.dangdang.ddframe.job.internal.env.LocalHostService;
@@ -51,7 +51,7 @@ public final class LeaderElectionServiceTest {
     @Mock
     private ServerService serverService;
     
-    private final JobConfiguration jobConfig = new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?");
+    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").overwrite(true).build();
     
     private final LeaderElectionService leaderElectionService = new LeaderElectionService(null, jobConfig);
     
@@ -64,7 +64,6 @@ public final class LeaderElectionServiceTest {
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
         when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
-        jobConfig.setOverwrite(true);
     }
     
     @Test

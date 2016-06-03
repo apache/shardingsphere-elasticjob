@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.internal.execution;
 
-import com.dangdang.ddframe.job.api.config.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.internal.execution.ExecutionListenerManager.MonitorExecutionChangedJobListener;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
@@ -41,7 +41,8 @@ public final class ExecutionListenerManagerTest {
     @Mock
     private ExecutionService executionService;
     
-    private final ExecutionListenerManager executionListenerManager = new ExecutionListenerManager(null, new SimpleJobConfiguration("testJob", TestJob.class, 3, "0/1 * * * * ?"));
+    private final ExecutionListenerManager executionListenerManager = new ExecutionListenerManager(null, 
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build());
     
     @Before
     public void setUp() throws NoSuchFieldException {
