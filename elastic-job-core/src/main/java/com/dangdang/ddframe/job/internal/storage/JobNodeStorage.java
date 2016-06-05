@@ -17,11 +17,8 @@
 
 package com.dangdang.ddframe.job.internal.storage;
 
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import lombok.Getter;
+import java.util.List;
+
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.recipes.cache.TreeCache;
@@ -29,7 +26,12 @@ import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderLatch;
 import org.apache.curator.framework.state.ConnectionStateListener;
 
-import java.util.List;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+
+import lombok.Getter;
 
 /**
  * 作业节点数据访问类.
@@ -138,7 +140,19 @@ public class JobNodeStorage {
     public void fillEphemeralJobNode(final String node, final Object value) {
         coordinatorRegistryCenter.persistEphemeral(jobNodePath.getFullPath(node), value.toString());
     }
-    
+
+    /**
+     * 如果节点不存在填充临时节点数据,节点存在不覆盖.
+     *
+     * @param node 作业节点名称
+     * @param value 作业节点数据值
+     */
+    public void fillEphemeralJobNodeIfNotExists(final String node, final Object value) {
+        if(!isJobNodeExisted(node)) {
+            coordinatorRegistryCenter.persistEphemeral(jobNodePath.getFullPath(node), value.toString());
+        }
+    }
+
     /**
      * 更新节点数据.
      * 

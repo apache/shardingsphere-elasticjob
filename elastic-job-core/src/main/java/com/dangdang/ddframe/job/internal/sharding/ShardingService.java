@@ -17,6 +17,13 @@
 
 package com.dangdang.ddframe.job.internal.sharding;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
+
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.internal.election.LeaderElectionService;
@@ -32,14 +39,9 @@ import com.dangdang.ddframe.job.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.internal.storage.TransactionExecutionCallback;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * 作业分片服务.
@@ -92,11 +94,14 @@ public class ShardingService {
     
     /**
      * 如果需要分片且当前节点为主节点, 则作业分片.
+     *
+     * 从节点等待主节点分片结束
      */
     public void shardingIfNecessary() {
         if (!isNeedSharding()) {
             return;
         }
+        jobNodeStorage.fillEphemeralJobNodeIfNotExists(ShardingNode.PROCESSING, "");
         if (!leaderElectionService.isLeader()) {
             blockUntilShardingCompleted();
             return;
@@ -105,7 +110,6 @@ public class ShardingService {
             waitingOtherJobCompleted();
         }
         log.debug("Elastic job: sharding begin.");
-        jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(configService.getJobShardingStrategyClass());
         JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, configService.getShardingTotalCount(), configService.getShardingItemParameters());
