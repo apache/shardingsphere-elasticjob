@@ -28,6 +28,7 @@ import com.dangdang.ddframe.job.internal.server.ServerService;
 import com.dangdang.ddframe.job.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.internal.storage.TransactionExecutionCallback;
 import com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
+
 import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
@@ -138,7 +139,7 @@ public final class ShardingServiceTest {
         verify(executionService, times(2)).hasRunningItems();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/sharding");
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/sharding");
-        verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
+        verify(jobNodeStorage).fillEphemeralJobNodeIfNotExists("leader/sharding/processing", "");
         verify(configService).getJobShardingStrategyClass();
         verify(configService).getShardingTotalCount();
         verify(configService).getShardingItemParameters();
@@ -160,7 +161,7 @@ public final class ShardingServiceTest {
         verify(configService).isMonitorExecution();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/sharding");
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/sharding");
-        verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
+        verify(jobNodeStorage).fillEphemeralJobNodeIfNotExists("leader/sharding/processing", "");
         verify(configService).getJobShardingStrategyClass();
         verify(configService).getShardingTotalCount();
         verify(configService).getShardingItemParameters();

@@ -20,9 +20,10 @@ package com.dangdang.ddframe.job.internal.storage;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.api.config.impl.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.util.JobConfigurationFieldUtil;
 import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.util.JobConfigurationFieldUtil;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransaction;
 import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
@@ -172,7 +173,13 @@ public final class JobNodeStorageTest {
         jobNodeStorage.fillEphemeralJobNode("config/cron", "0/1 * * * * ?");
         verify(coordinatorRegistryCenter).persistEphemeral("/testJob/config/cron", "0/1 * * * * ?");
     }
-    
+
+    @Test
+    public void assertFillEphemeralJobNodeIfNotExists() {
+        jobNodeStorage.fillEphemeralJobNodeIfNotExists("config/cron", "0/1 * * * * ?");
+        verify(coordinatorRegistryCenter).persistEphemeral("/testJob/config/cron", "0/1 * * * * ?");
+    }
+
     @Test
     public void assertUpdateJobNode() {
         jobNodeStorage.updateJobNode("config/cron", "0/1 * * * * ?");
