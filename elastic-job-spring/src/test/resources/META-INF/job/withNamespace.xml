@@ -8,6 +8,6 @@
                         http://www.dangdang.com/schema/ddframe/job/job.xsd 
                         ">
     <import resource="withNamespaceBase.xml"/>
-    <job:simple id="simpleElasticJob_namespace" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob" regCenter="regCenter" cron="${simpleElasticJob.cron}" shardingTotalCount="${simpleElasticJob.shardingTotalCount}" shardingItemParameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}" />
-    <job:dataflow id="throughputDataFlowElasticJob_namespace" class="com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob" regCenter="regCenter" cron="0/1 * * * * ?" shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" processCountIntervalSeconds="10" concurrentDataProcessThreadCount="3" fetchDataCount="100" description="中文描述" overwrite="true" />
+    <job:simple id="simpleElasticJob_namespace" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob" reg-center="regCenter" cron="${simpleElasticJob.cron}" sharding-total-count="${simpleElasticJob.shardingTotalCount}" sharding-item-parameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}" />
+    <job:dataflow id="throughputDataFlowElasticJob_namespace" class="com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob" reg-center="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="3" fetch-data-count="100" description="中文描述" overwrite="true" />
 </beans>

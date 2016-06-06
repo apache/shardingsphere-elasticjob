@@ -4,30 +4,30 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * </p>
+ *
  */
 
-package com.dangdang.ddframe;
+package com.dangdang.ddframe.job.spring.namespace.constants;
 
-import com.dangdang.ddframe.job.AllSpringJobTests;
-import com.dangdang.ddframe.reg.AllSpringRegTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-
-@RunWith(Suite.class)
-@SuiteClasses({
-    AllSpringRegTests.class, 
-    AllSpringJobTests.class
-    })
-public class AllTests {
+/**
+ * 脚本作业属性解析标签.
+ *
+ * @author caohao
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ScriptJobBeanDefinitionParserTag {
+    
+    public static final String SCRIPT_COMMAND_LINE_ATTRIBUTE = "script-command-line";
 }

@@ -7,43 +7,21 @@
         attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans"/>
     
-    <!--
-    use placeholder, must define all attribute type as string.
     <xsd:element name="zookeeper">
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="serverLists" type="xsd:string" use="required" />
+                    <xsd:attribute name="server-lists" type="xsd:string" use="required" />
                     <xsd:attribute name="namespace" type="xsd:string" use="required" />
-                    <xsd:attribute name="baseSleepTimeMilliseconds" type="xsd:positiveInteger" />
-                    <xsd:attribute name="maxSleepTimeMilliseconds" type="xsd:positiveInteger" />
-                    <xsd:attribute name="maxRetries" type="xsd:positiveInteger" />
-                    <xsd:attribute name="sessionTimeoutMilliseconds" type="xsd:positiveInteger" />
-                    <xsd:attribute name="connectionTimeoutMilliseconds" type="xsd:positiveInteger" />
+                    <xsd:attribute name="base-sleep-time-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="max-sleep-time-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="max-retries" type="xsd:string" />
+                    <xsd:attribute name="session-timeout-milliseconds" type="xsd:string" />
+                    <xsd:attribute name="connection-timeout-milliseconds" type="xsd:string" />
                     <xsd:attribute name="digest" type="xsd:string" />
-                    <xsd:attribute name="localPropertiesPath" type="xsd:string" />
-                    <xsd:attribute name="overwrite" type="xsd:boolean" />
-                </xsd:extension>
-            </xsd:complexContent>
-        </xsd:complexType>
-    </xsd:element>
-    -->
-    
-    <xsd:element name="zookeeper">
-        <xsd:complexType>
-            <xsd:complexContent>
-                <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="serverLists" type="xsd:string" use="required" />
-                    <xsd:attribute name="namespace" type="xsd:string" use="required" />
-                    <xsd:attribute name="baseSleepTimeMilliseconds" type="xsd:string" />
-                    <xsd:attribute name="maxSleepTimeMilliseconds" type="xsd:string" />
-                    <xsd:attribute name="maxRetries" type="xsd:string" />
-                    <xsd:attribute name="sessionTimeoutMilliseconds" type="xsd:string" />
-                    <xsd:attribute name="connectionTimeoutMilliseconds" type="xsd:string" />
-                    <xsd:attribute name="digest" type="xsd:string" />
-                    <xsd:attribute name="nestedPort" type="xsd:string" />
-                    <xsd:attribute name="nestedDataDir" type="xsd:string" />
-                    <xsd:attribute name="localPropertiesPath" type="xsd:string" />
+                    <xsd:attribute name="nested-port" type="xsd:string" />
+                    <xsd:attribute name="nested-data-dir" type="xsd:string" />
+                    <xsd:attribute name="local-properties-path" type="xsd:string" />
                     <xsd:attribute name="overwrite" type="xsd:string" />
                 </xsd:extension>
             </xsd:complexContent>

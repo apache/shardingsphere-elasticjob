@@ -22,6 +22,10 @@ import com.dangdang.ddframe.job.spring.namespace.parser.common.AbstractJobBeanDe
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.w3c.dom.Element;
 
+import static com.dangdang.ddframe.job.spring.namespace.constants.DataFlowJobBeanDefinitionParserTag.CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE;
+import static com.dangdang.ddframe.job.spring.namespace.constants.DataFlowJobBeanDefinitionParserTag.FETCH_DATA_COUNT_ATTRIBUTE;
+import static com.dangdang.ddframe.job.spring.namespace.constants.DataFlowJobBeanDefinitionParserTag.PROCESS_COUNT_INTERVAL_SECONDS_ATTRIBUTE;
+
 /**
  * 数据流作业的命名空间解析器.
  * 
@@ -36,8 +40,8 @@ public class DataFlowJobBeanDefinitionParser extends AbstractJobBeanDefinitionPa
     
     @Override
     protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
-        addPropertyValueIfNotEmpty("processCountIntervalSeconds", element, factory);
-        addPropertyValueIfNotEmpty("concurrentDataProcessThreadCount", element, factory);
-        addPropertyValueIfNotEmpty("fetchDataCount", element, factory);
+        addPropertyValueIfNotEmpty(PROCESS_COUNT_INTERVAL_SECONDS_ATTRIBUTE, "processCountIntervalSeconds", element, factory);
+        addPropertyValueIfNotEmpty(CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE, "concurrentDataProcessThreadCount", element, factory);
+        addPropertyValueIfNotEmpty(FETCH_DATA_COUNT_ATTRIBUTE, "fetchDataCount", element, factory);
     }
 }

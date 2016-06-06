@@ -10,8 +10,8 @@
     <xsd:element name="listener">
         <xsd:complexType>
             <xsd:attribute name="class" type="xsd:string" use="required" />
-            <xsd:attribute name="startedTimeoutMilliseconds" type="xsd:string"/>
-            <xsd:attribute name="completedTimeoutMilliseconds" type="xsd:string"/>
+            <xsd:attribute name="started-timeout-milliseconds" type="xsd:string" />
+            <xsd:attribute name="completed-timeout-milliseconds" type="xsd:string" />
         </xsd:complexType>
     </xsd:element>
     
@@ -22,17 +22,17 @@
                     <xsd:element ref="listener" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
                 <xsd:attribute name="class" type="xsd:string" />
-                <xsd:attribute name="regCenter" type="xsd:string" use="required" />
+                <xsd:attribute name="reg-center" type="xsd:string" use="required" />
                 <xsd:attribute name="cron" type="xsd:string" use="required" />
-                <xsd:attribute name="shardingTotalCount" type="xsd:string" use="required" />
-                <xsd:attribute name="shardingItemParameters" type="xsd:string" />
-                <xsd:attribute name="jobParameter" type="xsd:string" />
-                <xsd:attribute name="monitorExecution" type="xsd:string" />
-                <xsd:attribute name="monitorPort" type="xsd:string" />
-                <xsd:attribute name="maxTimeDiffSeconds" type="xsd:string" />
+                <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
+                <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
+                <xsd:attribute name="job-parameter" type="xsd:string" />
+                <xsd:attribute name="monitor-execution" type="xsd:string" />
+                <xsd:attribute name="monitor-port" type="xsd:string" />
+                <xsd:attribute name="max-time-diff-seconds" type="xsd:string" />
                 <xsd:attribute name="failover" type="xsd:string" />
                 <xsd:attribute name="misfire" type="xsd:string" />
-                <xsd:attribute name="jobShardingStrategyClass" type="xsd:string" />
+                <xsd:attribute name="job-sharding-strategy-class" type="xsd:string" />
                 <xsd:attribute name="description" type="xsd:string" />
                 <xsd:attribute name="disabled" type="xsd:string" />
                 <xsd:attribute name="overwrite" type="xsd:string" />
@@ -43,7 +43,7 @@
     <xsd:element name="simple">
         <xsd:complexType>
             <xsd:complexContent>
-                <xsd:extension base="base"/>
+                <xsd:extension base="base" />
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
@@ -52,9 +52,9 @@
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="base">
-                    <xsd:attribute name="processCountIntervalSeconds" type="xsd:string" />
-                    <xsd:attribute name="concurrentDataProcessThreadCount" type="xsd:string" />
-                    <xsd:attribute name="fetchDataCount" type="xsd:string" />
+                    <xsd:attribute name="process-count-interval-seconds" type="xsd:string" />
+                    <xsd:attribute name="concurrent-data-process-thread-count" type="xsd:string" />
+                    <xsd:attribute name="fetch-data-count" type="xsd:string" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -64,7 +64,7 @@
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="base">
-                    <xsd:attribute name="scriptCommandLine" type="xsd:string" />
+                    <xsd:attribute name="script-command-line" type="xsd:string" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

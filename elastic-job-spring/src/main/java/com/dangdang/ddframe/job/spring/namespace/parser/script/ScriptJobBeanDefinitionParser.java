@@ -22,6 +22,8 @@ import com.dangdang.ddframe.job.spring.namespace.parser.common.AbstractJobBeanDe
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.w3c.dom.Element;
 
+import static com.dangdang.ddframe.job.spring.namespace.constants.ScriptJobBeanDefinitionParserTag.SCRIPT_COMMAND_LINE_ATTRIBUTE;
+
 /**
  * 脚本作业的命名空间解析器.
  * 
@@ -36,6 +38,6 @@ public class ScriptJobBeanDefinitionParser extends AbstractJobBeanDefinitionPars
     
     @Override
     protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
-        addPropertyValueIfNotEmpty("scriptCommandLine", element, factory);
+        addPropertyValueIfNotEmpty(SCRIPT_COMMAND_LINE_ATTRIBUTE, "scriptCommandLine", element, factory);
     }
 }

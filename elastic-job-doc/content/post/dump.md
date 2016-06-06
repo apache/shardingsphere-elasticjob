@@ -30,10 +30,10 @@ weight=13
                         http://www.dangdang.com/schema/ddframe/job/job.xsd 
                         ">
     <!--配置作业注册中心 -->
-    <reg:zookeeper id="regCenter" serverLists=" yourhost:2181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
+    <reg:zookeeper id="regCenter" server-lists=" yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     
     <!-- 配置作业-->
-    <job:bean id="oneOffElasticJob" monitorPort="9888" class="xxx.MyElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
+    <job:simple id="oneOffElasticJob" monitor-port="9888" class="xxx.MyElasticJob" reg-center="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
 ```
 
@@ -42,7 +42,7 @@ weight=13
 ```java
 public class JobMain {
     public static void main(final String[] args) {
-        JobConfiguration jobConfig = new JobConfiguration("simpleElasticDemoJob", SimpleJobDemo.class, 10, "0/5 * * * * ?");
+        // ...
         jobConfig.setMonitorPort(9888);
         // ...
     }

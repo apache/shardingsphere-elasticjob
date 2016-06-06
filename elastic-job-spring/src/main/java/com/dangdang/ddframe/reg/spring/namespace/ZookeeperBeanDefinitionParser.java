@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
  * 
  * @author zhangliang
  */
-public class ZookeeperBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+class ZookeeperBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
     
     @Override
     protected Class<?> getBeanClass(final Element element) {
@@ -41,17 +41,17 @@ public class ZookeeperBeanDefinitionParser extends AbstractSingleBeanDefinitionP
     
     private SpringZookeeperConfigurationDto createZookeeperConfiguration(final Element element) {
         SpringZookeeperConfigurationDto result = new SpringZookeeperConfigurationDto(
-                element.getAttribute("serverLists"), 
+                element.getAttribute("server-lists"), 
                 element.getAttribute("namespace"), 
-                element.getAttribute("baseSleepTimeMilliseconds"), 
-                element.getAttribute("maxSleepTimeMilliseconds"), 
-                element.getAttribute("maxRetries"));
-        result.setSessionTimeoutMilliseconds(element.getAttribute("sessionTimeoutMilliseconds"));
-        result.setConnectionTimeoutMilliseconds(element.getAttribute("connectionTimeoutMilliseconds"));
+                element.getAttribute("base-sleep-time-milliseconds"), 
+                element.getAttribute("max-sleep-time-milliseconds"), 
+                element.getAttribute("max-retries"));
+        result.setSessionTimeoutMilliseconds(element.getAttribute("session-timeout-milliseconds"));
+        result.setConnectionTimeoutMilliseconds(element.getAttribute("connection-timeout-milliseconds"));
         result.setDigest(element.getAttribute("digest"));
-        result.setNestedPort(element.getAttribute("nestedPort"));
-        result.setNestedDataDir(element.getAttribute("nestedDataDir"));
-        result.setLocalPropertiesPath(element.getAttribute("localPropertiesPath"));
+        result.setNestedPort(element.getAttribute("nested-port"));
+        result.setNestedDataDir(element.getAttribute("nested-data-dir"));
+        result.setLocalPropertiesPath(element.getAttribute("local-properties-path"));
         result.setOverwrite(element.getAttribute("overwrite"));
         return result;
     }

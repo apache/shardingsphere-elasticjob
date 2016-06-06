@@ -36,7 +36,7 @@ public class SpringJobScheduler extends JobScheduler implements ApplicationConte
     
     private ApplicationContext applicationContext;
     
-    SpringJobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final AbstractJobConfigurationDto jobConfigurationDto) {
+    public SpringJobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final AbstractJobConfigurationDto jobConfigurationDto) {
         super(coordinatorRegistryCenter, jobConfigurationDto.toJobConfiguration());
     }
     
