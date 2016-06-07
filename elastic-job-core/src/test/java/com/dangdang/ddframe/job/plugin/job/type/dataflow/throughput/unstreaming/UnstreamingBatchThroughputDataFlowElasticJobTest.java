@@ -22,7 +22,12 @@ import com.dangdang.ddframe.job.plugin.job.type.fixture.FooUnstreamingBatchThrou
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 
 public final class UnstreamingBatchThroughputDataFlowElasticJobTest extends AbstractUnstreamingThroughputDataFlowElasticJobTest {
-
+    
+    @Override
+    protected boolean isStreamingProcess() {
+        return false;
+    }
+    
     @Override
     protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
         return new FooUnstreamingBatchThroughputDataFlowElasticJob(jobCaller);

@@ -49,11 +49,14 @@ public abstract class AbstractDataFlowElasticJobTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
+        when(jobFacade.isStreamingProcess()).thenReturn(isStreamingProcess());
         dataFlowElasticJob = createDataFlowElasticJob(jobCaller);
         dataFlowElasticJob.setJobFacade(jobFacade);
         shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
     }
+    
+    protected abstract boolean isStreamingProcess();
     
     @After
     public void tearDown() throws NoSuchFieldException {

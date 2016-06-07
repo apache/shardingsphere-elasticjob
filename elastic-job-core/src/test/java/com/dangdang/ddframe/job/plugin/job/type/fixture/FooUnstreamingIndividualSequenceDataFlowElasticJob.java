@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
-import java.util.List;
-
 import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
-
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public final class FooUnstreamingIndividualSequenceDataFlowElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<Object> {
@@ -37,10 +36,5 @@ public final class FooUnstreamingIndividualSequenceDataFlowElasticJob extends Ab
     @Override
     public boolean processData(final JobExecutionSingleShardingContext shardingContext, final Object data) {
         return jobCaller.processData(data);
-    }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return false;
     }
 }

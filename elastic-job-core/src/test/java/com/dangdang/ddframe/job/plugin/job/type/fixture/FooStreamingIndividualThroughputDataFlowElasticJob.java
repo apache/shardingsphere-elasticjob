@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
-import java.util.List;
-
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
-
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public final class FooStreamingIndividualThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<Object> {
@@ -37,10 +36,5 @@ public final class FooStreamingIndividualThroughputDataFlowElasticJob extends Ab
     @Override
     public boolean processData(final JobExecutionMultipleShardingContext shardingContext, final Object data) {
         return jobCaller.processData(data);
-    }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return true;
     }
 }

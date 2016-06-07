@@ -43,10 +43,6 @@ public class StreamingThroughputDataFlowElasticJobForExecuteFailure extends Abst
         return false;
     }
     
-    @Override
-    public boolean isStreamingProcess() {
-        return true;
-    }
     
     public static void reset() {
         completed = false;

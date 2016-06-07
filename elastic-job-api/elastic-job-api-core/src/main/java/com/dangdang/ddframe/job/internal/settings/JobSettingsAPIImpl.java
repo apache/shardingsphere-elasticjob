@@ -51,7 +51,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         return result;
     }
     
-    public void buildSimpleJobSettings(final String jobName, final JobSettings result, final JobNodePath jobNodePath, final String jobType) {
+    private void buildSimpleJobSettings(final String jobName, final JobSettings result, final JobNodePath jobNodePath, final String jobType) {
         result.setJobName(jobName);
         result.setJobType(jobType);
         result.setJobClass(registryCenter.get(jobNodePath.getConfigNodePath("jobClass")));
@@ -71,13 +71,14 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setDescription(registryCenter.get(jobNodePath.getConfigNodePath("description")));
     }
     
-    public void buildDataFlowJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
+    private void buildDataFlowJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
         result.setProcessCountIntervalSeconds(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("processCountIntervalSeconds"))));
         result.setConcurrentDataProcessThreadCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("concurrentDataProcessThreadCount"))));
         result.setFetchDataCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("fetchDataCount"))));
+        result.setStreamingProcess(Boolean.parseBoolean(registryCenter.get(jobNodePath.getConfigNodePath("streamingProcess"))));
     }
     
-    public void buildScriptJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
+    private void buildScriptJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
         result.setScriptCommandLine(registryCenter.get(jobNodePath.getConfigNodePath("scriptCommandLine")));
     }
     
@@ -96,6 +97,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         updateIfChanged(jobNodePath.getConfigNodePath("monitorPort"), jobSettings.getMonitorPort());
         updateIfChanged(jobNodePath.getConfigNodePath("failover"), jobSettings.isFailover());
         updateIfChanged(jobNodePath.getConfigNodePath("misfire"), jobSettings.isMisfire());
+        updateIfChanged(jobNodePath.getConfigNodePath("streamingProcess"), jobSettings.isStreamingProcess());
         updateIfChanged(jobNodePath.getConfigNodePath("jobShardingStrategyClass"), jobSettings.getJobShardingStrategyClass());
         updateIfChanged(jobNodePath.getConfigNodePath("description"), jobSettings.getDescription());
         updateIfChanged(jobNodePath.getConfigNodePath("scriptCommandLine"), jobSettings.getScriptCommandLine());

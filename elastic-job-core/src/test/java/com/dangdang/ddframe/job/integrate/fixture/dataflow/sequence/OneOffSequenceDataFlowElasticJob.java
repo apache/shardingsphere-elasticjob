@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.integrate.fixture.dataflow.sequence;
 
+import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
 
 public final class OneOffSequenceDataFlowElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<String> {
     
@@ -40,11 +40,6 @@ public final class OneOffSequenceDataFlowElasticJob extends AbstractIndividualSe
     public boolean processData(final JobExecutionSingleShardingContext singleContext, final String data) {
         processedData.add(data);
         return true;
-    }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return false;
     }
     
     public static boolean isCompleted() {

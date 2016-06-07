@@ -46,11 +46,6 @@ public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException exte
     }
     
     @Override
-    public boolean isStreamingProcess() {
-        return true;
-    }
-    
-    @Override
     public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
     }
     

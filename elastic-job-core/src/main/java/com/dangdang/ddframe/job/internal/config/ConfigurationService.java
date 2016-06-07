@@ -36,6 +36,7 @@ import java.util.Map;
  * 弹性化分布式作业配置服务.
  * 
  * @author zhangliang
+ * @author caohao
  */
 public class ConfigurationService {
     
@@ -94,12 +95,12 @@ public class ConfigurationService {
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, jobConfiguration.getProcessCountIntervalSeconds());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, jobConfiguration.getConcurrentDataProcessThreadCount());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, jobConfiguration.getFetchDataCount());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, jobConfiguration.isStreamingProcess());
     }
-
+    
     private void fillScriptJobInfo() {
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, ((ScriptJobConfiguration) jobNodeStorage.getJobConfiguration()).getScriptCommandLine());
     }
-    
     
     /**
      * 获取作业类型.
@@ -205,6 +206,15 @@ public class ConfigurationService {
     }
     
     /**
+     * 获取是否流式处理数据.
+     *
+     * @return 是否流式处理数据
+     */
+    public boolean isStreamingProcess() {
+        return Boolean.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.STREAMING_PROCESS));
+    }
+    
+    /**
      * 检查本机与注册中心的时间误差秒数是否在允许范围.
      */
     public void checkMaxTimeDiffSecondsTolerable() {
@@ -262,7 +272,7 @@ public class ConfigurationService {
     public String getJobName() {
         return jobNodeStorage.getJobConfiguration().getJobName();
     }
-
+    
     /**
      * 获取作业执行脚本命令行.
      *
@@ -275,5 +285,4 @@ public class ConfigurationService {
     public String getScriptCommandLine() {
         return jobNodeStorage.getJobNodeData(ConfigurationNode.SCRIPT_COMMAND_LINE);
     }
-
 }

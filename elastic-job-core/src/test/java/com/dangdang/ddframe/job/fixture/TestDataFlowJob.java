@@ -26,17 +26,12 @@ import java.util.List;
 public class TestDataFlowJob extends AbstractDataFlowElasticJob {
     
     @Override
-    protected void processDataWithStatistics(AbstractJobExecutionShardingContext shardingContext, List data) {
+    protected void processDataWithStatistics(final AbstractJobExecutionShardingContext shardingContext, final List data) {
             
     }
     
     @Override
-    public List fetchData(AbstractJobExecutionShardingContext shardingContext) {
+    public List fetchData(final AbstractJobExecutionShardingContext shardingContext) {
         return null;
-    }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return false;
     }
 }

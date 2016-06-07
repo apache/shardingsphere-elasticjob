@@ -1,3 +1,4 @@
+
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "开发指南"
@@ -59,11 +60,6 @@ public class MyElasticJob extends AbstractIndividualThroughputDataFlowElasticJob
         }
         return true;
     }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return true;
-    }
 }
 ```
 
@@ -88,11 +84,6 @@ public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<F
         
         // store offset
         updateOffset(context.getShardingItem(), "your offset, maybe id");
-        return true;
-    }
-    
-    @Override
-    public boolean isStreamingProcess() {
         return true;
     }
 }
@@ -227,7 +218,7 @@ public class JobMain {
     <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" reg-center="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
     
     <!-- 配置数据流作业-->
-    <job:dataflow id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" regCenter="reg-center" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="10" />
+    <job:dataflow id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" reg-center="reg-center" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="10" />
     
     <!-- 配置脚本作业-->
     <job:script id="scriptElasticJob" reg-center="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" script-command-line="/your/file/path/demo.sh" />
@@ -252,7 +243,7 @@ public class JobMain {
 |sharding-item-parameters            |String |否      |     | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从`0`开始，不可大于或等于作业分片总数<br />如：<br/>`0=a,1=b,2=c`|
 |job-parameter                       |String |否      |     | 作业自定义参数<br />可以配置多个相同的作业，但是用不同的参数作为不同的调度实例     |
 |monitor-execution                   |boolean|否      |true | 监控作业运行时状态<br />每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率。因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。<br />每次作业执行时间和间隔时间均较长的情况，建议监控作业运行时状态，可保证数据不会重复选取。|
-|monitor-port                        |int    |否      |-1   | 作业监控端口。<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump" \| nc 127.0.0.1 9888|
+|monitor-port                        |int    |否      |-1   | 作业监控端口<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump" \| nc 127.0.0.1 9888|
 |max-time-diff-seconds               |int    |否      |-1   | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为`-1`表示不校验时间误差|
 |failover                            |boolean|否      |false| 是否开启失效转移<br />仅`monitorExecution`开启，失效转移才有效                   |
 |misfire                             |boolean|否      |true | 是否开启错过任务重新执行                                                       |
@@ -265,11 +256,12 @@ public class JobMain {
 
 job:dataflow命名空间拥有job:simple命名空间的全部属性，以下仅列出特有属性
 
-| 属性名                              | 类型  |是否必填 |缺省值| 描述                                                                       |
-| ---------------------------------- |:------|:-------|:----|:---------------------------------------------------------------------------|
-|process-count-interval-seconds      |int    |否      |300  | 统计作业处理数据数量的间隔时间<br />单位：秒<br />                              |
-|concurrent-data-process-thread-count|int    |否      |1    | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效      |
-|fetch-data-count                    |int    |否      |1    | 每次抓取的数据量                                                             |
+| 属性名                              | 类型  |是否必填 |缺省值| 描述                                                                                                                   |
+| ---------------------------------- |:------|:-------|:----|:----------------------------------------------------------------------------------------------------------------------|
+|process-count-interval-seconds      |int    |否      |300  | 统计作业处理数据数量的间隔时间<br />单位：秒<br />                                                                          |
+|concurrent-data-process-thread-count|int    |否      |1    | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效                                                  |
+|fetch-data-count                    |int    |否      |1    | 每次抓取的数据量                                                                                                         |
+|streaming-process                   |boolean|否      |false| 是否流式处理数据<br />如果流式处理数据, 则fetchData不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
 
 #### job:script命名空间属性详细说明，基本属性参照job:simple命名空间属性详细说明
 
@@ -332,9 +324,9 @@ public class JobDemo {
     private final SimpleJobConfiguration simpleJobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleElasticDemoJob", 
                     SimpleJobDemo.class, 10, "0/30 * * * * ?").build();
     
-    // 定义高吞吐的数据流作业配置对象
+    // 定义高吞吐流式处理的数据流作业配置对象
     private final DataFlowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("throughputDataFlowElasticDemoJob", 
-                    ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
+                    ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").streamingProcess(true).build();
     
     // 定义顺序的数据流作业配置对象
     private final DataFlowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("sequenceDataFlowElasticDemoJob", 
@@ -353,7 +345,7 @@ public class JobDemo {
         regCenter.init();
         // 启动简单作业
         new JobScheduler(regCenter, simpleJobConfig).init();
-        // 启动高吞吐的数据流作业
+        // 启动高吞吐流式处理的数据流作业
         new JobScheduler(regCenter, throughputJobConfig).init();
         // 启动顺序的数据流作业
         new JobScheduler(regCenter, sequenceJobConfig).init();

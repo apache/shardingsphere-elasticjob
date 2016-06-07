@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutorService;
  * @author zhangliang
  * 
  * @param <T> 数据流作业处理的数据实体类型
- * 
  * @param <C> 作业运行时分片上下文类型
  */
 public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingContext> extends ElasticJob {
@@ -40,15 +39,6 @@ public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingCon
      * @return 待处理的数据集合
      */
     List<T> fetchData(final C shardingContext);
-    
-    /**
-     * 配置是否流式处理数据.
-     * 如果流式处理数据, 则fetchData不返回空结果将持续执行作业.
-     * 如果非流式处理数据, 则处理数据完成后作业结束.
-     * 
-     * @return 是否流式处理数据
-     */
-    boolean isStreamingProcess();
     
     /**
      * 更新数据处理位置.

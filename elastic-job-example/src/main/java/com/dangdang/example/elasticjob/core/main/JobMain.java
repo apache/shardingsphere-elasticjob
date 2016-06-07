@@ -54,7 +54,7 @@ public final class JobMain {
                 SimpleJobDemo.class, 10, "0/30 * * * * ?").build();
 
         final DataFlowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("throughputDataFlowElasticDemoJob", 
-                ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
+                ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").streamingProcess(true).build();
 
         final DataFlowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("sequenceDataFlowElasticDemoJob", 
                 SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();

@@ -41,6 +41,8 @@ final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<Data
     
     private Integer concurrentDataProcessThreadCount;
     
+    private Boolean streamingProcess;
+    
     DataFlowJobConfigurationDto(final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final Integer shardingTotalCount, final String cron) {
         super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron);
     }
@@ -65,6 +67,9 @@ final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<Data
         }
         if (null != getConcurrentDataProcessThreadCount()) {
             builder.concurrentDataProcessThreadCount(getConcurrentDataProcessThreadCount());
+        }
+        if (null != getStreamingProcess()) {
+            builder.streamingProcess(getStreamingProcess());
         }
         return builder;
     }

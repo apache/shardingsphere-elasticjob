@@ -36,6 +36,8 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
     
     private int processCountIntervalSeconds = 10;
     
+    private boolean streamingProcess = true;
+    
     @Override
     protected DataFlowJobConfiguration getJobConfiguration() {
         return getJobConfigurationBuilder().build();
@@ -54,12 +56,14 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
             ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("concurrentDataProcessThreadCount"), concurrentDataProcessThreadCount);
             ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("fetchDataCount"), fetchDataCount);
             ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("processCountIntervalSeconds"), processCountIntervalSeconds);
+            ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("streamingProcess"), streamingProcess);
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }
         assertThat(getJobConfigurationBuilder().concurrentDataProcessThreadCount(concurrentDataProcessThreadCount)
                         .fetchDataCount(fetchDataCount)
                         .processCountIntervalSeconds(processCountIntervalSeconds)
+                        .streamingProcess(streamingProcess)
                         .build(),
                 new ReflectionEquals(jobConfiguration));
     }

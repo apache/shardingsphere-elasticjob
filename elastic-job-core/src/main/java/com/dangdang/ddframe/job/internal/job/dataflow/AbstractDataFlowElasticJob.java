@@ -82,14 +82,15 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     
     @Override
     protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
+        boolean streamingProcess = getJobFacade().isStreamingProcess();
         if (DataFlowType.THROUGHPUT == dataFlowType) {
-            if (isStreamingProcess()) {
+            if (streamingProcess) {
                 executeThroughputStreamingJob(shardingContext);
             } else {
                 executeThroughputOneOffJob(shardingContext);
             }
         } else if (DataFlowType.SEQUENCE == dataFlowType) {
-            if (isStreamingProcess()) {
+            if (streamingProcess) {
                 executeSequenceStreamingJob(shardingContext);
             } else {
                 executeSequenceOneOffJob(shardingContext);

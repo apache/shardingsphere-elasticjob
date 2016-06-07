@@ -70,7 +70,7 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineWhenOverwriteDisabled() {
-        JobConfigurationFieldUtil.setFieldValue(jobConfig, "overwrite", false);
+        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "overwrite", false);
         serverService.persistServerOnline();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(3)).getIp();
@@ -82,7 +82,7 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
-        JobConfigurationFieldUtil.setFieldValue(jobConfig, "disabled", true);
+        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "disabled", true);
         serverService.persistServerOnline();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();

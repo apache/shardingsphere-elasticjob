@@ -17,18 +17,19 @@
 
 package com.dangdang.ddframe.job.integrate.std.dataflow.sequence;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.integrate.fixture.dataflow.sequence.StreamingSequenceDataFlowElasticJob;
 import com.dangdang.ddframe.job.internal.statistics.ProcessCountStatistics;
+import com.dangdang.ddframe.job.util.JobConfigurationFieldUtil;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class StreamingSequenceDataFlowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
@@ -40,6 +41,11 @@ public final class StreamingSequenceDataFlowElasticJobTest extends AbstractBaseS
     @After
     public void reset() {
         StreamingSequenceDataFlowElasticJob.reset();
+    }
+    
+    @Override
+    protected void setJobConfig(final JobConfiguration jobConfig) {
+        JobConfigurationFieldUtil.setFieldValue(jobConfig, "streamingProcess", true);
     }
     
     @Test

@@ -19,9 +19,9 @@ package com.dangdang.example.elasticjob.spring.main;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public final class SpringJobMainWthNamespaceAndListener {
+public final class SpringJobMainWthListener {
     
-    private SpringJobMainWthNamespaceAndListener() {
+    private SpringJobMainWthListener() {
     }
     
     // CHECKSTYLE:OFF

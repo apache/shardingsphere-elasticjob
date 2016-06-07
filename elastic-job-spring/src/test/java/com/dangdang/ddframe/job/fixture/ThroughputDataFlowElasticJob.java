@@ -43,11 +43,6 @@ public final class ThroughputDataFlowElasticJob extends AbstractIndividualThroug
         return true;
     }
     
-    @Override
-    public boolean isStreamingProcess() {
-        return true;
-    }
-    
     public static void reset() {
         completed = false;
     }

@@ -45,9 +45,4 @@ public class SequenceDataFlowJobDemo extends AbstractIndividualSequenceDataFlowE
         updateOffset(context.getShardingItem(), String.valueOf(data.getId()));
         return true;
     }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return false;
-    }
 }

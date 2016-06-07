@@ -24,6 +24,11 @@ import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 public final class StreamingBatchSequenceDataFlowElasticJobTest extends AbstractStreamingSequenceDataFlowElasticJobTest {
     
     @Override
+    protected boolean isStreamingProcess() {
+        return true;
+    }
+    
+    @Override
     protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
         return new FooStreamingBatchSequenceDataFlowElasticJob(jobCaller);
     }

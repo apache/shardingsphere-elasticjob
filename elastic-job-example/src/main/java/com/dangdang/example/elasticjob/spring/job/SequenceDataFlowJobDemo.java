@@ -52,9 +52,4 @@ public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasti
         }
         return successCount;
     }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return true;
-    }
 }

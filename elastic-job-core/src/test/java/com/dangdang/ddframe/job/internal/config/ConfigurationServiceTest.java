@@ -104,9 +104,9 @@ public final class ConfigurationServiceTest {
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, dataFlowJobConfiguration.getProcessCountIntervalSeconds());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, dataFlowJobConfiguration.getConcurrentDataProcessThreadCount());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, dataFlowJobConfiguration.getFetchDataCount());
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, dataFlowJobConfiguration.isStreamingProcess());
         }
         if (ScriptElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
-            @SuppressWarnings("unchecked")
             ScriptJobConfiguration scriptJobConfiguration = (ScriptJobConfiguration) jobConfig;
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, scriptJobConfiguration.getScriptCommandLine());
         }
@@ -203,6 +203,13 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT)).thenReturn("1");
         assertThat(configService.getFetchDataCount(), is(1));
         verify(jobNodeStorage).getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT);
+    }
+    
+    @Test
+    public void assertIsNotStreamingProcess() {
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.STREAMING_PROCESS)).thenReturn("false");
+        assertFalse(configService.isStreamingProcess());
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.STREAMING_PROCESS);
     }
     
     @Test

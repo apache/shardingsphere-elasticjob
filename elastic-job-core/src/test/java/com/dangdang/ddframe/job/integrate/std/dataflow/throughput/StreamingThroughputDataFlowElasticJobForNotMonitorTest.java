@@ -46,7 +46,8 @@ public final class StreamingThroughputDataFlowElasticJobForNotMonitorTest extend
     
     @Override
     protected void setJobConfig(final JobConfiguration jobConfig) {
-        JobConfigurationFieldUtil.setFieldValue(jobConfig, "monitorExecution", false);
+        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "monitorExecution", false);
+        JobConfigurationFieldUtil.setFieldValue(jobConfig, "streamingProcess", true);
     }
     
     @Test

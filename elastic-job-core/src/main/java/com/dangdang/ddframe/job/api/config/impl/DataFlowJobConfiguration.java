@@ -37,18 +37,23 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
     
     private final int concurrentDataProcessThreadCount;
     
+    private final boolean streamingProcess;
+    
     //CHECKSTYLE:OFF
     private DataFlowJobConfiguration(final String jobName, final Class<? extends T> jobClass, final int shardingTotalCount, final String cron,
                                    final String shardingItemParameters, final String jobParameter, final boolean monitorExecution, final int maxTimeDiffSeconds,
                                    final boolean isFailover, final boolean isMisfire, final int monitorPort, final String jobShardingStrategyClass, final String description,
-                                   final boolean disabled, final boolean overwrite, final int processCountIntervalSeconds, final int fetchDataCount, final int concurrentDataProcessThreadCount) {
+                                   final boolean disabled, final boolean overwrite, final int processCountIntervalSeconds, final int fetchDataCount, final int concurrentDataProcessThreadCount,
+                                   final boolean streamingProcess) {
+        //CHECKSTYLE:ON
         super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire,
                 monitorPort, jobShardingStrategyClass, description, disabled, overwrite);
         this.processCountIntervalSeconds = processCountIntervalSeconds;
-        this.fetchDataCount = fetchDataCount;    
-        this.concurrentDataProcessThreadCount = concurrentDataProcessThreadCount;    
+        this.fetchDataCount = fetchDataCount;
+        this.concurrentDataProcessThreadCount = concurrentDataProcessThreadCount;
+        this.streamingProcess = streamingProcess;
     }
-    //CHECKSTYLE:ON
+    
     
     public static class DataFlowJobConfigurationBuilder extends AbstractJobConfigurationBuilder<DataFlowJobConfiguration, DataFlowElasticJob, DataFlowJobConfigurationBuilder> {
         
@@ -57,11 +62,13 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
         private int fetchDataCount = 1;
         
         private int concurrentDataProcessThreadCount = 1;
-    
+        
+        private boolean streamingProcess;
+        
         public DataFlowJobConfigurationBuilder(final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final int shardingTotalCount, final String cron) {
             super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron);
         }
-    
+        
         /**
          * 设置统计作业处理数据数量的间隔时间.
          *
@@ -73,11 +80,11 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
          *
          * @return 作业配置构建器
          */
-        public DataFlowJobConfigurationBuilder processCountIntervalSeconds(final int processCountIntervalSeconds) {
+        public final DataFlowJobConfigurationBuilder processCountIntervalSeconds(final int processCountIntervalSeconds) {
             this.processCountIntervalSeconds = processCountIntervalSeconds;
             return this;
         }
-    
+        
         /**
          * 设置每次抓取的数据量.
          *
@@ -89,11 +96,11 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
          *
          * @return 作业配置构建器
          */
-        public DataFlowJobConfigurationBuilder fetchDataCount(final int fetchDataCount) {
+        public final DataFlowJobConfigurationBuilder fetchDataCount(final int fetchDataCount) {
             this.fetchDataCount = fetchDataCount;
             return this;
         }
-    
+        
         /**
          * 设置同时处理数据的并发线程数.
          *
@@ -105,11 +112,27 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
          *
          * @return 作业配置构建器
          */
-        public DataFlowJobConfigurationBuilder concurrentDataProcessThreadCount(final int concurrentDataProcessThreadCount) {
+        public final DataFlowJobConfigurationBuilder concurrentDataProcessThreadCount(final int concurrentDataProcessThreadCount) {
             this.concurrentDataProcessThreadCount = concurrentDataProcessThreadCount;
             return this;
         }
-    
+        
+        /**
+         * 设置是否流式处理数据.
+         * 
+         * <p>
+         * 如果流式处理数据, 则fetchData不返回空结果将持续执行作业. 如果非流式处理数据, 则处理数据完成后作业结束.
+         * </p>
+         *
+         * @param streamingProcess 是否流式处理数据
+         * 
+         * @return 作业配置构建器
+         */
+        public final DataFlowJobConfigurationBuilder streamingProcess(final boolean streamingProcess) {
+            this.streamingProcess = streamingProcess;
+            return this;
+        }
+        
         @SuppressWarnings("unchecked")
         protected DataFlowJobConfiguration buildInternal() {
             Preconditions.checkArgument(processCountIntervalSeconds > 0, String.format("%d should larger than zero.", processCountIntervalSeconds));
@@ -117,7 +140,7 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
             Preconditions.checkArgument(concurrentDataProcessThreadCount > 0, String.format("%d should larger than zero.", concurrentDataProcessThreadCount));
             return new DataFlowJobConfiguration(getJobName(), getJobClass(), getShardingTotalCount(), getCron(), getShardingItemParameters(), getJobParameter(),
                     isMonitorExecution(), getMaxTimeDiffSeconds(), isFailover(), isMisfire(), getMonitorPort(), getJobShardingStrategyClass(),
-                    getDescription(), isDisabled(), isOverwrite(), processCountIntervalSeconds, fetchDataCount, concurrentDataProcessThreadCount);
+                    getDescription(), isDisabled(), isOverwrite(), processCountIntervalSeconds, fetchDataCount, concurrentDataProcessThreadCount, streamingProcess);
         }
     }
 }

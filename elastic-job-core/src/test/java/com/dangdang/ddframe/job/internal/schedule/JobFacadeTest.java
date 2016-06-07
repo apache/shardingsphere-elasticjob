@@ -103,6 +103,12 @@ public class JobFacadeTest {
     }
     
     @Test
+    public void testIsStreamingProcess() {
+        when(configService.isStreamingProcess()).thenReturn(false);
+        assertThat(jobFacade.isStreamingProcess(), is(false));
+    }
+    
+    @Test
     public void testFailoverIfUnnecessary() {
         when(configService.isFailover()).thenReturn(false);
         jobFacade.failoverIfNecessary();

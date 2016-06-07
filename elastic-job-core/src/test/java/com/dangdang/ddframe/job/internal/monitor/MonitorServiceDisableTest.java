@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.job.internal.monitor;
 
-import java.io.IOException;
-
-import org.junit.Test;
-
 import com.dangdang.ddframe.job.fixture.TestJob;
 import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
+import org.junit.Test;
+
+import java.io.IOException;
 
 public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
     

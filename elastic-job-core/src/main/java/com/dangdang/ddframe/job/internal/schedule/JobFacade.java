@@ -87,7 +87,20 @@ public class JobFacade {
     public int getConcurrentDataProcessThreadCount() {
         return configService.getConcurrentDataProcessThreadCount();
     }
-
+    
+    /**
+     * 获取是否流式处理数据.
+     *
+     * <p>
+     * 如果流式处理数据, 则fetchData不返回空结果将持续执行作业. 如果非流式处理数据, 则处理数据完成后作业结束.
+     * </p>
+     *
+     * @return 是否流式处理数据
+     */
+    public boolean isStreamingProcess() {
+        return configService.isStreamingProcess();
+    }
+    
     /**
      * 获取脚本型作业执行命令行.
      *

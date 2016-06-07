@@ -17,22 +17,21 @@
 
 package com.dangdang.ddframe.job.internal.monitor;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
-import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.integrate.AbstractBaseStdJobTest;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public final class MonitorServiceEnableTest extends AbstractBaseStdJobTest {
     
     private static final int MONITOR_PORT = 9000;
     
     public MonitorServiceEnableTest() {
-        super(TestJob.class, MONITOR_PORT);
+        super(TestJob.class, -1);
     }
     
     @Test

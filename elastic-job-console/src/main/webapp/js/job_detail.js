@@ -34,6 +34,7 @@ function renderSettings() {
         $("#processCountIntervalSeconds").attr("value", data.processCountIntervalSeconds);
         $("#concurrentDataProcessThreadCount").attr("value", data.concurrentDataProcessThreadCount);
         $("#fetchDataCount").attr("value", data.fetchDataCount);
+        $("#streamingProcess").attr("checked", data.streamingProcess);
         $("#maxTimeDiffSeconds").attr("value", data.maxTimeDiffSeconds);
         $("#monitorPort").attr("value", data.monitorPort);
         $("#jobShardingStrategyClass").attr("value", data.jobShardingStrategyClass);
@@ -57,6 +58,7 @@ function bindSubmitJobSettingsForm() {
         var concurrentDataProcessThreadCount = $("#concurrentDataProcessThreadCount").val();
         var processCountIntervalSeconds = $("#processCountIntervalSeconds").val();
         var fetchDataCount = $("#fetchDataCount").val();
+        var streamingProcess = $("#streamingProcess").prop("checked");
         var maxTimeDiffSeconds = $("#maxTimeDiffSeconds").val();
         var monitorPort = $("#monitorPort").val();
         var monitorExecution = $("#monitorExecution").prop("checked");
@@ -66,7 +68,7 @@ function bindSubmitJobSettingsForm() {
         var jobShardingStrategyClass = $("#jobShardingStrategyClass").val();
         var scriptCommandLine = $("#scriptCommandLine").val();
         var description = $("#description").val();
-        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, fetchDataCount: fetchDataCount, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, description: description, scriptCommandLine: scriptCommandLine}, function(data) {
+        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, fetchDataCount: fetchDataCount, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, description: description, scriptCommandLine: scriptCommandLine}, function(data) {
             showSuccessDialog();
             if (monitorExecution) {
                 $("#execution_info_tab").removeClass("disabled");

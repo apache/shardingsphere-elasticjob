@@ -34,6 +34,11 @@ import static org.mockito.Mockito.when;
 public final class StreamingBatchThroughputDataFlowElasticJobTest extends AbstractStreamingThroughputDataFlowElasticJobTest {
     
     @Override
+    protected boolean isStreamingProcess() {
+        return true;
+    }
+    
+    @Override
     protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
         return new FooStreamingBatchThroughputDataFlowElasticJob(jobCaller);
     }

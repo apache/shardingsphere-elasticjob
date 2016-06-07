@@ -66,7 +66,7 @@ public final class JobNodeStorageTest {
     
     @Before
     public void reset() {
-        JobConfigurationFieldUtil.setFieldValue(jobConfig, "overwrite", false);
+        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "overwrite", false);
     }
     
     @Test
@@ -141,7 +141,7 @@ public final class JobNodeStorageTest {
     public void assertFillJobNodeIfNotNullAndOverwriteEnabledButValueSame() throws NoSuchFieldException {
         when(coordinatorRegistryCenter.isExisted("/testJob/config/cron")).thenReturn(true);
         when(coordinatorRegistryCenter.getDirectly("/testJob/config/cron")).thenReturn("0/1 * * * * ?");
-        JobConfigurationFieldUtil.setFieldValue(jobConfig, "overwrite", true);
+        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "overwrite", true);
         jobNodeStorage.fillJobNodeIfNullOrOverwrite("config/cron", "0/1 * * * * ?");
         verify(coordinatorRegistryCenter).isExisted("/testJob/config/cron");
         verify(coordinatorRegistryCenter).getDirectly("/testJob/config/cron");
@@ -152,7 +152,7 @@ public final class JobNodeStorageTest {
     public void assertFillJobNodeIfNotNullAndOverwriteEnabledAndValueDifferent() throws NoSuchFieldException {
         when(coordinatorRegistryCenter.isExisted("/testJob/config/cron")).thenReturn(true);
         when(coordinatorRegistryCenter.getDirectly("/testJob/config/cron")).thenReturn("0/1 * * * * ?");
-        JobConfigurationFieldUtil.setFieldValue(jobConfig, "overwrite", true);
+        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "overwrite", true);
         jobNodeStorage.fillJobNodeIfNullOrOverwrite("config/cron", "0/2 * * * * ?");
         verify(coordinatorRegistryCenter).isExisted("/testJob/config/cron");
         verify(coordinatorRegistryCenter).getDirectly("/testJob/config/cron");

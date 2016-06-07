@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.integrate.fixture.dataflow.throughput;
 
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
 public final class OneOffThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
@@ -40,11 +40,6 @@ public final class OneOffThroughputDataFlowElasticJob extends AbstractIndividual
     public boolean processData(final JobExecutionMultipleShardingContext context, final String data) {
         processedData.add(data);
         return true;
-    }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return false;
     }
     
     public static boolean isCompleted() {

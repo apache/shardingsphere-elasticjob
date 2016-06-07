@@ -24,9 +24,9 @@ import com.dangdang.ddframe.job.internal.storage.JobNodePath;
  * 
  * @author zhangliang
  */
-public final class ConfigurationNode {
+final class ConfigurationNode {
     
-    static final String ROOT = "config";
+    private static final String ROOT = "config";
     
     static final String JOB_TYPE = ROOT + "/jobType";
     
@@ -48,6 +48,8 @@ public final class ConfigurationNode {
     
     static final String FETCH_DATA_COUNT = ROOT + "/fetchDataCount";
     
+    static final String STREAMING_PROCESS = ROOT + "/streamingProcess";
+    
     static final String MAX_TIME_DIFF_SECONDS = ROOT + "/maxTimeDiffSeconds";
     
     static final String FAILOVER = ROOT + "/failover";
@@ -64,7 +66,7 @@ public final class ConfigurationNode {
     
     private final JobNodePath jobNodePath;
     
-    public ConfigurationNode(final String jobName) {
+    ConfigurationNode(final String jobName) {
         jobNodePath = new JobNodePath(jobName);
     }
     
@@ -104,7 +106,7 @@ public final class ConfigurationNode {
      * @param path 节点路径
      * @return 是否为作业调度配置路径
      */
-    public boolean isCronPath(final String path) {
+    boolean isCronPath(final String path) {
         return jobNodePath.getFullPath(CRON).equals(path);
     }
 }

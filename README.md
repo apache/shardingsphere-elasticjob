@@ -65,7 +65,7 @@
 
 [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
 
-[1.0.2接口变更声明](http://dangdangdotcom.github.io/elastic-job/post/update_notes_1.0.2/)
+[1.1.0接口变更声明](http://dangdangdotcom.github.io/elastic-job/post/update_notes_1.1.0/)
 
 [何为分布式作业？](http://dangdangdotcom.github.io/elastic-job/post/distribution/)
 
