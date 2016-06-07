@@ -204,12 +204,12 @@ public class JobFacade {
     /**
      * 判断作业是否符合继续运行的条件.
      * 
-     * <p>如果作业停止或需要重分片则作业将不会继续运行.</p>
+     * <p>如果作业停止或需要重分片或非流式处理则作业将不会继续运行.</p>
      * 
      * @return 作业是否符合继续运行的条件
      */
     public boolean isEligibleForJobRunning() {
-        return !serverService.isJobPausedManually() && !shardingService.isNeedSharding();
+        return !serverService.isJobPausedManually() && !shardingService.isNeedSharding() && configService.isStreamingProcess();
     }
     
     /**判断是否需要重分片.

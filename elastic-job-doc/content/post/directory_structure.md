@@ -12,7 +12,7 @@ weight=4
 
 ## elastic-job-api
 
-`elastic-job`生命周期操作的API，可独立使用。
+`elastic-job`生命周期操作的`API`，可独立使用。
 
 ## elastic-job-spring
 

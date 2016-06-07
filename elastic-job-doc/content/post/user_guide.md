@@ -261,7 +261,7 @@ job:dataflow命名空间拥有job:simple命名空间的全部属性，以下仅�
 |process-count-interval-seconds      |int    |否      |300  | 统计作业处理数据数量的间隔时间<br />单位：秒<br />                                                                          |
 |concurrent-data-process-thread-count|int    |否      |1    | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效                                                  |
 |fetch-data-count                    |int    |否      |1    | 每次抓取的数据量                                                                                                         |
-|streaming-process                   |boolean|否      |false| 是否流式处理数据<br />如果流式处理数据, 则fetchData不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
+|streaming-process                   |boolean|否      |false| 是否流式处理数据<br />如果流式处理数据, 则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
 
 #### job:script命名空间属性详细说明，基本属性参照job:simple命名空间属性详细说明
 

@@ -91,32 +91,32 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testGetJobName() {
+    public void assertGetJobName() {
         when(configService.getJobName()).thenReturn("testJob");
         assertThat(jobFacade.getJobName(), is("testJob"));
     }
     
     @Test
-    public void testCheckMaxTimeDiffSecondsTolerable() {
+    public void assertCheckMaxTimeDiffSecondsTolerable() {
         jobFacade.checkMaxTimeDiffSecondsTolerable();
         verify(configService).checkMaxTimeDiffSecondsTolerable();
     }
     
     @Test
-    public void testIsStreamingProcess() {
+    public void assertIsStreamingProcess() {
         when(configService.isStreamingProcess()).thenReturn(false);
         assertThat(jobFacade.isStreamingProcess(), is(false));
     }
     
     @Test
-    public void testFailoverIfUnnecessary() {
+    public void assertFailoverIfUnnecessary() {
         when(configService.isFailover()).thenReturn(false);
         jobFacade.failoverIfNecessary();
         verify(failoverService, times(0)).failoverIfNecessary();
     }
     
     @Test
-    public void testFailoverIfNecessaryButIsPaused() {
+    public void assertFailoverIfNecessaryButIsPaused() {
         when(configService.isFailover()).thenReturn(true);
         when(serverService.isJobPausedManually()).thenReturn(true);
         jobFacade.failoverIfNecessary();
@@ -124,7 +124,7 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testFailoverIfNecessary() {
+    public void assertFailoverIfNecessary() {
         when(configService.isFailover()).thenReturn(true);
         when(serverService.isJobPausedManually()).thenReturn(false);
         jobFacade.failoverIfNecessary();
@@ -132,14 +132,14 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testRegisterJobBegin() {
+    public void assertRegisterJobBegin() {
         JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
         jobFacade.registerJobBegin(shardingContext);
         verify(executionService).registerJobBegin(shardingContext);
     }
     
     @Test
-    public void testRegisterJobCompletedWhenFailoverDisabled() {
+    public void assertRegisterJobCompletedWhenFailoverDisabled() {
         JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
         when(configService.isFailover()).thenReturn(false);
         jobFacade.registerJobCompleted(shardingContext);
@@ -148,7 +148,7 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testRegisterJobCompletedWhenFailoverEnabled() {
+    public void assertRegisterJobCompletedWhenFailoverEnabled() {
         JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
         when(configService.isFailover()).thenReturn(true);
         jobFacade.registerJobCompleted(shardingContext);
@@ -157,7 +157,7 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testGetShardingContextWhenIsFailoverEnableAndFailover() {
+    public void assertGetShardingContextWhenIsFailoverEnableAndFailover() {
         JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
         when(configService.isFailover()).thenReturn(true);
         when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.singletonList(1));
@@ -167,7 +167,7 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testGetShardingContextWhenIsFailoverEnableAndNotFailover() {
+    public void assertGetShardingContextWhenIsFailoverEnableAndNotFailover() {
         JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
         when(configService.isFailover()).thenReturn(true);
         when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.<Integer>emptyList());
@@ -179,7 +179,7 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testGetShardingContextWhenIsFailoverDisable() {
+    public void assertGetShardingContextWhenIsFailoverDisable() {
         JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
         when(configService.isFailover()).thenReturn(false);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
@@ -189,44 +189,76 @@ public class JobFacadeTest {
     }
     
     @Test
-    public void testMisfireIfNecessary() {
+    public void assertMisfireIfNecessary() {
         when(executionService.misfireIfNecessary(Arrays.asList(0, 1))).thenReturn(true);
         assertThat(jobFacade.misfireIfNecessary(Arrays.asList(0, 1)), is(true));
     }
     
     @Test
-    public void testClearMisfire() {
+    public void assertClearMisfire() {
         jobFacade.clearMisfire(Arrays.asList(0, 1));
         verify(executionService).clearMisfire(Arrays.asList(0, 1));
     }
     
     @Test
-    public void testIsNeedSharding() {
+    public void assertIsNeedSharding() {
         when(shardingService.isNeedSharding()).thenReturn(true);
         assertThat(jobFacade.isNeedSharding(), is(true));
     }
     
     @Test
-    public void testUpdateOffset() {
+    public void assertUpdateOffset() {
         jobFacade.updateOffset(0, "offset0");
         verify(offsetService).updateOffset(0, "offset0");
     }
     
     @Test
-    public void testCleanPreviousExecutionInfo() {
+    public void assertCleanPreviousExecutionInfo() {
         jobFacade.cleanPreviousExecutionInfo();
         verify(executionService).cleanPreviousExecutionInfo();
     }
     
     @Test
-    public void testBeforeJobExecuted() {
+    public void assertBeforeJobExecuted() {
         jobFacade.beforeJobExecuted(new JobExecutionMultipleShardingContext());
         verify(caller).before();
     }
     
     @Test
-    public void testAfterJobExecuted() {
+    public void assertAfterJobExecuted() {
         jobFacade.afterJobExecuted(new JobExecutionMultipleShardingContext());
         verify(caller).after();
+    }
+    
+    @Test
+    public void assertNotEligibleForJobRunningWhenJobPausedManually() {
+        when(serverService.isJobPausedManually()).thenReturn(true);
+        assertThat(jobFacade.isEligibleForJobRunning(), is(false));
+        verify(serverService).isJobPausedManually();
+    }
+    
+    @Test
+    public void assertNotEligibleForJobRunningWhenNeedSharding() {
+        when(shardingService.isNeedSharding()).thenReturn(true);
+        assertThat(jobFacade.isEligibleForJobRunning(), is(false));
+        verify(shardingService).isNeedSharding();
+    }
+    
+    @Test
+    public void assertNotEligibleForJobRunningWhenUnStreamingProcess() {
+        when(configService.isStreamingProcess()).thenReturn(false);
+        assertThat(jobFacade.isEligibleForJobRunning(), is(false));
+        verify(configService).isStreamingProcess();
+    }
+    
+    @Test
+    public void assertEligibleForJobRunningWhenNotJobPausedManuallyAndNotNeedShardingAndStreamingProcess() {
+        when(serverService.isJobPausedManually()).thenReturn(false);
+        when(shardingService.isNeedSharding()).thenReturn(false);
+        when(configService.isStreamingProcess()).thenReturn(true);
+        assertThat(jobFacade.isEligibleForJobRunning(), is(true));
+        verify(serverService).isJobPausedManually();
+        verify(shardingService).isNeedSharding();
+        verify(configService).isStreamingProcess();
     }
 }
