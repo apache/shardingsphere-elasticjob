@@ -47,6 +47,7 @@ import static com.dangdang.ddframe.job.spring.namespace.constants.BaseJobBeanDef
 import static com.dangdang.ddframe.job.spring.namespace.constants.BaseJobBeanDefinitionParserTag.MONITOR_EXECUTION_ATTRIBUTE;
 import static com.dangdang.ddframe.job.spring.namespace.constants.BaseJobBeanDefinitionParserTag.MONITOR_PORT_ATTRIBUTE;
 import static com.dangdang.ddframe.job.spring.namespace.constants.BaseJobBeanDefinitionParserTag.OVERWRITE_ATTRIBUTE;
+import static com.dangdang.ddframe.job.spring.namespace.constants.BaseJobBeanDefinitionParserTag.REGISTRY_CENTER_REF_ATTRIBUTE;
 import static com.dangdang.ddframe.job.spring.namespace.constants.BaseJobBeanDefinitionParserTag.SHARDING_ITEM_PARAMETERS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.spring.namespace.constants.BaseJobBeanDefinitionParserTag.SHARDING_TOTAL_COUNT_ATTRIBUTE;
 import static com.dangdang.ddframe.job.spring.namespace.constants.BaseJobBeanDefinitionParserTag.STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
@@ -64,7 +65,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
         factory.setInitMethodName("init");
-        factory.addConstructorArgReference(element.getAttribute("reg-center"));
+        factory.addConstructorArgReference(element.getAttribute(REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgReference(createJobConfiguration(element, parserContext));
         factory.addConstructorArgValue(createJobListeners(element));
         return factory.getBeanDefinition();

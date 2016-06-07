@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.internal.storage.JobNodePath;
  * 
  * @author zhangliang
  */
-final class ConfigurationNode {
+public final class ConfigurationNode {
     
     private static final String ROOT = "config";
     
@@ -66,7 +66,7 @@ final class ConfigurationNode {
     
     private final JobNodePath jobNodePath;
     
-    ConfigurationNode(final String jobName) {
+    public ConfigurationNode(final String jobName) {
         jobNodePath = new JobNodePath(jobName);
     }
     
@@ -106,7 +106,7 @@ final class ConfigurationNode {
      * @param path 节点路径
      * @return 是否为作业调度配置路径
      */
-    boolean isCronPath(final String path) {
+    public boolean isCronPath(final String path) {
         return jobNodePath.getFullPath(CRON).equals(path);
     }
 }

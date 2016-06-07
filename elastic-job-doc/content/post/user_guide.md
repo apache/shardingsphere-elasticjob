@@ -215,16 +215,16 @@ public class JobMain {
     <reg:zookeeper id="regCenter" server-lists=" yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     
     <!-- 配置简单作业-->
-    <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" reg-center="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
+    <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
     
     <!-- 配置数据流作业-->
-    <job:dataflow id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" reg-center="reg-center" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="10" />
+    <job:dataflow id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="10" />
     
     <!-- 配置脚本作业-->
-    <job:script id="scriptElasticJob" reg-center="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" script-command-line="/your/file/path/demo.sh" />
+    <job:script id="scriptElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" script-command-line="/your/file/path/demo.sh" />
     
     <!-- 配置带监听的简单作业-->
-    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" reg-center="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
+    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
         <job:listener class="xx.MySimpleJobListener"/>
         <job:listener class="xx.MyOnceSimpleJobListener" started-timeout-milliseconds="1000" completed-timeout-milliseconds="2000" />
     </job:simple>
@@ -237,7 +237,7 @@ public class JobMain {
 | -----------------------------------|:------|:-------|:----|:---------------------------------------------------------------------------|
 |id                                  |String |`是`    |     | 作业名称                                                                    |
 |class                               |String |否      |     | 作业实现类，需实现`ElasticJob`接口，脚本型作业不需要配置                         |
-|reg-center                          |String |`是`    |     | 注册中心`Bean`的引用，需引用`reg:zookeeper`的声明                              |
+|registry-center-ref                 |String |`是`    |     | 注册中心`Bean`的引用，需引用`reg:zookeeper`的声明                              |
 |cron                                |String |`是`    |     | `cron`表达式，用于配置作业触发时间                                             |
 |sharding-total-count                |int    |`是`    |     | 作业分片总数                                                                 |
 |sharding-item-parameters            |String |否      |     | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从`0`开始，不可大于或等于作业分片总数<br />如：<br/>`0=a,1=b,2=c`|
@@ -286,7 +286,7 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 | 属性名                          |类型   |是否必填|缺省值|描述                                                                                                |
 | ------------------------------ |:------|:------|:----|:--------------------------------------------------------------------------------------------------|
 |id                              |String |`是`   |     | 注册中心在`Spring`容器中的主键                                                                        |
-|serverLists                     |String |`是`   |     | 连接`Zookeeper`服务器的列表<br />包括IP地址和端口号<br />多个地址用逗号分隔<br />如: host1:2181,host2:2181|
+|server-lists                     |String |`是`   |     | 连接`Zookeeper`服务器的列表<br />包括IP地址和端口号<br />多个地址用逗号分隔<br />如: host1:2181,host2:2181|
 |namespace                       |String |`是`   |     | `Zookeeper`的命名空间                                                                               |
 |base-sleep-time-milliseconds    |int    |否     |1000 | 等待重试的间隔时间的初始值<br />单位：毫秒                                                              |
 |max-sleep-time-milliseconds     |int    |否     |3000 | 等待重试的间隔时间的最大值<br />单位：毫秒                                                              |

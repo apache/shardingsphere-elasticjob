@@ -31,7 +31,7 @@ public final class MonitorServiceEnableTest extends AbstractBaseStdJobTest {
     private static final int MONITOR_PORT = 9000;
     
     public MonitorServiceEnableTest() {
-        super(TestJob.class, -1);
+        super(TestJob.class, MONITOR_PORT);
     }
     
     @Test

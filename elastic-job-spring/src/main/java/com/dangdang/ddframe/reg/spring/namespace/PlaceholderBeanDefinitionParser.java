@@ -40,7 +40,7 @@ public class PlaceholderBeanDefinitionParser extends AbstractBeanDefinitionParse
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(PropertySourcesPlaceholderConfigurer.class);
         factory.addPropertyValue("ignoreUnresolvablePlaceholders", true);
         BeanDefinitionBuilder definitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(RegistryPropertySources.class);
-        definitionBuilder.addConstructorArgReference(element.getAttribute("registerRef"));
+        definitionBuilder.addConstructorArgReference(element.getAttribute("registry-center-ref"));
         factory.addPropertyValue("propertySources", definitionBuilder.getBeanDefinition());
         return factory.getBeanDefinition();
     }

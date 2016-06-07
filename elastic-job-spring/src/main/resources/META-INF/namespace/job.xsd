@@ -22,7 +22,7 @@
                     <xsd:element ref="listener" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
                 <xsd:attribute name="class" type="xsd:string" />
-                <xsd:attribute name="reg-center" type="xsd:string" use="required" />
+                <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
                 <xsd:attribute name="cron" type="xsd:string" use="required" />
                 <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
                 <xsd:attribute name="sharding-item-parameters" type="xsd:string" />

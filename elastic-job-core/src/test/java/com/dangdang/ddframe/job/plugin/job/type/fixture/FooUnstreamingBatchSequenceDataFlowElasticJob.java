@@ -37,8 +37,11 @@ public final class FooUnstreamingBatchSequenceDataFlowElasticJob extends Abstrac
     public int processData(final JobExecutionSingleShardingContext shardingContext, final List<Object> data) {
         int result = 0;
         for (Object each : data) {
-            if (jobCaller.processData(each)) {
-                result++;
+            try {
+                if (jobCaller.processData(each)) {
+                    result++;
+                }
+            } catch (final NullPointerException ex) {
             }
         }
         return result;
