@@ -24,10 +24,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    WithNamespaceTest.class,
-    WithNamespaceAndListenerTest.class,
-    WithNamespaceAndListenerAndJdkDynamicProxyTest.class,
-    WithNamespaceAndListenerAndCglibTest.class
+    JobSpringNamespaceWithoutListenerTest.class,
+    JobSpringNamespaceWithListenerTest.class,
+    JobSpringNamespaceWithListenerAndJdkDynamicProxyTest.class,
+    JobSpringNamespaceWithListenerAndCglibTest.class
     })
 public class AllSpringIntegrateTests {
 }

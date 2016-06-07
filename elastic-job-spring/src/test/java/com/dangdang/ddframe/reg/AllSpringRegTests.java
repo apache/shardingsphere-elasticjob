@@ -21,16 +21,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.reg.spring.WithoutNamespaceTest;
-import com.dangdang.ddframe.reg.spring.WithNamespaceTest;
+import com.dangdang.ddframe.reg.spring.RegSpringNamespaceTest;
 import com.dangdang.ddframe.reg.spring.placeholder.PlaceholderResolvedForNoPlaceholderConfigurerTest;
 import com.dangdang.ddframe.reg.spring.placeholder.PlaceholderResolvedTest;
 import com.dangdang.ddframe.reg.spring.placeholder.RegPlaceholderSpringIntegrateTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    WithNamespaceTest.class, 
-    WithoutNamespaceTest.class, 
+    RegSpringNamespaceTest.class, 
     RegPlaceholderSpringIntegrateTest.class, 
     PlaceholderResolvedTest.class, 
     PlaceholderResolvedForNoPlaceholderConfigurerTest.class

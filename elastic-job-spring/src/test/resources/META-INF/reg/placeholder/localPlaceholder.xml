@@ -9,14 +9,4 @@
                         ">
     <context:property-placeholder location="classpath*:conf/reg/fixture/local/withNamespace_1.properties" ignore-unresolvable="true" />
     <context:property-placeholder location="classpath*:conf/reg/fixture/local/withNamespace_2.properties" ignore-unresolvable="true" />
-    
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="locations" value="classpath:conf/reg/fixture/local/withoutNamespace_1.properties" />
-        <property name="ignoreUnresolvablePlaceholders" value="true" />
-    </bean>
-    
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="locations" value="classpath:conf/reg/fixture/local/withoutNamespace_2.properties" />
-        <property name="ignoreUnresolvablePlaceholders" value="true" />
-    </bean>
 </beans>

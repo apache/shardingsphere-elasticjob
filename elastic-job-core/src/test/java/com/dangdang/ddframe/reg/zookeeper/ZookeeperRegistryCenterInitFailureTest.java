@@ -19,11 +19,13 @@ package com.dangdang.ddframe.reg.zookeeper;
 
 import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.exception.RegException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public final class ZookeeperRegistryCenterInitFailureTest extends AbstractNestedZookeeperBaseTest {
     
     @Test(expected = RegException.class)
+    @Ignore
     public void assertInitFailure() {
         ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:1", ZookeeperRegistryCenterInitFailureTest.class.getName(), 100, 200, 1));
         zkRegCenter.init();

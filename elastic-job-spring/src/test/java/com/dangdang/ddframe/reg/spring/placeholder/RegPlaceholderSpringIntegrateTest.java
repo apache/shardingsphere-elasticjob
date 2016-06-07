@@ -28,7 +28,7 @@ import javax.annotation.Resource;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@ContextConfiguration(locations = "classpath:META-INF/reg/withNamespace.xml")
+@ContextConfiguration(locations = "classpath:META-INF/reg/regContext.xml")
 public class RegPlaceholderSpringIntegrateTest extends AbstractZookeeperJUnit4SpringContextTests {
     
     @Resource

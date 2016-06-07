@@ -15,7 +15,7 @@
                         ">
     <context:component-scan base-package="com.dangdang.ddframe.job.fixture.service"/>
     <aop:aspectj-autoproxy proxy-target-class="true"/>
-    <import resource="withNamespaceBase.xml"/>
+    <import resource="base.xml"/>
     <job:simple id="simpleElasticJob_namespace_listener_cglib" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob" registry-center-ref="regCenter" cron="${simpleElasticJob.cron}" sharding-total-count="${simpleElasticJob.shardingTotalCount}" sharding-item-parameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
         <job:listener class="com.dangdang.ddframe.job.fixture.listener.SimpleCglibListener" />
     </job:simple>

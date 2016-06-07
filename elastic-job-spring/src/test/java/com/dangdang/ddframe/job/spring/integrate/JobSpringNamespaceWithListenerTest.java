@@ -20,10 +20,10 @@ package com.dangdang.ddframe.job.spring.integrate;
 
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(locations = "classpath:META-INF/job/withNamespaceAndListener.xml")
-public class WithNamespaceAndListenerTest extends AbstractJobSpringIntegrateTest {
+@ContextConfiguration(locations = "classpath:META-INF/job/withListener.xml")
+public class JobSpringNamespaceWithListenerTest extends AbstractJobSpringIntegrateTest {
     
-    public WithNamespaceAndListenerTest() {
+    public JobSpringNamespaceWithListenerTest() {
         super("simpleElasticJob_namespace_listener", "throughputDataFlowElasticJob_namespace_listener");
     }
 }

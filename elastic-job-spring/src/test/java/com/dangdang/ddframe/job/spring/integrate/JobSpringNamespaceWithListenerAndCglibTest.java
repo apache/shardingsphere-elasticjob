@@ -20,10 +20,10 @@ package com.dangdang.ddframe.job.spring.integrate;
 
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(locations = "classpath:META-INF/job/withNamespaceAndListenerAndCglib.xml")
-public final class WithNamespaceAndListenerAndCglibTest extends AbstractJobSpringIntegrateTest {
+@ContextConfiguration(locations = "classpath:META-INF/job/withListenerAndCglib.xml")
+public final class JobSpringNamespaceWithListenerAndCglibTest extends AbstractJobSpringIntegrateTest {
     
-    public WithNamespaceAndListenerAndCglibTest() {
+    public JobSpringNamespaceWithListenerAndCglibTest() {
         super("simpleElasticJob_namespace_listener_cglib", "throughputDataFlowElasticJob_namespace_listener_cglib");
     }
 }

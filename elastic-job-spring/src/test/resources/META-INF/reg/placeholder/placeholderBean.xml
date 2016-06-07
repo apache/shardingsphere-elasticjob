@@ -14,7 +14,5 @@
         <property name="regValue2" value="${/new}" />
         <property name="withNamespaceValue1" value="${withNamespace_1}" />
         <property name="withNamespaceValue2" value="${withNamespace_2}" />
-        <property name="withoutNamespaceValue1" value="${withoutNamespace_1}" />
-        <property name="withoutNamespaceValue2" value="${withoutNamespace_2}" />
     </bean>
 </beans>
