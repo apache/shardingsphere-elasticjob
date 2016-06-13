@@ -8,6 +8,10 @@
     <artifactId>elastic-job-console</artifactId>
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
+
+    <properties>
+        <springframework.version>4.1.1.RELEASE</springframework.version>
+    </properties>
     
     <dependencies>
         <dependency>
@@ -39,22 +43,22 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${springframework4.version}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>${springframework4.version}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>${springframework4.version}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>${springframework4.version}</version>
+            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

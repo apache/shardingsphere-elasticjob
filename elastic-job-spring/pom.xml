@@ -7,6 +7,10 @@
     </parent>
     <artifactId>elastic-job-spring</artifactId>
     <name>${project.artifactId}</name>
+
+    <properties>
+        <springframework.version>3.2.17.RELEASE</springframework.version>
+    </properties>
     
     <dependencies>
         <dependency>
