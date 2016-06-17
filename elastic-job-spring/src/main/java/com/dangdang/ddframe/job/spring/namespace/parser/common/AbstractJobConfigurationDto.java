@@ -21,7 +21,7 @@ package com.dangdang.ddframe.job.spring.namespace.parser.common;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.config.impl.AbstractJobConfiguration.AbstractJobConfigurationBuilder;
-import com.dangdang.ddframe.job.internal.job.JobType;
+import com.dangdang.ddframe.job.api.config.impl.JobType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

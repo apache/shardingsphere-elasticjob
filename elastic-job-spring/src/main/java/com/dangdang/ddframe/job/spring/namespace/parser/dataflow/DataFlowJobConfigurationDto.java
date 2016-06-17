@@ -21,7 +21,7 @@ package com.dangdang.ddframe.job.spring.namespace.parser.dataflow;
 import com.dangdang.ddframe.job.api.DataFlowElasticJob;
 import com.dangdang.ddframe.job.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.api.config.impl.DataFlowJobConfiguration.DataFlowJobConfigurationBuilder;
-import com.dangdang.ddframe.job.internal.job.JobType;
+import com.dangdang.ddframe.job.api.config.impl.JobType;
 import com.dangdang.ddframe.job.spring.namespace.parser.common.AbstractJobConfigurationDto;
 import lombok.Getter;
 import lombok.Setter;

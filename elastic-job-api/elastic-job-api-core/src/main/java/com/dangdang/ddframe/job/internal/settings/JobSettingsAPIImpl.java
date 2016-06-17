@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.internal.settings;
 
 import com.dangdang.ddframe.job.api.JobSettingsAPI;
 import com.dangdang.ddframe.job.domain.JobSettings;
-import com.dangdang.ddframe.job.internal.job.JobType;
+import com.dangdang.ddframe.job.api.config.impl.JobType;
 import com.dangdang.ddframe.job.internal.storage.JobNodePath;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Strings;

@@ -19,7 +19,7 @@
 package com.dangdang.ddframe.job.api.config;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.internal.job.JobType;
+import com.dangdang.ddframe.job.api.config.impl.JobType;
 
 /**
  * 作业基本配置信息.

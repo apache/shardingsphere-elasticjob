@@ -18,7 +18,6 @@
 
 package com.dangdang.ddframe.job.api.config.impl;
 
-import com.dangdang.ddframe.job.internal.job.JobType;
 import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
 
 /**
