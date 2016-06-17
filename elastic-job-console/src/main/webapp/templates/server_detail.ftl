@@ -14,6 +14,7 @@
     <tbody>
     </tbody>
 </table>
+<button id="trigger-all-jobs-btn" class="btn btn-success">全部触发</button>
 <button id="pause-all-jobs-btn" class="btn btn-warning">全部暂停</button>
 <button id="resume-all-jobs-btn" class="btn btn-success">全部恢复</button>
 <span id="chosen-job-name" class="hide"></span>

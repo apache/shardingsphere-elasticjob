@@ -38,6 +38,10 @@ public class ServerNode {
     
     static final String STATUS = ROOT + "/%s/" + STATUS_APPENDIX;
     
+    static final String TRIGGER_APPENDIX = "trigger";
+    
+    static final String TRIGGER = ROOT + "/%s/" + TRIGGER_APPENDIX;
+    
     static final String DISABLED_APPENDIX = "disabled";
     
     static final String DISABLED = ROOT + "/%s/" + DISABLED_APPENDIX;
@@ -68,6 +72,10 @@ public class ServerNode {
         return String.format(STATUS, ip);
     }
     
+    static String getTriggerNode(final String ip) {
+        return String.format(TRIGGER, ip);
+    }
+    
     static String getDisabledNode(final String ip) {
         return String.format(DISABLED, ip);
     }
@@ -86,6 +94,16 @@ public class ServerNode {
     
     static String getShutdownNode(final String ip) {
         return String.format(SHUTDOWN, ip);
+    }
+    
+    /**
+     * 判断给定路径是否为作业服务器立刻触发路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器立刻触发路径
+     */
+    public boolean isLocalJobTriggerPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.TRIGGER, localHostService.getIp())));
     }
     
     /**

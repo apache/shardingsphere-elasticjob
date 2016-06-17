@@ -8,6 +8,10 @@ weight=1
 
 ## 1.1.1-SNAPSHOT
 
+### 功能提升
+
+1. [ISSUE #110](https://github.com/dangdangdotcom/elastic-job/issues/110) 手动触发作业
+
 ## 1.1.0
 
 ### 结构调整

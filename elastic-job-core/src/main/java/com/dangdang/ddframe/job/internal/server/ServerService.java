@@ -72,6 +72,13 @@ public class ServerService {
     }
     
     /**
+     * 清除立刻执行作业的标记.
+     */
+    public void clearJobTriggerStatus() {
+        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getTriggerNode(localHostService.getIp()));
+    }
+    
+    /**
      * 清除暂停作业的标记.
      */
     public void clearJobPausedStatus() {

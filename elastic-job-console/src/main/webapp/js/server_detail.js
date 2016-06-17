@@ -1,7 +1,9 @@
 $(function() {
     renderJobs();
+    bindTriggerButtons();
     bindPauseButtons();
     bindResumeButtons();
+    bindTriggerAllButton();
     bindPauseAllButton();
     bindResumeAllButton();
     bindShutdownButtons();
@@ -16,14 +18,16 @@ function renderJobs() {
             var status = data[i].status;
             var baseTd = "<td>" + data[i].jobName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td>";
             var operationTd = "";
+            var triggerButton = "<button operation='trigger' class='btn btn-success' job-name='" + data[i].jobName + "'>触发</button>";
             var resumeButton = "<button operation='resume' class='btn btn-success' job-name='" + data[i].jobName + "'>恢复</button>";
             var pauseButton = "<button operation='pause' class='btn btn-warning' job-name='" + data[i].jobName + "'" + ">暂停</button>";
             var shutdownButton = "<button operation='shutdown' class='btn btn-danger' job-name='" + data[i].jobName + "'>关闭</button>";
             var removeButton = "<button operation='remove' class='btn btn-danger' job-name='" + data[i].jobName + "'>删除</button>";
+            operationTd = triggerButton + "&nbsp;";
             if ("PAUSED" === status) {
-                operationTd = resumeButton + "&nbsp;";
+                operationTd = triggerButton + resumeButton + "&nbsp;";
             } else if ("DISABLED" !== status && "CRASHED" !== status && "SHUTDOWN" !== status) {
-                operationTd = pauseButton + "&nbsp;";
+                operationTd = triggerButton + pauseButton + "&nbsp;";
             }
             if ("SHUTDOWN" !== status) {
                 operationTd = operationTd + shutdownButton + "&nbsp;";
@@ -47,6 +51,18 @@ function renderJobs() {
     });
 }
 
+function bindTriggerButtons() {
+    $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
+        $.post("job/trigger", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
+            renderJobs();
+            showSuccessDialog();
+        });
+    });
+    $(document).on("click", "button[operation='trigger'][data-toggle='modal']", function(event) {
+        $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
+    });
+}
+
 function bindPauseButtons() {
     $(document).on("click", "button[operation='pause'][data-toggle!='modal']", function(event) {
         $.post("job/pause", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
@@ -62,6 +78,15 @@ function bindPauseButtons() {
 function bindResumeButtons() {
     $(document).on("click", "button[operation='resume']", function(event) {
         $.post("job/resume", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
+            renderJobs();
+            showSuccessDialog();
+        });
+    });
+}
+
+function bindTriggerAllButton() {
+    $(document).on("click", "#trigger-all-jobs-btn", function(event) {
+        $.post("job/triggerAll/ip", {ip : $("#server-ip").text()}, function (data) {
             renderJobs();
             showSuccessDialog();
         });

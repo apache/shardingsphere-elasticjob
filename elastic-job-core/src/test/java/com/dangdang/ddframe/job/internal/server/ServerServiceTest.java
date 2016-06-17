@@ -105,6 +105,12 @@ public final class ServerServiceTest {
     }
     
     @Test
+    public void assertClearJobTriggerStatus() {
+        serverService.clearJobTriggerStatus();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/trigger");
+    }
+    
+    @Test
     public void assertClearJobPausedStatus() {
         serverService.clearJobPausedStatus();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/paused");

@@ -43,6 +43,11 @@ public final class ServerNodeTest {
     }
     
     @Test
+    public void assertGetTriggerNode() {
+        assertThat(ServerNode.getTriggerNode("host0"), is("servers/host0/trigger"));
+    }
+    
+    @Test
     public void assertGetDisabledNode() {
         assertThat(ServerNode.getDisabledNode("host0"), is("servers/host0/disabled"));
     }
@@ -65,6 +70,11 @@ public final class ServerNodeTest {
     @Test
     public void assertShutdownNode() {
         assertThat(ServerNode.getShutdownNode("host0"), is("servers/host0/shutdown"));
+    }
+    
+    @Test
+    public void assertIsLocalJobTriggerPath() {
+        assertTrue(serverNode.isLocalJobTriggerPath("/testJob/servers/" + localHostService.getIp() + "/trigger"));
     }
     
     @Test

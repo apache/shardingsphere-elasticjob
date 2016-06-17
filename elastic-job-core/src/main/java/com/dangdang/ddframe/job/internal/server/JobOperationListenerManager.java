@@ -65,6 +65,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     @Override
     public void start() {
         addConnectionStateListener(new ConnectionLostListener());
+        addDataListener(new JobTriggerStatusJobListener());
         addDataListener(new JobPausedStatusJobListener());
         addDataListener(new JobShutdownStatusJobListener());
     }
@@ -85,6 +86,24 @@ public class JobOperationListenerManager extends AbstractListenerManager {
                 if (!serverService.isJobPausedManually()) {
                     jobScheduleController.resumeJob();
                 }
+            }
+        }
+    }
+    
+    class JobTriggerStatusJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
+            if (Type.NODE_ADDED != event.getType() || !serverNode.isLocalJobTriggerPath(path)) {
+                return;
+            }
+            serverService.clearJobTriggerStatus();
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            if (null == jobScheduleController) {
+                return;
+            }
+            if (serverService.isLocalhostServerReady()) {
+                jobScheduleController.triggerJob();
             }
         }
     }

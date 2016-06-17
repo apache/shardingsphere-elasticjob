@@ -49,6 +49,30 @@ public final class JobOperateAPIImplTest {
     }
     
     @Test
+    public void assertTriggerWithJobNameAndServerIp() {
+        jobOperateAPI.trigger(Optional.of("testJob"), Optional.of("localhost"));
+        verify(registryCenter).persist("/testJob/servers/localhost/trigger", "");
+    }
+    
+    @Test
+    public void assertTriggerWithJobName() {
+        when(registryCenter.getChildrenKeys("/testJob/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
+        jobOperateAPI.trigger(Optional.of("testJob"), Optional.<String>absent());
+        verify(registryCenter).getChildrenKeys("/testJob/servers");
+        verify(registryCenter).persist("/testJob/servers/ip1/trigger", "");
+        verify(registryCenter).persist("/testJob/servers/ip2/trigger", "");
+    }
+    
+    @Test
+    public void assertTriggerWithServerIp() {
+        when(registryCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("testJob1", "testJob2"));
+        jobOperateAPI.trigger(Optional.<String>absent(), Optional.of("localhost"));
+        verify(registryCenter).getChildrenKeys("/");
+        verify(registryCenter).persist("/testJob1/servers/localhost/trigger", "");
+        verify(registryCenter).persist("/testJob2/servers/localhost/trigger", "");
+    }
+    
+    @Test
     public void assertPauseWithJobNameAndServerIp() {
         jobOperateAPI.pause(Optional.of("testJob"), Optional.of("localhost"));
         verify(registryCenter).persist("/testJob/servers/localhost/paused", "");

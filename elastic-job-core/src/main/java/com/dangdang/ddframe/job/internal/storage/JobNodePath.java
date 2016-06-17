@@ -32,6 +32,11 @@ import lombok.RequiredArgsConstructor;
 public final class JobNodePath {
     
     /**
+     * 作业立刻触发节点名称.
+     */
+    public static final String TRIGGER_NODE = "trigger";
+    
+    /**
      * 作业暂停节点名称.
      */
     public static final String PAUSED_NODE = "paused";
@@ -79,16 +84,6 @@ public final class JobNodePath {
      */
     public String getConfigNodePath(final String nodeName) {
         return String.format("/%s/%s/%s", jobName, CONFIG_NODE, nodeName);
-    }
-    
-    /**
-     * 获取选举节点路径.
-     *
-     * @param nodeName 子节点名称
-     * @return 选举节点路径
-     */
-    public String getLeaderNodePath(final String nodeName) {
-        return String.format("/%s/%s/%s", jobName, LEADER_NODE, nodeName);
     }
     
     /**
