@@ -30,7 +30,7 @@ public class JobException extends RuntimeException {
         super(String.format(errorMessage, args));
     }
     
-    public JobException(final Exception cause) {
+    public JobException(final Throwable cause) {
         super(cause);
     }
 }

@@ -41,7 +41,7 @@ public final class ScriptJobConfiguration extends AbstractJobConfiguration<Scrip
                                      final Boolean disabled, final Boolean overwrite, final String scriptCommandLine) {
         super(jobName, JobType.SCRIPT, ScriptElasticJob.class, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire,
                 monitorPort, jobShardingStrategyClass, description, disabled, overwrite);
-        this.scriptCommandLine = scriptCommandLine;    
+        this.scriptCommandLine = scriptCommandLine;
     }
     //CHECKSTYLE:ON
     
