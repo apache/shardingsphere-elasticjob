@@ -61,7 +61,7 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
         
         private int fetchDataCount = 1;
         
-        private int concurrentDataProcessThreadCount = 1;
+        private int concurrentDataProcessThreadCount = Runtime.getRuntime().availableProcessors() * 2;
         
         private boolean streamingProcess;
         
@@ -89,7 +89,7 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
          * 设置每次抓取的数据量.
          *
          * <p>
-         * 不能小于1.
+         * 默认值: CPU核数 * 2. 不能小于1.
          * </p>
          *
          * @param fetchDataCount 每次抓取的数据量

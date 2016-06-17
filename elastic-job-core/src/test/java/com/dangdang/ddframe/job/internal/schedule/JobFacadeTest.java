@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -103,9 +104,21 @@ public class JobFacadeTest {
     }
     
     @Test
+    public void assertGetConcurrentDataProcessThreadCount() {
+        when(configService.getConcurrentDataProcessThreadCount()).thenReturn(100);
+        assertThat(jobFacade.getConcurrentDataProcessThreadCount(), is(100));
+    }
+    
+    @Test
     public void assertIsStreamingProcess() {
         when(configService.isStreamingProcess()).thenReturn(false);
-        assertThat(jobFacade.isStreamingProcess(), is(false));
+        assertFalse(jobFacade.isStreamingProcess());
+    }
+    
+    @Test
+    public void assertGetScriptCommandLine() {
+        when(configService.getScriptCommandLine()).thenReturn("echo hello");
+        assertThat(jobFacade.getScriptCommandLine(), is("echo hello"));
     }
     
     @Test
