@@ -68,8 +68,7 @@ public class ConfigurationService {
         fillSimpleJobInfo();
         if (JobType.DATA_FLOW == jobNodeStorage.getJobConfiguration().getJobType()) {
             fillDataFlowJobInfo();
-        }
-        if (JobType.SCRIPT == jobNodeStorage.getJobConfiguration().getJobType()) {
+        } else if (JobType.SCRIPT == jobNodeStorage.getJobConfiguration().getJobType()) {
             fillScriptJobInfo();
         }
     }
@@ -117,7 +116,8 @@ public class ConfigurationService {
      * @return 作业分片总数
      */
     public int getShardingTotalCount() {
-        return Integer.parseInt(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.SHARDING_TOTAL_COUNT));
+        String result = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.SHARDING_TOTAL_COUNT);
+        return Strings.isNullOrEmpty(result) ? -1 : Integer.parseInt(result);
     }
     
     /**

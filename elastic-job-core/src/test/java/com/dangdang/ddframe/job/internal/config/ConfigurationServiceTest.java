@@ -126,6 +126,12 @@ public final class ConfigurationServiceTest {
     }
     
     @Test
+    public void assertGetShardingTotalCountWhenNodeIsNotExisted() {
+        assertThat(configService.getShardingTotalCount(), is(-1));
+        verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.SHARDING_TOTAL_COUNT);
+    }
+    
+    @Test
     public void assertGetShardingItemParametersWhenIsEmpty() {
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.SHARDING_ITEM_PARAMETERS)).thenReturn("");
         assertThat(configService.getShardingItemParameters(), is(Collections.EMPTY_MAP));

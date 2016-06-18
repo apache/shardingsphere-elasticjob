@@ -12,6 +12,9 @@ weight=1
 
 1. [ISSUE #110](https://github.com/dangdangdotcom/elastic-job/issues/110) 手动触发作业
 
+### 缺陷修正
+1. [ISSUE #99](https://github.com/dangdangdotcom/elastic-job/issues/99) 删除作业异步导致作业删除后, 还未结束的作业继续创建zk数据
+
 ## 1.1.0
 
 ### 结构调整

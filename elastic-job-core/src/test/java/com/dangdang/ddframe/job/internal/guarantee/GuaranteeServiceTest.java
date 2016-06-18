@@ -56,27 +56,27 @@ public final class GuaranteeServiceTest {
     }
     
     @Test
-    public void testRegisterStart() {
+    public void assertRegisterStart() {
         guaranteeService.registerStart(Arrays.asList(0, 1));
         verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/started/0");
         verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/started/1");
     }
     
     @Test
-    public void testIsNotAllStartedWhenRootNodeIsNotExisted() {
+    public void assertIsNotAllStartedWhenRootNodeIsNotExisted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(false);
         assertFalse(guaranteeService.isAllStarted());
     }
     
     @Test
-    public void testIsNotAllStarted() {
+    public void assertIsNotAllStarted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1"));
         assertFalse(guaranteeService.isAllStarted());
     }
     
     @Test
-    public void testIsAllStarted() {
+    public void assertIsAllStarted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1", "2"));
@@ -84,33 +84,34 @@ public final class GuaranteeServiceTest {
     }
     
     @Test
-    public void testClearAllStartedInfo() {
+    public void assertClearAllStartedInfo() {
         guaranteeService.clearAllStartedInfo();
         verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/started");
     }
     
     @Test
-    public void testRegisterComplete() {
+    public void assertRegisterComplete() {
         guaranteeService.registerComplete(Arrays.asList(0, 1));
         verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/completed/0");
         verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/completed/1");
     }
     
     @Test
-    public void testIsNotAllCompletedWhenRootNodeIsNotExisted() {
+    public void assertIsNotAllCompletedWhenRootNodeIsNotExisted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(false);
         assertFalse(guaranteeService.isAllCompleted());
     }
     
     @Test
-    public void testIsNotAllCompleted() {
+    public void assertIsNotAllCompleted() {
+        when(configService.getShardingTotalCount()).thenReturn(10);
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1"));
         assertFalse(guaranteeService.isAllCompleted());
     }
     
     @Test
-    public void testIsAllCompleted() {
+    public void assertIsAllCompleted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1", "2"));
@@ -118,7 +119,7 @@ public final class GuaranteeServiceTest {
     }
     
     @Test
-    public void testClearAllCompletedInfo() {
+    public void assertClearAllCompletedInfo() {
         guaranteeService.clearAllCompletedInfo();
         verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/completed");
     }

@@ -20,8 +20,8 @@ package com.dangdang.ddframe.job.internal.storage;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.api.config.impl.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.util.JobConfigurationFieldUtil;
 import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.util.JobConfigurationFieldUtil;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransaction;
@@ -99,16 +99,30 @@ public final class JobNodeStorageTest {
     
     @Test
     public void assertCreateJobNodeIfNeeded() {
+        when(coordinatorRegistryCenter.isExisted("/testJob")).thenReturn(true);
         when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(false);
         jobNodeStorage.createJobNodeIfNeeded("config");
+        verify(coordinatorRegistryCenter).isExisted("/testJob");
         verify(coordinatorRegistryCenter).isExisted("/testJob/config");
         verify(coordinatorRegistryCenter).persist("/testJob/config", "");
     }
     
     @Test
-    public void assertCreateJobNodeIfNotNeeded() {
+    public void assertCreateJobNodeIfRootJobNodeIsNotExist() {
+        when(coordinatorRegistryCenter.isExisted("/testJob")).thenReturn(false);
         when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(true);
         jobNodeStorage.createJobNodeIfNeeded("config");
+        verify(coordinatorRegistryCenter).isExisted("/testJob");
+        verify(coordinatorRegistryCenter, times(0)).isExisted("/testJob/config");
+        verify(coordinatorRegistryCenter, times(0)).persist("/testJob/config", "");
+    }
+    
+    @Test
+    public void assertCreateJobNodeIfNotNeeded() {
+        when(coordinatorRegistryCenter.isExisted("/testJob")).thenReturn(true);
+        when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(true);
+        jobNodeStorage.createJobNodeIfNeeded("config");
+        verify(coordinatorRegistryCenter).isExisted("/testJob");
         verify(coordinatorRegistryCenter).isExisted("/testJob/config");
         verify(coordinatorRegistryCenter, times(0)).persist("/testJob/config", "");
     }
