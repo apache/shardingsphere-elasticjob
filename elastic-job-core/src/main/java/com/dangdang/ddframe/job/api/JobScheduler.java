@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobLis
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.internal.guarantee.GuaranteeService;
+import com.dangdang.ddframe.job.internal.job.LiteJob;
 import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
@@ -56,20 +57,17 @@ public class JobScheduler {
     
     private final CoordinatorRegistryCenter regCenter;
     
+    private final ElasticJob elasticJob;
+    
     private final SchedulerFacade schedulerFacade;
-    
-    private final JobFacade jobFacade;
-    
-    private final JobDetail jobDetail;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
         jobName = jobConfig.getJobName();
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobConfig, elasticJobListenerList);
+        elasticJob = createElasticJob(jobConfig, elasticJobListenerList);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig, elasticJobListenerList);
-        jobFacade = new JobFacade(regCenter, jobConfig, elasticJobListenerList);
-        jobDetail = JobBuilder.newJob(jobConfig.getJobClass()).withIdentity(jobName).build();
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners) {
@@ -81,6 +79,17 @@ public class JobScheduler {
         }
     }
     
+    private ElasticJob createElasticJob(final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListenerList) {
+        ElasticJob result;
+        try {
+            result = (ElasticJob) jobConfig.getJobClass().newInstance();
+        } catch (final InstantiationException | IllegalAccessException ex) {
+            throw new JobException(ex);
+        }
+        result.setJobFacade(new JobFacade(regCenter, jobConfig, elasticJobListenerList));
+        return result;
+    }
+    
     /**
      * 初始化作业.
      */
@@ -89,7 +98,8 @@ public class JobScheduler {
         schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + jobName);
         schedulerFacade.registerStartUpInfo();
-        jobDetail.getJobDataMap().put("jobFacade", jobFacade);
+        JobDetail jobDetail = JobBuilder.newJob(LiteJob.class).withIdentity(jobName).build();
+        jobDetail.getJobDataMap().put("elasticJob", elasticJob);
         JobScheduleController jobScheduleController;
         try {
             jobScheduleController = new JobScheduleController(

@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.FooStreamingIndividualThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 import org.junit.Test;
-import org.quartz.JobExecutionException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,12 +44,12 @@ public final class StreamingIndividualThroughputDataFlowElasticJobTest extends A
     
     @SuppressWarnings("unchecked")
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmpty() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2), Collections.emptyList());
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
         when(getJobCaller().processData(1)).thenReturn(false);
         when(getJobCaller().processData(2)).thenReturn(true);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller(), times(2)).fetchData();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);

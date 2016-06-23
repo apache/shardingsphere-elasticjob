@@ -17,21 +17,37 @@
 
 package com.dangdang.ddframe.job.api;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionException;
+import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 
 /**
  * 弹性化分布式作业接口.
  * 
  * @author zhangliang
  */
-public interface ElasticJob extends Job {
+public interface ElasticJob {
+    
+    /**
+     * 执行作业.
+     */
+    void execute();
     
     /**
      * 处理作业执行时异常.
      * 
-     * @param jobExecutionException 作业执行时异常
-     * @throws JobExecutionException 作业执行时异常
+     * @param jobException 作业异常
      */
-    void handleJobExecutionException(JobExecutionException jobExecutionException) throws JobExecutionException;
+    void handleJobExecutionException(JobException jobException);
+    
+    /**
+     * 获取提供作业服务的门面类.
+     */
+    JobFacade getJobFacade();
+    
+    /**
+     * 设置提供作业服务的门面类.
+     * 
+     * @param jobFacade 提供作业服务的门面类
+     */
+    void setJobFacade(JobFacade jobFacade);
 }

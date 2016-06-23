@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quartz.JobExecutionException;
 import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -47,7 +46,7 @@ public final class ProcessCountJobTest {
     }
     
     @Test
-    public void assertRun() throws JobExecutionException {
+    public void assertRun() {
         ProcessCountStatistics.incrementProcessSuccessCount(ProcessCountJobTest.class.getName());
         ProcessCountStatistics.incrementProcessSuccessCount(ProcessCountJobTest.class.getName());
         ProcessCountStatistics.incrementProcessFailureCount(ProcessCountJobTest.class.getName());

@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import lombok.RequiredArgsConstructor;
-import org.quartz.JobExecutionException;
 
 import java.util.List;
 
@@ -40,6 +40,6 @@ public final class FooUnstreamingIndividualThroughputDataFlowElasticJob extends 
     }
     
     @Override
-    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
+    public void handleJobExecutionException(final JobException jobException) {
     }
 }

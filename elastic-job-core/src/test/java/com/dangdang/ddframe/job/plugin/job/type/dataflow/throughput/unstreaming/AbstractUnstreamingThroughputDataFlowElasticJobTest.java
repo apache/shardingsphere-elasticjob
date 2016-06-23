@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractDataFlowElastic
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.junit.Test;
-import org.quartz.JobExecutionException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,30 +36,30 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowElasticJobTest {
     
     @Test
-    public void assertExecuteWhenFetchDataIsNull() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNull() {
         when(getJobCaller().fetchData()).thenReturn(null);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsEmpty() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsEmpty() {
         when(getJobCaller().fetchData()).thenReturn(Collections.emptyList());
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOne() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOne() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().processData(1)).thenReturn(true);
         when(getJobCaller().processData(2)).thenReturn(true);
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobFacade()).getConcurrentDataProcessThreadCount();
@@ -69,11 +68,11 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyAndDataIsOne() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmptyAndDataIsOne() {
         when(getJobCaller().fetchData()).thenReturn(Collections.<Object>singletonList(1));
         when(getJobCaller().processData(1)).thenReturn(true);
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobFacade()).getConcurrentDataProcessThreadCount();
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
@@ -81,11 +80,11 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOneAndProcessFailureWithException() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOneAndProcessFailureWithException() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
-        doThrow(NullPointerException.class).when(getJobCaller()).processData(any());
+        doThrow(IllegalStateException.class).when(getJobCaller()).processData(any());
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobFacade()).getConcurrentDataProcessThreadCount();
@@ -94,12 +93,12 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOneAndProcessFailureWithWrongResult() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOneAndProcessFailureWithWrongResult() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().processData(1)).thenReturn(true, true);
         when(getJobCaller().processData(2)).thenReturn(false, false);
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobFacade()).getConcurrentDataProcessThreadCount();
@@ -108,14 +107,14 @@ public abstract class AbstractUnstreamingThroughputDataFlowElasticJobTest extend
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyForMultipleThread() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmptyForMultipleThread() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3, 4));
         when(getJobCaller().processData(1)).thenReturn(true);
         when(getJobCaller().processData(2)).thenReturn(true);
         when(getJobCaller().processData(3)).thenReturn(true);
         when(getJobCaller().processData(4)).thenReturn(true);
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobCaller()).processData(3);

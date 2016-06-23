@@ -20,15 +20,13 @@
 package com.dangdang.ddframe.job.plugin.job.type.integrated;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.util.ScriptElasticJobUtil;
 import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
+import com.dangdang.ddframe.job.util.ScriptElasticJobUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import java.io.IOException;
 
@@ -41,9 +39,6 @@ public class ScriptElasticJobTest {
     private JobFacade jobFacade;
     
     private ScriptElasticJob scriptElasticJob;
-    
-    @Mock
-    private JobExecutionContext jobExecutionContext;
     
     private String scriptCommandLine;
     
@@ -58,23 +53,23 @@ public class ScriptElasticJobTest {
         scriptCommandLine = ScriptElasticJobUtil.buildScriptCommandLine();
     }
     
-    @Test(expected = JobExecutionException.class)
-    public void assertExecuteWhenFileNotExists() throws JobExecutionException {
+    @Test
+    public void assertExecuteWhenFileNotExists() {
         when(jobFacade.getScriptCommandLine()).thenReturn("wrong name");
-        scriptElasticJob.execute(jobExecutionContext);
+        scriptElasticJob.execute();
     }
     
     @Test
-    public void assertExecuteWhenFileExists() throws JobExecutionException {
+    public void assertExecuteWhenFileExists() {
         when(jobFacade.getScriptCommandLine()).thenReturn(scriptCommandLine);
-        scriptElasticJob.execute(jobExecutionContext);
+        scriptElasticJob.execute();
         verify(jobFacade).getScriptCommandLine();
     }
     
     @Test
-    public void assertExecuteWhenFileExistsWithArguments() throws JobExecutionException {
+    public void assertExecuteWhenFileExistsWithArguments() {
         when(jobFacade.getScriptCommandLine()).thenReturn(scriptCommandLine + " foo bar");
-        scriptElasticJob.execute(jobExecutionContext);
+        scriptElasticJob.execute();
         verify(jobFacade).getScriptCommandLine();
     }
 }

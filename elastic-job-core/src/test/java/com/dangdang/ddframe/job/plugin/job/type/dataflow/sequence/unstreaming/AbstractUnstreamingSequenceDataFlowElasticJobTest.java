@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.plugin.job.type.dataflow.sequence.AbstractSequen
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.junit.Test;
-import org.quartz.JobExecutionException;
 
 import java.util.Arrays;
 
@@ -33,14 +32,14 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractUnstreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDataFlowElasticJobTest {
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmpty() {
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
         when(getJobCaller().processData(1)).thenReturn(true);
         when(getJobCaller().processData(2)).thenReturn(true);
         when(getJobCaller().processData(3)).thenReturn(false);
-        when(getJobCaller().processData(4)).thenThrow(new NullPointerException());
-        getDataFlowElasticJob().execute(null);
+        when(getJobCaller().processData(4)).thenThrow(new IllegalStateException());
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).fetchData(0);
         verify(getJobCaller()).fetchData(1);
         verify(getJobCaller()).processData(1);

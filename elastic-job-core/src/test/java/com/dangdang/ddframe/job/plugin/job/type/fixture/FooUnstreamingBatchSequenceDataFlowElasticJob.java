@@ -41,7 +41,7 @@ public final class FooUnstreamingBatchSequenceDataFlowElasticJob extends Abstrac
                 if (jobCaller.processData(each)) {
                     result++;
                 }
-            } catch (final NullPointerException ex) {
+            } catch (final IllegalStateException ex) {
             }
         }
         return result;

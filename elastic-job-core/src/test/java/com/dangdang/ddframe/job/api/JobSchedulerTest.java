@@ -20,33 +20,27 @@ package com.dangdang.ddframe.job.api;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
-import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.fixture.TestElasticJobListener;
 import com.dangdang.ddframe.job.fixture.TestJob;
-import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
 import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import org.hamcrest.core.Is;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -61,12 +55,6 @@ public final class JobSchedulerTest {
     private SchedulerFacade schedulerFacade;
     
     @Mock
-    private JobFacade jobFacade;
-    
-    @Mock
-    private JobDetail jobDetail;
-    
-    @Mock
     private ElasticJobListenerCaller caller;
     
     private JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
@@ -78,18 +66,15 @@ public final class JobSchedulerTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "regCenter", regCenter);
         ReflectionUtils.setFieldValue(jobScheduler, "schedulerFacade", schedulerFacade);
-        ReflectionUtils.setFieldValue(jobScheduler, "jobFacade", jobFacade);
     }
     
     @Test
     public void testNew() throws NoSuchFieldException {
-        JobScheduler actualJobScheduler = new JobScheduler(null, jobConfig, new TestElasticJobListener(caller), new TestDistributeOnceElasticJobListener(caller));
-        JobFacade actualJobFacade = ReflectionUtils.getFieldValue(actualJobScheduler, ReflectionUtils.getFieldWithName(JobScheduler.class, "jobFacade", false));
-        List<ElasticJobListener> actualElasticJobListeners = ReflectionUtils.getFieldValue(actualJobFacade, ReflectionUtils.getFieldWithName(JobFacade.class, "elasticJobListeners", false));
-        assertThat(actualElasticJobListeners.size(), Is.is(2));
-        assertThat(actualElasticJobListeners.get(0), IsInstanceOf.instanceOf(TestElasticJobListener.class));
-        assertThat(actualElasticJobListeners.get(1), IsInstanceOf.instanceOf(TestDistributeOnceElasticJobListener.class));
-        assertNotNull(ReflectionUtils.getFieldValue(actualElasticJobListeners.get(1), AbstractDistributeOnceElasticJobListener.class.getDeclaredField("guaranteeService")));
+        TestDistributeOnceElasticJobListener testDistributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(caller);
+        assertNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
+        JobScheduler actualJobScheduler = new JobScheduler(null, jobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
+        assertNotNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
+        assertThat(ReflectionUtils.getFieldValue(actualJobScheduler, ReflectionUtils.getFieldWithName(JobScheduler.class, "elasticJob", false)), instanceOf(jobConfig.getJobClass()));
     }
     
     @Test
@@ -114,13 +99,10 @@ public final class JobSchedulerTest {
     
     private void assertInit() throws NoSuchFieldException, SchedulerException {
         verify(schedulerFacade).clearPreviousServerStatus();
-        JobDetail jobDetail = ReflectionUtils.getFieldValue(jobScheduler, jobScheduler.getClass().getDeclaredField("jobDetail"));
-        assertThat(jobDetail.getKey().getName(), is("testJob"));
         Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("testJob"), JobScheduleController.class.getDeclaredField("scheduler"));
         assertThat(scheduler.getListenerManager().getTriggerListeners().size(), is(1));
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
-        assertThat((JobFacade) jobDetail.getJobDataMap().get("jobFacade"), is(jobFacade));
         verify(regCenter).addCacheData("/testJob");
         verify(schedulerFacade).registerStartUpInfo();
         verify(schedulerFacade).newJobTriggerListener();

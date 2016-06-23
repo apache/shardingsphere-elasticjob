@@ -20,12 +20,12 @@ package com.dangdang.ddframe.job.internal.job.dataflow;
 import com.dangdang.ddframe.job.api.DataFlowElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.internal.job.AbstractJobExecutionShardingContext;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.quartz.JobExecutionException;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -224,8 +224,8 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     }
     
     @Override
-    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
-        log.error("Elastic job: exception occur in job processing...", jobExecutionException.getCause());
+    public void handleJobExecutionException(final JobException jobException) {
+        log.error("Elastic job: exception occur in job processing...", jobException.getCause());
     }
     
     private void latchAwait(final CountDownLatch latch) {

@@ -17,9 +17,10 @@
 
 package com.dangdang.ddframe.job.spring.schedule;
 
-import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.ElasticJob;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
-
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.Scheduler;
@@ -28,11 +29,7 @@ import org.quartz.simpl.PropertySettingJobFactory;
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
-
-import com.dangdang.ddframe.job.spring.util.AopTargetUtils;
-import com.google.common.base.Preconditions;
 
 /**
  * 基于Spring Bean的作业工厂.
@@ -52,30 +49,30 @@ public final class SpringJobFactory extends PropertySettingJobFactory {
     @Override
     public Job newJob(final TriggerFiredBundle bundle, final Scheduler scheduler) throws SchedulerException {
         Preconditions.checkNotNull(applicationContext, "applicationContext cannot be null, should call setApplicationContext first.");
-        Job job = null;
-        try {
-            for (Job each : applicationContext.getBeansOfType(Job.class).values()) {
-                if (AopUtils.getTargetClass(each) == bundle.getJobDetail().getJobClass()) {
-                    job = each;
-                    break;
-                }
-            }
-            if (ScriptElasticJob.class == bundle.getJobDetail().getJobClass()) {
-                return super.newJob(bundle, scheduler);
-            }
-            if (null == job) {
-                throw new NoSuchBeanDefinitionException("");
-            }
-        } catch (final BeansException ex) {
-            log.info("Elastic job: cannot found bean for class: '{}'. This job is not managed for spring.", bundle.getJobDetail().getJobClass().getCanonicalName());
-            return super.newJob(bundle, scheduler);
+        Job result = super.newJob(bundle, scheduler);
+        Optional<ElasticJob> elasticJobBean = findElasticJobBean(bundle);
+        if (elasticJobBean.isPresent()) {
+            setBeanProps(result, getJobDataMap(bundle, scheduler, elasticJobBean.get()));
         }
-        JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.putAll(scheduler.getContext());
-        jobDataMap.putAll(bundle.getJobDetail().getJobDataMap());
-        jobDataMap.putAll(bundle.getTrigger().getJobDataMap());
-        Job target = (Job) AopTargetUtils.getTarget(job);
-        setBeanProps(target, jobDataMap);
-        return target;
+        return result;
+    }
+    
+    private Optional<ElasticJob> findElasticJobBean(final TriggerFiredBundle bundle) {
+        for (ElasticJob each : applicationContext.getBeansOfType(ElasticJob.class).values()) {
+            if (bundle.getJobDetail().getJobDataMap().containsKey("elasticJob") && AopUtils.getTargetClass(each) == bundle.getJobDetail().getJobDataMap().get("elasticJob").getClass()) {
+                return Optional.of(each);
+            }
+        }
+        return Optional.absent();
+    }
+    
+    private JobDataMap getJobDataMap(final TriggerFiredBundle bundle, final Scheduler scheduler, final ElasticJob elasticJobBean) throws SchedulerException {
+        JobDataMap result = new JobDataMap();
+        result.putAll(scheduler.getContext());
+        result.putAll(bundle.getJobDetail().getJobDataMap());
+        result.putAll(bundle.getTrigger().getJobDataMap());
+        elasticJobBean.setJobFacade(((ElasticJob) result.get("elasticJob")).getJobFacade());
+        result.put("elasticJob", elasticJobBean);
+        return result;
     }
 }

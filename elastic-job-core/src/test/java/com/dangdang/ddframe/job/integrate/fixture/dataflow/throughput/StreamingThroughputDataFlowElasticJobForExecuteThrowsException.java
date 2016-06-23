@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import lombok.Getter;
-import org.quartz.JobExecutionException;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +45,7 @@ public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException exte
     }
     
     @Override
-    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
+    public void handleJobExecutionException(final JobException jobException) {
     }
     
     public static void reset() {

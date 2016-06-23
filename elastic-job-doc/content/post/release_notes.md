@@ -8,6 +8,10 @@ weight=1
 
 ## 1.1.1-SNAPSHOT
 
+### 结构调整
+
+1. [ISSUE #116](https://github.com/dangdangdotcom/elastic-job/issues/116) 作业接口的handleJobExecutionException参数变更
+
 ### 功能提升
 
 1. [ISSUE #110](https://github.com/dangdangdotcom/elastic-job/issues/110) 手动触发作业

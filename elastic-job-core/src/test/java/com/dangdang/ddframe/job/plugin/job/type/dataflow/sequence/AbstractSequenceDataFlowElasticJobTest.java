@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractDataFlowElastic
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.junit.Test;
-import org.quartz.JobExecutionException;
 
 import java.util.Collections;
 
@@ -35,10 +34,10 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractSequenceDataFlowElasticJobTest extends AbstractDataFlowElasticJobTest {
     
     @Test
-    public void assertExecuteWhenFetchDataIsNullAndEmpty() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNullAndEmpty() {
         when(getJobCaller().fetchData(0)).thenReturn(null);
         when(getJobCaller().fetchData(1)).thenReturn(Collections.emptyList());
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).fetchData(0);
         verify(getJobCaller()).fetchData(1);
         verify(getJobCaller(), times(0)).processData(any());

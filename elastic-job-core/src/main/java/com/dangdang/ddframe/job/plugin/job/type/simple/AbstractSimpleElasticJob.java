@@ -17,12 +17,9 @@
 
 package com.dangdang.ddframe.job.plugin.job.type.simple;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.quartz.JobExecutionException;
-
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.internal.job.AbstractElasticJob;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 简单的分布式作业.
@@ -40,11 +37,6 @@ public abstract class AbstractSimpleElasticJob extends AbstractElasticJob {
     @Override
     protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
         process(shardingContext);
-    }
-    
-    @Override
-    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
-        log.error("Elastic job: exception occur in job processing...", jobExecutionException.getCause());
     }
     
     /**

@@ -38,30 +38,30 @@ public final class JobMain {
     private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:4181", "elasticjob-example");
     
     private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
-
+    
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
         new JobMain().init();
     }
-
+    
     private void init() {
         zkConfig.setNestedPort(4181);
         zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         regCenter.init();
-
+        
         final SimpleJobConfiguration simpleJobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleElasticDemoJob", 
                 SimpleJobDemo.class, 10, "0/30 * * * * ?").build();
-
+        
         final DataFlowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("throughputDataFlowElasticDemoJob", 
                 ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").streamingProcess(true).build();
-
+        
         final DataFlowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("sequenceDataFlowElasticDemoJob", 
                 SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
-
+        
         final ScriptJobConfiguration scriptJobConfig = JobConfigurationFactory.createScriptJobConfigurationBuilder("scriptElasticDemoJob", 10, "0/5 * * * * ?", 
                 buildScriptCommandLine()).build();
-    
+        
         new JobScheduler(regCenter, simpleJobConfig, new SimpleDistributeOnceElasticJobListener()).init();
         new JobScheduler(regCenter, throughputJobConfig).init();
         new JobScheduler(regCenter, sequenceJobConfig).init();

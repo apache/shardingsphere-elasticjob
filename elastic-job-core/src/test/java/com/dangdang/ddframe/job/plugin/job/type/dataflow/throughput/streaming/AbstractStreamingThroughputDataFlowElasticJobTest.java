@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.plugin.job.type.dataflow.AbstractDataFlowElastic
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.junit.Test;
-import org.quartz.JobExecutionException;
 
 import java.util.Collections;
 
@@ -35,9 +34,9 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowElasticJobTest {
     
     @Test
-    public void assertExecuteWhenFetchDataIsNull() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNull() {
         when(getJobCaller().fetchData()).thenReturn(null);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
@@ -45,9 +44,9 @@ public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends 
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsEmpty() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsEmpty() {
         when(getJobCaller().fetchData()).thenReturn(Collections.emptyList());
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
@@ -55,10 +54,10 @@ public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends 
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyAndIsNotEligibleForJobRunning() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmptyAndIsNotEligibleForJobRunning() {
         when(getJobCaller().fetchData()).thenReturn(Collections.<Object>singletonList(1));
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(false);
-        getDataFlowElasticJob().execute(null);
+        getDataFlowElasticJob().execute();
         verify(getJobCaller()).fetchData();
         verify(getJobCaller()).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());

@@ -41,7 +41,7 @@ public final class FooStreamingBatchSequenceDataFlowElasticJob extends AbstractB
                 if (jobCaller.processData(each)) {
                     result++;
                 }
-            } catch (final NullPointerException ex) {
+            } catch (final IllegalStateException ex) {
             }
         }
         return result;

@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.plugin.job.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.FooStreamingBatchThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.plugin.job.type.fixture.JobCaller;
 import org.junit.Test;
-import org.quartz.JobExecutionException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,13 +44,13 @@ public final class StreamingBatchThroughputDataFlowElasticJobTest extends Abstra
     
     @SuppressWarnings("unchecked")
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmpty() throws JobExecutionException {
+    public void assertExecuteWhenFetchDataIsNotEmpty() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3), Collections.emptyList());
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
         when(getJobCaller().processData(1)).thenReturn(false);
         when(getJobCaller().processData(2)).thenReturn(true);
-        when(getJobCaller().processData(3)).thenThrow(new NullPointerException());
-        getDataFlowElasticJob().execute(null);
+        when(getJobCaller().processData(3)).thenThrow(new IllegalStateException());
+        getDataFlowElasticJob().execute();
         verify(getJobCaller(), times(2)).fetchData();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);

@@ -17,11 +17,9 @@
 
 package com.dangdang.ddframe.job.plugin.job.type.fixture;
 
-import org.quartz.JobExecutionException;
-
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -35,7 +33,7 @@ public class FooSimpleElasticJob extends AbstractSimpleElasticJob {
     }
     
     @Override
-    public void handleJobExecutionException(final JobExecutionException jobExecutionException) throws JobExecutionException {
-        throw jobExecutionException;
+    public void handleJobExecutionException(final JobException jobException) {
+        throw jobException;
     }
 }

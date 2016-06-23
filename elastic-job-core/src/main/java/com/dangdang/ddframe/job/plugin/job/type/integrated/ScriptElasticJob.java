@@ -33,7 +33,7 @@ import java.io.IOException;
  * @author caohao
  */
 public final class ScriptElasticJob extends AbstractElasticJob {
-        
+    
     @Override
     protected void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
         String scriptCommandLine = getJobFacade().getScriptCommandLine();
