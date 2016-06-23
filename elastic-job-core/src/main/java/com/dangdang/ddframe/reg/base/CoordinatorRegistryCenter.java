@@ -51,6 +51,14 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     void persistEphemeral(String key, String value);
     
     /**
+     * 持久化顺序注册数据.
+     *
+     * @param key 键
+     * @return 包含10位顺序数字的znode名称
+     */
+    String persistSequential(String key);
+    
+    /**
      * 持久化临时顺序注册数据.
      * 
      * @param key 键
