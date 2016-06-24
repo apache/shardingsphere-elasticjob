@@ -29,6 +29,7 @@ import com.dangdang.ddframe.job.internal.execution.ExecutionContextServiceTest;
 import com.dangdang.ddframe.job.internal.execution.ExecutionListenerManagerTest;
 import com.dangdang.ddframe.job.internal.execution.ExecutionNodeTest;
 import com.dangdang.ddframe.job.internal.execution.ExecutionServiceTest;
+import com.dangdang.ddframe.job.internal.executor.JobExecutorTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverListenerManagerTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverNodeTest;
 import com.dangdang.ddframe.job.internal.failover.FailoverServiceTest;
@@ -106,7 +107,8 @@ import org.junit.runners.Suite.SuiteClasses;
     GuaranteeNodeTest.class,
     GuaranteeServiceTest.class, 
     SchedulerFacadeTest.class,
-    JobFacadeTest.class
+    JobFacadeTest.class, 
+    JobExecutorTest.class
     })
 public final class AllInternalTests {
 }

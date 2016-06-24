@@ -25,7 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    JobExecutionMultipleShardingContextTest.class, 
+    JobExecutionMultipleShardingContextTest.class,
     JobSchedulerTest.class,
     DistributeOnceElasticJobListenerTest.class, 
     JobConfigurationFactoryTest.class,

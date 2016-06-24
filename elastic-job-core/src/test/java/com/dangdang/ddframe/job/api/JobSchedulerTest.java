@@ -19,11 +19,9 @@ package com.dangdang.ddframe.job.api;
 
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.config.JobConfigurationFactory;
-import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.fixture.ElasticJobListenerCaller;
-import com.dangdang.ddframe.job.api.listener.fixture.TestDistributeOnceElasticJobListener;
-import com.dangdang.ddframe.job.api.listener.fixture.TestElasticJobListener;
 import com.dangdang.ddframe.job.fixture.TestJob;
+import com.dangdang.ddframe.job.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.internal.schedule.JobTriggerListener;
@@ -39,8 +37,6 @@ import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -50,6 +46,9 @@ public final class JobSchedulerTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
+    private JobExecutor jobExecutor;
     
     @Mock
     private SchedulerFacade schedulerFacade;
@@ -64,17 +63,8 @@ public final class JobSchedulerTest {
     @Before
     public void initMocks() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        ReflectionUtils.setFieldValue(jobScheduler, "regCenter", regCenter);
-        ReflectionUtils.setFieldValue(jobScheduler, "schedulerFacade", schedulerFacade);
-    }
-    
-    @Test
-    public void testNew() throws NoSuchFieldException {
-        TestDistributeOnceElasticJobListener testDistributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(caller);
-        assertNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
-        JobScheduler actualJobScheduler = new JobScheduler(null, jobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
-        assertNotNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
-        assertThat(ReflectionUtils.getFieldValue(actualJobScheduler, ReflectionUtils.getFieldWithName(JobScheduler.class, "elasticJob", false)), instanceOf(jobConfig.getJobClass()));
+        ReflectionUtils.setFieldValue(jobScheduler, "jobExecutor", jobExecutor);
+        when(jobExecutor.getSchedulerFacade()).thenReturn(schedulerFacade);
     }
     
     @Test
@@ -92,19 +82,18 @@ public final class JobSchedulerTest {
     }
     
     private void mockInit(final boolean isMisfire) {
+        when(jobExecutor.getJobName()).thenReturn("testJob");
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         when(schedulerFacade.getCron()).thenReturn("* * 0/10 * * ? 2050");
         when(schedulerFacade.isMisfire()).thenReturn(isMisfire);
     }
     
     private void assertInit() throws NoSuchFieldException, SchedulerException {
-        verify(schedulerFacade).clearPreviousServerStatus();
+        verify(jobExecutor).init();
         Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("testJob"), JobScheduleController.class.getDeclaredField("scheduler"));
         assertThat(scheduler.getListenerManager().getTriggerListeners().size(), is(1));
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
-        verify(regCenter).addCacheData("/testJob");
-        verify(schedulerFacade).registerStartUpInfo();
         verify(schedulerFacade).newJobTriggerListener();
     }
 }

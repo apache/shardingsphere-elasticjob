@@ -82,8 +82,8 @@ public class SchedulerFacade {
         configService.persistJobConfiguration();
         serverService.persistServerOnline();
         serverService.clearJobPausedStatus();
-        if (JobType.DATA_FLOW.equals(configService.getJobType())) {
-            statisticsService.startProcessCountJob();    
+        if (JobType.DATA_FLOW == configService.getJobType()) {
+            statisticsService.startProcessCountJob();
         }
         shardingService.setReshardingFlag();
         monitorService.listen();

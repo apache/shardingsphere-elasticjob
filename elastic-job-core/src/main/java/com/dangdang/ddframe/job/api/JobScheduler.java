@@ -18,26 +18,20 @@
 package com.dangdang.ddframe.job.api;
 
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.internal.guarantee.GuaranteeService;
+import com.dangdang.ddframe.job.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.internal.job.LiteJob;
-import com.dangdang.ddframe.job.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
-import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -46,76 +40,41 @@ import java.util.Properties;
  * @author zhangliang
  * @author caohao
  */
-@Slf4j
 public class JobScheduler {
     
     private static final String SCHEDULER_INSTANCE_NAME_SUFFIX = "Scheduler";
     
     private static final String CRON_TRIGGER_IDENTITY_SUFFIX = "Trigger";
     
-    private final String jobName;
-    
-    private final CoordinatorRegistryCenter regCenter;
-    
-    private final ElasticJob elasticJob;
-    
-    private final SchedulerFacade schedulerFacade;
+    private final JobExecutor jobExecutor;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        jobName = jobConfig.getJobName();
-        this.regCenter = regCenter;
-        List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
-        setGuaranteeServiceForElasticJobListeners(regCenter, jobConfig, elasticJobListenerList);
-        elasticJob = createElasticJob(jobConfig, elasticJobListenerList);
-        schedulerFacade = new SchedulerFacade(regCenter, jobConfig, elasticJobListenerList);
-    }
-    
-    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners) {
-        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobConfig);
-        for (ElasticJobListener each : elasticJobListeners) {
-            if (each instanceof AbstractDistributeOnceElasticJobListener) {
-                ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
-            }
-        }
-    }
-    
-    private ElasticJob createElasticJob(final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListenerList) {
-        ElasticJob result;
-        try {
-            result = (ElasticJob) jobConfig.getJobClass().newInstance();
-        } catch (final InstantiationException | IllegalAccessException ex) {
-            throw new JobException(ex);
-        }
-        result.setJobFacade(new JobFacade(regCenter, jobConfig, elasticJobListenerList));
-        return result;
+        jobExecutor = new JobExecutor(regCenter, jobConfig, elasticJobListeners);
     }
     
     /**
      * 初始化作业.
      */
     public void init() {
-        log.debug("Elastic job: job controller init, job name is: {}.", jobName);
-        schedulerFacade.clearPreviousServerStatus();
-        regCenter.addCacheData("/" + jobName);
-        schedulerFacade.registerStartUpInfo();
-        JobDetail jobDetail = JobBuilder.newJob(LiteJob.class).withIdentity(jobName).build();
-        jobDetail.getJobDataMap().put("elasticJob", elasticJob);
+        jobExecutor.init();
+        JobDetail jobDetail = JobBuilder.newJob(LiteJob.class).withIdentity(jobExecutor.getJobName()).build();
+        jobDetail.getJobDataMap().put("elasticJob", jobExecutor.getElasticJob());
         JobScheduleController jobScheduleController;
         try {
             jobScheduleController = new JobScheduleController(
-                    initializeScheduler(jobDetail.getKey().toString()), jobDetail, schedulerFacade, Joiner.on("_").join(jobName, CRON_TRIGGER_IDENTITY_SUFFIX));
-            jobScheduleController.scheduleJob(schedulerFacade.getCron());
+                    initializeScheduler(jobDetail.getKey().toString()), jobDetail, jobExecutor.getSchedulerFacade(), Joiner.on("_").join(jobExecutor.getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX));
+            jobScheduleController.scheduleJob(jobExecutor.getSchedulerFacade().getCron());
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
-        JobRegistry.getInstance().addJobScheduleController(jobName, jobScheduleController);
+        JobRegistry.getInstance().addJobScheduleController(jobExecutor.getJobName(), jobScheduleController);
     }
     
     private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
         StdSchedulerFactory factory = new StdSchedulerFactory();
         factory.initialize(getBaseQuartzProperties(jobName));
         Scheduler result = factory.getScheduler();
-        result.getListenerManager().addTriggerListener(schedulerFacade.newJobTriggerListener());
+        result.getListenerManager().addTriggerListener(jobExecutor.getSchedulerFacade().newJobTriggerListener());
         return result;
     }
     
@@ -124,7 +83,7 @@ public class JobScheduler {
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
-        if (!schedulerFacade.isMisfire()) {
+        if (!jobExecutor.getSchedulerFacade().isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
         prepareEnvironments(result);
