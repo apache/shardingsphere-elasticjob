@@ -1,3 +1,20 @@
+<!--
+  ~ Copyright 1999-2015 dangdang.com.
+  ~ <p>
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~ </p>
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dangdang</groupId>
@@ -12,6 +29,7 @@
         <module>elastic-job-spring</module>
         <module>elastic-job-api</module>
         <module>elastic-job-console</module>
+        <module>elastic-job-cloud</module>
     </modules>
     
     <properties>
@@ -36,6 +54,7 @@
         <commons-exec.version>1.3</commons-exec.version>
         <gson.version>2.6.1</gson.version>
         <javaee-web-api.version>7.0</javaee-web-api.version>
+        <mesos.version>0.20.1</mesos.version>
         
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
@@ -187,6 +206,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-exec</artifactId>
                 <version>${commons-exec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.mesos</groupId>
+                <artifactId>mesos</artifactId>
+                <version>${mesos.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax</groupId>
