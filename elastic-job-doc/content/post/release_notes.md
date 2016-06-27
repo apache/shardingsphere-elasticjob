@@ -6,7 +6,7 @@ weight=1
 
 # Release Notes
 
-## 1.1.1-SNAPSHOT
+## 1.1.1
 
 ### 结构调整
 
