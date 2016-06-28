@@ -30,6 +30,7 @@
         <module>elastic-job-api</module>
         <module>elastic-job-console</module>
         <module>elastic-job-cloud</module>
+        <module>elastic-job-cloud-assembly</module>
     </modules>
     
     <properties>

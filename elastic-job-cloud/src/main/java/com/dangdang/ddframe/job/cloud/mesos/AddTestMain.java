@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.cloud.Internal.schedule.CloudTaskSchedulerRegistry;
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudTask;
+import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
@@ -36,6 +36,6 @@ public class AddTestMain {
         CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
         regCenter.init();
         CloudTaskSchedulerRegistry.getInstance(regCenter).register(
-                new CloudTask("job_" + System.nanoTime(), "0/5 * * * * ?", 10, 1d, 128, "docker", "", "localhost:2181", "elastic-job-cloud-example", Optional.<String>absent()));
+                new CloudJobConfiguration("job_test", "0/5 * * * * ?", 5, 0.5d, 128, "docker", ""));
     }
 }

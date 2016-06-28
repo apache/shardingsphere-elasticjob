@@ -15,29 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.running;
+package com.dangdang.ddframe.job.cloud.boot;
 
-import lombok.RequiredArgsConstructor;
+import com.dangdang.ddframe.job.cloud.api.AbstractCloudElasticJob;
+
+import java.util.Date;
 
 /**
- * Elastic Job Cloud运行状态根节点名称的常量类.
+ * .
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor
-public final class RunningNode {
+public class TestCloudJob extends AbstractCloudElasticJob {
     
-    private static final String ROOT = "/running";
-    
-    private static final String RUNNING_JOBS = ROOT + "/jobs/%s";
-    
-    private static final String RUNNING_TASKS = ROOT + "/tasks/%s";
-    
-    static String getRunningJobNodePath(final String jobName) {
-        return String.format(RUNNING_JOBS, jobName);
+    public TestCloudJob(final String taskId) {
+        super(taskId);
     }
     
-    static String getRunningTaskNodePath(final String taskId) {
-        return String.format(RUNNING_TASKS, taskId);
+    
+    @Override
+    protected void executeJob(final int shardingItem) {
+        System.out.println(new Date() + ":------test job-------:" + shardingItem);
     }
 }

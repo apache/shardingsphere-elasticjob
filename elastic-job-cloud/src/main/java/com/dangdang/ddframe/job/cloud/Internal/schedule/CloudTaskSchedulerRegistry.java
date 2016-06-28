@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.Internal.schedule;
 
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudTask;
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudTaskService;
+import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.Internal.config.CloudConfigurationService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudTaskSchedulerRegistry {
     
     private static volatile CloudTaskSchedulerRegistry instance;
@@ -38,6 +37,13 @@ public final class CloudTaskSchedulerRegistry {
     private final ConcurrentHashMap<String, CloudTaskScheduler> cloudTaskSchedulerMap = new ConcurrentHashMap<>(65535);
     
     private final CoordinatorRegistryCenter registryCenter;
+    
+    private final CloudConfigurationService configService;
+    
+    private CloudTaskSchedulerRegistry(final CoordinatorRegistryCenter registryCenter) {
+        this.registryCenter = registryCenter;
+        configService = new CloudConfigurationService(registryCenter);
+    }
     
     /**
      * 获取实例.
@@ -57,19 +63,28 @@ public final class CloudTaskSchedulerRegistry {
     }
     
     /**
-     * 注册任务.
-     * 
-     * @param task 云任务
+     * 将注册中心中的云作业配置注册调度.
      */
-    public void register(final CloudTask task) {
-        String jobName = task.getJobName();
+    public void registerFromRegistryCenter() {
+        for (CloudJobConfiguration each : configService.loadAll()) {
+            register(each);
+        }
+    }
+    
+    /**
+     * 注册调度.
+     * 
+     * @param cloudJobConfig 云任务
+     */
+    public void register(final CloudJobConfiguration cloudJobConfig) {
+        String jobName = cloudJobConfig.getJobName();
         if (cloudTaskSchedulerMap.containsKey(jobName)) {
             cloudTaskSchedulerMap.get(jobName).shutdown();
             cloudTaskSchedulerMap.remove(jobName);
         }
-        CloudTaskService cloudTaskService = new CloudTaskService(registryCenter);
-        cloudTaskService.addTask(task);
-        CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(task, registryCenter);
+        CloudConfigurationService cloudTaskService = new CloudConfigurationService(registryCenter);
+        cloudTaskService.add(cloudJobConfig);
+        CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(cloudJobConfig, registryCenter);
         cloudTaskScheduler.startup();
         cloudTaskSchedulerMap.put(jobName, cloudTaskScheduler);
     }

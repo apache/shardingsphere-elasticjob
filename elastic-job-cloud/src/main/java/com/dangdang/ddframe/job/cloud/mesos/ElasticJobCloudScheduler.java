@@ -17,25 +17,28 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.api.JobAPIFactory;
+import com.dangdang.ddframe.job.cloud.Internal.config.CloudConfigurationService;
+import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.Internal.queue.TaskQueueService;
-import com.dangdang.ddframe.job.cloud.Internal.running.RunningService;
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudTask;
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudTaskService;
+import com.dangdang.ddframe.job.cloud.Internal.schedule.CloudTaskSchedulerRegistry;
+import com.dangdang.ddframe.job.cloud.Internal.state.StateService;
+import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTask;
+import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTaskService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
- * Elastic-Job-Cloud的Mesos调度器.
+ * 作业云的Mesos调度器.
  *
  * @author zhangliang
  */
@@ -44,8 +47,25 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     private final CoordinatorRegistryCenter registryCenter;
     
+    private final CloudConfigurationService configService;
+    
+    private final CloudJobTaskService taskService;
+    
+    private final TaskQueueService taskQueueService;
+    
+    private final StateService stateService;
+    
+    public ElasticJobCloudScheduler(final CoordinatorRegistryCenter registryCenter) {
+        this.registryCenter = registryCenter;
+        configService = new CloudConfigurationService(registryCenter);
+        taskService = new CloudJobTaskService();
+        taskQueueService = new TaskQueueService(registryCenter);
+        stateService = new StateService(registryCenter);
+    }
+    
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
+        CloudTaskSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
     }
     
     @Override
@@ -54,38 +74,71 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
-        CloudTaskService cloudTaskService = new CloudTaskService(registryCenter);
-        TaskQueueService taskQueueService = new TaskQueueService(registryCenter);
-        RunningService runningService = new RunningService(registryCenter);
-        List<Protos.TaskInfo> tasks = new ArrayList<>(offers.size());
-        List<Protos.OfferID> offerIdList = new ArrayList<>(offers.size());
-        for (Protos.Offer each : offers) {
-            Optional<String> jobName = taskQueueService.dequeue();
-            if (!jobName.isPresent()) {
-                schedulerDriver.declineOffer(each.getId());
-                return;
-            }
-            Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(Joiner.on("-").join(jobName.get(), UUID.randomUUID().toString())).build();
-            CloudTask cloudTask = cloudTaskService.getTask(jobName.get());
-            Protos.TaskInfo task = Protos.TaskInfo.newBuilder()
-                    .setName(Joiner.on("-").join(jobName.get(), taskId.getValue()))
-                    .setTaskId(taskId)
-                    .setSlaveId(each.getSlaveId())
-                    .addResources(Protos.Resource.newBuilder()
-                            .setName("cpus")
-                            .setType(Protos.Value.Type.SCALAR)
-                            .setScalar(Protos.Value.Scalar.newBuilder().setValue(cloudTask.getCpuCount())))
-                    .addResources(Protos.Resource.newBuilder()
-                            .setName("mem")
-                            .setType(Protos.Value.Type.SCALAR)
-                            .setScalar(Protos.Value.Scalar.newBuilder().setValue(cloudTask.getMemoryMB())))
-                    .setCommand(Protos.CommandInfo.newBuilder().setValue("/Users/zhangliang/docker-sample/elastic-job-example/bin/start.sh > /Users/zhangliang/docker-sample/elastic-job-example/logs/log1.log"))
-                    .build();
-            tasks.add(task);
-            offerIdList.add(each.getId());
-            runningService.startRunning(jobName.get(), taskId.getValue());
+        Optional<String> jobName = taskQueueService.dequeue();
+        if (!jobName.isPresent()) {
+            declineOffers(schedulerDriver, offers);
+            return;
         }
-        schedulerDriver.launchTasks(offerIdList, tasks);
+        CloudJobConfiguration cloudJobConfig = configService.load(jobName.get());
+        List<Protos.TaskInfo> tasks = new ArrayList<>(cloudJobConfig.getShardingTotalCount());
+        int startShardingItem = 0;
+        int assignedShares = 0;
+        for (Protos.Offer each : offers) {
+            int availableCpuShare = getValue(each.getResourcesList(), "cpus").divide(new BigDecimal(cloudJobConfig.getCpuCount()), BigDecimal.ROUND_DOWN).intValue();
+            int availableMemoriesShare = getValue(each.getResourcesList(), "mem").divide(new BigDecimal(cloudJobConfig.getMemoryMB()), BigDecimal.ROUND_DOWN).intValue();
+            assignedShares += availableCpuShare < availableMemoriesShare ? availableCpuShare : availableMemoriesShare;
+            for (int i = startShardingItem; i < assignedShares; i++) {
+                Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(taskService.generateTaskId(jobName.get(), i)).build();
+                Protos.TaskInfo task = Protos.TaskInfo.newBuilder()
+                        .setName(taskId.getValue())
+                        .setTaskId(taskId)
+                        .setSlaveId(each.getSlaveId())
+                        .addResources(getResources("cpus", cloudJobConfig.getCpuCount()))
+                        .addResources(getResources("mem", cloudJobConfig.getMemoryMB()))
+                        .setCommand(Protos.CommandInfo.newBuilder().setValue("/Users/zhangliang/docker-sample/elastic-job-example/bin/start.sh " + taskId.getValue() + " > /Users/zhangliang/docker-sample/elastic-job-example/logs/log" + taskService.getJobTask(taskId.getValue()).getShardingItem() + ".log"))
+                        .build();
+                tasks.add(task);
+                if (tasks.size() == cloudJobConfig.getShardingTotalCount()) {
+                    break;
+                }
+            }
+            if (tasks.size() == cloudJobConfig.getShardingTotalCount()) {
+                break;
+            }
+            startShardingItem = assignedShares;
+        }
+        if (tasks.size() < cloudJobConfig.getShardingTotalCount()) {
+            declineOffers(schedulerDriver, offers);
+            return;
+        }
+        // TODO 未使用的slaveid 机器调用declineOffer方法放回
+        stateService.sharding(jobName.get());
+        schedulerDriver.launchTasks(Lists.transform(offers, new Function<Protos.Offer, Protos.OfferID>() {
+            
+            @Override
+            public Protos.OfferID apply(final Protos.Offer input) {
+                return input.getId();
+            }
+        }), tasks);
+    }
+    
+    private void declineOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
+        for (Protos.Offer each : offers) {
+            schedulerDriver.declineOffer(each.getId());
+        }
+    }
+    
+    private BigDecimal getValue(final List<Protos.Resource> resources, final String type) {
+        for (Protos.Resource each : resources) {
+            if (type.equals(each.getName())) {
+                return new BigDecimal(each.getScalar().getValue());
+            }
+        }
+        return BigDecimal.ZERO;
+    }
+    
+    private Protos.Resource.Builder getResources(final String type, final double value) {
+        return Protos.Resource.newBuilder().setName(type).setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(value));
     }
     
     @Override
@@ -94,19 +147,16 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     @Override
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
-        RunningService runningService = new RunningService(registryCenter);
         String taskId = taskStatus.getTaskId().getValue();
-        String jobName = runningService.getRunningJobName(taskId);
+        CloudJobTask cloudJobTask = taskService.getJobTask(taskId);
         switch (taskStatus.getState()) {
+            case TASK_STARTING:
+                stateService.startRunning(cloudJobTask.getJobName(), cloudJobTask.getShardingItem());
             case TASK_FINISHED:
             case TASK_FAILED:
             case TASK_KILLED:
             case TASK_LOST:
-                runningService.completeRunning(jobName, taskId);
-                break;
-            case TASK_RUNNING:
-                CloudTask cloudTask = new CloudTaskService(registryCenter).getTask(jobName);
-                JobAPIFactory.createJobOperateAPI(cloudTask.getConnectString(), cloudTask.getNamespace(), cloudTask.getDigest()).trigger(Optional.of(jobName), Optional.<String>absent());
+                stateService.completeRunning(cloudJobTask.getJobName(), cloudJobTask.getShardingItem());
                 break;
             default:
                 break;

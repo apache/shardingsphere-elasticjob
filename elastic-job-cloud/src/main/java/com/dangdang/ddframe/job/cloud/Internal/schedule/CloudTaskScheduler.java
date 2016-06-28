@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.Internal.schedule;
 
 import com.dangdang.ddframe.job.cloud.Internal.queue.TaskQueueService;
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudTask;
+import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
@@ -40,13 +40,13 @@ import java.util.Properties;
  */
 public final class CloudTaskScheduler {
     
-    private final CloudTask task;
+    private final CloudJobConfiguration task;
     
     private final CoordinatorRegistryCenter registryCenter;
     
     private final Scheduler scheduler;
     
-    public CloudTaskScheduler(final CloudTask task, final CoordinatorRegistryCenter registryCenter) {
+    public CloudTaskScheduler(final CloudJobConfiguration task, final CoordinatorRegistryCenter registryCenter) {
         this.task = task;
         this.registryCenter = registryCenter;
         scheduler = getScheduler();

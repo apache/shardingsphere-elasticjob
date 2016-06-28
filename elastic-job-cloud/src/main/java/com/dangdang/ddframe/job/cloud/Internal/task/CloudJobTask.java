@@ -17,36 +17,21 @@
 
 package com.dangdang.ddframe.job.cloud.Internal.task;
 
-import com.google.common.base.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 云任务域对象.
+ * 云作业任务.
  *
  * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter
-public final class CloudTask {
+public final class CloudJobTask {
+    
+    private final String taskId;
     
     private final String jobName;
     
-    private final String cron;
-    
-    private final int shardingTotalCount;
-    
-    private final double cpuCount;
-    
-    private final int memoryMB;
-    
-    private final String dockerImageName;
-    
-    private final String appURL;
-    
-    private final String connectString;
-    
-    private final String namespace;
-    
-    private final Optional<String> digest;
+    private final int shardingItem;
 }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.Internal.queue;
 
-import com.dangdang.ddframe.job.cloud.Internal.running.RunningService;
+import com.dangdang.ddframe.job.cloud.Internal.state.StateService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
@@ -32,11 +32,11 @@ public class TaskQueueService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
-    private final RunningService runningService;
+    private final StateService stateService;
     
     public TaskQueueService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
-        runningService = new RunningService(registryCenter);
+        stateService = new StateService(registryCenter);
     }
     
     /**
@@ -63,7 +63,7 @@ public class TaskQueueService {
         }
         for (String each : jobNames) {
             String jobName = getLogicNodeForSequential(each);
-            if (!runningService.isRunning(jobName)) {
+            if (!stateService.isRunning(jobName)) {
                 registryCenter.remove(QueueNode.getQueueNodePath(each));
                 return Optional.of(jobName);
             }
