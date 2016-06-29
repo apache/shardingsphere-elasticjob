@@ -23,17 +23,21 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 
-public class Main {
+public class Bootstrap {
     
     // -Djava.library.path=/usr/local/lib
     public static void main(String[] args) {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "elastic-job-cloud");
         CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
         regCenter.init();
-        
-        
         Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser("").setName("myTest").build();
         MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new ElasticJobCloudScheduler(regCenter), frameworkInfo, "zk://localhost:2181/mesos");
         Protos.Status status = schedulerDriver.run();
+        if (Protos.Status.DRIVER_STOPPED == status) {
+            System.exit(0);
+        }
+        if (Protos.Status.DRIVER_ABORTED == status) {
+            System.exit(-1);
+        }
     }
 }

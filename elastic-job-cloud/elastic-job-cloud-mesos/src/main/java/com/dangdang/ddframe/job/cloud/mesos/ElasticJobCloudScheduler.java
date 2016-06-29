@@ -24,6 +24,8 @@ import com.dangdang.ddframe.job.cloud.Internal.schedule.CloudTaskSchedulerRegist
 import com.dangdang.ddframe.job.cloud.Internal.state.StateService;
 import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTask;
 import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTaskService;
+import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
+import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -33,8 +35,6 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,40 +79,19 @@ public final class ElasticJobCloudScheduler implements Scheduler {
             declineOffers(schedulerDriver, offers);
             return;
         }
-        CloudJobConfiguration cloudJobConfig = configService.load(jobName.get());
-        List<Protos.TaskInfo> tasks = new ArrayList<>(cloudJobConfig.getShardingTotalCount());
-        int startShardingItem = 0;
-        int assignedShares = 0;
-        for (Protos.Offer each : offers) {
-            int availableCpuShare = getValue(each.getResourcesList(), "cpus").divide(new BigDecimal(cloudJobConfig.getCpuCount()), BigDecimal.ROUND_DOWN).intValue();
-            int availableMemoriesShare = getValue(each.getResourcesList(), "mem").divide(new BigDecimal(cloudJobConfig.getMemoryMB()), BigDecimal.ROUND_DOWN).intValue();
-            assignedShares += availableCpuShare < availableMemoriesShare ? availableCpuShare : availableMemoriesShare;
-            for (int i = startShardingItem; i < assignedShares; i++) {
-                Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(taskService.generateTaskId(jobName.get(), i)).build();
-                Protos.TaskInfo task = Protos.TaskInfo.newBuilder()
-                        .setName(taskId.getValue())
-                        .setTaskId(taskId)
-                        .setSlaveId(each.getSlaveId())
-                        .addResources(getResources("cpus", cloudJobConfig.getCpuCount()))
-                        .addResources(getResources("mem", cloudJobConfig.getMemoryMB()))
-                        .setCommand(Protos.CommandInfo.newBuilder().setValue("/Users/zhangliang/docker-sample/elastic-job-example/bin/start.sh " + taskId.getValue() + " > /Users/zhangliang/docker-sample/elastic-job-example/logs/log" + taskService.getJobTask(taskId.getValue()).getShardingItem() + ".log"))
-                        .build();
-                tasks.add(task);
-                if (tasks.size() == cloudJobConfig.getShardingTotalCount()) {
-                    break;
-                }
-            }
-            if (tasks.size() == cloudJobConfig.getShardingTotalCount()) {
-                break;
-            }
-            startShardingItem = assignedShares;
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName.get());
+        if (!cloudJobConfig.isPresent()) {
+            declineOffers(schedulerDriver, offers);
+            return;
         }
-        if (tasks.size() < cloudJobConfig.getShardingTotalCount()) {
+        // TODO 出队时如果mesos framework死机,则已出队但未运行的作业将丢失
+        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy();
+        List<Protos.TaskInfo> tasks = resourceAllocateStrategy.allocate(offers, cloudJobConfig.get());
+        if (tasks.size() < cloudJobConfig.get().getShardingTotalCount()) {
             declineOffers(schedulerDriver, offers);
             return;
         }
         // TODO 未使用的slaveid 机器调用declineOffer方法放回
-        stateService.sharding(jobName.get());
         schedulerDriver.launchTasks(Lists.transform(offers, new Function<Protos.Offer, Protos.OfferID>() {
             
             @Override
@@ -126,19 +105,6 @@ public final class ElasticJobCloudScheduler implements Scheduler {
         for (Protos.Offer each : offers) {
             schedulerDriver.declineOffer(each.getId());
         }
-    }
-    
-    private BigDecimal getValue(final List<Protos.Resource> resources, final String type) {
-        for (Protos.Resource each : resources) {
-            if (type.equals(each.getName())) {
-                return new BigDecimal(each.getScalar().getValue());
-            }
-        }
-        return BigDecimal.ZERO;
-    }
-    
-    private Protos.Resource.Builder getResources(final String type, final double value) {
-        return Protos.Resource.newBuilder().setName(type).setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(value));
     }
     
     @Override

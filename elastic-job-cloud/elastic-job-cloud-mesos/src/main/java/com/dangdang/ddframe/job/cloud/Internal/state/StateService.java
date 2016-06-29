@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.Internal.state;
 import com.dangdang.ddframe.job.cloud.Internal.config.CloudConfigurationService;
 import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Optional;
 
 /**
  * 云作业状态服务.
@@ -43,9 +44,36 @@ public final class StateService {
      * @param jobName 作业名称.
      */
     public void sharding(final String jobName) {
-        CloudJobConfiguration cloudJobConfig = cloudConfigurationService.load(jobName);
-        for (int i = 0; i < cloudJobConfig.getShardingTotalCount(); i++) {
+        Optional<CloudJobConfiguration> cloudJobConfig = cloudConfigurationService.load(jobName);
+        if (!cloudJobConfig.isPresent()) {
+            return;
+        }
+        for (int i = 0; i < cloudJobConfig.get().getShardingTotalCount(); i++) {
             registryCenter.persist(StateNode.getShardingItemNodePath(jobName, i), "");
+        }
+    }
+    
+    /**
+     * 重分片.
+     *
+     * @param jobName 作业名称.
+     */
+    public void reSharding(final String jobName) {
+        Optional<CloudJobConfiguration> cloudJobConfig = cloudConfigurationService.load(jobName);
+        if (!cloudJobConfig.isPresent()) {
+            return;
+        }
+        int originalShardingTotalCount = registryCenter.getChildrenKeys(StateNode.getRootNodePath(jobName)).size();
+        int newShardingTotalCount =  cloudJobConfig.get().getShardingTotalCount();
+        if (originalShardingTotalCount < newShardingTotalCount) {
+            for (int i = originalShardingTotalCount; i < newShardingTotalCount; i++) {
+                registryCenter.persist(StateNode.getShardingItemNodePath(jobName, i), "");
+            }
+        }
+        if (originalShardingTotalCount > newShardingTotalCount) {
+            for (int i = newShardingTotalCount; i < originalShardingTotalCount; i++) {
+                registryCenter.remove(StateNode.getShardingItemNodePath(jobName, i));
+            }
         }
     }
     
@@ -76,8 +104,11 @@ public final class StateService {
      * @return 作业是否运行
      */
     public boolean isRunning(final String jobName) {
-        CloudJobConfiguration cloudJobConfig = cloudConfigurationService.load(jobName);
-        for (int i = 0; i < cloudJobConfig.getShardingTotalCount(); i++) {
+        Optional<CloudJobConfiguration> cloudJobConfig = cloudConfigurationService.load(jobName);
+        if (!cloudJobConfig.isPresent()) {
+            return false;
+        }
+        for (int i = 0; i < cloudJobConfig.get().getShardingTotalCount(); i++) {
             if (registryCenter.isExisted(StateNode.getRunningNodePath(jobName, i))) {
                 return true;
             }

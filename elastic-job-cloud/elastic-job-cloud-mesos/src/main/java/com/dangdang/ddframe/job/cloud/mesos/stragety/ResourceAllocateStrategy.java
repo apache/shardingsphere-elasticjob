@@ -15,28 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.task;
+package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
-import com.google.common.base.Preconditions;
+import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
+import org.apache.mesos.Protos;
+
+import java.util.List;
 
 /**
- * 云作业任务服务.
+ * 资源分配策略接口.
  *
  * @author zhangliang
  */
-public class CloudJobTaskService {
-    
-    private final static String DELIMITER = "@-@";
+public interface ResourceAllocateStrategy {
     
     /**
-     * 根据任务主键获取任务对象.
-     *
-     * @param taskId 任务主键
-     * @return 任务对象
+     * 分配资源.
+     * 
+     * @param offers 资源列表
+     * @param cloudJobConfig 云作业配置
+     * @return 执行任务列表
      */
-    public CloudJobTask getJobTask(final String taskId) {
-        String[] result = taskId.split(DELIMITER);
-        Preconditions.checkState(3 == result.length);
-        return new CloudJobTask(result[2], result[0], Integer.parseInt(result[1]));
-    }
+    List<Protos.TaskInfo> allocate(List<Protos.Offer> offers, CloudJobConfiguration cloudJobConfig);
 }

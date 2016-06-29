@@ -17,11 +17,12 @@
 
 package com.dangdang.ddframe.job.cloud.Internal.schedule;
 
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.Internal.config.CloudConfigurationService;
+import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.Internal.state.StateService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,9 +41,12 @@ public final class CloudTaskSchedulerRegistry {
     
     private final CloudConfigurationService configService;
     
+    private final StateService stateService;
+    
     private CloudTaskSchedulerRegistry(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new CloudConfigurationService(registryCenter);
+        stateService = new StateService(registryCenter);
     }
     
     /**
@@ -74,7 +78,7 @@ public final class CloudTaskSchedulerRegistry {
     /**
      * 注册调度.
      * 
-     * @param cloudJobConfig 云任务
+     * @param cloudJobConfig 云任务配置
      */
     public void register(final CloudJobConfiguration cloudJobConfig) {
         String jobName = cloudJobConfig.getJobName();
@@ -82,11 +86,38 @@ public final class CloudTaskSchedulerRegistry {
             cloudTaskSchedulerMap.get(jobName).shutdown();
             cloudTaskSchedulerMap.remove(jobName);
         }
-        CloudConfigurationService cloudTaskService = new CloudConfigurationService(registryCenter);
-        cloudTaskService.add(cloudJobConfig);
+        configService.add(cloudJobConfig);
+        stateService.sharding(jobName);
         CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(cloudJobConfig, registryCenter);
         cloudTaskScheduler.startup();
         cloudTaskSchedulerMap.put(jobName, cloudTaskScheduler);
+    }
+    
+    /**
+     * 重新注册调度.
+     *
+     * @param cloudJobConfig 云任务配置
+     */
+    public void reregister(final CloudJobConfiguration cloudJobConfig) {
+        String jobName = cloudJobConfig.getJobName();
+        Preconditions.checkState(cloudTaskSchedulerMap.containsKey(jobName));
+        Optional<CloudJobConfiguration> originalCloudJobConfig = configService.load(jobName);
+        Preconditions.checkState(originalCloudJobConfig.isPresent());
+        configService.update(cloudJobConfig);
+        boolean isCronChanged = !originalCloudJobConfig.get().getCron().equals(cloudJobConfig.getCron());
+        boolean isShardingTotalCountChanged = originalCloudJobConfig.get().getShardingTotalCount() != cloudJobConfig.getShardingTotalCount();
+        if (isCronChanged) {
+            cloudTaskSchedulerMap.get(jobName).shutdown();
+            cloudTaskSchedulerMap.remove(jobName);
+        }
+        if (isShardingTotalCountChanged) {
+            stateService.reSharding(jobName);
+        }
+        if (isCronChanged) {
+            CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(cloudJobConfig, registryCenter);
+            cloudTaskScheduler.startup();
+            cloudTaskSchedulerMap.put(jobName, cloudTaskScheduler);
+        }
     }
     
     /**
@@ -97,5 +128,6 @@ public final class CloudTaskSchedulerRegistry {
     public void unregister(final String jobName) {
         cloudTaskSchedulerMap.get(jobName).shutdown();
         cloudTaskSchedulerMap.remove(jobName);
+        configService.remove(jobName);
     }
 }

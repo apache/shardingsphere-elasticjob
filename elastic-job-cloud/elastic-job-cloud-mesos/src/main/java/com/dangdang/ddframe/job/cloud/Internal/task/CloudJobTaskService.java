@@ -29,6 +29,8 @@ import java.util.UUID;
  */
 public class CloudJobTaskService {
     
+    private final static String DELIMITER = "@-@";
+    
     /**
      * 创建任务主键.
      *
@@ -37,7 +39,7 @@ public class CloudJobTaskService {
      * @return 任务主键
      */
     public String generateTaskId(final String jobName, final int shardingItem) {
-        return Joiner.on("@-@").join(jobName, shardingItem, UUID.randomUUID().toString());
+        return Joiner.on(DELIMITER).join(jobName, shardingItem, UUID.randomUUID().toString());
     }
     
     /**
@@ -47,7 +49,7 @@ public class CloudJobTaskService {
      * @return 任务对象
      */
     public CloudJobTask getJobTask(final String taskId) {
-        String[] result = taskId.split("@-@");
+        String[] result = taskId.split(DELIMITER);
         Preconditions.checkState(3 == result.length);
         return new CloudJobTask(result[2], result[0], Integer.parseInt(result[1]));
     }

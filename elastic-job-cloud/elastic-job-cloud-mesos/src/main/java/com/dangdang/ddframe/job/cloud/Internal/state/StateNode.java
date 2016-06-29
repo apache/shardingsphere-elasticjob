@@ -38,6 +38,10 @@ public final class StateNode {
     
     static final String SHUTDOWN = SHARDING_ITEM + "/shutdown";
     
+    static String getRootNodePath(final String jobName) {
+        return String.format(ROOT, jobName);
+    }
+    
     static String getShardingItemNodePath(final String jobName, final int shardingItem) {
         return String.format(SHARDING_ITEM, jobName, shardingItem);
     }

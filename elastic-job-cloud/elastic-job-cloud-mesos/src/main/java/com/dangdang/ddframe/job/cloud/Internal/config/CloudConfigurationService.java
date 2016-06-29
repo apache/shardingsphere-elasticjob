@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.Internal.config;
 
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +42,6 @@ public final class CloudConfigurationService {
      * 
      * @param cloudJobConfig 云作业配置对象
      */
-    // TODO 应为API
     public void add(final CloudJobConfiguration cloudJobConfig) {
         registryCenter.persist(CloudConfigurationNode.getShardingTotalCountNodePath(cloudJobConfig.getJobName()), Integer.toString(cloudJobConfig.getShardingTotalCount()));
         registryCenter.persist(CloudConfigurationNode.getCpuCountNodePath(cloudJobConfig.getJobName()), Double.toString(cloudJobConfig.getCpuCount()));
@@ -49,6 +49,27 @@ public final class CloudConfigurationService {
         registryCenter.persist(CloudConfigurationNode.getDockerImageNameNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getDockerImageName());
         registryCenter.persist(CloudConfigurationNode.getAppURLNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getAppURL());
         registryCenter.persist(CloudConfigurationNode.getCronNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getCron());
+    }
+    
+    /**
+     * 修改云作业配置.
+     *
+     * @param cloudJobConfig 云作业配置对象
+     */
+    public void update(final CloudJobConfiguration cloudJobConfig) {
+        updateIfNeed(CloudConfigurationNode.getShardingTotalCountNodePath(cloudJobConfig.getJobName()), Integer.toString(cloudJobConfig.getShardingTotalCount()));
+        updateIfNeed(CloudConfigurationNode.getShardingTotalCountNodePath(cloudJobConfig.getJobName()), Integer.toString(cloudJobConfig.getShardingTotalCount()));
+        updateIfNeed(CloudConfigurationNode.getCpuCountNodePath(cloudJobConfig.getJobName()), Double.toString(cloudJobConfig.getCpuCount()));
+        updateIfNeed(CloudConfigurationNode.getMemoryMBNodePath(cloudJobConfig.getJobName()), Double.toString(cloudJobConfig.getMemoryMB()));
+        updateIfNeed(CloudConfigurationNode.getDockerImageNameNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getDockerImageName());
+        updateIfNeed(CloudConfigurationNode.getAppURLNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getAppURL());
+        updateIfNeed(CloudConfigurationNode.getCronNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getCron());
+    }
+    
+    private void updateIfNeed(final String znode, final String newValue) {
+        if (null != newValue && !newValue.equals(registryCenter.get(znode))) {
+            registryCenter.update(znode, newValue);
+        }
     }
     
     /**
@@ -63,7 +84,10 @@ public final class CloudConfigurationService {
         List<String> jobNames = registryCenter.getChildrenKeys("/jobs");
         Collection<CloudJobConfiguration> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
-            result.add(load(each));
+            Optional<CloudJobConfiguration> config = load(each);
+            if (config.isPresent()) {
+                result.add(config.get());
+            }
         }
         return result;
     }
@@ -74,15 +98,23 @@ public final class CloudConfigurationService {
      * @param jobName 作业名称
      * @return 云作业配置
      */
-    public CloudJobConfiguration load(final String jobName) {
-        Preconditions.checkState(registryCenter.isExisted(CloudConfigurationNode.getRootNodePath(jobName)));
-        return new CloudJobConfiguration(
+    public Optional<CloudJobConfiguration> load(final String jobName) {
+        return !registryCenter.isExisted(CloudConfigurationNode.getRootNodePath(jobName)) ? Optional.<CloudJobConfiguration>absent() : Optional.of(new CloudJobConfiguration(
                 jobName, 
                 registryCenter.get(CloudConfigurationNode.getCronNodePath(jobName)), 
                 Integer.parseInt(registryCenter.get(CloudConfigurationNode.getShardingTotalCountNodePath(jobName))), 
                 Double.parseDouble(registryCenter.get(CloudConfigurationNode.getCpuCountNodePath(jobName))),
                 Double.parseDouble(registryCenter.get(CloudConfigurationNode.getMemoryMBNodePath(jobName))), 
                 registryCenter.get(CloudConfigurationNode.getDockerImageNameNodePath(jobName)),
-                registryCenter.get(CloudConfigurationNode.getAppURLNodePath(jobName)));
+                registryCenter.get(CloudConfigurationNode.getAppURLNodePath(jobName))));
+    }
+    
+    /**
+     * 删除云作业.
+     *
+     * @param jobName 作业名称
+     */
+    public void remove(final String jobName) {
+        registryCenter.remove("/jobs/" + jobName);
     }
 }
