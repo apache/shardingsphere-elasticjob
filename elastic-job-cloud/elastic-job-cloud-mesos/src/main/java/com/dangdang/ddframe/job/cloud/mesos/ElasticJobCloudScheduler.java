@@ -130,7 +130,18 @@ public final class ElasticJobCloudScheduler implements Scheduler {
             declineOffers(schedulerDriver, offers);
             return;
         }
-        // TODO 未使用的slaveid 机器调用declineOffer方法放回
+        removeRunningTasks(tasks);
+        declineUnusedOffers(schedulerDriver, offers, tasks);
+        launchTasks(schedulerDriver, offers, tasks);
+    }
+    
+    private void declineOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
+        for (Protos.Offer each : offers) {
+            schedulerDriver.declineOffer(each.getId());
+        }
+    }
+    
+    private void removeRunningTasks(final List<Protos.TaskInfo> tasks) {
         List<Protos.TaskInfo> runningTasks = new ArrayList<>(tasks.size());
         for (Protos.TaskInfo each : tasks) {
             if (!taskRunningService.add(each.getSlaveId().getValue(), ElasticJobTask.from(each.getTaskId().getValue()))) {
@@ -138,6 +149,26 @@ public final class ElasticJobCloudScheduler implements Scheduler {
             }
         }
         tasks.removeAll(runningTasks);
+    }
+    
+    private void declineUnusedOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.TaskInfo> tasks) {
+        for (Protos.Offer each : offers) {
+            if (!isUsed(each, tasks)) {
+                schedulerDriver.declineOffer(each.getId());
+            }
+        }
+    }
+    
+    private boolean isUsed(final Protos.Offer offer, final List<Protos.TaskInfo> tasks) {
+        for (Protos.TaskInfo each : tasks) {
+            if (offer.getSlaveId().getValue().equals(each.getSlaveId().getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private void launchTasks(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.TaskInfo> tasks) {
         schedulerDriver.launchTasks(Lists.transform(offers, new Function<Protos.Offer, Protos.OfferID>() {
             
             @Override
@@ -145,12 +176,6 @@ public final class ElasticJobCloudScheduler implements Scheduler {
                 return input.getId();
             }
         }), tasks);
-    }
-    
-    private void declineOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
-        for (Protos.Offer each : offers) {
-            schedulerDriver.declineOffer(each.getId());
-        }
     }
     
     @Override
