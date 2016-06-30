@@ -90,8 +90,8 @@ public final class ElasticJobCloudScheduler implements Scheduler {
             return false;
         }
         for (Protos.Offer each : offers) {
-            BigDecimal cpuCount = MesosUtil.getValue(each.getResourcesList(), "cpus");
-            BigDecimal memories = MesosUtil.getValue(each.getResourcesList(), "mem");
+            BigDecimal cpuCount = MesosUtil.getValue(each, "cpus");
+            BigDecimal memories = MesosUtil.getValue(each, "mem");
             if (cpuCount.doubleValue() >= cloudJobConfig.get().getCpuCount() && memories.doubleValue() >= cloudJobConfig.get().getMemoryMB()) {
                 Protos.TaskInfo task = MesosUtil.createTaskInfo(each, cloudJobConfig.get(), elasticJobTask.get().getShardingItem());
                 schedulerDriver.launchTasks(Lists.transform(offers, new Function<Protos.Offer, Protos.OfferID>() {
@@ -112,33 +112,24 @@ public final class ElasticJobCloudScheduler implements Scheduler {
         if (failover(schedulerDriver, offers)) {
             return;
         }
+        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(offers);
         Optional<String> jobName = readyJobQueueService.dequeue();
-        if (!jobName.isPresent()) {
-            declineOffers(schedulerDriver, offers);
-            return;
+        while (jobName.isPresent()) {
+            Optional<CloudJobConfiguration> jobConfig = configService.load(jobName.get());
+            if (!jobConfig.isPresent()) {
+                continue;
+            }
+            if (!resourceAllocateStrategy.allocate(jobConfig.get())) {
+                break;
+            }
+            jobName = readyJobQueueService.dequeue();
         }
-        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName.get());
-        if (!cloudJobConfig.isPresent()) {
-            declineOffers(schedulerDriver, offers);
-            return;
-        }
+        List<Protos.TaskInfo> tasks = resourceAllocateStrategy.getTasks();
         // TODO 出队时如果mesos framework死机,则已出队但未运行的作业将丢失
         // TODO 目前是每个实例处理一片, 要改成每个实例能处理n片,按照资源决定每个服务分配的分片
-        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy();
-        List<Protos.TaskInfo> tasks = resourceAllocateStrategy.allocate(offers, cloudJobConfig.get());
-        if (tasks.size() < cloudJobConfig.get().getShardingTotalCount()) {
-            declineOffers(schedulerDriver, offers);
-            return;
-        }
         removeRunningTasks(tasks);
         declineUnusedOffers(schedulerDriver, offers, tasks);
         launchTasks(schedulerDriver, offers, tasks);
-    }
-    
-    private void declineOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
-        for (Protos.Offer each : offers) {
-            schedulerDriver.declineOffer(each.getId());
-        }
     }
     
     private void removeRunningTasks(final List<Protos.TaskInfo> tasks) {

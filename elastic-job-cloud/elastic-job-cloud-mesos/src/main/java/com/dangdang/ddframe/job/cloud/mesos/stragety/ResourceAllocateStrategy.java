@@ -32,9 +32,15 @@ public interface ResourceAllocateStrategy {
     /**
      * 分配资源.
      * 
-     * @param offers 资源列表
-     * @param cloudJobConfig 云作业配置
-     * @return 执行任务列表
+     * @param jobConfig 云作业配置
+     * @return 分配是否成功
      */
-    List<Protos.TaskInfo> allocate(List<Protos.Offer> offers, CloudJobConfiguration cloudJobConfig);
+    boolean allocate(CloudJobConfiguration jobConfig);
+    
+    /**
+     * 获取任务列表.
+     * 
+     * @return 任务列表
+     */
+    List<Protos.TaskInfo> getTasks();
 }

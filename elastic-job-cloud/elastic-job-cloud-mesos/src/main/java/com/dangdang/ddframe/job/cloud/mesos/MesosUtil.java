@@ -63,12 +63,12 @@ public class MesosUtil {
     /**
      * 获取资源值.
      * 
-     * @param resources 资源集合
+     * @param offer 资源提供对象
      * @param type 资源类型
      * @return 资源值
      */
-    public static BigDecimal getValue(final List<Protos.Resource> resources, final String type) {
-        for (Protos.Resource each : resources) {
+    public static BigDecimal getValue(final Protos.Offer offer, final String type) {
+        for (Protos.Resource each : offer.getResourcesList()) {
             if (type.equals(each.getName())) {
                 return new BigDecimal(each.getScalar().getValue());
             }
