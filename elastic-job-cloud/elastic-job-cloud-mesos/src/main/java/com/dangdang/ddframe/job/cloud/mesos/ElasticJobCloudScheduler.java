@@ -164,6 +164,7 @@ public final class ElasticJobCloudScheduler implements Scheduler {
         switch (taskStatus.getState()) {
             case TASK_STARTING:
                 stateService.startRunning(cloudJobTask.getJobName(), cloudJobTask.getShardingItem());
+                break;
             case TASK_FINISHED:
             case TASK_FAILED:
             case TASK_KILLED:
@@ -188,7 +189,11 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     public void slaveLost(final SchedulerDriver schedulerDriver, final Protos.SlaveID slaveID) {
         List<String> runningTaskIds = taskRunningService.load(slaveID.getValue());
         for (String each : runningTaskIds) {
-            failoverTaskQueueService.enqueue(each);
+            ElasticJobTask elasticJobTask = ElasticJobTask.from(each);
+            Optional<CloudJobConfiguration> jobConfig = configService.load(elasticJobTask.getJobName());
+            if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
+                failoverTaskQueueService.enqueue(each);    
+            }
             taskRunningService.remove(slaveID.getValue(), each);
         }
     }

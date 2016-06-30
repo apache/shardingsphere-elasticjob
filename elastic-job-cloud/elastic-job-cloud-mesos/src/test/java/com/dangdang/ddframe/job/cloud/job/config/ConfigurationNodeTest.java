@@ -20,42 +20,12 @@ package com.dangdang.ddframe.job.cloud.job.config;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public final class ConfigurationNodeTest {
     
     @Test
     public void assertGetRootNodePath() {
         assertThat(ConfigurationNode.getRootNodePath("test_job"), is("/jobs/test_job/config"));
-    }
-    
-    @Test
-    public void assertGetCronNodePath() {
-        assertThat(ConfigurationNode.getCronNodePath("test_job"), is("/jobs/test_job/config/cron"));
-    }
-    
-    @Test
-    public void assertGetShardingTotalCountNodePath() {
-        assertThat(ConfigurationNode.getShardingTotalCountNodePath("test_job"), is("/jobs/test_job/config/sharding_total_count"));
-    }
-    
-    @Test
-    public void assertGetCpuCountNodePath() {
-        assertThat(ConfigurationNode.getCpuCountNodePath("test_job"), is("/jobs/test_job/config/cpu_count"));
-    }
-    
-    @Test
-    public void assertGetMemoryMBNodePath() {
-        assertThat(ConfigurationNode.getMemoryMBNodePath("test_job"), is("/jobs/test_job/config/memory_mb"));
-    }
-    
-    @Test
-    public void assertGetDockerImageNameNodePath() {
-        assertThat(ConfigurationNode.getDockerImageNameNodePath("test_job"), is("/jobs/test_job/config/docker_image_name"));
-    }
-    
-    @Test
-    public void assertGetAppURLNodePath() {
-        assertThat(ConfigurationNode.getAppURLNodePath("test_job"), is("/jobs/test_job/config/app_url"));
     }
 }

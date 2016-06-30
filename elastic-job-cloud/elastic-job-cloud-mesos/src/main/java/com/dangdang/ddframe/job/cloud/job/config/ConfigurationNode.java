@@ -31,43 +31,7 @@ public final class ConfigurationNode {
     
     private static final String ROOT = JobNode.JOB_ROOT + "/config";
     
-    static final String CRON = ROOT + "/cron";
-    
-    static final String SHARDING_TOTAL_COUNT = ROOT + "/sharding_total_count";
-    
-    static final String CPU_COUNT = ROOT + "/cpu_count";
-    
-    static final String MEMORY_MB = ROOT + "/memory_mb";
-    
-    static final String DOCKER_IMAGE_NAME = ROOT + "/docker_image_name";
-    
-    static final String APP_URL = ROOT + "/app_url";
-    
     static String getRootNodePath(final String jobName) {
         return String.format(ROOT, jobName);
-    }
-    
-    static String getCronNodePath(final String jobName) {
-        return String.format(CRON, jobName);
-    }
-    
-    static String getShardingTotalCountNodePath(final String jobName) {
-        return String.format(SHARDING_TOTAL_COUNT, jobName);
-    }
-    
-    static String getCpuCountNodePath(final String jobName) {
-        return String.format(CPU_COUNT, jobName);
-    }
-    
-    static String getMemoryMBNodePath(final String jobName) {
-        return String.format(MEMORY_MB, jobName);
-    }
-    
-    static String getDockerImageNameNodePath(final String jobName) {
-        return String.format(DOCKER_IMAGE_NAME, jobName);
-    }
-    
-    static String getAppURLNodePath(final String jobName) {
-        return String.format(APP_URL, jobName);
     }
 }

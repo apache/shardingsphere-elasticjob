@@ -42,4 +42,8 @@ public final class CloudJobConfiguration {
     private final String dockerImageName;
     
     private final String appURL;
+    
+    private final boolean failover;
+    
+    private final boolean misfire;
 }
