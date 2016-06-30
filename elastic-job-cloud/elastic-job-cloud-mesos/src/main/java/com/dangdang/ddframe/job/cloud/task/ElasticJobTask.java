@@ -15,42 +15,52 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.task;
+package com.dangdang.ddframe.job.cloud.task;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
 /**
- * 云作业任务服务.
+ * 云作业任务.
  *
  * @author zhangliang
  */
-public class CloudJobTaskService {
+@Getter
+public final class ElasticJobTask {
     
     private final static String DELIMITER = "@-@";
     
-    /**
-     * 创建任务主键.
-     *
-     * @param jobName 作业名称
-     * @param shardingItem 分片项
-     * @return 任务主键
-     */
-    public String generateTaskId(final String jobName, final int shardingItem) {
-        return Joiner.on(DELIMITER).join(jobName, shardingItem, UUID.randomUUID().toString());
+    private final String id;
+    
+    private final String jobName;
+    
+    private final int shardingItem;
+    
+    public ElasticJobTask(final String jobName, final int shardingItem) {
+        id = Joiner.on(DELIMITER).join(jobName, shardingItem, UUID.randomUUID().toString());
+        this.jobName = jobName;
+        this.shardingItem = shardingItem;
+    }
+    
+    private ElasticJobTask(final String id, final String jobName, final int shardingItem) {
+        this.id = id;
+        this.jobName = jobName;
+        this.shardingItem = shardingItem;
     }
     
     /**
      * 根据任务主键获取任务对象.
      *
-     * @param taskId 任务主键
+     * @param id 任务主键
      * @return 任务对象
      */
-    public CloudJobTask getJobTask(final String taskId) {
-        String[] result = taskId.split(DELIMITER);
+    public static ElasticJobTask from(final String id) {
+        String[] result = id.split(DELIMITER);
         Preconditions.checkState(3 == result.length);
-        return new CloudJobTask(result[2], result[0], Integer.parseInt(result[1]));
+        return new ElasticJobTask(id, result[0], Integer.parseInt(result[1]));
     }
 }

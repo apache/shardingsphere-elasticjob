@@ -15,26 +15,31 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.stragety;
+package com.dangdang.ddframe.job.cloud.job.config;
 
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import org.apache.mesos.Protos;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * 资源分配策略接口.
+ * 云作业配置对象.
  *
  * @author zhangliang
  */
-public interface ResourceAllocateStrategy {
+@RequiredArgsConstructor
+@Getter
+public final class CloudJobConfiguration {
     
-    /**
-     * 分配资源.
-     * 
-     * @param offers 资源列表
-     * @param cloudJobConfig 云作业配置
-     * @return 执行任务列表
-     */
-    List<Protos.TaskInfo> allocate(List<Protos.Offer> offers, CloudJobConfiguration cloudJobConfig);
+    private final String jobName;
+    
+    private final String cron;
+    
+    private final int shardingTotalCount;
+    
+    private final double cpuCount;
+    
+    private final double memoryMB;
+    
+    private final String dockerImageName;
+    
+    private final String appURL;
 }

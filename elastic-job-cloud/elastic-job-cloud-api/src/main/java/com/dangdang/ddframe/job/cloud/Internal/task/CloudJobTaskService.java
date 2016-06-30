@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.Internal.task;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 
 /**
@@ -27,6 +28,10 @@ import com.google.common.base.Preconditions;
 public class CloudJobTaskService {
     
     private final static String DELIMITER = "@-@";
+    
+    public String generateTaskId(final String jobName, final int shardingItem) {
+        return Joiner.on(DELIMITER).join(jobName, shardingItem);
+    }
     
     /**
      * 根据任务主键获取任务对象.

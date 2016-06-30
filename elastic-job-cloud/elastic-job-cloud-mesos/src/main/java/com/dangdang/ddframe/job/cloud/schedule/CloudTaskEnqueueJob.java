@@ -15,9 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.schedule;
+package com.dangdang.ddframe.job.cloud.schedule;
 
-import com.dangdang.ddframe.job.cloud.Internal.queue.TaskQueueService;
+import com.dangdang.ddframe.job.cloud.task.ready.ReadyJobQueueService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -31,18 +31,18 @@ public final class CloudTaskEnqueueJob implements Job {
     
     private String jobName;
     
-    private TaskQueueService taskQueueService;
+    private ReadyJobQueueService readyJobQueueService;
     
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        taskQueueService.enqueue(jobName);
+        readyJobQueueService.enqueue(jobName);
     }
     
     public void setJobName(final String jobName) {
         this.jobName = jobName;
     }
     
-    public void setTaskQueueService(final TaskQueueService taskQueueService) {
-        this.taskQueueService = taskQueueService;
+    public void setReadyJobQueueService(final ReadyJobQueueService readyJobQueueService) {
+        this.readyJobQueueService = readyJobQueueService;
     }
 }

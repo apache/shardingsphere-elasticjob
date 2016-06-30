@@ -15,26 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.stragety;
+package com.dangdang.ddframe.job.cloud.task;
 
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import org.apache.mesos.Protos;
+import com.dangdang.ddframe.job.cloud.task.failover.FailoverTaskQueueNodeTest;
+import com.dangdang.ddframe.job.cloud.task.ready.ReadyQueueNodeTest;
+import com.dangdang.ddframe.job.cloud.task.running.RunningTaskNodeTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import java.util.List;
-
-/**
- * 资源分配策略接口.
- *
- * @author zhangliang
- */
-public interface ResourceAllocateStrategy {
-    
-    /**
-     * 分配资源.
-     * 
-     * @param offers 资源列表
-     * @param cloudJobConfig 云作业配置
-     * @return 执行任务列表
-     */
-    List<Protos.TaskInfo> allocate(List<Protos.Offer> offers, CloudJobConfiguration cloudJobConfig);
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        ReadyQueueNodeTest.class, 
+        RunningTaskNodeTest.class,
+        FailoverTaskQueueNodeTest.class
+})
+public final class AllTaskTests {
 }

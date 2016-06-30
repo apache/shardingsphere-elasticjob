@@ -15,26 +15,36 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.stragety;
+package com.dangdang.ddframe.job.cloud.job;
 
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import org.apache.mesos.Protos;
-
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * 资源分配策略接口.
+ * 作业根节点路径.
  *
  * @author zhangliang
  */
-public interface ResourceAllocateStrategy {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class JobNode {
     
     /**
-     * 分配资源.
-     * 
-     * @param offers 资源列表
-     * @param cloudJobConfig 云作业配置
-     * @return 执行任务列表
+     * 作业根节点.
      */
-    List<Protos.TaskInfo> allocate(List<Protos.Offer> offers, CloudJobConfiguration cloudJobConfig);
+    public static final String ROOT = "/jobs";
+    
+    /**
+     * 作业名称维度根节点.
+     */
+    public static final String JOB_ROOT = ROOT + "/%s";
+    
+    /**
+     * 获取作业维度根节点路径.
+     * 
+     * @param jobName 作业名称
+     * @return 作业维度根节点路径
+     */
+    public static String getJobRootNodePath(final String jobName) {
+        return String.format(JOB_ROOT, jobName);
+    }
 }

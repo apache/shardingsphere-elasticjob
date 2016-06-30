@@ -15,23 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.queue;
+package com.dangdang.ddframe.job.cloud.task.ready;
 
+import com.dangdang.ddframe.job.cloud.task.TaskNode;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Elastic Job Cloud任务队列根节点名称的常量类.
+ * 待运行作业队列节点路径.
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor
-public final class QueueNode {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+final class ReadyJobQueueNode {
     
-    static final String ROOT = "/queue";
+    static final String ROOT = TaskNode.ROOT + "/ready";
     
-    private static final String QUEUE_JOB = ROOT + "/%s";
+    private static final String READY_JOB = ROOT + "/%s";
     
-    static String getQueueNodePath(final String jobName) {
-        return String.format(QUEUE_JOB, jobName);
+    static String getReadyJobNodePath(final String jobName) {
+        return String.format(READY_JOB, jobName);
     }
 }

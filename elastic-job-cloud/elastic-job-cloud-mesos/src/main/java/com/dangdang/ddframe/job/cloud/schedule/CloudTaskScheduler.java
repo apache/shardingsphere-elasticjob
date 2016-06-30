@@ -15,10 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.schedule;
+package com.dangdang.ddframe.job.cloud.schedule;
 
-import com.dangdang.ddframe.job.cloud.Internal.queue.TaskQueueService;
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.task.ready.ReadyJobQueueService;
+import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
@@ -77,7 +77,7 @@ public final class CloudTaskScheduler {
     public void startup() {
         JobDetail jobDetail = JobBuilder.newJob(CloudTaskEnqueueJob.class).withIdentity(task.getJobName()).build();
         jobDetail.getJobDataMap().put("jobName", task.getJobName());
-        jobDetail.getJobDataMap().put("taskQueueService", new TaskQueueService(registryCenter));
+        jobDetail.getJobDataMap().put("readyJobQueueService", new ReadyJobQueueService(registryCenter));
         try {
             if (!scheduler.checkExists(jobDetail.getKey())) {
                 Trigger trigger = TriggerBuilder.newTrigger().withIdentity(createIdentity("Trigger"))

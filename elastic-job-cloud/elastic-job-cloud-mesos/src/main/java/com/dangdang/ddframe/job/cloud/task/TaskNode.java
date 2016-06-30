@@ -15,26 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.stragety;
+package com.dangdang.ddframe.job.cloud.task;
 
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import org.apache.mesos.Protos;
-
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * 资源分配策略接口.
+ * 任务根节点路径.
  *
  * @author zhangliang
  */
-public interface ResourceAllocateStrategy {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TaskNode {
     
     /**
-     * 分配资源.
-     * 
-     * @param offers 资源列表
-     * @param cloudJobConfig 云作业配置
-     * @return 执行任务列表
+     * 任务根节点.
      */
-    List<Protos.TaskInfo> allocate(List<Protos.Offer> offers, CloudJobConfiguration cloudJobConfig);
+    public static final String ROOT = "/tasks";
 }

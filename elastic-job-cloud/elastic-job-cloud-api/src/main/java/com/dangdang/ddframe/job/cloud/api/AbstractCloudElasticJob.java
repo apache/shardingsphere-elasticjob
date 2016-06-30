@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.api;
 
+
 import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTask;
 import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTaskService;
 

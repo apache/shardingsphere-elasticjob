@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.mesos.MesosUtil;
 import org.apache.mesos.Protos;
 
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ import java.util.List;
  *
  * @author zhangliang
  */
-public final class ExhaustFirstResourceAllocateStrategy extends AbstractResourceAllocateStrategy {
+public final class ExhaustFirstResourceAllocateStrategy implements ResourceAllocateStrategy {
     
     @Override
     public List<Protos.TaskInfo> allocate(final List<Protos.Offer> offers, final CloudJobConfiguration cloudJobConfig) {
@@ -37,11 +38,11 @@ public final class ExhaustFirstResourceAllocateStrategy extends AbstractResource
         int startShardingItem = 0;
         int assignedShares = 0;
         for (Protos.Offer each : offers) {
-            int availableCpuShare = getValue(each.getResourcesList(), "cpus").divide(new BigDecimal(cloudJobConfig.getCpuCount()), BigDecimal.ROUND_DOWN).intValue();
-            int availableMemoriesShare = getValue(each.getResourcesList(), "mem").divide(new BigDecimal(cloudJobConfig.getMemoryMB()), BigDecimal.ROUND_DOWN).intValue();
+            int availableCpuShare = MesosUtil.getValue(each.getResourcesList(), "cpus").divide(new BigDecimal(cloudJobConfig.getCpuCount()), BigDecimal.ROUND_DOWN).intValue();
+            int availableMemoriesShare = MesosUtil.getValue(each.getResourcesList(), "mem").divide(new BigDecimal(cloudJobConfig.getMemoryMB()), BigDecimal.ROUND_DOWN).intValue();
             assignedShares += availableCpuShare < availableMemoriesShare ? availableCpuShare : availableMemoriesShare;
             for (int i = startShardingItem; i < assignedShares; i++) {
-                result.add(createTaskInfo(each, cloudJobConfig, i));
+                result.add(MesosUtil.createTaskInfo(each, cloudJobConfig, i));
                 if (result.size() == cloudJobConfig.getShardingTotalCount()) {
                     return result;
                 }

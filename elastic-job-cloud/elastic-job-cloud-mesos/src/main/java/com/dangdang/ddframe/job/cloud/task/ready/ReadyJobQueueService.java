@@ -15,26 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.queue;
+package com.dangdang.ddframe.job.cloud.task.ready;
 
-import com.dangdang.ddframe.job.cloud.Internal.state.StateService;
+import com.dangdang.ddframe.job.cloud.job.state.StateService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
 import java.util.List;
 
 /**
- * 任务队列服务.
+ * 待运行作业队列服务.
  *
  * @author zhangliang
  */
-public class TaskQueueService {
+public class ReadyJobQueueService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
     private final StateService stateService;
     
-    public TaskQueueService(final CoordinatorRegistryCenter registryCenter) {
+    public ReadyJobQueueService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         stateService = new StateService(registryCenter);
     }
@@ -45,7 +45,7 @@ public class TaskQueueService {
      * @param jobName 作业名称
      */
     public void enqueue(final String jobName) {
-        registryCenter.persistSequential(QueueNode.getQueueNodePath(jobName));
+        registryCenter.persistSequential(ReadyJobQueueNode.getReadyJobNodePath(jobName));
     }
     
     /**
@@ -54,17 +54,14 @@ public class TaskQueueService {
      * @return 出队的作业名称, 队列为空则不返回数据
      */
     public Optional<String> dequeue() {
-        if (!registryCenter.isExisted(QueueNode.ROOT)) {
+        if (!registryCenter.isExisted(ReadyJobQueueNode.ROOT)) {
             return Optional.absent();
         }
-        List<String> jobNames = registryCenter.getChildrenKeys(QueueNode.ROOT);
-        if (jobNames.isEmpty()) {
-            return Optional.absent();
-        }
+        List<String> jobNames = registryCenter.getChildrenKeys(ReadyJobQueueNode.ROOT);
         for (String each : jobNames) {
             String jobName = getLogicNodeForSequential(each);
             if (!stateService.isRunning(jobName)) {
-                registryCenter.remove(QueueNode.getQueueNodePath(each));
+                registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
                 return Optional.of(jobName);
             }
         }

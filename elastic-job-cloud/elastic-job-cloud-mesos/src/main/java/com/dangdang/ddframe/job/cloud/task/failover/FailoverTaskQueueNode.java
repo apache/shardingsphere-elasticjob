@@ -15,26 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.stragety;
+package com.dangdang.ddframe.job.cloud.task.failover;
 
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import org.apache.mesos.Protos;
-
-import java.util.List;
+import com.dangdang.ddframe.job.cloud.task.TaskNode;
+import lombok.RequiredArgsConstructor;
 
 /**
- * 资源分配策略接口.
+ * 待失效转移任务队列节点路径.
  *
  * @author zhangliang
  */
-public interface ResourceAllocateStrategy {
+@RequiredArgsConstructor
+public final class FailoverTaskQueueNode {
     
-    /**
-     * 分配资源.
-     * 
-     * @param offers 资源列表
-     * @param cloudJobConfig 云作业配置
-     * @return 执行任务列表
-     */
-    List<Protos.TaskInfo> allocate(List<Protos.Offer> offers, CloudJobConfiguration cloudJobConfig);
+    static final String ROOT = TaskNode.ROOT + "/failover";
+    
+    private static final String FAILOVER_TASK = ROOT + "/%s";
+    
+    static String getFailoverNodePath(final String taskId) {
+        return String.format(FAILOVER_TASK, taskId);
+    }
 }

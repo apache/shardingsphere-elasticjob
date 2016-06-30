@@ -15,23 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.task;
+package com.dangdang.ddframe.job.cloud.job;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.dangdang.ddframe.job.cloud.job.config.ConfigurationNodeTest;
+import com.dangdang.ddframe.job.cloud.job.state.StateNodeTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/**
- * 云作业任务.
- *
- * @author zhangliang
- */
-@RequiredArgsConstructor
-@Getter
-public final class CloudJobTask {
-    
-    private final String taskId;
-    
-    private final String jobName;
-    
-    private final int shardingItem;
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        JobNodeTest.class, 
+        ConfigurationNodeTest.class, 
+        StateNodeTest.class
+})
+public final class AllJobTests {
 }

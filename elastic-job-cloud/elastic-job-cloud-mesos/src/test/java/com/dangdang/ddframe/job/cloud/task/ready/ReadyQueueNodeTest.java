@@ -15,26 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.stragety;
+package com.dangdang.ddframe.job.cloud.task.ready;
 
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import org.apache.mesos.Protos;
+import org.junit.Test;
 
-import java.util.List;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
 
-/**
- * 资源分配策略接口.
- *
- * @author zhangliang
- */
-public interface ResourceAllocateStrategy {
+public final class ReadyQueueNodeTest {
     
-    /**
-     * 分配资源.
-     * 
-     * @param offers 资源列表
-     * @param cloudJobConfig 云作业配置
-     * @return 执行任务列表
-     */
-    List<Protos.TaskInfo> allocate(List<Protos.Offer> offers, CloudJobConfiguration cloudJobConfig);
+    @Test
+    public void assertGetReadyJobNodePath() {
+        assertThat(ReadyJobQueueNode.getReadyJobNodePath("test_job0000000001"), is("/tasks/ready/test_job0000000001"));
+    }
 }

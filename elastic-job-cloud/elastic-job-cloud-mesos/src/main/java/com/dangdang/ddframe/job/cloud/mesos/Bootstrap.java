@@ -20,8 +20,12 @@ package com.dangdang.ddframe.job.cloud.mesos;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
+import com.sun.javafx.collections.MappingChange;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Bootstrap {
     
@@ -33,11 +37,7 @@ public class Bootstrap {
         Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser("").setName("myTest").build();
         MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new ElasticJobCloudScheduler(regCenter), frameworkInfo, "zk://localhost:2181/mesos");
         Protos.Status status = schedulerDriver.run();
-        if (Protos.Status.DRIVER_STOPPED == status) {
-            System.exit(0);
-        }
-        if (Protos.Status.DRIVER_ABORTED == status) {
-            System.exit(-1);
-        }
+        schedulerDriver.stop();
+        System.exit(Protos.Status.DRIVER_STOPPED == status ? 0 : -1);
     }
 }

@@ -17,15 +17,16 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudConfigurationService;
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.Internal.queue.TaskQueueService;
-import com.dangdang.ddframe.job.cloud.Internal.schedule.CloudTaskSchedulerRegistry;
-import com.dangdang.ddframe.job.cloud.Internal.state.StateService;
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTask;
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTaskService;
+import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.job.state.StateService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
+import com.dangdang.ddframe.job.cloud.schedule.CloudTaskSchedulerRegistry;
+import com.dangdang.ddframe.job.cloud.task.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.task.failover.FailoverTaskQueueService;
+import com.dangdang.ddframe.job.cloud.task.ready.ReadyJobQueueService;
+import com.dangdang.ddframe.job.cloud.task.running.RunningTaskService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -35,6 +36,9 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,20 +51,23 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     private final CoordinatorRegistryCenter registryCenter;
     
-    private final CloudConfigurationService configService;
+    private final ConfigurationService configService;
     
-    private final CloudJobTaskService taskService;
-    
-    private final TaskQueueService taskQueueService;
+    private final ReadyJobQueueService readyJobQueueService;
     
     private final StateService stateService;
     
+    private final RunningTaskService taskRunningService;
+    
+    private final FailoverTaskQueueService failoverTaskQueueService;
+    
     public ElasticJobCloudScheduler(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
-        configService = new CloudConfigurationService(registryCenter);
-        taskService = new CloudJobTaskService();
-        taskQueueService = new TaskQueueService(registryCenter);
+        configService = new ConfigurationService(registryCenter);
+        readyJobQueueService = new ReadyJobQueueService(registryCenter);
         stateService = new StateService(registryCenter);
+        taskRunningService = new RunningTaskService(registryCenter);
+        failoverTaskQueueService = new FailoverTaskQueueService(registryCenter);
     }
     
     @Override
@@ -72,9 +79,40 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
     }
     
+    private boolean failover(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
+        // TODO 批量failover
+        Optional<ElasticJobTask> elasticJobTask = failoverTaskQueueService.dequeue();
+        if (!elasticJobTask.isPresent()) {
+            return false;
+        }
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(elasticJobTask.get().getJobName());
+        if (!cloudJobConfig.isPresent()) {
+            return false;
+        }
+        for (Protos.Offer each : offers) {
+            BigDecimal cpuCount = MesosUtil.getValue(each.getResourcesList(), "cpus");
+            BigDecimal memories = MesosUtil.getValue(each.getResourcesList(), "mem");
+            if (cpuCount.doubleValue() >= cloudJobConfig.get().getCpuCount() && memories.doubleValue() >= cloudJobConfig.get().getMemoryMB()) {
+                Protos.TaskInfo task = MesosUtil.createTaskInfo(each, cloudJobConfig.get(), elasticJobTask.get().getShardingItem());
+                schedulerDriver.launchTasks(Lists.transform(offers, new Function<Protos.Offer, Protos.OfferID>() {
+                    
+                    @Override
+                    public Protos.OfferID apply(final Protos.Offer input) {
+                        return input.getId();
+                    }
+                }), Collections.singleton(task));
+                return true;
+            }
+        }
+        return false;
+    }
+    
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
-        Optional<String> jobName = taskQueueService.dequeue();
+        if (failover(schedulerDriver, offers)) {
+            return;
+        }
+        Optional<String> jobName = readyJobQueueService.dequeue();
         if (!jobName.isPresent()) {
             declineOffers(schedulerDriver, offers);
             return;
@@ -85,6 +123,7 @@ public final class ElasticJobCloudScheduler implements Scheduler {
             return;
         }
         // TODO 出队时如果mesos framework死机,则已出队但未运行的作业将丢失
+        // TODO 目前是每个实例处理一片, 要改成每个实例能处理n片,按照资源决定每个服务分配的分片
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy();
         List<Protos.TaskInfo> tasks = resourceAllocateStrategy.allocate(offers, cloudJobConfig.get());
         if (tasks.size() < cloudJobConfig.get().getShardingTotalCount()) {
@@ -92,6 +131,13 @@ public final class ElasticJobCloudScheduler implements Scheduler {
             return;
         }
         // TODO 未使用的slaveid 机器调用declineOffer方法放回
+        List<Protos.TaskInfo> runningTasks = new ArrayList<>(tasks.size());
+        for (Protos.TaskInfo each : tasks) {
+            if (!taskRunningService.add(each.getSlaveId().getValue(), each.getTaskId().getValue())) {
+                runningTasks.add(each);
+            }
+        }
+        tasks.removeAll(runningTasks);
         schedulerDriver.launchTasks(Lists.transform(offers, new Function<Protos.Offer, Protos.OfferID>() {
             
             @Override
@@ -114,7 +160,7 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     @Override
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
-        CloudJobTask cloudJobTask = taskService.getJobTask(taskId);
+        ElasticJobTask cloudJobTask = ElasticJobTask.from(taskId);
         switch (taskStatus.getState()) {
             case TASK_STARTING:
                 stateService.startRunning(cloudJobTask.getJobName(), cloudJobTask.getShardingItem());
@@ -123,6 +169,7 @@ public final class ElasticJobCloudScheduler implements Scheduler {
             case TASK_KILLED:
             case TASK_LOST:
                 stateService.completeRunning(cloudJobTask.getJobName(), cloudJobTask.getShardingItem());
+                taskRunningService.remove(taskStatus.getSlaveId().getValue(), taskId);
                 break;
             default:
                 break;
@@ -139,10 +186,16 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     @Override
     public void slaveLost(final SchedulerDriver schedulerDriver, final Protos.SlaveID slaveID) {
+        List<String> runningTaskIds = taskRunningService.load(slaveID.getValue());
+        for (String each : runningTaskIds) {
+            failoverTaskQueueService.enqueue(each);
+            taskRunningService.remove(slaveID.getValue(), each);
+        }
     }
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
+        failoverTaskQueueService.enqueue(executorID.getValue());
     }
     
     @Override

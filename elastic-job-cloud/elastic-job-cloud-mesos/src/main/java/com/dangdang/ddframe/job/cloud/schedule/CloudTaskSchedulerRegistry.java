@@ -15,11 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.schedule;
+package com.dangdang.ddframe.job.cloud.schedule;
 
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudConfigurationService;
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.Internal.state.StateService;
+import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.job.state.StateService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -39,13 +39,13 @@ public final class CloudTaskSchedulerRegistry {
     
     private final CoordinatorRegistryCenter registryCenter;
     
-    private final CloudConfigurationService configService;
+    private final ConfigurationService configService;
     
     private final StateService stateService;
     
     private CloudTaskSchedulerRegistry(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
-        configService = new CloudConfigurationService(registryCenter);
+        configService = new ConfigurationService(registryCenter);
         stateService = new StateService(registryCenter);
     }
     

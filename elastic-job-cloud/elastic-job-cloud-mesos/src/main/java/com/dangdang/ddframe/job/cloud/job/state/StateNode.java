@@ -15,20 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.state;
+package com.dangdang.ddframe.job.cloud.job.state;
 
+import com.dangdang.ddframe.job.cloud.job.JobNode;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 云作业状态根节点常量类.
+ * 作业状态节点路径.
  *
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StateNode {
     
-    private static final String ROOT = "/jobs/%s/state";
+    private static final String ROOT = JobNode.JOB_ROOT + "/state";
     
     private static final String SHARDING_ITEM = ROOT + "/%d";
     

@@ -15,10 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.state;
+package com.dangdang.ddframe.job.cloud.job.state;
 
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudConfigurationService;
-import com.dangdang.ddframe.job.cloud.Internal.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
@@ -31,11 +31,11 @@ public final class StateService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
-    private final CloudConfigurationService cloudConfigurationService;
+    private final ConfigurationService configService;
     
     public StateService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
-        cloudConfigurationService = new CloudConfigurationService(registryCenter);
+        configService = new ConfigurationService(registryCenter);
     }
     
     /**
@@ -44,7 +44,7 @@ public final class StateService {
      * @param jobName 作业名称.
      */
     public void sharding(final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfig = cloudConfigurationService.load(jobName);
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
         if (!cloudJobConfig.isPresent()) {
             return;
         }
@@ -59,7 +59,7 @@ public final class StateService {
      * @param jobName 作业名称.
      */
     public void reSharding(final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfig = cloudConfigurationService.load(jobName);
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
         if (!cloudJobConfig.isPresent()) {
             return;
         }
@@ -104,7 +104,7 @@ public final class StateService {
      * @return 作业是否运行
      */
     public boolean isRunning(final String jobName) {
-        Optional<CloudJobConfiguration> cloudJobConfig = cloudConfigurationService.load(jobName);
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
         if (!cloudJobConfig.isPresent()) {
             return false;
         }
