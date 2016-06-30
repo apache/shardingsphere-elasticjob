@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.job.config;
 import com.dangdang.ddframe.job.cloud.job.JobNode;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -43,12 +44,7 @@ public final class ConfigurationService {
      * @param cloudJobConfig 云作业配置对象
      */
     public void add(final CloudJobConfiguration cloudJobConfig) {
-        registryCenter.persist(ConfigurationNode.getShardingTotalCountNodePath(cloudJobConfig.getJobName()), Integer.toString(cloudJobConfig.getShardingTotalCount()));
-        registryCenter.persist(ConfigurationNode.getCpuCountNodePath(cloudJobConfig.getJobName()), Double.toString(cloudJobConfig.getCpuCount()));
-        registryCenter.persist(ConfigurationNode.getMemoryMBNodePath(cloudJobConfig.getJobName()), Double.toString(cloudJobConfig.getMemoryMB()));
-        registryCenter.persist(ConfigurationNode.getDockerImageNameNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getDockerImageName());
-        registryCenter.persist(ConfigurationNode.getAppURLNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getAppURL());
-        registryCenter.persist(ConfigurationNode.getCronNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getCron());
+        registryCenter.persist(ConfigurationNode.getRootNodePath(cloudJobConfig.getJobName()), new Gson().toJson(cloudJobConfig));
     }
     
     /**
@@ -57,19 +53,7 @@ public final class ConfigurationService {
      * @param cloudJobConfig 云作业配置对象
      */
     public void update(final CloudJobConfiguration cloudJobConfig) {
-        updateIfNeed(ConfigurationNode.getShardingTotalCountNodePath(cloudJobConfig.getJobName()), Integer.toString(cloudJobConfig.getShardingTotalCount()));
-        updateIfNeed(ConfigurationNode.getShardingTotalCountNodePath(cloudJobConfig.getJobName()), Integer.toString(cloudJobConfig.getShardingTotalCount()));
-        updateIfNeed(ConfigurationNode.getCpuCountNodePath(cloudJobConfig.getJobName()), Double.toString(cloudJobConfig.getCpuCount()));
-        updateIfNeed(ConfigurationNode.getMemoryMBNodePath(cloudJobConfig.getJobName()), Double.toString(cloudJobConfig.getMemoryMB()));
-        updateIfNeed(ConfigurationNode.getDockerImageNameNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getDockerImageName());
-        updateIfNeed(ConfigurationNode.getAppURLNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getAppURL());
-        updateIfNeed(ConfigurationNode.getCronNodePath(cloudJobConfig.getJobName()), cloudJobConfig.getCron());
-    }
-    
-    private void updateIfNeed(final String znode, final String newValue) {
-        if (null != newValue && !newValue.equals(registryCenter.get(znode))) {
-            registryCenter.update(znode, newValue);
-        }
+        registryCenter.update(ConfigurationNode.getRootNodePath(cloudJobConfig.getJobName()), new Gson().toJson(cloudJobConfig));
     }
     
     /**
@@ -99,14 +83,8 @@ public final class ConfigurationService {
      * @return 云作业配置
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
-        return !registryCenter.isExisted(ConfigurationNode.getRootNodePath(jobName)) ? Optional.<CloudJobConfiguration>absent() : Optional.of(new CloudJobConfiguration(
-                jobName, 
-                registryCenter.get(ConfigurationNode.getCronNodePath(jobName)), 
-                Integer.parseInt(registryCenter.get(ConfigurationNode.getShardingTotalCountNodePath(jobName))), 
-                Double.parseDouble(registryCenter.get(ConfigurationNode.getCpuCountNodePath(jobName))),
-                Double.parseDouble(registryCenter.get(ConfigurationNode.getMemoryMBNodePath(jobName))), 
-                registryCenter.get(ConfigurationNode.getDockerImageNameNodePath(jobName)),
-                registryCenter.get(ConfigurationNode.getAppURLNodePath(jobName))));
+        return !registryCenter.isExisted(ConfigurationNode.getRootNodePath(jobName)) ? Optional.<CloudJobConfiguration>absent()
+                : Optional.of(new Gson().fromJson(registryCenter.get(ConfigurationNode.getRootNodePath(jobName)), CloudJobConfiguration.class));
     }
     
     /**

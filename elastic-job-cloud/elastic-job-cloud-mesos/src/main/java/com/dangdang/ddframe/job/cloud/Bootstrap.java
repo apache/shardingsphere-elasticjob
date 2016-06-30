@@ -15,17 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos;
+package com.dangdang.ddframe.job.cloud;
 
+import com.dangdang.ddframe.job.cloud.mesos.ElasticJobCloudScheduler;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
-import com.sun.javafx.collections.MappingChange;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Bootstrap {
     
