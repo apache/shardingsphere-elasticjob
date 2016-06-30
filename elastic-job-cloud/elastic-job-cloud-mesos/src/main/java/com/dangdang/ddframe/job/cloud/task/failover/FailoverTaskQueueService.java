@@ -43,11 +43,11 @@ public class FailoverTaskQueueService {
     /**
      * 将任务放入失效转移队列.
      *
-     * @param taskId 任务主键
+     * @param task 任务
      */
-    public void enqueue(final String taskId) {
-        if (!registryCenter.isExisted(FailoverTaskQueueNode.getFailoverNodePath(taskId))) {
-            registryCenter.persist(FailoverTaskQueueNode.getFailoverNodePath(taskId), "");
+    public void enqueue(final ElasticJobTask task) {
+        if (!registryCenter.isExisted(FailoverTaskQueueNode.getFailoverNodePath(task.getId()))) {
+            registryCenter.persist(FailoverTaskQueueNode.getFailoverNodePath(task.getId()), "");
         }
     }
     

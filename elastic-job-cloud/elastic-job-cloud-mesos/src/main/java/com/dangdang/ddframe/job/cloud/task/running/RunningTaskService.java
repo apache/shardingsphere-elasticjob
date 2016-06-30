@@ -17,7 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.task.running;
 
+import com.dangdang.ddframe.job.cloud.task.ElasticJobTask;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
@@ -34,13 +37,13 @@ public class RunningTaskService {
     private final CoordinatorRegistryCenter registryCenter;
     
     /**
-     * 将任务主键放入运行时队列.
+     * 将任务放入运行时队列.
      * 
-     * @param taskId 任务主键
-     * @return 是否加入运行时队列
+     * @param task 任务对象
+     * @return 是否成功加入运行时队列
      */
-    public boolean add(final String slaveId, final String taskId) {
-        String runningTaskNodePath = RunningTaskNode.getRunningTaskNodePath(getSlaveIdWithoutSequence(slaveId), taskId);
+    public boolean add(final String slaveId, final ElasticJobTask task) {
+        String runningTaskNodePath = RunningTaskNode.getRunningTaskNodePath(getSlaveIdWithoutSequence(slaveId), task.getId());
         if (registryCenter.isExisted(runningTaskNodePath)) {
             return false;
         }
@@ -50,20 +53,29 @@ public class RunningTaskService {
     
     /**
      * 将任务主键从运行时队列删除.
+     * 
+     * @param slaveId 执行机主键
+     * @param task 任务对象
      */
-    public void remove(final String slaveId, final String taskId) {
-        registryCenter.remove(RunningTaskNode.getRunningTaskNodePath(getSlaveIdWithoutSequence(slaveId), taskId));
+    public void remove(final String slaveId, final ElasticJobTask task) {
+        registryCenter.remove(RunningTaskNode.getRunningTaskNodePath(getSlaveIdWithoutSequence(slaveId), task.getId()));
     }
     
     /**
      * 通过执行机主键获取运行时任务.
      * 
      * @param slaveId 执行机主键
-     * @return 运行时任务
+     * @return 运行时任务集合
      */
-    public List<String> load(final String slaveId) {
+    public List<ElasticJobTask> load(final String slaveId) {
         String runningSlaveNodePath = RunningTaskNode.getRunningSlaveNodePath(getSlaveIdWithoutSequence(slaveId));
-        return registryCenter.isExisted(runningSlaveNodePath) ? registryCenter.getChildrenKeys(runningSlaveNodePath) : Collections.<String>emptyList();
+        return registryCenter.isExisted(runningSlaveNodePath) ? Lists.transform(registryCenter.getChildrenKeys(runningSlaveNodePath), new Function<String, ElasticJobTask>() {
+            
+            @Override
+            public ElasticJobTask apply(final String input) {
+                return ElasticJobTask.from(input);
+            }
+        }) : Collections.<ElasticJobTask>emptyList();
     }
     
     private String getSlaveIdWithoutSequence(final String slaveId) {

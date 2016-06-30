@@ -133,7 +133,7 @@ public final class ElasticJobCloudScheduler implements Scheduler {
         // TODO 未使用的slaveid 机器调用declineOffer方法放回
         List<Protos.TaskInfo> runningTasks = new ArrayList<>(tasks.size());
         for (Protos.TaskInfo each : tasks) {
-            if (!taskRunningService.add(each.getSlaveId().getValue(), each.getTaskId().getValue())) {
+            if (!taskRunningService.add(each.getSlaveId().getValue(), ElasticJobTask.from(each.getTaskId().getValue()))) {
                 runningTasks.add(each);
             }
         }
@@ -160,17 +160,17 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     @Override
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
-        ElasticJobTask cloudJobTask = ElasticJobTask.from(taskId);
+        ElasticJobTask elasticJobTask = ElasticJobTask.from(taskId);
         switch (taskStatus.getState()) {
             case TASK_STARTING:
-                stateService.startRunning(cloudJobTask.getJobName(), cloudJobTask.getShardingItem());
+                stateService.startRunning(elasticJobTask.getJobName(), elasticJobTask.getShardingItem());
                 break;
             case TASK_FINISHED:
             case TASK_FAILED:
             case TASK_KILLED:
             case TASK_LOST:
-                stateService.completeRunning(cloudJobTask.getJobName(), cloudJobTask.getShardingItem());
-                taskRunningService.remove(taskStatus.getSlaveId().getValue(), taskId);
+                stateService.completeRunning(elasticJobTask.getJobName(), elasticJobTask.getShardingItem());
+                taskRunningService.remove(taskStatus.getSlaveId().getValue(), elasticJobTask);
                 break;
             default:
                 break;
@@ -187,12 +187,11 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     @Override
     public void slaveLost(final SchedulerDriver schedulerDriver, final Protos.SlaveID slaveID) {
-        List<String> runningTaskIds = taskRunningService.load(slaveID.getValue());
-        for (String each : runningTaskIds) {
-            ElasticJobTask elasticJobTask = ElasticJobTask.from(each);
-            Optional<CloudJobConfiguration> jobConfig = configService.load(elasticJobTask.getJobName());
+        List<ElasticJobTask> runningTasks = taskRunningService.load(slaveID.getValue());
+        for (ElasticJobTask each : runningTasks) {
+            Optional<CloudJobConfiguration> jobConfig = configService.load(each.getJobName());
             if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
-                failoverTaskQueueService.enqueue(each);    
+                failoverTaskQueueService.enqueue(each);
             }
             taskRunningService.remove(slaveID.getValue(), each);
         }
@@ -200,7 +199,7 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
-        failoverTaskQueueService.enqueue(executorID.getValue());
+        failoverTaskQueueService.enqueue(ElasticJobTask.from(executorID.getValue()));
     }
     
     @Override
