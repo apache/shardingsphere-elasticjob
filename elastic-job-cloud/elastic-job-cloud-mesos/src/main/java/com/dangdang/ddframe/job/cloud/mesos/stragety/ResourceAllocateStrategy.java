@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.mesos.stragety;
 import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
 import org.apache.mesos.Protos;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -48,9 +47,16 @@ public interface ResourceAllocateStrategy {
     boolean allocate(CloudJobConfiguration jobConfig, List<Integer> shardingItems);
     
     /**
-     * 获取任务列表.
+     * 获取提供资源的任务列表.
      * 
-     * @return 任务列表
+     * @return 提供资源的任务列表
      */
-    List<Protos.TaskInfo> getTaskInfoList();
+    List<Protos.TaskInfo> getOfferedTaskInfoList();
+    
+    /**
+     * 获取拒绝执行的任务列表.
+     *
+     * @return 拒绝执行的任务列表
+     */
+    List<Protos.TaskInfo> getDeclinedTaskInfoList();
 }

@@ -34,7 +34,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public final class ExhaustFirstResourceAllocateStrategy implements ResourceAllocateStrategy {
     
-    private final List<Protos.TaskInfo> tasks = new LinkedList<>();
+    private final List<Protos.TaskInfo> offeredTaskInfoList = new LinkedList<>();
+    
+    private final List<Protos.TaskInfo> declinedTaskInfoList = new LinkedList<>();
     
     private final List<MachineResource> machineResources;
     
@@ -49,7 +51,8 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
     
     @Override
     public boolean allocate(final CloudJobConfiguration jobConfig, final List<Integer> shardingItems) {
-        List<Protos.TaskInfo> tasks = new ArrayList<>(shardingItems.size());
+        declinedTaskInfoList.clear();
+        List<Protos.TaskInfo> taskInfoList = new ArrayList<>(shardingItems.size());
         int startShardingItemIndex = 0;
         int shardingTotalCount = shardingItems.size();
         int assignedShardingCount = 0;
@@ -61,14 +64,15 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
             shardingTotalCount -= assignedShardingCount;
             for (int i = startShardingItemIndex; i < assignedShardingCount; i++) {
                 each.reserveResources(jobConfig.getCpuCount(), jobConfig.getMemoryMB());
-                tasks.add(MesosUtil.createTaskInfo(each.getOffer(), jobConfig, shardingItems.get(i)));
+                taskInfoList.add(MesosUtil.createTaskInfo(each.getOffer(), jobConfig, shardingItems.get(i)));
             }
             startShardingItemIndex = assignedShardingCount;
         }
-        if (tasks.size() != jobConfig.getShardingTotalCount()) {
+        if (taskInfoList.size() != jobConfig.getShardingTotalCount()) {
+            declinedTaskInfoList.addAll(taskInfoList);
             return false;
         }
-        this.tasks.addAll(tasks);
+        this.offeredTaskInfoList.addAll(taskInfoList);
         for (MachineResource each : machineResources) {
             each.commitReservedResources();
         }
@@ -76,7 +80,12 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
     }
     
     @Override
-    public List<Protos.TaskInfo> getTaskInfoList() {
-        return tasks;
+    public List<Protos.TaskInfo> getOfferedTaskInfoList() {
+        return offeredTaskInfoList;
+    }
+    
+    @Override
+    public List<Protos.TaskInfo> getDeclinedTaskInfoList() {
+        return declinedTaskInfoList;
     }
 }

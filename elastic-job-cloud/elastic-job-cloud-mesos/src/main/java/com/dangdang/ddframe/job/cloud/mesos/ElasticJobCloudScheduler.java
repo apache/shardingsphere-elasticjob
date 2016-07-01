@@ -85,9 +85,7 @@ public final class ElasticJobCloudScheduler implements Scheduler {
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(machineResources);
         offerFailoverJobs(resourceAllocateStrategy);
         offerReadyJobs(resourceAllocateStrategy);
-        List<Protos.TaskInfo> taskInfoList = resourceAllocateStrategy.getTaskInfoList();
-        // TODO 出队时如果mesos framework死机,则已出队但未运行的作业将丢失
-        // TODO 目前是每个实例处理一片, 要改成每个实例能处理n片,按照资源决定每个服务分配的分片
+        List<Protos.TaskInfo> taskInfoList = resourceAllocateStrategy.getOfferedTaskInfoList();
         removeRunningTasks(taskInfoList);
         declineUnusedOffers(schedulerDriver, offers, taskInfoList);
         launchTasks(schedulerDriver, offers, taskInfoList);
@@ -111,6 +109,9 @@ public final class ElasticJobCloudScheduler implements Scheduler {
                 continue;
             }
             if (!resourceAllocateStrategy.allocate(jobConfig.get(), Collections.singletonList(task.get().getShardingItem()))) {
+                for (Protos.TaskInfo each : resourceAllocateStrategy.getDeclinedTaskInfoList()) {
+                    failoverTaskQueueService.enqueue(ElasticJobTask.from(each.getTaskId().getValue()));
+                }
                 break;
             }
             task = failoverTaskQueueService.dequeue();
@@ -125,6 +126,9 @@ public final class ElasticJobCloudScheduler implements Scheduler {
                 continue;
             }
             if (!resourceAllocateStrategy.allocate(jobConfig.get())) {
+                if (!resourceAllocateStrategy.getDeclinedTaskInfoList().isEmpty()) {
+                    readyJobQueueService.enqueue(ElasticJobTask.from(resourceAllocateStrategy.getDeclinedTaskInfoList().get(0).getTaskId().getValue()).getJobName());
+                }
                 break;
             }
             jobName = readyJobQueueService.dequeue();
