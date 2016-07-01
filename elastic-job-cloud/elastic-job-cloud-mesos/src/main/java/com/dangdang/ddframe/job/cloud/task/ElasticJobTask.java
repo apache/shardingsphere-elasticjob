@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.task;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
@@ -32,7 +31,7 @@ import java.util.UUID;
 @Getter
 public final class ElasticJobTask {
     
-    private final static String DELIMITER = "@-@";
+    private static final String DELIMITER = "@-@";
     
     private final String id;
     

@@ -27,7 +27,7 @@ import org.apache.mesos.Protos;
 public class Bootstrap {
     
     // -Djava.library.path=/usr/local/lib
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "elastic-job-cloud");
         CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
         regCenter.init();

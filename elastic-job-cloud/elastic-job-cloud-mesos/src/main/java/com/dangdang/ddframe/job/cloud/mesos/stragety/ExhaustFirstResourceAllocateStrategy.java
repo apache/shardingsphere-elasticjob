@@ -19,8 +19,7 @@ package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
 import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.mesos.MesosUtil;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Protos;
 
 import java.util.ArrayList;
@@ -32,29 +31,27 @@ import java.util.List;
  *
  * @author zhangliang
  */
+@RequiredArgsConstructor
 public final class ExhaustFirstResourceAllocateStrategy implements ResourceAllocateStrategy {
     
-    private final List<Protos.TaskInfo> tasks;
+    private final List<Protos.TaskInfo> tasks = new LinkedList<>();
     
     private final List<MachineResource> machineResources;
     
-    public ExhaustFirstResourceAllocateStrategy(final List<Protos.Offer> offers) {
-        tasks = new LinkedList<>();
-        machineResources = new ArrayList<>(offers.size());
-        machineResources.addAll(Lists.transform(offers, new Function<Protos.Offer, MachineResource>() {
-            
-            @Override
-            public MachineResource apply(final Protos.Offer input) {
-                return new MachineResource(input);
-            }
-        }));
+    @Override
+    public boolean allocate(final CloudJobConfiguration jobConfig) {
+        List<Integer> shardingItems = new ArrayList<>(jobConfig.getShardingTotalCount());
+        for (int i = 0; i < jobConfig.getShardingTotalCount(); i++) {
+            shardingItems.add(i);
+        }
+        return allocate(jobConfig, shardingItems);
     }
     
     @Override
-    public boolean allocate(final CloudJobConfiguration jobConfig) {
-        List<Protos.TaskInfo> tasks = new ArrayList<>(jobConfig.getShardingTotalCount());
-        int startShardingItem = 0;
-        int shardingTotalCount = jobConfig.getShardingTotalCount();
+    public boolean allocate(final CloudJobConfiguration jobConfig, final List<Integer> shardingItems) {
+        List<Protos.TaskInfo> tasks = new ArrayList<>(shardingItems.size());
+        int startShardingItemIndex = 0;
+        int shardingTotalCount = shardingItems.size();
         int assignedShardingCount = 0;
         for (MachineResource each : machineResources) {
             if (0 == shardingTotalCount) {
@@ -62,11 +59,11 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
             }
             assignedShardingCount += each.calculateShardingCount(shardingTotalCount, jobConfig.getCpuCount(), jobConfig.getMemoryMB());
             shardingTotalCount -= assignedShardingCount;
-            for (int i = startShardingItem; i < assignedShardingCount; i++) {
+            for (int i = startShardingItemIndex; i < assignedShardingCount; i++) {
                 each.reserveResources(jobConfig.getCpuCount(), jobConfig.getMemoryMB());
-                tasks.add(MesosUtil.createTaskInfo(each.getOffer(), jobConfig, i));
+                tasks.add(MesosUtil.createTaskInfo(each.getOffer(), jobConfig, shardingItems.get(i)));
             }
-            startShardingItem = assignedShardingCount;
+            startShardingItemIndex = assignedShardingCount;
         }
         if (tasks.size() != jobConfig.getShardingTotalCount()) {
             return false;
@@ -79,7 +76,7 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
     }
     
     @Override
-    public List<Protos.TaskInfo> getTasks() {
+    public List<Protos.TaskInfo> getTaskInfoList() {
         return tasks;
     }
 }

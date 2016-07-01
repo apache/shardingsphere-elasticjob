@@ -27,7 +27,7 @@ import com.google.common.base.Preconditions;
  */
 public class CloudJobTaskService {
     
-    private final static String DELIMITER = "@-@";
+    private static final String DELIMITER = "@-@";
     
     public String generateTaskId(final String jobName, final int shardingItem) {
         return Joiner.on(DELIMITER).join(jobName, shardingItem);

@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.job.state.StateService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
+import com.dangdang.ddframe.job.cloud.mesos.stragety.MachineResource;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.schedule.CloudTaskSchedulerRegistry;
 import com.dangdang.ddframe.job.cloud.task.ElasticJobTask;
@@ -36,7 +37,6 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,40 +79,45 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
     }
     
-    private boolean failover(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
-        // TODO 批量failover
-        Optional<ElasticJobTask> elasticJobTask = failoverTaskQueueService.dequeue();
-        if (!elasticJobTask.isPresent()) {
-            return false;
-        }
-        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(elasticJobTask.get().getJobName());
-        if (!cloudJobConfig.isPresent()) {
-            return false;
-        }
-        for (Protos.Offer each : offers) {
-            BigDecimal cpuCount = MesosUtil.getValue(each, "cpus");
-            BigDecimal memories = MesosUtil.getValue(each, "mem");
-            if (cpuCount.doubleValue() >= cloudJobConfig.get().getCpuCount() && memories.doubleValue() >= cloudJobConfig.get().getMemoryMB()) {
-                Protos.TaskInfo task = MesosUtil.createTaskInfo(each, cloudJobConfig.get(), elasticJobTask.get().getShardingItem());
-                schedulerDriver.launchTasks(Lists.transform(offers, new Function<Protos.Offer, Protos.OfferID>() {
-                    
-                    @Override
-                    public Protos.OfferID apply(final Protos.Offer input) {
-                        return input.getId();
-                    }
-                }), Collections.singleton(task));
-                return true;
-            }
-        }
-        return false;
-    }
-    
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
-        if (failover(schedulerDriver, offers)) {
-            return;
+        List<MachineResource> machineResources = getMachineResources(offers);
+        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(machineResources);
+        offerFailoverJobs(resourceAllocateStrategy);
+        offerReadyJobs(resourceAllocateStrategy);
+        List<Protos.TaskInfo> taskInfoList = resourceAllocateStrategy.getTaskInfoList();
+        // TODO 出队时如果mesos framework死机,则已出队但未运行的作业将丢失
+        // TODO 目前是每个实例处理一片, 要改成每个实例能处理n片,按照资源决定每个服务分配的分片
+        removeRunningTasks(taskInfoList);
+        declineUnusedOffers(schedulerDriver, offers, taskInfoList);
+        launchTasks(schedulerDriver, offers, taskInfoList);
+    }
+    
+    private List<MachineResource> getMachineResources(final List<Protos.Offer> offers) {
+        return Lists.transform(offers, new Function<Protos.Offer, MachineResource>() {
+            
+            @Override
+            public MachineResource apply(final Protos.Offer input) {
+                return new MachineResource(input);
+            }
+        });
+    }
+    
+    private void offerFailoverJobs(final ResourceAllocateStrategy resourceAllocateStrategy) {
+        Optional<ElasticJobTask> task = failoverTaskQueueService.dequeue();
+        while (task.isPresent()) {
+            Optional<CloudJobConfiguration> jobConfig = configService.load(task.get().getJobName());
+            if (!jobConfig.isPresent()) {
+                continue;
+            }
+            if (!resourceAllocateStrategy.allocate(jobConfig.get(), Collections.singletonList(task.get().getShardingItem()))) {
+                break;
+            }
+            task = failoverTaskQueueService.dequeue();
         }
-        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(offers);
+    }
+    
+    private void offerReadyJobs(final ResourceAllocateStrategy resourceAllocateStrategy) {
         Optional<String> jobName = readyJobQueueService.dequeue();
         while (jobName.isPresent()) {
             Optional<CloudJobConfiguration> jobConfig = configService.load(jobName.get());
@@ -124,12 +129,6 @@ public final class ElasticJobCloudScheduler implements Scheduler {
             }
             jobName = readyJobQueueService.dequeue();
         }
-        List<Protos.TaskInfo> tasks = resourceAllocateStrategy.getTasks();
-        // TODO 出队时如果mesos framework死机,则已出队但未运行的作业将丢失
-        // TODO 目前是每个实例处理一片, 要改成每个实例能处理n片,按照资源决定每个服务分配的分片
-        removeRunningTasks(tasks);
-        declineUnusedOffers(schedulerDriver, offers, tasks);
-        launchTasks(schedulerDriver, offers, tasks);
     }
     
     private void removeRunningTasks(final List<Protos.TaskInfo> tasks) {
@@ -215,7 +214,11 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
-        failoverTaskQueueService.enqueue(ElasticJobTask.from(executorID.getValue()));
+        ElasticJobTask task = ElasticJobTask.from(executorID.getValue());
+        Optional<CloudJobConfiguration> jobConfig = configService.load(task.getJobName());
+        if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
+            failoverTaskQueueService.enqueue(task);
+        }
     }
     
     @Override
