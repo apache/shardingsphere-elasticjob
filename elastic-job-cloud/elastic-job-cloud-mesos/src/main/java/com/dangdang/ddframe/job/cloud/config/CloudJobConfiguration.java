@@ -15,17 +15,35 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.job.config;
+package com.dangdang.ddframe.job.cloud.config;
 
-import org.junit.Test;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-public final class ConfigurationNodeTest {
+/**
+ * 云作业配置对象.
+ *
+ * @author zhangliang
+ */
+@RequiredArgsConstructor
+@Getter
+public final class CloudJobConfiguration {
     
-    @Test
-    public void assertGetRootNodePath() {
-        assertThat(ConfigurationNode.getRootNodePath("test_job"), is("/jobs/test_job/config"));
-    }
+    private final String jobName;
+    
+    private final String cron;
+    
+    private final int shardingTotalCount;
+    
+    private final double cpuCount;
+    
+    private final double memoryMB;
+    
+    private final String dockerImageName;
+    
+    private final String appURL;
+    
+    private final boolean failover;
+    
+    private final boolean misfire;
 }

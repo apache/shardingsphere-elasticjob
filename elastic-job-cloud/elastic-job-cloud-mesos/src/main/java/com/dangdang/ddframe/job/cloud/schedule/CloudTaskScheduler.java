@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.schedule;
 
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyJobQueueService;
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;

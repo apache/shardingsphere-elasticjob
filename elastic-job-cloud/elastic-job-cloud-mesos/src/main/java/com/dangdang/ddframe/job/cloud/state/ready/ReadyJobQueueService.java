@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.state.ready;
 
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningTaskService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;

@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.MachineResource;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;

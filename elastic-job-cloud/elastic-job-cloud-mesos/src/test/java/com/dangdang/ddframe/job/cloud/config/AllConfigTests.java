@@ -15,16 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.job;
+package com.dangdang.ddframe.job.cloud.config;
 
-import com.dangdang.ddframe.job.cloud.job.config.ConfigurationNodeTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-        JobNodeTest.class, 
-        ConfigurationNodeTest.class, 
-})
-public final class AllJobTests {
+@Suite.SuiteClasses(ConfigurationNodeTest.class)
+public final class AllConfigTests {
 }

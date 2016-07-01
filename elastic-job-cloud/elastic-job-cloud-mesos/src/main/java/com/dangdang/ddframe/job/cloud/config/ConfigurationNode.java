@@ -15,36 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.job;
+package com.dangdang.ddframe.job.cloud.config;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 作业根节点路径.
+ * 作业配置节点路径.
  *
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JobNode {
+public final class ConfigurationNode {
     
-    /**
-     * 作业根节点.
-     */
-    public static final String ROOT = "/jobs";
+    static final String ROOT =  "/config";
     
-    /**
-     * 作业名称维度根节点.
-     */
-    public static final String JOB_ROOT = ROOT + "/%s";
+    private static final String JOB_CONFIG =  ROOT + "/%s";
     
-    /**
-     * 获取作业维度根节点路径.
-     * 
-     * @param jobName 作业名称
-     * @return 作业维度根节点路径
-     */
-    public static String getJobRootNodePath(final String jobName) {
-        return String.format(JOB_ROOT, jobName);
+    static String getRootNodePath(final String jobName) {
+        return String.format(JOB_CONFIG, jobName);
     }
 }
