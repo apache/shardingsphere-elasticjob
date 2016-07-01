@@ -31,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 final class SlaveCache {
     
-    private final static ConcurrentHashMap<String, List<ElasticJobTask>> runningTasks = new ConcurrentHashMap<>(128);
+    private static final ConcurrentHashMap<String, List<ElasticJobTask>> RUNNING_TASKS = new ConcurrentHashMap<>(128);
     
     private static SlaveCache instance;
     
@@ -45,8 +45,8 @@ final class SlaveCache {
             List<String> runningTaskIds = registryCenter.getChildrenKeys(RunningTaskNode.getRunningJobNodePath(runningJobName));
             for (String runningTaskId : runningTaskIds) {
                 String slaveId = registryCenter.get(RunningTaskNode.getRunningTaskNodePath(runningTaskId));
-                runningTasks.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
-                runningTasks.get(slaveId).add(ElasticJobTask.from(runningTaskId));
+                RUNNING_TASKS.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
+                RUNNING_TASKS.get(slaveId).add(ElasticJobTask.from(runningTaskId));
             }
         }
     }
@@ -63,16 +63,16 @@ final class SlaveCache {
     }
     
     void add(final String slaveId, final ElasticJobTask task) {
-        runningTasks.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
-        runningTasks.get(slaveId).add(task);
+        RUNNING_TASKS.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
+        RUNNING_TASKS.get(slaveId).add(task);
     }
     
     void remove(final String slaveId, final ElasticJobTask task) {
-        runningTasks.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
-        runningTasks.get(slaveId).remove(task);
+        RUNNING_TASKS.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
+        RUNNING_TASKS.get(slaveId).remove(task);
     }
     
     List<ElasticJobTask> load(final String slaveId) {
-        return runningTasks.get(slaveId);
+        return RUNNING_TASKS.get(slaveId);
     }
 }

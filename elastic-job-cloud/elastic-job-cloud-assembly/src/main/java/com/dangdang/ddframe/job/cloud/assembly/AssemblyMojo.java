@@ -23,7 +23,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
- * elastic-job-cloud专用的打包插件.
+ * 云作业打包插件.
  * 
  * @author caohao
  */
@@ -32,12 +32,14 @@ public class AssemblyMojo extends SingleAssemblyMojo {
     
     static final String MOJO_NAME = "assembly";
     
+    private static final String DESCRIPTOR_REFERENCE = "elastic-job-cloud-assembly";
+    
     private String finalName = "target";
     
     @Override
     public String[] getDescriptorReferences() {
         if (null == getDescriptors() || 0 == getDescriptors().length) {
-            return new String[] {"elastic-job-cloud-assembly"};
+            return new String[] {DESCRIPTOR_REFERENCE};
         }
         return super.getDescriptorReferences();
     }

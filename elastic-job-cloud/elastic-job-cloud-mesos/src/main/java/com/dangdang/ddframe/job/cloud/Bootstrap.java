@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud;
 
-import com.dangdang.ddframe.job.cloud.mesos.ElasticJobCloudEngine;
+import com.dangdang.ddframe.job.cloud.mesos.SchedulerEngine;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
@@ -27,12 +27,14 @@ import org.apache.mesos.Protos;
 public class Bootstrap {
     
     // -Djava.library.path=/usr/local/lib
+    // CHECKSTYLE:OFF
     public static void main(final String[] args) {
+    // CHECKSTYLE:ON
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "elastic-job-cloud");
         CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
         regCenter.init();
         Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser("").setName("Elastic-Job-Cloud").build();
-        MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new ElasticJobCloudEngine(regCenter), frameworkInfo, "zk://localhost:2181/mesos");
+        MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, "zk://localhost:2181/mesos");
         Protos.Status status = schedulerDriver.run();
         schedulerDriver.stop();
         System.exit(Protos.Status.DRIVER_STOPPED == status ? 0 : -1);

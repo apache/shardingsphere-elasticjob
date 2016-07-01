@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.mesos;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
-import com.dangdang.ddframe.job.cloud.mesos.stragety.MachineResource;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.schedule.CloudTaskSchedulerRegistry;
 import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
@@ -46,7 +45,7 @@ import java.util.List;
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public final class ElasticJobCloudEngine implements Scheduler {
+public final class SchedulerEngine implements Scheduler {
     
     private final CoordinatorRegistryCenter registryCenter;
     
@@ -58,7 +57,7 @@ public final class ElasticJobCloudEngine implements Scheduler {
     
     private final FailoverTaskQueueService failoverTaskQueueService;
     
-    public ElasticJobCloudEngine(final CoordinatorRegistryCenter registryCenter) {
+    public SchedulerEngine(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new ConfigurationService(registryCenter);
         readyJobQueueService = new ReadyJobQueueService(registryCenter);
@@ -77,8 +76,8 @@ public final class ElasticJobCloudEngine implements Scheduler {
     
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
-        List<MachineResource> machineResources = getMachineResources(offers);
-        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(machineResources);
+        List<HardwareResource> hardwareResources = getHardwareResource(offers);
+        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(hardwareResources);
         offerFailoverJobs(resourceAllocateStrategy);
         offerReadyJobs(resourceAllocateStrategy);
         List<Protos.TaskInfo> taskInfoList = resourceAllocateStrategy.getOfferedTaskInfoList();
@@ -87,12 +86,12 @@ public final class ElasticJobCloudEngine implements Scheduler {
         launchTasks(schedulerDriver, offers, taskInfoList);
     }
     
-    private List<MachineResource> getMachineResources(final List<Protos.Offer> offers) {
-        return Lists.transform(offers, new Function<Protos.Offer, MachineResource>() {
+    private List<HardwareResource> getHardwareResource(final List<Protos.Offer> offers) {
+        return Lists.transform(offers, new Function<Protos.Offer, HardwareResource>() {
             
             @Override
-            public MachineResource apply(final Protos.Offer input) {
-                return new MachineResource(input);
+            public HardwareResource apply(final Protos.Offer input) {
+                return new HardwareResource(input);
             }
         });
     }

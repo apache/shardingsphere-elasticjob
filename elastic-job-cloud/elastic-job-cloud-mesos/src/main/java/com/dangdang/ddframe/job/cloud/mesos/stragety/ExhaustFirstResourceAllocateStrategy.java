@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.mesos.MesosUtil;
+import com.dangdang.ddframe.job.cloud.mesos.HardwareResource;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Protos;
 
@@ -38,7 +38,7 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
     
     private final List<Protos.TaskInfo> declinedTaskInfoList = new LinkedList<>();
     
-    private final List<MachineResource> machineResources;
+    private final List<HardwareResource> hardwareResources;
     
     @Override
     public boolean allocate(final CloudJobConfiguration jobConfig) {
@@ -56,7 +56,7 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
         int startShardingItemIndex = 0;
         int shardingTotalCount = shardingItems.size();
         int assignedShardingCount = 0;
-        for (MachineResource each : machineResources) {
+        for (HardwareResource each : hardwareResources) {
             if (0 == shardingTotalCount) {
                 break;
             }
@@ -64,7 +64,7 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
             shardingTotalCount -= assignedShardingCount;
             for (int i = startShardingItemIndex; i < assignedShardingCount; i++) {
                 each.reserveResources(jobConfig.getCpuCount(), jobConfig.getMemoryMB());
-                taskInfoList.add(MesosUtil.createTaskInfo(each.getOffer(), jobConfig, shardingItems.get(i)));
+                taskInfoList.add(each.createTaskInfo(jobConfig, shardingItems.get(i)));
             }
             startShardingItemIndex = assignedShardingCount;
         }
@@ -73,7 +73,7 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
             return false;
         }
         this.offeredTaskInfoList.addAll(taskInfoList);
-        for (MachineResource each : machineResources) {
+        for (HardwareResource each : hardwareResources) {
             each.commitReservedResources();
         }
         return true;

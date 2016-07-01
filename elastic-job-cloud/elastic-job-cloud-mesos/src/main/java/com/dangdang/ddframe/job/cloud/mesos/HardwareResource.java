@@ -15,25 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.stragety;
+package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.cloud.mesos.MesosUtil;
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
 import com.google.common.base.Preconditions;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import org.apache.mesos.Protos;
 
 import java.math.BigDecimal;
 
 /**
- * 机器资源.
+ * 硬件资源.
  *
  * @author zhangliang
  */
 @EqualsAndHashCode(of = "offerId")
-public final class MachineResource {
+public final class HardwareResource {
     
-    @Getter
+    private static final String RUN_COMMAND = "sh bin/start.sh %s";
+    
     private final Protos.Offer offer;
     
     private final String offerId;
@@ -46,13 +47,22 @@ public final class MachineResource {
     
     private BigDecimal reservedMemoryMB;
     
-    public MachineResource(final Protos.Offer offer) {
+    public HardwareResource(final Protos.Offer offer) {
         this.offer = offer;
         offerId = offer.getId().getValue();
-        availableCpuCount = MesosUtil.getValue(offer, "cpus");
-        availableMemoryMB = MesosUtil.getValue(offer, "mem");
+        availableCpuCount = getResource("cpus");
+        availableMemoryMB = getResource("mem");
         reservedCpuCount = BigDecimal.ZERO;
         reservedMemoryMB = BigDecimal.ZERO;
+    }
+    
+    private BigDecimal getResource(final String type) {
+        for (Protos.Resource each : offer.getResourcesList()) {
+            if (type.equals(each.getName())) {
+                return new BigDecimal(each.getScalar().getValue());
+            }
+        }
+        return BigDecimal.ZERO;
     }
     
     /**
@@ -96,5 +106,31 @@ public final class MachineResource {
     public void commitReservedResources() {
         availableCpuCount.subtract(reservedCpuCount);
         availableMemoryMB.subtract(reservedMemoryMB);
+    }
+    
+    /**
+     * 创建Mesos任务对象.
+     *
+     * @param jobConfig 云作业配置
+     * @param shardingItem 分片项
+     * @return 任务对象
+     */
+    public Protos.TaskInfo createTaskInfo(final CloudJobConfiguration jobConfig, final int shardingItem) {
+        Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new ElasticJobTask(jobConfig.getJobName(), shardingItem).getId()).build();
+        Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(true).build();
+        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(String.format(RUN_COMMAND, taskId.getValue())).build();
+        Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();
+        return Protos.TaskInfo.newBuilder()
+                .setName(taskId.getValue())
+                .setTaskId(taskId)
+                .setSlaveId(offer.getSlaveId())
+                .addResources(buildResource("cpus", jobConfig.getCpuCount()))
+                .addResources(buildResource("mem", jobConfig.getMemoryMB()))
+                .setExecutor(executorInfo)
+                .build();
+    }
+    
+    private Protos.Resource.Builder buildResource(final String type, final double resourceValue) {
+        return Protos.Resource.newBuilder().setName(type).setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(resourceValue));
     }
 }

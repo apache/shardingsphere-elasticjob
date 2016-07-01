@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.assembly;
 
 /**
- * 打包插件抛出的统一异常.
+ * 打包插件异常.
  * 
  * @author zhangliang
  */
@@ -26,17 +26,15 @@ public final class AssemblyException extends RuntimeException {
     
     private static final long serialVersionUID = 2669851400531899217L;
     
-    public AssemblyException(final Exception casue) {
-        super(casue);
+    public AssemblyException(final Exception cause) {
+        super(cause);
     }
     
-    public AssemblyException(final String errorMsg) {
-        super(errorMsg);
+    public AssemblyException(final String errorMessage) {
+        super(errorMessage);
     }
     
-    public AssemblyException(final String errorMsg, final Exception casue) {
-        super(errorMsg, casue);
+    public AssemblyException(final String errorMessage, final Exception cause) {
+        super(errorMessage, cause);
     }
-    
-
 }

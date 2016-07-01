@@ -81,7 +81,7 @@ public class AddClasspathFileSetsTask {
      * @throws AssemblyFormattingException 打包描述文件格式
      */
     public void execute(final Archiver archiver, final AssemblerConfigurationSource configSource) throws ArchiveCreationException, AssemblyFormattingException {
-        final File archiveBaseDir = configSource.getArchiveBaseDirectory();
+        File archiveBaseDir = configSource.getArchiveBaseDirectory();
         if (null != archiveBaseDir) {
             if (!archiveBaseDir.exists()) {
                 throw new ArchiveCreationException(String.format("The archive base directory '%s' does not exist", archiveBaseDir.getAbsolutePath()));
@@ -89,7 +89,7 @@ public class AddClasspathFileSetsTask {
                 throw new ArchiveCreationException(String.format("The archive base directory '%s' exists, but it is not a directory", archiveBaseDir.getAbsolutePath()));
             }
         }
-        for (final FileSet fileSet : fileSets) {
+        for (FileSet fileSet : fileSets) {
             addFileSet(fileSet, archiver, configSource, archiveBaseDir);
         }
     }
@@ -100,88 +100,83 @@ public class AddClasspathFileSetsTask {
         if (null == project) {
             project = configSource.getProject();
         }
-        String destDirectory = fileSet.getOutputDirectory();
-        if (null == destDirectory) {
-            destDirectory = fileSet.getDirectory();
+        String destinationDirectory = fileSet.getOutputDirectory();
+        if (null == destinationDirectory) {
+            destinationDirectory = fileSet.getDirectory();
         }
-        warnForPlatformSpecifics(destDirectory);
-        destDirectory = AssemblyFormatUtils.getOutputDirectory(destDirectory, configSource.getFinalName(), configSource, 
-                                                    AssemblyFormatUtils.moduleProjectInterpolator(moduleProject), 
-                                                    AssemblyFormatUtils.artifactProjectInterpolator(project));
-        logEnviroment(fileSet, archiver, destDirectory);
+        warnForPlatformSpecifics(destinationDirectory);
+        destinationDirectory = AssemblyFormatUtils.getOutputDirectory(destinationDirectory, 
+                configSource.getFinalName(), configSource, AssemblyFormatUtils.moduleProjectInterpolator(moduleProject), AssemblyFormatUtils.artifactProjectInterpolator(project));
+        logEnvironment(fileSet, archiver, destinationDirectory);
         if (logger.isDebugEnabled()) {
             logger.debug(String.format("The archive base directory is '%s'", archiveBaseDir));
         }
-        final File fileSetDir = getFileSetDirectory(fileSet, configSource);
+        File fileSetDir = getFileSetDirectory(fileSet, configSource);
         if (fileSetDir.exists()) {
-            final InputStreamTransformer fileSetTransformers = ReaderFormatter.getFileSetTransformers(configSource, fileSet.isFiltered(), fileSet.getLineEnding());
+            InputStreamTransformer fileSetTransformers = ReaderFormatter.getFileSetTransformers(configSource, fileSet.isFiltered(), fileSet.getLineEnding());
             if (null == fileSetTransformers && logger.isDebugEnabled()) {
                 logger.debug("NOT reformatting any files in " + fileSetDir);
             }
             if (fileSetDir.getPath().equals(File.separator)) {
                 throw new AssemblyFormattingException(
-                    "Your assembly descriptor specifies a directory of " + File.separator
-                        + ", which is your *entire* file system.\nThese are not the files you are looking for");
+                        "Your assembly descriptor specifies a directory of " + File.separator + ", which is your *entire* file system.\nThese are not the files you are looking for");
             }
-            final AddDirectoryTask task = new AddDirectoryTask(fileSetDir, fileSetTransformers);
-            final int dirMode = TypeConversionUtils.modeToInt(fileSet.getDirectoryMode(), logger);
+            AddDirectoryTask task = new AddDirectoryTask(fileSetDir, fileSetTransformers);
+            int dirMode = TypeConversionUtils.modeToInt(fileSet.getDirectoryMode(), logger);
             if (-1 != dirMode) {
                 task.setDirectoryMode(dirMode);
             }
-            final int fileMode = TypeConversionUtils.modeToInt(fileSet.getFileMode(), logger);
+            int fileMode = TypeConversionUtils.modeToInt(fileSet.getFileMode(), logger);
             if (-1 != fileMode) {
                 task.setFileMode(fileMode);
             }
             task.setUseDefaultExcludes(fileSet.isUseDefaultExcludes());
-            final List<String> excludes = fileSet.getExcludes();
+            List<String> excludes = fileSet.getExcludes();
             excludes.add("**/*.filtered");
             excludes.add("**/*.formatted");
             task.setExcludes(excludes);
             task.setIncludes(fileSet.getIncludes());
-            task.setOutputDirectory(destDirectory);
+            task.setOutputDirectory(destinationDirectory);
             task.execute(archiver);
         }
     }
     
-    private void logEnviroment(final FileSet fileSet, final Archiver archiver, final String destDirectory) {
+    private void logEnvironment(final FileSet fileSet, final Archiver archiver, final String destinationDirectory) {
         if (logger.isDebugEnabled()) {
-            logger.debug("ClasspathFileSet[" + destDirectory + "]" + " dir perms: " + Integer.toString(
-                archiver.getOverrideDirectoryMode(), 8) + " file perms: " + Integer.toString(
-                archiver.getOverrideFileMode(), 8) + (fileSet.getLineEnding() == null
-                ? ""
-                : " lineEndings: " + fileSet.getLineEnding()));
+            String filePerms = Integer.toString(archiver.getOverrideFileMode(), 8) + (null == fileSet.getLineEnding() ? "" : " lineEndings: " + fileSet.getLineEnding());
+            logger.debug(String.format("ClasspathFileSet[%s] dir perms: %s file perms: ", destinationDirectory, Integer.toString(archiver.getOverrideDirectoryMode(), 8), filePerms));
         }
     }
     
-    private void warnForPlatformSpecifics(final String destDirectory) {
+    private void warnForPlatformSpecifics(final String destinationDirectory) {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            if (isLinuxRootReference(destDirectory) && logger.isErrorEnabled()) {
-                logger.error(String.format("OS=Windows and the assembly descriptor contains a *nix-specific root-relative-reference(starting with slash) %s", destDirectory));
-            } else if (isWindowsPath(destDirectory) && logger.isWarnEnabled()) {
+            if (isLinuxRootReference(destinationDirectory) && logger.isErrorEnabled()) {
+                logger.error(String.format("OS=Windows and the assembly descriptor contains a *nix-specific root-relative-reference(starting with slash) %s", destinationDirectory));
+            } else if (isWindowsPath(destinationDirectory) && logger.isWarnEnabled()) {
                 logger.warn(String.format(
-                        "The assembly descriptor contains a *nix-specific root-relative-reference (starting with slash). This is non-portable and will fail on windows %s", destDirectory));
+                        "The assembly descriptor contains a *nix-specific root-relative-reference (starting with slash). This is non-portable and will fail on windows %s", destinationDirectory));
             }
         } else {
-            if (isWindowsPath(destDirectory) && logger.isErrorEnabled()) {
-                logger.error(String.format("OS=Non-Windows and the assembly descriptor contains a windows-specific directory reference (with a drive letter) %s", destDirectory));
-            } else if (isLinuxRootReference(destDirectory) && logger.isWarnEnabled()) {
-                logger.warn(String.format("The assembly descriptor contains a filesystem-root relative reference, which is not cross platform compatible %s", destDirectory));
+            if (isWindowsPath(destinationDirectory) && logger.isErrorEnabled()) {
+                logger.error(String.format("OS=Non-Windows and the assembly descriptor contains a windows-specific directory reference (with a drive letter) %s", destinationDirectory));
+            } else if (isLinuxRootReference(destinationDirectory) && logger.isWarnEnabled()) {
+                logger.warn(String.format("The assembly descriptor contains a filesystem-root relative reference, which is not cross platform compatible %s", destinationDirectory));
             }
         }
     }
     
-    private static boolean isLinuxRootReference(final String destDirectory) {
-        return null != destDirectory && destDirectory.startsWith("/");
+    private static boolean isLinuxRootReference(final String destinationDirectory) {
+        return null != destinationDirectory && destinationDirectory.startsWith("/");
     }
     
-    private static boolean isWindowsPath(final String destDirectory) {
-        return null != destDirectory && destDirectory.length() >= 2 && destDirectory.charAt(1) == ':';
+    private static boolean isWindowsPath(final String destinationDirectory) {
+        return null != destinationDirectory && destinationDirectory.length() >= 2 && destinationDirectory.charAt(1) == ':';
     }
     
     private File getFileSetDirectory(final FileSet fileSet, final AssemblerConfigurationSource configSource) {
-        final String sourceDirectory = fileSet.getDirectory();
-        final Path assmebliesPath = makeAssmebliesFolder(configSource, sourceDirectory);
-        final String jarPath = getJarPath(sourceDirectory);
+        String sourceDirectory = fileSet.getDirectory();
+        Path assmebliesPath = makeAssmebliesFolder(configSource, sourceDirectory);
+        String jarPath = getJarPath(sourceDirectory);
         if (null == jarPath) {
             return assmebliesPath.toFile();
         }
@@ -192,11 +187,11 @@ public class AddClasspathFileSetsTask {
             throw new AssemblyException(String.format("cannot fount jar file '%s'", jarPath), ex);
         }
         while (jarEntries.hasMoreElements()) {
-            final JarEntry jarEntry = jarEntries.nextElement();
-            final String jarEntryName = jarEntry.getName();
+            JarEntry jarEntry = jarEntries.nextElement();
+            String jarEntryName = jarEntry.getName();
             if (jarEntryName.startsWith(sourceDirectory) && !jarEntry.isDirectory()) {
-                final InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(jarEntryName);
-                final Path target = Paths.get(configSource.getOutputDirectory().getAbsolutePath(), jarEntryName);
+                InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(jarEntryName);
+                Path target = Paths.get(configSource.getOutputDirectory().getAbsolutePath(), jarEntryName);
                 try {
                     Files.copy(resourceAsStream, target, StandardCopyOption.REPLACE_EXISTING);
                 } catch (final IOException ex) {
@@ -209,7 +204,7 @@ public class AddClasspathFileSetsTask {
     }
     
     private Path makeAssmebliesFolder(final AssemblerConfigurationSource configSource, final String sourceDirectory) {
-        final Path result = Paths.get(configSource.getOutputDirectory().getAbsolutePath(), sourceDirectory);
+        Path result = Paths.get(configSource.getOutputDirectory().getAbsolutePath(), sourceDirectory);
         if (result.toFile().exists()) {
             result.toFile().delete();
         }
@@ -218,11 +213,11 @@ public class AddClasspathFileSetsTask {
     }
     
     private String getJarPath(final String sourceDirectory) {
-        final URL url = Thread.currentThread().getContextClassLoader().getResource(sourceDirectory);
+        URL url = Thread.currentThread().getContextClassLoader().getResource(sourceDirectory);
         if (null == url) {
             return null;
         }
-        final String result = url.getPath();
+        String result = url.getPath();
         if (!result.contains("!")) {
             throw new AssemblyException(String.format("The Directory '%s' cannot fount in jar file.", sourceDirectory));
         }

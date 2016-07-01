@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.assembly;
 import org.apache.maven.plugin.assembly.AssemblerConfigurationSource;
 import org.apache.maven.plugin.assembly.archive.ArchiveCreationException;
 import org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase;
+import org.apache.maven.plugin.assembly.archive.phase.FileSetAssemblyPhase;
 import org.apache.maven.plugin.assembly.archive.phase.PhaseOrder;
 import org.apache.maven.plugin.assembly.format.AssemblyFormattingException;
 import org.apache.maven.plugin.assembly.model.Assembly;
@@ -42,16 +43,15 @@ public class ClasspathFileSetAssemblyPhase extends AbstractLogEnabled implements
     private static final String CLASSPATH_PREFIX = "classpath:";
     
     @Override
-    public void execute(final Assembly assembly, final Archiver archiver, final AssemblerConfigurationSource configSource) 
-            throws ArchiveCreationException, AssemblyFormattingException {
-        final List<FileSet> fileSets = assembly.getFileSets();
+    public void execute(final Assembly assembly, final Archiver archiver, final AssemblerConfigurationSource configSource) throws ArchiveCreationException, AssemblyFormattingException {
+        List<FileSet> fileSets = assembly.getFileSets();
         if (null == fileSets || fileSets.isEmpty()) {
             return;
         }
-        final List<FileSet> classpathFileSets = new ArrayList<>(fileSets.size());
-        for (final FileSet each : fileSets) {
+        List<FileSet> classpathFileSets = new ArrayList<>(fileSets.size());
+        for (FileSet each : fileSets) {
             if (isClasspathDirectory(each.getDirectory())) {
-                final String directory = each.getDirectory();
+                String directory = each.getDirectory();
                 each.setDirectory(directory.substring(CLASSPATH_PREFIX.length(), directory.length()).trim());
                 classpathFileSets.add(each);
             }
@@ -59,7 +59,7 @@ public class ClasspathFileSetAssemblyPhase extends AbstractLogEnabled implements
         if (classpathFileSets.isEmpty()) {
             return;
         }
-        final AddClasspathFileSetsTask task = new AddClasspathFileSetsTask(classpathFileSets);
+        AddClasspathFileSetsTask task = new AddClasspathFileSetsTask(classpathFileSets);
         task.setLogger(getLogger());
         task.execute(archiver, configSource);
     }
@@ -68,14 +68,8 @@ public class ClasspathFileSetAssemblyPhase extends AbstractLogEnabled implements
         return null != directory && directory.startsWith(CLASSPATH_PREFIX);
     }
     
-    /** 
-     * 返回{@code ClasspathFileSetAssemblyPhase }的执行顺序.
-     * 返回值为21的原因是{@code FileSetAssemblyPhase }的返回值是20, {@code ClasspathFileSetAssemblyPhase }将在{@code FileSetAssemblyPhase }之后执行.
-     * 
-     * @return  {@code ClasspathFileSetAssemblyPhase }的执行顺序.
-     */
     @Override
     public int order() {
-        return 21;
+        return new FileSetAssemblyPhase().order() + 1;
     }
 }
