@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-set>
+    <components>
+        <component>
+            <role>org.codehaus.plexus.archiver.UnArchiver</role>
+            <role-hint>sar</role-hint>
+            <implementation>org.codehaus.plexus.archiver.zip.ZipUnArchiver
+            </implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+        </component>
+        <component>
+            <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection
+            </role>
+            <role-hint>sar</role-hint>
+            <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection
+            </implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase
+            </role>
+            <role-hint>dependency-sets</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.archive.phase.DependencySetAssemblyPhase
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+            <requirements>
+                <requirement>
+                    <role>org.apache.maven.project.MavenProjectBuilder</role>
+                    <role-hint />
+                    <field-name>projectBuilder</field-name>
+                </requirement>
+                <requirement>
+                    <role>org.codehaus.plexus.archiver.manager.ArchiverManager</role>
+                    <role-hint />
+                    <field-name>archiverManager</field-name>
+                </requirement>
+                <requirement>
+                    <role>org.apache.maven.plugin.assembly.artifact.DependencyResolver
+                    </role>
+                    <role-hint />
+                    <field-name>dependencyResolver</field-name>
+                </requirement>
+            </requirements>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase
+            </role>
+            <role-hint>repositories</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.archive.phase.RepositoryAssemblyPhase
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+            <requirements>
+                <requirement>
+                    <role>org.apache.maven.shared.repository.RepositoryAssembler</role>
+                    <role-hint />
+                    <field-name>repositoryAssembler</field-name>
+                </requirement>
+            </requirements>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase
+            </role>
+            <role-hint>module-sets</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.archive.phase.ModuleSetAssemblyPhase
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+            <requirements>
+                <requirement>
+                    <role>org.apache.maven.project.MavenProjectBuilder</role>
+                    <role-hint />
+                    <field-name>projectBuilder</field-name>
+                </requirement>
+                <requirement>
+                    <role>org.codehaus.plexus.archiver.manager.ArchiverManager</role>
+                    <role-hint />
+                    <field-name>archiverManager</field-name>
+                </requirement>
+                <requirement>
+                    <role>org.apache.maven.plugin.assembly.artifact.DependencyResolver
+                    </role>
+                    <role-hint />
+                    <field-name>dependencyResolver</field-name>
+                </requirement>
+            </requirements>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase
+            </role>
+            <role-hint>file-sets</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.archive.phase.FileSetAssemblyPhase
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+        </component>
+        <!-- Add classpath file set for dangdang -->
+        <component>
+            <role>org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase
+            </role>
+            <role-hint>classpath-file-sets</role-hint>
+            <implementation>com.dangdang.ddframe.job.cloud.assembly.ClasspathFileSetAssemblyPhase
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase
+            </role>
+            <role-hint>file-items</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.archive.phase.FileItemAssemblyPhase
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.archive.AssemblyArchiver
+            </role>
+            <role-hint>default</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.archive.DefaultAssemblyArchiver
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+            <requirements>
+                <requirement>
+                    <role>org.codehaus.plexus.archiver.manager.ArchiverManager</role>
+                    <role-hint />
+                    <field-name>archiverManager</field-name>
+                </requirement>
+                <requirement>
+                    <role>org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase
+                    </role>
+                    <field-name>assemblyPhases</field-name>
+                </requirement>
+                <requirement>
+                    <role>org.apache.maven.plugin.assembly.filter.ContainerDescriptorHandler
+                    </role>
+                    <field-name>containerDescriptorHandlers</field-name>
+                </requirement>
+            </requirements>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.filter.ContainerDescriptorHandler
+            </role>
+            <role-hint>metaInf-services</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.filter.MetaInfServicesHandler
+            </implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+            <description />
+            <isolated-realm>false</isolated-realm>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.filter.ContainerDescriptorHandler
+            </role>
+            <role-hint>plexus</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.filter.ComponentsXmlArchiverFileFilter
+            </implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+            <description />
+            <isolated-realm>false</isolated-realm>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.filter.ContainerDescriptorHandler
+            </role>
+            <role-hint>file-aggregator</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.filter.SimpleAggregatingDescriptorHandler
+            </implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+            <description />
+            <isolated-realm>false</isolated-realm>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.filter.ContainerDescriptorHandler
+            </role>
+            <role-hint>metaInf-spring</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.filter.MetaInfSpringHandler
+            </implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+            <description />
+            <isolated-realm>false</isolated-realm>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.artifact.DependencyResolver
+            </role>
+            <role-hint>default</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.artifact.DefaultDependencyResolver
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+            <requirements>
+                <requirement>
+                    <role>org.apache.maven.artifact.resolver.ArtifactResolver</role>
+                    <role-hint />
+                    <field-name>resolver</field-name>
+                </requirement>
+                <requirement>
+                    <role>org.apache.maven.artifact.metadata.ArtifactMetadataSource
+                    </role>
+                    <role-hint />
+                    <field-name>metadataSource</field-name>
+                </requirement>
+                <requirement>
+                    <role>org.apache.maven.artifact.factory.ArtifactFactory</role>
+                    <role-hint />
+                    <field-name>factory</field-name>
+                </requirement>
+            </requirements>
+        </component>
+        <component>
+            <role>org.apache.maven.plugin.assembly.io.AssemblyReader</role>
+            <role-hint>default</role-hint>
+            <implementation>org.apache.maven.plugin.assembly.io.DefaultAssemblyReader
+            </implementation>
+            <description />
+            <isolated-realm>false</isolated-realm>
+        </component>
+    </components>
+</component-set>

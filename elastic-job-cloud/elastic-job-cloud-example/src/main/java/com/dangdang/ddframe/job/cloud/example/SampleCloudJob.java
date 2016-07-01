@@ -15,17 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.boot;
+package com.dangdang.ddframe.job.cloud.example;
+
+import com.dangdang.ddframe.job.cloud.api.AbstractCloudElasticJob;
+
+import java.util.Date;
 
 /**
- * 云作业启动入口.
+ * 云作业实例.
  *
- * @author zhangliang
+ * @author caohao
  */
-public final class Bootstrap {
+public class SampleCloudJob extends AbstractCloudElasticJob {
     
-    public static void main(final String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        String taskId = args[0];
-        new TestCloudJob(taskId).execute();
+    public SampleCloudJob(final String taskId) {
+        super(taskId);
+    }
+    
+    
+    @Override
+    protected void executeJob(final int shardingItem) {
+        System.out.println(new Date() + ":------sample cloud job-------:" + shardingItem);
     }
 }

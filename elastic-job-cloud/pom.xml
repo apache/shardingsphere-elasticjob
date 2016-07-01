@@ -14,5 +14,6 @@
         <module>elastic-job-cloud-mesos</module>
         <module>elastic-job-cloud-api</module>
         <module>elastic-job-cloud-assembly</module>
+        <module>elastic-job-cloud-example</module>
     </modules>
 </project>

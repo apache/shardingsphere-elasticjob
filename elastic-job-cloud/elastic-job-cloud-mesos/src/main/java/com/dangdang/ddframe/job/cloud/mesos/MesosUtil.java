@@ -22,14 +22,15 @@ import com.dangdang.ddframe.job.cloud.task.ElasticJobTask;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.CommandInfo.URI;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Mesos资源工具类.
  *
  * @author zhangliang
+ * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MesosUtil {
@@ -40,19 +41,20 @@ public class MesosUtil {
      * @param offer 资源提供对象
      * @param cloudJobConfig 云作业配置
      * @param shardingItem 分片项
-     * @return
+     * @return Mesos任务对象
      */
     public static Protos.TaskInfo createTaskInfo(final Protos.Offer offer, final CloudJobConfiguration cloudJobConfig, final int shardingItem) {
         Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new ElasticJobTask(cloudJobConfig.getJobName(), shardingItem).getId()).build();
+        URI uri = Protos.CommandInfo.URI.newBuilder().setValue(cloudJobConfig.getAppURL()).setExtract(true).setCache(true).build();
+        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue("sh bin/start.sh " + taskId.getValue()).build();
+        Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
                 .setTaskId(taskId)
                 .setSlaveId(offer.getSlaveId())
                 .addResources(getResources("cpus", cloudJobConfig.getCpuCount()))
                 .addResources(getResources("mem", cloudJobConfig.getMemoryMB()))
-                .setExecutor(Protos.ExecutorInfo.newBuilder()
-                        .setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue()))
-                        .setCommand(Protos.CommandInfo.newBuilder().setValue("/Users/zhangliang/docker-sample/elastic-job-example/bin/start.sh " + taskId.getValue() + " > /Users/zhangliang/docker-sample/elastic-job-example/logs/log" + ElasticJobTask.from(taskId.getValue()).getShardingItem() + ".log")))
+                .setExecutor(executorInfo)
                 .build();
     }
     

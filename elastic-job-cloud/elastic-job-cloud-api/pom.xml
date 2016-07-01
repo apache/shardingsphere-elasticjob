@@ -11,9 +11,12 @@
     
     <dependencies>
         <dependency>
-            <groupId>com.dangdang</groupId>
-            <artifactId>elastic-job-core</artifactId>
-            <version>${project.parent.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
 </project>

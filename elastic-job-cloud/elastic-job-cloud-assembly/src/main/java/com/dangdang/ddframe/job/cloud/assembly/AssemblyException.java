@@ -15,26 +15,28 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.boot;
-
-import com.dangdang.ddframe.job.cloud.api.AbstractCloudElasticJob;
-
-import java.util.Date;
+package com.dangdang.ddframe.job.cloud.assembly;
 
 /**
- * .
- *
+ * 打包插件抛出的统一异常.
+ * 
  * @author zhangliang
  */
-public class TestCloudJob extends AbstractCloudElasticJob {
+public final class AssemblyException extends RuntimeException {
     
-    public TestCloudJob(final String taskId) {
-        super(taskId);
+    private static final long serialVersionUID = 2669851400531899217L;
+    
+    public AssemblyException(final Exception casue) {
+        super(casue);
     }
     
-    
-    @Override
-    protected void executeJob(final int shardingItem) {
-        System.out.println(new Date() + ":------test job-------:" + shardingItem);
+    public AssemblyException(final String errorMsg) {
+        super(errorMsg);
     }
+    
+    public AssemblyException(final String errorMsg, final Exception casue) {
+        super(errorMsg, casue);
+    }
+    
+
 }

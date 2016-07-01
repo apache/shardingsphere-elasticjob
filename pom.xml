@@ -38,7 +38,7 @@
         <commons-exec.version>1.3</commons-exec.version>
         <gson.version>2.6.1</gson.version>
         <javaee-web-api.version>7.0</javaee-web-api.version>
-        <mesos.version>0.20.1</mesos.version>
+        <mesos.version>0.28.1</mesos.version>
         
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
@@ -53,7 +53,6 @@
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
         <maven-enforcer-plugin.version>1.4</maven-enforcer-plugin.version>
         <maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
-        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
@@ -66,6 +65,11 @@
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
+        <!-- aseembly dependencies -->
+        <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
+        <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
+        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
+        <maven-plugin-api.version>3.3.9</maven-plugin-api.version>
     </properties>
     
     <dependencyManagement>
@@ -243,6 +247,21 @@
                 <artifactId>aspectjweaver</artifactId>
                 <version>${aspectj.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugin-tools</groupId>
+                <artifactId>maven-plugin-annotations</artifactId>
+                <version>${maven-plugin-annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-plugin-api</artifactId>
+                <version>${maven-plugin-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -474,16 +493,6 @@
                 <version>${maven-project-info-reports-plugin.version}</version>
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <charset>${project.build.sourceEncoding}</charset>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <docencoding>${project.build.sourceEncoding}</docencoding>
                 </configuration>
             </plugin>
             <plugin>

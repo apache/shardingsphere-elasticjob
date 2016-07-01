@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>elastic-job-cloud</artifactId>
+        <groupId>com.dangdang</groupId>
+        <version>1.1.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>elastic-job-cloud-example</artifactId>
+    <name>${project.artifactId}</name>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.dangdang</groupId>
+            <artifactId>elastic-job-cloud-api</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.dangdang</groupId>
+                <artifactId>elastic-job-cloud-assembly</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
