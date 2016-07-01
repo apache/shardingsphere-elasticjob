@@ -19,15 +19,14 @@ package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.job.state.StateService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.MachineResource;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.schedule.CloudTaskSchedulerRegistry;
-import com.dangdang.ddframe.job.cloud.task.ElasticJobTask;
-import com.dangdang.ddframe.job.cloud.task.failover.FailoverTaskQueueService;
-import com.dangdang.ddframe.job.cloud.task.ready.ReadyJobQueueService;
-import com.dangdang.ddframe.job.cloud.task.running.RunningTaskService;
+import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.state.failover.FailoverTaskQueueService;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyJobQueueService;
+import com.dangdang.ddframe.job.cloud.state.running.RunningTaskService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -42,12 +41,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 作业云的Mesos调度器.
+ * 作业云引擎.
  *
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public final class ElasticJobCloudScheduler implements Scheduler {
+public final class ElasticJobCloudEngine implements Scheduler {
     
     private final CoordinatorRegistryCenter registryCenter;
     
@@ -55,17 +54,14 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     
     private final ReadyJobQueueService readyJobQueueService;
     
-    private final StateService stateService;
-    
     private final RunningTaskService taskRunningService;
     
     private final FailoverTaskQueueService failoverTaskQueueService;
     
-    public ElasticJobCloudScheduler(final CoordinatorRegistryCenter registryCenter) {
+    public ElasticJobCloudEngine(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new ConfigurationService(registryCenter);
         readyJobQueueService = new ReadyJobQueueService(registryCenter);
-        stateService = new StateService(registryCenter);
         taskRunningService = new RunningTaskService(registryCenter);
         failoverTaskQueueService = new FailoverTaskQueueService(registryCenter);
     }
@@ -138,7 +134,7 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     private void removeRunningTasks(final List<Protos.TaskInfo> tasks) {
         List<Protos.TaskInfo> runningTasks = new ArrayList<>(tasks.size());
         for (Protos.TaskInfo each : tasks) {
-            if (!taskRunningService.add(each.getSlaveId().getValue(), ElasticJobTask.from(each.getTaskId().getValue()))) {
+            if (taskRunningService.isTaskRunning(ElasticJobTask.from(each.getTaskId().getValue()))) {
                 runningTasks.add(each);
             }
         }
@@ -170,6 +166,11 @@ public final class ElasticJobCloudScheduler implements Scheduler {
                 return input.getId();
             }
         }), tasks);
+    
+        // TODO 状态回调调整好, 这里的代码应删除
+        for (Protos.TaskInfo each : tasks) {
+            taskRunningService.add(each.getSlaveId().getValue(), ElasticJobTask.from(each.getTaskId().getValue()));
+        }
     }
     
     @Override
@@ -177,18 +178,18 @@ public final class ElasticJobCloudScheduler implements Scheduler {
     }
     
     @Override
+    // TODO 状态返回不正确,不能正确记录状态,导致不能failover, 目前先放在resourceOffers实现
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
         ElasticJobTask elasticJobTask = ElasticJobTask.from(taskId);
         switch (taskStatus.getState()) {
             case TASK_STARTING:
-                stateService.startRunning(elasticJobTask.getJobName(), elasticJobTask.getShardingItem());
+                taskRunningService.add(taskStatus.getSlaveId().getValue(), elasticJobTask);
                 break;
             case TASK_FINISHED:
             case TASK_FAILED:
             case TASK_KILLED:
             case TASK_LOST:
-                stateService.completeRunning(elasticJobTask.getJobName(), elasticJobTask.getShardingItem());
                 taskRunningService.remove(taskStatus.getSlaveId().getValue(), elasticJobTask);
                 break;
             default:

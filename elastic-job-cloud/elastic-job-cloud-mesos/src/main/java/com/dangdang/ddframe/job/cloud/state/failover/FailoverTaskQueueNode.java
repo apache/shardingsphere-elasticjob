@@ -15,9 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.task.failover;
+package com.dangdang.ddframe.job.cloud.state.failover;
 
-import com.dangdang.ddframe.job.cloud.task.TaskNode;
+import com.dangdang.ddframe.job.cloud.state.TaskNode;
 import lombok.RequiredArgsConstructor;
 
 /**

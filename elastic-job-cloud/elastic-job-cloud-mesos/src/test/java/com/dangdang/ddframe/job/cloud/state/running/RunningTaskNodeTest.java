@@ -15,19 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.task;
+package com.dangdang.ddframe.job.cloud.state.running;
 
-import com.dangdang.ddframe.job.cloud.task.failover.FailoverTaskQueueNodeTest;
-import com.dangdang.ddframe.job.cloud.task.ready.ReadyQueueNodeTest;
-import com.dangdang.ddframe.job.cloud.task.running.RunningTaskNodeTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        ReadyQueueNodeTest.class, 
-        RunningTaskNodeTest.class,
-        FailoverTaskQueueNodeTest.class
-})
-public final class AllTaskTests {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class RunningTaskNodeTest {
+    
+    @Test
+    public void assertGetRunningTaskNodePath() {
+        assertThat(RunningTaskNode.getRunningTaskNodePath("testJob@-@0@-@00"), is("/state/running/testJob/testJob@-@0@-@00"));
+    }
 }

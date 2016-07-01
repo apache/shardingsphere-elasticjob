@@ -15,25 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.task.ready;
+package com.dangdang.ddframe.job.cloud.state;
 
-import com.dangdang.ddframe.job.cloud.task.TaskNode;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import com.dangdang.ddframe.job.cloud.state.failover.FailoverTaskQueueNodeTest;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyQueueNodeTest;
+import com.dangdang.ddframe.job.cloud.state.running.RunningTaskNodeTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/**
- * 待运行作业队列节点路径.
- *
- * @author zhangliang
- */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-final class ReadyJobQueueNode {
-    
-    static final String ROOT = TaskNode.ROOT + "/ready";
-    
-    private static final String READY_JOB = ROOT + "/%s";
-    
-    static String getReadyJobNodePath(final String jobName) {
-        return String.format(READY_JOB, jobName);
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        ReadyQueueNodeTest.class, 
+        RunningTaskNodeTest.class,
+        FailoverTaskQueueNodeTest.class
+})
+public final class AllStateTests {
 }

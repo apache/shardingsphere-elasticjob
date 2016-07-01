@@ -15,10 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.task.failover;
+package com.dangdang.ddframe.job.cloud.state.failover;
 
-import com.dangdang.ddframe.job.cloud.job.state.StateService;
-import com.dangdang.ddframe.job.cloud.task.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.state.running.RunningTaskService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
@@ -33,11 +33,11 @@ public class FailoverTaskQueueService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
-    private final StateService stateService;
+    private final RunningTaskService runningTaskService;
     
     public FailoverTaskQueueService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
-        stateService = new StateService(registryCenter);
+        runningTaskService = new RunningTaskService(registryCenter);
     }
     
     /**
@@ -66,7 +66,7 @@ public class FailoverTaskQueueService {
         }
         for (String each : taskIds) {
             ElasticJobTask task = ElasticJobTask.from(each);
-            if (!stateService.isRunning(task.getJobName())) {
+            if (!runningTaskService.isJobRunning(task.getJobName())) {
                 registryCenter.remove(FailoverTaskQueueNode.getFailoverNodePath(each));
                 return Optional.of(task);
             }

@@ -15,11 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.task.ready;
+package com.dangdang.ddframe.job.cloud.state.ready;
 
 import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.job.state.StateService;
+import com.dangdang.ddframe.job.cloud.state.running.RunningTaskService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
@@ -36,12 +36,12 @@ public class ReadyJobQueueService {
     
     private final ConfigurationService configService;
     
-    private final StateService stateService;
+    private final RunningTaskService runningTaskService;
     
     public ReadyJobQueueService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new ConfigurationService(registryCenter);
-        stateService = new StateService(registryCenter);
+        runningTaskService = new RunningTaskService(registryCenter);
     }
     
     /**
@@ -70,7 +70,7 @@ public class ReadyJobQueueService {
                 registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
                 break;
             }
-            if (!stateService.isRunning(jobName)) {
+            if (!runningTaskService.isJobRunning(jobName)) {
                 registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
                 return Optional.of(jobName);
             }

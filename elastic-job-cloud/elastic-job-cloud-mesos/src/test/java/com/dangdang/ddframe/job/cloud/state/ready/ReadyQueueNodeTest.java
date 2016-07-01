@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.task.ready;
+package com.dangdang.ddframe.job.cloud.state.ready;
 
 import org.junit.Test;
 
@@ -26,6 +26,6 @@ public final class ReadyQueueNodeTest {
     
     @Test
     public void assertGetReadyJobNodePath() {
-        assertThat(ReadyJobQueueNode.getReadyJobNodePath("test_job0000000001"), is("/tasks/ready/test_job0000000001"));
+        assertThat(ReadyJobQueueNode.getReadyJobNodePath("test_job0000000001"), is("/state/ready/test_job0000000001"));
     }
 }

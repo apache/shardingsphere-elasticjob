@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.cloud.job;
 
 import com.dangdang.ddframe.job.cloud.job.config.ConfigurationNodeTest;
-import com.dangdang.ddframe.job.cloud.job.state.StateNodeTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -26,7 +25,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         JobNodeTest.class, 
         ConfigurationNodeTest.class, 
-        StateNodeTest.class
 })
 public final class AllJobTests {
 }

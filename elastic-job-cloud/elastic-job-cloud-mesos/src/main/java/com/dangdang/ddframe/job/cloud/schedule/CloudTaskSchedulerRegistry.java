@@ -17,9 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.schedule;
 
-import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.job.state.StateService;
+import com.dangdang.ddframe.job.cloud.job.config.ConfigurationService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -41,12 +40,9 @@ public final class CloudTaskSchedulerRegistry {
     
     private final ConfigurationService configService;
     
-    private final StateService stateService;
-    
     private CloudTaskSchedulerRegistry(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new ConfigurationService(registryCenter);
-        stateService = new StateService(registryCenter);
     }
     
     /**
@@ -87,7 +83,6 @@ public final class CloudTaskSchedulerRegistry {
             cloudTaskSchedulerMap.remove(jobName);
         }
         configService.add(cloudJobConfig);
-        stateService.sharding(jobName);
         CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(cloudJobConfig, registryCenter);
         cloudTaskScheduler.startup();
         cloudTaskSchedulerMap.put(jobName, cloudTaskScheduler);
@@ -105,13 +100,9 @@ public final class CloudTaskSchedulerRegistry {
         Preconditions.checkState(originalCloudJobConfig.isPresent());
         configService.update(cloudJobConfig);
         boolean isCronChanged = !originalCloudJobConfig.get().getCron().equals(cloudJobConfig.getCron());
-        boolean isShardingTotalCountChanged = originalCloudJobConfig.get().getShardingTotalCount() != cloudJobConfig.getShardingTotalCount();
         if (isCronChanged) {
             cloudTaskSchedulerMap.get(jobName).shutdown();
             cloudTaskSchedulerMap.remove(jobName);
-        }
-        if (isShardingTotalCountChanged) {
-            stateService.reSharding(jobName);
         }
         if (isCronChanged) {
             CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(cloudJobConfig, registryCenter);

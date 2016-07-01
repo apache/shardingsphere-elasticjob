@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.schedule;
 
-import com.dangdang.ddframe.job.cloud.task.ready.ReadyJobQueueService;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyJobQueueService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

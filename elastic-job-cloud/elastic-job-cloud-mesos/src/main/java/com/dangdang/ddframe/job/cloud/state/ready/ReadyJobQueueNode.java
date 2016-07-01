@@ -15,22 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.task.running;
+package com.dangdang.ddframe.job.cloud.state.ready;
 
-import org.junit.Test;
+import com.dangdang.ddframe.job.cloud.state.TaskNode;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-public final class RunningTaskNodeTest {
+/**
+ * 待运行作业队列节点路径.
+ *
+ * @author zhangliang
+ */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+final class ReadyJobQueueNode {
     
-    @Test
-    public void assertGetRunningSlaveNodePath() {
-        assertThat(RunningTaskNode.getRunningSlaveNodePath("slave00"), is("/tasks/running/slave00"));
-    }
+    static final String ROOT = TaskNode.ROOT + "/ready";
     
-    @Test
-    public void assertGetRunningTaskNodePath() {
-        assertThat(RunningTaskNode.getRunningTaskNodePath("slave00", "testJob@-@0@-@00"), is("/tasks/running/slave00/testJob@-@0@-@00"));
+    private static final String READY_JOB = ROOT + "/%s";
+    
+    static String getReadyJobNodePath(final String jobName) {
+        return String.format(READY_JOB, jobName);
     }
 }

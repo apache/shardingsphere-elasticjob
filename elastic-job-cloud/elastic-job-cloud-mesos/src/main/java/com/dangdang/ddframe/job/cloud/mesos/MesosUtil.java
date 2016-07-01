@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.cloud.job.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.task.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.mesos.Protos;

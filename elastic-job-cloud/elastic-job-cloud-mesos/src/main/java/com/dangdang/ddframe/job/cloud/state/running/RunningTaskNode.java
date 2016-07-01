@@ -15,9 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.task.running;
+package com.dangdang.ddframe.job.cloud.state.running;
 
-import com.dangdang.ddframe.job.cloud.task.TaskNode;
+import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.state.TaskNode;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -28,15 +29,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 final class RunningTaskNode {
     
-    private static final String RUNNING_SLAVE = TaskNode.ROOT + "/running/%s";
+    static final String ROOT = TaskNode.ROOT + "/running";
     
-    private static final String RUNNING_TASK = RUNNING_SLAVE + "/%s";
+    private static final String RUNNING_JOB = ROOT + "/%s";
     
-    static String getRunningSlaveNodePath(final String slaveId) {
-        return String.format(RUNNING_SLAVE, slaveId);
+    private static final String RUNNING_TASK = RUNNING_JOB + "/%s";
+    
+    static String getRunningJobNodePath(final String jobName) {
+        return String.format(RUNNING_JOB, jobName);
     }
     
-    static String getRunningTaskNodePath(final String slaveId, final String taskId) {
-        return String.format(RUNNING_TASK, slaveId, taskId);
+    static String getRunningTaskNodePath(final String taskId) {
+        return String.format(RUNNING_TASK, ElasticJobTask.from(taskId).getJobName(), taskId);
     }
 }
