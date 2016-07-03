@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.state.failover;
 
+import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
 import com.dangdang.ddframe.job.cloud.state.StateNode;
 import lombok.RequiredArgsConstructor;
 
@@ -30,9 +31,15 @@ public final class FailoverNode {
     
     static final String ROOT = StateNode.ROOT + "/failover";
     
-    private static final String FAILOVER_TASK = ROOT + "/%s";
+    private static final String FAILOVER_JOB = ROOT + "/%s";
     
-    static String getFailoverNodePath(final String taskId) {
-        return String.format(FAILOVER_TASK, taskId);
+    private static final String FAILOVER_TASK = FAILOVER_JOB + "/%s";
+    
+    static String getFailoverJobNodePath(final String jobName) {
+        return String.format(FAILOVER_JOB, jobName);
+    }
+    
+    static String getFailoverTaskNodePath(final String taskId) {
+        return String.format(FAILOVER_TASK, ElasticJobTask.from(taskId).getJobName(), taskId);
     }
 }

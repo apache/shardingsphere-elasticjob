@@ -53,16 +53,13 @@ public class RunningService {
      * 
      * @param slaveId 执行机主键
      * @param task 任务对象
-     * @return 是否成功加入运行时队列
      */
-    public boolean add(final String slaveId, final ElasticJobTask task) {
+    public void add(final String slaveId, final ElasticJobTask task) {
         String runningTaskNodePath = RunningNode.getRunningTaskNodePath(task.getId());
-        if (registryCenter.isExisted(runningTaskNodePath)) {
-            return false;
+        if (!registryCenter.isExisted(runningTaskNodePath)) {
+            registryCenter.persist(runningTaskNodePath, slaveId);
+            slaveCache.add(slaveId, task);
         }
-        registryCenter.persist(runningTaskNodePath, slaveId);
-        slaveCache.add(slaveId, task);
-        return true;
     }
     
     /**

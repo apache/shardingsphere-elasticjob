@@ -27,7 +27,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -63,7 +62,7 @@ public class ReadyService {
     /**
      * 从待执行队列中出队顶端作业.
      * 
-     * @return 出队的作业, 队列为空则不返回数据
+     * @return 出队的作业
      */
     public Optional<JobContext> dequeue() {
         if (!registryCenter.isExisted(ReadyNode.ROOT)) {
@@ -92,7 +91,7 @@ public class ReadyService {
     
     private Optional<JobContext> getJobContext(final CloudJobConfiguration jobConfig) {
         int shardingTotalCount = jobConfig.getShardingTotalCount();
-        Collection<Integer> shardingItems = new ArrayList<>(shardingTotalCount);
+        List<Integer> shardingItems = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             shardingItems.add(i);
         }

@@ -98,20 +98,15 @@ public final class SchedulerEngine implements Scheduler {
     }
     
     private void offerFailoverJobs(final ResourceAllocateStrategy resourceAllocateStrategy) {
-        Optional<ElasticJobTask> task = failoverService.dequeue();
-        while (task.isPresent()) {
-            Optional<CloudJobConfiguration> jobConfig = configService.load(task.get().getJobName());
-            if (!jobConfig.isPresent()) {
-                task = failoverService.dequeue();
-                continue;
-            }
-            if (!resourceAllocateStrategy.allocate(jobConfig.get(), Collections.singletonList(task.get().getShardingItem()))) {
+        Optional<JobContext> jobContext = failoverService.dequeue();
+        while (jobContext.isPresent()) {
+            if (!resourceAllocateStrategy.allocate(jobContext.get().getJobConfig(), jobContext.get().getAssignedShardingItems())) {
                 for (Protos.TaskInfo each : resourceAllocateStrategy.getDeclinedTaskInfoList()) {
                     failoverService.enqueue(ElasticJobTask.from(each.getTaskId().getValue()));
                 }
                 break;
             }
-            task = failoverService.dequeue();
+            jobContext = failoverService.dequeue();
         }
     }
     

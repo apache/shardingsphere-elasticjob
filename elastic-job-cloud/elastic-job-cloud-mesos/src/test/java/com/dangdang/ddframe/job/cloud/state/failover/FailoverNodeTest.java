@@ -25,7 +25,12 @@ import static org.junit.Assert.assertThat;
 public final class FailoverNodeTest {
     
     @Test
-    public void assertGetFailoverNodePath() {
-        assertThat(FailoverNode.getFailoverNodePath("testJob@-@0@-@00"), is("/state/failover/testJob@-@0@-@00"));
+    public void assertGetFailoverJobNodePath() {
+        assertThat(FailoverNode.getFailoverJobNodePath("test_job"), is("/state/failover/test_job"));
+    }
+    
+    @Test
+    public void assertGetFailoverTaskNodePath() {
+        assertThat(FailoverNode.getFailoverTaskNodePath("test_job@-@0@-@00"), is("/state/failover/test_job/test_job@-@0@-@00"));
     }
 }

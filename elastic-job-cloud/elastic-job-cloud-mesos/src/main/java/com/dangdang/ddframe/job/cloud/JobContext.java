@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 作业运行上下文.
@@ -34,5 +34,5 @@ public final class JobContext {
     
     private final CloudJobConfiguration jobConfig;
     
-    private final Collection<Integer> assignedShardingItems;
+    private final List<Integer> assignedShardingItems;
 }
