@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.state.failover;
 
 import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
-import com.dangdang.ddframe.job.cloud.state.running.RunningTaskService;
+import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
@@ -29,15 +29,15 @@ import java.util.List;
  *
  * @author zhangliang
  */
-public class FailoverTaskQueueService {
+public class FailoverService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
-    private final RunningTaskService runningTaskService;
+    private final RunningService runningService;
     
-    public FailoverTaskQueueService(final CoordinatorRegistryCenter registryCenter) {
+    public FailoverService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
-        runningTaskService = new RunningTaskService(registryCenter);
+        runningService = new RunningService(registryCenter);
     }
     
     /**
@@ -46,8 +46,8 @@ public class FailoverTaskQueueService {
      * @param task 任务
      */
     public void enqueue(final ElasticJobTask task) {
-        if (!registryCenter.isExisted(FailoverTaskQueueNode.getFailoverNodePath(task.getId()))) {
-            registryCenter.persist(FailoverTaskQueueNode.getFailoverNodePath(task.getId()), "");
+        if (!registryCenter.isExisted(FailoverNode.getFailoverNodePath(task.getId()))) {
+            registryCenter.persist(FailoverNode.getFailoverNodePath(task.getId()), "");
         }
     }
     
@@ -57,17 +57,17 @@ public class FailoverTaskQueueService {
      * @return 出队的任务, 队列为空则不返回数据
      */
     public Optional<ElasticJobTask> dequeue() {
-        if (!registryCenter.isExisted(FailoverTaskQueueNode.ROOT)) {
+        if (!registryCenter.isExisted(FailoverNode.ROOT)) {
             return Optional.absent();
         }
-        List<String> taskIds = registryCenter.getChildrenKeys(FailoverTaskQueueNode.ROOT);
+        List<String> taskIds = registryCenter.getChildrenKeys(FailoverNode.ROOT);
         if (taskIds.isEmpty()) {
             return Optional.absent();
         }
         for (String each : taskIds) {
             ElasticJobTask task = ElasticJobTask.from(each);
-            if (!runningTaskService.isJobRunning(task.getJobName())) {
-                registryCenter.remove(FailoverTaskQueueNode.getFailoverNodePath(each));
+            if (!runningService.isJobRunning(task.getJobName())) {
+                registryCenter.remove(FailoverNode.getFailoverNodePath(each));
                 return Optional.of(task);
             }
         }

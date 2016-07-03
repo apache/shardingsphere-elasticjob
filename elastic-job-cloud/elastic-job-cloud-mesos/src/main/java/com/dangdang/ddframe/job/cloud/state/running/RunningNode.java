@@ -15,24 +15,31 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.state.failover;
+package com.dangdang.ddframe.job.cloud.state.running;
 
-import com.dangdang.ddframe.job.cloud.state.TaskNode;
+import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.state.StateNode;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 待失效转移任务队列节点路径.
+ * 运行中任务节点路径.
  *
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public final class FailoverTaskQueueNode {
+final class RunningNode {
     
-    static final String ROOT = TaskNode.ROOT + "/failover";
+    static final String ROOT = StateNode.ROOT + "/running";
     
-    private static final String FAILOVER_TASK = ROOT + "/%s";
+    private static final String RUNNING_JOB = ROOT + "/%s";
     
-    static String getFailoverNodePath(final String taskId) {
-        return String.format(FAILOVER_TASK, taskId);
+    private static final String RUNNING_TASK = RUNNING_JOB + "/%s";
+    
+    static String getRunningJobNodePath(final String jobName) {
+        return String.format(RUNNING_JOB, jobName);
+    }
+    
+    static String getRunningTaskNodePath(final String taskId) {
+        return String.format(RUNNING_TASK, ElasticJobTask.from(taskId).getJobName(), taskId);
     }
 }

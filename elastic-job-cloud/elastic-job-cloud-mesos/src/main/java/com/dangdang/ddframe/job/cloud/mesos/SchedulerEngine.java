@@ -23,9 +23,9 @@ import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocat
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.schedule.CloudTaskSchedulerRegistry;
 import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
-import com.dangdang.ddframe.job.cloud.state.failover.FailoverTaskQueueService;
-import com.dangdang.ddframe.job.cloud.state.ready.ReadyJobQueueService;
-import com.dangdang.ddframe.job.cloud.state.running.RunningTaskService;
+import com.dangdang.ddframe.job.cloud.state.failover.FailoverService;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
+import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -51,18 +51,18 @@ public final class SchedulerEngine implements Scheduler {
     
     private final ConfigurationService configService;
     
-    private final ReadyJobQueueService readyJobQueueService;
+    private final ReadyService readyService;
     
-    private final RunningTaskService taskRunningService;
+    private final RunningService runningService;
     
-    private final FailoverTaskQueueService failoverTaskQueueService;
+    private final FailoverService failoverService;
     
     public SchedulerEngine(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new ConfigurationService(registryCenter);
-        readyJobQueueService = new ReadyJobQueueService(registryCenter);
-        taskRunningService = new RunningTaskService(registryCenter);
-        failoverTaskQueueService = new FailoverTaskQueueService(registryCenter);
+        readyService = new ReadyService(registryCenter);
+        runningService = new RunningService(registryCenter);
+        failoverService = new FailoverService(registryCenter);
     }
     
     @Override
@@ -97,45 +97,45 @@ public final class SchedulerEngine implements Scheduler {
     }
     
     private void offerFailoverJobs(final ResourceAllocateStrategy resourceAllocateStrategy) {
-        Optional<ElasticJobTask> task = failoverTaskQueueService.dequeue();
+        Optional<ElasticJobTask> task = failoverService.dequeue();
         while (task.isPresent()) {
             Optional<CloudJobConfiguration> jobConfig = configService.load(task.get().getJobName());
             if (!jobConfig.isPresent()) {
-                task = failoverTaskQueueService.dequeue();
+                task = failoverService.dequeue();
                 continue;
             }
             if (!resourceAllocateStrategy.allocate(jobConfig.get(), Collections.singletonList(task.get().getShardingItem()))) {
                 for (Protos.TaskInfo each : resourceAllocateStrategy.getDeclinedTaskInfoList()) {
-                    failoverTaskQueueService.enqueue(ElasticJobTask.from(each.getTaskId().getValue()));
+                    failoverService.enqueue(ElasticJobTask.from(each.getTaskId().getValue()));
                 }
                 break;
             }
-            task = failoverTaskQueueService.dequeue();
+            task = failoverService.dequeue();
         }
     }
     
     private void offerReadyJobs(final ResourceAllocateStrategy resourceAllocateStrategy) {
-        Optional<String> jobName = readyJobQueueService.dequeue();
+        Optional<String> jobName = readyService.dequeue();
         while (jobName.isPresent()) {
             Optional<CloudJobConfiguration> jobConfig = configService.load(jobName.get());
             if (!jobConfig.isPresent()) {
-                jobName = readyJobQueueService.dequeue();
+                jobName = readyService.dequeue();
                 continue;
             }
             if (!resourceAllocateStrategy.allocate(jobConfig.get())) {
                 if (!resourceAllocateStrategy.getDeclinedTaskInfoList().isEmpty()) {
-                    readyJobQueueService.enqueue(ElasticJobTask.from(resourceAllocateStrategy.getDeclinedTaskInfoList().get(0).getTaskId().getValue()).getJobName());
+                    readyService.enqueue(ElasticJobTask.from(resourceAllocateStrategy.getDeclinedTaskInfoList().get(0).getTaskId().getValue()).getJobName());
                 }
                 break;
             }
-            jobName = readyJobQueueService.dequeue();
+            jobName = readyService.dequeue();
         }
     }
     
     private void removeRunningTasks(final List<Protos.TaskInfo> tasks) {
         List<Protos.TaskInfo> runningTasks = new ArrayList<>(tasks.size());
         for (Protos.TaskInfo each : tasks) {
-            if (taskRunningService.isTaskRunning(ElasticJobTask.from(each.getTaskId().getValue()))) {
+            if (runningService.isTaskRunning(ElasticJobTask.from(each.getTaskId().getValue()))) {
                 runningTasks.add(each);
             }
         }
@@ -170,7 +170,7 @@ public final class SchedulerEngine implements Scheduler {
     
         // TODO 状态回调调整好, 这里的代码应删除
         for (Protos.TaskInfo each : tasks) {
-            taskRunningService.add(each.getSlaveId().getValue(), ElasticJobTask.from(each.getTaskId().getValue()));
+            runningService.add(each.getSlaveId().getValue(), ElasticJobTask.from(each.getTaskId().getValue()));
         }
     }
     
@@ -185,13 +185,13 @@ public final class SchedulerEngine implements Scheduler {
         ElasticJobTask elasticJobTask = ElasticJobTask.from(taskId);
         switch (taskStatus.getState()) {
             case TASK_STARTING:
-                taskRunningService.add(taskStatus.getSlaveId().getValue(), elasticJobTask);
+                runningService.add(taskStatus.getSlaveId().getValue(), elasticJobTask);
                 break;
             case TASK_FINISHED:
             case TASK_FAILED:
             case TASK_KILLED:
             case TASK_LOST:
-                taskRunningService.remove(taskStatus.getSlaveId().getValue(), elasticJobTask);
+                runningService.remove(taskStatus.getSlaveId().getValue(), elasticJobTask);
                 break;
             default:
                 break;
@@ -208,13 +208,13 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void slaveLost(final SchedulerDriver schedulerDriver, final Protos.SlaveID slaveID) {
-        List<ElasticJobTask> runningTasks = taskRunningService.load(slaveID.getValue());
+        List<ElasticJobTask> runningTasks = runningService.load(slaveID.getValue());
         for (ElasticJobTask each : runningTasks) {
             Optional<CloudJobConfiguration> jobConfig = configService.load(each.getJobName());
             if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
-                failoverTaskQueueService.enqueue(each);
+                failoverService.enqueue(each);
             }
-            taskRunningService.remove(slaveID.getValue(), each);
+            runningService.remove(slaveID.getValue(), each);
         }
     }
     
@@ -223,7 +223,7 @@ public final class SchedulerEngine implements Scheduler {
         ElasticJobTask task = ElasticJobTask.from(executorID.getValue());
         Optional<CloudJobConfiguration> jobConfig = configService.load(task.getJobName());
         if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
-            failoverTaskQueueService.enqueue(task);
+            failoverService.enqueue(task);
         }
     }
     

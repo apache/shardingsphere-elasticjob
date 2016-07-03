@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.state.ready;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.state.running.RunningTaskService;
+import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
@@ -30,18 +30,18 @@ import java.util.List;
  *
  * @author zhangliang
  */
-public class ReadyJobQueueService {
+public class ReadyService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
     private final ConfigurationService configService;
     
-    private final RunningTaskService runningTaskService;
+    private final RunningService runningService;
     
-    public ReadyJobQueueService(final CoordinatorRegistryCenter registryCenter) {
+    public ReadyService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new ConfigurationService(registryCenter);
-        runningTaskService = new RunningTaskService(registryCenter);
+        runningService = new RunningService(registryCenter);
     }
     
     /**
@@ -50,7 +50,7 @@ public class ReadyJobQueueService {
      * @param jobName 作业名称
      */
     public void enqueue(final String jobName) {
-        registryCenter.persistSequential(ReadyJobQueueNode.getReadyJobNodePath(jobName));
+        registryCenter.persistSequential(ReadyNode.getReadyJobNodePath(jobName));
     }
     
     /**
@@ -59,23 +59,23 @@ public class ReadyJobQueueService {
      * @return 出队的作业名称, 队列为空则不返回数据
      */
     public Optional<String> dequeue() {
-        if (!registryCenter.isExisted(ReadyJobQueueNode.ROOT)) {
+        if (!registryCenter.isExisted(ReadyNode.ROOT)) {
             return Optional.absent();
         }
-        List<String> jobNamesWithSequential = registryCenter.getChildrenKeys(ReadyJobQueueNode.ROOT);
+        List<String> jobNamesWithSequential = registryCenter.getChildrenKeys(ReadyNode.ROOT);
         for (String each : jobNamesWithSequential) {
             ReadyJob readyJob = new ReadyJob(each);
             Optional<CloudJobConfiguration> jobConfig = configService.load(readyJob.getJobName());
             if (!jobConfig.isPresent()) {
-                registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
+                registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 break;
             }
-            if (!runningTaskService.isJobRunning(readyJob.getJobName())) {
-                registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
+            if (!runningService.isJobRunning(readyJob.getJobName())) {
+                registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 return Optional.of(readyJob.getJobName());
             }
             if (!jobConfig.get().isMisfire()) {
-                registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
+                registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
             }
         }
         return Optional.absent();

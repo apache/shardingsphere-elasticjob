@@ -27,13 +27,13 @@ import java.util.List;
  *
  * @author zhangliang
  */
-public class RunningTaskService {
+public class RunningService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
     private final SlaveCache slaveCache;
     
-    public RunningTaskService(final CoordinatorRegistryCenter registryCenter) {
+    public RunningService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         slaveCache = SlaveCache.getInstance(registryCenter);
     }
@@ -45,7 +45,7 @@ public class RunningTaskService {
      * @return 运行时任务集合
      */
     public List<ElasticJobTask> load(final String slaveId) {
-        return slaveCache.load(getSlaveIdWithoutSequence(slaveId));
+        return slaveCache.load(slaveId);
     }
     
     /**
@@ -56,18 +56,13 @@ public class RunningTaskService {
      * @return 是否成功加入运行时队列
      */
     public boolean add(final String slaveId, final ElasticJobTask task) {
-        String runningTaskNodePath = RunningTaskNode.getRunningTaskNodePath(task.getId());
+        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(task.getId());
         if (registryCenter.isExisted(runningTaskNodePath)) {
             return false;
         }
-        String slaveIdWithoutSequence = getSlaveIdWithoutSequence(slaveId);
-        registryCenter.persist(runningTaskNodePath, slaveIdWithoutSequence);
-        slaveCache.add(slaveIdWithoutSequence, task);
+        registryCenter.persist(runningTaskNodePath, slaveId);
+        slaveCache.add(slaveId, task);
         return true;
-    }
-    
-    private String getSlaveIdWithoutSequence(final String slaveId) {
-        return slaveId.substring(0, slaveId.lastIndexOf("-"));
     }
     
     /**
@@ -78,7 +73,7 @@ public class RunningTaskService {
      */
     public void remove(final String slaveId, final ElasticJobTask task) {
         slaveCache.remove(slaveId, task);
-        registryCenter.remove(RunningTaskNode.getRunningTaskNodePath(task.getId()));
+        registryCenter.remove(RunningNode.getRunningTaskNodePath(task.getId()));
     }
     
     /**
@@ -88,7 +83,7 @@ public class RunningTaskService {
      * @return 作业是否运行
      */
     public boolean isJobRunning(final String jobName) {
-        return !registryCenter.getChildrenKeys(RunningTaskNode.getRunningJobNodePath(jobName)).isEmpty();
+        return !registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(jobName)).isEmpty();
     }
     
     /**
@@ -98,6 +93,6 @@ public class RunningTaskService {
      * @return 任务是否运行
      */
     public boolean isTaskRunning(final ElasticJobTask task) {
-        return !registryCenter.getChildrenKeys(RunningTaskNode.getRunningTaskNodePath(task.getId())).isEmpty();
+        return !registryCenter.getChildrenKeys(RunningNode.getRunningTaskNodePath(task.getId())).isEmpty();
     }
 }

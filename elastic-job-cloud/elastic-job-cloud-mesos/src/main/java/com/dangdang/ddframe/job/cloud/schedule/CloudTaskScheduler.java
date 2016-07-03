@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.schedule;
 
-import com.dangdang.ddframe.job.cloud.state.ready.ReadyJobQueueService;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -77,7 +77,7 @@ public final class CloudTaskScheduler {
     public void startup() {
         JobDetail jobDetail = JobBuilder.newJob(CloudTaskEnqueueJob.class).withIdentity(jobConfig.getJobName()).build();
         jobDetail.getJobDataMap().put("jobName", jobConfig.getJobName());
-        jobDetail.getJobDataMap().put("readyJobQueueService", new ReadyJobQueueService(registryCenter));
+        jobDetail.getJobDataMap().put("readyService", new ReadyService(registryCenter));
         try {
             if (!scheduler.checkExists(jobDetail.getKey())) {
                 Trigger trigger = TriggerBuilder.newTrigger().withIdentity(createIdentity("Trigger"))

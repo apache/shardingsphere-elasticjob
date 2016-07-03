@@ -40,13 +40,14 @@ final class SlaveCache {
     }
     
     private void init(final CoordinatorRegistryCenter registryCenter) {
-        List<String> runningJobNames = registryCenter.getChildrenKeys(RunningTaskNode.ROOT);
+        List<String> runningJobNames = registryCenter.getChildrenKeys(RunningNode.ROOT);
         for (String runningJobName : runningJobNames) {
-            List<String> runningTaskIds = registryCenter.getChildrenKeys(RunningTaskNode.getRunningJobNodePath(runningJobName));
+            List<String> runningTaskIds = registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(runningJobName));
             for (String runningTaskId : runningTaskIds) {
-                String slaveId = registryCenter.get(RunningTaskNode.getRunningTaskNodePath(runningTaskId));
-                RUNNING_TASKS.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
-                RUNNING_TASKS.get(slaveId).add(ElasticJobTask.from(runningTaskId));
+                String slaveId = registryCenter.get(RunningNode.getRunningTaskNodePath(runningTaskId));
+                String slaveIdWithoutSequence = getSlaveIdWithoutSequence(slaveId);
+                RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<ElasticJobTask>());
+                RUNNING_TASKS.get(slaveIdWithoutSequence).add(ElasticJobTask.from(runningTaskId));
             }
         }
     }
@@ -63,16 +64,22 @@ final class SlaveCache {
     }
     
     void add(final String slaveId, final ElasticJobTask task) {
-        RUNNING_TASKS.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
-        RUNNING_TASKS.get(slaveId).add(task);
+        String slaveIdWithoutSequence = getSlaveIdWithoutSequence(slaveId);
+        RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<ElasticJobTask>());
+        RUNNING_TASKS.get(slaveIdWithoutSequence).add(task);
     }
     
     void remove(final String slaveId, final ElasticJobTask task) {
-        RUNNING_TASKS.putIfAbsent(slaveId, new CopyOnWriteArrayList<ElasticJobTask>());
-        RUNNING_TASKS.get(slaveId).remove(task);
+        String slaveIdWithoutSequence = getSlaveIdWithoutSequence(slaveId);
+        RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<ElasticJobTask>());
+        RUNNING_TASKS.get(slaveIdWithoutSequence).remove(task);
     }
     
     List<ElasticJobTask> load(final String slaveId) {
         return RUNNING_TASKS.get(slaveId);
+    }
+    
+    private String getSlaveIdWithoutSequence(final String slaveId) {
+        return slaveId.substring(0, slaveId.lastIndexOf("-"));
     }
 }

@@ -15,17 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.state.failover;
+package com.dangdang.ddframe.job.cloud.state;
 
-import org.junit.Test;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-public final class FailoverTaskQueueNodeTest {
+/**
+ * 状态根节点路径.
+ *
+ * @author zhangliang
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class StateNode {
     
-    @Test
-    public void assertGetFailoverNodePath() {
-        assertThat(FailoverTaskQueueNode.getFailoverNodePath("testJob@-@0@-@00"), is("/state/failover/testJob@-@0@-@00"));
-    }
+    /**
+     * 状态根节点.
+     */
+    public static final String ROOT = "/state";
 }

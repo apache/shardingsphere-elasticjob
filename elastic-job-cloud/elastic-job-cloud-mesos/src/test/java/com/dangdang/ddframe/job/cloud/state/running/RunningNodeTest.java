@@ -15,17 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.state.ready;
+package com.dangdang.ddframe.job.cloud.state.running;
 
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
-public final class ReadyQueueNodeTest {
+public final class RunningNodeTest {
     
     @Test
-    public void assertGetReadyJobNodePath() {
-        assertThat(ReadyJobQueueNode.getReadyJobNodePath("test_job0000000001"), is("/state/ready/test_job0000000001"));
+    public void assertGetRunningTaskNodePath() {
+        assertThat(RunningNode.getRunningTaskNodePath("testJob@-@0@-@00"), is("/state/running/testJob/testJob@-@0@-@00"));
     }
 }

@@ -17,23 +17,15 @@
 
 package com.dangdang.ddframe.job.cloud.state.ready;
 
-import com.dangdang.ddframe.job.cloud.state.TaskNode;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import org.junit.Test;
 
-/**
- * 待运行作业队列节点路径.
- *
- * @author zhangliang
- */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-final class ReadyJobQueueNode {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
+
+public final class ReadyNodeTest {
     
-    static final String ROOT = TaskNode.ROOT + "/ready";
-    
-    private static final String READY_JOB = ROOT + "/%s";
-    
-    static String getReadyJobNodePath(final String jobName) {
-        return String.format(READY_JOB, jobName);
+    @Test
+    public void assertGetReadyJobNodePath() {
+        assertThat(ReadyNode.getReadyJobNodePath("test_job0000000001"), is("/state/ready/test_job0000000001"));
     }
 }

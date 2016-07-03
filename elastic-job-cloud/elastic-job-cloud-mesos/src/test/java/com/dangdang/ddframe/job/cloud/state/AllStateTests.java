@@ -17,17 +17,17 @@
 
 package com.dangdang.ddframe.job.cloud.state;
 
-import com.dangdang.ddframe.job.cloud.state.failover.FailoverTaskQueueNodeTest;
-import com.dangdang.ddframe.job.cloud.state.ready.ReadyQueueNodeTest;
-import com.dangdang.ddframe.job.cloud.state.running.RunningTaskNodeTest;
+import com.dangdang.ddframe.job.cloud.state.failover.FailoverNodeTest;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyNodeTest;
+import com.dangdang.ddframe.job.cloud.state.running.RunningNodeTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        ReadyQueueNodeTest.class, 
-        RunningTaskNodeTest.class,
-        FailoverTaskQueueNodeTest.class
+        ReadyNodeTest.class, 
+        RunningNodeTest.class,
+        FailoverNodeTest.class
 })
 public final class AllStateTests {
 }
