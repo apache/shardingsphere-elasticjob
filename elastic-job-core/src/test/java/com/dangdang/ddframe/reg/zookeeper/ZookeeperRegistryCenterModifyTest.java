@@ -96,7 +96,7 @@ public final class ZookeeperRegistryCenterModifyTest extends AbstractNestedZooke
         assertThat(actual.size(), is(2));
         for (String each : actual) {
             assertThat(each, startsWith("test_sequential"));
-            assertThat(zkRegCenter.get(each), startsWith("test_value"));
+            assertThat(zkRegCenter.get("/sequential/" + each), startsWith("test_value"));
         }
     }
     
