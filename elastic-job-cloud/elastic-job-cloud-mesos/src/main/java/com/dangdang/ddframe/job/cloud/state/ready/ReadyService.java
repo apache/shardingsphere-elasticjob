@@ -17,12 +17,17 @@
 
 package com.dangdang.ddframe.job.cloud.state.ready;
 
+import com.dangdang.ddframe.job.cloud.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import lombok.AccessLevel;
+import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -48,36 +53,59 @@ public class ReadyService {
      * 将作业放入待执行队列.
      * 
      * @param jobName 作业名称
+     * @param misfired 是否为misfire的作业
      */
-    public void enqueue(final String jobName) {
-        registryCenter.persistSequential(ReadyNode.getReadyJobNodePath(jobName));
+    // TODO misfire作业以后考虑独立出去
+    public void enqueue(final String jobName, final boolean misfired) {
+        registryCenter.persistSequential(ReadyNode.getReadyJobNodePath(jobName), Boolean.toString(misfired));
     }
     
     /**
-     * 从待执行队列中获取顶端作业名称.
+     * 从待执行队列中出队顶端作业.
      * 
-     * @return 出队的作业名称, 队列为空则不返回数据
+     * @return 出队的作业, 队列为空则不返回数据
      */
-    public Optional<String> dequeue() {
+    public Optional<JobContext> dequeue() {
         if (!registryCenter.isExisted(ReadyNode.ROOT)) {
             return Optional.absent();
         }
         List<String> jobNamesWithSequential = registryCenter.getChildrenKeys(ReadyNode.ROOT);
         for (String each : jobNamesWithSequential) {
+            registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
             ReadyJob readyJob = new ReadyJob(each);
-            Optional<CloudJobConfiguration> jobConfig = configService.load(readyJob.getJobName());
-            if (!jobConfig.isPresent()) {
-                registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
-                break;
+            String jobName = readyJob.getJobName();
+            Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+            if (!jobConfig.isPresent() || runningService.isJobRunning(jobName)) {
+                if (isNeedMisfire(jobConfig)) {
+                    enqueue(jobName, true);
+                }
+                continue;
             }
-            if (!runningService.isJobRunning(readyJob.getJobName())) {
-                registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
-                return Optional.of(readyJob.getJobName());
-            }
-            if (!jobConfig.get().isMisfire()) {
-                registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
-            }
+            return getJobContext(jobConfig.get());
         }
         return Optional.absent();
+    }
+    
+    private boolean isNeedMisfire(final Optional<CloudJobConfiguration> jobConfig) {
+        return jobConfig.isPresent() && jobConfig.get().isMisfire() && !Boolean.valueOf(registryCenter.get(ReadyNode.getReadyJobNodePath(jobConfig.get().getJobName())));
+    }
+    
+    private Optional<JobContext> getJobContext(final CloudJobConfiguration jobConfig) {
+        int shardingTotalCount = jobConfig.getShardingTotalCount();
+        Collection<Integer> shardingItems = new ArrayList<>(shardingTotalCount);
+        for (int i = 0; i < shardingTotalCount; i++) {
+            shardingItems.add(i);
+        }
+        return Optional.of(new JobContext(jobConfig, shardingItems));
+    }
+    
+    static final class ReadyJob {
+        
+        @Getter(AccessLevel.PACKAGE)
+        private final String jobName;
+        
+        ReadyJob(final String jobNameWithSequential) {
+            jobName = jobNameWithSequential.substring(0, jobNameWithSequential.length() - 10);
+        }
     }
 }

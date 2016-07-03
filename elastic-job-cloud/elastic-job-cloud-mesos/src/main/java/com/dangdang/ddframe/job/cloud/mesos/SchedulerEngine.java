@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
+import com.dangdang.ddframe.job.cloud.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
@@ -115,20 +116,15 @@ public final class SchedulerEngine implements Scheduler {
     }
     
     private void offerReadyJobs(final ResourceAllocateStrategy resourceAllocateStrategy) {
-        Optional<String> jobName = readyService.dequeue();
-        while (jobName.isPresent()) {
-            Optional<CloudJobConfiguration> jobConfig = configService.load(jobName.get());
-            if (!jobConfig.isPresent()) {
-                jobName = readyService.dequeue();
-                continue;
-            }
-            if (!resourceAllocateStrategy.allocate(jobConfig.get())) {
+        Optional<JobContext> jobContext = readyService.dequeue();
+        while (jobContext.isPresent()) {
+            if (!resourceAllocateStrategy.allocate(jobContext.get().getJobConfig())) {
                 if (!resourceAllocateStrategy.getDeclinedTaskInfoList().isEmpty()) {
-                    readyService.enqueue(ElasticJobTask.from(resourceAllocateStrategy.getDeclinedTaskInfoList().get(0).getTaskId().getValue()).getJobName());
+                    readyService.enqueue(ElasticJobTask.from(resourceAllocateStrategy.getDeclinedTaskInfoList().get(0).getTaskId().getValue()).getJobName(), false);
                 }
                 break;
             }
-            jobName = readyService.dequeue();
+            jobContext = readyService.dequeue();
         }
     }
     

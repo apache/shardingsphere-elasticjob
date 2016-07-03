@@ -87,8 +87,8 @@ public final class ZookeeperRegistryCenterModifyTest extends AbstractNestedZooke
     
     @Test
     public void assertPersistSequential() throws Exception {
-        assertThat(zkRegCenter.persistSequential("/sequential/test_sequential"), startsWith("/sequential/test_sequential"));
-        assertThat(zkRegCenter.persistSequential("/sequential/test_sequential"), startsWith("/sequential/test_sequential"));
+        assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
+        assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
         CuratorFramework client = CuratorFrameworkFactory.newClient(ZK_CONNECTION_STRING, new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
@@ -96,6 +96,7 @@ public final class ZookeeperRegistryCenterModifyTest extends AbstractNestedZooke
         assertThat(actual.size(), is(2));
         for (String each : actual) {
             assertThat(each, startsWith("test_sequential"));
+            assertThat(zkRegCenter.get(each), startsWith("test_value"));
         }
     }
     

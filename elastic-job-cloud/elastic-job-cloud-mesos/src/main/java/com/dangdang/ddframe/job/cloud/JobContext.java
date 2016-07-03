@@ -15,21 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.state.ready;
+package com.dangdang.ddframe.job.cloud;
 
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.util.Collection;
 
 /**
- * 准备执行的作业.
+ * 作业运行上下文.
  *
  * @author zhangliang
  */
-public final class ReadyJob {
+@RequiredArgsConstructor
+@Getter
+public final class JobContext {
     
-    @Getter
-    private final String jobName;
+    private final CloudJobConfiguration jobConfig;
     
-    public ReadyJob(final String jobNameWithSequential) {
-        jobName = jobNameWithSequential.substring(0, jobNameWithSequential.length() - 10);
-    }
+    private final Collection<Integer> assignedShardingItems;
 }
