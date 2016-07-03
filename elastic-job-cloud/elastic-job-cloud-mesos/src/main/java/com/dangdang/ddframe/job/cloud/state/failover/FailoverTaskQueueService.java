@@ -52,7 +52,7 @@ public class FailoverTaskQueueService {
     }
     
     /**
-     * 从待执行队列中获取顶端作业名称.
+     * 从失效转移中获取顶端任务名称.
      *
      * @return 出队的任务, 队列为空则不返回数据
      */

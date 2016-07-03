@@ -62,26 +62,22 @@ public class ReadyJobQueueService {
         if (!registryCenter.isExisted(ReadyJobQueueNode.ROOT)) {
             return Optional.absent();
         }
-        List<String> jobNames = registryCenter.getChildrenKeys(ReadyJobQueueNode.ROOT);
-        for (String each : jobNames) {
-            String jobName = getLogicNodeForSequential(each);
-            Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+        List<String> jobNamesWithSequential = registryCenter.getChildrenKeys(ReadyJobQueueNode.ROOT);
+        for (String each : jobNamesWithSequential) {
+            ReadyJob readyJob = new ReadyJob(each);
+            Optional<CloudJobConfiguration> jobConfig = configService.load(readyJob.getJobName());
             if (!jobConfig.isPresent()) {
                 registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
                 break;
             }
-            if (!runningTaskService.isJobRunning(jobName)) {
+            if (!runningTaskService.isJobRunning(readyJob.getJobName())) {
                 registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
-                return Optional.of(jobName);
+                return Optional.of(readyJob.getJobName());
             }
             if (!jobConfig.get().isMisfire()) {
                 registryCenter.remove(ReadyJobQueueNode.getReadyJobNodePath(each));
             }
         }
         return Optional.absent();
-    }
-    
-    private String getLogicNodeForSequential(final String sequentialNode) {
-        return sequentialNode.substring(0, sequentialNode.length() - 10);
     }
 }

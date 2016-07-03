@@ -101,6 +101,7 @@ public final class SchedulerEngine implements Scheduler {
         while (task.isPresent()) {
             Optional<CloudJobConfiguration> jobConfig = configService.load(task.get().getJobName());
             if (!jobConfig.isPresent()) {
+                task = failoverTaskQueueService.dequeue();
                 continue;
             }
             if (!resourceAllocateStrategy.allocate(jobConfig.get(), Collections.singletonList(task.get().getShardingItem()))) {
@@ -118,6 +119,7 @@ public final class SchedulerEngine implements Scheduler {
         while (jobName.isPresent()) {
             Optional<CloudJobConfiguration> jobConfig = configService.load(jobName.get());
             if (!jobConfig.isPresent()) {
+                jobName = readyJobQueueService.dequeue();
                 continue;
             }
             if (!resourceAllocateStrategy.allocate(jobConfig.get())) {

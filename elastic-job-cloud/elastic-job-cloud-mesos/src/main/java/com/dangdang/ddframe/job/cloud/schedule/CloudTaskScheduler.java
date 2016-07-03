@@ -40,14 +40,14 @@ import java.util.Properties;
  */
 public final class CloudTaskScheduler {
     
-    private final CloudJobConfiguration task;
+    private final CloudJobConfiguration jobConfig;
     
     private final CoordinatorRegistryCenter registryCenter;
     
     private final Scheduler scheduler;
     
-    public CloudTaskScheduler(final CloudJobConfiguration task, final CoordinatorRegistryCenter registryCenter) {
-        this.task = task;
+    public CloudTaskScheduler(final CloudJobConfiguration jobConfig, final CoordinatorRegistryCenter registryCenter) {
+        this.jobConfig = jobConfig;
         this.registryCenter = registryCenter;
         scheduler = getScheduler();
         startup();
@@ -75,13 +75,13 @@ public final class CloudTaskScheduler {
      * 启动调度作业.
      */
     public void startup() {
-        JobDetail jobDetail = JobBuilder.newJob(CloudTaskEnqueueJob.class).withIdentity(task.getJobName()).build();
-        jobDetail.getJobDataMap().put("jobName", task.getJobName());
+        JobDetail jobDetail = JobBuilder.newJob(CloudTaskEnqueueJob.class).withIdentity(jobConfig.getJobName()).build();
+        jobDetail.getJobDataMap().put("jobName", jobConfig.getJobName());
         jobDetail.getJobDataMap().put("readyJobQueueService", new ReadyJobQueueService(registryCenter));
         try {
             if (!scheduler.checkExists(jobDetail.getKey())) {
                 Trigger trigger = TriggerBuilder.newTrigger().withIdentity(createIdentity("Trigger"))
-                        .withSchedule(CronScheduleBuilder.cronSchedule(task.getCron()).withMisfireHandlingInstructionDoNothing()).build();
+                        .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getCron()).withMisfireHandlingInstructionDoNothing()).build();
                 scheduler.scheduleJob(jobDetail, trigger);
             }
             scheduler.start();
@@ -91,7 +91,7 @@ public final class CloudTaskScheduler {
     }
     
     private String createIdentity(final String identityAppendix) {
-        return Joiner.on("_").join(task.getJobName(), identityAppendix);
+        return Joiner.on("_").join(jobConfig.getJobName(), identityAppendix);
     }
     
     /**
