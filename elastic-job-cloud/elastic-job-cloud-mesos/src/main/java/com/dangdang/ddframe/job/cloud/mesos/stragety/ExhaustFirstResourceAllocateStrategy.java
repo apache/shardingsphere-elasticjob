@@ -17,14 +17,19 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
+import com.dangdang.ddframe.job.cloud.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.mesos.HardwareResource;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Protos;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 同一机器资源优先策略.
@@ -34,28 +39,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public final class ExhaustFirstResourceAllocateStrategy implements ResourceAllocateStrategy {
     
-    private final List<Protos.TaskInfo> offeredTaskInfoList = new LinkedList<>();
-    
-    private final List<Protos.TaskInfo> declinedTaskInfoList = new LinkedList<>();
-    
     private final List<HardwareResource> hardwareResources;
     
     @Override
-    public boolean allocate(final CloudJobConfiguration jobConfig) {
-        List<Integer> shardingItems = new ArrayList<>(jobConfig.getShardingTotalCount());
-        for (int i = 0; i < jobConfig.getShardingTotalCount(); i++) {
-            shardingItems.add(i);
+    public List<Protos.TaskInfo> allocate(final Collection<JobContext> jobContexts) {
+        List<Protos.TaskInfo> result = new LinkedList<>();
+        for (JobContext each : jobContexts) {
+            result.addAll(allocate(each));
         }
-        return allocate(jobConfig, shardingItems);
+        return result;
     }
     
     @Override
-    public boolean allocate(final CloudJobConfiguration jobConfig, final List<Integer> shardingItems) {
-        declinedTaskInfoList.clear();
-        List<Protos.TaskInfo> taskInfoList = new ArrayList<>(shardingItems.size());
+    public Map<String, List<Protos.TaskInfo>> allocate(final Map<String, JobContext> jobContextMap) {
+        Map<String, List<Protos.TaskInfo>> result = new HashMap<>(jobContextMap.size());
+        for (Map.Entry<String, JobContext> entry : jobContextMap.entrySet()) {
+            List<Protos.TaskInfo> taskInfoList = allocate(entry.getValue());
+            if (!taskInfoList.isEmpty()) {
+                result.put(entry.getKey(), allocate(entry.getValue()));    
+            }
+        }
+        return result;
+    }
+    
+    private List<Protos.TaskInfo> allocate(final JobContext jobContext) {
+        CloudJobConfiguration jobConfig = jobContext.getJobConfig();
+        List<Integer> assignedShardingItems = jobContext.getAssignedShardingItems();
+        int shardingTotalCount = assignedShardingItems.size();
         int startShardingItemIndex = 0;
-        int shardingTotalCount = shardingItems.size();
         int assignedShardingCount = 0;
+        List<Protos.TaskInfo> result = new ArrayList<>(shardingTotalCount);
         for (HardwareResource each : hardwareResources) {
             if (0 == shardingTotalCount) {
                 break;
@@ -64,28 +77,16 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
             shardingTotalCount -= assignedShardingCount;
             for (int i = startShardingItemIndex; i < assignedShardingCount; i++) {
                 each.reserveResources(jobConfig.getCpuCount(), jobConfig.getMemoryMB());
-                taskInfoList.add(each.createTaskInfo(jobConfig, shardingItems.get(i)));
+                result.add(each.createTaskInfo(jobContext, assignedShardingItems.get(i)));
             }
             startShardingItemIndex = assignedShardingCount;
         }
-        if (taskInfoList.size() != jobConfig.getShardingTotalCount()) {
-            declinedTaskInfoList.addAll(taskInfoList);
-            return false;
+        if (result.size() != jobConfig.getShardingTotalCount()) {
+            return Collections.emptyList();
         }
-        this.offeredTaskInfoList.addAll(taskInfoList);
         for (HardwareResource each : hardwareResources) {
             each.commitReservedResources();
         }
-        return true;
-    }
-    
-    @Override
-    public List<Protos.TaskInfo> getOfferedTaskInfoList() {
-        return offeredTaskInfoList;
-    }
-    
-    @Override
-    public List<Protos.TaskInfo> getDeclinedTaskInfoList() {
-        return declinedTaskInfoList;
+        return result;
     }
 }

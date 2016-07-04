@@ -17,10 +17,12 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.JobContext;
 import org.apache.mesos.Protos;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 资源分配策略接口.
@@ -32,31 +34,16 @@ public interface ResourceAllocateStrategy {
     /**
      * 分配资源.
      * 
-     * @param jobConfig 云作业配置
-     * @return 分配是否成功
+     * @param jobContexts 作业运行时上下文集合
+     * @return 分配的任务列表
      */
-    boolean allocate(CloudJobConfiguration jobConfig);
+    List<Protos.TaskInfo> allocate(Collection<JobContext> jobContexts);
     
     /**
      * 分配资源.
      *
-     * @param jobConfig 云作业配置
-     * @param shardingItems 分片项列表
-     * @return 分配是否成功
+     * @param jobContextMap 作业运行时上下文Map, key为待序号的作业名称
+     * @return 分配的任务Map, key为待序号的作业名称
      */
-    boolean allocate(CloudJobConfiguration jobConfig, List<Integer> shardingItems);
-    
-    /**
-     * 获取提供资源的任务列表.
-     * 
-     * @return 提供资源的任务列表
-     */
-    List<Protos.TaskInfo> getOfferedTaskInfoList();
-    
-    /**
-     * 获取拒绝执行的任务列表.
-     *
-     * @return 拒绝执行的任务列表
-     */
-    List<Protos.TaskInfo> getDeclinedTaskInfoList();
+    Map<String, List<Protos.TaskInfo>> allocate(Map<String, JobContext> jobContextMap);
 }
