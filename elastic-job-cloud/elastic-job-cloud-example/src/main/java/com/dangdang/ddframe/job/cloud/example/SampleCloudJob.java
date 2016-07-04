@@ -32,7 +32,6 @@ public class SampleCloudJob extends AbstractCloudElasticJob {
         super(taskId);
     }
     
-    
     @Override
     protected void executeJob(final int shardingItem) {
         System.out.println(new Date() + ":------sample cloud job-------:" + shardingItem);
