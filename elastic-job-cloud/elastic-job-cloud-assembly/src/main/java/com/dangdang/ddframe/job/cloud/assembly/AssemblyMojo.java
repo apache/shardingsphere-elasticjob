@@ -38,10 +38,7 @@ public class AssemblyMojo extends SingleAssemblyMojo {
     
     @Override
     public String[] getDescriptorReferences() {
-        if (null == getDescriptors() || 0 == getDescriptors().length) {
-            return new String[] {DESCRIPTOR_REFERENCE};
-        }
-        return super.getDescriptorReferences();
+        return new String[] {DESCRIPTOR_REFERENCE};
     }
     
     @Override

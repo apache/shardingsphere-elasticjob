@@ -175,10 +175,10 @@ public class AddClasspathFileSetsTask {
     
     private File getFileSetDirectory(final FileSet fileSet, final AssemblerConfigurationSource configSource) {
         String sourceDirectory = fileSet.getDirectory();
-        Path assmebliesPath = makeAssmebliesFolder(configSource, sourceDirectory);
+        Path assemblyPath = makeAssemblyFolder(configSource, sourceDirectory);
         String jarPath = getJarPath(sourceDirectory);
         if (null == jarPath) {
-            return assmebliesPath.toFile();
+            return assemblyPath.toFile();
         }
         Enumeration<JarEntry> jarEntries;
         try {
@@ -200,10 +200,10 @@ public class AddClasspathFileSetsTask {
                 }
             }
         }
-        return assmebliesPath.toFile();
+        return assemblyPath.toFile();
     }
     
-    private Path makeAssmebliesFolder(final AssemblerConfigurationSource configSource, final String sourceDirectory) {
+    private Path makeAssemblyFolder(final AssemblerConfigurationSource configSource, final String sourceDirectory) {
         Path result = Paths.get(configSource.getOutputDirectory().getAbsolutePath(), sourceDirectory);
         if (result.toFile().exists()) {
             result.toFile().delete();

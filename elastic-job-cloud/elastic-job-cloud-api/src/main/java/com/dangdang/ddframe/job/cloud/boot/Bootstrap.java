@@ -29,16 +29,16 @@ import java.util.Properties;
  * @author caohao
  */
 public final class Bootstrap {
+    
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, IOException {
-    // CHECKSTYLE:ON
+        // CHECKSTYLE:ON
         String taskId = args[0];
         Properties properties = new Properties();
         properties.load(new FileInputStream("conf/job.properties"));
-        Object object = properties.get("jobClassNames");
-        String[] jobClassNames = object.toString().split(",");
-        for (String jobClassName : jobClassNames) {
-            Class<?> cloudElasticJobClass = Class.forName(jobClassName);
+        String[] jobClassNames = properties.getProperty("jobClassNames").split(",");
+        for (String each : jobClassNames) {
+            Class<?> cloudElasticJobClass = Class.forName(each);
             Object cloudElasticJob = cloudElasticJobClass.getConstructor(String.class).newInstance(taskId);
             cloudElasticJobClass.getMethod("execute").invoke(cloudElasticJob);
         }
