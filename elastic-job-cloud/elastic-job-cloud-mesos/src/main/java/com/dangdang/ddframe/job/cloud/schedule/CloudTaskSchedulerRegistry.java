@@ -20,8 +20,6 @@ package com.dangdang.ddframe.job.cloud.schedule;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -72,53 +70,36 @@ public final class CloudTaskSchedulerRegistry {
     }
     
     /**
-     * 注册调度.
+     * 注册作业.
      * 
-     * @param cloudJobConfig 云任务配置
+     * @param jobConfig 作业配置
      */
-    public void register(final CloudJobConfiguration cloudJobConfig) {
-        String jobName = cloudJobConfig.getJobName();
+    public void register(final CloudJobConfiguration jobConfig) {
+        String jobName = jobConfig.getJobName();
         if (cloudTaskSchedulerMap.containsKey(jobName)) {
             cloudTaskSchedulerMap.get(jobName).shutdown();
             cloudTaskSchedulerMap.remove(jobName);
         }
-        configService.add(cloudJobConfig);
-        CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(cloudJobConfig, registryCenter);
+        if (configService.load(jobName).isPresent()) {
+            configService.update(jobConfig);
+        } else {
+            configService.add(jobConfig);
+        }
+        CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(jobConfig, registryCenter);
         cloudTaskScheduler.startup();
         cloudTaskSchedulerMap.put(jobName, cloudTaskScheduler);
     }
     
     /**
-     * 重新注册调度.
-     *
-     * @param cloudJobConfig 云任务配置
-     */
-    public void reregister(final CloudJobConfiguration cloudJobConfig) {
-        String jobName = cloudJobConfig.getJobName();
-        Preconditions.checkState(cloudTaskSchedulerMap.containsKey(jobName));
-        Optional<CloudJobConfiguration> originalCloudJobConfig = configService.load(jobName);
-        Preconditions.checkState(originalCloudJobConfig.isPresent());
-        configService.update(cloudJobConfig);
-        boolean isCronChanged = !originalCloudJobConfig.get().getCron().equals(cloudJobConfig.getCron());
-        if (isCronChanged) {
-            cloudTaskSchedulerMap.get(jobName).shutdown();
-            cloudTaskSchedulerMap.remove(jobName);
-        }
-        if (isCronChanged) {
-            CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(cloudJobConfig, registryCenter);
-            cloudTaskScheduler.startup();
-            cloudTaskSchedulerMap.put(jobName, cloudTaskScheduler);
-        }
-    }
-    
-    /**
-     * 注销任务.
+     * 注销作业.
      * 
      * @param jobName 作业名称
      */
     public void unregister(final String jobName) {
-        cloudTaskSchedulerMap.get(jobName).shutdown();
-        cloudTaskSchedulerMap.remove(jobName);
+        if (cloudTaskSchedulerMap.containsKey(jobName)) {
+            cloudTaskSchedulerMap.get(jobName).shutdown();
+            cloudTaskSchedulerMap.remove(jobName);
+        }
         configService.remove(jobName);
     }
 }

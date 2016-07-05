@@ -39,6 +39,8 @@
         <gson.version>2.6.1</gson.version>
         <javaee-web-api.version>7.0</javaee-web-api.version>
         <mesos.version>0.28.1</mesos.version>
+        <jersey.version>1.19</jersey.version>
+        <jetty-all-server.version>8.1.19.v20160209</jetty-all-server.version>
         
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
@@ -210,6 +212,21 @@
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-servlet</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-json</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty.aggregate</groupId>
+                <artifactId>jetty-all-server</artifactId>
+                <version>${jetty-all-server.version}</version>
             </dependency>
             
             <dependency>

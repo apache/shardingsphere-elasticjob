@@ -79,6 +79,8 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
+        runningService.clear();
+        CloudTaskSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
     }
     
     @Override
@@ -196,6 +198,8 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void disconnected(final SchedulerDriver schedulerDriver) {
+        // TODO 停止作业调度
+        runningService.clear();
     }
     
     @Override
