@@ -58,7 +58,9 @@ public class MisfiredService {
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
-        registryCenter.persistSequential(MisfiredNode.getMisfiredJobNodePath(jobName), "");
+        if (!registryCenter.isExisted(MisfiredNode.getMisfiredJobNodePath(jobName))) {
+            registryCenter.persist(MisfiredNode.getMisfiredJobNodePath(jobName), "");
+        }
     }
     
     /**
@@ -78,17 +80,15 @@ public class MisfiredService {
                 return input.getJobConfig().getJobName();
             }
         });
-        List<String> jobNamesWithSequential = registryCenter.getChildrenKeys(MisfiredNode.ROOT);
-        Map<String, JobContext> result = new HashMap<>(jobNamesWithSequential.size(), 1);
-        for (String each : jobNamesWithSequential) {
-            SequentialJob sequentialJob = new SequentialJob(each);
-            String jobName = sequentialJob.getJobName();
-            Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+        List<String> jobNames = registryCenter.getChildrenKeys(MisfiredNode.ROOT);
+        Map<String, JobContext> result = new HashMap<>(jobNames.size(), 1);
+        for (String each : jobNames) {
+            Optional<CloudJobConfiguration> jobConfig = configService.load(each);
             if (!jobConfig.isPresent()) {
                 registryCenter.remove(MisfiredNode.getMisfiredJobNodePath(each));
                 continue;
             }
-            if (!result.containsKey(each) && !ineligibleJobNames.contains(jobName) && !runningService.isJobRunning(jobName)) {
+            if (!ineligibleJobNames.contains(each) && !runningService.isJobRunning(each)) {
                 result.put(each, JobContext.from(jobConfig.get()));
             }
         }
