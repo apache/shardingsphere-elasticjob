@@ -28,6 +28,8 @@ import org.apache.mesos.Protos.SlaveInfo;
 import org.apache.mesos.Protos.Status;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
+import org.apache.mesos.Protos.TaskState;
+import org.apache.mesos.Protos.TaskStatus;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -77,6 +79,7 @@ public final class TaskExecutor implements Executor {
                 Object cloudElasticJob = cloudElasticJobClass.getConstructor(String.class).newInstance(taskId);
                 cloudElasticJobClass.getMethod("execute").invoke(cloudElasticJob);
             }
+            executorDriver.sendStatusUpdate(TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
         } catch (final IOException | ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException ex) {
             throw new RuntimeException(ex);
         }

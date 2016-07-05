@@ -24,20 +24,31 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  * 作业云启动入口.
  */
 public final class CloudBootstrap {
     
-    // -Djava.library.path=/usr/local/lib
     // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
     // CHECKSTYLE:ON
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "elastic-job-cloud");
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("conf/server.properties"));
+        String zKServers = properties.getProperty("zkServers", "localhost:2181");
+        String zKNameSpace = properties.getProperty("zKNameSpace", "elastic-job-cloud");
+        String userName = properties.getProperty("userName", "");
+        String frameWorkName = properties.getProperty("frameWorkName", "Elastic-Job-Cloud");
+        String mesosUrl = properties.getProperty("mesosUrl", "zk://localhost:2181/mesos");
+        
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(zKServers, zKNameSpace);
         CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
         regCenter.init();
-        Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser("").setName("Elastic-Job-Cloud").build();
-        MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, "zk://localhost:2181/mesos");
+        Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser(userName).setName(frameWorkName).build();
+        MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosUrl);
         Protos.Status status = schedulerDriver.run();
         schedulerDriver.stop();
         System.exit(Protos.Status.DRIVER_STOPPED == status ? 0 : -1);
