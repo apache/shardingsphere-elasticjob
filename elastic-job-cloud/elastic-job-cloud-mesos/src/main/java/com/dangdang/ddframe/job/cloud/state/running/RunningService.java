@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.state.running;
 
-import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.TaskContext;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
@@ -39,38 +39,38 @@ public class RunningService {
     }
     
     /**
-     * 通过执行机主键获取运行时任务.
+     * 通过执行机主键获取任务运行时上下文.
      *
      * @param slaveId 执行机主键
-     * @return 运行时任务集合
+     * @return 任务运行时上下文集合
      */
-    public List<ElasticJobTask> load(final String slaveId) {
+    public List<TaskContext> load(final String slaveId) {
         return slaveCache.load(slaveId);
     }
     
     /**
-     * 将任务放入运行时队列.
+     * 将任务运行时上下文放入运行时队列.
      * 
      * @param slaveId 执行机主键
-     * @param task 任务对象
+     * @param taskContext 任务运行时上下文
      */
-    public void add(final String slaveId, final ElasticJobTask task) {
-        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(task.getId());
+    public void add(final String slaveId, final TaskContext taskContext) {
+        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getId());
         if (!registryCenter.isExisted(runningTaskNodePath)) {
             registryCenter.persist(runningTaskNodePath, slaveId);
-            slaveCache.add(slaveId, task);
+            slaveCache.add(slaveId, taskContext);
         }
     }
     
     /**
-     * 将任务主键从运行时队列删除.
+     * 将任务运行时上下文从队列删除.
      * 
      * @param slaveId 执行机主键
-     * @param task 任务对象
+     * @param taskContext 任务运行时上下文
      */
-    public void remove(final String slaveId, final ElasticJobTask task) {
-        slaveCache.remove(slaveId, task);
-        registryCenter.remove(RunningNode.getRunningTaskNodePath(task.getId()));
+    public void remove(final String slaveId, final TaskContext taskContext) {
+        slaveCache.remove(slaveId, taskContext);
+        registryCenter.remove(RunningNode.getRunningTaskNodePath(taskContext.getId()));
     }
     
     /**
@@ -84,12 +84,12 @@ public class RunningService {
     }
     
     /**
-     * 判断作业是否运行.
+     * 判断任务是否运行.
      *
-     * @param task 任务对象
+     * @param taskContext 任务运行时上下文
      * @return 任务是否运行
      */
-    public boolean isTaskRunning(final ElasticJobTask task) {
-        return !registryCenter.getChildrenKeys(RunningNode.getRunningTaskNodePath(task.getId())).isEmpty();
+    public boolean isTaskRunning(final TaskContext taskContext) {
+        return !registryCenter.getChildrenKeys(RunningNode.getRunningTaskNodePath(taskContext.getId())).isEmpty();
     }
 }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.state.running;
 
-import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.TaskContext;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 final class SlaveCache {
     
-    private static final ConcurrentHashMap<String, List<ElasticJobTask>> RUNNING_TASKS = new ConcurrentHashMap<>(128);
+    private static final ConcurrentHashMap<String, List<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(128);
     
     private static SlaveCache instance;
     
@@ -46,8 +46,8 @@ final class SlaveCache {
             for (String runningTaskId : runningTaskIds) {
                 String slaveId = registryCenter.get(RunningNode.getRunningTaskNodePath(runningTaskId));
                 String slaveIdWithoutSequence = getSlaveIdWithoutSequence(slaveId);
-                RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<ElasticJobTask>());
-                RUNNING_TASKS.get(slaveIdWithoutSequence).add(ElasticJobTask.from(runningTaskId));
+                RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<TaskContext>());
+                RUNNING_TASKS.get(slaveIdWithoutSequence).add(TaskContext.from(runningTaskId));
             }
         }
     }
@@ -63,19 +63,19 @@ final class SlaveCache {
         return instance;
     }
     
-    void add(final String slaveId, final ElasticJobTask task) {
+    void add(final String slaveId, final TaskContext taskContext) {
         String slaveIdWithoutSequence = getSlaveIdWithoutSequence(slaveId);
-        RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<ElasticJobTask>());
-        RUNNING_TASKS.get(slaveIdWithoutSequence).add(task);
+        RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<TaskContext>());
+        RUNNING_TASKS.get(slaveIdWithoutSequence).add(taskContext);
     }
     
-    void remove(final String slaveId, final ElasticJobTask task) {
+    void remove(final String slaveId, final TaskContext taskContext) {
         String slaveIdWithoutSequence = getSlaveIdWithoutSequence(slaveId);
-        RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<ElasticJobTask>());
-        RUNNING_TASKS.get(slaveIdWithoutSequence).remove(task);
+        RUNNING_TASKS.putIfAbsent(slaveIdWithoutSequence, new CopyOnWriteArrayList<TaskContext>());
+        RUNNING_TASKS.get(slaveIdWithoutSequence).remove(taskContext);
     }
     
-    List<ElasticJobTask> load(final String slaveId) {
+    List<TaskContext> load(final String slaveId) {
         return RUNNING_TASKS.get(slaveId);
     }
     

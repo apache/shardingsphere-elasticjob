@@ -18,15 +18,22 @@
 package com.dangdang.ddframe.job.cloud.state.failover;
 
 import com.dangdang.ddframe.job.cloud.JobContext;
+import com.dangdang.ddframe.job.cloud.TaskContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 失效转移队列服务.
@@ -50,24 +57,26 @@ public class FailoverService {
     /**
      * 将任务放入失效转移队列.
      *
-     * @param task 任务
+     * @param taskContext 任务运行时上下文
      */
-    public void enqueue(final ElasticJobTask task) {
-        if (!registryCenter.isExisted(FailoverNode.getFailoverTaskNodePath(task.getId()))) {
-            registryCenter.persist(FailoverNode.getFailoverTaskNodePath(task.getId()), "");
+    public void add(final TaskContext taskContext) {
+        if (!registryCenter.isExisted(FailoverNode.getFailoverTaskNodePath(taskContext.getId()))) {
+            registryCenter.persist(FailoverNode.getFailoverTaskNodePath(taskContext.getId()), "");
         }
     }
     
     /**
-     * 从失效转移中获取顶端作业.
+     * 从失效转移队列中获取所有有资格执行的作业上下文.
      *
-     * @return 出队的作业
+     * @return 有资格执行的作业上下文集合
      */
-    public Optional<JobContext> dequeue() {
+    public Collection<JobContext> getAllEligibleJobContexts() {
         if (!registryCenter.isExisted(FailoverNode.ROOT)) {
-            return Optional.absent();
+            return Collections.emptyList();
         }
         List<String> jobNames = registryCenter.getChildrenKeys(FailoverNode.ROOT);
+        Collection<JobContext> result = new ArrayList<>(jobNames.size());
+        Set<HashCode> assignedTasks = new HashSet<>(jobNames.size() * 10, 1);
         for (String each : jobNames) {
             List<String> taskIds = registryCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
             if (taskIds.isEmpty()) {
@@ -79,17 +88,33 @@ public class FailoverService {
                 registryCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
-            List<Integer> assignedShardingItems = new ArrayList<>(taskIds.size());
-            for (String taskId : taskIds) {
-                ElasticJobTask task = ElasticJobTask.from(taskId);
-                if (!runningService.isTaskRunning(task)) {
-                    assignedShardingItems.add(task.getShardingItem());
-                }
-                // TODO 需考虑,是否发现已运行的任务就删除此失效转移
-                registryCenter.remove(FailoverNode.getFailoverTaskNodePath(taskId));
+            List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIds, assignedTasks);
+            if (!assignedShardingItems.isEmpty()) {
+                result.add(new JobContext(jobConfig.get(), assignedShardingItems));
             }
-            return Optional.of(new JobContext(jobConfig.get(), assignedShardingItems));
         }
-        return Optional.absent();
+        return result;
+    }
+    
+    private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskIds, final Set<HashCode> assignedTasks) {
+        List<Integer> result = new ArrayList<>(taskIds.size());
+        for (String each : taskIds) {
+            TaskContext taskContext = TaskContext.from(each);
+            if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(taskContext.getShardingItem()).hash()) && !runningService.isTaskRunning(taskContext)) {
+                result.add(taskContext.getShardingItem());
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * 从失效转移队列中删除相关任务.
+     * 
+     * @param taskContexts 待删除的任务
+     */
+    public void remove(final List<TaskContext> taskContexts) {
+        for (TaskContext each : taskContexts) {
+            registryCenter.remove(FailoverNode.getFailoverJobNodePath(each.getId()));
+        }
     }
 }

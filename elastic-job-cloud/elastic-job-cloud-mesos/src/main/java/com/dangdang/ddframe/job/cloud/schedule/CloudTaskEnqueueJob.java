@@ -35,7 +35,7 @@ public final class CloudTaskEnqueueJob implements Job {
     
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        readyService.enqueue(jobName, false);
+        readyService.add(jobName);
     }
     
     public void setJobName(final String jobName) {

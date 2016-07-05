@@ -15,31 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.state.failover;
+package com.dangdang.ddframe.job.cloud.state.misfired;
 
-import com.dangdang.ddframe.job.cloud.TaskContext;
 import com.dangdang.ddframe.job.cloud.state.StateNode;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 待失效转移任务队列节点路径.
+ * 错过执行的作业队列节点路径.
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor
-public final class FailoverNode {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+final class MisfiredNode {
     
-    static final String ROOT = StateNode.ROOT + "/failover";
+    static final String ROOT = StateNode.ROOT + "/misfired";
     
-    private static final String FAILOVER_JOB = ROOT + "/%s";
+    private static final String MISFIRED_JOB = ROOT + "/%s";
     
-    private static final String FAILOVER_TASK = FAILOVER_JOB + "/%s";
-    
-    static String getFailoverJobNodePath(final String jobName) {
-        return String.format(FAILOVER_JOB, jobName);
-    }
-    
-    static String getFailoverTaskNodePath(final String taskId) {
-        return String.format(FAILOVER_TASK, TaskContext.from(taskId).getJobName(), taskId);
+    static String getMisfiredJobNodePath(final String jobName) {
+        return String.format(MISFIRED_JOB, jobName);
     }
 }

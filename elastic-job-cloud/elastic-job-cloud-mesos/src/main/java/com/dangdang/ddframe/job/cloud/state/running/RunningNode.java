@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.state.running;
 
-import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
+import com.dangdang.ddframe.job.cloud.TaskContext;
 import com.dangdang.ddframe.job.cloud.state.StateNode;
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +40,6 @@ final class RunningNode {
     }
     
     static String getRunningTaskNodePath(final String taskId) {
-        return String.format(RUNNING_TASK, ElasticJobTask.from(taskId).getJobName(), taskId);
+        return String.format(RUNNING_TASK, TaskContext.from(taskId).getJobName(), taskId);
     }
 }

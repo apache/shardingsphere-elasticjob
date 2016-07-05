@@ -24,7 +24,10 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 
-public class Bootstrap {
+/**
+ * 作业云启动入口.
+ */
+public final class CloudBootstrap {
     
     // -Djava.library.path=/usr/local/lib
     // CHECKSTYLE:OFF

@@ -15,16 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.state.ready;
+package com.dangdang.ddframe.job.cloud.state.misfired;
 
 import com.dangdang.ddframe.job.cloud.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.state.SequentialJob;
-import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,11 +34,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 待运行作业队列服务.
+ * 错过执行的作业队列服务.
  *
  * @author zhangliang
  */
-public class ReadyService {
+public class MisfiredService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
@@ -45,49 +46,49 @@ public class ReadyService {
     
     private final RunningService runningService;
     
-    private final MisfiredService misfiredService;
-    
-    public ReadyService(final CoordinatorRegistryCenter registryCenter) {
+    public MisfiredService(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new ConfigurationService(registryCenter);
         runningService = new RunningService(registryCenter);
-        misfiredService = new MisfiredService(registryCenter);
     }
     
     /**
-     * 将作业放入待执行队列.
+     * 将作业放入错过执行队列.
      * 
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
-        registryCenter.persistSequential(ReadyNode.getReadyJobNodePath(jobName), "");
+        registryCenter.persistSequential(MisfiredNode.getMisfiredJobNodePath(jobName), "");
     }
     
     /**
-     * 从待执行队列中获取所有有资格执行的作业上下文.
+     * 从错过执行队列中获取所有有资格执行的作业上下文.
      *
      * @param ineligibleJobContexts 无资格执行的作业上下文
      * @return 有资格执行的作业上下文集合
      */
     public Map<String, JobContext> getAllEligibleJobContexts(final Collection<JobContext> ineligibleJobContexts) {
-        if (!registryCenter.isExisted(ReadyNode.ROOT)) {
+        if (!registryCenter.isExisted(MisfiredNode.ROOT)) {
             return Collections.emptyMap();
         }
-        List<String> jobNamesWithSequential = registryCenter.getChildrenKeys(ReadyNode.ROOT);
+        Collection<String> ineligibleJobNames = Collections2.transform(ineligibleJobContexts, new Function<JobContext, String>() {
+            
+            @Override
+            public String apply(final JobContext input) {
+                return input.getJobConfig().getJobName();
+            }
+        });
+        List<String> jobNamesWithSequential = registryCenter.getChildrenKeys(MisfiredNode.ROOT);
         Map<String, JobContext> result = new HashMap<>(jobNamesWithSequential.size(), 1);
         for (String each : jobNamesWithSequential) {
             SequentialJob sequentialJob = new SequentialJob(each);
             String jobName = sequentialJob.getJobName();
             Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
             if (!jobConfig.isPresent()) {
-                registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
+                registryCenter.remove(MisfiredNode.getMisfiredJobNodePath(each));
                 continue;
             }
-            if (runningService.isJobRunning(jobName)) {
-                misfiredService.add(jobName);
-                continue;
-            }
-            if (!result.containsKey(jobName) && !ineligibleJobContexts.contains(jobName)) {
+            if (!result.containsKey(each) && !ineligibleJobNames.contains(jobName) && !runningService.isJobRunning(jobName)) {
                 result.put(each, JobContext.from(jobConfig.get()));
             }
         }
@@ -95,13 +96,13 @@ public class ReadyService {
     }
     
     /**
-     * 从待执行队列中删除相关作业.
-     *
+     * 从错过执行队列中删除相关作业.
+     * 
      * @param jobNamesWithSequential 待删除的作业名集合
      */
     public void remove(final Collection<String> jobNamesWithSequential) {
         for (String each : jobNamesWithSequential) {
-            registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
+            registryCenter.remove(MisfiredNode.getMisfiredJobNodePath(each));
         }
     }
 }

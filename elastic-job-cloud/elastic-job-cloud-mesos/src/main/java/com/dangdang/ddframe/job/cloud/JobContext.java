@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,4 +36,19 @@ public final class JobContext {
     private final CloudJobConfiguration jobConfig;
     
     private final List<Integer> assignedShardingItems;
+    
+    /**
+     * 通过作业配置创建作业运行上下文.
+     * 
+     * @param jobConfig 作业配置
+     * @return 作业运行上下文
+     */
+    public static JobContext from(final CloudJobConfiguration jobConfig) {
+        int shardingTotalCount = jobConfig.getShardingTotalCount();
+        List<Integer> shardingItems = new ArrayList<>(shardingTotalCount);
+        for (int i = 0; i < shardingTotalCount; i++) {
+            shardingItems.add(i);
+        }
+        return new JobContext(jobConfig, shardingItems);
+    }
 }

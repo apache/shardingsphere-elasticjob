@@ -17,8 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
+import com.dangdang.ddframe.job.cloud.JobContext;
+import com.dangdang.ddframe.job.cloud.TaskContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.state.ElasticJobTask;
 import com.google.common.base.Preconditions;
 import lombok.EqualsAndHashCode;
 import org.apache.mesos.Protos;
@@ -111,12 +112,13 @@ public final class HardwareResource {
     /**
      * 创建Mesos任务对象.
      *
-     * @param jobConfig 云作业配置
+     * @param jobContext 云作业配置
      * @param shardingItem 分片项
      * @return 任务对象
      */
-    public Protos.TaskInfo createTaskInfo(final CloudJobConfiguration jobConfig, final int shardingItem) {
-        Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new ElasticJobTask(jobConfig.getJobName(), shardingItem).getId()).build();
+    public Protos.TaskInfo createTaskInfo(final JobContext jobContext, final int shardingItem) {
+        CloudJobConfiguration jobConfig = jobContext.getJobConfig();
+        Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new TaskContext(jobConfig.getJobName(), shardingItem).getId()).build();
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(true).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(String.format(RUN_COMMAND, taskId.getValue())).build();
         Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();
