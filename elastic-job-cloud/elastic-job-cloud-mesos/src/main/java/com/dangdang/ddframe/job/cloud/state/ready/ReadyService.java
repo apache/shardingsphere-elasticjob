@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.cloud.state.ready;
 import com.dangdang.ddframe.job.cloud.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.state.SequentialJob;
+import com.dangdang.ddframe.job.cloud.state.UniqueJob;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -60,7 +60,7 @@ public class ReadyService {
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
-        registryCenter.persistSequential(ReadyNode.getReadyJobNodePath(jobName), "");
+        registryCenter.persist(ReadyNode.getReadyJobNodePath(new UniqueJob(jobName).getUniqueName()), "");
     }
     
     /**
@@ -73,11 +73,10 @@ public class ReadyService {
         if (!registryCenter.isExisted(ReadyNode.ROOT)) {
             return Collections.emptyMap();
         }
-        List<String> jobNamesWithSequential = registryCenter.getChildrenKeys(ReadyNode.ROOT);
-        Map<String, JobContext> result = new HashMap<>(jobNamesWithSequential.size(), 1);
-        for (String each : jobNamesWithSequential) {
-            SequentialJob sequentialJob = new SequentialJob(each);
-            String jobName = sequentialJob.getJobName();
+        List<String> uniqueNames = registryCenter.getChildrenKeys(ReadyNode.ROOT);
+        Map<String, JobContext> result = new HashMap<>(uniqueNames.size(), 1);
+        for (String each : uniqueNames) {
+            String jobName = UniqueJob.from(each).getJobName();
             Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
             if (!jobConfig.isPresent()) {
                 registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
@@ -97,10 +96,10 @@ public class ReadyService {
     /**
      * 从待执行队列中删除相关作业.
      *
-     * @param jobNamesWithSequential 待删除的作业名集合
+     * @param uniqueNames 待删除的作业名集合
      */
-    public void remove(final Collection<String> jobNamesWithSequential) {
-        for (String each : jobNamesWithSequential) {
+    public void remove(final Collection<String> uniqueNames) {
+        for (String each : uniqueNames) {
             registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
         }
     }

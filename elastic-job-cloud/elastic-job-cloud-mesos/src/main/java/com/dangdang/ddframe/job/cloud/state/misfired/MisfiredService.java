@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.state.misfired;
 import com.dangdang.ddframe.job.cloud.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.state.SequentialJob;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
