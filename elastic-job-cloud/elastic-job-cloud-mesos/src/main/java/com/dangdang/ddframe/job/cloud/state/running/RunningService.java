@@ -92,4 +92,11 @@ public class RunningService {
     public boolean isTaskRunning(final TaskContext taskContext) {
         return !registryCenter.getChildrenKeys(RunningNode.getRunningTaskNodePath(taskContext.getId())).isEmpty();
     }
+    
+    /**
+     * 清理所有运行时状态.
+     */
+    public void clear() {
+        registryCenter.remove(RunningNode.ROOT);
+    }
 }

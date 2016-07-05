@@ -73,6 +73,7 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
+        runningService.clear();
         CloudTaskSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
     }
     
