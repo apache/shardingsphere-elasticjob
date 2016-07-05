@@ -40,14 +40,14 @@ import java.util.Properties;
  * @author caohao
  */
 @RequiredArgsConstructor
-public final class CloudJobExecutor implements Executor {
+public final class TaskExecutor implements Executor {
     
     private final String taskId;
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        MesosExecutorDriver driver = new MesosExecutorDriver(new CloudJobExecutor(args[0]));
+        MesosExecutorDriver driver = new MesosExecutorDriver(new TaskExecutor(args[0]));
         System.exit(driver.run() == Status.DRIVER_STOPPED ? 0 : 1);
     }
     
