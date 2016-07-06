@@ -49,7 +49,6 @@ public final class MasterBootstrap {
         } catch (final FileNotFoundException ex) {
             properties.load(MasterBootstrap.class.getResourceAsStream("/conf/elastic-job-cloud.properties"));
         }
-    
         String zookeeperServers = properties.getProperty("zookeeper.servers", "localhost:2181");
         String zookeeperNamespace = properties.getProperty("zookeeper.namespace", "elastic-job-cloud");
         String zookeeperDigest = properties.getProperty("zookeeper.digest", "");
@@ -85,7 +84,7 @@ public final class MasterBootstrap {
     private static ServletHolder getServletHolder() {
         ServletHolder result = new ServletHolder(ServletContainer.class);
         result.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "com.sun.jersey.api.core.PackagesResourceConfig");
-        result.setInitParameter("com.sun.jersey.config.property.packages", "com.dangdang.ddframe.job.cloud.rest");
+        result.setInitParameter("com.sun.jersey.config.property.packages", RestfulApi.class.getPackage().getName());
         result.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
         result.setInitParameter("resteasy.scan.providers", "true");
         result.setInitParameter("resteasy.use.builtin.providers", "false");

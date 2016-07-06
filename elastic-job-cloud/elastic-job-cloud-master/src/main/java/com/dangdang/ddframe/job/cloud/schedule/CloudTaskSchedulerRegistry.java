@@ -84,7 +84,7 @@ public final class CloudTaskSchedulerRegistry {
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobName);
         if (!jobConfigFromZk.isPresent()) {
             configService.add(jobConfig);
-        } else if (!jobConfigFromZk.equals(jobConfig)) {
+        } else if (!jobConfigFromZk.get().equals(jobConfig)) {
             configService.update(jobConfig);
         }
         CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(jobConfig, registryCenter);
@@ -97,7 +97,7 @@ public final class CloudTaskSchedulerRegistry {
      * 
      * @param jobName 作业名称
      */
-    public void unregister(final String jobName) {
+    public void deregister(final String jobName) {
         if (cloudTaskSchedulerMap.containsKey(jobName)) {
             cloudTaskSchedulerMap.get(jobName).shutdown();
             cloudTaskSchedulerMap.remove(jobName);

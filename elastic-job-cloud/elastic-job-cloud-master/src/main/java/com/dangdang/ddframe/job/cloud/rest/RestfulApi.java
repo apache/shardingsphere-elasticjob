@@ -54,9 +54,9 @@ public class RestfulApi {
     }
     
     @DELETE
-    @Path("/unregister")
+    @Path("/deregister")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void unregister(final String jobName) {
-        CloudTaskSchedulerRegistry.getInstance(regCenter).unregister(jobName);
+    public void deregister(final String jobName) {
+        CloudTaskSchedulerRegistry.getInstance(regCenter).deregister(jobName);
     }
 }

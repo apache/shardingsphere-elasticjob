@@ -17,8 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.dangdang.ddframe.job.cloud.util.GsonFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -48,13 +47,11 @@ public final class GsonJsonProvider implements MessageBodyWriter<Object>, Messag
     
     private static final String UTF_8 = "UTF-8";
     
-    private Gson gson;
-    
     @Override
     public Object readFrom(final Class<Object> type, final Type genericType, final Annotation[] annotations,
                            final MediaType mediaType, final MultivaluedMap<String, String> httpHeaders, final InputStream entityStream) {
         try (InputStreamReader streamReader = new InputStreamReader(entityStream, UTF_8)) {
-            return getGson().fromJson(streamReader, type.equals(genericType) ? type : genericType);
+            return GsonFactory.getGson().fromJson(streamReader, type.equals(genericType) ? type : genericType);
         } catch (final IOException ex) {
             throw new RestfulException(ex);
         }
@@ -64,18 +61,10 @@ public final class GsonJsonProvider implements MessageBodyWriter<Object>, Messag
     public void writeTo(final Object object, final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType,
                         final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
         try (OutputStreamWriter writer = new OutputStreamWriter(entityStream, UTF_8)) {
-            getGson().toJson(object, type.equals(genericType) ? type : genericType, writer);
+            GsonFactory.getGson().toJson(object, type.equals(genericType) ? type : genericType, writer);
         } catch (final IOException ex) {
             throw new RestfulException(ex);
         }
-    }
-    
-    private Gson getGson() {
-        if (null == gson) {
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gson = gsonBuilder.create();
-        }
-        return gson;
     }
     
     @Override
