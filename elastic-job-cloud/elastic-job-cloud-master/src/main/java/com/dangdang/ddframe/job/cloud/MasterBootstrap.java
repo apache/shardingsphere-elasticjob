@@ -37,7 +37,7 @@ import java.util.Properties;
 /**
  * 作业云启动入口.
  */
-public final class CloudBootstrap {
+public final class MasterBootstrap {
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
@@ -47,7 +47,7 @@ public final class CloudBootstrap {
             FileInputStream fileInputStream = new FileInputStream("conf/elastic-job-cloud.properties");
             properties.load(fileInputStream);
         } catch (final FileNotFoundException ex) {
-            properties.load(CloudBootstrap.class.getResourceAsStream("/conf/elastic-job-cloud.properties"));
+            properties.load(MasterBootstrap.class.getResourceAsStream("/conf/elastic-job-cloud.properties"));
         }
     
         String zookeeperServers = properties.getProperty("zookeeper.servers", "localhost:2181");
@@ -56,6 +56,7 @@ public final class CloudBootstrap {
         String username = properties.getProperty("username", "");
         String framework = "Elastic-Job-Cloud";
         String mesosUrl = properties.getProperty("mesos.url", "zk://localhost:2181/mesos");
+        int port = Integer.parseInt(properties.getProperty("port", "8899"));
     
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(zookeeperServers, zookeeperNamespace);
         if (!Strings.isNullOrEmpty(zookeeperDigest)) {
@@ -66,14 +67,13 @@ public final class CloudBootstrap {
         Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser(username).setName(framework).build();
         MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosUrl);
         Protos.Status status = schedulerDriver.run();
+        startRestfulServer(regCenter, port);
         schedulerDriver.stop();
         System.exit(Protos.Status.DRIVER_STOPPED == status ? 0 : -1);
     }
     
-    private static void startRestfulServer(final CoordinatorRegistryCenter regCenter) throws Exception {
+    private static void startRestfulServer(final CoordinatorRegistryCenter regCenter, final int port) throws Exception {
         RestfulApi.init(regCenter);
-        // TODO 可配置
-        int port = 8899;
         Server server = new Server(port);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
@@ -85,7 +85,7 @@ public final class CloudBootstrap {
     private static ServletHolder getServletHolder() {
         ServletHolder result = new ServletHolder(ServletContainer.class);
         result.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "com.sun.jersey.api.core.PackagesResourceConfig");
-        result.setInitParameter("com.sun.jersey.config.property.packages", "com.dangdang.ddframe.job.cloud.schedule");
+        result.setInitParameter("com.sun.jersey.config.property.packages", "com.dangdang.ddframe.job.cloud.rest");
         result.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
         result.setInitParameter("resteasy.scan.providers", "true");
         result.setInitParameter("resteasy.use.builtin.providers", "false");
