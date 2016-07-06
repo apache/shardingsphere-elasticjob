@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.schedule;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Optional;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -80,10 +81,11 @@ public final class CloudTaskSchedulerRegistry {
             cloudTaskSchedulerMap.get(jobName).shutdown();
             cloudTaskSchedulerMap.remove(jobName);
         }
-        if (configService.load(jobName).isPresent()) {
-            configService.update(jobConfig);
-        } else {
+        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobName);
+        if (!jobConfigFromZk.isPresent()) {
             configService.add(jobConfig);
+        } else if (!jobConfigFromZk.equals(jobConfig)) {
+            configService.update(jobConfig);
         }
         CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(jobConfig, registryCenter);
         cloudTaskScheduler.startup();

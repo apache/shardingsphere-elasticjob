@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.config;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
+@EqualsAndHashCode
 public final class CloudJobConfiguration {
     
     private final String jobName;

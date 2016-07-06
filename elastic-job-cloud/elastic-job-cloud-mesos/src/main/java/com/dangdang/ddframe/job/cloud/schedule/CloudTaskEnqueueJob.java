@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.schedule;
 
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
+import lombok.Setter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -27,6 +28,7 @@ import org.quartz.JobExecutionException;
  *
  * @author zhangliang
  */
+@Setter
 public final class CloudTaskEnqueueJob implements Job {
     
     private String jobName;
@@ -36,13 +38,5 @@ public final class CloudTaskEnqueueJob implements Job {
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
         readyService.add(jobName);
-    }
-    
-    public void setJobName(final String jobName) {
-        this.jobName = jobName;
-    }
-    
-    public void setReadyService(final ReadyService readyService) {
-        this.readyService = readyService;
     }
 }

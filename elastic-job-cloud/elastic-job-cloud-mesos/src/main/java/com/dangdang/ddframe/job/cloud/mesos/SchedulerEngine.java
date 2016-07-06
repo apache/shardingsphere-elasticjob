@@ -182,6 +182,7 @@ public final class SchedulerEngine implements Scheduler {
                 runningService.add(taskStatus.getSlaveId().getValue(), taskContext);
                 break;
             case TASK_FINISHED:
+            // TODO TASK_FAILED, TASK_LOST走failover
             case TASK_FAILED:
             case TASK_KILLED:
             case TASK_LOST:
@@ -202,25 +203,26 @@ public final class SchedulerEngine implements Scheduler {
         runningService.clear();
     }
     
+    
     @Override
     public void slaveLost(final SchedulerDriver schedulerDriver, final Protos.SlaveID slaveID) {
         List<TaskContext> runningTaskContexts = runningService.load(slaveID.getValue());
         for (TaskContext each : runningTaskContexts) {
-            Optional<CloudJobConfiguration> jobConfig = configService.load(each.getJobName());
-            if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
-                failoverService.add(each);
-            }
-            runningService.remove(slaveID.getValue(), each);
+            doFailover(slaveID, each);
         }
     }
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
-        TaskContext taskContext = TaskContext.from(executorID.getValue());
+        doFailover(slaveID, TaskContext.from(executorID.getValue()));
+    }
+    
+    private void doFailover(final Protos.SlaveID slaveID, final TaskContext taskContext) {
         Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getJobName());
         if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
             failoverService.add(taskContext);
         }
+        runningService.remove(slaveID.getValue(), taskContext);
     }
     
     @Override
