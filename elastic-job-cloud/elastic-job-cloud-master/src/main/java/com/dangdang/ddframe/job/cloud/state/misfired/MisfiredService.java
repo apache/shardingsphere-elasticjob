@@ -97,10 +97,10 @@ public class MisfiredService {
     /**
      * 从错过执行队列中删除相关作业.
      * 
-     * @param jobNamesWithSequential 待删除的作业名集合
+     * @param jobNames 待删除的作业名集合
      */
-    public void remove(final Collection<String> jobNamesWithSequential) {
-        for (String each : jobNamesWithSequential) {
+    public void remove(final Collection<String> jobNames) {
+        for (String each : jobNames) {
             registryCenter.remove(MisfiredNode.getMisfiredJobNodePath(each));
         }
     }

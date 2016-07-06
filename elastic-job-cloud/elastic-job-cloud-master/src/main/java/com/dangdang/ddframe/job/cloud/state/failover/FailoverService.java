@@ -114,7 +114,7 @@ public class FailoverService {
      */
     public void remove(final List<TaskContext> taskContexts) {
         for (TaskContext each : taskContexts) {
-            registryCenter.remove(FailoverNode.getFailoverJobNodePath(each.getId()));
+            registryCenter.remove(FailoverNode.getFailoverTaskNodePath(each.getId()));
         }
     }
 }

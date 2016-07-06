@@ -90,7 +90,7 @@ public class RunningService {
      * @return 任务是否运行
      */
     public boolean isTaskRunning(final TaskContext taskContext) {
-        return !registryCenter.getChildrenKeys(RunningNode.getRunningTaskNodePath(taskContext.getId())).isEmpty();
+        return registryCenter.isExisted(RunningNode.getRunningTaskNodePath(taskContext.getId()));
     }
     
     /**

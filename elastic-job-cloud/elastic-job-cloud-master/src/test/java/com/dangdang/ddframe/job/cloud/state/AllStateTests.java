@@ -18,16 +18,29 @@
 package com.dangdang.ddframe.job.cloud.state;
 
 import com.dangdang.ddframe.job.cloud.state.failover.FailoverNodeTest;
+import com.dangdang.ddframe.job.cloud.state.failover.FailoverServiceTest;
+import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredNodeTest;
+import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredServiceTest;
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyNodeTest;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyServiceTest;
 import com.dangdang.ddframe.job.cloud.state.running.RunningNodeTest;
+import com.dangdang.ddframe.job.cloud.state.running.RunningServiceTest;
+import com.dangdang.ddframe.job.cloud.state.running.SlaveCacheTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    UniqueJobTest.class, 
     ReadyNodeTest.class, 
-    RunningNodeTest.class,
-    FailoverNodeTest.class
+    ReadyServiceTest.class, 
+    MisfiredNodeTest.class, 
+    MisfiredServiceTest.class, 
+    RunningNodeTest.class, 
+    RunningServiceTest.class, 
+    SlaveCacheTest.class, 
+    FailoverNodeTest.class, 
+    FailoverServiceTest.class
 })
 public final class AllStateTests {
 }

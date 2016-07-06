@@ -24,7 +24,9 @@ import com.dangdang.ddframe.job.cloud.state.UniqueJob;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Collections2;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -73,6 +75,13 @@ public class ReadyService {
         if (!registryCenter.isExisted(ReadyNode.ROOT)) {
             return Collections.emptyMap();
         }
+        Collection<String> ineligibleJobNames = Collections2.transform(ineligibleJobContexts, new Function<JobContext, String>() {
+            
+            @Override
+            public String apply(final JobContext input) {
+                return input.getJobConfig().getJobName();
+            }
+        });
         List<String> uniqueNames = registryCenter.getChildrenKeys(ReadyNode.ROOT);
         Map<String, JobContext> result = new HashMap<>(uniqueNames.size(), 1);
         for (String each : uniqueNames) {
@@ -86,7 +95,7 @@ public class ReadyService {
                 misfiredService.add(jobName);
                 continue;
             }
-            if (!result.containsKey(jobName) && !ineligibleJobContexts.contains(jobName)) {
+            if (!result.containsKey(jobName) && !ineligibleJobNames.contains(jobName)) {
                 result.put(each, JobContext.from(jobConfig.get()));
             }
         }

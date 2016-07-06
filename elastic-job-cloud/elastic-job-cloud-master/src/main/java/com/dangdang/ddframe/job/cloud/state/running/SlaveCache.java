@@ -29,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author zhangliang
  */
-final class SlaveCache {
+class SlaveCache {
     
     private static final ConcurrentHashMap<String, List<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(128);
     
@@ -81,5 +81,10 @@ final class SlaveCache {
     
     private String getSlaveIdWithoutSequence(final String slaveId) {
         return slaveId.substring(0, slaveId.lastIndexOf("-"));
+    }
+    
+    void clear() {
+        instance = null;
+        RUNNING_TASKS.clear();
     }
 }

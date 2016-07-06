@@ -33,7 +33,7 @@ import java.util.List;
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public final class ConfigurationService {
+public class ConfigurationService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
