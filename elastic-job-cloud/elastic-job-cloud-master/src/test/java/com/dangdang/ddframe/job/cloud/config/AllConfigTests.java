@@ -21,6 +21,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(ConfigurationNodeTest.class)
+@Suite.SuiteClasses({
+        ConfigurationNodeTest.class,
+        ConfigurationServiceTest.class
+})
 public final class AllConfigTests {
 }
