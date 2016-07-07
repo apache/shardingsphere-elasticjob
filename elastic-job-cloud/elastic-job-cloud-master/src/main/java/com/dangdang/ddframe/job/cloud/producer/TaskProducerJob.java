@@ -15,29 +15,28 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.util;
+package com.dangdang.ddframe.job.cloud.producer;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
+import lombok.Setter;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
- * Gson构建器.
+ * 发布任务的作业.
  *
- * @author caohao
+ * @author zhangliang
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class GsonFactory {
+@Setter
+public final class TaskProducerJob implements Job {
     
-    private static final Gson GSON = new GsonBuilder().create();
+    private String jobName;
     
-    /**
-     * 获取Gson实例.
-     * 
-     * @return Gson实例
-     */
-    public static Gson getGson() {
-        return GSON;
+    private ReadyService readyService;
+    
+    @Override
+    public void execute(final JobExecutionContext context) throws JobExecutionException {
+        readyService.add(jobName);
     }
 }

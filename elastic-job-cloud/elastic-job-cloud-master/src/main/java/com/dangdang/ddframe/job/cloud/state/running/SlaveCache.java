@@ -33,7 +33,7 @@ class SlaveCache {
     
     private static final ConcurrentHashMap<String, List<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(128);
     
-    private static SlaveCache instance;
+    private static volatile SlaveCache instance;
     
     private SlaveCache(final CoordinatorRegistryCenter registryCenter) {
         init(registryCenter);
@@ -81,10 +81,5 @@ class SlaveCache {
     
     private String getSlaveIdWithoutSequence(final String slaveId) {
         return slaveId.substring(0, slaveId.lastIndexOf("-"));
-    }
-    
-    void clear() {
-        instance = null;
-        RUNNING_TASKS.clear();
     }
 }

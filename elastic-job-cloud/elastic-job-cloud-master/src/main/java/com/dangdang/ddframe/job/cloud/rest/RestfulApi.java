@@ -18,8 +18,9 @@
 package com.dangdang.ddframe.job.cloud.rest;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.schedule.CloudTaskSchedulerRegistry;
+import com.dangdang.ddframe.job.cloud.producer.TaskProducerSchedulerRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Preconditions;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,9 +34,16 @@ import javax.ws.rs.core.MediaType;
  * @author zhangliang
  */
 @Path("/job")
-public class RestfulApi {
+public final class RestfulApi {
     
     private static CoordinatorRegistryCenter regCenter;
+    
+    private final TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
+    
+    public RestfulApi() {
+        Preconditions.checkNotNull(regCenter);
+        taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(regCenter);
+    }
     
     /**
      * 初始化.
@@ -46,17 +54,27 @@ public class RestfulApi {
         RestfulApi.regCenter = regCenter;
     }
     
+    /**
+     * 注册作业.
+     * 
+     * @param jobConfig 作业配置
+     */
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public void register(final CloudJobConfiguration jobConfig) {
-        CloudTaskSchedulerRegistry.getInstance(regCenter).register(jobConfig);
+        taskProducerSchedulerRegistry.register(jobConfig);
     }
     
+    /**
+     * 注销作业.
+     * 
+     * @param jobName 作业名称
+     */
     @DELETE
     @Path("/deregister")
     @Consumes(MediaType.APPLICATION_JSON)
     public void deregister(final String jobName) {
-        CloudTaskSchedulerRegistry.getInstance(regCenter).deregister(jobName);
+        taskProducerSchedulerRegistry.deregister(jobName);
     }
 }

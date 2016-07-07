@@ -25,6 +25,10 @@ import lombok.NoArgsConstructor;
 public final class CloudJobConfigurationBuilder {
     
     public static CloudJobConfiguration createCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(jobName, "5/10 * * * * *", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true);
+        return new CloudJobConfiguration(jobName, "0/1 * * * * ?", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true);
+    }
+    
+    public static CloudJobConfiguration createOtherCloudJobConfiguration(final String jobName) {
+        return new CloudJobConfiguration(jobName, "0/1 * * * * ?", 3, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true);
     }
 }

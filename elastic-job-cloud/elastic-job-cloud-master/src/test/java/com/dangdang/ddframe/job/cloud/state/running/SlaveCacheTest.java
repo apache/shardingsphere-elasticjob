@@ -19,23 +19,18 @@ package com.dangdang.ddframe.job.cloud.state.running;
 
 import com.dangdang.ddframe.job.cloud.TaskContext;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,7 +41,9 @@ public final class SlaveCacheTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        SlaveCache.getInstance(regCenter).clear();
+        SlaveCache slaveCache = SlaveCache.getInstance(regCenter);
+        ReflectionUtils.setFieldValue(slaveCache, "instance", null);
+        ((Map) ReflectionUtils.getFieldValue(slaveCache, ReflectionUtils.getFieldWithName(SlaveCache.class, "RUNNING_TASKS", true))).clear();
         when(regCenter.getChildrenKeys("/state/running")).thenReturn(Collections.singletonList("test_job"));
         when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Collections.singletonList("test_job@-@0@-@00"));
         when(regCenter.get("/state/running/test_job/test_job@-@0@-@00")).thenReturn("slave-init-S0");

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.schedule;
+package com.dangdang.ddframe.job.cloud.producer;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
@@ -25,21 +25,21 @@ import com.google.common.base.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 云任务调度注册器.
+ * 发布任务作业调度注册表.
  *
  * @author zhangliang
  */
-public final class CloudTaskSchedulerRegistry {
+public final class TaskProducerSchedulerRegistry {
     
-    private static volatile CloudTaskSchedulerRegistry instance;
+    private static volatile TaskProducerSchedulerRegistry instance;
     
-    private final ConcurrentHashMap<String, CloudTaskScheduler> cloudTaskSchedulerMap = new ConcurrentHashMap<>(65535);
+    private final ConcurrentHashMap<String, TaskProducerScheduler> taskProducerSchedulerMap = new ConcurrentHashMap<>(65535);
     
     private final CoordinatorRegistryCenter registryCenter;
     
     private final ConfigurationService configService;
     
-    private CloudTaskSchedulerRegistry(final CoordinatorRegistryCenter registryCenter) {
+    private TaskProducerSchedulerRegistry(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         configService = new ConfigurationService(registryCenter);
     }
@@ -50,11 +50,11 @@ public final class CloudTaskSchedulerRegistry {
      * @param registryCenter 注册中心对象
      * @return 实例对象
      */
-    public static CloudTaskSchedulerRegistry getInstance(final CoordinatorRegistryCenter registryCenter) {
+    public static TaskProducerSchedulerRegistry getInstance(final CoordinatorRegistryCenter registryCenter) {
         if (null == instance) {
-            synchronized (CloudTaskSchedulerRegistry.class) {
+            synchronized (TaskProducerSchedulerRegistry.class) {
                 if (null == instance) {
-                    instance = new CloudTaskSchedulerRegistry(registryCenter);
+                    instance = new TaskProducerSchedulerRegistry(registryCenter);
                 }
             }
         }
@@ -77,9 +77,9 @@ public final class CloudTaskSchedulerRegistry {
      */
     public void register(final CloudJobConfiguration jobConfig) {
         String jobName = jobConfig.getJobName();
-        if (cloudTaskSchedulerMap.containsKey(jobName)) {
-            cloudTaskSchedulerMap.get(jobName).shutdown();
-            cloudTaskSchedulerMap.remove(jobName);
+        if (taskProducerSchedulerMap.containsKey(jobName)) {
+            taskProducerSchedulerMap.get(jobName).shutdown();
+            taskProducerSchedulerMap.remove(jobName);
         }
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobName);
         if (!jobConfigFromZk.isPresent()) {
@@ -87,9 +87,9 @@ public final class CloudTaskSchedulerRegistry {
         } else if (!jobConfigFromZk.get().equals(jobConfig)) {
             configService.update(jobConfig);
         }
-        CloudTaskScheduler cloudTaskScheduler = new CloudTaskScheduler(jobConfig, registryCenter);
-        cloudTaskScheduler.startup();
-        cloudTaskSchedulerMap.put(jobName, cloudTaskScheduler);
+        TaskProducerScheduler taskProducerScheduler = new TaskProducerScheduler(jobConfig, registryCenter);
+        taskProducerScheduler.startup();
+        taskProducerSchedulerMap.put(jobName, taskProducerScheduler);
     }
     
     /**
@@ -98,9 +98,9 @@ public final class CloudTaskSchedulerRegistry {
      * @param jobName 作业名称
      */
     public void deregister(final String jobName) {
-        if (cloudTaskSchedulerMap.containsKey(jobName)) {
-            cloudTaskSchedulerMap.get(jobName).shutdown();
-            cloudTaskSchedulerMap.remove(jobName);
+        if (taskProducerSchedulerMap.containsKey(jobName)) {
+            taskProducerSchedulerMap.get(jobName).shutdown();
+            taskProducerSchedulerMap.remove(jobName);
         }
         configService.remove(jobName);
     }

@@ -23,7 +23,7 @@ import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
-import com.dangdang.ddframe.job.cloud.schedule.CloudTaskSchedulerRegistry;
+import com.dangdang.ddframe.job.cloud.producer.TaskProducerSchedulerRegistry;
 import com.dangdang.ddframe.job.cloud.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
@@ -74,13 +74,13 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
         runningService.clear();
-        CloudTaskSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
+        TaskProducerSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
     }
     
     @Override
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
         runningService.clear();
-        CloudTaskSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
+        TaskProducerSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
     }
     
     @Override

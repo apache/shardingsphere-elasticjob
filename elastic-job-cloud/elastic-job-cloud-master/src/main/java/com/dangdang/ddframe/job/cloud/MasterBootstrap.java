@@ -18,17 +18,13 @@
 package com.dangdang.ddframe.job.cloud;
 
 import com.dangdang.ddframe.job.cloud.mesos.SchedulerEngine;
-import com.dangdang.ddframe.job.cloud.rest.RestfulApi;
+import com.dangdang.ddframe.job.cloud.rest.RestfulServer;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.google.common.base.Strings;
-import com.sun.jersey.spi.container.servlet.ServletContainer;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -56,7 +52,6 @@ public final class MasterBootstrap {
         String framework = "Elastic-Job-Cloud";
         String mesosUrl = properties.getProperty("mesos.url", "zk://localhost:2181/mesos");
         int port = Integer.parseInt(properties.getProperty("port", "8899"));
-    
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(zookeeperServers, zookeeperNamespace);
         if (!Strings.isNullOrEmpty(zookeeperDigest)) {
             zkConfig.setDigest(zookeeperDigest);
@@ -65,29 +60,11 @@ public final class MasterBootstrap {
         regCenter.init();
         Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser(username).setName(framework).build();
         MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosUrl);
+        RestfulServer restfulServer = new RestfulServer(port, regCenter);
+        restfulServer.start();
         Protos.Status status = schedulerDriver.run();
-        startRestfulServer(regCenter, port);
         schedulerDriver.stop();
+        restfulServer.stop();
         System.exit(Protos.Status.DRIVER_STOPPED == status ? 0 : -1);
-    }
-    
-    private static void startRestfulServer(final CoordinatorRegistryCenter regCenter, final int port) throws Exception {
-        RestfulApi.init(regCenter);
-        Server server = new Server(port);
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-        context.addServlet(getServletHolder(), "/*");
-        server.start();
-    }
-    
-    private static ServletHolder getServletHolder() {
-        ServletHolder result = new ServletHolder(ServletContainer.class);
-        result.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "com.sun.jersey.api.core.PackagesResourceConfig");
-        result.setInitParameter("com.sun.jersey.config.property.packages", RestfulApi.class.getPackage().getName());
-        result.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
-        result.setInitParameter("resteasy.scan.providers", "true");
-        result.setInitParameter("resteasy.use.builtin.providers", "false");
-        return result;
     }
 }

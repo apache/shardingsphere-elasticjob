@@ -15,28 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.schedule;
+package com.dangdang.ddframe.job.cloud.rest;
 
-import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
-import lombok.Setter;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.junit.Test;
 
-/**
- * 向注册中心发布任务的作业.
- *
- * @author zhangliang
- */
-@Setter
-public final class CloudTaskEnqueueJob implements Job {
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.*;
+
+public final class RestfulExceptionTest {
     
-    private String jobName;
-    
-    private ReadyService readyService;
-    
-    @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException {
-        readyService.add(jobName);
+    @Test
+    public void assertRestfulException() {
+        assertThat(new RestfulException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }

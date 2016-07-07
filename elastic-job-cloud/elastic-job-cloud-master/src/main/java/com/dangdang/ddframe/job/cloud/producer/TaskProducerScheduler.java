@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.schedule;
+package com.dangdang.ddframe.job.cloud.producer;
 
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
@@ -30,15 +30,16 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.simpl.SimpleThreadPool;
 
 import java.util.Properties;
 
 /**
- * 云任务调度器.
+ * 发布任务作业的调度器.
  *
  * @author zhangliang
  */
-public final class CloudTaskScheduler {
+public final class TaskProducerScheduler {
     
     private final CloudJobConfiguration jobConfig;
     
@@ -46,11 +47,10 @@ public final class CloudTaskScheduler {
     
     private final Scheduler scheduler;
     
-    public CloudTaskScheduler(final CloudJobConfiguration jobConfig, final CoordinatorRegistryCenter registryCenter) {
+    public TaskProducerScheduler(final CloudJobConfiguration jobConfig, final CoordinatorRegistryCenter registryCenter) {
         this.jobConfig = jobConfig;
         this.registryCenter = registryCenter;
         scheduler = getScheduler();
-        startup();
     }
     
     private Scheduler getScheduler() {
@@ -65,7 +65,7 @@ public final class CloudTaskScheduler {
     
     private Properties getQuartzProperties() {
         Properties result = new Properties();
-        result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
+        result.put("org.quartz.threadPool.class", SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", Integer.toString(Runtime.getRuntime().availableProcessors() * 2));
         result.put("org.quartz.scheduler.instanceName", createIdentity("Scheduler"));
         return result;
@@ -75,7 +75,7 @@ public final class CloudTaskScheduler {
      * 启动调度作业.
      */
     public void startup() {
-        JobDetail jobDetail = JobBuilder.newJob(CloudTaskEnqueueJob.class).withIdentity(jobConfig.getJobName()).build();
+        JobDetail jobDetail = JobBuilder.newJob(TaskProducerJob.class).withIdentity(jobConfig.getJobName()).build();
         jobDetail.getJobDataMap().put("jobName", jobConfig.getJobName());
         jobDetail.getJobDataMap().put("readyService", new ReadyService(registryCenter));
         try {

@@ -17,27 +17,15 @@
 
 package com.dangdang.ddframe.job.cloud.util;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.junit.Test;
 
-/**
- * Gson构建器.
- *
- * @author caohao
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class GsonFactory {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
+
+public final class GsonFactoryTest {
     
-    private static final Gson GSON = new GsonBuilder().create();
-    
-    /**
-     * 获取Gson实例.
-     * 
-     * @return Gson实例
-     */
-    public static Gson getGson() {
-        return GSON;
+    @Test
+    public void assertGetGson() {
+        assertThat(GsonFactory.getGson(), is(GsonFactory.getGson()));
     }
 }
