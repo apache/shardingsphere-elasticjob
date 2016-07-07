@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.cloud.TaskContext;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Protos;
 
@@ -45,20 +44,17 @@ public final class EligibleJobContext {
     
     private final Map<String, JobContext> readyJobContexts;
     
-    // TODO 待重构
-    @Getter
-    private AssignedTaskContext assignedTaskContext = new AssignedTaskContext(null, null, null, null);
-    
     /**
      * 分配资源.
      * 
      * @param resourceAllocateStrategy 资源分配策略
+     * @return 分配完成的任务集合上下文
      */
-    public void allocate(final ResourceAllocateStrategy resourceAllocateStrategy) {
+    public AssignedTaskContext allocate(final ResourceAllocateStrategy resourceAllocateStrategy) {
         List<Protos.TaskInfo> failoverTaskInfoList = resourceAllocateStrategy.allocate(failoverJobContexts);
         Map<String, List<Protos.TaskInfo>> misfiredTaskInfoMap = resourceAllocateStrategy.allocate(misfiredJobContexts);
         Map<String, List<Protos.TaskInfo>> readyTaskInfoMap = resourceAllocateStrategy.allocate(readyJobContexts);
-        assignedTaskContext = new AssignedTaskContext(
+        return new AssignedTaskContext(
                 getTaskInfoList(failoverTaskInfoList, misfiredTaskInfoMap, readyTaskInfoMap), getFailoverTaskContext(failoverTaskInfoList), misfiredTaskInfoMap.keySet(), readyTaskInfoMap.keySet());
     }
     

@@ -29,6 +29,7 @@ import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import org.apache.mesos.Protos;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -116,10 +117,11 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertRemoveLaunchTasksFromQueue() {
-        facadeService.removeLaunchTasksFromQueue(new EligibleJobContext(Collections.<JobContext>emptyList(), Collections.<String, JobContext>emptyMap(), Collections.<String, JobContext>emptyMap()));
-        verify(failoverService).remove(null);
-        verify(misfiredService).remove(null);
-        verify(readyService).remove(null);
+        facadeService.removeLaunchTasksFromQueue(
+                new AssignedTaskContext(Collections.<Protos.TaskInfo>emptyList(), Collections.<TaskContext>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList()));
+        verify(failoverService).remove(Collections.<TaskContext>emptyList());
+        verify(misfiredService).remove(Collections.<String>emptyList());
+        verify(readyService).remove(Collections.<String>emptyList());
     }
     
     @Test

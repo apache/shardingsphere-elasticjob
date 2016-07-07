@@ -28,7 +28,6 @@ import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
-import org.apache.mesos.Protos;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,12 +88,12 @@ public final class FacadeService {
     /**
      * 从队列中删除已运行的作业.
      * 
-     * @param eligibleJobContext 有资格运行的作业集合上下文
+     * @param assignedTaskContext 分配完成的任务集合上下文
      */
-    public void removeLaunchTasksFromQueue(final EligibleJobContext eligibleJobContext) {
-        failoverService.remove(eligibleJobContext.getAssignedTaskContext().getFailoverTaskContexts());
-        misfiredService.remove(eligibleJobContext.getAssignedTaskContext().getMisfiredJobNames());
-        readyService.remove(eligibleJobContext.getAssignedTaskContext().getReadyJobNames());
+    public void removeLaunchTasksFromQueue(final AssignedTaskContext assignedTaskContext) {
+        failoverService.remove(assignedTaskContext.getFailoverTaskContexts());
+        misfiredService.remove(assignedTaskContext.getMisfiredJobNames());
+        readyService.remove(assignedTaskContext.getReadyJobNames());
     }
     
     /**

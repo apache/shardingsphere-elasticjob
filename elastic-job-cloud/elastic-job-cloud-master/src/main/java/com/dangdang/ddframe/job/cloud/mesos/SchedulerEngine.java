@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.cloud.TaskContext;
+import com.dangdang.ddframe.job.cloud.mesos.facade.AssignedTaskContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.EligibleJobContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
@@ -60,11 +61,11 @@ public final class SchedulerEngine implements Scheduler {
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(getHardwareResource(offers));
         EligibleJobContext eligibleJobContext = facadeService.getEligibleJobContext();
-        eligibleJobContext.allocate(resourceAllocateStrategy);
-        List<Protos.TaskInfo> taskInfoList = eligibleJobContext.getAssignedTaskContext().getTaskInfoList();
+        AssignedTaskContext assignedTaskContext = eligibleJobContext.allocate(resourceAllocateStrategy);
+        List<Protos.TaskInfo> taskInfoList = assignedTaskContext.getTaskInfoList();
         declineUnusedOffers(schedulerDriver, offers, taskInfoList);
         launchTasks(schedulerDriver, offers, taskInfoList);
-        facadeService.removeLaunchTasksFromQueue(eligibleJobContext);
+        facadeService.removeLaunchTasksFromQueue(assignedTaskContext);
     }
     
     private List<HardwareResource> getHardwareResource(final List<Protos.Offer> offers) {
