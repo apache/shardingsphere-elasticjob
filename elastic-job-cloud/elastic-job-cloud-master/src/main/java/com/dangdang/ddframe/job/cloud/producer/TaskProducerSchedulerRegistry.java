@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author zhangliang
  */
-public final class TaskProducerSchedulerRegistry {
+public class TaskProducerSchedulerRegistry {
     
     private static volatile TaskProducerSchedulerRegistry instance;
     

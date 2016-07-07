@@ -17,30 +17,20 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.cloud.JobContext;
 import com.dangdang.ddframe.job.cloud.TaskContext;
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.mesos.facade.EligibleJobContext;
+import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
-import com.dangdang.ddframe.job.cloud.producer.TaskProducerSchedulerRegistry;
-import com.dangdang.ddframe.job.cloud.state.failover.FailoverService;
-import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
-import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
-import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 作业云引擎.
@@ -50,55 +40,31 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class SchedulerEngine implements Scheduler {
     
-    private final CoordinatorRegistryCenter registryCenter;
-    
-    private final ConfigurationService configService;
-    
-    private final ReadyService readyService;
-    
-    private final RunningService runningService;
-    
-    private final FailoverService failoverService;
-    
-    private final MisfiredService misfiredService;
+    private final FacadeService facadeService;
     
     public SchedulerEngine(final CoordinatorRegistryCenter registryCenter) {
-        this.registryCenter = registryCenter;
-        configService = new ConfigurationService(registryCenter);
-        readyService = new ReadyService(registryCenter);
-        runningService = new RunningService(registryCenter);
-        failoverService = new FailoverService(registryCenter);
-        misfiredService = new MisfiredService(registryCenter);
+        facadeService = new FacadeService(registryCenter);
     }
     
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
-        runningService.clear();
-        TaskProducerSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
+        facadeService.start();
     }
     
     @Override
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
-        runningService.clear();
-        TaskProducerSchedulerRegistry.getInstance(registryCenter).registerFromRegistryCenter();
+        facadeService.start();
     }
     
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(getHardwareResource(offers));
-        Collection<JobContext> failoverJobContexts = failoverService.getAllEligibleJobContexts();
-        Map<String, JobContext> misfiredJobContexts = misfiredService.getAllEligibleJobContexts(failoverJobContexts);
-        Collection<JobContext> ineligibleJobContexts = new ArrayList<>(failoverJobContexts.size() + misfiredJobContexts.size());
-        ineligibleJobContexts.addAll(failoverJobContexts);
-        ineligibleJobContexts.addAll(misfiredJobContexts.values());
-        Map<String, JobContext> readyJobContexts = readyService.getAllEligibleJobContexts(ineligibleJobContexts);
-        List<Protos.TaskInfo> failoverTaskInfoList = resourceAllocateStrategy.allocate(failoverJobContexts);
-        Map<String, List<Protos.TaskInfo>> misfiredTaskInfoMap = resourceAllocateStrategy.allocate(misfiredJobContexts);
-        Map<String, List<Protos.TaskInfo>> readyTaskInfoMap = resourceAllocateStrategy.allocate(readyJobContexts);
-        List<Protos.TaskInfo> taskInfoList = getTaskInfoList(failoverTaskInfoList, misfiredTaskInfoMap, readyTaskInfoMap);
+        EligibleJobContext eligibleJobContext = facadeService.getEligibleJobContext();
+        eligibleJobContext.allocate(resourceAllocateStrategy);
+        List<Protos.TaskInfo> taskInfoList = eligibleJobContext.getAssignedTaskContext().getTaskInfoList();
         declineUnusedOffers(schedulerDriver, offers, taskInfoList);
         launchTasks(schedulerDriver, offers, taskInfoList);
-        removeLaunchTasksFromQueue(failoverTaskInfoList, misfiredTaskInfoMap, readyTaskInfoMap);
+        facadeService.removeLaunchTasksFromQueue(eligibleJobContext);
     }
     
     private List<HardwareResource> getHardwareResource(final List<Protos.Offer> offers) {
@@ -109,19 +75,6 @@ public final class SchedulerEngine implements Scheduler {
                 return new HardwareResource(input);
             }
         });
-    }
-    
-    private List<Protos.TaskInfo> getTaskInfoList(final List<Protos.TaskInfo> failoverTaskInfoList, 
-                                                  final Map<String, List<Protos.TaskInfo>> misfiredTaskInfoMap, final Map<String, List<Protos.TaskInfo>> readyTaskInfoMap) {
-        List<Protos.TaskInfo> result = new ArrayList<>(failoverTaskInfoList.size() + misfiredTaskInfoMap.size() + readyTaskInfoMap.size());
-        result.addAll(failoverTaskInfoList);
-        for (List<Protos.TaskInfo> each : misfiredTaskInfoMap.values()) {
-            result.addAll(each);
-        }
-        for (List<Protos.TaskInfo> each : readyTaskInfoMap.values()) {
-            result.addAll(each);
-        }
-        return result;
     }
     
     private void declineUnusedOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.TaskInfo> tasks) {
@@ -151,21 +104,8 @@ public final class SchedulerEngine implements Scheduler {
         }), tasks);
         // TODO 状态回调调整好, 这里的代码应删除
         for (Protos.TaskInfo each : tasks) {
-            runningService.add(each.getSlaveId().getValue(), TaskContext.from(each.getTaskId().getValue()));
+            facadeService.addRunning(each.getSlaveId().getValue(), TaskContext.from(each.getTaskId().getValue()));
         }
-    }
-    
-    private void removeLaunchTasksFromQueue(final List<Protos.TaskInfo> failoverTaskInfoList, 
-                                            final Map<String, List<Protos.TaskInfo>> misfiredTaskInfoMap, final Map<String, List<Protos.TaskInfo>> readyTaskInfoMap) {
-        failoverService.remove(Lists.transform(failoverTaskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
-            
-            @Override
-            public TaskContext apply(final Protos.TaskInfo input) {
-                return TaskContext.from(input.getTaskId().getValue());
-            }
-        }));
-        misfiredService.remove(misfiredTaskInfoMap.keySet());
-        readyService.remove(readyTaskInfoMap.keySet());
     }
     
     @Override
@@ -179,14 +119,14 @@ public final class SchedulerEngine implements Scheduler {
         TaskContext taskContext = TaskContext.from(taskId);
         switch (taskStatus.getState()) {
             case TASK_STARTING:
-                runningService.add(taskStatus.getSlaveId().getValue(), taskContext);
+                facadeService.addRunning(taskStatus.getSlaveId().getValue(), taskContext);
                 break;
             case TASK_FINISHED:
             // TODO TASK_FAILED, TASK_LOST走failover
             case TASK_FAILED:
             case TASK_KILLED:
             case TASK_LOST:
-                runningService.remove(taskStatus.getSlaveId().getValue(), taskContext);
+                facadeService.removeRunning(taskStatus.getSlaveId().getValue(), taskContext);
                 break;
             default:
                 break;
@@ -199,30 +139,18 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void disconnected(final SchedulerDriver schedulerDriver) {
-        // TODO 停止作业调度
-        runningService.clear();
+        facadeService.stop();
     }
     
     
     @Override
     public void slaveLost(final SchedulerDriver schedulerDriver, final Protos.SlaveID slaveID) {
-        List<TaskContext> runningTaskContexts = runningService.load(slaveID.getValue());
-        for (TaskContext each : runningTaskContexts) {
-            doFailover(slaveID, each);
-        }
+        facadeService.recordFailoverTasks(slaveID.getValue());
     }
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
-        doFailover(slaveID, TaskContext.from(executorID.getValue()));
-    }
-    
-    private void doFailover(final Protos.SlaveID slaveID, final TaskContext taskContext) {
-        Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getJobName());
-        if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
-            failoverService.add(taskContext);
-        }
-        runningService.remove(slaveID.getValue(), taskContext);
+        facadeService.recordFailoverTask(slaveID.getValue(), TaskContext.from(executorID.getValue()));
     }
     
     @Override

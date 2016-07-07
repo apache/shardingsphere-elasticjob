@@ -112,7 +112,7 @@ public class FailoverService {
      * 
      * @param taskContexts 待删除的任务
      */
-    public void remove(final List<TaskContext> taskContexts) {
+    public void remove(final Collection<TaskContext> taskContexts) {
         for (TaskContext each : taskContexts) {
             registryCenter.remove(FailoverNode.getFailoverTaskNodePath(each.getId()));
         }

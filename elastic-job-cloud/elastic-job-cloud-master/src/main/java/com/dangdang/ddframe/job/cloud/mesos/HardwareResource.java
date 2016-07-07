@@ -105,8 +105,10 @@ public final class HardwareResource {
      * 提交预留资源.
      */
     public void commitReservedResources() {
-        availableCpuCount.subtract(reservedCpuCount);
-        availableMemoryMB.subtract(reservedMemoryMB);
+        availableCpuCount = availableCpuCount.subtract(reservedCpuCount);
+        availableMemoryMB = availableMemoryMB.subtract(reservedMemoryMB);
+        reservedCpuCount = BigDecimal.ZERO;
+        reservedMemoryMB = BigDecimal.ZERO;
     }
     
     /**

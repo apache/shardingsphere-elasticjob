@@ -15,27 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud;
+package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.cloud.config.AllConfigTests;
-import com.dangdang.ddframe.job.cloud.mesos.AllMesosTests;
-import com.dangdang.ddframe.job.cloud.producer.AllProducerTests;
-import com.dangdang.ddframe.job.cloud.rest.AllRestTests;
-import com.dangdang.ddframe.job.cloud.state.AllStateTests;
-import com.dangdang.ddframe.job.cloud.util.AllUtilTests;
+import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeServiceTest;
+import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategyTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        JobContextTest.class, 
-        TaskContextTest.class, 
-        AllConfigTests.class, 
-        AllStateTests.class, 
-        AllProducerTests.class, 
-        AllRestTests.class, 
-        AllMesosTests.class, 
-        AllUtilTests.class
+        HardwareResourceTest.class,
+        FacadeServiceTest.class, 
+        ExhaustFirstResourceAllocateStrategyTest.class
 })
-public final class AllTests {
+public final class AllMesosTests {
 }

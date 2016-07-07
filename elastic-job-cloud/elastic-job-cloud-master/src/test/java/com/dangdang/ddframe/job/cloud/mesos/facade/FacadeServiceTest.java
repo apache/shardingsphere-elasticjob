@@ -1,0 +1,175 @@
+/*
+ * Copyright 1999-2015 dangdang.com.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * </p>
+ */
+
+package com.dangdang.ddframe.job.cloud.mesos.facade;
+
+import com.dangdang.ddframe.job.cloud.JobContext;
+import com.dangdang.ddframe.job.cloud.TaskContext;
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.producer.TaskProducerSchedulerRegistry;
+import com.dangdang.ddframe.job.cloud.state.failover.FailoverService;
+import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
+import com.dangdang.ddframe.job.cloud.state.running.RunningService;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Optional;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(MockitoJUnitRunner.class)
+public final class FacadeServiceTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
+    private ConfigurationService configService;
+    
+    @Mock
+    private ReadyService readyService;
+    
+    @Mock
+    private RunningService runningService;
+    
+    @Mock
+    private FailoverService failoverService;
+    
+    @Mock
+    private MisfiredService misfiredService;
+    
+    @Mock
+    private TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
+    
+    private FacadeService facadeService;
+    
+    @Before
+    public void setUp() throws NoSuchFieldException {
+        facadeService = new FacadeService(regCenter);
+        ReflectionUtils.setFieldValue(facadeService, "configService", configService);
+        ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
+        ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
+        ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
+        ReflectionUtils.setFieldValue(facadeService, "misfiredService", misfiredService);
+        ReflectionUtils.setFieldValue(facadeService, "taskProducerSchedulerRegistry", taskProducerSchedulerRegistry);
+    }
+    
+    @Test
+    public void assertStart() {
+        facadeService.start();
+        verify(runningService).clear();
+        verify(taskProducerSchedulerRegistry).registerFromRegistryCenter();
+    }
+    
+    @Test
+    public void assertGetEligibleJobContext() {
+        Collection<JobContext> failoverJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job")));
+        Map<String, JobContext> misfiredJobContexts = new HashMap<>(1, 1);
+        misfiredJobContexts.put("misfire_job", JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("misfire_job")));
+        Map<String, JobContext> readyJobContexts = new HashMap<>(1, 1);
+        readyJobContexts.put("ready_job", JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job")));
+        when(failoverService.getAllEligibleJobContexts()).thenReturn(failoverJobContexts);
+        when(misfiredService.getAllEligibleJobContexts(failoverJobContexts)).thenReturn(misfiredJobContexts);
+        when(readyService.getAllEligibleJobContexts(Arrays.asList(failoverJobContexts.iterator().next(), misfiredJobContexts.get("misfire_job")))).thenReturn(readyJobContexts);
+        EligibleJobContext actual = facadeService.getEligibleJobContext();
+        Collection<JobContext> actualFailoverJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "failoverJobContexts", false));
+        assertThat(actualFailoverJobContexts.size(), is(1));
+        assertThat(actualFailoverJobContexts.iterator().next().getJobConfig().getJobName(), is("failover_job"));
+        Map<String, JobContext> actualMisfiredJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "misfiredJobContexts", false));
+        assertThat(actualMisfiredJobContexts.size(), is(1));
+        assertThat(actualMisfiredJobContexts.get("misfire_job").getJobConfig().getJobName(), is("misfire_job"));
+        Map<String, JobContext> actualReadyJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "readyJobContexts", false));
+        assertThat(actualReadyJobContexts.size(), is(1));
+        assertThat(actualReadyJobContexts.get("ready_job").getJobConfig().getJobName(), is("ready_job"));
+    }
+    
+    @Test
+    public void assertRemoveLaunchTasksFromQueue() {
+        facadeService.removeLaunchTasksFromQueue(new EligibleJobContext(Collections.<JobContext>emptyList(), Collections.<String, JobContext>emptyMap(), Collections.<String, JobContext>emptyMap()));
+        verify(failoverService).remove(null);
+        verify(misfiredService).remove(null);
+        verify(readyService).remove(null);
+    }
+    
+    @Test
+    public void assertAddRunning() {
+        facadeService.addRunning("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).add("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+    }
+    
+    @Test
+    public void assertRemoveRunning() {
+        facadeService.removeRunning("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+    }
+    
+    @Test
+    public void assertRecordFailoverTasks() {
+        when(runningService.load("slave-S0")).thenReturn(Collections.singletonList(TaskContext.from("test_job@-@0@-@00")));
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        facadeService.recordFailoverTasks("slave-S0");
+        verify(failoverService, times(0)).add(TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+    }
+    
+    @Test
+    public void assertRecordFailoverTaskWhenJobConfigNotExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        facadeService.recordFailoverTask("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        verify(failoverService, times(0)).add(TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+    }
+    
+    @Test
+    public void assertRecordFailoverTaskWhenIsFailoverDisabled() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createOtherCloudJobConfiguration("test_job")));
+        facadeService.recordFailoverTask("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        verify(failoverService, times(0)).add(TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+    }
+    
+    @Test
+    public void assertRecordFailoverTaskWhenIsFailoverEnabled() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        facadeService.recordFailoverTask("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        verify(failoverService).add(TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+    }
+    
+    @Test
+    public void assertStop() {
+        facadeService.stop();
+        verify(runningService).clear();
+    }
+}

@@ -56,7 +56,7 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
         for (Map.Entry<String, JobContext> entry : jobContextMap.entrySet()) {
             List<Protos.TaskInfo> taskInfoList = allocate(entry.getValue());
             if (!taskInfoList.isEmpty()) {
-                result.put(entry.getKey(), allocate(entry.getValue()));    
+                result.put(entry.getKey(), taskInfoList);
             }
         }
         return result;
