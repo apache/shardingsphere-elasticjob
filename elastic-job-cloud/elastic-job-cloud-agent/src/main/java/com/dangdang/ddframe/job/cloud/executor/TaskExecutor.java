@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * </p>
- *
  */
 
-package com.dangdang.ddframe.job.cloud.boot;
+package com.dangdang.ddframe.job.cloud.executor;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
-import org.apache.mesos.MesosExecutorDriver;
 import org.apache.mesos.Protos.ExecutorInfo;
 import org.apache.mesos.Protos.FrameworkInfo;
 import org.apache.mesos.Protos.SlaveInfo;
-import org.apache.mesos.Protos.Status;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.Protos.TaskState;
@@ -37,44 +34,36 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 /**
- * 云作业启动执行器.
+ * 作业启动执行器.
  *
  * @author caohao
+ * @author zhangliang
  */
 @RequiredArgsConstructor
 public final class TaskExecutor implements Executor {
     
     private final String taskId;
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        MesosExecutorDriver driver = new MesosExecutorDriver(new TaskExecutor(args[0]));
-        System.exit(driver.run() == Status.DRIVER_STOPPED ? 0 : 1);
-    }
-    
     @Override
     public void registered(final ExecutorDriver executorDriver, final ExecutorInfo executorInfo, final FrameworkInfo frameworkInfo, final SlaveInfo slaveInfo) {
-        
     }
     
     @Override
     public void reregistered(final ExecutorDriver executorDriver, final SlaveInfo slaveInfo) {
-        
     }
     
     @Override
     public void disconnected(final ExecutorDriver executorDriver) {
-        
     }
     
+    // TODO 解析作业和执行作业是否可分开, 解析作业放入registered. 需调研mesos executor生命周期
     @Override
     public void launchTask(final ExecutorDriver executorDriver, final TaskInfo taskInfo) {
         try {
             Properties properties = new Properties();
             properties.load(new FileInputStream("conf/job.properties"));
-            String[] jobClassNames = properties.getProperty("jobClassNames").split(",");
-            for (String each : jobClassNames) {
+            String[] jobClasses = properties.getProperty("job.classes").split(",");
+            for (String each : jobClasses) {
                 Class<?> cloudElasticJobClass = Class.forName(each);
                 Object cloudElasticJob = cloudElasticJobClass.getConstructor(String.class).newInstance(taskId);
                 cloudElasticJobClass.getMethod("execute").invoke(cloudElasticJob);
@@ -87,21 +76,17 @@ public final class TaskExecutor implements Executor {
     
     @Override
     public void killTask(final ExecutorDriver executorDriver, final TaskID taskID) {
-        
     }
     
     @Override
     public void frameworkMessage(final ExecutorDriver executorDriver, final byte[] bytes) {
-        
     }
     
     @Override
     public void shutdown(final ExecutorDriver executorDriver) {
-        
     }
     
     @Override
     public void error(final ExecutorDriver executorDriver, final String s) {
-        
     }
 }

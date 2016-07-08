@@ -18,9 +18,6 @@
 package com.dangdang.ddframe.job.cloud.api;
 
 
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTask;
-import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTaskService;
-
 /**
  * 弹性化分布式云作业的基类.
  * 
@@ -28,19 +25,16 @@ import com.dangdang.ddframe.job.cloud.Internal.task.CloudJobTaskService;
  */
 public abstract class AbstractCloudElasticJob implements CloudElasticJob {
     
-    private final CloudJobTaskService taskService;
-    
     private final String taskId;
     
     public AbstractCloudElasticJob(final String taskId) {
         this.taskId = taskId;
-        taskService = new CloudJobTaskService();
     }
     
     @Override
     public final void execute() {
-        CloudJobTask task = taskService.getJobTask(taskId);
-        executeJob(task.getShardingItem());
+        TaskContext taskContext = TaskContext.from(taskId);
+        executeJob(taskContext.getShardingItem());
     }
     
     protected abstract void executeJob(final int shardingItem);

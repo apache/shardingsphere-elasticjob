@@ -15,23 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.task;
+package com.dangdang.ddframe.job.cloud;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.dangdang.ddframe.job.cloud.boot.MasterBootstrap;
+import org.apache.mesos.Protos;
 
 /**
- * 云作业任务.
- *
- * @author zhangliang
+ * 启动入口.
  */
-@RequiredArgsConstructor
-@Getter
-public final class CloudJobTask {
+public final class MasterMain {
     
-    private final String taskId;
-    
-    private final String jobName;
-    
-    private final int shardingItem;
+    // CHECKSTYLE:OFF
+    public static void main(final String[] args) throws Exception {
+    // CHECKSTYLE:ON
+        MasterBootstrap bootstrap = new MasterBootstrap();
+        Protos.Status status = bootstrap.runAsDaemon();
+        System.exit(bootstrap.stop(status) ? 0 : -1);
+    }
 }

@@ -17,19 +17,23 @@
 
 package com.dangdang.ddframe.job.cloud;
 
-import com.dangdang.ddframe.job.cloud.boot.MasterBootstrap;
-import org.apache.mesos.Protos;
+import com.dangdang.ddframe.job.cloud.executor.TaskExecutor;
+import lombok.RequiredArgsConstructor;
+import org.apache.mesos.MesosExecutorDriver;
+import org.apache.mesos.Protos.Status;
 
 /**
- * 启动入口.
+ * 云作业启动执行器.
+ *
+ * @author caohao
  */
-public final class Main {
+@RequiredArgsConstructor
+public final class AgentMain {
     
     // CHECKSTYLE:OFF
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        MasterBootstrap bootstrap = new MasterBootstrap();
-        Protos.Status status = bootstrap.runAsDaemon();
-        System.exit(bootstrap.stop(status) ? 0 : -1);
+        MesosExecutorDriver driver = new MesosExecutorDriver(new TaskExecutor(args[0]));
+        System.exit(Status.DRIVER_STOPPED == driver.run() ? 0 : -1);
     }
 }

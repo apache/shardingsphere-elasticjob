@@ -15,33 +15,42 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.Internal.task;
+package com.dangdang.ddframe.job.cloud.api;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 
 /**
- * 云作业任务服务.
+ * 任务上下文.
  *
  * @author zhangliang
  */
-public class CloudJobTaskService {
+@Getter
+public final class TaskContext {
     
     private static final String DELIMITER = "@-@";
     
-    public String generateTaskId(final String jobName, final int shardingItem) {
-        return Joiner.on(DELIMITER).join(jobName, shardingItem);
+    private final String id;
+    
+    private final String jobName;
+    
+    private final int shardingItem;
+    
+    private TaskContext(final String id, final String jobName, final int shardingItem) {
+        this.id = id;
+        this.jobName = jobName;
+        this.shardingItem = shardingItem;
     }
     
     /**
-     * 根据任务主键获取任务对象.
+     * 根据任务主键获取任务上下文.
      *
-     * @param taskId 任务主键
-     * @return 任务对象
+     * @param id 任务主键
+     * @return 任务上下文
      */
-    public CloudJobTask getJobTask(final String taskId) {
-        String[] result = taskId.split(DELIMITER);
+    public static TaskContext from(final String id) {
+        String[] result = id.split(DELIMITER);
         Preconditions.checkState(3 == result.length);
-        return new CloudJobTask(result[2], result[0], Integer.parseInt(result[1]));
+        return new TaskContext(id, result[0], Integer.parseInt(result[1]));
     }
 }
