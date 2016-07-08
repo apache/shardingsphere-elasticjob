@@ -119,7 +119,7 @@ public class AddClasspathFileSetsTask {
             }
             if (fileSetDir.getPath().equals(File.separator)) {
                 throw new AssemblyFormattingException(
-                        "Your assembly descriptor specifies a directory of " + File.separator + ", which is your *entire* file system.\nThese are not the files you are looking for");
+                        String.format("Your assembly descriptor specifies a directory of %s, which is your *entire* file system.\nThese are not the files you are looking for", File.separator));
             }
             AddDirectoryTask task = new AddDirectoryTask(fileSetDir, fileSetTransformers);
             int dirMode = TypeConversionUtils.modeToInt(fileSet.getDirectoryMode(), logger);
