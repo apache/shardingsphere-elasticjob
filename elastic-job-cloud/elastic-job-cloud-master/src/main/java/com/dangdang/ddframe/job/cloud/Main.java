@@ -15,26 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.env;
+package com.dangdang.ddframe.job.cloud;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.dangdang.ddframe.job.cloud.boot.MasterBootstrap;
+import org.apache.mesos.Protos;
 
 /**
- * Mesos配置项.
- *
- * @author zhangliang
+ * 启动入口.
  */
-@RequiredArgsConstructor
-@Getter
-public final class MesosConfiguration {
+public final class Main {
     
-    /**
-     * 框架名称.
-     */
-    public static final String FRAMEWORK_NAME = "Elastic-Job-Cloud";
-    
-    private final String username;
-    
-    private final String url;
+    // CHECKSTYLE:OFF
+    public static void main(final String[] args) throws Exception {
+    // CHECKSTYLE:ON
+        MasterBootstrap bootstrap = new MasterBootstrap();
+        Protos.Status status = bootstrap.runAsDaemon();
+        System.exit(bootstrap.stop(status) ? 0 : -1);
+    }
 }

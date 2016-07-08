@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.env;
+package com.dangdang.ddframe.job.cloud.boot.env;
 
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import org.junit.Before;

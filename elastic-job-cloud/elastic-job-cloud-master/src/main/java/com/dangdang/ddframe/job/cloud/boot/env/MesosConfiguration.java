@@ -15,12 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.env;
+package com.dangdang.ddframe.job.cloud.boot.env;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses(BootstrapEnvironmentTest.class)
-public final class AllEnvTests {
+/**
+ * Mesos配置项.
+ *
+ * @author zhangliang
+ */
+@RequiredArgsConstructor
+@Getter
+public final class MesosConfiguration {
+    
+    /**
+     * 框架名称.
+     */
+    public static final String FRAMEWORK_NAME = "Elastic-Job-Cloud";
+    
+    private final String username;
+    
+    private final String url;
 }

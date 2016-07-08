@@ -29,7 +29,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
  *
  * @author zhangliang
  */
-public final class RestfulServer {
+public class RestfulServer {
     
     private final Server server;
     
