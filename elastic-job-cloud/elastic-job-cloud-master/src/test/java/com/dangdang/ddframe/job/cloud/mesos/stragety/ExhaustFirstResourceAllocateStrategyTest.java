@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
-import com.dangdang.ddframe.job.cloud.JobContext;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.mesos.HardwareResource;
 import com.dangdang.ddframe.job.cloud.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;

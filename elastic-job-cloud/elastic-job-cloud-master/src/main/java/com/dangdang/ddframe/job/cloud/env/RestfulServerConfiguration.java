@@ -15,30 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.facade;
+package com.dangdang.ddframe.job.cloud.env;
 
-import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.mesos.Protos;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
- * 分配完成的任务集合上下文.
+ * Restful服务器配置项.
  *
  * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter
-public final class AssignedTaskContext {
+public final class RestfulServerConfiguration {
     
-    private final List<Protos.TaskInfo> taskInfoList;
-    
-    private final Collection<TaskContext> failoverTaskContexts;
-    
-    private final Collection<String> misfiredJobNames;
-    
-    private final Collection<String> readyJobNames;
+    private final int port;
 }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.state.running;
 
-import com.dangdang.ddframe.job.cloud.TaskContext;
+import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;

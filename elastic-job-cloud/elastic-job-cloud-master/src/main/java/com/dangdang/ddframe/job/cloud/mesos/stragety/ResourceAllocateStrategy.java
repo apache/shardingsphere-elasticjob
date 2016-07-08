@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
-import com.dangdang.ddframe.job.cloud.JobContext;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import org.apache.mesos.Protos;
 
 import java.util.Collection;

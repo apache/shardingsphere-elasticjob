@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.cloud.JobContext;
-import com.dangdang.ddframe.job.cloud.TaskContext;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
+import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.AssignedTaskContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.EligibleJobContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeService;

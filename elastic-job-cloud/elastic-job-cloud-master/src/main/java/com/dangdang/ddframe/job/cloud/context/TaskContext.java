@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud;
+package com.dangdang.ddframe.job.cloud.context;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;

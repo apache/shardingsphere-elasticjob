@@ -17,7 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud;
 
+import com.dangdang.ddframe.job.cloud.env.AllEnvTests;
 import com.dangdang.ddframe.job.cloud.config.AllConfigTests;
+import com.dangdang.ddframe.job.cloud.context.AllContextTests;
 import com.dangdang.ddframe.job.cloud.mesos.AllMesosTests;
 import com.dangdang.ddframe.job.cloud.producer.AllProducerTests;
 import com.dangdang.ddframe.job.cloud.rest.AllRestTests;
@@ -28,8 +30,8 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        JobContextTest.class, 
-        TaskContextTest.class, 
+        AllEnvTests.class, 
+        AllContextTests.class, 
         AllConfigTests.class, 
         AllStateTests.class, 
         AllProducerTests.class, 

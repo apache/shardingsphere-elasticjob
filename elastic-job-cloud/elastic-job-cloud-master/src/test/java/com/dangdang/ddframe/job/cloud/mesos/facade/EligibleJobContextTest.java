@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.facade;
 
-import com.dangdang.ddframe.job.cloud.JobContext;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
 import org.apache.mesos.Protos;

@@ -15,9 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud;
+package com.dangdang.ddframe.job.cloud.context;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;

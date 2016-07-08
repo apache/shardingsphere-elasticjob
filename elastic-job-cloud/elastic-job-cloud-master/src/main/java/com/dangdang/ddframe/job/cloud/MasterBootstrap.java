@@ -17,18 +17,14 @@
 
 package com.dangdang.ddframe.job.cloud;
 
+import com.dangdang.ddframe.job.cloud.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.mesos.SchedulerEngine;
 import com.dangdang.ddframe.job.cloud.rest.RestfulServer;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
-import com.google.common.base.Strings;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Properties;
 
 /**
  * 作业云启动入口.
@@ -38,33 +34,26 @@ public final class MasterBootstrap {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON
-        Properties properties = new Properties();
-        try {
-            FileInputStream fileInputStream = new FileInputStream("conf/elastic-job-cloud.properties");
-            properties.load(fileInputStream);
-        } catch (final FileNotFoundException ex) {
-            properties.load(MasterBootstrap.class.getResourceAsStream("/conf/elastic-job-cloud.properties"));
-        }
-        String zookeeperServers = properties.getProperty("zookeeper.servers", "localhost:2181");
-        String zookeeperNamespace = properties.getProperty("zookeeper.namespace", "elastic-job-cloud");
-        String zookeeperDigest = properties.getProperty("zookeeper.digest", "");
-        String username = properties.getProperty("username", "");
-        String framework = "Elastic-Job-Cloud";
-        String mesosUrl = properties.getProperty("mesos.url", "zk://localhost:2181/mesos");
-        int port = Integer.parseInt(properties.getProperty("port", "8899"));
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(zookeeperServers, zookeeperNamespace);
-        if (!Strings.isNullOrEmpty(zookeeperDigest)) {
-            zkConfig.setDigest(zookeeperDigest);
-        }
-        CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
-        regCenter.init();
-        Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser(username).setName(framework).build();
-        MesosSchedulerDriver schedulerDriver = new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosUrl);
-        RestfulServer restfulServer = new RestfulServer(port, regCenter);
+        BootstrapEnvironment env = new BootstrapEnvironment();
+        CoordinatorRegistryCenter regCenter = getRegistryCenter(env);
+        MesosSchedulerDriver schedulerDriver = getSchedulerDriver(env, regCenter);
+        RestfulServer restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort(), regCenter);
         restfulServer.start();
         Protos.Status status = schedulerDriver.run();
         schedulerDriver.stop();
         restfulServer.stop();
         System.exit(Protos.Status.DRIVER_STOPPED == status ? 0 : -1);
+    }
+    
+    private static CoordinatorRegistryCenter getRegistryCenter(final BootstrapEnvironment env) {
+        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(env.getZookeeperConfiguration());
+        result.init();
+        return result;
+    }
+    
+    private static MesosSchedulerDriver getSchedulerDriver(final BootstrapEnvironment env, final CoordinatorRegistryCenter regCenter) {
+        MesosConfiguration mesosConfig = env.getMesosConfiguration();
+        Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUsername()).setName(MesosConfiguration.FRAMEWORK_NAME).build();
+        return new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosConfig.getUrl());
     }
 }

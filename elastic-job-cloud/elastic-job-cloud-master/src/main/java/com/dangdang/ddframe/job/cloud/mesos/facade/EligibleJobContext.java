@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.facade;
 
-import com.dangdang.ddframe.job.cloud.JobContext;
-import com.dangdang.ddframe.job.cloud.TaskContext;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
+import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

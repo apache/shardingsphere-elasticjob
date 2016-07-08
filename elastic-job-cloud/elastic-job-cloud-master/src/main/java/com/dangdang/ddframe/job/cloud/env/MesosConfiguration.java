@@ -15,30 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.mesos.facade;
+package com.dangdang.ddframe.job.cloud.env;
 
-import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.mesos.Protos;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
- * 分配完成的任务集合上下文.
+ * Mesos配置项.
  *
  * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter
-public final class AssignedTaskContext {
+public final class MesosConfiguration {
     
-    private final List<Protos.TaskInfo> taskInfoList;
+    /**
+     * 框架名称.
+     */
+    public static final String FRAMEWORK_NAME = "Elastic-Job-Cloud";
     
-    private final Collection<TaskContext> failoverTaskContexts;
+    private final String username;
     
-    private final Collection<String> misfiredJobNames;
-    
-    private final Collection<String> readyJobNames;
+    private final String url;
 }
