@@ -31,6 +31,7 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,8 +64,8 @@ public final class SchedulerEngine implements Scheduler {
         EligibleJobContext eligibleJobContext = facadeService.getEligibleJobContext();
         AssignedTaskContext assignedTaskContext = eligibleJobContext.allocate(resourceAllocateStrategy);
         List<Protos.TaskInfo> taskInfoList = assignedTaskContext.getTaskInfoList();
-        declineUnusedOffers(schedulerDriver, offers, taskInfoList);
-        launchTasks(schedulerDriver, offers, taskInfoList);
+        List<Protos.Offer> declinedOffers = declineUnusedOffers(schedulerDriver, offers, taskInfoList);
+        launchTasks(schedulerDriver, offers, declinedOffers, taskInfoList);
         facadeService.removeLaunchTasksFromQueue(assignedTaskContext);
     }
     
@@ -78,12 +79,15 @@ public final class SchedulerEngine implements Scheduler {
         });
     }
     
-    private void declineUnusedOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.TaskInfo> tasks) {
+    private List<Protos.Offer> declineUnusedOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.TaskInfo> tasks) {
+        List<Protos.Offer> result = new ArrayList<>(offers.size());
         for (Protos.Offer each : offers) {
             if (!isUsed(each, tasks)) {
                 schedulerDriver.declineOffer(each.getId());
+                result.add(each);
             }
         }
+        return result;
     }
     
     private boolean isUsed(final Protos.Offer offer, final List<Protos.TaskInfo> tasks) {
@@ -95,8 +99,10 @@ public final class SchedulerEngine implements Scheduler {
         return false;
     }
     
-    private void launchTasks(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.TaskInfo> tasks) {
-        schedulerDriver.launchTasks(Lists.transform(offers, new Function<Protos.Offer, Protos.OfferID>() {
+    private void launchTasks(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.Offer> declinedOffers, final List<Protos.TaskInfo> tasks) {
+        List<Protos.Offer> launchOffers = new ArrayList<>(offers);
+        launchOffers.removeAll(declinedOffers);
+        schedulerDriver.launchTasks(Lists.transform(launchOffers, new Function<Protos.Offer, Protos.OfferID>() {
             
             @Override
             public Protos.OfferID apply(final Protos.Offer input) {

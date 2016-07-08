@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
+import com.dangdang.ddframe.job.cloud.mesos.facade.EligibleJobContextTest;
 import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeServiceTest;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategyTest;
 import org.junit.runner.RunWith;
@@ -24,9 +25,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        HardwareResourceTest.class,
+        HardwareResourceTest.class, 
         FacadeServiceTest.class, 
-        ExhaustFirstResourceAllocateStrategyTest.class
+        EligibleJobContextTest.class, 
+        ExhaustFirstResourceAllocateStrategyTest.class, 
+        SchedulerEngineTest.class
 })
 public final class AllMesosTests {
 }

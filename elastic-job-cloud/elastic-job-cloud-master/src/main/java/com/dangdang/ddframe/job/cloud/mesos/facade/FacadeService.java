@@ -39,7 +39,7 @@ import java.util.Map;
  *
  * @author zhangliang
  */
-public final class FacadeService {
+public class FacadeService {
     
     private final ConfigurationService configService;
     
