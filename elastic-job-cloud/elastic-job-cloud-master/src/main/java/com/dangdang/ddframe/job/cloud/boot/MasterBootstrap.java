@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.cloud.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.boot.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.mesos.SchedulerEngine;
 import com.dangdang.ddframe.job.cloud.rest.RestfulServer;
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import org.apache.mesos.MesosSchedulerDriver;
@@ -58,7 +59,7 @@ public final class MasterBootstrap {
     
     private MesosSchedulerDriver getSchedulerDriver() {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
-        Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUsername()).setName(MesosConfiguration.FRAMEWORK_NAME).build();
+        Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUsername()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(new LocalHostService().getIp()).build();
         return new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosConfig.getUrl());
     }
     

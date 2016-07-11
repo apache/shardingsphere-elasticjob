@@ -18,7 +18,10 @@
 package com.dangdang.ddframe.job.cloud;
 
 import com.dangdang.ddframe.job.cloud.boot.MasterBootstrap;
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import org.apache.mesos.Protos;
+
+import java.net.InetAddress;
 
 /**
  * 启动入口.
