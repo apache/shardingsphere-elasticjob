@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.apache.mesos.Protos;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.Map;
  * @author zhangliang
  */
 @RequiredArgsConstructor
+@ToString
 public final class EligibleJobContext {
     
     private final Collection<JobContext> failoverJobContexts;

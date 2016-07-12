@@ -27,6 +27,7 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
@@ -40,6 +41,7 @@ import java.util.List;
  * @author zhangliang
  */
 @RequiredArgsConstructor
+@Slf4j
 public final class SchedulerEngine implements Scheduler {
     
     private final FacadeService facadeService;
@@ -50,19 +52,23 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
+        log.info("call registered");
         facadeService.start();
     }
     
     @Override
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
+        log.info("call reregistered");
         facadeService.start();
     }
     
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
+        log.trace("call resourceOffers: {}", offers);
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(getHardwareResource(offers));
         EligibleJobContext eligibleJobContext = facadeService.getEligibleJobContext();
         AssignedTaskContext assignedTaskContext = eligibleJobContext.allocate(resourceAllocateStrategy);
+        log.trace("call resourceOffers, eligibleJobContext is:{}, assignedTaskContext is {}", eligibleJobContext, assignedTaskContext);
         List<Protos.TaskInfo> taskInfoList = assignedTaskContext.getTaskInfoList();
         List<Protos.Offer> declinedOffers = declineUnusedOffers(schedulerDriver, offers, taskInfoList);
         launchTasks(schedulerDriver, offers, declinedOffers, taskInfoList);
@@ -117,6 +123,7 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void offerRescinded(final SchedulerDriver schedulerDriver, final Protos.OfferID offerID) {
+        log.trace("call offerRescinded: {}", offerID);
     }
     
     @Override
@@ -124,16 +131,21 @@ public final class SchedulerEngine implements Scheduler {
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
+        log.trace("call statusUpdate task state is: {}", taskStatus.getState(), taskContext);
+        String slaveId = taskStatus.getSlaveId().getValue();
         switch (taskStatus.getState()) {
             case TASK_STARTING:
-                facadeService.addRunning(taskStatus.getSlaveId().getValue(), taskContext);
+                //facadeService.addRunning(slaveId, taskContext);
                 break;
             case TASK_FINISHED:
             // TODO TASK_FAILED, TASK_LOST走failover
             case TASK_FAILED:
             case TASK_KILLED:
+                facadeService.removeRunning(slaveId, taskContext);
+                break;
             case TASK_LOST:
-                facadeService.removeRunning(taskStatus.getSlaveId().getValue(), taskContext);
+                facadeService.recordFailoverTask(slaveId, taskContext);
+                facadeService.removeRunning(slaveId, taskContext);
                 break;
             default:
                 break;
@@ -142,25 +154,28 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void frameworkMessage(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final byte[] bytes) {
+        log.trace("call frameworkMessage slaveID: {}, bytes: {}", slaveID, new String(bytes));
     }
     
     @Override
     public void disconnected(final SchedulerDriver schedulerDriver) {
+        log.warn("call disconnected");
         facadeService.stop();
     }
     
-    
     @Override
     public void slaveLost(final SchedulerDriver schedulerDriver, final Protos.SlaveID slaveID) {
-        facadeService.recordFailoverTasks(slaveID.getValue());
+        log.warn("call slaveLost slaveID is: {}", slaveID);
     }
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
+        log.warn("call executorLost slaveID is: {}, executorID is: {}", slaveID, executorID);
         facadeService.recordFailoverTask(slaveID.getValue(), TaskContext.from(executorID.getValue()));
     }
     
     @Override
-    public void error(final SchedulerDriver schedulerDriver, final String s) {
+    public void error(final SchedulerDriver schedulerDriver, final String message) {
+        log.error("call error, message is: {}", message);
     }
 }

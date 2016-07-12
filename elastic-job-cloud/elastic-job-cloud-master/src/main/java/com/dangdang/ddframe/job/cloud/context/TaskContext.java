@@ -21,6 +21,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ import java.util.UUID;
  */
 @Getter
 @EqualsAndHashCode(of = "id")
+@ToString
 public final class TaskContext {
     
     private static final String DELIMITER = "@-@";

@@ -98,7 +98,8 @@ public final class SchedulerEngineTest {
     public void assertStartingStatusUpdate() {
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@00")).setState(Protos.TaskState.TASK_STARTING).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).addRunning("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        // TODO 参见ScheduleEngine statusUpdate方法
+        //verify(facadeService).addRunning("slave-S0", TaskContext.from("test_job@-@0@-@00"));verify(facadeService).addRunning("slave-S0", TaskContext.from("test_job@-@0@-@00"));
     }
     
     @Test
@@ -131,7 +132,7 @@ public final class SchedulerEngineTest {
     
     @Test
     public void assertFrameworkMessage() {
-        schedulerEngine.frameworkMessage(null, null, null, null);
+        schedulerEngine.frameworkMessage(null, null, Protos.SlaveID.newBuilder().setValue("slave-S0").build(), new byte[1]);
     }
     
     @Test
@@ -143,7 +144,6 @@ public final class SchedulerEngineTest {
     @Test
     public void assertSlaveLost() {
         schedulerEngine.slaveLost(null, Protos.SlaveID.newBuilder().setValue("slave-S0").build());
-        verify(facadeService).recordFailoverTasks("slave-S0");
     }
     
     @Test

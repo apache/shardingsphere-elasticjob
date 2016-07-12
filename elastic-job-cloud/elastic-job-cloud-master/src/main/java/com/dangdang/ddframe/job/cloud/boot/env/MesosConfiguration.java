@@ -37,4 +37,6 @@ public final class MesosConfiguration {
     private final String username;
     
     private final String url;
+    
+    private final String hostname;
 }

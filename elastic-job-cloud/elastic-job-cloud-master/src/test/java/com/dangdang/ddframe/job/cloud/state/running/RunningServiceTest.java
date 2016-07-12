@@ -95,14 +95,18 @@ public final class RunningServiceTest {
     }
     
     @Test
-    public void assertIsTaskRunning() {
-        when(regCenter.isExisted("/state/running/test_job/test_job@-@0@-@00")).thenReturn(true);
-        assertTrue(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@00")));
+    public void assertIsTaskRunningWithoutRootNode() {
+        when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);
         assertFalse(runningService.isTaskRunning(TaskContext.from("test_job@-@1@-@00")));
-        verify(regCenter).isExisted("/state/running/test_job/test_job@-@0@-@00");
-        verify(regCenter).isExisted("/state/running/test_job/test_job@-@1@-@00");
     }
     
+    @Test
+    public void assertIsTaskRunningWitRootNode() {
+        when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Collections.singletonList("test_job@-@0@-@00"));
+        assertTrue(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@11")));
+        assertFalse(runningService.isTaskRunning(TaskContext.from("test_job@-@1@-@00")));
+    }
     @Test
     public void assertClear() {
         runningService.clear();

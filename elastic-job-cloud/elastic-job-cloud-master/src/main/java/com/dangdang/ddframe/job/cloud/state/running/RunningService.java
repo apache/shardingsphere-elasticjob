@@ -54,6 +54,7 @@ public class RunningService {
      * @param slaveId 执行机主键
      * @param taskContext 任务运行时上下文
      */
+    // TODO 不能添加重复作业
     public void add(final String slaveId, final TaskContext taskContext) {
         String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getId());
         if (!registryCenter.isExisted(runningTaskNodePath)) {
@@ -90,7 +91,15 @@ public class RunningService {
      * @return 任务是否运行
      */
     public boolean isTaskRunning(final TaskContext taskContext) {
-        return registryCenter.isExisted(RunningNode.getRunningTaskNodePath(taskContext.getId()));
+        if (!registryCenter.isExisted(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
+            return false;
+        }
+        for (String each : registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
+            if (TaskContext.from(each).getShardingItem() == taskContext.getShardingItem()) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**

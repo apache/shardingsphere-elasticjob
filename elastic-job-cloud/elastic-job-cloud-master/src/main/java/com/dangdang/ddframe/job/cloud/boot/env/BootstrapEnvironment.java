@@ -74,7 +74,7 @@ public final class BootstrapEnvironment {
      * @return Mesos配置对象
      */
     public MesosConfiguration getMesosConfiguration() {
-        return new MesosConfiguration(getValue(EnvironmentArgument.USERNAME), getValue(EnvironmentArgument.MESOS_URL));
+        return new MesosConfiguration(getValue(EnvironmentArgument.USERNAME), getValue(EnvironmentArgument.MESOS_URL), getValue(EnvironmentArgument.HOSTNAME));
     }
     
     /**
@@ -86,6 +86,7 @@ public final class BootstrapEnvironment {
         return new RestfulServerConfiguration(Integer.parseInt(getValue(EnvironmentArgument.PORT)));
     }
     
+    // TODO 检查必填参数
     private String getValue(final EnvironmentArgument environmentArgument) {
         return properties.getProperty(environmentArgument.getKey(), environmentArgument.getDefaultValue());
     }
@@ -94,17 +95,19 @@ public final class BootstrapEnvironment {
     @Getter
     enum EnvironmentArgument {
         
-        ZOOKEEPER_SERVERS("zookeeper.servers", "localhost:2181"),
+        ZOOKEEPER_SERVERS("zk_servers", "localhost:2181"),
         
-        ZOOKEEPER_NAMESPACE("zookeeper.namespace", "elastic-job-cloud"),
+        ZOOKEEPER_NAMESPACE("zk_namespace", "elastic-job-cloud"),
         
-        ZOOKEEPER_DIGEST("zookeeper.digest", ""),
+        ZOOKEEPER_DIGEST("zk_digest", ""),
         
         USERNAME("username", ""),
         
-        MESOS_URL("mesos.url", "zk://localhost:2181/mesos"),
+        HOSTNAME("hostname", ""),
         
-        PORT("port", "8899");
+        MESOS_URL("mesos_url", "zk://localhost:2181/mesos"),
+        
+        PORT("http_port", "8899");
         
         private final String key;
         

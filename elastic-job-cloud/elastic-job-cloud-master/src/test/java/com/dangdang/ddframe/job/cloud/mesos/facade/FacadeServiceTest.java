@@ -137,15 +137,6 @@ public final class FacadeServiceTest {
     }
     
     @Test
-    public void assertRecordFailoverTasks() {
-        when(runningService.load("slave-S0")).thenReturn(Collections.singletonList(TaskContext.from("test_job@-@0@-@00")));
-        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
-        facadeService.recordFailoverTasks("slave-S0");
-        verify(failoverService, times(0)).add(TaskContext.from("test_job@-@0@-@00"));
-        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
-    }
-    
-    @Test
     public void assertRecordFailoverTaskWhenJobConfigNotExisted() {
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         facadeService.recordFailoverTask("slave-S0", TaskContext.from("test_job@-@0@-@00"));

@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.config;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * 云作业配置对象.
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode
+@ToString
 public final class CloudJobConfiguration {
     
     private final String jobName;

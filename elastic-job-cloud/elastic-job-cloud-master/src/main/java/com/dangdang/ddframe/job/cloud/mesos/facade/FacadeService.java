@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.facade;
 
-import com.dangdang.ddframe.job.cloud.context.JobContext;
-import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
+import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.producer.TaskProducerSchedulerRegistry;
 import com.dangdang.ddframe.job.cloud.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
@@ -31,7 +31,6 @@ import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -114,18 +113,6 @@ public class FacadeService {
      */
     public void removeRunning(final String slaveId, final TaskContext taskContext) {
         runningService.remove(slaveId, taskContext);
-    }
-    
-    /**
-     * 记录失效转移队列.
-     *
-     * @param slaveId 执行机主键
-     */
-    public void recordFailoverTasks(final String slaveId) {
-        List<TaskContext> runningTaskContexts = runningService.load(slaveId);
-        for (TaskContext each : runningTaskContexts) {
-            recordFailoverTask(slaveId, each);
-        }
     }
     
     /**

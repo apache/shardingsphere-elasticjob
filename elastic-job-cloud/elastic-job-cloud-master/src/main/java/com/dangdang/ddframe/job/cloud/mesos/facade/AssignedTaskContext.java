@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.mesos.facade;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.apache.mesos.Protos;
 
 import java.util.Collection;
@@ -32,6 +33,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Getter
+@ToString
 public final class AssignedTaskContext {
     
     private final List<Protos.TaskInfo> taskInfoList;
