@@ -1,26 +1,5 @@
 # Roadmap
 
-## 1. Elastic-Job-Lite
-
-* Distributed schedule job coordinate.
-* Elastic scale in and scale out supported.
-* Running jobs failover supported.
-* Misfired jobs refire supported.
-* Idempotency jobs execution supported.
-* Parallel scheduling supported.
-* Job lifecycle operation supported.
-* Lavish job types supported.
-* Spring integrated and namespace supported.
-* Web console supported.
-
-## 2. Elastic-Job-Cloud
-* All features for Elastic-Job-Lite included.
-* Resources allocated elastically.
-* Resources distribute automatically.
-* Docker based processes isolation supported (TBD).
-* Maven assembly plugin supported.
-
-
 ## Elastic-Job-Lite
 - [x] Distributed Features
     - [x] High Availability
