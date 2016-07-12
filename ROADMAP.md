@@ -62,6 +62,7 @@
     - [x] Resources Allocate
     - [x] Transient Job
     - [ ] Daemon Job
+    - [ ] Cross Data Center
 - [ ] Spring Integrate
 - [ ] Web Console
 
