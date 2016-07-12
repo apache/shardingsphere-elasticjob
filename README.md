@@ -47,6 +47,8 @@ Elastic-Job-Lite and Elastic-Job-Cloud provides same API. Developers
 
 ![Elastic-Job-Cloud Architecture](http://dangdangdotcom.github.io/elastic-job/img/architecture_cloud_en.png)
 
+# [Roadmap](ROADMAP.md)
+
 # Quick Start
 
 ## Add maven dependency
