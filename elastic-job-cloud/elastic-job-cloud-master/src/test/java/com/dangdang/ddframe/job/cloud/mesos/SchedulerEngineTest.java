@@ -85,7 +85,7 @@ public final class SchedulerEngineTest {
         schedulerEngine.resourceOffers(schedulerDriver, offers);
         verify(schedulerDriver, times(0)).declineOffer(Protos.OfferID.newBuilder().setValue("offer_0").build());
         verify(schedulerDriver).declineOffer(Protos.OfferID.newBuilder().setValue("offer_1").build());
-        verify(schedulerDriver).launchTasks(eq(offers.get(0).getId()), (Collection) any());
+        verify(schedulerDriver).launchTasks(eq(Collections.singletonList(offers.get(0).getId())), (Collection) any());
         verify(facadeService).removeLaunchTasksFromQueue((AssignedTaskContext) any());
     }
     

@@ -33,7 +33,10 @@ import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 作业云引擎.
@@ -106,15 +109,26 @@ public final class SchedulerEngine implements Scheduler {
     }
     
     private void launchTasks(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.Offer> declinedOffers, final List<Protos.TaskInfo> tasks) {
-        List<Protos.Offer> launchOffers = new ArrayList<>(offers);
-        launchOffers.removeAll(declinedOffers);
-        for (Protos.Offer each : launchOffers) {
-            schedulerDriver.launchTasks(each.getId(), filterTaskInfoBySlaveID(each.getSlaveId(), tasks));
+        Map<Protos.SlaveID, List<Protos.OfferID>> launchOfferMap = getLaunchOfferMap(offers, declinedOffers);
+        for (Map.Entry<Protos.SlaveID, List<Protos.OfferID>> entry : launchOfferMap.entrySet()) {
+            schedulerDriver.launchTasks(entry.getValue(), filterTaskInfoBySlaveID(entry.getKey(), tasks));
         }
         // TODO 状态回调调整好, 这里的代码应删除
         for (Protos.TaskInfo each : tasks) {
             facadeService.addRunning(each.getSlaveId().getValue(), TaskContext.from(each.getTaskId().getValue()));
         }
+    }
+    
+    private Map<Protos.SlaveID, List<Protos.OfferID>> getLaunchOfferMap(final List<Protos.Offer> offers, final List<Protos.Offer> declinedOffers) {
+        List<Protos.Offer> launchOffers = new ArrayList<>(offers);
+        launchOffers.removeAll(declinedOffers);
+        Map<Protos.SlaveID, List<Protos.OfferID>> result = new HashMap<>(launchOffers.size(), 1);
+        for (Protos.Offer each : launchOffers) {
+            List<Protos.OfferID> offerIdList = result.containsKey(each.getSlaveId()) ? result.get(each.getSlaveId()) : new LinkedList<Protos.OfferID>();
+            offerIdList.add(each.getId());
+            result.put(each.getSlaveId(), offerIdList);
+        }
+        return result;
     }
     
     private List<Protos.TaskInfo> filterTaskInfoBySlaveID(final Protos.SlaveID slaveId, final List<Protos.TaskInfo> tasks) {
