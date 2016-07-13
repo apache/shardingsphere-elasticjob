@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.boot.env;
 
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,15 @@ public final class BootstrapEnvironment {
     }
     
     /**
+     * 获取Mesos配置对象.
+     *
+     * @return Mesos配置对象
+     */
+    public MesosConfiguration getMesosConfiguration() {
+        return new MesosConfiguration(getValue(EnvironmentArgument.USERNAME), getValue(EnvironmentArgument.MESOS_URL), getValue(EnvironmentArgument.HOSTNAME));
+    }
+    
+    /**
      * 获取Zookeeper配置对象.
      * 
      * @return Zookeeper配置对象
@@ -69,15 +79,6 @@ public final class BootstrapEnvironment {
     }
     
     /**
-     * 获取Mesos配置对象.
-     * 
-     * @return Mesos配置对象
-     */
-    public MesosConfiguration getMesosConfiguration() {
-        return new MesosConfiguration(getValue(EnvironmentArgument.USERNAME), getValue(EnvironmentArgument.MESOS_URL), getValue(EnvironmentArgument.HOSTNAME));
-    }
-    
-    /**
      * 获取Restful服务器配置对象.
      *
      * @return Restful服务器配置对象
@@ -86,31 +87,36 @@ public final class BootstrapEnvironment {
         return new RestfulServerConfiguration(Integer.parseInt(getValue(EnvironmentArgument.PORT)));
     }
     
-    // TODO 检查必填参数
     private String getValue(final EnvironmentArgument environmentArgument) {
-        return properties.getProperty(environmentArgument.getKey(), environmentArgument.getDefaultValue());
+        String result = properties.getProperty(environmentArgument.getKey(), environmentArgument.getDefaultValue());
+        if (environmentArgument.isRequired()) {
+            Preconditions.checkState(!Strings.isNullOrEmpty(result), String.format("Property `%s` is required.", environmentArgument.getKey()));
+        }
+        return result;
     }
     
     @RequiredArgsConstructor
     @Getter
     enum EnvironmentArgument {
         
-        ZOOKEEPER_SERVERS("zk_servers", "localhost:2181"),
+        HOSTNAME("hostname", "", true),
         
-        ZOOKEEPER_NAMESPACE("zk_namespace", "elastic-job-cloud"),
+        MESOS_URL("mesos_url", "zk://localhost:2181/mesos", true),
         
-        ZOOKEEPER_DIGEST("zk_digest", ""),
+        USERNAME("username", "", false),
+    
+        ZOOKEEPER_SERVERS("zk_servers", "localhost:2181", true),
+    
+        ZOOKEEPER_NAMESPACE("zk_namespace", "elastic-job-cloud", true),
+    
+        ZOOKEEPER_DIGEST("zk_digest", "", false),
         
-        USERNAME("username", ""),
-        
-        HOSTNAME("hostname", ""),
-        
-        MESOS_URL("mesos_url", "zk://localhost:2181/mesos"),
-        
-        PORT("http_port", "8899");
+        PORT("http_port", "8899", true);
         
         private final String key;
         
         private final String defaultValue;
+    
+        private final boolean required;
     }
 }
