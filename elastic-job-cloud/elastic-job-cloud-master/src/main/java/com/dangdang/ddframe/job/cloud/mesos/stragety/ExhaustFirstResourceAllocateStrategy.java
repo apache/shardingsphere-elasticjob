@@ -17,10 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
-import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.mesos.HardwareResource;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.Map;
  * @author zhangliang
  */
 @RequiredArgsConstructor
+@Slf4j
 public final class ExhaustFirstResourceAllocateStrategy implements ResourceAllocateStrategy {
     
     private final List<HardwareResource> hardwareResources;
@@ -82,6 +84,9 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
             startShardingItemIndex = assignedShardingCount;
         }
         if (result.size() != jobConfig.getShardingTotalCount()) {
+            if (!result.isEmpty()) {
+                log.warn("Resources not enough, job `{}` is not allocated. ", jobContext.getJobConfig().getJobName());
+            }
             return Collections.emptyList();
         }
         for (HardwareResource each : hardwareResources) {
