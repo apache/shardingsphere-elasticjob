@@ -29,6 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author zhangliang
  */
+@Deprecated
 class SlaveCache {
     
     private static final ConcurrentHashMap<String, List<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(128);

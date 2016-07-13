@@ -69,8 +69,16 @@ public class RunningService {
      * @param taskContext 任务运行时上下文
      */
     public void remove(final String slaveId, final TaskContext taskContext) {
+        if (!registryCenter.isExisted(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
+            return;
+        }
+        for (String each : registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
+            TaskContext runningTaskContext = TaskContext.from(each);
+            if (runningTaskContext.getJobName().equals(taskContext.getJobName()) && runningTaskContext.getShardingItem() == (taskContext.getShardingItem())) {
+                registryCenter.remove(RunningNode.getRunningTaskNodePath(runningTaskContext.getId()));    
+            }
+        }
         slaveCache.remove(slaveId, taskContext);
-        registryCenter.remove(RunningNode.getRunningTaskNodePath(taskContext.getId()));
     }
     
     /**

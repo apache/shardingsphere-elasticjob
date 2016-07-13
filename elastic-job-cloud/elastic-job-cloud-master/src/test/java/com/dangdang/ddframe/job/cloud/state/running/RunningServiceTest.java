@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
@@ -79,9 +80,20 @@ public final class RunningServiceTest {
     }
     
     @Test
-    public void assertRemove() {
+    public void assertRemoveWithoutRootNode() {
+        when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);
+        runningService.remove("slave-S00", TaskContext.from("test_job@-@0@-@00"));
+        verify(regCenter, times(0)).remove("/state/running/test_job/test_job@-@0@-@00");
+    }
+    
+    @Test
+    public void assertRemoveWithRootNode() {
+        when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Arrays.asList("test_job@-@0@-@00", "test_job@-@0@-@11", "test_job@-@1@-@00"));
         runningService.remove("slave-S00", TaskContext.from("test_job@-@0@-@00"));
         verify(regCenter).remove("/state/running/test_job/test_job@-@0@-@00");
+        verify(regCenter).remove("/state/running/test_job/test_job@-@0@-@11");
+        verify(regCenter, times(0)).remove("/state/running/test_job/test_job@-@1@-@00");
         verify(slaveCache).remove("slave-S00", TaskContext.from("test_job@-@0@-@00"));
     }
     
