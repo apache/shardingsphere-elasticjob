@@ -98,35 +98,32 @@ public class FacadeService {
     /**
      * 将任务运行时上下文放入运行时队列.
      *
-     * @param slaveId 执行机主键
      * @param taskContext 任务运行时上下文
      */
-    public void addRunning(final String slaveId, final TaskContext taskContext) {
-        runningService.add(slaveId, taskContext);
+    public void addRunning(final TaskContext taskContext) {
+        runningService.add(taskContext);
     }
     
     /**
      * 将任务运行时上下文从队列删除.
      *
-     * @param slaveId 执行机主键
      * @param taskContext 任务运行时上下文
      */
-    public void removeRunning(final String slaveId, final TaskContext taskContext) {
-        runningService.remove(slaveId, taskContext);
+    public void removeRunning(final TaskContext taskContext) {
+        runningService.remove(taskContext);
     }
     
     /**
      * 记录失效转移队列.
      * 
-     * @param slaveId 执行机主键
      * @param taskContext 任务上下文
      */
-    public void recordFailoverTask(final String slaveId, final TaskContext taskContext) {
+    public void recordFailoverTask(final TaskContext taskContext) {
         Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getJobName());
         if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
             failoverService.add(taskContext);
         }
-        runningService.remove(slaveId, taskContext);
+        runningService.remove(taskContext);
     }
     
     /**

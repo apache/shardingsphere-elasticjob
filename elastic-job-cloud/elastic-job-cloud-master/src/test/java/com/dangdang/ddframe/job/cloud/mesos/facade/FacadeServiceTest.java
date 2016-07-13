@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.facade;
 
-import com.dangdang.ddframe.job.cloud.context.JobContext;
-import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
+import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.producer.TaskProducerSchedulerRegistry;
 import com.dangdang.ddframe.job.cloud.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
@@ -126,38 +126,38 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertAddRunning() {
-        facadeService.addRunning("slave-S0", TaskContext.from("test_job@-@0@-@00"));
-        verify(runningService).add("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        facadeService.addRunning(TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).add(TaskContext.from("test_job@-@0@-@00"));
     }
     
     @Test
     public void assertRemoveRunning() {
-        facadeService.removeRunning("slave-S0", TaskContext.from("test_job@-@0@-@00"));
-        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        facadeService.removeRunning(TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove(TaskContext.from("test_job@-@0@-@00"));
     }
     
     @Test
     public void assertRecordFailoverTaskWhenJobConfigNotExisted() {
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
-        facadeService.recordFailoverTask("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        facadeService.recordFailoverTask(TaskContext.from("test_job@-@0@-@00"));
         verify(failoverService, times(0)).add(TaskContext.from("test_job@-@0@-@00"));
-        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove(TaskContext.from("test_job@-@0@-@00"));
     }
     
     @Test
     public void assertRecordFailoverTaskWhenIsFailoverDisabled() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createOtherCloudJobConfiguration("test_job")));
-        facadeService.recordFailoverTask("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        facadeService.recordFailoverTask(TaskContext.from("test_job@-@0@-@00"));
         verify(failoverService, times(0)).add(TaskContext.from("test_job@-@0@-@00"));
-        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove(TaskContext.from("test_job@-@0@-@00"));
     }
     
     @Test
     public void assertRecordFailoverTaskWhenIsFailoverEnabled() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
-        facadeService.recordFailoverTask("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        facadeService.recordFailoverTask(TaskContext.from("test_job@-@0@-@00"));
         verify(failoverService).add(TaskContext.from("test_job@-@0@-@00"));
-        verify(runningService).remove("slave-S0", TaskContext.from("test_job@-@0@-@00"));
+        verify(runningService).remove(TaskContext.from("test_job@-@0@-@00"));
     }
     
     @Test

@@ -19,66 +19,45 @@ package com.dangdang.ddframe.job.cloud.state.running;
 
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 任务运行时服务.
  *
  * @author zhangliang
  */
+@RequiredArgsConstructor
 public class RunningService {
     
     private final CoordinatorRegistryCenter registryCenter;
     
-    private final SlaveCache slaveCache;
-    
-    public RunningService(final CoordinatorRegistryCenter registryCenter) {
-        this.registryCenter = registryCenter;
-        slaveCache = SlaveCache.getInstance(registryCenter);
-    }
-    
-    /**
-     * 通过执行机主键获取任务运行时上下文.
-     *
-     * @param slaveId 执行机主键
-     * @return 任务运行时上下文集合
-     */
-    public List<TaskContext> load(final String slaveId) {
-        return slaveCache.load(slaveId);
-    }
-    
     /**
      * 将任务运行时上下文放入运行时队列.
      * 
-     * @param slaveId 执行机主键
      * @param taskContext 任务运行时上下文
      */
-    public void add(final String slaveId, final TaskContext taskContext) {
+    public void add(final TaskContext taskContext) {
         String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getId());
         if (!registryCenter.isExisted(runningTaskNodePath)) {
-            registryCenter.persist(runningTaskNodePath, slaveId);
-            slaveCache.add(slaveId, taskContext);
+            registryCenter.persist(runningTaskNodePath, "");
         }
     }
     
     /**
      * 将任务运行时上下文从队列删除.
      * 
-     * @param slaveId 执行机主键
      * @param taskContext 任务运行时上下文
      */
-    public void remove(final String slaveId, final TaskContext taskContext) {
+    public void remove(final TaskContext taskContext) {
         if (!registryCenter.isExisted(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
             return;
         }
         for (String each : registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
             TaskContext runningTaskContext = TaskContext.from(each);
             if (runningTaskContext.getJobName().equals(taskContext.getJobName()) && runningTaskContext.getShardingItem() == (taskContext.getShardingItem())) {
-                registryCenter.remove(RunningNode.getRunningTaskNodePath(runningTaskContext.getId()));    
+                registryCenter.remove(RunningNode.getRunningTaskNodePath(runningTaskContext.getId()));
             }
         }
-        slaveCache.remove(slaveId, taskContext);
     }
     
     /**

@@ -113,9 +113,8 @@ public final class SchedulerEngine implements Scheduler {
         for (Map.Entry<Protos.SlaveID, List<Protos.OfferID>> entry : launchOfferMap.entrySet()) {
             schedulerDriver.launchTasks(entry.getValue(), filterTaskInfoBySlaveID(entry.getKey(), tasks));
         }
-        // TODO 状态回调调整好, 这里的代码应删除
         for (Protos.TaskInfo each : tasks) {
-            facadeService.addRunning(each.getSlaveId().getValue(), TaskContext.from(each.getTaskId().getValue()));
+            facadeService.addRunning(TaskContext.from(each.getTaskId().getValue()));
         }
     }
     
@@ -147,27 +146,22 @@ public final class SchedulerEngine implements Scheduler {
     }
     
     @Override
-    // TODO 状态返回不正确,不能正确记录状态,导致不能failover, 目前先放在resourceOffers实现
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
         log.trace("call statusUpdate task state is: {}", taskStatus.getState(), taskContext);
-        String slaveId = taskStatus.getSlaveId().getValue();
         switch (taskStatus.getState()) {
-            case TASK_STARTING:
-                //facadeService.addRunning(slaveId, taskContext);
-                break;
             case TASK_FINISHED:
             case TASK_KILLED:
-                facadeService.removeRunning(slaveId, taskContext);
+                facadeService.removeRunning(taskContext);
                 break;
+            case TASK_LOST:
             // TODO TASK_FAILED和TASK_ERROR是否要做失效转移
             case TASK_FAILED:
             case TASK_ERROR:
-            case TASK_LOST:
                 log.warn("task status is: {}, message is: {}, source is: {}", taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
-                facadeService.removeRunning(slaveId, taskContext);
-                facadeService.recordFailoverTask(slaveId, taskContext);
+                facadeService.removeRunning(taskContext);
+                facadeService.recordFailoverTask(taskContext);
                 break;
             default:
                 break;
@@ -193,7 +187,6 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
         log.warn("call executorLost slaveID is: {}, executorID is: {}", slaveID, executorID);
-        facadeService.recordFailoverTask(slaveID.getValue(), TaskContext.from(executorID.getValue()));
     }
     
     @Override

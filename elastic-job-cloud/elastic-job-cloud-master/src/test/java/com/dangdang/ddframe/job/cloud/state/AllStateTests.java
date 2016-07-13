@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.cloud.state.ready.ReadyNodeTest;
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyServiceTest;
 import com.dangdang.ddframe.job.cloud.state.running.RunningNodeTest;
 import com.dangdang.ddframe.job.cloud.state.running.RunningServiceTest;
-import com.dangdang.ddframe.job.cloud.state.running.SlaveCacheTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -38,7 +37,6 @@ import org.junit.runners.Suite;
     MisfiredServiceTest.class, 
     RunningNodeTest.class, 
     RunningServiceTest.class, 
-    SlaveCacheTest.class, 
     FailoverNodeTest.class, 
     FailoverServiceTest.class
 })
