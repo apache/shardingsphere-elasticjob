@@ -60,7 +60,7 @@ public final class HardwareResource {
     private BigDecimal getResource(final String type) {
         for (Protos.Resource each : offer.getResourcesList()) {
             if (type.equals(each.getName())) {
-                return new BigDecimal(each.getScalar().getValue());
+                return new BigDecimal(Double.toString(each.getScalar().getValue()));
             }
         }
         return BigDecimal.ZERO;
@@ -75,11 +75,11 @@ public final class HardwareResource {
      * @return 分片数量
      */
     public int calculateShardingCount(final int expectedShardingCount, final double perCpuCount, final double perMemoryMB) {
-        int cpuShardingCount = availableCpuCount.divide(new BigDecimal(perCpuCount), BigDecimal.ROUND_DOWN).intValue();
+        int cpuShardingCount = availableCpuCount.divide(new BigDecimal(Double.toString(perCpuCount)), BigDecimal.ROUND_DOWN).intValue();
         if (cpuShardingCount > expectedShardingCount) {
             cpuShardingCount = expectedShardingCount;
         }
-        int memoryShardingCount = availableMemoryMB.divide(new BigDecimal(perMemoryMB), BigDecimal.ROUND_DOWN).intValue();
+        int memoryShardingCount = availableMemoryMB.divide(new BigDecimal(Double.toString(perMemoryMB)), BigDecimal.ROUND_DOWN).intValue();
         if (memoryShardingCount > expectedShardingCount) {
             memoryShardingCount = expectedShardingCount;
         }
@@ -93,8 +93,8 @@ public final class HardwareResource {
      * @param toBeReservedMemoryMB 需预留的内存兆字节数量
      */
     public void reserveResources(final double toBeReservedCpuCount, final double toBeReservedMemoryMB) {
-        BigDecimal toBeReservedCpuCountDecimal = new BigDecimal(toBeReservedCpuCount);
-        BigDecimal toBeReservedMemoryMBDecimal = new BigDecimal(toBeReservedMemoryMB);
+        BigDecimal toBeReservedCpuCountDecimal = new BigDecimal(Double.toString(toBeReservedCpuCount));
+        BigDecimal toBeReservedMemoryMBDecimal = new BigDecimal(Double.toString(toBeReservedMemoryMB));
         Preconditions.checkArgument(availableCpuCount.doubleValue() >= toBeReservedCpuCountDecimal.add(reservedCpuCount).doubleValue());
         Preconditions.checkArgument(availableMemoryMB.doubleValue() >= toBeReservedMemoryMBDecimal.add(reservedMemoryMB).doubleValue());
         reservedCpuCount = reservedCpuCount.add(toBeReservedCpuCountDecimal);

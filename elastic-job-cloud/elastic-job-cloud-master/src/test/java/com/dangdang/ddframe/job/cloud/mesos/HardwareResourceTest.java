@@ -68,8 +68,8 @@ public final class HardwareResourceTest {
     public void assertReserveResources() {
         HardwareResource hardwareResource = new HardwareResource(OfferBuilder.createOffer(10d, 1280d));
         hardwareResource.reserveResources(4d, 512d);
-        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "reservedCpuCount", false)), is(new BigDecimal(4d)));
-        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "reservedMemoryMB", false)), is(new BigDecimal(512d)));
+        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "reservedCpuCount", false)), is(new BigDecimal("4.0")));
+        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "reservedMemoryMB", false)), is(new BigDecimal("512.0")));
     }
     
     @Test
@@ -77,10 +77,10 @@ public final class HardwareResourceTest {
         HardwareResource hardwareResource = new HardwareResource(OfferBuilder.createOffer(10d, 1280d));
         hardwareResource.reserveResources(4d, 512d);
         hardwareResource.commitReservedResources();
-        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "reservedCpuCount", false)), is(new BigDecimal(0d)));
-        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "reservedMemoryMB", false)), is(new BigDecimal(0d)));
-        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "availableCpuCount", false)), is(new BigDecimal(6d)));
-        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "availableMemoryMB", false)), is(new BigDecimal(768d)));
+        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "reservedCpuCount", false)), is(new BigDecimal("0")));
+        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "reservedMemoryMB", false)), is(new BigDecimal("0")));
+        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "availableCpuCount", false)), is(new BigDecimal("6.0")));
+        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "availableMemoryMB", false)), is(new BigDecimal("768.0")));
     }
     
     @Test
@@ -112,7 +112,7 @@ public final class HardwareResourceTest {
     @Test
     public void assertInitWithoutCpuResource() {
         HardwareResource hardwareResource = new HardwareResource(OfferBuilder.createOffer(1280d));
-        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "availableCpuCount", false)), is(new BigDecimal(0d)));
-        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "availableMemoryMB", false)), is(new BigDecimal(1280d)));
+        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "availableCpuCount", false)), is(new BigDecimal("0")));
+        assertThat((BigDecimal) ReflectionUtils.getFieldValue(hardwareResource, ReflectionUtils.getFieldWithName(HardwareResource.class, "availableMemoryMB", false)), is(new BigDecimal("1280.0")));
     }
 }
