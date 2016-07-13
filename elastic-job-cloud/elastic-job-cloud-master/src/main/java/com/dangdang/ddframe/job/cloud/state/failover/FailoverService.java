@@ -60,7 +60,7 @@ public class FailoverService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
-        if (!registryCenter.isExisted(FailoverNode.getFailoverTaskNodePath(taskContext.getId()))) {
+        if (!registryCenter.isExisted(FailoverNode.getFailoverTaskNodePath(taskContext.getId())) && !runningService.isTaskRunning(taskContext)) {
             registryCenter.persist(FailoverNode.getFailoverTaskNodePath(taskContext.getId()), "");
         }
     }

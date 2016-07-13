@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.state.failover;
 
-import com.dangdang.ddframe.job.cloud.context.JobContext;
-import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
+import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -73,10 +73,22 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertAddWhenNotExisted() {
+    public void assertAddWhenNotExistedAndTaskIsRunning() {
         when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@111")).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@111"))).thenReturn(true);
         failoverService.add(TaskContext.from("test_job@-@0@-@111"));
         verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@111");
+        verify(runningService).isTaskRunning(TaskContext.from("test_job@-@0@-@111"));
+        verify(regCenter, times(0)).persist("/state/failover/test_job/test_job@-@0@-@111", "");
+    }
+    
+    @Test
+    public void assertAddWhenNotExistedAndTaskIsNotRunning() {
+        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@111")).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@111"))).thenReturn(false);
+        failoverService.add(TaskContext.from("test_job@-@0@-@111"));
+        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@111");
+        verify(runningService).isTaskRunning(TaskContext.from("test_job@-@0@-@111"));
         verify(regCenter).persist("/state/failover/test_job/test_job@-@0@-@111", "");
     }
     

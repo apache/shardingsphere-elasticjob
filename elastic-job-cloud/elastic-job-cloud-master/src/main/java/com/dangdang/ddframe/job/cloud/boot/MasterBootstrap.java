@@ -59,7 +59,8 @@ public final class MasterBootstrap {
     
     private MesosSchedulerDriver getSchedulerDriver() {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
-        Protos.FrameworkInfo frameworkInfo = Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUsername()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(new LocalHostService().getIp()).build();
+        Protos.FrameworkInfo frameworkInfo = 
+                Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUsername()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(new LocalHostService().getIp()).build();
         return new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosConfig.getUrl());
     }
     

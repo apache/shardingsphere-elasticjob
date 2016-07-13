@@ -108,17 +108,23 @@ public final class SchedulerEngine implements Scheduler {
     private void launchTasks(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.Offer> declinedOffers, final List<Protos.TaskInfo> tasks) {
         List<Protos.Offer> launchOffers = new ArrayList<>(offers);
         launchOffers.removeAll(declinedOffers);
-        schedulerDriver.launchTasks(Lists.transform(launchOffers, new Function<Protos.Offer, Protos.OfferID>() {
-            
-            @Override
-            public Protos.OfferID apply(final Protos.Offer input) {
-                return input.getId();
-            }
-        }), tasks);
+        for (Protos.Offer each : launchOffers) {
+            schedulerDriver.launchTasks(each.getId(), filterTaskInfoBySlaveID(each.getSlaveId(), tasks));
+        }
         // TODO 状态回调调整好, 这里的代码应删除
         for (Protos.TaskInfo each : tasks) {
             facadeService.addRunning(each.getSlaveId().getValue(), TaskContext.from(each.getTaskId().getValue()));
         }
+    }
+    
+    private List<Protos.TaskInfo> filterTaskInfoBySlaveID(final Protos.SlaveID slaveId, final List<Protos.TaskInfo> tasks) {
+        List<Protos.TaskInfo> result = new ArrayList<>(tasks.size());
+        for (Protos.TaskInfo each : tasks) {
+            if (each.getSlaveId().equals(slaveId)) {
+                result.add(each);
+            }
+        }
+        return result;
     }
     
     @Override
