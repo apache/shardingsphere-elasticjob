@@ -131,21 +131,23 @@ public final class SchedulerEngine implements Scheduler {
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
-        log.trace("call statusUpdate task state is: {}", taskStatus.getState(), taskContext);
+        log.error("call statusUpdate task state is: {}", taskStatus.getState(), taskContext);
         String slaveId = taskStatus.getSlaveId().getValue();
         switch (taskStatus.getState()) {
             case TASK_STARTING:
                 //facadeService.addRunning(slaveId, taskContext);
                 break;
             case TASK_FINISHED:
-            // TODO TASK_FAILED, TASK_LOST走failover
-            case TASK_FAILED:
             case TASK_KILLED:
                 facadeService.removeRunning(slaveId, taskContext);
                 break;
+            // TODO TASK_FAILED和TASK_ERROR是否要做失效转移
+            case TASK_FAILED:
+            case TASK_ERROR:
             case TASK_LOST:
-                facadeService.recordFailoverTask(slaveId, taskContext);
+                log.warn("task status is: {}, message is: {}", taskStatus.getState(), taskStatus.getMessage());
                 facadeService.removeRunning(slaveId, taskContext);
+                facadeService.recordFailoverTask(slaveId, taskContext);
                 break;
             default:
                 break;
