@@ -52,4 +52,6 @@
         <appender-ref ref="ASYNC_FILE" />
         <appender-ref ref="ERROR" />
     </root>
+    
+    <logger name="org.apache.zookeeper" level="WARN"/>
 </configuration>
