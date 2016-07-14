@@ -21,6 +21,6 @@ weight=13
 
 ## 2 .Elastic-Job-Cloud
 
-### [作业操作API](../cloud_job_operate_api/)
+### [作业操作API](../other/cloud_job_operate_api/)
 
-### [打包插件] TODO
+### [打包插件](../other/cloud_assembly_plugin/)

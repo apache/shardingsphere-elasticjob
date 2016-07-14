@@ -24,7 +24,7 @@ weight=12
 
 3. 解压并启动`elastic-job-cloud-master-${version}.tar.gz`。`elastic-job-cloud-master-${version}.tar.gz`可通过源码`mvn install`编译获取。
 
-4. 配置`conf/job.properties`的作业`class`并使用`elastic-job-cloud-assembly`插件打包应用源码。
+4. 配置`conf/job.properties`的作业`class`并使用`elastic-job-cloud-assembly`插件打包应用源码。更多打包插件信息请参考[使用指南](../other/cloud_assembly_plugin/)。
 
 5. 将打包之后的作业`tar.gz`文件放至网络可访问的位置。如：`ftp`或`http`。
 
