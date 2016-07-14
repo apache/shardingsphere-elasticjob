@@ -1,18 +1,18 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
-title = "快速上手"
-weight=14
+title = "Elastic-Job-Lite快速上手"
+weight=61
 +++
 
-# 快速上手
+# Elastic-Job-Lite快速上手
 
 ## 下载源码和文档
 
 [https://github.com/dangdangdotcom/elastic-job](https://github.com/dangdangdotcom/elastic-job)
 
-![quick_start_01](../../img/quick_start_01.png)
+![folder_01](../../../img/quick_start/folder_01.png)
 
-![quick_start_02](../../img/quick_start_02.png)
+![folder_02](../../../img/quick_start/folder_02.png)
 
 选择 `tags\1.0.2` 作为源码
 
@@ -64,7 +64,7 @@ clientPort=2181
 * 启动：`zkServer.cmd(zkServer.sh)`，无报错。
 * 验证：`JPS`，存在`QuorumPeerMain`为已启动；验证端口`netstat -ano|findstr 2181`
 
-![quick_start_03](../../img/quick_start_03.png)
+![zk_01](../../../img/quick_start/zk_01.png)
 
 * 客户端命令
 
@@ -139,11 +139,11 @@ server.3=127.0.0.1:2889:3889
 
 * `dataDir`目录 需要建`myid`文件，内容对应为服务器序列。
 
-![quick_start_04](../../img/quick_start_04.png)
+![zk_02](../../../img/quick_start/zk_02.png)
 
 * 启动3个服务，`zkServer1.cmd zkServer2.cmd zkServer3.cmd`，过程会有报错，等3个全启就不会报错了。
 
-![quick_start_05](../../img/quick_start_05.png)
+![zk_03](../../../img/quick_start/zk_03.png)
 
 ## 启动elastic-job-example
 
@@ -167,21 +167,21 @@ maxRetries=3
 
 注册连接信息，对应各自应用服务的配置
 
-![quick_start_web_console_01](../../img/quick_start_web_console_01.png)
+![quick_start_web_console_01](../../../img/quick_start/web_console_01.png)
 
 连接上，自动把当前的相关服务和作业信息加载。可以在里面启停服务，启停作业，修改作业参数，查看服务，作业状态等。
 
-![quick_start_web_console_02](../../img/quick_start_web_console_02.png)
+![quick_start_web_console_02](../../../img/quick_start/web_console_02.png)
 
-![quick_start_web_console_03](../../img/quick_start_web_console_03.png)
+![quick_start_web_console_03](../../../img/quick_start/web_console_03.png)
 
-![quick_start_web_console_04](../../img/quick_start_web_console_04.png)
+![quick_start_web_console_04](../../../img/quick_start/web_console_04.png)
 
-![quick_start_web_console_05](../../img/quick_start_web_console_05.png)
+![quick_start_web_console_05](../../../img/quick_start/web_console_05.png)
 
 ## 3种作业类型的区别
 
-![quick_start_06](../../img/quick_start_06.png)
+![job_type](../../../img/quick_start/job_type.png)
 
 ### Simple类型作业
 

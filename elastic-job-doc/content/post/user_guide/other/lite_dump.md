@@ -1,12 +1,15 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
-title = "dump作业运行信息（便于开发者debug）"
-weight=13
+title = "Elastic-Job-Lite dump作业运行信息"
+weight=25
 +++
 
-# dump作业运行信息（便于开发者debug）
+# Elastic-Job-Lite dump作业运行信息
 
-由于在使用`elastic-job`中可能会碰到一些分布式问题，导致作业运行不稳定。由于无法在生产环境调试，通过`dump`命令可以把作业内部相关信息`dump`出来，方便开发者`debug`分析；另外为了不泄露隐私，已经把相关信息中的`ip`地址以`ip1, ip2...`的形式过滤掉了，可以在互联网上公开传输环境信息，便于进一步完善`elastic-job`。
+使用`Elastic-Job-Lite`过程中可能会碰到一些分布式问题，导致作业运行不稳定。
+
+由于无法在生产环境调试，通过`dump`命令可以把作业内部相关信息`dump`出来，方便开发者`debug`分析；
+另外为了不泄露隐私，已将相关信息中的`ip`地址以`ip1, ip2...`的形式过滤，可以在互联网上公开传输环境信息，便于进一步完善`Elastic-Job`。
 
 ## 如何使用
 
@@ -53,15 +56,15 @@ public class JobMain {
 
 ### 执行dump命令
 
-dump命令完全参照Zookeeper的四字命令的理念
+`dump`命令完全参照`Zookeeper`的四字命令理念
 
 ```bash
 echo "dump" | nc <任意一台作业服务器IP> 9888
 ```
 
-![dump命令](../../img/dump.jpg)
+![dump命令](../../../../img/dump/dump.jpg)
 
-导出到文件
+导出至文件
 
 ```bash
 echo "dump" | nc <任意一台作业服务器IP> 9888 > job_debug.txt
@@ -69,4 +72,4 @@ echo "dump" | nc <任意一台作业服务器IP> 9888 > job_debug.txt
 
 ## 使用注意事项
 
-务必更新到`1.0.3`以上版本
+务必更新至`1.0.3`以上版本

@@ -1,10 +1,10 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
-title = "作业分片策略"
-weight=11
+title = "Elastic-Job-Lite作业分片策略"
+weight=24
 +++
 
-# 作业分片策略
+# Elastic-Job-Lite作业分片策略
 
 ## 框架提供的分片策略
 

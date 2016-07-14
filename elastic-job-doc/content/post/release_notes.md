@@ -134,7 +134,7 @@ weight=1
 
 ### 结构调整
 
-1. [ISSUE #17](https://github.com/dangdangdotcom/elastic-job/issues/17) 作业类型接口变更，参见[1.0.2升级说明](http://dangdangdotcom.github.io/elastic-job/post/update_notes_1.0.2/)
+1. [ISSUE #17](https://github.com/dangdangdotcom/elastic-job/issues/17) 作业类型接口变更
 
 ## 1.0.1
 1. 初始版本

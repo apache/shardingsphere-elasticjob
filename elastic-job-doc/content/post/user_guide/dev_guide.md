@@ -2,7 +2,7 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "开发指南"
-weight=6
+weight=11
 +++
 
 # 开发指南
@@ -11,17 +11,13 @@ weight=6
 
 ### 作业类型
 
-目前提供`3`种作业类型，分别是`Simple`, `DataFlow`和`Script`。
+提供`Simple`、`DataFlow`和`Script` `3`种作业类型。
 
-`DataFlow`类型用于处理数据流，它又提供`2`种作业类型，分别是`ThroughputDataFlow`和`SequenceDataFlow`。需要继承相应的抽象类。
+方法参数`shardingContext`包含作业配置、片和运行时信息。可通过`getShardingTotalCount()`, `getShardingItems()`等方法分别获取分片总数，运行在本作业服务器的分片序列号集合等。
 
-`Script`类型用于处理脚本，可直接使用，无需编码。
+#### 1. Simple类型作业
 
-方法参数`shardingContext`包含作业配置，分片和运行时信息。可通过`getShardingTotalCount()`, `getShardingItems()`等方法分别获取分片总数，运行在本作业服务器的分片序列号集合等。
-
-#### Simple类型作业
-
-`Simple`类型作业意为简单实现，未经任何封装的类型。需要继承`AbstractSimpleElasticJob`，该类只提供了一个方法用于覆盖，此方法将被定时执行。用于执行普通的定时任务，与`Quartz`原生接口相似，只是增加了弹性扩缩容和分片等功能。
+意为简单实现，未经任何封装的类型。需继承`AbstractSimpleElasticJob`。该类仅提供单一方法用于覆盖，此方法将定时执行。与`Quartz`原生接口相似，但增加了弹性扩缩容和分片等功能。
 
 ```java
 public class MyElasticJob extends AbstractSimpleElasticJob {
@@ -33,11 +29,43 @@ public class MyElasticJob extends AbstractSimpleElasticJob {
 }
 ```
 
-#### ThroughputDataFlow类型作业
+#### 2. DataFlow类型作业
+`DataFlow`类型用于处理数据流，又提供`2`种作业类型，分别是`ThroughputDataFlow`和`SequenceDataFlow`，需继承相应抽象类。抽象类提供`2`个方法可供覆盖，分别用于抓取(`fetchData`)和处理(`processData`)数据。
 
-`ThroughputDataFlow`类型作业意为高吞吐的数据流作业。需要继承`AbstractIndividualThroughputDataFlowElasticJob`并可以指定返回值泛型，该类提供`3`个方法可覆盖，分别用于抓取数据，处理数据和指定是否流式处理数据。可以获取数据处理成功失败次数等辅助监控信息。如果流式处理数据，`fetchData`方法的返回值只有为`null`或长度为空时，作业才会停止执行，否则作业会一直运行下去；非流式处理数据则只会在每次作业执行过程中执行一次`fetchData`方法和`processData`方法，即完成本次作业。流式数据处理参照`TbSchedule`设计，适用于不间歇的数据处理。
+***
 
-作业执行时会将`fetchData`的数据传递给`processData`处理，其中`processData`得到的数据是通过多线程（线程池大小可配）拆分的。如果采用流式作业处理方式，建议`processData`处理数据后更新其状态，避免`fetchData`再次抓取到，从而使得作业永远不会停止。`processData`的返回值用于表示数据是否处理成功，抛出异常或者返回`false`将会在统计信息中归入失败次数，返回`true`则归入成功次数。
+**流式处理**
+
+可通过`JobConfiguration`配置是否流式处理。
+
+流式处理数据只有`fetchData`方法的返回值为`null`或集合长度为空时，作业才停止抓取，否则作业将一直运行下去；
+非流式处理数据则只会在每次作业执行过程中执行一次`fetchData`方法和`processData`方法，随即完成本次作业。
+
+如果采用流式作业处理方式，建议`processData`处理数据后更新其状态，避免`fetchData`再次抓取到，从而使得作业永远不会停止。
+流式数据处理参照`TbSchedule`设计，适用于不间歇的数据处理。
+
+***
+
+**数据处理成功/失败次数**
+
+可通过`processData`的返回结果通知作业框架记录数据处理成功/失败次数。`processData`的返回值用于表示数据是否处理成功，抛出异常或者返回`false`将会在统计信息中归入失败次数，返回`true`则归入成功次数。
+该数据可作为监控的辅助信息。
+
+***
+
+**逐条/批量处理**
+
+为了提高数据处理效率，`DataFlow`类型作业提供了批量处理数据的功能。
+使用逐条或批量处理数据需要分别继承AbstractIndividual`XXX`DataFlowElasticJob和AbstractBatch`XXX`FlowElasticJob。其中`XXX`是`Throughput`或`Sequence`，下文会详细说明。
+不同之处在于逐条和批量处理`processData`方法的第二个入参分别为泛型类型和泛型集合；返回值分别为`boolean`类型和`int`类型，`int`用于表示一批数据处理的成功数量。
+
+***
+
+**ThroughputDataFlow类型作业**
+
+意为高吞吐的数据流作业。需继承`AbstractIndividualThroughputDataFlowElasticJob`或`AbstractBatchThroughputDataFlowElasticJob`并可指定返回值泛型。
+
+作业执行时会将`fetchData`的数据传递给`processData`处理，`processData`得到的数据是通过多线程（线程池大小可配）拆分的。
 
 ```java
 public class MyElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<Foo> {
@@ -63,9 +91,12 @@ public class MyElasticJob extends AbstractIndividualThroughputDataFlowElasticJob
 }
 ```
 
-#### SequenceDataFlow类型作业
+***
 
-`SequenceDataFlow`类型作业和`ThroughputDataFlow`作业类型极为相似，所不同的是`ThroughputDataFlow`作业类型可以将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，配置为两个线程处理，则第`1`个线程处理前`50`条数据，第`2`个线程处理后`50`条数据，无视分片项；`SequenceDataFlow`类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，则系统自动分配两个线程处理，第`1`个线程处理第`1`个分片的`40`条数据，第`2`个线程处理第`2`个分片的`60`条数据。由于`ThroughputDataFlow`作业可以使用多于分片项的任意线程数处理，所以性能调优的可能会优于`SequenceDataFlow`作业。
+**SequenceDataFlow类型作业**
+
+`SequenceDataFlow`类型作业和`ThroughputDataFlow`作业类型极为相似，所不同的是`ThroughputDataFlow`作业类型可以将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。
+如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，配置为两个线程处理，则第`1`个线程处理前`50`条数据，第`2`个线程处理后`50`条数据，无视分片项；`SequenceDataFlow`类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，则系统自动分配两个线程处理，第`1`个线程处理第`1`个分片的`40`条数据，第`2`个线程处理第`2`个分片的`60`条数据。由于`ThroughputDataFlow`作业可以使用多于分片项的任意线程数处理，所以性能调优的可能会优于`SequenceDataFlow`作业。
 
 ```java
 public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<Foo> {
@@ -89,9 +120,9 @@ public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<F
 }
 ```
 
-#### Script类型作业
+#### 3. Script类型作业
 
-`Script`类型作业意为脚本类型作业，支持`shell`，`python`，`perl`等所有类型脚本。只需通过控制台/代码配置scriptCommandLine即可。执行脚本路径可以包含参数，最后一个参数为作业运行时信息.
+`Script`类型作业意为脚本类型作业，支持`shell`，`python`，`perl`等所有类型脚本。只需通过控制台或代码配置`scriptCommandLine`即可，无需编码。执行脚本路径可包含参数，参数传递完毕后，作业框架会自动追加最后一个参数为作业运行时信息。
 
 ```
 #!/bin/bash
@@ -102,18 +133,14 @@ echo sharding execution context is $*
 
 `sharding execution context is {"shardingItems":[0,1,2,3,4,5,6,7,8,9],"shardingItemParameters":{},"offsets":{},"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","monitorExecution":true,"fetchDataCount":1}`
 
-### 批量处理
-
-为了提高数据处理效率，数据流类型作业提供了批量处理数据的功能。之前逐条处理数据的两个抽象类分别是`AbstractIndividualThroughputDataFlowElasticJob`和`AbstractIndividualSequenceDataFlowElasticJob`，批量处理则使用另外两个接口`AbstractBatchThroughputDataFlowElasticJob`和`AbstractBatchSequenceDataFlowElasticJob`。不同之处在于`processData`方法的返回值从`boolean`类型变为`int`类型，用于表示一批数据处理的成功数量，第二个入参则转变为`List`数据集合。
-
 ### 异常处理
 
-`elastic-job`在最上层接口提供了`handleJobExecutionException`方法，使用作业时可以覆盖此方法，并使用`quartz`提供的`JobExecutionException`控制异常后作业的声明周期。默认实现是直接将异常抛出。示例：
+`elastic-job`在最上层接口提供了`handleJobExecutionException`方法，使用作业时可以覆盖此方法，并使用`quartz`提供的`JobExecutionException`控制异常后作业的声明周期。默认实现是直接将异常抛出。
 
-### 任务监听配置
-可以通过配置多个任务监听器，在任务执行前和执行后执行监听的方法。监听器分为每台作业节点均执行和分布式场景中仅单一节点执行两种。
+### 任务监听
+可通过配置多个任务监听器，在任务执行前和执行后执行监听的方法。监听器分为每台作业节点均执行和分布式场景中仅单一节点执行`2`种。
 
-#### 每台作业节点均执行的监听
+#### 1. 每台作业节点均执行的监听
 若作业处理作业服务器的文件，处理完成后删除文件，可考虑使用每个节点均执行清理任务。此类型任务实现简单，且无需考虑全局分布式任务是否完成，请尽量使用此类型监听器。
 
 步骤：
@@ -149,7 +176,7 @@ public class JobMain {
 }
 ```
 
-#### 分布式场景中仅单一节点执行的监听
+#### 2. 分布式场景中仅单一节点执行的监听
 若作业处理数据库数据，处理完成后只需一个节点完成数据清理任务即可。此类型任务处理复杂，需同步分布式环境下作业的状态同步，提供了超时设置来避免作业不同步导致的死锁，请谨慎使用。
 
 步骤：
@@ -193,12 +220,11 @@ public class JobMain {
 
 ## 作业配置
 
-与`Spring`容器配合使用作业，可以将作业`Bean`配置为`Spring Bean`，可在作业中通过依赖注入使用`Spring`容器管理的数据源等对象。可用`placeholder`占位符从属性文件中取值。
+与`Spring`容器配合使用作业，可将作业`Bean`配置为`Spring Bean`，并在作业中通过依赖注入使用`Spring`容器管理的数据源等对象。可用`placeholder`占位符从属性文件中取值。
 
 ### Spring命名空间配置
 
 ```xml
-
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -299,7 +325,7 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 
 ### 不使用Spring配置
 
-如果不使用Spring框架，可以用如下方式启动作业。
+如果不使用Spring框架，可用如下方式启动作业。`JobConfiguration`的属性与`Spring`命名空间保持一致。
 
 ```java
 import com.dangdang.ddframe.job.api.config.JobConfiguration;

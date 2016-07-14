@@ -9,31 +9,34 @@
 
 # Overview
 
-Elastic-Job is a distributed scheduled job solution. Elastic-Job includes Elastic-Job-Lite and Elastic-Job-Cloud. 
-Elastic-Job-Lite is a centreless solution, use lightweight jar to coordinate distributed jobs. Elastic-Job-Cloud is a Mesos framework which use Mesos + Docker to manage and isolate resources and processes.
-Elastic-Job-Lite and Elastic-Job-Cloud provides same API. Developers  
+Elastic-Job is a distributed scheduled job solution. Elastic-Job is composited from 2 independent sub projects: Elastic-Job-Lite and Elastic-Job-Cloud. 
+
+Elastic-Job-Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs. 
+Elastic-Job-Cloud is a Mesos framework which use Mesos + Docker to manage and isolate resources and processes.
+
+Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need develop code one time, then decide to deploy Lite or Cloud as you want. 
 
 # Features
 
 ## 1. Elastic-Job-Lite
 
-* Distributed schedule job coordinate.
-* Elastic scale in and scale out supported.
-* Running jobs failover supported.
-* Misfired jobs refire supported.
-* Idempotency jobs execution supported.
-* Parallel scheduling supported.
-* Job lifecycle operation supported.
-* Lavish job types supported.
-* Spring integrated and namespace supported.
-* Web console supported.
+* Distributed schedule job coordinate
+* Elastic scale in and scale out supported
+* Failover
+* Misfired jobs refire
+* Sharding consistently, same sharding item for a job only one running instance
+* Parallel scheduling supported
+* Job lifecycle operation
+* Lavish job types
+* Spring integrated and namespace supported
+* Web console
 
 ## 2. Elastic-Job-Cloud
-* All features for Elastic-Job-Lite included.
-* Resources allocated elastically.
-* Resources distribute automatically.
-* Docker based processes isolation supported (TBD).
-* Maven assembly plugin supported.
+* All features for Elastic-Job-Lite included
+* Resources allocated elastically
+* Application distribute automatically
+* Docker based processes isolation supported (TBD)
+* Maven assembly plugin supported
 
 ***
 
@@ -41,11 +44,13 @@ Elastic-Job-Lite and Elastic-Job-Cloud provides same API. Developers
 
 ## Elastic-job-Lite
 
-![Elastic-Job-Lite Architecture](http://dangdangdotcom.github.io/elastic-job/img/architecture_lite_en.png)
+![Elastic-Job-Lite Architecture](http://dangdangdotcom.github.io/elastic-job/img/architecture/elastic_job_lite.png)
+
+***
 
 ## Elastic-Job-Cloud
 
-![Elastic-Job-Cloud Architecture](http://dangdangdotcom.github.io/elastic-job/img/architecture_cloud_en.png)
+![Elastic-Job-Cloud Architecture](http://dangdangdotcom.github.io/elastic-job/img/architecture/elastic_job_cloud.png)
 
 # [Roadmap](ROADMAP.md)
 

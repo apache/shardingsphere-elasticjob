@@ -1,13 +1,13 @@
 baseurl = "http://dangdangdotcom.github.io/elastic-job/"
 languageCode = "en-us"
-title = "Elastic-JOB"
+title = "Elastic-Job"
 
 [params]
     description = "Elastic-Job - distributed scheduled job solution"
     author_url = "https://github.com/dangdangdotcom"
     project_url = "https://github.com/dangdangdotcom/elastic-job"
     project_documentation = "http://dangdangdotcom.github.io/elastic-job"
-    github_project_name = "Elastic-JOB"
+    github_project_name = "Elastic-Job"
     github_user_name = "dangdangdotcom"
 
     first_color="#f8f8f8"
