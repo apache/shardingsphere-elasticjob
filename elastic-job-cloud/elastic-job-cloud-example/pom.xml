@@ -12,11 +12,6 @@
     <dependencies>
         <dependency>
             <groupId>com.dangdang</groupId>
-            <artifactId>elastic-job-cloud-api</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.dangdang</groupId>
             <artifactId>elastic-job-cloud-agent</artifactId>
             <version>1.1.1</version>
         </dependency>
