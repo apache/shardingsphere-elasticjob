@@ -80,7 +80,7 @@ public final class SchedulerEngineTest {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         List<Protos.Offer> offers = Arrays.asList(OfferBuilder.createOffer("offer_0", 100d, 128000d), OfferBuilder.createOffer("offer_1", 100d, 128000d));
         EligibleJobContext eligibleJobContext = new EligibleJobContext(Collections.singletonList(
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"))), Collections.<JobContext>emptyList(), Collections.<String, JobContext>emptyMap());
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"))), Collections.<JobContext>emptyList(), Collections.<JobContext>emptyList());
         when(facadeService.getEligibleJobContext()).thenReturn(eligibleJobContext);
         schedulerEngine.resourceOffers(schedulerDriver, offers);
         verify(schedulerDriver, times(0)).declineOffer(Protos.OfferID.newBuilder().setValue("offer_0").build());

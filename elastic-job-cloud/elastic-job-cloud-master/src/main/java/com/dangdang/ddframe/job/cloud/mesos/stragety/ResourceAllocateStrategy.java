@@ -22,7 +22,6 @@ import org.apache.mesos.Protos;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 资源分配策略接口.
@@ -38,12 +37,4 @@ public interface ResourceAllocateStrategy {
      * @return 分配的任务列表
      */
     List<Protos.TaskInfo> allocate(Collection<JobContext> jobContexts);
-    
-    /**
-     * 分配资源.
-     *
-     * @param jobContextMap 作业运行时上下文Map, key为待序号的作业名称
-     * @return 分配的任务Map, key为待序号的作业名称
-     */
-    Map<String, List<Protos.TaskInfo>> allocate(Map<String, JobContext> jobContextMap);
 }

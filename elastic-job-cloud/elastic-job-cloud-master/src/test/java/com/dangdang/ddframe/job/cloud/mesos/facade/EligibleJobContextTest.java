@@ -26,12 +26,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -47,18 +44,16 @@ public final class EligibleJobContextTest {
     public void assertAllocate() {
         Collection<JobContext> failoverJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job")));
         Collection<JobContext> misfiredJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("misfired_job")));
-        Map<String, JobContext> readyJobContextMap = new HashMap<>(1, 1);
-        readyJobContextMap.put("ready_job", JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job")));
-        EligibleJobContext actual = new EligibleJobContext(failoverJobContext, misfiredJobContext, readyJobContextMap);
+        Collection<JobContext> readyJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job")));
+        EligibleJobContext actual = new EligibleJobContext(failoverJobContext, misfiredJobContext, readyJobContext);
         when(resourceAllocateStrategy.allocate(failoverJobContext)).thenReturn(Collections.singletonList(Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder()
                         .setValue("failover_job@-@0@-@00").build()).setName("failover_job@-@0@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build()));
         List<Protos.TaskInfo> taskInfoList = Collections.singletonList(Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder()
                 .setValue("misfired_job@-@0@-@00").build()).setName("misfired_job@-@0@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build());
         when(resourceAllocateStrategy.allocate(misfiredJobContext)).thenReturn(taskInfoList);
-        Map<String, List<Protos.TaskInfo>> readyTaskMap = new HashMap<>(1, 1);
-        readyTaskMap.put("ready_job", Collections.singletonList(Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder()
-                .setValue("ready_job@-@0@-@00").build()).setName("ready_job@-@0@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build()));
-        when(resourceAllocateStrategy.allocate(readyJobContextMap)).thenReturn(readyTaskMap);
+        List<Protos.TaskInfo> readyTasks = Collections.singletonList(Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder()
+                .setValue("ready_job@-@0@-@00").build()).setName("ready_job@-@0@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build());
+        when(resourceAllocateStrategy.allocate(readyJobContext)).thenReturn(readyTasks);
         AssignedTaskContext assignedTaskContext = actual.allocate(resourceAllocateStrategy);
         assertThat(assignedTaskContext.getTaskInfoList().size(), is(3));
         assertThat(assignedTaskContext.getTaskInfoList().get(0).getTaskId().getValue(), is("failover_job@-@0@-@00"));

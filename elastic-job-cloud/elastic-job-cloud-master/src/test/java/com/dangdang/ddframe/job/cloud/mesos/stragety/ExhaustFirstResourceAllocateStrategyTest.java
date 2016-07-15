@@ -36,7 +36,7 @@ import static org.junit.Assert.assertThat;
 public final class ExhaustFirstResourceAllocateStrategyTest {
     
     @Test
-    public void assertAllocateForList() {
+    public void assertAllocate() {
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(
                 Arrays.asList(new HardwareResource(OfferBuilder.createOffer("offer_0", 8d, 1280d)), new HardwareResource(OfferBuilder.createOffer("offer_1", 8d, 1280d))));
         List<Protos.TaskInfo> actual = resourceAllocateStrategy.allocate(
@@ -48,33 +48,6 @@ public final class ExhaustFirstResourceAllocateStrategyTest {
                 assertThat(actual.get(i).getSlaveId().getValue(), is("slave-offer_0"));
             } else {
                 assertThat(actual.get(i).getSlaveId().getValue(), is("slave-offer_1"));
-            }
-        }
-    }
-    
-    @Test
-    public void assertAllocateForMap() {
-        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(
-                Arrays.asList(new HardwareResource(OfferBuilder.createOffer("offer_0", 15d, 5120d)), new HardwareResource(OfferBuilder.createOffer("offer_1", 10d, 1280d))));
-        Map<String, JobContext> map = new LinkedHashMap<>(2, 1);
-        map.put("test_job_0@-@00", JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_0")));
-        map.put("test_job_1@-@00", JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1")));
-        Map<String, List<Protos.TaskInfo>> actual = resourceAllocateStrategy.allocate(map);
-        assertThat(actual.size(), is(2));
-        List<Protos.TaskInfo> actualTaskInfoList0 = actual.get("test_job_0@-@00");
-        assertThat(actualTaskInfoList0.size(), is(10));
-        for (int i = 0; i < actualTaskInfoList0.size(); i++) {
-            assertThat(actualTaskInfoList0.get(i).getTaskId().getValue(), startsWith("test_job_0@-@" + i));
-            assertThat(actualTaskInfoList0.get(i).getSlaveId().getValue(), is("slave-offer_0"));
-        }
-        List<Protos.TaskInfo> actualTaskInfoList1 = actual.get("test_job_1@-@00");
-        assertThat(actualTaskInfoList1.size(), is(10));
-        for (int i = 0; i < actualTaskInfoList1.size(); i++) {
-            assertThat(actualTaskInfoList1.get(i).getTaskId().getValue(), startsWith("test_job_1@-@" + i));
-            if (i < 5) {
-                assertThat(actualTaskInfoList1.get(i).getSlaveId().getValue(), is("slave-offer_0"));
-            } else {
-                assertThat(actualTaskInfoList1.get(i).getSlaveId().getValue(), is("slave-offer_1"));
             }
         }
     }
