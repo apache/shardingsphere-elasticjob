@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.facade;
 
-import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

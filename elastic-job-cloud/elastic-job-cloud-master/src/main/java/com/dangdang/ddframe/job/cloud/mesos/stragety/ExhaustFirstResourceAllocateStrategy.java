@@ -27,10 +27,8 @@ import org.apache.mesos.Protos;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 同一机器资源优先策略.
@@ -48,18 +46,6 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
         List<Protos.TaskInfo> result = new LinkedList<>();
         for (JobContext each : jobContexts) {
             result.addAll(allocate(each));
-        }
-        return result;
-    }
-    
-    @Override
-    public Map<String, List<Protos.TaskInfo>> allocate(final Map<String, JobContext> jobContextMap) {
-        Map<String, List<Protos.TaskInfo>> result = new HashMap<>(jobContextMap.size());
-        for (Map.Entry<String, JobContext> entry : jobContextMap.entrySet()) {
-            List<Protos.TaskInfo> taskInfoList = allocate(entry.getValue());
-            if (!taskInfoList.isEmpty()) {
-                result.put(entry.getKey(), taskInfoList);
-            }
         }
         return result;
     }

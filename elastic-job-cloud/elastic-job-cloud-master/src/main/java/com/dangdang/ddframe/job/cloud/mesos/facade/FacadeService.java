@@ -31,7 +31,6 @@ import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * 为Mesos提供的门面服务.
@@ -80,7 +79,7 @@ public class FacadeService {
         Collection<JobContext> ineligibleJobContexts = new ArrayList<>(failoverJobContexts.size() + misfiredJobContexts.size());
         ineligibleJobContexts.addAll(failoverJobContexts);
         ineligibleJobContexts.addAll(misfiredJobContexts);
-        Map<String, JobContext> readyJobContexts = readyService.getAllEligibleJobContexts(ineligibleJobContexts);
+        Collection<JobContext> readyJobContexts = readyService.getAllEligibleJobContexts(ineligibleJobContexts);
         return new EligibleJobContext(failoverJobContexts, misfiredJobContexts, readyJobContexts);
     }
     

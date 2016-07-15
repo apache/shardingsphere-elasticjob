@@ -40,6 +40,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -104,8 +105,10 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertRemove() {
+        when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("test_job_0@-@00", "test_job_1@-@00"));
         readyService.remove(Arrays.asList("test_job_1", "test_job_2"));
-        verify(regCenter).remove("/state/ready/test_job_1");
-        verify(regCenter).remove("/state/ready/test_job_2");
+        verify(regCenter).remove("/state/ready/test_job_1@-@00");
+        verify(regCenter, times(0)).remove("/state/ready/test_job_0@-@00");
+        verify(regCenter, times(0)).remove("/state/ready/test_job_2");
     }
 }

@@ -27,13 +27,13 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -73,9 +73,9 @@ public class ReadyService {
      * @param ineligibleJobContexts 无资格执行的作业上下文
      * @return 有资格执行的作业上下文集合
      */
-    public Map<String, JobContext> getAllEligibleJobContexts(final Collection<JobContext> ineligibleJobContexts) {
+    public Collection<JobContext> getAllEligibleJobContexts(final Collection<JobContext> ineligibleJobContexts) {
         if (!regCenter.isExisted(ReadyNode.ROOT)) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
         Collection<String> ineligibleJobNames = Collections2.transform(ineligibleJobContexts, new Function<JobContext, String>() {
             
@@ -85,7 +85,7 @@ public class ReadyService {
             }
         });
         List<String> uniqueNames = regCenter.getChildrenKeys(ReadyNode.ROOT);
-        Map<String, JobContext> result = new HashMap<>(uniqueNames.size(), 1);
+        List<JobContext> result = new ArrayList<>(uniqueNames.size());
         Set<String> assignedJobNames = new HashSet<>(uniqueNames.size(), 1);
         for (String each : uniqueNames) {
             String jobName = UniqueJob.from(each).getJobName();
@@ -101,7 +101,7 @@ public class ReadyService {
                 misfiredService.add(jobName);
                 continue;
             }
-            result.put(each, JobContext.from(jobConfig.get()));
+            result.add(JobContext.from(jobConfig.get()));
             assignedJobNames.add(jobName);
         }
         return result;
@@ -110,11 +110,30 @@ public class ReadyService {
     /**
      * 从待执行队列中删除相关作业.
      *
-     * @param uniqueNames 待删除的作业名集合
+     * @param jobNames 待删除的作业名集合
      */
-    public void remove(final Collection<String> uniqueNames) {
-        for (String each : uniqueNames) {
-            regCenter.remove(ReadyNode.getReadyJobNodePath(each));
+    public void remove(final Collection<String> jobNames) {
+        List<UniqueJob> uniqueJobs = Lists.transform(regCenter.getChildrenKeys(ReadyNode.ROOT), new Function<String, UniqueJob>() {
+            
+            @Override
+            public UniqueJob apply(final String input) {
+                return UniqueJob.from(input);
+            }
+        });
+        for (String each : jobNames) {
+            Optional<UniqueJob> uniqueJob = find(each, uniqueJobs);
+            if (uniqueJob.isPresent()) {
+                regCenter.remove(ReadyNode.getReadyJobNodePath(uniqueJob.get().getUniqueName()));
+            }
         }
+    }
+    
+    private Optional<UniqueJob> find(final String jobName, final List<UniqueJob> uniqueJobs) {
+        for (UniqueJob each : uniqueJobs) {
+            if (jobName.equals(each.getJobName())) {
+                return Optional.of(each);
+            }
+        }
+        return Optional.absent();
     }
 }

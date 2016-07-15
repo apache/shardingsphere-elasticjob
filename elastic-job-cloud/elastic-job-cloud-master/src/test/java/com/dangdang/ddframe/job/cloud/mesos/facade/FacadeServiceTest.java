@@ -40,8 +40,6 @@ import org.unitils.util.ReflectionUtils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -97,8 +95,7 @@ public final class FacadeServiceTest {
     public void assertGetEligibleJobContext() {
         Collection<JobContext> failoverJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job")));
         Collection<JobContext> misfiredJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("misfire_job")));
-        Map<String, JobContext> readyJobContexts = new HashMap<>(1, 1);
-        readyJobContexts.put("ready_job", JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job")));
+        Collection<JobContext> readyJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job")));
         when(failoverService.getAllEligibleJobContexts()).thenReturn(failoverJobContexts);
         when(misfiredService.getAllEligibleJobContexts(failoverJobContexts)).thenReturn(misfiredJobContexts);
         when(readyService.getAllEligibleJobContexts(Arrays.asList(failoverJobContexts.iterator().next(), misfiredJobContexts.iterator().next()))).thenReturn(readyJobContexts);
@@ -109,9 +106,9 @@ public final class FacadeServiceTest {
         Collection<JobContext> actualMisfiredJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "misfiredJobContexts", false));
         assertThat(actualMisfiredJobContexts.size(), is(1));
         assertThat(actualMisfiredJobContexts.iterator().next().getJobConfig().getJobName(), is("misfire_job"));
-        Map<String, JobContext> actualReadyJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "readyJobContexts", false));
+        Collection<JobContext> actualReadyJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "readyJobContexts", false));
         assertThat(actualReadyJobContexts.size(), is(1));
-        assertThat(actualReadyJobContexts.get("ready_job").getJobConfig().getJobName(), is("ready_job"));
+        assertThat(actualReadyJobContexts.iterator().next().getJobConfig().getJobName(), is("ready_job"));
     }
     
     @Test

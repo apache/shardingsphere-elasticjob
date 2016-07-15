@@ -29,7 +29,6 @@ import org.apache.mesos.Protos;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 有资格运行的作业集合上下文.
@@ -44,7 +43,7 @@ public final class EligibleJobContext {
     
     private final Collection<JobContext> misfiredJobContexts;
     
-    private final Map<String, JobContext> readyJobContexts;
+    private final Collection<JobContext> readyJobContexts;
     
     /**
      * 分配资源.
@@ -55,19 +54,17 @@ public final class EligibleJobContext {
     public AssignedTaskContext allocate(final ResourceAllocateStrategy resourceAllocateStrategy) {
         List<Protos.TaskInfo> failoverTaskInfoList = resourceAllocateStrategy.allocate(failoverJobContexts);
         List<Protos.TaskInfo> misfiredTaskInfoList = resourceAllocateStrategy.allocate(misfiredJobContexts);
-        Map<String, List<Protos.TaskInfo>> readyTaskInfoMap = resourceAllocateStrategy.allocate(readyJobContexts);
-        return new AssignedTaskContext(
-                getTaskInfoList(failoverTaskInfoList, misfiredTaskInfoList, readyTaskInfoMap), getFailoverTaskContext(failoverTaskInfoList), getJobNames(misfiredTaskInfoList), readyTaskInfoMap.keySet());
+        List<Protos.TaskInfo> readyTaskInfoList = resourceAllocateStrategy.allocate(readyJobContexts);
+        return new AssignedTaskContext(getTaskInfoList(failoverTaskInfoList, misfiredTaskInfoList, readyTaskInfoList), 
+                getFailoverTaskContext(failoverTaskInfoList), getJobNames(misfiredTaskInfoList), getJobNames(readyTaskInfoList));
     }
     
     private List<Protos.TaskInfo> getTaskInfoList(final List<Protos.TaskInfo> failoverTaskInfoList,
-                                                  final List<Protos.TaskInfo> misfiredTaskInfoList, final Map<String, List<Protos.TaskInfo>> readyTaskInfoMap) {
-        List<Protos.TaskInfo> result = new ArrayList<>(failoverTaskInfoList.size() + misfiredTaskInfoList.size() + readyTaskInfoMap.size());
+                                                  final List<Protos.TaskInfo> misfiredTaskInfoList, final List<Protos.TaskInfo> readyTaskInfoList) {
+        List<Protos.TaskInfo> result = new ArrayList<>(failoverTaskInfoList.size() + misfiredTaskInfoList.size() + readyTaskInfoList.size());
         result.addAll(failoverTaskInfoList);
         result.addAll(misfiredTaskInfoList);
-        for (List<Protos.TaskInfo> each : readyTaskInfoMap.values()) {
-            result.addAll(each);
-        }
+        result.addAll(readyTaskInfoList);
         return result;
     }
     
