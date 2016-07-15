@@ -19,7 +19,9 @@ package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
+import com.dangdang.ddframe.job.cloud.context.ShardingContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
+import com.dangdang.ddframe.job.cloud.util.GsonFactory;
 import com.google.common.base.Preconditions;
 import lombok.EqualsAndHashCode;
 import org.apache.mesos.Protos;
@@ -121,8 +123,11 @@ public final class HardwareResource {
     public Protos.TaskInfo createTaskInfo(final JobContext jobContext, final int shardingItem) {
         CloudJobConfiguration jobConfig = jobContext.getJobConfig();
         Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new TaskContext(jobConfig.getJobName(), shardingItem).getId()).build();
+        ShardingContext shardingContext = new ShardingContext(shardingItem);
+        shardingContext.setStreamingProcess(jobConfig.isStreamingProcess());
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(true).build();
-        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(String.format(RUN_COMMAND, taskId.getValue())).build();
+        String shardingContextJson = GsonFactory.getGson().toJson(shardingContext).replace("{", "\\{").replace("}", "\\}");
+        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(String.format(RUN_COMMAND, shardingContextJson)).build();
         Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())

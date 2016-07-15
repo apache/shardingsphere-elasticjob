@@ -45,18 +45,18 @@ public final class ConfigurationServiceTest {
     private ConfigurationService configService;
     
     private String jobConfigJson = "{\"jobName\":\"%s\",\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"cpuCount\":1.0,\"memoryMB\":128.0," +
-            "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\",\"failover\":true,\"misfire\":true}";
+            "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\",\"failover\":true,\"misfire\":true,\"streamingProcess\":true}";
     
     @Test
     public void assertAdd() {
-        CloudJobConfiguration jobConfig = new CloudJobConfiguration("test_job", "0/30 * * * * ?", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true);
+        CloudJobConfiguration jobConfig = new CloudJobConfiguration("test_job", "0/30 * * * * ?", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true, true);
         configService.add(jobConfig);
         verify(regCenter).persist("/config/test_job", String.format(jobConfigJson, "test_job"));
     }
     
     @Test
     public void assertUpdate() {
-        CloudJobConfiguration jobConfig = new CloudJobConfiguration("test_job", "0/30 * * * * ?", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true);
+        CloudJobConfiguration jobConfig = new CloudJobConfiguration("test_job", "0/30 * * * * ?", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true, true);
         configService.update(jobConfig);
         verify(regCenter).update("/config/test_job", String.format(jobConfigJson, "test_job"));
     }

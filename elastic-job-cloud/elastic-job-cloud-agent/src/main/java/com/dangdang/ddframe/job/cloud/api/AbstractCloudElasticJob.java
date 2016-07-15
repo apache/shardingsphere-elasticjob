@@ -17,25 +17,23 @@
 
 package com.dangdang.ddframe.job.cloud.api;
 
+import com.dangdang.ddframe.job.cloud.context.ShardingContext;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 弹性化分布式云作业的基类.
  * 
  * @author zhangliang
  */
+@RequiredArgsConstructor
 public abstract class AbstractCloudElasticJob implements CloudElasticJob {
     
-    private final String taskId;
-    
-    public AbstractCloudElasticJob(final String taskId) {
-        this.taskId = taskId;
-    }
+    private final ShardingContext shardingContext;
     
     @Override
     public final void execute() {
-        TaskContext taskContext = TaskContext.from(taskId);
-        executeJob(taskContext.getShardingItem());
+        executeJob(shardingContext);
     }
     
-    protected abstract void executeJob(final int shardingItem);
+    protected abstract void executeJob(final ShardingContext shardingContext);
 }

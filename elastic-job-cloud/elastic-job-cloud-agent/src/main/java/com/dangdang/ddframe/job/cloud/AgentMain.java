@@ -17,7 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud;
 
+import com.dangdang.ddframe.job.cloud.context.ShardingContext;
 import com.dangdang.ddframe.job.cloud.executor.TaskExecutor;
+import com.dangdang.ddframe.job.cloud.util.GsonFactory;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.MesosExecutorDriver;
 import org.apache.mesos.Protos.Status;
@@ -33,7 +35,7 @@ public final class AgentMain {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        MesosExecutorDriver driver = new MesosExecutorDriver(new TaskExecutor(args[0]));
+        MesosExecutorDriver driver = new MesosExecutorDriver(new TaskExecutor(GsonFactory.getGson().fromJson(args[0], ShardingContext.class)));
         System.exit(Status.DRIVER_STOPPED == driver.run() ? 0 : -1);
     }
 }

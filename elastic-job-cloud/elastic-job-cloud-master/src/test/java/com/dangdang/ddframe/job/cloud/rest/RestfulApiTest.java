@@ -45,7 +45,7 @@ public final class RestfulApiTest {
     private static CoordinatorRegistryCenter regCenter;
     
     private String jobConfigJson = "{\"jobName\":\"test_job\",\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"cpuCount\":1.0,\"memoryMB\":128.0," +
-            "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\",\"failover\":true,\"misfire\":true}";
+            "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\",\"failover\":true,\"misfire\":true,\"streamingProcess\":false}";
     
     @BeforeClass
     public static void setUp() throws Exception {

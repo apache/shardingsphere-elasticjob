@@ -18,17 +18,16 @@
 package com.dangdang.ddframe.job.cloud.context;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.context.JobContext;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public final class JobContextTest {
     
     @Test
     public void assertFrom() {
-        CloudJobConfiguration jobConfig = new CloudJobConfiguration("test_job", "5/10 * * * * *", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true);
+        CloudJobConfiguration jobConfig = new CloudJobConfiguration("test_job", "5/10 * * * * *", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true, false);
         JobContext actual = JobContext.from(jobConfig);
         assertThat(actual.getAssignedShardingItems().size(), is(10));
         for (int i = 0; i < actual.getAssignedShardingItems().size(); i++) {

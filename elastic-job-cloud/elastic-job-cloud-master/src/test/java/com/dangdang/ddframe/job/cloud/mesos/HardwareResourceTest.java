@@ -95,7 +95,7 @@ public final class HardwareResourceTest {
         assertThat(actual.getResources(1).getName(), is("mem"));
         assertThat(actual.getResources(1).getScalar().getValue(), is(128d));
         assertThat(actual.getExecutor().getExecutorId().getValue(), startsWith("test_job@-@0@-@"));
-        assertThat(actual.getExecutor().getCommand().getValue(), startsWith("sh bin/start.sh test_job@-@0@-@"));
+        assertThat(actual.getExecutor().getCommand().getValue(), startsWith("sh bin/start.sh"));
         assertTrue(actual.getExecutor().getCommand().getShell());
         assertThat(actual.getExecutor().getCommand().getUrisCount(), is(1));
         assertThat(actual.getExecutor().getCommand().getUris(0).getValue(), is("http://localhost/app.jar"));

@@ -15,26 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.example;
+package com.dangdang.ddframe.job.cloud;
 
-import com.dangdang.ddframe.job.cloud.api.AbstractCloudElasticJob;
-import com.dangdang.ddframe.job.cloud.context.ShardingContext;
+import com.dangdang.ddframe.job.cloud.util.AllUtilTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import java.util.Date;
-
-/**
- * 云作业实例.
- *
- * @author caohao
- */
-public class SampleCloudJob extends AbstractCloudElasticJob {
-    
-    public SampleCloudJob(final ShardingContext shardingContext) {
-        super(shardingContext);
-    }
-    
-    @Override
-    protected void executeJob(ShardingContext shardingContext) {
-        System.out.println(new Date() + ":------sample cloud job-------:" + shardingContext);
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        AllUtilTests.class
+})
+public final class AllTests {
 }

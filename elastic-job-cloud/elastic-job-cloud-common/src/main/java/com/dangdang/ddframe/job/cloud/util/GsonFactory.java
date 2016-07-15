@@ -15,20 +15,29 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.state.fixture;
+package com.dangdang.ddframe.job.cloud.util;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Gson构建器.
+ *
+ * @author caohao
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CloudJobConfigurationBuilder {
+public final class GsonFactory {
     
-    public static CloudJobConfiguration createCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(jobName, "0/1 * * * * ?", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true, false);
-    }
+    private static final Gson GSON = new GsonBuilder().create();
     
-    public static CloudJobConfiguration createOtherCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(jobName, "0/1 * * * * ?", 3, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", false, true, false);
+    /**
+     * 获取Gson实例.
+     * 
+     * @return Gson实例
+     */
+    public static Gson getGson() {
+        return GSON;
     }
 }

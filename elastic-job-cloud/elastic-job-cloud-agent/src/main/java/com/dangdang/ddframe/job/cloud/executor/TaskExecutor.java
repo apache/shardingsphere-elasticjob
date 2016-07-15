@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.executor;
 
+import com.dangdang.ddframe.job.cloud.context.ShardingContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
@@ -42,7 +43,7 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public final class TaskExecutor implements Executor {
     
-    private final String taskId;
+    private final ShardingContext shardingContext;
     
     @Override
     public void registered(final ExecutorDriver executorDriver, final ExecutorInfo executorInfo, final FrameworkInfo frameworkInfo, final SlaveInfo slaveInfo) {
@@ -65,7 +66,7 @@ public final class TaskExecutor implements Executor {
             String[] jobClasses = properties.getProperty("job.classes").split(",");
             for (String each : jobClasses) {
                 Class<?> cloudElasticJobClass = Class.forName(each);
-                Object cloudElasticJob = cloudElasticJobClass.getConstructor(String.class).newInstance(taskId);
+                Object cloudElasticJob = cloudElasticJobClass.getConstructor(ShardingContext.class).newInstance(shardingContext);
                 cloudElasticJobClass.getMethod("execute").invoke(cloudElasticJob);
             }
             executorDriver.sendStatusUpdate(TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());

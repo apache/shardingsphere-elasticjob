@@ -50,4 +50,6 @@ public final class CloudJobConfiguration {
     private final boolean failover;
     
     private final boolean misfire;
+    
+    private final boolean streamingProcess;
 }
