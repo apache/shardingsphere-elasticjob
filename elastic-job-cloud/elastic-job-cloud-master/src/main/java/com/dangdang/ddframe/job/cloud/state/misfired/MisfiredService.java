@@ -17,20 +17,19 @@
 
 package com.dangdang.ddframe.job.cloud.state.misfired;
 
-import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 错过执行的作业队列服务.
@@ -39,16 +38,16 @@ import java.util.Map;
  */
 public class MisfiredService {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     private final ConfigurationService configService;
     
     private final RunningService runningService;
     
-    public MisfiredService(final CoordinatorRegistryCenter registryCenter) {
-        this.registryCenter = registryCenter;
-        configService = new ConfigurationService(registryCenter);
-        runningService = new RunningService(registryCenter);
+    public MisfiredService(final CoordinatorRegistryCenter regCenter) {
+        this.regCenter = regCenter;
+        configService = new ConfigurationService(regCenter);
+        runningService = new RunningService(regCenter);
     }
     
     /**
@@ -57,8 +56,8 @@ public class MisfiredService {
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
-        if (!registryCenter.isExisted(MisfiredNode.getMisfiredJobNodePath(jobName))) {
-            registryCenter.persist(MisfiredNode.getMisfiredJobNodePath(jobName), "");
+        if (!regCenter.isExisted(MisfiredNode.getMisfiredJobNodePath(jobName))) {
+            regCenter.persist(MisfiredNode.getMisfiredJobNodePath(jobName), "");
         }
     }
     
@@ -68,9 +67,9 @@ public class MisfiredService {
      * @param ineligibleJobContexts 无资格执行的作业上下文
      * @return 有资格执行的作业上下文集合
      */
-    public Map<String, JobContext> getAllEligibleJobContexts(final Collection<JobContext> ineligibleJobContexts) {
-        if (!registryCenter.isExisted(MisfiredNode.ROOT)) {
-            return Collections.emptyMap();
+    public Collection<JobContext> getAllEligibleJobContexts(final Collection<JobContext> ineligibleJobContexts) {
+        if (!regCenter.isExisted(MisfiredNode.ROOT)) {
+            return Collections.emptyList();
         }
         Collection<String> ineligibleJobNames = Collections2.transform(ineligibleJobContexts, new Function<JobContext, String>() {
             
@@ -79,16 +78,16 @@ public class MisfiredService {
                 return input.getJobConfig().getJobName();
             }
         });
-        List<String> jobNames = registryCenter.getChildrenKeys(MisfiredNode.ROOT);
-        Map<String, JobContext> result = new HashMap<>(jobNames.size(), 1);
+        List<String> jobNames = regCenter.getChildrenKeys(MisfiredNode.ROOT);
+        Collection<JobContext> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
             Optional<CloudJobConfiguration> jobConfig = configService.load(each);
             if (!jobConfig.isPresent()) {
-                registryCenter.remove(MisfiredNode.getMisfiredJobNodePath(each));
+                regCenter.remove(MisfiredNode.getMisfiredJobNodePath(each));
                 continue;
             }
             if (!ineligibleJobNames.contains(each) && !runningService.isJobRunning(each)) {
-                result.put(each, JobContext.from(jobConfig.get()));
+                result.add(JobContext.from(jobConfig.get()));
             }
         }
         return result;
@@ -101,7 +100,7 @@ public class MisfiredService {
      */
     public void remove(final Collection<String> jobNames) {
         for (String each : jobNames) {
-            registryCenter.remove(MisfiredNode.getMisfiredJobNodePath(each));
+            regCenter.remove(MisfiredNode.getMisfiredJobNodePath(each));
         }
     }
 }

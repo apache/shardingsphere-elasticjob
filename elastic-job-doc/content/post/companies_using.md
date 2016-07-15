@@ -42,6 +42,8 @@ weight=50
 
 ## [华图教育](http://bj.huatu.com/)
 
+## [亚信](http://www.asiainfo.com.cn/)
+
 ## [一加手机](http://www.oneplus.cn/)
 
 ## [蚁坊软件](http://www.eefung.com/)

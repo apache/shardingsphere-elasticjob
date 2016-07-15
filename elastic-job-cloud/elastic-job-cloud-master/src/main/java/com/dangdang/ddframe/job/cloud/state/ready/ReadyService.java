@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.state.ready;
 
-import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.state.UniqueJob;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
@@ -31,8 +31,10 @@ import com.google.common.collect.Collections2;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 待运行作业队列服务.
@@ -41,7 +43,7 @@ import java.util.Map;
  */
 public class ReadyService {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     private final ConfigurationService configService;
     
@@ -49,11 +51,11 @@ public class ReadyService {
     
     private final MisfiredService misfiredService;
     
-    public ReadyService(final CoordinatorRegistryCenter registryCenter) {
-        this.registryCenter = registryCenter;
-        configService = new ConfigurationService(registryCenter);
-        runningService = new RunningService(registryCenter);
-        misfiredService = new MisfiredService(registryCenter);
+    public ReadyService(final CoordinatorRegistryCenter regCenter) {
+        this.regCenter = regCenter;
+        configService = new ConfigurationService(regCenter);
+        runningService = new RunningService(regCenter);
+        misfiredService = new MisfiredService(regCenter);
     }
     
     /**
@@ -62,7 +64,7 @@ public class ReadyService {
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
-        registryCenter.persist(ReadyNode.getReadyJobNodePath(new UniqueJob(jobName).getUniqueName()), "");
+        regCenter.persist(ReadyNode.getReadyJobNodePath(new UniqueJob(jobName).getUniqueName()), "");
     }
     
     /**
@@ -72,7 +74,7 @@ public class ReadyService {
      * @return 有资格执行的作业上下文集合
      */
     public Map<String, JobContext> getAllEligibleJobContexts(final Collection<JobContext> ineligibleJobContexts) {
-        if (!registryCenter.isExisted(ReadyNode.ROOT)) {
+        if (!regCenter.isExisted(ReadyNode.ROOT)) {
             return Collections.emptyMap();
         }
         Collection<String> ineligibleJobNames = Collections2.transform(ineligibleJobContexts, new Function<JobContext, String>() {
@@ -82,22 +84,25 @@ public class ReadyService {
                 return input.getJobConfig().getJobName();
             }
         });
-        List<String> uniqueNames = registryCenter.getChildrenKeys(ReadyNode.ROOT);
+        List<String> uniqueNames = regCenter.getChildrenKeys(ReadyNode.ROOT);
         Map<String, JobContext> result = new HashMap<>(uniqueNames.size(), 1);
+        Set<String> assignedJobNames = new HashSet<>(uniqueNames.size(), 1);
         for (String each : uniqueNames) {
             String jobName = UniqueJob.from(each).getJobName();
+            if (assignedJobNames.contains(jobName) || ineligibleJobNames.contains(jobName)) {
+                continue;
+            }
             Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
             if (!jobConfig.isPresent()) {
-                registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
+                regCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 continue;
             }
             if (runningService.isJobRunning(jobName)) {
                 misfiredService.add(jobName);
                 continue;
             }
-            if (!result.containsKey(jobName) && !ineligibleJobNames.contains(jobName)) {
-                result.put(each, JobContext.from(jobConfig.get()));
-            }
+            result.put(each, JobContext.from(jobConfig.get()));
+            assignedJobNames.add(jobName);
         }
         return result;
     }
@@ -109,7 +114,7 @@ public class ReadyService {
      */
     public void remove(final Collection<String> uniqueNames) {
         for (String each : uniqueNames) {
-            registryCenter.remove(ReadyNode.getReadyJobNodePath(each));
+            regCenter.remove(ReadyNode.getReadyJobNodePath(each));
         }
     }
 }

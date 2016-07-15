@@ -42,7 +42,7 @@ public final class EligibleJobContext {
     
     private final Collection<JobContext> failoverJobContexts;
     
-    private final Map<String, JobContext> misfiredJobContexts;
+    private final Collection<JobContext> misfiredJobContexts;
     
     private final Map<String, JobContext> readyJobContexts;
     
@@ -54,19 +54,17 @@ public final class EligibleJobContext {
      */
     public AssignedTaskContext allocate(final ResourceAllocateStrategy resourceAllocateStrategy) {
         List<Protos.TaskInfo> failoverTaskInfoList = resourceAllocateStrategy.allocate(failoverJobContexts);
-        Map<String, List<Protos.TaskInfo>> misfiredTaskInfoMap = resourceAllocateStrategy.allocate(misfiredJobContexts);
+        List<Protos.TaskInfo> misfiredTaskInfoList = resourceAllocateStrategy.allocate(misfiredJobContexts);
         Map<String, List<Protos.TaskInfo>> readyTaskInfoMap = resourceAllocateStrategy.allocate(readyJobContexts);
         return new AssignedTaskContext(
-                getTaskInfoList(failoverTaskInfoList, misfiredTaskInfoMap, readyTaskInfoMap), getFailoverTaskContext(failoverTaskInfoList), misfiredTaskInfoMap.keySet(), readyTaskInfoMap.keySet());
+                getTaskInfoList(failoverTaskInfoList, misfiredTaskInfoList, readyTaskInfoMap), getFailoverTaskContext(failoverTaskInfoList), getJobNames(misfiredTaskInfoList), readyTaskInfoMap.keySet());
     }
     
     private List<Protos.TaskInfo> getTaskInfoList(final List<Protos.TaskInfo> failoverTaskInfoList,
-                                                  final Map<String, List<Protos.TaskInfo>> misfiredTaskInfoMap, final Map<String, List<Protos.TaskInfo>> readyTaskInfoMap) {
-        List<Protos.TaskInfo> result = new ArrayList<>(failoverTaskInfoList.size() + misfiredTaskInfoMap.size() + readyTaskInfoMap.size());
+                                                  final List<Protos.TaskInfo> misfiredTaskInfoList, final Map<String, List<Protos.TaskInfo>> readyTaskInfoMap) {
+        List<Protos.TaskInfo> result = new ArrayList<>(failoverTaskInfoList.size() + misfiredTaskInfoList.size() + readyTaskInfoMap.size());
         result.addAll(failoverTaskInfoList);
-        for (List<Protos.TaskInfo> each : misfiredTaskInfoMap.values()) {
-            result.addAll(each);
-        }
+        result.addAll(misfiredTaskInfoList);
         for (List<Protos.TaskInfo> each : readyTaskInfoMap.values()) {
             result.addAll(each);
         }
@@ -79,6 +77,16 @@ public final class EligibleJobContext {
             @Override
             public TaskContext apply(final Protos.TaskInfo input) {
                 return TaskContext.from(input.getTaskId().getValue());
+            }
+        });
+    }
+    
+    private List<String> getJobNames(final List<Protos.TaskInfo> taskInfoList) {
+        return Lists.transform(taskInfoList, new Function<Protos.TaskInfo, String>() {
+            
+            @Override
+            public String apply(final Protos.TaskInfo input) {
+                return TaskContext.from(input.getTaskId().getValue()).getJobName();
             }
         });
     }

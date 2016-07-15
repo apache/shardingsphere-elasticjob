@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.google.common.base.Preconditions;
 import lombok.EqualsAndHashCode;
 import org.apache.mesos.Protos;

@@ -76,10 +76,10 @@ public class FacadeService {
      */
     public EligibleJobContext getEligibleJobContext() {
         Collection<JobContext> failoverJobContexts = failoverService.getAllEligibleJobContexts();
-        Map<String, JobContext> misfiredJobContexts = misfiredService.getAllEligibleJobContexts(failoverJobContexts);
+        Collection<JobContext> misfiredJobContexts = misfiredService.getAllEligibleJobContexts(failoverJobContexts);
         Collection<JobContext> ineligibleJobContexts = new ArrayList<>(failoverJobContexts.size() + misfiredJobContexts.size());
         ineligibleJobContexts.addAll(failoverJobContexts);
-        ineligibleJobContexts.addAll(misfiredJobContexts.values());
+        ineligibleJobContexts.addAll(misfiredJobContexts);
         Map<String, JobContext> readyJobContexts = readyService.getAllEligibleJobContexts(ineligibleJobContexts);
         return new EligibleJobContext(failoverJobContexts, misfiredJobContexts, readyJobContexts);
     }
