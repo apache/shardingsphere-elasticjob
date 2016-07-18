@@ -19,8 +19,10 @@ package com.dangdang.ddframe.job.cloud.context;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.UUID;
@@ -30,8 +32,9 @@ import java.util.UUID;
  *
  * @author zhangliang
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 @ToString
 public final class TaskContext {
     
@@ -45,18 +48,23 @@ public final class TaskContext {
     
     private final ExecutionType type;
     
-    public TaskContext(final String jobName, final int shardingItem, final ExecutionType type) {
-        id = Joiner.on(DELIMITER).join(jobName, shardingItem, type, UUID.randomUUID().toString());
+    private final String slaveId;
+    
+    public TaskContext(final String jobName, final int shardingItem, final ExecutionType type, final String slaveId) {
+        id = Joiner.on(DELIMITER).join(jobName, shardingItem, type, slaveId, UUID.randomUUID().toString());
         this.jobName = jobName;
         this.shardingItem = shardingItem;
         this.type = type;
+        this.slaveId = slaveId;
     }
     
-    private TaskContext(final String id, final String jobName, final int shardingItem, final ExecutionType type) {
-        this.id = id;
-        this.jobName = jobName;
-        this.shardingItem = shardingItem;
-        this.type = type;
+    /**
+     * 获取任务元信息.
+     * 
+     * @return 任务元信息
+     */
+    public String getMetaInfo() {
+        return Joiner.on(DELIMITER).join(jobName, shardingItem);
     }
     
     /**
@@ -65,9 +73,21 @@ public final class TaskContext {
      * @param id 任务主键
      * @return 任务上下文
      */
-    public static TaskContext from(final String id) {
+    public static TaskContext fromId(final String id) {
         String[] result = id.split(DELIMITER);
-        Preconditions.checkState(4 == result.length);
-        return new TaskContext(id, result[0], Integer.parseInt(result[1]), ExecutionType.valueOf(result[2]));
+        Preconditions.checkState(5 == result.length);
+        return new TaskContext(id, result[0], Integer.parseInt(result[1]), ExecutionType.valueOf(result[2]), result[3]);
+    }
+    
+    /**
+     * 根据任务元信息获取任务上下文.
+     *
+     * @param metaInfo 任务元信息
+     * @return 任务上下文
+     */
+    public static TaskContext fromMetaInfo(final String metaInfo) {
+        String[] result = metaInfo.split(DELIMITER);
+        Preconditions.checkState(2 <= result.length);
+        return new TaskContext("", result[0], Integer.parseInt(result[1]), ExecutionType.READY, "");
     }
 }

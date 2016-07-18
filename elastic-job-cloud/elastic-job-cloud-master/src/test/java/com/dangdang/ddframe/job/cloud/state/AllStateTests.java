@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.cloud.state;
 
 import com.dangdang.ddframe.job.cloud.state.failover.FailoverNodeTest;
+import com.dangdang.ddframe.job.cloud.state.failover.FailoverServiceTest;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredNodeTest;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredServiceTest;
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyNodeTest;
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyServiceTest;
 import com.dangdang.ddframe.job.cloud.state.running.RunningNodeTest;
-import com.dangdang.ddframe.job.cloud.state.failover.FailoverServiceTest;
 import com.dangdang.ddframe.job.cloud.state.running.RunningServiceTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

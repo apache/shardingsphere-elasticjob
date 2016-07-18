@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.state.failover;
 
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
+import com.dangdang.ddframe.job.cloud.state.fixture.TaskNode;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -31,6 +33,7 @@ public final class FailoverNodeTest {
     
     @Test
     public void assertGetFailoverTaskNodePath() {
-        assertThat(FailoverNode.getFailoverTaskNodePath("test_job@-@0@-@FAILOVER@-@00"), is("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@00"));
+        String jobNodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodePath();
+        assertThat(FailoverNode.getFailoverTaskNodePath(jobNodePath), is("/state/failover/test_job/" + jobNodePath));
     }
 }

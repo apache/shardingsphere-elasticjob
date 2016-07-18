@@ -39,7 +39,7 @@ final class RunningNode {
         return String.format(RUNNING_JOB, jobName);
     }
     
-    static String getRunningTaskNodePath(final String taskId) {
-        return String.format(RUNNING_TASK, TaskContext.from(taskId).getJobName(), taskId);
+    static String getRunningTaskNodePath(final String taskMetaInfo) {
+        return String.format(RUNNING_TASK, TaskContext.fromMetaInfo(taskMetaInfo).getJobName(), taskMetaInfo);
     }
 }

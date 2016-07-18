@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.state.running;
 
+import com.dangdang.ddframe.job.cloud.state.fixture.TaskNode;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -26,6 +27,7 @@ public final class RunningNodeTest {
     
     @Test
     public void assertGetRunningTaskNodePath() {
-        assertThat(RunningNode.getRunningTaskNodePath("testJob@-@0@-@READY@-@00"), is("/state/running/testJob/testJob@-@0@-@READY@-@00"));
+        String nodePath = TaskNode.builder().build().getTaskNodePath();
+        assertThat(RunningNode.getRunningTaskNodePath(nodePath), is("/state/running/test_job/" + nodePath));
     }
 }

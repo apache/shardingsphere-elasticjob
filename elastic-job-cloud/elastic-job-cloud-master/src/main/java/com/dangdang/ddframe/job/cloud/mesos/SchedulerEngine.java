@@ -78,7 +78,7 @@ public final class SchedulerEngine implements Scheduler {
             
             @Override
             public TaskContext apply(final Protos.TaskInfo input) {
-                return TaskContext.from(input.getTaskId().getValue());
+                return TaskContext.fromId(input.getTaskId().getValue());
             }
         }));
     }
@@ -119,7 +119,7 @@ public final class SchedulerEngine implements Scheduler {
             schedulerDriver.launchTasks(entry.getValue(), filterTaskInfoBySlaveID(entry.getKey(), tasks));
         }
         for (Protos.TaskInfo each : tasks) {
-            facadeService.addRunning(TaskContext.from(each.getTaskId().getValue()));
+            facadeService.addRunning(TaskContext.fromId(each.getTaskId().getValue()));
         }
     }
     
@@ -153,7 +153,7 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
-        TaskContext taskContext = TaskContext.from(taskId);
+        TaskContext taskContext = TaskContext.fromId(taskId);
         log.trace("call statusUpdate task state is: {}", taskStatus.getState(), taskContext);
         switch (taskStatus.getState()) {
             case TASK_FINISHED:
@@ -161,7 +161,7 @@ public final class SchedulerEngine implements Scheduler {
                 facadeService.removeRunning(taskContext);
                 break;
             case TASK_LOST:
-                // TODO TASK_FAILED和TASK_ERROR是否要做失效转移
+            // TODO TASK_FAILED和TASK_ERROR是否要做失效转移
             case TASK_FAILED:
             case TASK_ERROR:
                 log.warn("task status is: {}, message is: {}, source is: {}", taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());

@@ -61,8 +61,8 @@ public class FailoverService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
-        if (!registryCenter.isExisted(FailoverNode.getFailoverTaskNodePath(taskContext.getId())) && !runningService.isTaskRunning(taskContext)) {
-            registryCenter.persist(FailoverNode.getFailoverTaskNodePath(taskContext.getId()), "");
+        if (!registryCenter.isExisted(FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo())) && !runningService.isTaskRunning(taskContext)) {
+            registryCenter.persist(FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo()), taskContext.getId());
         }
     }
     
@@ -79,8 +79,8 @@ public class FailoverService {
         Collection<JobContext> result = new ArrayList<>(jobNames.size());
         Set<HashCode> assignedTasks = new HashSet<>(jobNames.size() * 10, 1);
         for (String each : jobNames) {
-            List<String> taskIds = registryCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
-            if (taskIds.isEmpty()) {
+            List<String> taskMetaInfoList = registryCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
+            if (taskMetaInfoList.isEmpty()) {
                 registryCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
@@ -89,7 +89,7 @@ public class FailoverService {
                 registryCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
-            List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIds, assignedTasks);
+            List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskMetaInfoList, assignedTasks);
             if (!assignedShardingItems.isEmpty()) {
                 result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));
             }
@@ -97,10 +97,10 @@ public class FailoverService {
         return result;
     }
     
-    private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskIds, final Set<HashCode> assignedTasks) {
-        List<Integer> result = new ArrayList<>(taskIds.size());
-        for (String each : taskIds) {
-            TaskContext taskContext = TaskContext.from(each);
+    private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskMetaInfoList, final Set<HashCode> assignedTasks) {
+        List<Integer> result = new ArrayList<>(taskMetaInfoList.size());
+        for (String each : taskMetaInfoList) {
+            TaskContext taskContext = TaskContext.fromMetaInfo(each);
             if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(taskContext.getShardingItem()).hash()) && !runningService.isTaskRunning(taskContext)) {
                 result.add(taskContext.getShardingItem());
             }
@@ -115,7 +115,7 @@ public class FailoverService {
      */
     public void remove(final Collection<TaskContext> taskContexts) {
         for (TaskContext each : taskContexts) {
-            registryCenter.remove(FailoverNode.getFailoverTaskNodePath(each.getId()));
+            registryCenter.remove(FailoverNode.getFailoverTaskNodePath(each.getMetaInfo()));
         }
     }
 }

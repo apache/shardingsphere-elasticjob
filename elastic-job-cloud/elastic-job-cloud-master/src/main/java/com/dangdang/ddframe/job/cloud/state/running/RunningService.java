@@ -37,9 +37,9 @@ public class RunningService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
-        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getId());
+        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo());
         if (!registryCenter.isExisted(runningTaskNodePath)) {
-            registryCenter.persist(runningTaskNodePath, "");
+            registryCenter.persist(runningTaskNodePath, taskContext.getId());
         }
     }
     
@@ -49,14 +49,10 @@ public class RunningService {
      * @param taskContext 任务运行时上下文
      */
     public void remove(final TaskContext taskContext) {
-        if (!registryCenter.isExisted(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
-            return;
-        }
-        for (String each : registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
-            TaskContext runningTaskContext = TaskContext.from(each);
-            if (runningTaskContext.getJobName().equals(taskContext.getJobName()) && runningTaskContext.getShardingItem() == (taskContext.getShardingItem())) {
-                registryCenter.remove(RunningNode.getRunningTaskNodePath(runningTaskContext.getId()));
-            }
+        registryCenter.remove(RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo()));
+        String jobRootNode = RunningNode.getRunningJobNodePath(taskContext.getJobName());
+        if (registryCenter.isExisted(jobRootNode) && registryCenter.getChildrenKeys(jobRootNode).isEmpty()) {
+            registryCenter.remove(jobRootNode);
         }
     }
     
@@ -81,7 +77,7 @@ public class RunningService {
             return false;
         }
         for (String each : registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
-            if (TaskContext.from(each).getShardingItem() == taskContext.getShardingItem()) {
+            if (TaskContext.fromMetaInfo(each).getShardingItem() == taskContext.getShardingItem()) {
                 return true;
             }
         }

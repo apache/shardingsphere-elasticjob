@@ -39,7 +39,7 @@ public final class FailoverNode {
         return String.format(FAILOVER_JOB, jobName);
     }
     
-    static String getFailoverTaskNodePath(final String taskId) {
-        return String.format(FAILOVER_TASK, TaskContext.from(taskId).getJobName(), taskId);
+    static String getFailoverTaskNodePath(final String taskMetaInfo) {
+        return String.format(FAILOVER_TASK, TaskContext.fromMetaInfo(taskMetaInfo).getJobName(), taskMetaInfo);
     }
 }

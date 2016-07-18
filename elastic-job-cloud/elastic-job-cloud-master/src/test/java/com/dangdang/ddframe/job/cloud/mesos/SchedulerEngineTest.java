@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeService;
 import com.dangdang.ddframe.job.cloud.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.cloud.state.fixture.TaskNode;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
@@ -95,40 +96,45 @@ public final class SchedulerEngineTest {
     
     @Test
     public void assertFinishedStatusUpdate() {
+        String nodePath = TaskNode.builder().build().getTaskNodeValue();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue(nodePath)).setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).removeRunning(TaskContext.fromId(nodePath));
     }
     
     @Test
     public void assertKilledStatusUpdate() {
+        String nodePath = TaskNode.builder().build().getTaskNodeValue();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_KILLED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue(nodePath)).setState(Protos.TaskState.TASK_KILLED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).removeRunning(TaskContext.fromId(nodePath));
     }
     
     @Test
     public void assertFailedStatusUpdate() {
+        String nodePath = TaskNode.builder().build().getTaskNodeValue();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_FAILED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@READY@-@00"));
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue(nodePath)).setState(Protos.TaskState.TASK_FAILED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.fromId(nodePath));
+        verify(facadeService).removeRunning(TaskContext.fromId(nodePath));
     }
     
     @Test
     public void assertErrorStatusUpdate() {
+        String nodePath = TaskNode.builder().build().getTaskNodeValue();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_ERROR).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@READY@-@00"));
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue(nodePath)).setState(Protos.TaskState.TASK_ERROR).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.fromId(nodePath));
+        verify(facadeService).removeRunning(TaskContext.fromId(nodePath));
     }
     
     @Test
     public void assertLostStatusUpdate() {
+        String nodePath = TaskNode.builder().build().getTaskNodeValue();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_LOST).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@READY@-@00"));
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue(nodePath)).setState(Protos.TaskState.TASK_LOST).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.fromId(nodePath));
+        verify(facadeService).removeRunning(TaskContext.fromId(nodePath));
     }
     
     @Test

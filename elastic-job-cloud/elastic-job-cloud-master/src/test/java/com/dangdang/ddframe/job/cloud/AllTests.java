@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.cloud;
 
 import com.dangdang.ddframe.job.cloud.boot.AllBootTests;
-import com.dangdang.ddframe.job.cloud.context.AllContextTests;
-import com.dangdang.ddframe.job.cloud.producer.AllProducerTests;
 import com.dangdang.ddframe.job.cloud.config.AllConfigTests;
+import com.dangdang.ddframe.job.cloud.context.AllContextTests;
 import com.dangdang.ddframe.job.cloud.mesos.AllMesosTests;
+import com.dangdang.ddframe.job.cloud.producer.AllProducerTests;
 import com.dangdang.ddframe.job.cloud.rest.AllRestTests;
 import com.dangdang.ddframe.job.cloud.state.AllStateTests;
 import org.junit.runner.RunWith;

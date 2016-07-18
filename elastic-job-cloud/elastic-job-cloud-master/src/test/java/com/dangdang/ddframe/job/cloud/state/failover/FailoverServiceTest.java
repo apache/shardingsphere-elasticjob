@@ -19,9 +19,11 @@ package com.dangdang.ddframe.job.cloud.state.failover;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.cloud.state.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
@@ -66,30 +68,33 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertAddWhenExisted() {
-        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111")).thenReturn(true);
-        failoverService.add(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
-        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111");
-        verify(regCenter, times(0)).persist("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111", "");
+        String nodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodePath();
+        when(regCenter.isExisted("/state/failover/test_job/" + nodePath)).thenReturn(true);
+        failoverService.add(TaskContext.fromMetaInfo(nodePath));
+        verify(regCenter).isExisted("/state/failover/test_job/" + nodePath);
+        verify(regCenter, times(0)).persist("/state/failover/test_job/" + nodePath, "");
     }
     
     @Test
     public void assertAddWhenNotExistedAndTaskIsRunning() {
-        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111")).thenReturn(false);
-        when(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"))).thenReturn(true);
-        failoverService.add(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
-        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111");
-        verify(runningService).isTaskRunning(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
-        verify(regCenter, times(0)).persist("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111", "");
+        String nodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodePath();
+        when(regCenter.isExisted("/state/failover/test_job/"  +nodePath)).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.fromMetaInfo(nodePath))).thenReturn(true);
+        failoverService.add(TaskContext.fromMetaInfo(nodePath));
+        verify(regCenter).isExisted("/state/failover/test_job/" + nodePath);
+        verify(runningService).isTaskRunning(TaskContext.fromMetaInfo(nodePath));
+        verify(regCenter, times(0)).persist("/state/failover/test_job/" + nodePath, "");
     }
     
     @Test
     public void assertAddWhenNotExistedAndTaskIsNotRunning() {
-        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111")).thenReturn(false);
-        when(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"))).thenReturn(false);
-        failoverService.add(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
-        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111");
-        verify(runningService).isTaskRunning(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
-        verify(regCenter).persist("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111", "");
+        String nodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodePath();
+        when(regCenter.isExisted("/state/failover/test_job/" + nodePath)).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.fromMetaInfo(nodePath))).thenReturn(false);
+        failoverService.add(TaskContext.fromMetaInfo(nodePath));
+        verify(regCenter).isExisted("/state/failover/test_job/" + nodePath);
+        verify(runningService).isTaskRunning(TaskContext.fromMetaInfo(nodePath));
+        verify(regCenter).persist("/state/failover/test_job/" + nodePath, "");
     }
     
     @Test
@@ -104,14 +109,15 @@ public final class FailoverServiceTest {
         when(regCenter.isExisted("/state/failover")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/failover")).thenReturn(Arrays.asList("task_empty_job", "not_existed_job", "eligible_job"));
         when(regCenter.getChildrenKeys("/state/failover/task_empty_job")).thenReturn(Collections.<String>emptyList());
-        when(regCenter.getChildrenKeys("/state/failover/not_existed_job")).thenReturn(Arrays.asList("not_existed_job@-@0@-@FAILOVER@-@11", "not_existed_job@-@@-@FAILOVER1@-@11"));
-        when(regCenter.getChildrenKeys("/state/failover/eligible_job")).thenReturn(
-                Arrays.asList("eligible_job@-@0@-@FAILOVER@-@11", "eligible_job@-@1@-@FAILOVER@-@11", "eligible_job@-@1@-@FAILOVER@-@22"));
+        when(regCenter.getChildrenKeys("/state/failover/not_existed_job")).thenReturn(Arrays.asList(
+                TaskNode.builder().jobName("not_existed_job").build().getTaskNodePath(), TaskNode.builder().jobName("not_existed_job").shardingItem(1).build().getTaskNodePath()));
+        String eligibleJobNodePath1 = TaskNode.builder().jobName("eligible_job").build().getTaskNodePath();
+        String eligibleJobNodePath2 = TaskNode.builder().jobName("eligible_job").shardingItem(1).build().getTaskNodePath();
+        when(regCenter.getChildrenKeys("/state/failover/eligible_job")).thenReturn(Arrays.asList(eligibleJobNodePath1, eligibleJobNodePath2));
         when(configService.load("not_existed_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         when(configService.load("eligible_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("eligible_job")));
-        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@0@-@FAILOVER@-@11"))).thenReturn(true);
-        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@1@-@FAILOVER@-@11"))).thenReturn(false);
-        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@1@-@FAILOVER@-@22"))).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.fromMetaInfo(eligibleJobNodePath1))).thenReturn(true);
+        when(runningService.isTaskRunning(TaskContext.fromMetaInfo(eligibleJobNodePath2))).thenReturn(false);
         Collection<JobContext> actual = failoverService.getAllEligibleJobContexts();
         assertThat(actual.size(), is(1));
         assertThat(actual.iterator().next().getAssignedShardingItems().size(), is(1));
@@ -123,8 +129,10 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertRemove() {
-        failoverService.remove(Arrays.asList(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"), TaskContext.from("test_job@-@1@-@FAILOVER@-@111")));
-        verify(regCenter).remove("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111");
-        verify(regCenter).remove("/state/failover/test_job/test_job@-@1@-@FAILOVER@-@111");
+        String jobNodePath1 = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodePath();
+        String jobNodePath2 = TaskNode.builder().shardingItem(1).type(ExecutionType.FAILOVER).build().getTaskNodePath();
+        failoverService.remove(Arrays.asList(TaskContext.fromMetaInfo(jobNodePath1), TaskContext.fromMetaInfo(jobNodePath2)));
+        verify(regCenter).remove("/state/failover/test_job/" + jobNodePath1);
+        verify(regCenter).remove("/state/failover/test_job/" + jobNodePath2);
     }
 }
