@@ -19,6 +19,8 @@ package com.dangdang.ddframe.job.cloud.internal.env;
 
 import org.junit.Test;
 
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
+
 import static org.junit.Assert.assertNotNull;
 
 public final class LocalHostServiceTest {

@@ -19,6 +19,8 @@ package com.dangdang.ddframe.job.cloud.internal.env;
 
 import org.junit.Test;
 
+import com.dangdang.ddframe.job.internal.env.TimeService;
+
 import static junit.framework.TestCase.assertTrue;
 
 

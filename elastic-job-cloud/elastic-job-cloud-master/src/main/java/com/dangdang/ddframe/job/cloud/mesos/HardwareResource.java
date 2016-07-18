@@ -19,9 +19,9 @@ package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
-import com.dangdang.ddframe.job.cloud.context.ShardingContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.util.GsonFactory;
+import com.dangdang.ddframe.job.context.ShardingContext;
+import com.dangdang.ddframe.job.util.GsonFactory;
 import com.google.common.base.Preconditions;
 import lombok.EqualsAndHashCode;
 import org.apache.mesos.Protos;

@@ -19,6 +19,8 @@ package com.dangdang.ddframe.job.cloud.exception;
 
 import org.junit.Test;
 
+import com.dangdang.ddframe.job.exception.JobTimeoutException;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

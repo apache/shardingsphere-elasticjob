@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.api;
 
-import com.dangdang.ddframe.job.cloud.context.ShardingContext;
+import com.dangdang.ddframe.job.context.ShardingContext;
+
 import lombok.RequiredArgsConstructor;
 
 /**

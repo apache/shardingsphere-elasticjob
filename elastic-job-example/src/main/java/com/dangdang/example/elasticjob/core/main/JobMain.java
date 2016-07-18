@@ -17,13 +17,13 @@
 
 package com.dangdang.example.elasticjob.core.main;
 
-import com.dangdang.ddframe.job.cloud.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.cloud.api.JobScheduler;
-import com.dangdang.ddframe.job.cloud.api.config.JobConfigurationFactory;
-import com.dangdang.ddframe.job.cloud.api.config.impl.DataFlowJobConfiguration;
-import com.dangdang.ddframe.job.cloud.api.config.impl.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.cloud.api.config.impl.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.cloud.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.lite.api.JobScheduler;
+import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;

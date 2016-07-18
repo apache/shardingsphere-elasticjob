@@ -19,6 +19,8 @@ package com.dangdang.ddframe.job.cloud.util;
 
 import org.junit.Test;
 
+import com.dangdang.ddframe.job.util.GsonFactory;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 

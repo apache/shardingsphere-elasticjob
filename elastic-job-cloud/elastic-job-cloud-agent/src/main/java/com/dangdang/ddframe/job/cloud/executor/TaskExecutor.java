@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.executor;
 
-import com.dangdang.ddframe.job.cloud.context.ShardingContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
@@ -28,6 +27,8 @@ import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.Protos.TaskState;
 import org.apache.mesos.Protos.TaskStatus;
+
+import com.dangdang.ddframe.job.context.ShardingContext;
 
 import java.io.FileInputStream;
 import java.io.IOException;

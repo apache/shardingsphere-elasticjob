@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.cloud.boot;
 
 import com.dangdang.ddframe.job.cloud.boot.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.boot.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.cloud.rest.RestfulServer;
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.cloud.mesos.SchedulerEngine;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;

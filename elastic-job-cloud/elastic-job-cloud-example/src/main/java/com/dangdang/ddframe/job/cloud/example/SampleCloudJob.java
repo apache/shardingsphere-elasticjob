@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.example;
 
 import com.dangdang.ddframe.job.cloud.api.AbstractCloudElasticJob;
-import com.dangdang.ddframe.job.cloud.context.ShardingContext;
+import com.dangdang.ddframe.job.context.ShardingContext;
 
 import java.util.Date;
 

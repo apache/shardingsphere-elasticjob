@@ -13,11 +13,11 @@
                         http://www.springframework.org/schema/aop
                         http://www.springframework.org/schema/aop/spring-aop.xsd
                         ">
-    <context:component-scan base-package="com.dangdang.ddframe.job.fixture.service"/>
+    <context:component-scan base-package="com.dangdang.ddframe.job.lite.fixture.service"/>
     <aop:aspectj-autoproxy proxy-target-class="false"/>
     <import resource="base.xml"/>
-    <job:simple id="simpleElasticJob_namespace_listener_jdk_proxy" class="com.dangdang.ddframe.job.cloud.fixture.SimpleElasticJob" registry-center-ref="regCenter" cron="${simpleElasticJob.cron}" sharding-total-count="${simpleElasticJob.shardingTotalCount}" sharding-item-parameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
-        <job:listener class="com.dangdang.ddframe.job.cloud.fixture.listener.SimpleJdkDynamicProxyListener" />
+    <job:simple id="simpleElasticJob_namespace_listener_jdk_proxy" class="com.dangdang.ddframe.job.lite.fixture.SimpleElasticJob" registry-center-ref="regCenter" cron="${simpleElasticJob.cron}" sharding-total-count="${simpleElasticJob.shardingTotalCount}" sharding-item-parameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
+        <job:listener class="com.dangdang.ddframe.job.lite.fixture.listener.SimpleJdkDynamicProxyListener" />
     </job:simple>
-    <job:dataflow id="throughputDataFlowElasticJob_namespace_listener_jdk_proxy" class="com.dangdang.ddframe.job.cloud.fixture.ThroughputDataFlowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="3" fetch-data-count="100" description="中文描述" overwrite="true" streaming-process="true"/>
+    <job:dataflow id="throughputDataFlowElasticJob_namespace_listener_jdk_proxy" class="com.dangdang.ddframe.job.lite.fixture.ThroughputDataFlowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="3" fetch-data-count="100" description="中文描述" overwrite="true" streaming-process="true"/>
 </beans>

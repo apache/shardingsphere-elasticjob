@@ -1,7 +1,7 @@
 package com.dangdang.example.elasticjob.spring.job.listener;
 
-import com.dangdang.ddframe.job.cloud.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.cloud.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 
 public class SimpleListener implements ElasticJobListener {
     
