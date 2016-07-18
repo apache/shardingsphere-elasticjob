@@ -15,12 +15,17 @@
     <dependencies>
         <dependency>
             <groupId>com.dangdang</groupId>
-            <artifactId>elastic-job-cloud-common</artifactId>
+            <artifactId>elastic-job-common</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.mesos</groupId>
             <artifactId>mesos</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>

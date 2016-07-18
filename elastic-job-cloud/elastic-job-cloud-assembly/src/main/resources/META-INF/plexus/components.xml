@@ -100,7 +100,7 @@
             <role>org.apache.maven.plugin.assembly.archive.phase.AssemblyArchiverPhase
             </role>
             <role-hint>classpath-file-sets</role-hint>
-            <implementation>com.dangdang.ddframe.job.cloud.assembly.ClasspathFileSetAssemblyPhase
+            <implementation>com.dangdang.ddframe.job.assembly.ClasspathFileSetAssemblyPhase
             </implementation>
             <description />
             <isolated-realm>false</isolated-realm>
