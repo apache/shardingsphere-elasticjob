@@ -28,9 +28,11 @@ import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * 为Mesos提供的门面服务.
@@ -71,27 +73,49 @@ public class FacadeService {
     /**
      * 获取有资格运行的作业.
      * 
-     * @return 有资格运行的作业集合上下文
+     * @return 作业上下文集合
      */
-    public EligibleJobContext getEligibleJobContext() {
+    public Collection<JobContext> getEligibleJobContext() {
         Collection<JobContext> failoverJobContexts = failoverService.getAllEligibleJobContexts();
         Collection<JobContext> misfiredJobContexts = misfiredService.getAllEligibleJobContexts(failoverJobContexts);
         Collection<JobContext> ineligibleJobContexts = new ArrayList<>(failoverJobContexts.size() + misfiredJobContexts.size());
         ineligibleJobContexts.addAll(failoverJobContexts);
         ineligibleJobContexts.addAll(misfiredJobContexts);
         Collection<JobContext> readyJobContexts = readyService.getAllEligibleJobContexts(ineligibleJobContexts);
-        return new EligibleJobContext(failoverJobContexts, misfiredJobContexts, readyJobContexts);
+        Collection<JobContext> result = new ArrayList<>(failoverJobContexts.size() + misfiredJobContexts.size() + readyJobContexts.size());
+        result.addAll(failoverJobContexts);
+        result.addAll(misfiredJobContexts);
+        result.addAll(readyJobContexts);
+        return result;
     }
     
     /**
      * 从队列中删除已运行的作业.
      * 
-     * @param assignedTaskContext 分配完成的任务集合上下文
+     * @param taskContexts 任务上下文集合
      */
-    public void removeLaunchTasksFromQueue(final AssignedTaskContext assignedTaskContext) {
-        failoverService.remove(assignedTaskContext.getFailoverTaskContexts());
-        misfiredService.remove(assignedTaskContext.getMisfiredJobNames());
-        readyService.remove(assignedTaskContext.getReadyJobNames());
+    public void removeLaunchTasksFromQueue(final Collection<TaskContext> taskContexts) {
+        Collection<TaskContext> failoverTaskContexts = new ArrayList<>(taskContexts.size());
+        Collection<String> misfiredJobNames = new HashSet<>(taskContexts.size(), 1);
+        Collection<String> readyJobNames = new HashSet<>(taskContexts.size(), 1);
+        for (TaskContext each : taskContexts) {
+            switch (each.getType()) {
+                case FAILOVER:
+                    failoverTaskContexts.add(each);
+                    break;
+                case MISFIRED:
+                    misfiredJobNames.add(each.getJobName());
+                    break;
+                case READY:
+                    readyJobNames.add(each.getJobName());
+                    break;
+                default:
+                    break;
+            }
+        }
+        failoverService.remove(failoverTaskContexts);
+        misfiredService.remove(misfiredJobNames);
+        readyService.remove(readyJobNames);
     }
     
     /**

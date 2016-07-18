@@ -30,7 +30,7 @@ import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
-import org.apache.mesos.Protos;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,25 +100,35 @@ public final class FacadeServiceTest {
         when(failoverService.getAllEligibleJobContexts()).thenReturn(failoverJobContexts);
         when(misfiredService.getAllEligibleJobContexts(failoverJobContexts)).thenReturn(misfiredJobContexts);
         when(readyService.getAllEligibleJobContexts(Arrays.asList(failoverJobContexts.iterator().next(), misfiredJobContexts.iterator().next()))).thenReturn(readyJobContexts);
-        EligibleJobContext actual = facadeService.getEligibleJobContext();
-        Collection<JobContext> actualFailoverJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "failoverJobContexts", false));
-        assertThat(actualFailoverJobContexts.size(), is(1));
-        assertThat(actualFailoverJobContexts.iterator().next().getJobConfig().getJobName(), is("failover_job"));
-        Collection<JobContext> actualMisfiredJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "misfiredJobContexts", false));
-        assertThat(actualMisfiredJobContexts.size(), is(1));
-        assertThat(actualMisfiredJobContexts.iterator().next().getJobConfig().getJobName(), is("misfire_job"));
-        Collection<JobContext> actualReadyJobContexts = ReflectionUtils.getFieldValue(actual, ReflectionUtils.getFieldWithName(EligibleJobContext.class, "readyJobContexts", false));
-        assertThat(actualReadyJobContexts.size(), is(1));
-        assertThat(actualReadyJobContexts.iterator().next().getJobConfig().getJobName(), is("ready_job"));
+        Collection<JobContext> actual = facadeService.getEligibleJobContext();
+    
+        assertThat(actual.size(), is(3));
+        int i = 0;
+        for (JobContext each : actual) {
+            switch (i) {
+                case 0:
+                    assertThat(each.getJobConfig().getJobName(), is("failover_job"));
+                    break;
+                case 1:
+                    assertThat(each.getJobConfig().getJobName(), is("misfire_job"));
+                    break;
+                case 2:
+                    assertThat(each.getJobConfig().getJobName(), is("ready_job"));
+                    break;
+                default:
+                    break;
+            }
+            i++;
+        }
     }
     
     @Test
     public void assertRemoveLaunchTasksFromQueue() {
         facadeService.removeLaunchTasksFromQueue(
-                new AssignedTaskContext(Collections.<Protos.TaskInfo>emptyList(), Collections.<TaskContext>emptyList(), Collections.<String>emptyList(), Collections.<String>emptyList()));
-        verify(failoverService).remove(Collections.<TaskContext>emptyList());
-        verify(misfiredService).remove(Collections.<String>emptyList());
-        verify(readyService).remove(Collections.<String>emptyList());
+                Arrays.asList(TaskContext.from("test_job@-@0@-@FAILOVER@-@00"), TaskContext.from("test_job@-@0@-@MISFIRED@-@00"), TaskContext.from("test_job@-@0@-@READY@-@00")));
+        verify(failoverService).remove(Collections.singletonList(TaskContext.from("test_job@-@0@-@FAILOVER@-@00")));
+        verify(misfiredService).remove(Sets.newHashSet("test_job"));
+        verify(readyService).remove(Sets.newHashSet("test_job"));
     }
     
     @Test

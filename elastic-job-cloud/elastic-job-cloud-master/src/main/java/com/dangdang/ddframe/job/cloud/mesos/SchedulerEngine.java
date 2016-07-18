@@ -17,9 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.mesos.facade.AssignedTaskContext;
-import com.dangdang.ddframe.job.cloud.mesos.facade.EligibleJobContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeService;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
@@ -33,6 +32,7 @@ import org.apache.mesos.Scheduler;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -69,13 +69,18 @@ public final class SchedulerEngine implements Scheduler {
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
         log.trace("call resourceOffers: {}", offers);
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(getHardwareResource(offers));
-        EligibleJobContext eligibleJobContext = facadeService.getEligibleJobContext();
-        AssignedTaskContext assignedTaskContext = eligibleJobContext.allocate(resourceAllocateStrategy);
-        log.trace("call resourceOffers, eligibleJobContext is:{}, assignedTaskContext is {}", eligibleJobContext, assignedTaskContext);
-        List<Protos.TaskInfo> taskInfoList = assignedTaskContext.getTaskInfoList();
+        Collection<JobContext> eligibleJobContexts = facadeService.getEligibleJobContext();
+        List<Protos.TaskInfo> taskInfoList = resourceAllocateStrategy.allocate(eligibleJobContexts);
+        log.trace("call resourceOffers, assignedTaskContext is {}", taskInfoList);
         List<Protos.Offer> declinedOffers = declineUnusedOffers(schedulerDriver, offers, taskInfoList);
         launchTasks(schedulerDriver, offers, declinedOffers, taskInfoList);
-        facadeService.removeLaunchTasksFromQueue(assignedTaskContext);
+        facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
+            
+            @Override
+            public TaskContext apply(final Protos.TaskInfo input) {
+                return TaskContext.from(input.getTaskId().getValue());
+            }
+        }));
     }
     
     private List<HardwareResource> getHardwareResource(final List<Protos.Offer> offers) {

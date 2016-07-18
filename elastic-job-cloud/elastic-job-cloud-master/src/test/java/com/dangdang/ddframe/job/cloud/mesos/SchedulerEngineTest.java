@@ -20,8 +20,6 @@ package com.dangdang.ddframe.job.cloud.mesos;
 import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.mesos.facade.AssignedTaskContext;
-import com.dangdang.ddframe.job.cloud.mesos.facade.EligibleJobContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeService;
 import com.dangdang.ddframe.job.cloud.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
@@ -76,19 +74,18 @@ public final class SchedulerEngineTest {
         verify(facadeService).start();
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void assertResourceOffers() {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         List<Protos.Offer> offers = Arrays.asList(OfferBuilder.createOffer("offer_0", 100d, 128000d), OfferBuilder.createOffer("offer_1", 100d, 128000d));
-        EligibleJobContext eligibleJobContext = new EligibleJobContext(Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), 
-                ExecutionType.FAILOVER)), Collections.<JobContext>emptyList(), Collections.<JobContext>emptyList());
-        when(facadeService.getEligibleJobContext()).thenReturn(eligibleJobContext);
+        when(facadeService.getEligibleJobContext()).thenReturn(Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER)));
         schedulerEngine.resourceOffers(schedulerDriver, offers);
         verify(schedulerDriver, times(0)).declineOffer(Protos.OfferID.newBuilder().setValue("offer_0").build());
         verify(schedulerDriver).declineOffer(Protos.OfferID.newBuilder().setValue("offer_1").build());
         verify(schedulerDriver).launchTasks(eq(Collections.singletonList(offers.get(0).getId())), (Collection) any());
         verify(facadeService, times(10)).addRunning((TaskContext) any());
-        verify(facadeService).removeLaunchTasksFromQueue((AssignedTaskContext) any());
+        verify(facadeService).removeLaunchTasksFromQueue((Collection) any());
     }
     
     @Test
