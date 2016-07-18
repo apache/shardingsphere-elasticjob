@@ -16,8 +16,8 @@
     <context:component-scan base-package="com.dangdang.ddframe.job.fixture.service"/>
     <aop:aspectj-autoproxy proxy-target-class="true"/>
     <import resource="base.xml"/>
-    <job:simple id="simpleElasticJob_namespace_listener_cglib" class="com.dangdang.ddframe.job.fixture.SimpleElasticJob" registry-center-ref="regCenter" cron="${simpleElasticJob.cron}" sharding-total-count="${simpleElasticJob.shardingTotalCount}" sharding-item-parameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
-        <job:listener class="com.dangdang.ddframe.job.fixture.listener.SimpleCglibListener" />
+    <job:simple id="simpleElasticJob_namespace_listener_cglib" class="com.dangdang.ddframe.job.cloud.fixture.SimpleElasticJob" registry-center-ref="regCenter" cron="${simpleElasticJob.cron}" sharding-total-count="${simpleElasticJob.shardingTotalCount}" sharding-item-parameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
+        <job:listener class="com.dangdang.ddframe.job.cloud.fixture.listener.SimpleCglibListener" />
     </job:simple>
-    <job:dataflow id="throughputDataFlowElasticJob_namespace_listener_cglib" class="com.dangdang.ddframe.job.fixture.ThroughputDataFlowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="3" fetch-data-count="100" description="中文描述" overwrite="true" streaming-process="true"/>
+    <job:dataflow id="throughputDataFlowElasticJob_namespace_listener_cglib" class="com.dangdang.ddframe.job.cloud.fixture.ThroughputDataFlowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="3" fetch-data-count="100" description="中文描述" overwrite="true" streaming-process="true"/>
 </beans>

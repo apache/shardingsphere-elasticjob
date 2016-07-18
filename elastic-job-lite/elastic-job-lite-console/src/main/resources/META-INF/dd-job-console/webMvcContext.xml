@@ -44,11 +44,11 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/job/**"/>
-            <bean class="com.dangdang.ddframe.job.console.interceptor.SessionRegistryCenterConfigurationInterceptor" />
+            <bean class="com.dangdang.ddframe.job.cloud.console.interceptor.SessionRegistryCenterConfigurationInterceptor" />
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/server/**"/>
-            <bean class="com.dangdang.ddframe.job.console.interceptor.SessionRegistryCenterConfigurationInterceptor" />
+            <bean class="com.dangdang.ddframe.job.cloud.console.interceptor.SessionRegistryCenterConfigurationInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
 </beans>

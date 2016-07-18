@@ -17,8 +17,8 @@
 
 package com.dangdang.example.elasticjob.core.job;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.plugin.job.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.cloud.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.cloud.plugin.job.type.simple.AbstractSimpleElasticJob;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 

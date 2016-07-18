@@ -28,7 +28,7 @@
     
     <filter>
         <filter-name>wwwAuthFilter</filter-name>
-        <filter-class>com.dangdang.ddframe.job.console.security.WwwAuthFilter</filter-class>
+        <filter-class>com.dangdang.ddframe.job.cloud.console.security.WwwAuthFilter</filter-class>
         <init-param>
             <param-name>auth-config</param-name>
             <param-value>conf/auth.properties</param-value>

@@ -20,8 +20,8 @@
 
 package com.dangdang.example.elasticjob.spring.job.listener;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
+import com.dangdang.ddframe.job.cloud.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.cloud.api.listener.AbstractDistributeOnceElasticJobListener;
 
 import javax.annotation.Resource;
 

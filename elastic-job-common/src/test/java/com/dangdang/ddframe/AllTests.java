@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe;
 
-import com.dangdang.ddframe.job.AllJobTests;
+import com.dangdang.ddframe.job.cloud.AllJobTests;
 import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.AllRegTests;
 import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServers;

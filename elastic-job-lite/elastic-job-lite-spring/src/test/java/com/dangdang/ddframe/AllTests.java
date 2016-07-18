@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe;
 
-import com.dangdang.ddframe.job.AllSpringJobTests;
+import com.dangdang.ddframe.job.cloud.AllSpringJobTests;
 import com.dangdang.ddframe.reg.AllSpringRegTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
