@@ -43,16 +43,20 @@ public final class TaskContext {
     
     private final int shardingItem;
     
-    public TaskContext(final String jobName, final int shardingItem) {
-        id = Joiner.on(DELIMITER).join(jobName, shardingItem, UUID.randomUUID().toString());
+    private final ExecutionType type;
+    
+    public TaskContext(final String jobName, final int shardingItem, final ExecutionType type) {
+        id = Joiner.on(DELIMITER).join(jobName, shardingItem, type, UUID.randomUUID().toString());
         this.jobName = jobName;
         this.shardingItem = shardingItem;
+        this.type = type;
     }
     
-    private TaskContext(final String id, final String jobName, final int shardingItem) {
+    private TaskContext(final String id, final String jobName, final int shardingItem, final ExecutionType type) {
         this.id = id;
         this.jobName = jobName;
         this.shardingItem = shardingItem;
+        this.type = type;
     }
     
     /**
@@ -63,7 +67,7 @@ public final class TaskContext {
      */
     public static TaskContext from(final String id) {
         String[] result = id.split(DELIMITER);
-        Preconditions.checkState(3 == result.length);
-        return new TaskContext(id, result[0], Integer.parseInt(result[1]));
+        Preconditions.checkState(4 == result.length);
+        return new TaskContext(id, result[0], Integer.parseInt(result[1]), ExecutionType.valueOf(result[2]));
     }
 }

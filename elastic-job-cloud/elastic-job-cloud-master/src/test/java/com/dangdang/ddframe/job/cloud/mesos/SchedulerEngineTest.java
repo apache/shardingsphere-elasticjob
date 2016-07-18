@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.AssignedTaskContext;
@@ -79,8 +80,8 @@ public final class SchedulerEngineTest {
     public void assertResourceOffers() {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         List<Protos.Offer> offers = Arrays.asList(OfferBuilder.createOffer("offer_0", 100d, 128000d), OfferBuilder.createOffer("offer_1", 100d, 128000d));
-        EligibleJobContext eligibleJobContext = new EligibleJobContext(Collections.singletonList(
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"))), Collections.<JobContext>emptyList(), Collections.<JobContext>emptyList());
+        EligibleJobContext eligibleJobContext = new EligibleJobContext(Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), 
+                ExecutionType.FAILOVER)), Collections.<JobContext>emptyList(), Collections.<JobContext>emptyList());
         when(facadeService.getEligibleJobContext()).thenReturn(eligibleJobContext);
         schedulerEngine.resourceOffers(schedulerDriver, offers);
         verify(schedulerDriver, times(0)).declineOffer(Protos.OfferID.newBuilder().setValue("offer_0").build());
@@ -98,39 +99,39 @@ public final class SchedulerEngineTest {
     @Test
     public void assertFinishedStatusUpdate() {
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@00")).setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
     }
     
     @Test
     public void assertKilledStatusUpdate() {
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@00")).setState(Protos.TaskState.TASK_KILLED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_KILLED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
     }
     
     @Test
     public void assertFailedStatusUpdate() {
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@00")).setState(Protos.TaskState.TASK_FAILED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@00"));
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_FAILED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@READY@-@00"));
+        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
     }
     
     @Test
     public void assertErrorStatusUpdate() {
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@00")).setState(Protos.TaskState.TASK_ERROR).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@00"));
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_ERROR).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@READY@-@00"));
+        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
     }
     
     @Test
     public void assertLostStatusUpdate() {
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@00")).setState(Protos.TaskState.TASK_LOST).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
-        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@00"));
-        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@00"));
+                .setTaskId(Protos.TaskID.newBuilder().setValue("test_job@-@0@-@READY@-@00")).setState(Protos.TaskState.TASK_LOST).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.from("test_job@-@0@-@READY@-@00"));
+        verify(facadeService).removeRunning(TaskContext.from("test_job@-@0@-@READY@-@00"));
     }
     
     @Test

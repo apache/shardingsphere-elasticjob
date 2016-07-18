@@ -39,18 +39,21 @@ public final class JobContext {
     
     private final List<Integer> assignedShardingItems;
     
+    private final ExecutionType type;
+    
     /**
      * 通过作业配置创建作业运行上下文.
      * 
      * @param jobConfig 作业配置
+     * @param type 执行类型
      * @return 作业运行上下文
      */
-    public static JobContext from(final CloudJobConfiguration jobConfig) {
+    public static JobContext from(final CloudJobConfiguration jobConfig, final ExecutionType type) {
         int shardingTotalCount = jobConfig.getShardingTotalCount();
         List<Integer> shardingItems = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             shardingItems.add(i);
         }
-        return new JobContext(jobConfig, shardingItems);
+        return new JobContext(jobConfig, shardingItems, type);
     }
 }

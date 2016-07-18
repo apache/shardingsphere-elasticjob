@@ -26,6 +26,6 @@ public final class RunningNodeTest {
     
     @Test
     public void assertGetRunningTaskNodePath() {
-        assertThat(RunningNode.getRunningTaskNodePath("testJob@-@0@-@00"), is("/state/running/testJob/testJob@-@0@-@00"));
+        assertThat(RunningNode.getRunningTaskNodePath("testJob@-@0@-@READY@-@00"), is("/state/running/testJob/testJob@-@0@-@READY@-@00"));
     }
 }

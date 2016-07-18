@@ -15,22 +15,27 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.state.failover;
+package com.dangdang.ddframe.job.cloud.context;
 
-import org.junit.Test;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-public final class FailoverNodeTest {
+/**
+ * 执行类型.
+ *
+ * @author zhangliang
+ */
+public enum ExecutionType {
     
-    @Test
-    public void assertGetFailoverJobNodePath() {
-        assertThat(FailoverNode.getFailoverJobNodePath("test_job"), is("/state/failover/test_job"));
-    }
+    /**
+     * 准备执行的任务.
+     */
+    READY,
     
-    @Test
-    public void assertGetFailoverTaskNodePath() {
-        assertThat(FailoverNode.getFailoverTaskNodePath("test_job@-@0@-@FAILOVER@-@00"), is("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@00"));
-    }
+    /**
+     * 错过执行的任务.
+     */
+    MISFIRED,
+    
+    /**
+     * 失效转移的任务.
+     */
+    FAILOVER
 }

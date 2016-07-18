@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.stragety;
 
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.mesos.HardwareResource;
 import com.dangdang.ddframe.job.cloud.mesos.fixture.OfferBuilder;
@@ -39,11 +40,12 @@ public final class ExhaustFirstResourceAllocateStrategyTest {
     public void assertAllocate() {
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(
                 Arrays.asList(new HardwareResource(OfferBuilder.createOffer("offer_0", 8d, 1280d)), new HardwareResource(OfferBuilder.createOffer("offer_1", 8d, 1280d))));
-        List<Protos.TaskInfo> actual = resourceAllocateStrategy.allocate(
-                Arrays.asList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_0")), JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1"))));
+        List<Protos.TaskInfo> actual = resourceAllocateStrategy.allocate(Arrays.asList(
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_0"), ExecutionType.READY), 
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1"), ExecutionType.READY)));
         assertThat(actual.size(), is(10));
         for (int i = 0; i < actual.size(); i++) {
-            assertThat(actual.get(i).getTaskId().getValue(), startsWith("test_job_0@-@" + i));
+            assertThat(actual.get(i).getTaskId().getValue(), startsWith("test_job_0@-@" + i + "@-@READY@-@"));
             if (i < 8) {
                 assertThat(actual.get(i).getSlaveId().getValue(), is("slave-offer_0"));
             } else {

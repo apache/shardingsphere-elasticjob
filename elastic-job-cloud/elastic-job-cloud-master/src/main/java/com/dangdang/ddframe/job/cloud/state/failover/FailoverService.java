@@ -17,10 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.state.failover;
 
-import com.dangdang.ddframe.job.cloud.context.JobContext;
-import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
+import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Charsets;
@@ -90,7 +91,7 @@ public class FailoverService {
             }
             List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIds, assignedTasks);
             if (!assignedShardingItems.isEmpty()) {
-                result.add(new JobContext(jobConfig.get(), assignedShardingItems));
+                result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));
             }
         }
         return result;

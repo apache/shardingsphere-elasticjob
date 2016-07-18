@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.state.ready;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.state.UniqueJob;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
@@ -101,7 +102,7 @@ public class ReadyService {
                 misfiredService.add(jobName);
                 continue;
             }
-            result.add(JobContext.from(jobConfig.get()));
+            result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
             assignedJobNames.add(jobName);
         }
         return result;

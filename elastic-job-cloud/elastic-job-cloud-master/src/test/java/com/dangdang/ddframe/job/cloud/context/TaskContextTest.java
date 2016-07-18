@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.context;
 
-import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -28,16 +27,16 @@ public final class TaskContextTest {
     
     @Test
     public void assertNew() {
-        TaskContext actual = new TaskContext("test_job", 0);
+        TaskContext actual = new TaskContext("test_job", 0, ExecutionType.READY);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getShardingItem(), is(0));
-        assertThat(actual.getId(), startsWith("test_job@-@0@-@"));
+        assertThat(actual.getId(), startsWith("test_job@-@0@-@READY@-@"));
     }
     
     @Test
     public void assertFrom() {
-        TaskContext actual = TaskContext.from("test_job@-@0@-@01234567890");
-        assertThat(actual.getId(), is("test_job@-@0@-@01234567890"));
+        TaskContext actual = TaskContext.from("test_job@-@0@-@READY@-@01234567890");
+        assertThat(actual.getId(), is("test_job@-@0@-@READY@-@01234567890"));
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getShardingItem(), is(0));
     }

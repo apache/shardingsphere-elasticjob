@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
@@ -86,15 +87,15 @@ public final class HardwareResourceTest {
     @Test
     public void assertCreateTaskInfo() {
         HardwareResource hardwareResource = new HardwareResource(OfferBuilder.createOffer(10d, 1280d));
-        Protos.TaskInfo actual = hardwareResource.createTaskInfo(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")), 0);
-        assertThat(actual.getTaskId().getValue(), startsWith("test_job@-@0@-@"));
-        assertThat(actual.getName(), startsWith("test_job@-@0@-@"));
+        Protos.TaskInfo actual = hardwareResource.createTaskInfo(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"), ExecutionType.READY), 0);
+        assertThat(actual.getTaskId().getValue(), startsWith("test_job@-@0@-@READY@-@"));
+        assertThat(actual.getName(), startsWith("test_job@-@0@-@READY@-@"));
         assertThat(actual.getSlaveId().getValue(), is("slave-offer_id_0"));
         assertThat(actual.getResources(0).getName(), is("cpus"));
         assertThat(actual.getResources(0).getScalar().getValue(), is(1d));
         assertThat(actual.getResources(1).getName(), is("mem"));
         assertThat(actual.getResources(1).getScalar().getValue(), is(128d));
-        assertThat(actual.getExecutor().getExecutorId().getValue(), startsWith("test_job@-@0@-@"));
+        assertThat(actual.getExecutor().getExecutorId().getValue(), startsWith("test_job@-@0@-@READY@-@"));
         assertThat(actual.getExecutor().getCommand().getValue(), startsWith("sh bin/start.sh"));
         assertTrue(actual.getExecutor().getCommand().getShell());
         assertThat(actual.getExecutor().getCommand().getUrisCount(), is(1));

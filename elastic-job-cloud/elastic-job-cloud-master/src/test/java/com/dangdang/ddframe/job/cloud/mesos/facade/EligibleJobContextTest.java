@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos.facade;
 
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
@@ -42,23 +43,23 @@ public final class EligibleJobContextTest {
     
     @Test
     public void assertAllocate() {
-        Collection<JobContext> failoverJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job")));
-        Collection<JobContext> misfiredJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("misfired_job")));
-        Collection<JobContext> readyJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job")));
+        Collection<JobContext> failoverJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER));
+        Collection<JobContext> misfiredJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("misfired_job"), ExecutionType.MISFIRED));
+        Collection<JobContext> readyJobContext = Collections.singleton(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job"), ExecutionType.READY));
         EligibleJobContext actual = new EligibleJobContext(failoverJobContext, misfiredJobContext, readyJobContext);
         when(resourceAllocateStrategy.allocate(failoverJobContext)).thenReturn(Collections.singletonList(Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder()
-                        .setValue("failover_job@-@0@-@00").build()).setName("failover_job@-@0@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build()));
+                        .setValue("failover_job@-@0@-@FAILOVER@-@00").build()).setName("failover_job@-@0@-@FAILOVER@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build()));
         List<Protos.TaskInfo> taskInfoList = Collections.singletonList(Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder()
-                .setValue("misfired_job@-@0@-@00").build()).setName("misfired_job@-@0@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build());
+                .setValue("misfired_job@-@0@-@MISFIRED@-@00").build()).setName("misfired_job@-@0@-@MISFIRED@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build());
         when(resourceAllocateStrategy.allocate(misfiredJobContext)).thenReturn(taskInfoList);
         List<Protos.TaskInfo> readyTasks = Collections.singletonList(Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder()
-                .setValue("ready_job@-@0@-@00").build()).setName("ready_job@-@0@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build());
+                .setValue("ready_job@-@0@-@READY@-@00").build()).setName("ready_job@-@0@-@READY@-@00").setSlaveId(Protos.SlaveID.newBuilder().setValue("salve-S0").build()).build());
         when(resourceAllocateStrategy.allocate(readyJobContext)).thenReturn(readyTasks);
         AssignedTaskContext assignedTaskContext = actual.allocate(resourceAllocateStrategy);
         assertThat(assignedTaskContext.getTaskInfoList().size(), is(3));
-        assertThat(assignedTaskContext.getTaskInfoList().get(0).getTaskId().getValue(), is("failover_job@-@0@-@00"));
-        assertThat(assignedTaskContext.getTaskInfoList().get(1).getTaskId().getValue(), is("misfired_job@-@0@-@00"));
-        assertThat(assignedTaskContext.getTaskInfoList().get(2).getTaskId().getValue(), is("ready_job@-@0@-@00"));
+        assertThat(assignedTaskContext.getTaskInfoList().get(0).getTaskId().getValue(), is("failover_job@-@0@-@FAILOVER@-@00"));
+        assertThat(assignedTaskContext.getTaskInfoList().get(1).getTaskId().getValue(), is("misfired_job@-@0@-@MISFIRED@-@00"));
+        assertThat(assignedTaskContext.getTaskInfoList().get(2).getTaskId().getValue(), is("ready_job@-@0@-@READY@-@00"));
         assertThat(assignedTaskContext.getFailoverTaskContexts().size(), is(1));
         assertThat(assignedTaskContext.getFailoverTaskContexts().iterator().next().getJobName(), is("failover_job"));
         assertThat(assignedTaskContext.getMisfiredJobNames().size(), is(1));

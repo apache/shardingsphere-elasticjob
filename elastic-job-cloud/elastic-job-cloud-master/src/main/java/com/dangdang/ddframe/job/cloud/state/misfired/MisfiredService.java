@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.state.misfired;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -87,7 +88,7 @@ public class MisfiredService {
                 continue;
             }
             if (!ineligibleJobNames.contains(each) && !runningService.isJobRunning(each)) {
-                result.add(JobContext.from(jobConfig.get()));
+                result.add(JobContext.from(jobConfig.get(), ExecutionType.MISFIRED));
             }
         }
         return result;

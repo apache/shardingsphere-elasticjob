@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.state.misfired;
 
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
@@ -96,7 +97,8 @@ public final class MisfiredServiceTest {
         when(runningService.isJobRunning("running_job")).thenReturn(true);
         when(runningService.isJobRunning("ineligible_job")).thenReturn(false);
         when(runningService.isJobRunning("eligible_job")).thenReturn(false);
-        assertThat(misfiredService.getAllEligibleJobContexts(Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("eligible_job")))).size(), is(1));
+        assertThat(misfiredService.getAllEligibleJobContexts(Collections.singletonList(
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("eligible_job"), ExecutionType.MISFIRED))).size(), is(1));
         verify(regCenter).isExisted("/state/misfired");
         verify(regCenter).remove("/state/misfired/not_existed_job");
     }

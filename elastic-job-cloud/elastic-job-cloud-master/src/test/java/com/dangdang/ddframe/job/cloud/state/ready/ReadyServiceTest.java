@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.state.ready;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
@@ -93,7 +94,8 @@ public final class ReadyServiceTest {
         when(runningService.isJobRunning("running_job")).thenReturn(true);
         when(runningService.isJobRunning("ineligible_job")).thenReturn(false);
         when(runningService.isJobRunning("eligible_job")).thenReturn(false);
-        assertThat(readyService.getAllEligibleJobContexts(Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job")))).size(), is(1));
+        assertThat(readyService.getAllEligibleJobContexts(Collections.singletonList(
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job"), ExecutionType.READY))).size(), is(1));
         verify(regCenter).isExisted("/state/ready");
         verify(regCenter).getChildrenKeys("/state/ready");
         verify(configService).load("not_existed_job");

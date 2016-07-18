@@ -45,40 +45,40 @@ public final class RunningServiceTest {
     
     @Test
     public void assertAddWithRootNode() {
-        when(regCenter.isExisted("/state/running/test_job/test_job@-@0@-@00")).thenReturn(true);
-        runningService.add(TaskContext.from("test_job@-@0@-@00"));
-        verify(regCenter).isExisted("/state/running/test_job/test_job@-@0@-@00");
-        verify(regCenter, times(0)).persist("/state/running/test_job/test_job@-@0@-@00", "slave-S00");
+        when(regCenter.isExisted("/state/running/test_job/test_job@-@0@-@READY@-@00")).thenReturn(true);
+        runningService.add(TaskContext.from("test_job@-@0@-@READY@-@00"));
+        verify(regCenter).isExisted("/state/running/test_job/test_job@-@0@-@READY@-@00");
+        verify(regCenter, times(0)).persist("/state/running/test_job/test_job@-@0@-@READY@-@00", "slave-S00");
     }
     
     @Test
     public void assertAddWithoutRootNode() {
-        when(regCenter.isExisted("/state/running/test_job/test_job@-@0@-@00")).thenReturn(false);
-        runningService.add(TaskContext.from("test_job@-@0@-@00"));
-        verify(regCenter).isExisted("/state/running/test_job/test_job@-@0@-@00");
-        verify(regCenter).persist("/state/running/test_job/test_job@-@0@-@00", "");
+        when(regCenter.isExisted("/state/running/test_job/test_job@-@0@-@READY@-@00")).thenReturn(false);
+        runningService.add(TaskContext.from("test_job@-@0@-@READY@-@00"));
+        verify(regCenter).isExisted("/state/running/test_job/test_job@-@0@-@READY@-@00");
+        verify(regCenter).persist("/state/running/test_job/test_job@-@0@-@READY@-@00", "");
     }
     
     @Test
     public void assertRemoveWithoutRootNode() {
         when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);
-        runningService.remove(TaskContext.from("test_job@-@0@-@00"));
-        verify(regCenter, times(0)).remove("/state/running/test_job/test_job@-@0@-@00");
+        runningService.remove(TaskContext.from("test_job@-@0@-@READY@-@00"));
+        verify(regCenter, times(0)).remove("/state/running/test_job/test_job@-@0@-@READY@-@00");
     }
     
     @Test
     public void assertRemoveWithRootNode() {
         when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Arrays.asList("test_job@-@0@-@00", "test_job@-@0@-@11", "test_job@-@1@-@00"));
-        runningService.remove(TaskContext.from("test_job@-@0@-@00"));
-        verify(regCenter).remove("/state/running/test_job/test_job@-@0@-@00");
-        verify(regCenter).remove("/state/running/test_job/test_job@-@0@-@11");
-        verify(regCenter, times(0)).remove("/state/running/test_job/test_job@-@1@-@00");
+        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Arrays.asList("test_job@-@0@-@READY@-@00", "test_job@-@0@-@READY@-@11", "test_job@-@1@-@READY@-@00"));
+        runningService.remove(TaskContext.from("test_job@-@0@-@READY@-@00"));
+        verify(regCenter).remove("/state/running/test_job/test_job@-@0@-@READY@-@00");
+        verify(regCenter).remove("/state/running/test_job/test_job@-@0@-@READY@-@11");
+        verify(regCenter, times(0)).remove("/state/running/test_job/test_job@-@1@-@READY@-@00");
     }
     
     @Test
     public void assertIsJobRunning() {
-        when(regCenter.getChildrenKeys("/state/running/running_job")).thenReturn(Collections.singletonList("running_job@-@0@-@00"));
+        when(regCenter.getChildrenKeys("/state/running/running_job")).thenReturn(Collections.singletonList("running_job@-@0@-@READY@-@00"));
         assertTrue(runningService.isJobRunning("running_job"));
         assertFalse(runningService.isJobRunning("pending_job"));
         verify(regCenter).getChildrenKeys("/state/running/running_job");
@@ -88,15 +88,15 @@ public final class RunningServiceTest {
     @Test
     public void assertIsTaskRunningWithoutRootNode() {
         when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);
-        assertFalse(runningService.isTaskRunning(TaskContext.from("test_job@-@1@-@00")));
+        assertFalse(runningService.isTaskRunning(TaskContext.from("test_job@-@1@-@READY@-@00")));
     }
     
     @Test
     public void assertIsTaskRunningWitRootNode() {
         when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Collections.singletonList("test_job@-@0@-@00"));
-        assertTrue(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@11")));
-        assertFalse(runningService.isTaskRunning(TaskContext.from("test_job@-@1@-@00")));
+        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Collections.singletonList("test_job@-@0@-@READY@-@00"));
+        assertTrue(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@READY@-@11")));
+        assertFalse(runningService.isTaskRunning(TaskContext.from("test_job@-@1@-@READY@-@00")));
     }
     @Test
     public void assertClear() {

@@ -66,30 +66,30 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertAddWhenExisted() {
-        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@111")).thenReturn(true);
-        failoverService.add(TaskContext.from("test_job@-@0@-@111"));
-        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@111");
-        verify(regCenter, times(0)).persist("/state/failover/test_job/test_job@-@0@-@111", "");
+        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111")).thenReturn(true);
+        failoverService.add(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
+        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111");
+        verify(regCenter, times(0)).persist("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111", "");
     }
     
     @Test
     public void assertAddWhenNotExistedAndTaskIsRunning() {
-        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@111")).thenReturn(false);
-        when(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@111"))).thenReturn(true);
-        failoverService.add(TaskContext.from("test_job@-@0@-@111"));
-        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@111");
-        verify(runningService).isTaskRunning(TaskContext.from("test_job@-@0@-@111"));
-        verify(regCenter, times(0)).persist("/state/failover/test_job/test_job@-@0@-@111", "");
+        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111")).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"))).thenReturn(true);
+        failoverService.add(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
+        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111");
+        verify(runningService).isTaskRunning(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
+        verify(regCenter, times(0)).persist("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111", "");
     }
     
     @Test
     public void assertAddWhenNotExistedAndTaskIsNotRunning() {
-        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@111")).thenReturn(false);
-        when(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@111"))).thenReturn(false);
-        failoverService.add(TaskContext.from("test_job@-@0@-@111"));
-        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@111");
-        verify(runningService).isTaskRunning(TaskContext.from("test_job@-@0@-@111"));
-        verify(regCenter).persist("/state/failover/test_job/test_job@-@0@-@111", "");
+        when(regCenter.isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111")).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"))).thenReturn(false);
+        failoverService.add(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
+        verify(regCenter).isExisted("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111");
+        verify(runningService).isTaskRunning(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"));
+        verify(regCenter).persist("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111", "");
     }
     
     @Test
@@ -104,13 +104,14 @@ public final class FailoverServiceTest {
         when(regCenter.isExisted("/state/failover")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/failover")).thenReturn(Arrays.asList("task_empty_job", "not_existed_job", "eligible_job"));
         when(regCenter.getChildrenKeys("/state/failover/task_empty_job")).thenReturn(Collections.<String>emptyList());
-        when(regCenter.getChildrenKeys("/state/failover/not_existed_job")).thenReturn(Arrays.asList("not_existed_job@-@0@-@11", "not_existed_job@-@1@-@11"));
-        when(regCenter.getChildrenKeys("/state/failover/eligible_job")).thenReturn(Arrays.asList("eligible_job@-@0@-@11", "eligible_job@-@1@-@11", "eligible_job@-@1@-@22"));
+        when(regCenter.getChildrenKeys("/state/failover/not_existed_job")).thenReturn(Arrays.asList("not_existed_job@-@0@-@FAILOVER@-@11", "not_existed_job@-@@-@FAILOVER1@-@11"));
+        when(regCenter.getChildrenKeys("/state/failover/eligible_job")).thenReturn(
+                Arrays.asList("eligible_job@-@0@-@FAILOVER@-@11", "eligible_job@-@1@-@FAILOVER@-@11", "eligible_job@-@1@-@FAILOVER@-@22"));
         when(configService.load("not_existed_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         when(configService.load("eligible_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("eligible_job")));
-        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@0@-@11"))).thenReturn(true);
-        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@1@-@11"))).thenReturn(false);
-        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@1@-@22"))).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@0@-@FAILOVER@-@11"))).thenReturn(true);
+        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@1@-@FAILOVER@-@11"))).thenReturn(false);
+        when(runningService.isTaskRunning(TaskContext.from("eligible_job@-@1@-@FAILOVER@-@22"))).thenReturn(false);
         Collection<JobContext> actual = failoverService.getAllEligibleJobContexts();
         assertThat(actual.size(), is(1));
         assertThat(actual.iterator().next().getAssignedShardingItems().size(), is(1));
@@ -122,8 +123,8 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertRemove() {
-        failoverService.remove(Arrays.asList(TaskContext.from("test_job@-@0@-@111"), TaskContext.from("test_job@-@1@-@111")));
-        verify(regCenter).remove("/state/failover/test_job/test_job@-@0@-@111");
-        verify(regCenter).remove("/state/failover/test_job/test_job@-@1@-@111");
+        failoverService.remove(Arrays.asList(TaskContext.from("test_job@-@0@-@FAILOVER@-@111"), TaskContext.from("test_job@-@1@-@FAILOVER@-@111")));
+        verify(regCenter).remove("/state/failover/test_job/test_job@-@0@-@FAILOVER@-@111");
+        verify(regCenter).remove("/state/failover/test_job/test_job@-@1@-@FAILOVER@-@111");
     }
 }

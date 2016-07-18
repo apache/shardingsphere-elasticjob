@@ -28,7 +28,7 @@ public final class JobContextTest {
     @Test
     public void assertFrom() {
         CloudJobConfiguration jobConfig = new CloudJobConfiguration("test_job", "5/10 * * * * *", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true, false);
-        JobContext actual = JobContext.from(jobConfig);
+        JobContext actual = JobContext.from(jobConfig, ExecutionType.READY);
         assertThat(actual.getAssignedShardingItems().size(), is(10));
         for (int i = 0; i < actual.getAssignedShardingItems().size(); i++) {
             assertThat(actual.getAssignedShardingItems().get(i), is(i));
