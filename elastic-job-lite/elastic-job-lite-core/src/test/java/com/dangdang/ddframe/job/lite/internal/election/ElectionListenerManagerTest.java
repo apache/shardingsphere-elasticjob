@@ -19,13 +19,10 @@ package com.dangdang.ddframe.job.lite.internal.election;
 
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
-import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager.LeaderElectionJobListener;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;

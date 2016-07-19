@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.cloud.rest;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public final class RestfulExceptionTest {
     

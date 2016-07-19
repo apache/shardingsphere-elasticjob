@@ -22,9 +22,7 @@ package com.dangdang.ddframe.job.lite.plugin.job.type.integrated;
 import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.lite.plugin.job.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.lite.plugin.job.type.integrated.ScriptElasticJob;
 import com.dangdang.ddframe.job.lite.util.ScriptElasticJobUtil;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

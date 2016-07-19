@@ -98,7 +98,7 @@ public class ReadyService {
                 regCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 continue;
             }
-            if (runningService.isJobRunning(jobName)) {
+            if (runningService.isJobRunning(jobName) && jobConfig.get().isMisfire()) {
                 misfiredService.add(jobName);
                 continue;
             }

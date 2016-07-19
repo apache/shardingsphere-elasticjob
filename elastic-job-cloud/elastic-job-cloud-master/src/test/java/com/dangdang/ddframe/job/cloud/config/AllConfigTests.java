@@ -24,6 +24,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         ConfigurationNodeTest.class,
         ConfigurationServiceTest.class
-})
+    })
 public final class AllConfigTests {
 }

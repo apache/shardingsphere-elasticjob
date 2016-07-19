@@ -44,8 +44,8 @@ public final class ConfigurationServiceTest {
     @InjectMocks
     private ConfigurationService configService;
     
-    private String jobConfigJson = "{\"jobName\":\"%s\",\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"cpuCount\":1.0,\"memoryMB\":128.0," +
-            "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\",\"failover\":true,\"misfire\":true,\"streamingProcess\":true}";
+    private String jobConfigJson = "{\"jobName\":\"%s\",\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"cpuCount\":1.0,\"memoryMB\":128.0," 
+            + "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\",\"failover\":true,\"misfire\":true,\"streamingProcess\":true}";
     
     @Test
     public void assertAdd() {

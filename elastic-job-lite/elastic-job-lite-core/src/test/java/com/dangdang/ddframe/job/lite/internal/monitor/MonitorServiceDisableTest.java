@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.lite.internal.monitor;
 
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
-import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
-
 import org.junit.Test;
 
 import java.io.IOException;

@@ -20,8 +20,6 @@ package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration.DataFlowJobConfigurationBuilder;
 import com.dangdang.ddframe.job.lite.fixture.ThroughputDataFlowElasticJob;
-import com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow.DataFlowJobConfigurationDto;
-
 import org.junit.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 

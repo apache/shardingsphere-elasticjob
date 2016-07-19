@@ -18,11 +18,9 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.script;
 
+import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration.ScriptJobConfigurationBuilder;
 import org.junit.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-
-import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration.ScriptJobConfigurationBuilder;
-import com.dangdang.ddframe.job.lite.spring.namespace.parser.script.ScriptJobConfigurationDto;
 
 import static com.dangdang.ddframe.job.lite.spring.util.JobConfigurationDtoHelper.buildJobConfigurationBuilder;
 import static com.dangdang.ddframe.job.lite.spring.util.JobConfigurationDtoHelper.buildJobConfigurationDto;

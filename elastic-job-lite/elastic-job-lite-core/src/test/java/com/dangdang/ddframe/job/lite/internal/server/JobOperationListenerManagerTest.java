@@ -24,13 +24,10 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
-import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager.ConnectionLostListener;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager.JobPausedStatusJobListener;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.state.ConnectionState;

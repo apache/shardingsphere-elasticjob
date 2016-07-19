@@ -38,17 +38,17 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    JobAPIFactoryTest.class, 
-    JobStatusTest.class,
-    ServerStatusTest.class, 
-    ServerBriefStatusTest.class, 
-    ExecutionStatusTest.class, 
-    RegistryCenterFactoryTest.class, 
-    JobSettingsAPIImplTest.class,
-    JobOperateAPIImplTest.class,
-    JobStatisticsAPIImplTest.class,
-    ServerStatisticsAPIImplTest.class
-})
+        JobAPIFactoryTest.class, 
+        JobStatusTest.class,
+        ServerStatusTest.class, 
+        ServerBriefStatusTest.class, 
+        ExecutionStatusTest.class, 
+        RegistryCenterFactoryTest.class, 
+        JobSettingsAPIImplTest.class,
+        JobOperateAPIImplTest.class,
+        JobStatisticsAPIImplTest.class,
+        ServerStatisticsAPIImplTest.class
+    })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllTests {
     

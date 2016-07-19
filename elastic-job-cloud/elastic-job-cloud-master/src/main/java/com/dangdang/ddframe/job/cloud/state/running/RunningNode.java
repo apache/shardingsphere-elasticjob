@@ -19,14 +19,12 @@ package com.dangdang.ddframe.job.cloud.state.running;
 
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.state.StateNode;
-import lombok.RequiredArgsConstructor;
 
 /**
  * 运行中任务节点路径.
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor
 final class RunningNode {
     
     static final String ROOT = StateNode.ROOT + "/running";
@@ -40,6 +38,6 @@ final class RunningNode {
     }
     
     static String getRunningTaskNodePath(final String taskMetaInfo) {
-        return String.format(RUNNING_TASK, TaskContext.fromMetaInfo(taskMetaInfo).getJobName(), taskMetaInfo);
+        return String.format(RUNNING_TASK, TaskContext.MetaInfo.from(taskMetaInfo).getJobName(), taskMetaInfo);
     }
 }

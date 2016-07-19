@@ -18,12 +18,10 @@
 
 package com.dangdang.ddframe.job.lite.api.config;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.AbstractJobConfiguration.AbstractJobConfigurationBuilder;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration.DataFlowJobConfigurationBuilder;
 import com.dangdang.ddframe.job.lite.fixture.TestDataFlowJob;
-
 import org.junit.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.unitils.util.ReflectionUtils;

@@ -17,12 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNode;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class ShardingNodeTest {
     

@@ -17,12 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.storage;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class JobNodePathTest {
     

@@ -29,7 +29,6 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.lite.internal.offset.OffsetService;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobFacade;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.google.common.collect.Lists;

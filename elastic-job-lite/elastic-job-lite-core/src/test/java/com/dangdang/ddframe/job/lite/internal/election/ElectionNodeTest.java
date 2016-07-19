@@ -17,12 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public final class ElectionNodeTest {
     

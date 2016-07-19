@@ -24,6 +24,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         RestfulApiTest.class, 
         RestfulExceptionTest.class
-})
+    })
 public final class AllRestTests {
 }

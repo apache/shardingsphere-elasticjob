@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
-import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;

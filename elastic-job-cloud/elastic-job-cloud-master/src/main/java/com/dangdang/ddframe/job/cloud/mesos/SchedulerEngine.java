@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Scheduler;
@@ -43,7 +42,6 @@ import java.util.Map;
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor
 @Slf4j
 public final class SchedulerEngine implements Scheduler {
     
@@ -78,7 +76,7 @@ public final class SchedulerEngine implements Scheduler {
             
             @Override
             public TaskContext apply(final Protos.TaskInfo input) {
-                return TaskContext.fromId(input.getTaskId().getValue());
+                return TaskContext.from(input.getTaskId().getValue());
             }
         }));
     }
@@ -119,7 +117,7 @@ public final class SchedulerEngine implements Scheduler {
             schedulerDriver.launchTasks(entry.getValue(), filterTaskInfoBySlaveID(entry.getKey(), tasks));
         }
         for (Protos.TaskInfo each : tasks) {
-            facadeService.addRunning(TaskContext.fromId(each.getTaskId().getValue()));
+            facadeService.addRunning(TaskContext.from(each.getTaskId().getValue()));
         }
     }
     
@@ -153,19 +151,19 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
-        TaskContext taskContext = TaskContext.fromId(taskId);
-        log.trace("call statusUpdate task state is: {}", taskStatus.getState(), taskContext);
+        TaskContext taskContext = TaskContext.from(taskId);
+        log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
         switch (taskStatus.getState()) {
             case TASK_FINISHED:
             case TASK_KILLED:
-                facadeService.removeRunning(taskContext);
+                facadeService.removeRunning(taskContext.getMetaInfo());
                 break;
             case TASK_LOST:
             // TODO TASK_FAILED和TASK_ERROR是否要做失效转移
             case TASK_FAILED:
             case TASK_ERROR:
                 log.warn("task status is: {}, message is: {}, source is: {}", taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
-                facadeService.removeRunning(taskContext);
+                facadeService.removeRunning(taskContext.getMetaInfo());
                 facadeService.recordFailoverTask(taskContext);
                 break;
             default:

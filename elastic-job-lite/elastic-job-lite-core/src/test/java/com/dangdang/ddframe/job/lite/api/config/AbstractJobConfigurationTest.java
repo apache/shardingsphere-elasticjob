@@ -18,14 +18,12 @@
 
 package com.dangdang.ddframe.job.lite.api.config;
 
-import org.junit.Test;
-import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-import org.unitils.util.ReflectionUtils;
-
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.AbstractJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.AbstractJobConfiguration.AbstractJobConfigurationBuilder;
 import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
+import org.junit.Test;
+import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
+import org.unitils.util.ReflectionUtils;
 
 import static org.junit.Assert.assertThat;
 

@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.lite.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.domain.ServerInfo;
-import com.dangdang.ddframe.job.lite.internal.statistics.JobStatisticsAPIImpl;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;

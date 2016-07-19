@@ -23,7 +23,6 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import java.util.UUID;
 
@@ -34,37 +33,24 @@ import java.util.UUID;
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(of = "id")
 public final class TaskContext {
     
     private static final String DELIMITER = "@-@";
     
     private final String id;
     
-    private final String jobName;
-    
-    private final int shardingItem;
+    private final MetaInfo metaInfo;
     
     private final ExecutionType type;
     
     private final String slaveId;
     
     public TaskContext(final String jobName, final int shardingItem, final ExecutionType type, final String slaveId) {
-        id = Joiner.on(DELIMITER).join(jobName, shardingItem, type, slaveId, UUID.randomUUID().toString());
-        this.jobName = jobName;
-        this.shardingItem = shardingItem;
+        metaInfo = new MetaInfo(jobName, shardingItem);
         this.type = type;
         this.slaveId = slaveId;
-    }
-    
-    /**
-     * 获取任务元信息.
-     * 
-     * @return 任务元信息
-     */
-    public String getMetaInfo() {
-        return Joiner.on(DELIMITER).join(jobName, shardingItem);
+        id = Joiner.on(DELIMITER).join(metaInfo, type, slaveId, UUID.randomUUID().toString());
     }
     
     /**
@@ -73,21 +59,39 @@ public final class TaskContext {
      * @param id 任务主键
      * @return 任务上下文
      */
-    public static TaskContext fromId(final String id) {
+    public static TaskContext from(final String id) {
         String[] result = id.split(DELIMITER);
         Preconditions.checkState(5 == result.length);
-        return new TaskContext(id, result[0], Integer.parseInt(result[1]), ExecutionType.valueOf(result[2]), result[3]);
+        return new TaskContext(id, new MetaInfo(result[0], Integer.parseInt(result[1])), ExecutionType.valueOf(result[2]), result[3]);
     }
     
     /**
-     * 根据任务元信息获取任务上下文.
-     *
-     * @param metaInfo 任务元信息
-     * @return 任务上下文
+     * 任务元信息.
      */
-    public static TaskContext fromMetaInfo(final String metaInfo) {
-        String[] result = metaInfo.split(DELIMITER);
-        Preconditions.checkState(2 <= result.length);
-        return new TaskContext("", result[0], Integer.parseInt(result[1]), ExecutionType.READY, "");
+    @RequiredArgsConstructor
+    @Getter
+    @EqualsAndHashCode
+    public static class MetaInfo {
+        
+        private final String jobName;
+        
+        private final int shardingItem;
+        
+        /**
+         * 根据任务元信息字符串获取元信息对象.
+         *
+         * @param value 任务元信息字符串
+         * @return 元信息对象
+         */
+        public static MetaInfo from(final String value) {
+            String[] result = value.split(DELIMITER);
+            Preconditions.checkState(2 == result.length || 5 == result.length);
+            return new MetaInfo(result[0], Integer.parseInt(result[1]));
+        }
+        
+        @Override
+        public String toString() {
+            return Joiner.on(DELIMITER).join(jobName, shardingItem);
+        }
     }
 }

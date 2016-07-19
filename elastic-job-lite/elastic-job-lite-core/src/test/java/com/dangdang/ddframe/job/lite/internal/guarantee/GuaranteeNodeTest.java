@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.lite.internal.guarantee;
 
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeNode;
-
 import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

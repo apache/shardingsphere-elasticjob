@@ -21,12 +21,9 @@ import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
-import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;

@@ -18,15 +18,12 @@
 package com.dangdang.ddframe.job.cloud.state.ready;
 
 import com.dangdang.ddframe.job.cloud.state.StateNode;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 
 /**
  * 待运行作业队列节点路径.
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class ReadyNode {
     
     static final String ROOT = StateNode.ROOT + "/ready";

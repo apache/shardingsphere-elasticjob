@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.internal.statistics;
 import com.dangdang.ddframe.job.lite.api.ServerStatisticsAPI;
 import com.dangdang.ddframe.job.lite.domain.ServerBriefInfo;
 import com.dangdang.ddframe.job.lite.domain.ServerInfo;
-import com.dangdang.ddframe.job.lite.internal.statistics.ServerStatisticsAPIImpl;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;

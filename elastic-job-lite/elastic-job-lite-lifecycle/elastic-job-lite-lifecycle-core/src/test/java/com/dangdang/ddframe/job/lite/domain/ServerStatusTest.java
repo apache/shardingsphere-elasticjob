@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.lite.domain;
 
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.lite.domain.ServerInfo;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 

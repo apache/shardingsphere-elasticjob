@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.lite.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.google.common.collect.Lists;

@@ -24,28 +24,26 @@ import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataFlowJob;
 import com.dangdang.ddframe.job.lite.integrate.fixture.simple.SimpleElasticJob;
-
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public final class JobConfigurationFactoryTest {
     
     @Test
     public void assertCreateSimpleJobConfiguration() {
-        MatcherAssert.assertThat(JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleJob", SimpleElasticJob.class, 10, "0/10 * * * *").build(), is(instanceOf(SimpleJobConfiguration.class)));
+        assertThat(JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleJob", SimpleElasticJob.class, 10, "0/10 * * * *").build(), is(instanceOf(SimpleJobConfiguration.class)));
     }
 
     @Test
     public void assertCreateDataFlowJobConfiguration() {
-        MatcherAssert.assertThat(JobConfigurationFactory.createDataFlowJobConfigurationBuilder("dataFlowJob", TestDataFlowJob.class, 10, "0/10 * * * *").build(), is(instanceOf(DataFlowJobConfiguration.class)));
+        assertThat(JobConfigurationFactory.createDataFlowJobConfigurationBuilder("dataFlowJob", TestDataFlowJob.class, 10, "0/10 * * * *").build(), is(instanceOf(DataFlowJobConfiguration.class)));
     }
 
     @Test
     public void assertCreateScriptJobConfiguration() {
-        MatcherAssert.assertThat(JobConfigurationFactory.createScriptJobConfigurationBuilder("dataFlowJob", 10, "0/10 * * * *", "test.sh").build(), is(instanceOf(ScriptJobConfiguration.class)));
+        assertThat(JobConfigurationFactory.createScriptJobConfigurationBuilder("dataFlowJob", 10, "0/10 * * * *", "test.sh").build(), is(instanceOf(ScriptJobConfiguration.class)));
     }
 }

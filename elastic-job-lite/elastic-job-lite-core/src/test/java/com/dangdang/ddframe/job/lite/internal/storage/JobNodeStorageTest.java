@@ -21,8 +21,6 @@ import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
-import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationFieldUtil;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;

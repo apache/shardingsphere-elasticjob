@@ -17,14 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
+import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListener;
-import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 
 import java.util.Collections;
 

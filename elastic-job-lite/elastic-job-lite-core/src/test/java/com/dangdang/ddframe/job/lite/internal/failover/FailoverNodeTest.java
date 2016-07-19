@@ -17,13 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-
-import com.dangdang.ddframe.job.lite.internal.failover.FailoverNode;
 
 public final class FailoverNodeTest {
     

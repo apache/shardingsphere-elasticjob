@@ -27,11 +27,14 @@ import com.dangdang.ddframe.job.cloud.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * 为Mesos提供的门面服务.
@@ -93,8 +96,8 @@ public class FacadeService {
      * 
      * @param taskContexts 任务上下文集合
      */
-    public void removeLaunchTasksFromQueue(final Collection<TaskContext> taskContexts) {
-        Collection<TaskContext> failoverTaskContexts = new ArrayList<>(taskContexts.size());
+    public void removeLaunchTasksFromQueue(final List<TaskContext> taskContexts) {
+        List<TaskContext> failoverTaskContexts = new ArrayList<>(taskContexts.size());
         Collection<String> misfiredJobNames = new HashSet<>(taskContexts.size(), 1);
         Collection<String> readyJobNames = new HashSet<>(taskContexts.size(), 1);
         for (TaskContext each : taskContexts) {
@@ -103,16 +106,22 @@ public class FacadeService {
                     failoverTaskContexts.add(each);
                     break;
                 case MISFIRED:
-                    misfiredJobNames.add(each.getJobName());
+                    misfiredJobNames.add(each.getMetaInfo().getJobName());
                     break;
                 case READY:
-                    readyJobNames.add(each.getJobName());
+                    readyJobNames.add(each.getMetaInfo().getJobName());
                     break;
                 default:
                     break;
             }
         }
-        failoverService.remove(failoverTaskContexts);
+        failoverService.remove(Lists.transform(failoverTaskContexts, new Function<TaskContext, TaskContext.MetaInfo>() {
+            
+            @Override
+            public TaskContext.MetaInfo apply(final TaskContext input) {
+                return input.getMetaInfo();
+            }
+        }));
         misfiredService.remove(misfiredJobNames);
         readyService.remove(readyJobNames);
     }
@@ -127,12 +136,12 @@ public class FacadeService {
     }
     
     /**
-     * 将任务运行时上下文从队列删除.
+     * 将任务从运行时队列删除..
      *
-     * @param taskContext 任务运行时上下文
+     * @param metaInfo 任务元信息
      */
-    public void removeRunning(final TaskContext taskContext) {
-        runningService.remove(taskContext);
+    public void removeRunning(final TaskContext.MetaInfo metaInfo) {
+        runningService.remove(metaInfo);
     }
     
     /**
@@ -141,11 +150,12 @@ public class FacadeService {
      * @param taskContext 任务上下文
      */
     public void recordFailoverTask(final TaskContext taskContext) {
-        Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getJobName());
+        TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
+        Optional<CloudJobConfiguration> jobConfig = configService.load(metaInfo.getJobName());
         if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
             failoverService.add(taskContext);
         }
-        runningService.remove(taskContext);
+        runningService.remove(metaInfo);
     }
     
     /**

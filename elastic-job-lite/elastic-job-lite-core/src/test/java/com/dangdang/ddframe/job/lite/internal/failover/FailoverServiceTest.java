@@ -21,14 +21,12 @@ import com.dangdang.ddframe.job.internal.env.LocalHostService;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
-import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService.FailoverLeaderExecutionCallback;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;

@@ -77,10 +77,9 @@ public class FailoverService {
      * 如果需要失效转移, 则设置作业失效转移.
      */
     public void failoverIfNecessary() {
-        if (!needFailover()) {
-            return;
+        if (needFailover()) {
+            jobNodeStorage.executeInLeader(FailoverNode.LATCH, new FailoverLeaderExecutionCallback());
         }
-        jobNodeStorage.executeInLeader(FailoverNode.LATCH, new FailoverLeaderExecutionCallback());
     }
     
     private boolean needFailover() {

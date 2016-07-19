@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.util;
 
+import com.dangdang.ddframe.job.util.GsonFactory;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.util.GsonFactory;
-
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public final class GsonFactoryTest {
     

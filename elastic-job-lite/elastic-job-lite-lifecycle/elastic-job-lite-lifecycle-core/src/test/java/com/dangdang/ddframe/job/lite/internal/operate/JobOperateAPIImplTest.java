@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.operate;
 
 import com.dangdang.ddframe.job.lite.api.JobOperateAPI;
-import com.dangdang.ddframe.job.lite.internal.operate.JobOperateAPIImpl;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import org.hamcrest.core.Is;

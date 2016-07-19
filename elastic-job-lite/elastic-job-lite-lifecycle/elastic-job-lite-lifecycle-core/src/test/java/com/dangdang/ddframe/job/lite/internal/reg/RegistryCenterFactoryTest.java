@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.reg;
 
 import com.dangdang.ddframe.job.lite.AbstractNestedZookeeperBaseTest;
-import com.dangdang.ddframe.job.lite.internal.reg.RegistryCenterFactory;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;

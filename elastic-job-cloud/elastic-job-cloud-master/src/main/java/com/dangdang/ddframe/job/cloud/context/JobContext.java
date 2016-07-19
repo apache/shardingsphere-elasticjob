@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.context;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Getter
-@ToString
 public final class JobContext {
     
     private final CloudJobConfiguration jobConfig;

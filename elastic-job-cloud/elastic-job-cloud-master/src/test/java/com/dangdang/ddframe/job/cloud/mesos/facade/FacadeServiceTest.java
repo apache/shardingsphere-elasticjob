@@ -125,53 +125,53 @@ public final class FacadeServiceTest {
     @Test
     public void assertRemoveLaunchTasksFromQueue() {
         facadeService.removeLaunchTasksFromQueue(Arrays.asList(
-                TaskContext.fromId(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()), 
-                TaskContext.fromId(TaskNode.builder().type(ExecutionType.MISFIRED).build().getTaskNodeValue()), 
-                TaskContext.fromId(TaskNode.builder().build().getTaskNodeValue())));
-        verify(failoverService).remove(Collections.singletonList(TaskContext.fromId(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue())));
+                TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()), 
+                TaskContext.from(TaskNode.builder().type(ExecutionType.MISFIRED).build().getTaskNodeValue()), 
+                TaskContext.from(TaskNode.builder().build().getTaskNodeValue())));
+        verify(failoverService).remove(Collections.singletonList(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
         verify(misfiredService).remove(Sets.newHashSet("test_job"));
         verify(readyService).remove(Sets.newHashSet("test_job"));
     }
     
     @Test
     public void assertAddRunning() {
-        String nodePath = TaskNode.builder().build().getTaskNodeValue();
-        facadeService.addRunning(TaskContext.fromId(nodePath));
-        verify(runningService).add(TaskContext.fromId(nodePath));
+        String taskNodeValue = TaskNode.builder().build().getTaskNodeValue();
+        facadeService.addRunning(TaskContext.from(taskNodeValue));
+        verify(runningService).add(TaskContext.from(taskNodeValue));
     }
     
     @Test
     public void assertRemoveRunning() {
-        String nodePath = TaskNode.builder().build().getTaskNodeValue();
-        facadeService.removeRunning(TaskContext.fromId(nodePath));
-        verify(runningService).remove(TaskContext.fromId(nodePath));
+        String taskNodePath = TaskNode.builder().build().getTaskNodePath();
+        facadeService.removeRunning(TaskContext.MetaInfo.from(taskNodePath));
+        verify(runningService).remove(TaskContext.MetaInfo.from(taskNodePath));
     }
     
     @Test
     public void assertRecordFailoverTaskWhenJobConfigNotExisted() {
-        String nodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue();
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
-        facadeService.recordFailoverTask(TaskContext.fromId(nodePath));
-        verify(failoverService, times(0)).add(TaskContext.fromId(nodePath));
-        verify(runningService).remove(TaskContext.fromId(nodePath));
+        facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(failoverService, times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(runningService).remove(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
     }
     
     @Test
     public void assertRecordFailoverTaskWhenIsFailoverDisabled() {
-        String nodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue();
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createOtherCloudJobConfiguration("test_job")));
-        facadeService.recordFailoverTask(TaskContext.fromId(nodePath));
-        verify(failoverService, times(0)).add(TaskContext.fromId(nodePath));
-        verify(runningService).remove(TaskContext.fromId(nodePath));
+        facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(failoverService, times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(runningService).remove(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
     }
     
     @Test
     public void assertRecordFailoverTaskWhenIsFailoverEnabled() {
-        String nodePath = TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue();
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
-        facadeService.recordFailoverTask(TaskContext.fromId(nodePath));
-        verify(failoverService).add(TaskContext.fromId(nodePath));
-        verify(runningService).remove(TaskContext.fromId(nodePath));
+        facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(failoverService).add(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(runningService).remove(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
     }
     
     @Test

@@ -18,15 +18,12 @@
 package com.dangdang.ddframe.job.cloud.state.misfired;
 
 import com.dangdang.ddframe.job.cloud.state.StateNode;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 
 /**
  * 错过执行的作业队列节点路径.
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class MisfiredNode {
     
     static final String ROOT = StateNode.ROOT + "/misfired";

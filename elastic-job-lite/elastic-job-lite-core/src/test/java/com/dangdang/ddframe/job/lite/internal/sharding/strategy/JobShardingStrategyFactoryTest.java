@@ -1,14 +1,12 @@
 package com.dangdang.ddframe.job.lite.internal.sharding.strategy;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-
 import com.dangdang.ddframe.job.exception.JobShardingStrategyClassConfigurationException;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyFactory;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.fixture.InvalidJobShardingStrategy;
 import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
 public class JobShardingStrategyFactoryTest {
     

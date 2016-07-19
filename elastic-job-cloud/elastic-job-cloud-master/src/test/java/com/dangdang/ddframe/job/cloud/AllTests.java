@@ -36,6 +36,6 @@ import org.junit.runners.Suite;
         AllProducerTests.class, 
         AllRestTests.class, 
         AllMesosTests.class
-})
+    })
 public final class AllTests {
 }

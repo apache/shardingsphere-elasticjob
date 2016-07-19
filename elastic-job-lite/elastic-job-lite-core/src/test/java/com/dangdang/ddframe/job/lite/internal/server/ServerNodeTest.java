@@ -17,15 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
+import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-import com.dangdang.ddframe.job.internal.env.LocalHostService;
-import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 
 public final class ServerNodeTest {
     

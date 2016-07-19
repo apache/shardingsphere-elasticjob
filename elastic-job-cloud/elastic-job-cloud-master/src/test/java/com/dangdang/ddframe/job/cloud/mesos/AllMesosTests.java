@@ -28,6 +28,6 @@ import org.junit.runners.Suite;
         FacadeServiceTest.class, 
         ExhaustFirstResourceAllocateStrategyTest.class, 
         SchedulerEngineTest.class
-})
+    })
 public final class AllMesosTests {
 }

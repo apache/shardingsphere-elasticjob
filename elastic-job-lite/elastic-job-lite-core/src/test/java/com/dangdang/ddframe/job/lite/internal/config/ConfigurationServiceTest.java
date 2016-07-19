@@ -26,12 +26,9 @@ import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.plugin.job.type.integrated.ScriptElasticJob;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

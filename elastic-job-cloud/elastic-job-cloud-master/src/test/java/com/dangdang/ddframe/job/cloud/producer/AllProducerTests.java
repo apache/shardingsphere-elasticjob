@@ -24,6 +24,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         TaskProducerJobTest.class, 
         TaskProducerSchedulerRegistryTest.class
-})
+    })
 public final class AllProducerTests {
 }

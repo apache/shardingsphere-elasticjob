@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCall
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestElasticJobListener;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
-import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;

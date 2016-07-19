@@ -17,15 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal.reg;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
-
-import com.dangdang.ddframe.job.lite.internal.reg.ItemUtils;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class ItemUtilsTest {
     

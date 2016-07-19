@@ -37,20 +37,20 @@ public class RunningService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
-        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo());
+        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString());
         if (!registryCenter.isExisted(runningTaskNodePath)) {
             registryCenter.persist(runningTaskNodePath, taskContext.getId());
         }
     }
     
     /**
-     * 将任务运行时上下文从队列删除.
+     * 将任务从运行时队列删除.
      * 
-     * @param taskContext 任务运行时上下文
+     * @param metaInfo 任务元信息
      */
-    public void remove(final TaskContext taskContext) {
-        registryCenter.remove(RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo()));
-        String jobRootNode = RunningNode.getRunningJobNodePath(taskContext.getJobName());
+    public void remove(final TaskContext.MetaInfo metaInfo) {
+        registryCenter.remove(RunningNode.getRunningTaskNodePath(metaInfo.toString()));
+        String jobRootNode = RunningNode.getRunningJobNodePath(metaInfo.getJobName());
         if (registryCenter.isExisted(jobRootNode) && registryCenter.getChildrenKeys(jobRootNode).isEmpty()) {
             registryCenter.remove(jobRootNode);
         }
@@ -69,15 +69,15 @@ public class RunningService {
     /**
      * 判断任务是否运行.
      *
-     * @param taskContext 任务运行时上下文
+     * @param metaInfo 任务元信息
      * @return 任务是否运行
      */
-    public boolean isTaskRunning(final TaskContext taskContext) {
-        if (!registryCenter.isExisted(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
+    public boolean isTaskRunning(final TaskContext.MetaInfo metaInfo) {
+        if (!registryCenter.isExisted(RunningNode.getRunningJobNodePath(metaInfo.getJobName()))) {
             return false;
         }
-        for (String each : registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(taskContext.getJobName()))) {
-            if (TaskContext.fromMetaInfo(each).getShardingItem() == taskContext.getShardingItem()) {
+        for (String each : registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(metaInfo.getJobName()))) {
+            if (TaskContext.MetaInfo.from(each).getShardingItem() == metaInfo.getShardingItem()) {
                 return true;
             }
         }

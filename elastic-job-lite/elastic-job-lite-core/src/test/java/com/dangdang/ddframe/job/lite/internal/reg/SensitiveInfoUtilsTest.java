@@ -17,15 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal.reg;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.dangdang.ddframe.job.lite.internal.reg.SensitiveInfoUtils;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class SensitiveInfoUtilsTest {
     

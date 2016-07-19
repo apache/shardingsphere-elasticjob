@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.plugin.sharding.strategy;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,10 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
-import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategy;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public final class OdevitySortByNameJobShardingStrategyTest {
     

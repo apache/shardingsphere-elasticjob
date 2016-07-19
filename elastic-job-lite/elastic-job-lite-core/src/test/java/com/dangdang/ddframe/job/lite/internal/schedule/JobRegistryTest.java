@@ -19,9 +19,6 @@ package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;

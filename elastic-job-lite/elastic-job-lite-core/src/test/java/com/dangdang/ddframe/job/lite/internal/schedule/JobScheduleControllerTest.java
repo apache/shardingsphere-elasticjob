@@ -18,9 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -87,7 +84,8 @@ public final class JobScheduleControllerTest {
         Trigger trigger2 = mock(Trigger.class);
         Trigger trigger3 = mock(Trigger.class);
         Trigger trigger4 = mock(Trigger.class);
-        @SuppressWarnings("rawtypes") List triggers = Arrays.asList(trigger1, trigger2, trigger3, trigger4);
+        @SuppressWarnings("rawtypes")
+        List triggers = Arrays.asList(trigger1, trigger2, trigger3, trigger4);
         when(trigger1.getNextFireTime()).thenReturn(null);
         when(trigger2.getNextFireTime()).thenReturn(new Date(1L));
         when(trigger3.getNextFireTime()).thenReturn(new Date(100L));

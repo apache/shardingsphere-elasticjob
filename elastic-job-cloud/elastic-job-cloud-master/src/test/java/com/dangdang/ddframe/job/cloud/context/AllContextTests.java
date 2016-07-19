@@ -24,6 +24,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         JobContextTest.class, 
         TaskContextTest.class
-})
+    })
 public final class AllContextTests {
 }

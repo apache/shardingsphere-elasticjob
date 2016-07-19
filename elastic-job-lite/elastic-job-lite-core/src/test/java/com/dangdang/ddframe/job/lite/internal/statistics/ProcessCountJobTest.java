@@ -20,9 +20,6 @@ package com.dangdang.ddframe.job.lite.internal.statistics;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
-import com.dangdang.ddframe.job.lite.internal.statistics.ProcessCountJob;
-import com.dangdang.ddframe.job.lite.internal.statistics.ProcessCountStatistics;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

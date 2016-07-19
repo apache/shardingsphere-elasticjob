@@ -20,11 +20,9 @@ package com.dangdang.ddframe.job.lite.api.listener;
 import com.dangdang.ddframe.job.exception.JobTimeoutException;
 import com.dangdang.ddframe.job.internal.env.TimeService;
 import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

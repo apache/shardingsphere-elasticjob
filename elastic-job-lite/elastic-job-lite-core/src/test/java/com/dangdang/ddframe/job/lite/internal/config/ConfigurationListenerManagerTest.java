@@ -19,12 +19,10 @@ package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager.CronSettingChangedJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;

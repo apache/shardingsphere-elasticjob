@@ -19,15 +19,13 @@ package com.dangdang.ddframe.job.cloud.state.failover;
 
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.state.StateNode;
-import lombok.RequiredArgsConstructor;
 
 /**
  * 待失效转移任务队列节点路径.
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor
-public final class FailoverNode {
+final class FailoverNode {
     
     static final String ROOT = StateNode.ROOT + "/failover";
     
@@ -40,6 +38,6 @@ public final class FailoverNode {
     }
     
     static String getFailoverTaskNodePath(final String taskMetaInfo) {
-        return String.format(FAILOVER_TASK, TaskContext.fromMetaInfo(taskMetaInfo).getJobName(), taskMetaInfo);
+        return String.format(FAILOVER_TASK, TaskContext.MetaInfo.from(taskMetaInfo).getJobName(), taskMetaInfo);
     }
 }

@@ -27,12 +27,9 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListener;
-import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.statistics.StatisticsService;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

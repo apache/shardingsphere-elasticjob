@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.lite.domain;
 
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.lite.domain.ServerBriefInfo;
-
 import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;

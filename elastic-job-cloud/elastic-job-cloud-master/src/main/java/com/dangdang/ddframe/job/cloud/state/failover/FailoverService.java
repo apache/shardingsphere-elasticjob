@@ -61,8 +61,9 @@ public class FailoverService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
-        if (!registryCenter.isExisted(FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo())) && !runningService.isTaskRunning(taskContext)) {
-            registryCenter.persist(FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo()), taskContext.getId());
+        String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo().toString());
+        if (!registryCenter.isExisted(failoverTaskNodePath) && !runningService.isTaskRunning(taskContext.getMetaInfo())) {
+            registryCenter.persist(failoverTaskNodePath, taskContext.getId());
         }
     }
     
@@ -100,9 +101,9 @@ public class FailoverService {
     private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskMetaInfoList, final Set<HashCode> assignedTasks) {
         List<Integer> result = new ArrayList<>(taskMetaInfoList.size());
         for (String each : taskMetaInfoList) {
-            TaskContext taskContext = TaskContext.fromMetaInfo(each);
-            if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(taskContext.getShardingItem()).hash()) && !runningService.isTaskRunning(taskContext)) {
-                result.add(taskContext.getShardingItem());
+            TaskContext.MetaInfo metaInfo = TaskContext.MetaInfo.from(each);
+            if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItem()).hash()) && !runningService.isTaskRunning(metaInfo)) {
+                result.add(metaInfo.getShardingItem());
             }
         }
         return result;
@@ -111,11 +112,11 @@ public class FailoverService {
     /**
      * 从失效转移队列中删除相关任务.
      * 
-     * @param taskContexts 待删除的任务
+     * @param metaInfoList 待删除的任务元信息集合
      */
-    public void remove(final Collection<TaskContext> taskContexts) {
-        for (TaskContext each : taskContexts) {
-            registryCenter.remove(FailoverNode.getFailoverTaskNodePath(each.getMetaInfo()));
+    public void remove(final Collection<TaskContext.MetaInfo> metaInfoList) {
+        for (TaskContext.MetaInfo each : metaInfoList) {
+            registryCenter.remove(FailoverNode.getFailoverTaskNodePath(each.toString()));
         }
     }
 }

@@ -25,10 +25,8 @@ import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
-import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
