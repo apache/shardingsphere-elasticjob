@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.rest;
 
-import com.dangdang.ddframe.job.util.GsonFactory;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;

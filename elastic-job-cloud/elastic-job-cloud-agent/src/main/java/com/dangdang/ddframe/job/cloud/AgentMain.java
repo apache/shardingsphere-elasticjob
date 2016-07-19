@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud;
 
 import com.dangdang.ddframe.job.cloud.executor.TaskExecutor;
 import com.dangdang.ddframe.job.context.ShardingContext;
-import com.dangdang.ddframe.job.util.GsonFactory;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.MesosExecutorDriver;

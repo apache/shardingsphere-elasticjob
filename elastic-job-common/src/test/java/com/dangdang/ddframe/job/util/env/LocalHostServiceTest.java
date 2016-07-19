@@ -15,18 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.util;
+package com.dangdang.ddframe.job.util.env;
 
-import com.dangdang.ddframe.job.cloud.internal.env.LocalHostServiceTest;
-import com.dangdang.ddframe.job.cloud.internal.env.TimeServiceTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    GsonFactoryTest.class,
-    LocalHostServiceTest.class,
-    TimeServiceTest.class
-    })
-public final class AllUtilTests {
+import static org.junit.Assert.assertNotNull;
+
+public final class LocalHostServiceTest {
+    
+    private final LocalHostService localHostService = new LocalHostService();
+    
+    @Test
+    public void assertGetIp() {
+        assertNotNull(localHostService.getIp());
+    }
+    
+    @Test
+    public void assertGetHostName() {
+        assertNotNull(localHostService.getHostName());
+    }
 }

@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,19 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.exception;
+package com.dangdang.ddframe.job;
 
-import org.junit.Test;
+import com.dangdang.ddframe.job.exception.AllExceptionTests;
+import com.dangdang.ddframe.job.util.AllUtilTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import com.dangdang.ddframe.job.exception.JobTimeoutException;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-public final class JobTimeoutExceptionTest {
-    
-    @Test
-    public void assertGetMessage() {
-        assertThat(new JobTimeoutException(5000L).getMessage(), is("Job timeout. timeout mills is 5000."));
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        AllExceptionTests.class, 
+        AllUtilTests.class
+    })
+public final class AllJobTests {
 }

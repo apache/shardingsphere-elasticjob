@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,20 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.exception;
+package com.dangdang.ddframe.job.util.env;
 
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.exception.JobConflictException;
+import static junit.framework.TestCase.assertTrue;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
-public final class JobConflictExceptionTest {
+public class TimeServiceTest {
+    
+    private TimeService timeService = new TimeService();
     
     @Test
-    public void assertGetMessage() {
-        assertThat(new JobConflictException("testJob", "com.dangdang.OldTestJob", "com.dangdang.NewTestJob").getMessage(), 
-                is("Job conflict with register center. The job [testJob] in register center's class is [com.dangdang.OldTestJob], your job class is [com.dangdang.NewTestJob]"));
+    public void testGetCurrentMillis() throws Exception {
+        assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
     }
 }

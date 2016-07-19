@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
-import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.job.lite.api.DataFlowElasticJob;
 import com.dangdang.ddframe.job.lite.api.ElasticJob;
 import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;

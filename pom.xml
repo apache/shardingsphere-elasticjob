@@ -64,12 +64,13 @@
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
-        <!-- aseembly dependencies -->
+        <!-- assembly dependencies -->
         <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
         <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
         <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <maven-plugin-api.version>3.3.9</maven-plugin-api.version>
+
+        <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
     
     <dependencyManagement>

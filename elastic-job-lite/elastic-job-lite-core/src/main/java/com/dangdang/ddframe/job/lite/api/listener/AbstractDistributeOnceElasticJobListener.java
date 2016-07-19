@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.api.listener;
 
 import com.dangdang.ddframe.job.exception.JobTimeoutException;
-import com.dangdang.ddframe.job.internal.env.TimeService;
+import com.dangdang.ddframe.job.util.env.TimeService;
 import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 

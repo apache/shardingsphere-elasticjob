@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.util;
+package com.dangdang.ddframe.job.util.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

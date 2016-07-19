@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
-import com.dangdang.ddframe.job.internal.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.reg.BlockUtils;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;

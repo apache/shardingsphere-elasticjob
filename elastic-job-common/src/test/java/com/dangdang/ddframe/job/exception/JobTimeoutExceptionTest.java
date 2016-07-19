@@ -15,21 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.internal.env;
+package com.dangdang.ddframe.job.exception;
 
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.internal.env.TimeService;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
-import static junit.framework.TestCase.assertTrue;
-
-
-public class TimeServiceTest {
-    
-    private TimeService timeService = new TimeService();
+public final class JobTimeoutExceptionTest {
     
     @Test
-    public void testGetCurrentMillis() throws Exception {
-        assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
+    public void assertGetMessage() {
+        assertThat(new JobTimeoutException(5000L).getMessage(), is("Job timeout. timeout mills is 5000."));
     }
 }

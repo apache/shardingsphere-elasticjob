@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.spring.schedule;
 import com.dangdang.ddframe.job.lite.api.ElasticJob;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.Scheduler;
@@ -37,7 +36,6 @@ import org.springframework.context.ApplicationContext;
  * @author zhangliang
  * @author caohao
  */
-@Slf4j
 public final class SpringJobFactory extends PropertySettingJobFactory {
     
     private static ApplicationContext applicationContext;

@@ -15,18 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.util;
+package com.dangdang.ddframe.job.exception;
 
-import com.dangdang.ddframe.job.util.GsonFactory;
 import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public final class GsonFactoryTest {
+public final class JobConflictExceptionTest {
     
     @Test
-    public void assertGetGson() {
-        assertThat(GsonFactory.getGson(), is(GsonFactory.getGson()));
+    public void assertGetMessage() {
+        assertThat(new JobConflictException("testJob", "com.dangdang.OldTestJob", "com.dangdang.NewTestJob").getMessage(), 
+                is("Job conflict with register center. The job [testJob] in register center's class is [com.dangdang.OldTestJob], your job class is [com.dangdang.NewTestJob]"));
     }
 }

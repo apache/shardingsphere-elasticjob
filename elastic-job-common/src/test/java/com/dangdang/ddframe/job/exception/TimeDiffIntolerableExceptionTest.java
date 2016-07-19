@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,21 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.internal.env;
+package com.dangdang.ddframe.job.exception;
 
-/**
- * 获取时间的服务.
- * 
- * @author zhangliang
- */
-public class TimeService {
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public final class TimeDiffIntolerableExceptionTest {
     
-    /**
-     * 获取当前时间的毫秒数.
-     * 
-     * @return 当前时间的毫秒数
-     */
-    public long getCurrentMillis() {
-        return System.currentTimeMillis();
+    @Test
+    public void assertGetMessage() {
+        assertThat(new TimeDiffIntolerableException(60, 10).getMessage(), 
+                is("Time different between job server and register center exceed [60] seconds, max time different is [10] seconds."));
     }
 }
