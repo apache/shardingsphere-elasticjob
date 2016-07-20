@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,8 +20,8 @@ package com.dangdang.ddframe.job.cloud.mesos;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.mesos.facade.FacadeService;
-import com.dangdang.ddframe.job.cloud.mesos.stragety.ExhaustFirstResourceAllocateStrategy;
-import com.dangdang.ddframe.job.cloud.mesos.stragety.ResourceAllocateStrategy;
+import com.dangdang.ddframe.job.cloud.mesos.strategy.ExhaustFirstResourceAllocateStrategy;
+import com.dangdang.ddframe.job.cloud.mesos.strategy.ResourceAllocateStrategy;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

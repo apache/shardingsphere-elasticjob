@@ -17,8 +17,8 @@
 
 package com.dangdang.example.elasticjob.spring.job;
 
-import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.lite.plugin.job.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;

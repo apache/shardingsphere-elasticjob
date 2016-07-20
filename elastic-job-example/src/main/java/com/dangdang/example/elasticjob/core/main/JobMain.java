@@ -17,7 +17,7 @@
 
 package com.dangdang.example.elasticjob.core.main;
 
-import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;

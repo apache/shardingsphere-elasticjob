@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal.executor;
 
+import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.lite.api.ElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobFacade;
+import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.Getter;
@@ -74,7 +74,7 @@ public class JobExecutor {
         } catch (final InstantiationException | IllegalAccessException ex) {
             throw new JobException(ex);
         }
-        result.setJobFacade(new JobFacade(regCenter, jobConfig, elasticJobListenerList));
+        result.setJobFacade(new LiteJobFacade(regCenter, jobConfig, elasticJobListenerList));
         return result;
     }
     

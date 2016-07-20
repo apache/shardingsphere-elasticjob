@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,10 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
-import com.dangdang.ddframe.job.util.env.LocalHostService;
-import com.dangdang.ddframe.job.lite.api.DataFlowElasticJob;
-import com.dangdang.ddframe.job.lite.api.ElasticJob;
-import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
@@ -30,9 +32,7 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
-import com.dangdang.ddframe.job.lite.internal.statistics.ProcessCountStatistics;
-import com.dangdang.ddframe.job.lite.plugin.job.type.integrated.ScriptElasticJob;
-import com.dangdang.ddframe.job.lite.plugin.job.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;

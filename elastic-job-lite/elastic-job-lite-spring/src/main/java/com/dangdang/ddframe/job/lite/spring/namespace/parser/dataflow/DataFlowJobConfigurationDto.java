@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * </p>
- *
  */
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import com.dangdang.ddframe.job.lite.api.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration.DataFlowJobConfigurationBuilder;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +31,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<DataFlowJobConfiguration, DataFlowElasticJob, DataFlowJobConfigurationBuilder> {
+final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<DataFlowJobConfiguration, DataFlowElasticJob, DataFlowJobConfiguration.DataFlowJobConfigurationBuilder> {
     
     private Integer processCountIntervalSeconds;
     
@@ -54,12 +51,12 @@ final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<Data
     }
     
     @Override
-    protected DataFlowJobConfigurationBuilder createCustomizedBuilder() {
-        return new DataFlowJobConfigurationBuilder(getJobName(), getJobClass(), getShardingTotalCount(), getCron());
+    protected DataFlowJobConfiguration.DataFlowJobConfigurationBuilder createCustomizedBuilder() {
+        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder(getJobName(), getJobClass(), getShardingTotalCount(), getCron());
     }
     
     @Override
-    protected DataFlowJobConfigurationBuilder buildCustomizedProperties(final DataFlowJobConfigurationBuilder builder) {
+    protected DataFlowJobConfiguration.DataFlowJobConfigurationBuilder buildCustomizedProperties(final DataFlowJobConfiguration.DataFlowJobConfigurationBuilder builder) {
         if (null != getProcessCountIntervalSeconds()) {
             builder.processCountIntervalSeconds(getProcessCountIntervalSeconds());
         }

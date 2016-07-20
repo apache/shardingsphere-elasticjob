@@ -159,7 +159,7 @@ maxRetries=3
 
 `job.properties`为作业配置
 
-启动应用：`SpringJobMainWthNamespace`或者`SpringJobMainWthoutNamespace`
+启动应用：`SpringJobMainWthNamespace`或者`SpringJobMainWithoutNamespace`
 
 ## 启动elastic-job-console
 

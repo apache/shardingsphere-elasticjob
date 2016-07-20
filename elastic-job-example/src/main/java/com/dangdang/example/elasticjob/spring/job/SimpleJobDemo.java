@@ -19,10 +19,10 @@ package com.dangdang.example.elasticjob.spring.job;
 
 import javax.annotation.Resource;
 
+import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
 import org.springframework.stereotype.Component;
 
-import com.dangdang.ddframe.job.lite.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.lite.plugin.job.type.simple.AbstractSimpleElasticJob;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 

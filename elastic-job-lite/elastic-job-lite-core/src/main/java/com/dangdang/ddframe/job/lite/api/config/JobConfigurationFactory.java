@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * </p>
- *
  */
 
 package com.dangdang.ddframe.job.lite.api.config;
 
-import com.dangdang.ddframe.job.lite.api.DataFlowElasticJob;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration.DataFlowJobConfigurationBuilder;
-import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration.ScriptJobConfigurationBuilder;
-import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration.SimpleJobConfigurationBuilder;
-import com.dangdang.ddframe.job.lite.plugin.job.type.simple.AbstractSimpleElasticJob;
-
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -44,9 +42,9 @@ public final class JobConfigurationFactory {
      * @param cron 作业启动时间的cron表达式
      * @return 简单作业配置
      */
-    public static SimpleJobConfigurationBuilder createSimpleJobConfigurationBuilder(final String jobName,
-                                                                                    final Class<? extends AbstractSimpleElasticJob> jobClass, final int shardingTotalCount, final String cron) {
-        return new SimpleJobConfigurationBuilder(jobName, jobClass, shardingTotalCount, cron);
+    public static SimpleJobConfiguration.SimpleJobConfigurationBuilder createSimpleJobConfigurationBuilder(
+            final String jobName, final Class<? extends AbstractSimpleElasticJob> jobClass, final int shardingTotalCount, final String cron) {
+        return new SimpleJobConfiguration.SimpleJobConfigurationBuilder(jobName, jobClass, shardingTotalCount, cron);
     }
 
     /**
@@ -58,9 +56,9 @@ public final class JobConfigurationFactory {
      * @param cron 作业启动时间的cron表达式
      * @return 数据流作业配置
      */
-    public static DataFlowJobConfigurationBuilder createDataFlowJobConfigurationBuilder(final String jobName,
-                                                                                        final Class<? extends DataFlowElasticJob> jobClass, final int shardingTotalCount, final String cron) {
-        return new DataFlowJobConfigurationBuilder(jobName, jobClass, shardingTotalCount, cron);
+    public static DataFlowJobConfiguration.DataFlowJobConfigurationBuilder createDataFlowJobConfigurationBuilder(
+            final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final int shardingTotalCount, final String cron) {
+        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder(jobName, jobClass, shardingTotalCount, cron);
     }
 
     /**
@@ -72,8 +70,8 @@ public final class JobConfigurationFactory {
      * @param scriptCommandLine 作业脚本命令行
      * @return 脚本作业配置
      */
-    public static ScriptJobConfigurationBuilder createScriptJobConfigurationBuilder(final String jobName, final int shardingTotalCount,
-                                                                                    final String cron, final String scriptCommandLine) {
-        return new ScriptJobConfigurationBuilder(jobName, shardingTotalCount, cron, scriptCommandLine);
+    public static ScriptJobConfiguration.ScriptJobConfigurationBuilder createScriptJobConfigurationBuilder(
+            final String jobName, final int shardingTotalCount, final String cron, final String scriptCommandLine) {
+        return new ScriptJobConfiguration.ScriptJobConfigurationBuilder(jobName, shardingTotalCount, cron, scriptCommandLine);
     }
 }

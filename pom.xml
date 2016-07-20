@@ -9,9 +9,10 @@
     <description>Elastic-Job - distributed scheduled job solution</description>
     
     <modules>
-        <module>elastic-job-common</module>
+        <module>elastic-job-api</module>
         <module>elastic-job-lite</module>
         <module>elastic-job-cloud</module>
+        <module>elastic-job-common</module>
     </modules>
     
     <properties>
@@ -313,7 +314,7 @@
                     <configuration>
                         <argLine>-XX:-UseSplitVerifier</argLine>
                         <excludes>
-                            <exclude>com.dangdang.ddframe.job.integrate.**</exclude>
+                            <exclude>com.dangdang.ddframe.job.lite.integrate.**</exclude>
                         </excludes>
                     </configuration>
                 </plugin>

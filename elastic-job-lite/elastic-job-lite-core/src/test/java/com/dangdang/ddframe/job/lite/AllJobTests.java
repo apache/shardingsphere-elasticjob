@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,21 +17,20 @@
 
 package com.dangdang.ddframe.job.lite;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import com.dangdang.ddframe.job.lite.api.AllApiTests;
 import com.dangdang.ddframe.job.lite.integrate.AllIntegrateTests;
 import com.dangdang.ddframe.job.lite.internal.AllInternalTests;
 import com.dangdang.ddframe.job.lite.plugin.AllPluginTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    AllApiTests.class, 
-    AllPluginTests.class, 
-    AllInternalTests.class, 
-    AllIntegrateTests.class
+        AllApiTests.class, 
+        AllPluginTests.class, 
+        AllInternalTests.class, 
+        AllIntegrateTests.class
     })
 public final class AllJobTests {
 }
