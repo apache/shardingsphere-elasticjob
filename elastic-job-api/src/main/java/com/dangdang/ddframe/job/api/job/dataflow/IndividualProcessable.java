@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.job.dataflow;
 
-import com.dangdang.ddframe.job.api.job.AbstractJobExecutionShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 
 /**
  * 逐条处理数据的接口.
@@ -25,9 +25,8 @@ import com.dangdang.ddframe.job.api.job.AbstractJobExecutionShardingContext;
  * @author zhangliang
  *
  * @param <T> 数据流作业处理的数据实体类型
- * @param <C> 作业运行时分片上下文类型
  */
-public interface IndividualProcessable<T, C extends AbstractJobExecutionShardingContext> {
+public interface IndividualProcessable<T> {
     
     /**
      * 处理数据.
@@ -36,5 +35,5 @@ public interface IndividualProcessable<T, C extends AbstractJobExecutionSharding
      * @param data 待处理的数据
      * @return 数据是否处理成功
      */
-    boolean processData(final C shardingContext, final T data);
+    boolean processData(final ShardingContext shardingContext, final T data);
 }

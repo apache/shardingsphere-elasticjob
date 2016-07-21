@@ -17,20 +17,25 @@
 
 package com.dangdang.ddframe.job.lite.fixture;
 
-import com.dangdang.ddframe.job.api.job.AbstractJobExecutionShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 
 import java.util.List;
 
 public class TestDataFlowJob extends AbstractDataFlowElasticJob {
     
     @Override
-    protected void processDataWithStatistics(final AbstractJobExecutionShardingContext shardingContext, final List data) {
-            
+    protected void processDataWithStatistics(final ShardingContext shardingContext, final List data) {
     }
     
     @Override
-    public List fetchData(final AbstractJobExecutionShardingContext shardingContext) {
+    public List fetchData(final ShardingContext shardingContext) {
         return null;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
     }
 }

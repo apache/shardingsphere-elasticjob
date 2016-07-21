@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
@@ -41,7 +41,7 @@ public abstract class AbstractDataFlowElasticJobTest {
     @Mock
     private JobFacade jobFacade;
     
-    private JobExecutionMultipleShardingContext shardingContext;
+    private ShardingContext shardingContext;
     
     private AbstractDataFlowElasticJob dataFlowElasticJob;
     

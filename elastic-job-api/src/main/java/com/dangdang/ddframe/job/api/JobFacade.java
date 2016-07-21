@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 为调度器提供内部服务的门面类.
@@ -80,23 +80,23 @@ public interface JobFacade {
     /**
      * 注册作业启动信息.
      *
-     * @param shardingContext 作业运行时分片上下文
+     * @param shardingContext 分片上下文
      */
-    void registerJobBegin(JobExecutionMultipleShardingContext shardingContext);
+    void registerJobBegin(ShardingContext shardingContext);
     
     /**
      * 注册作业完成信息.
      *
-     * @param shardingContext 作业运行时分片上下文
+     * @param shardingContext 分片上下文
      */
-    void registerJobCompleted(JobExecutionMultipleShardingContext shardingContext);
+    void registerJobCompleted(ShardingContext shardingContext);
     
     /**
-     * 获取当前作业服务器运行时分片上下文.
+     * 获取当前作业服务器的分片上下文.
      *
-     * @return 当前作业服务器运行时分片上下文
+     * @return 分片上下文
      */
-    JobExecutionMultipleShardingContext getShardingContext();
+    ShardingContext getShardingContext();
     
     /**
      * 设置任务被错过执行的标记.
@@ -104,14 +104,14 @@ public interface JobFacade {
      * @param shardingItems 需要设置错过执行的任务分片项
      * @return 是否满足misfire条件
      */
-    boolean misfireIfNecessary(List<Integer> shardingItems);
+    boolean misfireIfNecessary(Collection<Integer> shardingItems);
     
     /**
      * 清除任务被错过执行的标记.
      *
      * @param shardingItems 需要清除错过执行的任务分片项
      */
-    void clearMisfire(List<Integer> shardingItems);
+    void clearMisfire(Collection<Integer> shardingItems);
     
     /**
      * 判断作业是否需要执行错过的任务.
@@ -119,7 +119,7 @@ public interface JobFacade {
      * @param shardingItems 任务分片项集合
      * @return 作业是否需要执行错过的任务
      */
-    boolean isExecuteMisfired(List<Integer> shardingItems);
+    boolean isExecuteMisfired(Collection<Integer> shardingItems);
     
     /**
      * 判断作业是否符合继续运行的条件.
@@ -155,12 +155,12 @@ public interface JobFacade {
      *
      * @param shardingContext 分片上下文
      */
-    void beforeJobExecuted(JobExecutionMultipleShardingContext shardingContext);
+    void beforeJobExecuted(ShardingContext shardingContext);
     
     /**
      * 作业执行后的执行的方法.
      *
      * @param shardingContext 分片上下文
      */
-    void afterJobExecuted(JobExecutionMultipleShardingContext shardingContext);
+    void afterJobExecuted(ShardingContext shardingContext);
 }

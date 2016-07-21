@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.type.simple;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.AbstractElasticJob;
 
 /**
@@ -33,14 +33,14 @@ import com.dangdang.ddframe.job.api.job.AbstractElasticJob;
 public abstract class AbstractSimpleElasticJob extends AbstractElasticJob {
     
     @Override
-    protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
+    protected final void executeJob(final ShardingContext shardingContext) {
         process(shardingContext);
     }
     
     /**
      * 执行作业.
      * 
-     * @param shardingContext 作业分片规则配置上下文
+     * @param shardingContext 作业分片上下文
      */
-    public abstract void process(final JobExecutionMultipleShardingContext shardingContext);
+    public abstract void process(final ShardingContext shardingContext);
 }

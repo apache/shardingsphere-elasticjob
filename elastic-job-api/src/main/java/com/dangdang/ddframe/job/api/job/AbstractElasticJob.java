@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.api.job;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.exception.JobException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,8 +38,8 @@ public abstract class AbstractElasticJob implements ElasticJob {
     public final void execute() {
         log.trace("Elastic job: job execute begin.");
         jobFacade.checkMaxTimeDiffSecondsTolerable();
-        JobExecutionMultipleShardingContext shardingContext = jobFacade.getShardingContext();
-        if (jobFacade.misfireIfNecessary(shardingContext.getShardingItems())) {
+        ShardingContext shardingContext = jobFacade.getShardingContext();
+        if (jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())) {
             log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
             return;
         }
@@ -53,9 +53,9 @@ public abstract class AbstractElasticJob implements ElasticJob {
         }
         executeJobInternal(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
-        while (jobFacade.isExecuteMisfired(shardingContext.getShardingItems())) {
+        while (jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())) {
             log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
-            jobFacade.clearMisfire(shardingContext.getShardingItems());
+            jobFacade.clearMisfire(shardingContext.getShardingItems().keySet());
             executeJobInternal(shardingContext);
             log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
@@ -70,7 +70,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
         log.trace("Elastic job: execute all completed.");
     }
     
-    private void executeJobInternal(final JobExecutionMultipleShardingContext shardingContext) {
+    private void executeJobInternal(final ShardingContext shardingContext) {
         if (shardingContext.getShardingItems().isEmpty()) {
             log.trace("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
             return;
@@ -88,7 +88,7 @@ public abstract class AbstractElasticJob implements ElasticJob {
         }
     }
     
-    protected abstract void executeJob(final JobExecutionMultipleShardingContext shardingContext);
+    protected abstract void executeJob(final ShardingContext shardingContext);
     
     @Override
     public void handleJobExecutionException(final JobException jobException) {

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.type.integrated;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.AbstractElasticJob;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.google.common.base.Preconditions;
@@ -35,11 +35,11 @@ import java.io.IOException;
 public final class ScriptElasticJob extends AbstractElasticJob {
     
     @Override
-    protected void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
+    protected void executeJob(final ShardingContext shardingContext) {
         String scriptCommandLine = getJobFacade().getScriptCommandLine();
         Preconditions.checkArgument(!Strings.isNullOrEmpty(scriptCommandLine), "Cannot find script command line.");
         CommandLine cmdLine = CommandLine.parse(scriptCommandLine);
-        cmdLine.addArgument(shardingContext.toScriptArguments(), false);
+        cmdLine.addArgument(shardingContext.toJson(), false);
         DefaultExecutor executor = new DefaultExecutor();
         try {
             executor.execute(cmdLine);

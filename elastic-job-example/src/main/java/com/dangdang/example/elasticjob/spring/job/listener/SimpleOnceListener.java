@@ -20,7 +20,7 @@
 
 package com.dangdang.example.elasticjob.spring.job.listener;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 
 import javax.annotation.Resource;
@@ -41,12 +41,12 @@ public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener
     }
     
     @Override
-    public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void doBeforeJobExecutedAtLastStarted(final ShardingContext shardingContext) {
         System.out.println("doBeforeJobExecutedAtLastStarted:" + fooService.foo());
     }
     
     @Override
-    public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void doAfterJobExecutedAtLastCompleted(final ShardingContext shardingContext) {
         System.out.println("doAfterJobExecutedAtLastCompleted:" + startedTimeoutMilliseconds + "," + completedTimeoutMilliseconds);
     }
 }

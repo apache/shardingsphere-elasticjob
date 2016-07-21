@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.api.type.fixture;
 
-import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractBatchSequenceDataFlowElasticJob;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-
 
 @RequiredArgsConstructor
 public final class FooUnstreamingBatchSequenceDataFlowElasticJob extends AbstractBatchSequenceDataFlowElasticJob<Object> {
@@ -30,12 +30,12 @@ public final class FooUnstreamingBatchSequenceDataFlowElasticJob extends Abstrac
     private final JobCaller jobCaller;
     
     @Override
-    public List<Object> fetchData(final JobExecutionSingleShardingContext shardingContext) {
-        return jobCaller.fetchData(shardingContext.getShardingItem());
+    public List<Object> fetchData(final ShardingContext shardingContext) {
+        return jobCaller.fetchData(shardingContext.getShardingItems().keySet().iterator().next());
     }
     
     @Override
-    public int processData(final JobExecutionSingleShardingContext shardingContext, final List<Object> data) {
+    public int processData(final ShardingContext shardingContext, final List<Object> data) {
         int result = 0;
         for (Object each : data) {
             try {
@@ -46,5 +46,10 @@ public final class FooUnstreamingBatchSequenceDataFlowElasticJob extends Abstrac
             }
         }
         return result;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.SEQUENCE;
     }
 }

@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.fixture;
 
-import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
 import lombok.RequiredArgsConstructor;
 
@@ -29,12 +30,17 @@ public final class FooStreamingIndividualSequenceDataFlowElasticJob extends Abst
     private final JobCaller jobCaller;
     
     @Override
-    public List<Object> fetchData(final JobExecutionSingleShardingContext shardingContext) {
-        return jobCaller.fetchData(shardingContext.getShardingItem());
+    public List<Object> fetchData(final ShardingContext shardingContext) {
+        return jobCaller.fetchData(shardingContext.getShardingItems().keySet().iterator().next());
     }
     
     @Override
-    public boolean processData(final JobExecutionSingleShardingContext shardingContext, final Object data) {
+    public boolean processData(final ShardingContext shardingContext, final Object data) {
         return jobCaller.processData(data);
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.SEQUENCE;
     }
 }

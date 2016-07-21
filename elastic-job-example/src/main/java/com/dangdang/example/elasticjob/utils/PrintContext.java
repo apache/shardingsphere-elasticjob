@@ -1,8 +1,8 @@
 package com.dangdang.example.elasticjob.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 public final class PrintContext {
     
@@ -20,7 +20,7 @@ public final class PrintContext {
         this.clazz = clazz;
     }
     
-    public void printProcessJobMessage(final List<Integer> shardingItems) {
+    public void printProcessJobMessage(final Collection<Integer> shardingItems) {
         System.out.println(String.format(PROCESS_JOB_MESSAGE, clazz.getSimpleName(), shardingItems, new SimpleDateFormat(DATE_FORMAT).format(new Date())));
     }
     
@@ -28,7 +28,7 @@ public final class PrintContext {
         System.out.println(String.format(FETCH_DATA_MESSAGE, clazz.getSimpleName(), shardingItem, new SimpleDateFormat(DATE_FORMAT).format(new Date())));
     }
     
-    public void printFetchDataMessage(final List<Integer> shardingItems) {
+    public void printFetchDataMessage(final Collection<Integer> shardingItems) {
         System.out.println(String.format(FETCH_DATA_MESSAGE, clazz.getSimpleName(), shardingItems, new SimpleDateFormat(DATE_FORMAT).format(new Date())));
     }
     

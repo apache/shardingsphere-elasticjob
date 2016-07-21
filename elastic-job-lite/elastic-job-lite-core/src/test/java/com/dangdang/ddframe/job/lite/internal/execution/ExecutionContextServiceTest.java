@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,24 +74,21 @@ public final class ExecutionContextServiceTest {
     }
     
     @Test
-    public void assertGetJobExecutionShardingContextWhenNotAssignShardingItem() {
+    public void assertGetShardingContextWhenNotAssignShardingItem() {
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(configService.isFailover()).thenReturn(false);
         when(configService.isMonitorExecution()).thenReturn(false);
         when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
         when(configService.getFetchDataCount()).thenReturn(10);
-        JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
-        expected.setJobName("testJob");
-        expected.setShardingTotalCount(3);
-        expected.setFetchDataCount(10);
-        assertThat(executionContextService.getJobExecutionShardingContext(Collections.<Integer>emptyList()), new ReflectionEquals(expected));
+        ShardingContext expected = new ShardingContext("testJob", 3, null, 10, Collections.<ShardingContext.ShardingItem>emptyList());
+        assertThat(executionContextService.getJobShardingContext(Collections.<Integer>emptyList()), new ReflectionEquals(expected));
         verify(configService).getShardingTotalCount();
         verify(configService).isMonitorExecution();
         verify(configService).getFetchDataCount();
     }
     
     @Test
-    public void assertGetJobExecutionShardingContextWhenAssignShardingItems() {
+    public void assertGetShardingContextWhenAssignShardingItems() {
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(configService.isFailover()).thenReturn(false);
         when(configService.isMonitorExecution()).thenReturn(false);
@@ -105,15 +103,8 @@ public final class ExecutionContextServiceTest {
         offsets.put(0, "offset0");
         offsets.put(1, "offset1");
         when(offsetService.getOffsets(Arrays.asList(0, 1))).thenReturn(offsets);
-        JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
-        expected.setJobName("testJob");
-        expected.setShardingTotalCount(3);
-        expected.setFetchDataCount(10);
-        expected.setShardingItems(Arrays.asList(0, 1));
-        expected.getShardingItemParameters().put(0, "A");
-        expected.getShardingItemParameters().put(1, "B");
-        expected.setOffsets(offsets);
-        assertThat(executionContextService.getJobExecutionShardingContext(Arrays.asList(0, 1)), new ReflectionEquals(expected));
+        ShardingContext expected = new ShardingContext("testJob", 3, null, 10, Arrays.asList(new ShardingContext.ShardingItem(0, "A", "offset0"), new ShardingContext.ShardingItem(1, "B", "offset1")));
+        assertShardingContext(executionContextService.getJobShardingContext(Arrays.asList(0, 1)), expected);
         verify(configService).getShardingTotalCount();
         verify(configService).isMonitorExecution();
         verify(configService).getFetchDataCount();
@@ -122,7 +113,7 @@ public final class ExecutionContextServiceTest {
     }
     
     @Test
-    public void assertGetJobExecutionShardingContextWhenHasRunningItems() {
+    public void assertGetShardingContextWhenHasRunningItems() {
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(configService.isFailover()).thenReturn(true);
         when(configService.isMonitorExecution()).thenReturn(true);
@@ -138,15 +129,8 @@ public final class ExecutionContextServiceTest {
         Map<Integer, String> offsets = new HashMap<>(1);
         offsets.put(0, "offset0");
         when(offsetService.getOffsets(Collections.singletonList(0))).thenReturn(offsets);
-        JobExecutionMultipleShardingContext expected = new JobExecutionMultipleShardingContext();
-        expected.setJobName("testJob");
-        expected.setShardingTotalCount(3);
-        expected.setFetchDataCount(10);
-        expected.setShardingItems(Collections.singletonList(0));
-        expected.getShardingItemParameters().put(0, "A");
-        expected.setMonitorExecution(true);
-        expected.setOffsets(offsets);
-        assertThat(executionContextService.getJobExecutionShardingContext(Lists.newArrayList(0, 1)), new ReflectionEquals(expected));
+        ShardingContext expected = new ShardingContext("testJob", 3, null, 10, Collections.singletonList(new ShardingContext.ShardingItem(0, "A", "offset0")));
+        assertShardingContext(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1)), expected);
         verify(configService).getShardingTotalCount();
         verify(configService).isMonitorExecution();
         verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
@@ -154,5 +138,18 @@ public final class ExecutionContextServiceTest {
         verify(configService).getFetchDataCount();
         verify(configService).getShardingItemParameters();
         verify(offsetService).getOffsets(Collections.singletonList(0));
+    }
+    
+    private void assertShardingContext(final ShardingContext actual, final ShardingContext expected) {
+        assertThat(actual.getJobName(), is(expected.getJobName()));
+        assertThat(actual.getShardingTotalCount(), is(expected.getShardingTotalCount()));
+        assertThat(actual.getJobParameter(), is(expected.getJobParameter()));
+        assertThat(actual.getFetchDataCount(), is(expected.getFetchDataCount()));
+        assertThat(actual.getShardingItems().size(), is(expected.getShardingItems().size()));
+        for (int i = 0; i < expected.getShardingItems().size(); i++) {
+            assertThat(actual.getShardingItems().get(i).getItem(), is(expected.getShardingItems().get(i).getItem()));
+            assertThat(actual.getShardingItems().get(i).getParameter(), is(expected.getShardingItems().get(i).getParameter()));
+            assertThat(actual.getShardingItems().get(i).getOffset(), is(expected.getShardingItems().get(i).getOffset()));
+        }
     }
 }

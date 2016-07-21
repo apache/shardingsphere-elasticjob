@@ -17,7 +17,7 @@
 
 package com.dangdang.example.elasticjob.core.job;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -29,9 +29,9 @@ public class SimpleJobDemo extends AbstractSimpleElasticJob {
     private FooRepository fooRepository = new FooRepository();
     
     @Override
-    public void process(final JobExecutionMultipleShardingContext context) {
-        printContext.printProcessJobMessage(context.getShardingItems());
-        fooRepository.findActive(context.getShardingItems());
+    public void process(final ShardingContext context) {
+        printContext.printProcessJobMessage(context.getShardingItems().keySet());
+        fooRepository.findActive(context.getShardingItems().keySet());
         // do something
     }
 }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.type.fixture;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
 import com.dangdang.ddframe.job.exception.JobException;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class FooSimpleElasticJob extends AbstractSimpleElasticJob {
     private final JobCaller jobCaller;
     
     @Override
-    public void process(final JobExecutionMultipleShardingContext shardingContext) {
+    public void process(final ShardingContext shardingContext) {
         jobCaller.process();
     }
     

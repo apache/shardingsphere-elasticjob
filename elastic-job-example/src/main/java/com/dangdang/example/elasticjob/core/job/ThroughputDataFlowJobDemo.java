@@ -17,7 +17,8 @@
 
 package com.dangdang.example.elasticjob.core.job;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractBatchThroughputDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
@@ -34,13 +35,13 @@ public class ThroughputDataFlowJobDemo extends AbstractBatchThroughputDataFlowEl
     private FooRepository fooRepository = new FooRepository();
     
     @Override
-    public List<Foo> fetchData(final JobExecutionMultipleShardingContext context) {
-        printContext.printFetchDataMessage(context.getShardingItems());
-        return fooRepository.findActive(context.getShardingItems());
+    public List<Foo> fetchData(final ShardingContext context) {
+        printContext.printFetchDataMessage(context.getShardingItems().keySet());
+        return fooRepository.findActive(context.getShardingItems().keySet());
     }
     
     @Override
-    public int processData(final JobExecutionMultipleShardingContext context, final List<Foo> data) {
+    public int processData(final ShardingContext context, final List<Foo> data) {
         printContext.printProcessDataMessage(data);
         int successCount = 0;
         for (Foo each : data) {
@@ -50,6 +51,11 @@ public class ThroughputDataFlowJobDemo extends AbstractBatchThroughputDataFlowEl
             }
         }
         return successCount;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
     }
     
     @Override

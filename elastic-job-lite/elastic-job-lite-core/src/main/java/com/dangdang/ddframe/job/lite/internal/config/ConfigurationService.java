@@ -202,7 +202,8 @@ public class ConfigurationService {
      * @return 每次抓取的数据量
      */
     public int getFetchDataCount() {
-        return Integer.parseInt(jobNodeStorage.getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT));
+        String result = jobNodeStorage.getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT);
+        return null == result ? 0 : Integer.parseInt(result);
     }
     
     /**

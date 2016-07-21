@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.job.dataflow;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.job.AbstractJobExecutionShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -29,9 +29,8 @@ import java.util.concurrent.ExecutorService;
  * @author zhangliang
  * 
  * @param <T> 数据流作业处理的数据实体类型
- * @param <C> 作业运行时分片上下文类型
  */
-public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingContext> extends ElasticJob {
+public interface DataFlowElasticJob<T> extends ElasticJob {
     
     /**
      * 获取待处理的数据.
@@ -39,7 +38,7 @@ public interface DataFlowElasticJob<T, C extends AbstractJobExecutionShardingCon
      * @param shardingContext 作业分片规则配置上下文
      * @return 待处理的数据集合
      */
-    List<T> fetchData(final C shardingContext);
+    List<T> fetchData(final ShardingContext shardingContext);
     
     /**
      * 更新数据处理位置.

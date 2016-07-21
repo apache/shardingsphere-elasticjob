@@ -17,13 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.api;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobFacade;
-import com.dangdang.ddframe.job.context.ShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * 为调度器提供内部服务的门面类.
@@ -48,7 +46,8 @@ public class CloudJobFacade implements JobFacade {
     
     @Override
     public boolean isStreamingProcess() {
-        return shardingContext.isStreamingProcess();
+        // TODO
+        return true;
     }
     
     @Override
@@ -66,32 +65,29 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void registerJobBegin(final JobExecutionMultipleShardingContext shardingContext) {
+    public void registerJobBegin(final ShardingContext shardingContext) {
     }
     
     @Override
-    public void registerJobCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void registerJobCompleted(final ShardingContext shardingContext) {
     }
     
     @Override
-    public JobExecutionMultipleShardingContext getShardingContext() {
-        JobExecutionMultipleShardingContext result = new JobExecutionMultipleShardingContext();
-        result.setJobName(shardingContext.getJobName());
-        result.setShardingItems(Collections.singletonList(shardingContext.getShardingItem()));
-        return result;
+    public ShardingContext getShardingContext() {
+        return shardingContext;
     }
     
     @Override
-    public boolean misfireIfNecessary(final List<Integer> shardingItems) {
+    public boolean misfireIfNecessary(final Collection<Integer> shardingItems) {
         return false;
     }
     
     @Override
-    public void clearMisfire(final List<Integer> shardingItems) {
+    public void clearMisfire(final Collection<Integer> shardingItems) {
     }
     
     @Override
-    public boolean isExecuteMisfired(final List<Integer> shardingItems) {
+    public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
         return false;
     }
     
@@ -115,10 +111,10 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void beforeJobExecuted(final ShardingContext shardingContext) {
     }
     
     @Override
-    public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void afterJobExecuted(final ShardingContext shardingContext) {
     }
 }

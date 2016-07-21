@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.fixture;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
 
 public class TestJob extends AbstractSimpleElasticJob {
     
     @Override
-    public void process(final JobExecutionMultipleShardingContext shardingContext) {
+    public void process(final ShardingContext shardingContext) {
     }
 }

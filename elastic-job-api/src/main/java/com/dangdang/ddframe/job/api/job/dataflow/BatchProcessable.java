@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.job.dataflow;
 
-import com.dangdang.ddframe.job.api.job.AbstractJobExecutionShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 
 import java.util.List;
 
@@ -27,9 +27,8 @@ import java.util.List;
  * @author zhangliang
  *
  * @param <T> 数据流作业处理的数据实体类型
- * @param <C> 作业运行时分片上下文类型
  */
-public interface BatchProcessable<T, C extends AbstractJobExecutionShardingContext> {
+public interface BatchProcessable<T> {
     
     /**
      * 批量处理数据.
@@ -38,5 +37,5 @@ public interface BatchProcessable<T, C extends AbstractJobExecutionShardingConte
      * @param data 待处理的数据集合
      * @return 成功处理的数据数
      */
-    int processData(final C shardingContext, final List<T> data);
+    int processData(final ShardingContext shardingContext, final List<T> data);
 }

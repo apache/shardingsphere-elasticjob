@@ -17,15 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -52,49 +52,40 @@ public class ExecutionContextService {
     }
     
     /**
-     * 获取当前作业服务器运行时分片上下文.
+     * 获取当前作业服务器分片上下文.
      * 
      * @param shardingItems 分片项
-     * @return 当前作业服务器运行时分片上下文
+     * @return 分片上下文
      */
-    public JobExecutionMultipleShardingContext getJobExecutionShardingContext(final List<Integer> shardingItems) {
-        JobExecutionMultipleShardingContext result = new JobExecutionMultipleShardingContext();
-        result.setJobName(jobConfiguration.getJobName());
-        result.setShardingTotalCount(configService.getShardingTotalCount());
-        result.setShardingItems(shardingItems);
-        boolean isMonitorExecution = configService.isMonitorExecution();
-        if (isMonitorExecution) {
-            removeRunningItems(shardingItems);
+    public ShardingContext getJobShardingContext(final List<Integer> shardingItems) {
+        removeRunningIfMonitorExecution(shardingItems);
+        if (shardingItems.isEmpty()) {
+            return new ShardingContext(jobConfiguration.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), configService.getFetchDataCount(), 
+                    Collections.<ShardingContext.ShardingItem>emptyList());
         }
-        result.setJobParameter(configService.getJobParameter());
-        result.setMonitorExecution(isMonitorExecution);
-        if (JobType.DATA_FLOW.equals(configService.getJobType())) {
-            result.setFetchDataCount(configService.getFetchDataCount());    
+        Map<Integer, String> shardingItemParameterMap = configService.getShardingItemParameters();
+        Map<Integer, String>  offSetMap = offsetService.getOffsets(shardingItems);
+        List<ShardingContext.ShardingItem> shardingItemList = new ArrayList<>(shardingItems.size());
+        for (int each : shardingItems) {
+            shardingItemList.add(new ShardingContext.ShardingItem(each, shardingItemParameterMap.get(each), offSetMap.get(each)));
         }
-        if (result.getShardingItems().isEmpty()) {
-            return result;
-        }
-        Map<Integer, String> shardingItemParameters = configService.getShardingItemParameters();
-        for (int each : result.getShardingItems()) {
-            if (shardingItemParameters.containsKey(each)) {
-                result.getShardingItemParameters().put(each, shardingItemParameters.get(each));
-            }
-        }
-        result.setOffsets(offsetService.getOffsets(result.getShardingItems()));
-        return result;
+        return new ShardingContext(jobConfiguration.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), configService.getFetchDataCount(), shardingItemList);
     }
     
-    private void removeRunningItems(final List<Integer> items) {
-        List<Integer> toBeRemovedItems = new ArrayList<>(items.size());
-        for (int each : items) {
-            if (isRunningItem(each)) {
-                toBeRemovedItems.add(each);
+    private void removeRunningIfMonitorExecution(final List<Integer> shardingItems) {
+        if (!configService.isMonitorExecution()) {
+            return;
+        }
+        List<Integer> runningShardingItems = new ArrayList<>(shardingItems.size());
+        for (int each : shardingItems) {
+            if (isRunning(each)) {
+                runningShardingItems.add(each);
             }
         }
-        items.removeAll(toBeRemovedItems);
+        shardingItems.removeAll(runningShardingItems);
     }
     
-    private boolean isRunningItem(final int item) {
-        return jobNodeStorage.isJobNodeExisted(ExecutionNode.getRunningNode(item));
+    private boolean isRunning(final int shardingItem) {
+        return jobNodeStorage.isJobNodeExisted(ExecutionNode.getRunningNode(shardingItem));
     }
 }

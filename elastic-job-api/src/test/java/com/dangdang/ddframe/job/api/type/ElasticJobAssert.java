@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -35,28 +35,25 @@ public class ElasticJobAssert {
     
     public static final String JOB_NAME = "unit_test_job";
     
-    public static JobExecutionMultipleShardingContext getShardingContext() {
-        JobExecutionMultipleShardingContext result = new JobExecutionMultipleShardingContext();
-        result.setJobName(JOB_NAME);
-        result.setShardingItems(Arrays.asList(0, 1));
-        return result;
+    public static ShardingContext getShardingContext() {
+        return new ShardingContext(JOB_NAME, 10, "", 0, Arrays.asList(new ShardingContext.ShardingItem(0, "", ""), new ShardingContext.ShardingItem(1, "", "")));
     }
     
-    public static void prepareForIsNotMisfire(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext) {
+    public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContext shardingContext) {
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
     }
     
-    public static void verifyForIsNotMisfire(final JobFacade jobFacade, final JobExecutionMultipleShardingContext shardingContext) {
+    public static void verifyForIsNotMisfire(final JobFacade jobFacade, final ShardingContext shardingContext) {
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
-        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems());
+        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
         verify(jobFacade).cleanPreviousExecutionInfo();
         verify(jobFacade).beforeJobExecuted(shardingContext);
         verify(jobFacade).registerJobBegin(shardingContext);
         verify(jobFacade).registerJobCompleted(shardingContext);
-        verify(jobFacade).isExecuteMisfired(shardingContext.getShardingItems());
+        verify(jobFacade).isExecuteMisfired(shardingContext.getShardingItems().keySet());
         verify(jobFacade).afterJobExecuted(shardingContext);
     }
     

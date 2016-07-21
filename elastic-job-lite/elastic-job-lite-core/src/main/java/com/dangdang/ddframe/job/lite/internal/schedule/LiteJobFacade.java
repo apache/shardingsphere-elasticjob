@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
@@ -30,6 +30,7 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -99,25 +100,25 @@ public class LiteJobFacade implements JobFacade {
     }
     
     @Override
-    public void registerJobBegin(final JobExecutionMultipleShardingContext shardingContext) {
+    public void registerJobBegin(final ShardingContext shardingContext) {
         executionService.registerJobBegin(shardingContext);
     }
     
     @Override
-    public void registerJobCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void registerJobCompleted(final ShardingContext shardingContext) {
         executionService.registerJobCompleted(shardingContext);
         if (configService.isFailover()) {
-            failoverService.updateFailoverComplete(shardingContext.getShardingItems());
+            failoverService.updateFailoverComplete(shardingContext.getShardingItems().keySet());
         }
     }
     
     @Override
-    public JobExecutionMultipleShardingContext getShardingContext() {
+    public ShardingContext getShardingContext() {
         boolean isFailover = configService.isFailover();
         if (isFailover) {
-            List<Integer> failoverItems = failoverService.getLocalHostFailoverItems();
-            if (!failoverItems.isEmpty()) {
-                return executionContextService.getJobExecutionShardingContext(failoverItems);
+            List<Integer> failoverShardingItems = failoverService.getLocalHostFailoverItems();
+            if (!failoverShardingItems.isEmpty()) {
+                return executionContextService.getJobShardingContext(failoverShardingItems);
             }
         }
         shardingService.shardingIfNecessary();
@@ -125,21 +126,21 @@ public class LiteJobFacade implements JobFacade {
         if (isFailover) {
             shardingItems.removeAll(failoverService.getLocalHostTakeOffItems());
         }
-        return executionContextService.getJobExecutionShardingContext(shardingItems);
+        return executionContextService.getJobShardingContext(shardingItems);
     }
     
     @Override
-    public boolean misfireIfNecessary(final List<Integer> shardingItems) {
+    public boolean misfireIfNecessary(final Collection<Integer> shardingItems) {
         return executionService.misfireIfNecessary(shardingItems);
     }
     
     @Override
-    public void clearMisfire(final List<Integer> shardingItems) {
+    public void clearMisfire(final Collection<Integer> shardingItems) {
         executionService.clearMisfire(shardingItems);
     }
     
     @Override
-    public boolean isExecuteMisfired(final List<Integer> shardingItems) {
+    public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
         return isEligibleForJobRunning() && configService.isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
     }
     
@@ -164,14 +165,14 @@ public class LiteJobFacade implements JobFacade {
     }
     
     @Override
-    public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void beforeJobExecuted(final ShardingContext shardingContext) {
         for (ElasticJobListener each : elasticJobListeners) {
             each.beforeJobExecuted(shardingContext);
         }
     }
     
     @Override
-    public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void afterJobExecuted(final ShardingContext shardingContext) {
         for (ElasticJobListener each : elasticJobListeners) {
             each.afterJobExecuted(shardingContext);
         }

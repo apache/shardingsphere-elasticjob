@@ -17,7 +17,7 @@
 
 package com.dangdang.example.elasticjob.core.main;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
@@ -75,12 +75,12 @@ public final class JobMain {
         }
         
         @Override
-        public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
+        public void doBeforeJobExecutedAtLastStarted(final ShardingContext shardingContext) {
             System.out.println("------ before simple job start ------");
         }
         
         @Override
-        public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+        public void doAfterJobExecutedAtLastCompleted(final ShardingContext shardingContext) {
             System.out.println("------ after simple job start ------");
         }
     }

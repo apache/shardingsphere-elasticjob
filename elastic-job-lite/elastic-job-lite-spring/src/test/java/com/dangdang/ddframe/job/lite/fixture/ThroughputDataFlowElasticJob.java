@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.fixture;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import lombok.Getter;
 
@@ -30,7 +31,7 @@ public final class ThroughputDataFlowElasticJob extends AbstractIndividualThroug
     private static volatile boolean completed;
     
     @Override
-    public List<String> fetchData(final JobExecutionMultipleShardingContext context) {
+    public List<String> fetchData(final ShardingContext context) {
         if (completed) {
             return Collections.emptyList();
         }
@@ -38,9 +39,14 @@ public final class ThroughputDataFlowElasticJob extends AbstractIndividualThroug
     }
     
     @Override
-    public boolean processData(final JobExecutionMultipleShardingContext context, final String data) {
+    public boolean processData(final ShardingContext context, final String data) {
         completed = true;
         return true;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
     }
     
     public static void reset() {

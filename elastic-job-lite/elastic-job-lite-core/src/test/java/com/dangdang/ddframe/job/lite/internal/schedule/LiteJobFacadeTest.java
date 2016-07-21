@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
@@ -146,57 +146,57 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertRegisterJobBegin() {
-        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
         liteJobFacade.registerJobBegin(shardingContext);
         verify(executionService).registerJobBegin(shardingContext);
     }
     
     @Test
     public void assertRegisterJobCompletedWhenFailoverDisabled() {
-        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(false);
         liteJobFacade.registerJobCompleted(shardingContext);
         verify(executionService).registerJobCompleted(shardingContext);
-        verify(failoverService, times(0)).updateFailoverComplete(shardingContext.getShardingItems());
+        verify(failoverService, times(0)).updateFailoverComplete(shardingContext.getShardingItems().keySet());
     }
     
     @Test
     public void assertRegisterJobCompletedWhenFailoverEnabled() {
-        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(true);
         liteJobFacade.registerJobCompleted(shardingContext);
         verify(executionService).registerJobCompleted(shardingContext);
-        verify(failoverService).updateFailoverComplete(shardingContext.getShardingItems());
+        verify(failoverService).updateFailoverComplete(shardingContext.getShardingItems().keySet());
     }
     
     @Test
     public void assertGetShardingContextWhenIsFailoverEnableAndFailover() {
-        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(true);
         when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.singletonList(1));
-        when(executionContextService.getJobExecutionShardingContext(Collections.singletonList(1))).thenReturn(shardingContext);
+        when(executionContextService.getJobShardingContext(Collections.singletonList(1))).thenReturn(shardingContext);
         assertThat(liteJobFacade.getShardingContext(), is(shardingContext));
         verify(shardingService, times(0)).shardingIfNecessary();
     }
     
     @Test
     public void assertGetShardingContextWhenIsFailoverEnableAndNotFailover() {
-        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(true);
         when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.<Integer>emptyList());
         when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
         when(failoverService.getLocalHostTakeOffItems()).thenReturn(Collections.singletonList(0));
-        when(executionContextService.getJobExecutionShardingContext(Collections.singletonList(1))).thenReturn(shardingContext);
+        when(executionContextService.getJobShardingContext(Collections.singletonList(1))).thenReturn(shardingContext);
         assertThat(liteJobFacade.getShardingContext(), is(shardingContext));
         verify(shardingService).shardingIfNecessary();
     }
     
     @Test
     public void assertGetShardingContextWhenIsFailoverDisable() {
-        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(false);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
-        when(executionContextService.getJobExecutionShardingContext(Lists.newArrayList(0, 1))).thenReturn(shardingContext);
+        when(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1))).thenReturn(shardingContext);
         assertThat(liteJobFacade.getShardingContext(), is(shardingContext));
         verify(shardingService).shardingIfNecessary();
     }
@@ -233,13 +233,13 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertBeforeJobExecuted() {
-        liteJobFacade.beforeJobExecuted(new JobExecutionMultipleShardingContext());
+        liteJobFacade.beforeJobExecuted(new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList()));
         verify(caller).before();
     }
     
     @Test
     public void assertAfterJobExecuted() {
-        liteJobFacade.afterJobExecuted(new JobExecutionMultipleShardingContext());
+        liteJobFacade.afterJobExecuted(new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList()));
         verify(caller).after();
     }
     

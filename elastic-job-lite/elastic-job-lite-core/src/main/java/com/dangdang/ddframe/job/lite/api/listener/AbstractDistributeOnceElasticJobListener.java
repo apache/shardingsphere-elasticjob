@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api.listener;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.exception.JobTimeoutException;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.util.env.TimeService;
@@ -57,8 +57,8 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     }
     
     @Override
-    public final void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
-        guaranteeService.registerStart(shardingContext.getShardingItems());
+    public final void beforeJobExecuted(final ShardingContext shardingContext) {
+        guaranteeService.registerStart(shardingContext.getShardingItems().keySet());
         if (guaranteeService.isAllStarted()) {
             doBeforeJobExecutedAtLastStarted(shardingContext);
             guaranteeService.clearAllStartedInfo();
@@ -79,8 +79,8 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     }
     
     @Override
-    public final void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
-        guaranteeService.registerComplete(shardingContext.getShardingItems());
+    public final void afterJobExecuted(final ShardingContext shardingContext) {
+        guaranteeService.registerComplete(shardingContext.getShardingItems().keySet());
         if (guaranteeService.isAllCompleted()) {
             doAfterJobExecutedAtLastCompleted(shardingContext);
             guaranteeService.clearAllCompletedInfo();
@@ -105,14 +105,14 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
      *
      * @param shardingContext 分片上下文
      */
-    public abstract void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext);
+    public abstract void doBeforeJobExecutedAtLastStarted(final ShardingContext shardingContext);
     
     /**
      * 分布式环境中最后一个作业执行后的执行的方法.
      *
      * @param shardingContext 分片上下文
      */
-    public abstract void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext);
+    public abstract void doAfterJobExecutedAtLastCompleted(final ShardingContext shardingContext);
     
     /**
      * 通知任务开始.

@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.integrated;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.util.ScriptElasticJobUtil;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class ScriptElasticJobTest {
     public void setUp() throws NoSuchFieldException, IOException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
-        JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
+        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         scriptElasticJob = new ScriptElasticJob();
         scriptElasticJob.setJobFacade(jobFacade);

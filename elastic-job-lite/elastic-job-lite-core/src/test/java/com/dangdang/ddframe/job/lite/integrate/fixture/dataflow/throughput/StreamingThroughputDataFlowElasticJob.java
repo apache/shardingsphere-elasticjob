@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
 import java.util.Arrays;
@@ -36,8 +37,12 @@ public final class StreamingThroughputDataFlowElasticJob extends AbstractIndivid
     private static volatile List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
     
     @Override
-    public List<String> fetchData(final JobExecutionMultipleShardingContext context) {
-        offsets.putAll(context.getOffsets());
+    public List<String> fetchData(final ShardingContext context) {
+        for (Map.Entry<Integer, ShardingContext.ShardingItem> entry : context.getShardingItems().entrySet()) {
+            if (null != entry.getValue().getOffset()) {
+                offsets.put(entry.getKey(), entry.getValue().getOffset());    
+            }
+        }
         if (processedData.isEmpty()) {
             return result;
         } else {
@@ -46,12 +51,17 @@ public final class StreamingThroughputDataFlowElasticJob extends AbstractIndivid
     }
     
     @Override
-    public boolean processData(final JobExecutionMultipleShardingContext context, final String data) {
+    public boolean processData(final ShardingContext context, final String data) {
         processedData.add(data);
-        for (int item : context.getShardingItems()) {
+        for (int item : context.getShardingItems().keySet()) {
             updateOffset(item, "offset");
         }
         return true;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
     }
     
     public static boolean isCompleted() {

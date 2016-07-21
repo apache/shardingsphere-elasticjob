@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
@@ -88,22 +88,22 @@ public abstract class AbstractBaseStdJobTest {
         jobScheduler = new JobScheduler(regCenter, jobConfig, new ElasticJobListener() {
             
             @Override
-            public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+            public void beforeJobExecuted(final ShardingContext shardingContext) {
                 regCenter.persist("/" + jobName + "/listener/every", "test");
             }
             
             @Override
-            public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+            public void afterJobExecuted(final ShardingContext shardingContext) {
             }
         }, new AbstractDistributeOnceElasticJobListener(-1L, -1L) {
             
             @Override
-            public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
+            public void doBeforeJobExecutedAtLastStarted(final ShardingContext shardingContext) {
                 regCenter.persist("/" + jobName + "/listener/once", "test");
             }
             
             @Override
-            public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+            public void doAfterJobExecutedAtLastCompleted(final ShardingContext shardingContext) {
             }
         });
         monitorPort = -1;

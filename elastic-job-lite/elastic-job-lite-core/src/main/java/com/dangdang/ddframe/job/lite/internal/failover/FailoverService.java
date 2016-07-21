@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.failover;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,9 +90,9 @@ public class FailoverService {
     /**
      * 更新执行完毕失效转移的分片项状态.
      * 
-     * @param items 执行完毕失效转移的分片项列表
+     * @param items 执行完毕失效转移的分片项集合
      */
-    public void updateFailoverComplete(final List<Integer> items) {
+    public void updateFailoverComplete(final Collection<Integer> items) {
         for (int each : items) {
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(each));
         }

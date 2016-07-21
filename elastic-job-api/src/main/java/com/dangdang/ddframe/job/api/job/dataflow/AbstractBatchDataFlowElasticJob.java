@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.job.dataflow;
 
-import com.dangdang.ddframe.job.api.job.AbstractJobExecutionShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.exception.JobException;
 
 import java.util.List;
@@ -28,12 +28,11 @@ import java.util.List;
  * @author zhangliang
  * 
  * @param <T> 数据流作业处理的数据实体类型
- * @param <C> 作业运行时分片上下文类型
  */
-public abstract class AbstractBatchDataFlowElasticJob<T, C extends AbstractJobExecutionShardingContext> extends AbstractDataFlowElasticJob<T, C> implements BatchProcessable<T, C> {
+public abstract class AbstractBatchDataFlowElasticJob<T> extends AbstractDataFlowElasticJob<T> implements BatchProcessable<T> {
     
     @Override
-    protected final void processDataWithStatistics(final C shardingContext, final List<T> data) {
+    protected final void processDataWithStatistics(final ShardingContext shardingContext, final List<T> data) {
         int successCount = 0;
         try {
             successCount = processData(shardingContext, data);

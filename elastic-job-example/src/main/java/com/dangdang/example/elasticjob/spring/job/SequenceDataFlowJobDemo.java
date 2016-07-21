@@ -17,7 +17,8 @@
 
 package com.dangdang.example.elasticjob.spring.job;
 
-import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractBatchSequenceDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
@@ -37,13 +38,13 @@ public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasti
     private FooRepository fooRepository;
     
     @Override
-    public List<Foo> fetchData(final JobExecutionSingleShardingContext context) {
-        printContext.printFetchDataMessage(context.getShardingItem());
-        return fooRepository.findActive(Collections.singletonList(context.getShardingItem()));
+    public List<Foo> fetchData(final ShardingContext context) {
+        printContext.printFetchDataMessage(context.getShardingItems().keySet().iterator().next());
+        return fooRepository.findActive(Collections.singletonList(context.getShardingItems().keySet().iterator().next()));
     }
     
     @Override
-    public int processData(final JobExecutionSingleShardingContext context, final List<Foo> data) {
+    public int processData(final ShardingContext context, final List<Foo> data) {
         printContext.printProcessDataMessage(data);
         int successCount = 0;
         for (Foo each : data) {
@@ -51,5 +52,10 @@ public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasti
             successCount++;
         }
         return successCount;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.SEQUENCE;
     }
 }

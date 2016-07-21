@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
@@ -32,6 +32,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -64,12 +65,12 @@ public class ExecutionService {
     /**
      * 注册作业启动信息.
      * 
-     * @param jobExecutionShardingContext 作业运行时分片上下文
+     * @param shardingContext 分片上下文
      */
-    public void registerJobBegin(final JobExecutionMultipleShardingContext jobExecutionShardingContext) {
-        if (!jobExecutionShardingContext.getShardingItems().isEmpty() && configService.isMonitorExecution()) {
+    public void registerJobBegin(final ShardingContext shardingContext) {
+        if (!shardingContext.getShardingItems().isEmpty() && configService.isMonitorExecution()) {
             serverService.updateServerStatus(ServerStatus.RUNNING);
-            for (int each : jobExecutionShardingContext.getShardingItems()) {
+            for (int each : shardingContext.getShardingItems().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
                 JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobConfiguration.getJobName());
@@ -126,14 +127,14 @@ public class ExecutionService {
     /**
      * 注册作业完成信息.
      * 
-     * @param jobExecutionShardingContext 作业运行时分片上下文
+     * @param shardingContext 分片上下文
      */
-    public void registerJobCompleted(final JobExecutionMultipleShardingContext jobExecutionShardingContext) {
+    public void registerJobCompleted(final ShardingContext shardingContext) {
         if (!configService.isMonitorExecution()) {
             return;
         }
         serverService.updateServerStatus(ServerStatus.READY);
-        for (int each : jobExecutionShardingContext.getShardingItems()) {
+        for (int each : shardingContext.getShardingItems().keySet()) {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));
             jobNodeStorage.replaceJobNode(ExecutionNode.getLastCompleteTimeNode(each), System.currentTimeMillis());
@@ -168,7 +169,7 @@ public class ExecutionService {
      * @param items 需要设置错过执行的任务分片项
      * @return 是否满足misfire条件
      */
-    public boolean misfireIfNecessary(final List<Integer> items) {
+    public boolean misfireIfNecessary(final Collection<Integer> items) {
         if (hasRunningItems(items)) {
             setMisfire(items);
             return true;
@@ -181,7 +182,7 @@ public class ExecutionService {
      * 
      * @param items 需要设置错过执行的任务分片项
      */
-    public void setMisfire(final List<Integer> items) {
+    public void setMisfire(final Collection<Integer> items) {
         if (!configService.isMonitorExecution()) {
             return;
         }
@@ -196,7 +197,7 @@ public class ExecutionService {
      * @param items 需要获取标记被错过执行的任务分片项
      * @return 标记被错过执行的任务分片项
      */
-    public List<Integer> getMisfiredJobItems(final List<Integer> items) {
+    public List<Integer> getMisfiredJobItems(final Collection<Integer> items) {
         List<Integer> result = new ArrayList<>(items.size());
         for (int each : items) {
             if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getMisfireNode(each))) {
@@ -211,7 +212,7 @@ public class ExecutionService {
      * 
      * @param items 需要清除错过执行的任务分片项
      */
-    public void clearMisfire(final List<Integer> items) {
+    public void clearMisfire(final Collection<Integer> items) {
         for (int each : items) {
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getMisfireNode(each));
         }
@@ -240,7 +241,7 @@ public class ExecutionService {
      * @param items 需要判断的分片项列表
      * @return 分片项中是否还有执行中的作业
      */
-    public boolean hasRunningItems(final List<Integer> items) {
+    public boolean hasRunningItems(final Collection<Integer> items) {
         if (!configService.isMonitorExecution()) {
             return false;
         }

@@ -17,17 +17,14 @@
 
 package com.dangdang.ddframe.job.api.job.dataflow;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.AbstractElasticJob;
-import com.dangdang.ddframe.job.api.job.AbstractJobExecutionShardingContext;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,10 +39,9 @@ import java.util.concurrent.Executors;
  * @author zhangliang
  * 
  * @param <T> 数据流作业处理的数据实体类型
- * @param <C> 作业运行时分片上下文类型
  */
 @Slf4j
-public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecutionShardingContext> extends AbstractElasticJob implements DataFlowElasticJob<T, C> {
+public abstract class AbstractDataFlowElasticJob<T> extends AbstractElasticJob implements DataFlowElasticJob<T> {
     
     private final ExecutorService executorService;
     
@@ -56,31 +52,10 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         dataFlowType = getDataFlowType();
     }
     
-    private DataFlowType getDataFlowType() {
-        Class<?> target = getClass();
-        while (true) {
-            if (!(target.getGenericSuperclass() instanceof ParameterizedType)) {
-                target = target.getSuperclass();
-                continue;
-            }
-            ParameterizedType parameterizedType = (ParameterizedType) target.getGenericSuperclass();
-            if (2 != parameterizedType.getActualTypeArguments().length) {
-                target = target.getSuperclass();
-                continue;
-            }
-            Type type = parameterizedType.getActualTypeArguments()[1];
-            if (JobExecutionMultipleShardingContext.class == type) {
-                return DataFlowType.THROUGHPUT;
-            } else if (JobExecutionSingleShardingContext.class == type) {
-                return DataFlowType.SEQUENCE;
-            } else {
-                throw new UnsupportedOperationException(String.format("Cannot support %s", type));
-            }
-        }
-    }
+    protected abstract DataFlowType getDataFlowType();
     
     @Override
-    protected final void executeJob(final JobExecutionMultipleShardingContext shardingContext) {
+    protected final void executeJob(final ShardingContext shardingContext) {
         boolean streamingProcess = getJobFacade().isStreamingProcess();
         if (DataFlowType.THROUGHPUT == dataFlowType) {
             if (streamingProcess) {
@@ -97,7 +72,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         }
     }
     
-    private void executeThroughputStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
+    private void executeThroughputStreamingJob(final ShardingContext shardingContext) {
         List<T> data = fetchDataForThroughput(shardingContext);
         while (!CollectionUtils.isEmpty(data)) {
             processDataForThroughput(shardingContext, data);
@@ -108,14 +83,14 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         }
     }
     
-    private void executeThroughputOneOffJob(final JobExecutionMultipleShardingContext shardingContext) {
+    private void executeThroughputOneOffJob(final ShardingContext shardingContext) {
         List<T> data = fetchDataForThroughput(shardingContext);
         if (!CollectionUtils.isEmpty(data)) {
             processDataForThroughput(shardingContext, data);
         }
     }
     
-    private void executeSequenceStreamingJob(final JobExecutionMultipleShardingContext shardingContext) {
+    private void executeSequenceStreamingJob(final ShardingContext shardingContext) {
         Map<Integer, List<T>> data = fetchDataForSequence(shardingContext);
         while (!data.isEmpty()) {
             processDataForSequence(shardingContext, data);
@@ -126,25 +101,25 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         }
     }
     
-    private void executeSequenceOneOffJob(final JobExecutionMultipleShardingContext shardingContext) {
+    private void executeSequenceOneOffJob(final ShardingContext shardingContext) {
         Map<Integer, List<T>> data = fetchDataForSequence(shardingContext);
         if (!data.isEmpty()) {
             processDataForSequence(shardingContext, data);
         }
     }
     
-    private List<T> fetchDataForThroughput(final JobExecutionMultipleShardingContext shardingContext) {
+    private List<T> fetchDataForThroughput(final ShardingContext shardingContext) {
         @SuppressWarnings("unchecked")
-        List<T> result = fetchData((C) shardingContext);
+        List<T> result = fetchData(shardingContext);
         log.trace("Elastic job: fetch data size: {}.", result != null ? result.size() : 0);
         return result;
     }
     
     @SuppressWarnings("unchecked")
-    private void processDataForThroughput(final JobExecutionMultipleShardingContext shardingContext, final List<T> data) {
+    private void processDataForThroughput(final ShardingContext shardingContext, final List<T> data) {
         int threadCount = getJobFacade().getConcurrentDataProcessThreadCount();
         if (threadCount <= 1 || data.size() <= threadCount) {
-            processDataWithStatistics((C) shardingContext, data);
+            processDataWithStatistics(shardingContext, data);
             return;
         }
         List<List<T>> splitData = Lists.partition(data, data.size() / threadCount);
@@ -155,7 +130,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
                 @Override
                 public void run() {
                     try {
-                        processDataWithStatistics((C) shardingContext, each);
+                        processDataWithStatistics(shardingContext, each);
                     } finally {
                         latch.countDown();
                     }
@@ -165,8 +140,8 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         latchAwait(latch);
     }
     
-    private Map<Integer, List<T>> fetchDataForSequence(final JobExecutionMultipleShardingContext shardingContext) {
-        List<Integer> items = shardingContext.getShardingItems();
+    private Map<Integer, List<T>> fetchDataForSequence(final ShardingContext shardingContext) {
+        Collection<Integer> items = shardingContext.getShardingItems().keySet();
         final Map<Integer, List<T>> result = new ConcurrentHashMap<>(items.size());
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
@@ -175,8 +150,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
                 @Override
                 public void run() {
                     try {
-                        @SuppressWarnings("unchecked")
-                        List<T> data = fetchData((C) shardingContext.createJobExecutionSingleShardingContext(each));
+                        List<T> data = fetchData(shardingContext.getShardingContext(each));
                         if (null != data && !data.isEmpty()) {
                             result.put(each, data);
                         }
@@ -192,7 +166,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
     }
     
     @SuppressWarnings("unchecked")
-    private void processDataForSequence(final JobExecutionMultipleShardingContext shardingContext, final Map<Integer, List<T>> data) {
+    private void processDataForSequence(final ShardingContext shardingContext, final Map<Integer, List<T>> data) {
         final CountDownLatch latch = new CountDownLatch(data.size());
         for (final Entry<Integer, List<T>> each : data.entrySet()) {
             executorService.submit(new Runnable() {
@@ -200,7 +174,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
                 @Override
                 public void run() {
                     try {
-                        processDataWithStatistics((C) shardingContext.createJobExecutionSingleShardingContext(each.getKey()), each.getValue());
+                        processDataWithStatistics(shardingContext.getShardingContext(each.getKey()), each.getValue());
                     } finally {
                         latch.countDown();
                     }
@@ -210,7 +184,7 @@ public abstract class AbstractDataFlowElasticJob<T, C extends AbstractJobExecuti
         latchAwait(latch);
     }
     
-    protected abstract void processDataWithStatistics(C shardingContext, List<T> data);
+    protected abstract void processDataWithStatistics(ShardingContext shardingContext, List<T> data);
     
     @Override
     public final void updateOffset(final int item, final String offset) {

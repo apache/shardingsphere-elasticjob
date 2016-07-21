@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.fixture;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractBatchThroughputDataFlowElasticJob;
 import lombok.RequiredArgsConstructor;
 
@@ -29,12 +30,12 @@ public final class FooStreamingBatchThroughputDataFlowElasticJob extends Abstrac
     private final JobCaller jobCaller;
     
     @Override
-    public List<Object> fetchData(final JobExecutionMultipleShardingContext shardingContext) {
+    public List<Object> fetchData(final ShardingContext shardingContext) {
         return jobCaller.fetchData();
     }
     
     @Override
-    public int processData(final JobExecutionMultipleShardingContext shardingContext, final List<Object> data) {
+    public int processData(final ShardingContext shardingContext, final List<Object> data) {
         int result = 0;
         for (Object each : data) {
             try {
@@ -45,5 +46,10 @@ public final class FooStreamingBatchThroughputDataFlowElasticJob extends Abstrac
             }
         }
         return result;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
     }
 }

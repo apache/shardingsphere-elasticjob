@@ -17,15 +17,15 @@
 
 package com.dangdang.example.elasticjob.fixture.repository;
 
+import com.dangdang.example.elasticjob.fixture.entity.Foo;
+import com.dangdang.example.elasticjob.fixture.entity.FooStatus;
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.stereotype.Repository;
-
-import com.dangdang.example.elasticjob.fixture.entity.Foo;
-import com.dangdang.example.elasticjob.fixture.entity.FooStatus;
 
 @Repository
 public class FooRepository {
@@ -42,7 +42,7 @@ public class FooRepository {
         }
     }
     
-    public List<Foo> findActive(final List<Integer> shardingItems) {
+    public List<Foo> findActive(final Collection<Integer> shardingItems) {
         List<Foo> result = new ArrayList<>(shardingItems.size() * 10);
         for (int each : shardingItems) {
             result.addAll(findActive(each));

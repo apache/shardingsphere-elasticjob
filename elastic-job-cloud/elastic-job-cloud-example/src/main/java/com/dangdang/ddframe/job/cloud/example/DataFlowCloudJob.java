@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.example;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
 import java.util.Collections;
@@ -26,14 +27,19 @@ import java.util.List;
 public class DataFlowCloudJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
     @Override
-    public List<String> fetchData(final JobExecutionMultipleShardingContext shardingContext) {
+    public List<String> fetchData(final ShardingContext shardingContext) {
         System.out.println("---fetch data:" + shardingContext);
         return Collections.singletonList("abc");
     }
     
     @Override
-    public boolean processData(final JobExecutionMultipleShardingContext shardingContext, final String data) {
+    public boolean processData(final ShardingContext shardingContext, final String data) {
         System.out.println("---process data:" + data);
         return true;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
     }
 }

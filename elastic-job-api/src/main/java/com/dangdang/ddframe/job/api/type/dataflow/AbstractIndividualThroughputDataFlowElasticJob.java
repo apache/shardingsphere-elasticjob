@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractIndividualDataFlowElasticJob;
 
 /**
@@ -27,5 +26,5 @@ import com.dangdang.ddframe.job.api.job.dataflow.AbstractIndividualDataFlowElast
  *
  * @param <T> 数据流作业处理的数据实体类型
  */
-public abstract class AbstractIndividualThroughputDataFlowElasticJob<T> extends AbstractIndividualDataFlowElasticJob<T, JobExecutionMultipleShardingContext> {
+public abstract class AbstractIndividualThroughputDataFlowElasticJob<T> extends AbstractIndividualDataFlowElasticJob<T> {
 }

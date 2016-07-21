@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
@@ -36,6 +36,7 @@ import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -86,16 +87,14 @@ public final class ExecutionServiceTest {
     
     @Test
     public void assertRegisterJobBeginWhenNotAssignAnyItem() {
-        executionService.registerJobBegin(new JobExecutionMultipleShardingContext());
+        executionService.registerJobBegin(new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList()));
         verify(configService, times(0)).isMonitorExecution();
     }
     
     @Test
     public void assertRegisterJobBeginWhenNotMonitorExecution() {
         when(configService.isMonitorExecution()).thenReturn(false);
-        JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
-        jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
-        executionService.registerJobBegin(jobExecutionShardingContext);
+        executionService.registerJobBegin(getShardingContext());
         verify(configService).isMonitorExecution();
     }
     
@@ -104,9 +103,7 @@ public final class ExecutionServiceTest {
         when(configService.isMonitorExecution()).thenReturn(true);
         when(jobScheduleController.getNextFireTime()).thenReturn(null);
         JobRegistry.getInstance().addJobScheduleController("testJob", jobScheduleController);
-        JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
-        jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
-        executionService.registerJobBegin(jobExecutionShardingContext);
+        executionService.registerJobBegin(getShardingContext());
         verify(configService).isMonitorExecution();
         verify(serverService).updateServerStatus(ServerStatus.RUNNING);
         verify(jobNodeStorage).fillEphemeralJobNode("execution/0/running", "");
@@ -122,9 +119,7 @@ public final class ExecutionServiceTest {
         when(configService.isMonitorExecution()).thenReturn(true);
         when(jobScheduleController.getNextFireTime()).thenReturn(new Date(0L));
         JobRegistry.getInstance().addJobScheduleController("testJob", jobScheduleController);
-        JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
-        jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
-        executionService.registerJobBegin(jobExecutionShardingContext);
+        executionService.registerJobBegin(getShardingContext());
         verify(configService).isMonitorExecution();
         verify(serverService).updateServerStatus(ServerStatus.RUNNING);
         verify(jobNodeStorage).fillEphemeralJobNode("execution/0/running", "");
@@ -141,7 +136,7 @@ public final class ExecutionServiceTest {
     @Test
     public void assertRegisterJobCompletedWhenNotMonitorExecution() {
         when(configService.isMonitorExecution()).thenReturn(false);
-        executionService.registerJobCompleted(new JobExecutionMultipleShardingContext());
+        executionService.registerJobCompleted(new ShardingContext("test_job", 10, "", 10, Collections.<ShardingContext.ShardingItem>emptyList()));
         verify(configService).isMonitorExecution();
         verify(serverService, times(0)).updateServerStatus(ServerStatus.READY);
     }
@@ -149,9 +144,7 @@ public final class ExecutionServiceTest {
     @Test
     public void assertRegisterJobCompleted() {
         when(configService.isMonitorExecution()).thenReturn(true);
-        JobExecutionMultipleShardingContext jobExecutionShardingContext = new JobExecutionMultipleShardingContext();
-        jobExecutionShardingContext.setShardingItems(Arrays.asList(0, 1, 2));
-        executionService.registerJobCompleted(jobExecutionShardingContext);
+        executionService.registerJobCompleted(getShardingContext());
         verify(serverService).updateServerStatus(ServerStatus.READY);
         verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/completed");
         verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/completed");
@@ -438,5 +431,13 @@ public final class ExecutionServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
         verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
         verify(jobNodeStorage).isJobNodeExisted("execution/2/running");
+    }
+    
+    private ShardingContext getShardingContext() {
+        ShardingContext result = new ShardingContext("test_job", 10, "", 10, Collections.<ShardingContext.ShardingItem>emptyList());
+        result.getShardingItems().put(0, new ShardingContext.ShardingItem(0, "", ""));
+        result.getShardingItems().put(1, new ShardingContext.ShardingItem(1, "", ""));
+        result.getShardingItems().put(2, new ShardingContext.ShardingItem(2, "", ""));
+        return result;
     }
 }

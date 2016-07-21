@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.integrate.fixture.simple;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
 import lombok.Getter;
 
@@ -27,7 +27,7 @@ public final class SimpleElasticJob extends AbstractSimpleElasticJob {
     private static volatile boolean completed;
     
     @Override
-    public void process(final JobExecutionMultipleShardingContext context) {
+    public void process(final ShardingContext context) {
         completed = true;
     }
     

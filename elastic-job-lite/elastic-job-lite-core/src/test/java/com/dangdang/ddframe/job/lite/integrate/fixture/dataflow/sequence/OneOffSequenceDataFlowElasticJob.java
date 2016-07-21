@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.sequence;
 
-import com.dangdang.ddframe.job.api.JobExecutionSingleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
 
 import java.util.Arrays;
@@ -32,14 +33,19 @@ public final class OneOffSequenceDataFlowElasticJob extends AbstractIndividualSe
     private static volatile List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
     
     @Override
-    public List<String> fetchData(final JobExecutionSingleShardingContext singleContext) {
+    public List<String> fetchData(final ShardingContext singleContext) {
         return result;
     }
     
     @Override
-    public boolean processData(final JobExecutionSingleShardingContext singleContext, final String data) {
+    public boolean processData(final ShardingContext singleContext, final String data) {
         processedData.add(data);
         return true;
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.SEQUENCE;
     }
     
     public static boolean isCompleted() {

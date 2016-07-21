@@ -17,14 +17,13 @@
 
 package com.dangdang.example.elasticjob.spring.job;
 
-import javax.annotation.Resource;
-
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
-import org.springframework.stereotype.Component;
-
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 @Component
 public class SimpleJobDemo extends AbstractSimpleElasticJob {
@@ -35,10 +34,10 @@ public class SimpleJobDemo extends AbstractSimpleElasticJob {
     private FooRepository fooRepository;
     
     @Override
-    public void process(final JobExecutionMultipleShardingContext context) {
-        printContext.printProcessJobMessage(context.getShardingItems());
+    public void process(final ShardingContext context) {
+        printContext.printProcessJobMessage(context.getShardingItems().keySet());
         System.out.println("-----------------------------" + fooRepository);
-        fooRepository.findActive(context.getShardingItems());
+        fooRepository.findActive(context.getShardingItems().keySet());
         // do something
     }
 }

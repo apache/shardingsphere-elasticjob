@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import lombok.Getter;
 
@@ -30,7 +31,7 @@ public class StreamingThroughputDataFlowElasticJobForExecuteFailure extends Abst
     private static volatile boolean completed;
     
     @Override
-    public List<String> fetchData(final JobExecutionMultipleShardingContext context) {
+    public List<String> fetchData(final ShardingContext context) {
         if (completed) {
             return null;
         }
@@ -38,11 +39,15 @@ public class StreamingThroughputDataFlowElasticJobForExecuteFailure extends Abst
     }
     
     @Override
-    public boolean processData(final JobExecutionMultipleShardingContext context, final String data) {
+    public boolean processData(final ShardingContext context, final String data) {
         completed = true;
         return false;
     }
     
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
+    }
     
     public static void reset() {
         completed = false;

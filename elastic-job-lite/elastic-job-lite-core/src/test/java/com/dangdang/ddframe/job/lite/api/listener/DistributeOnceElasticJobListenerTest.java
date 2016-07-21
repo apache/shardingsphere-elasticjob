@@ -17,12 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.api.listener;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.exception.JobTimeoutException;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.util.env.TimeService;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -46,7 +47,7 @@ public final class DistributeOnceElasticJobListenerTest {
     @Mock
     private ElasticJobListenerCaller elasticJobListenerCaller;
     
-    private JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+    private ShardingContext shardingContext;
     
     private TestDistributeOnceElasticJobListener distributeOnceElasticJobListener;
     
@@ -56,14 +57,14 @@ public final class DistributeOnceElasticJobListenerTest {
         distributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(elasticJobListenerCaller);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false), guaranteeService);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "timeService", false), timeService);
-        shardingContext.setShardingItems(Arrays.asList(0, 1));
+        shardingContext = new ShardingContext("test_job", 10, "", 10, Arrays.asList(new ShardingContext.ShardingItem(0, "", ""), new ShardingContext.ShardingItem(1, "", "")));
     }
     
     @Test
     public void testBeforeJobExecutedWhenIsAllStarted() {
         when(guaranteeService.isAllStarted()).thenReturn(true);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContext);
-        verify(guaranteeService).registerStart(Arrays.asList(0, 1));
+        verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
         verify(elasticJobListenerCaller).before();
         verify(guaranteeService).clearAllStartedInfo();
     }
@@ -73,7 +74,7 @@ public final class DistributeOnceElasticJobListenerTest {
         when(guaranteeService.isAllStarted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContext);
-        verify(guaranteeService).registerStart(Arrays.asList(0, 1));
+        verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
         verify(guaranteeService, times(0)).clearAllStartedInfo();
     }
     
@@ -90,7 +91,7 @@ public final class DistributeOnceElasticJobListenerTest {
     public void testAfterJobExecutedWhenIsAllCompleted() {
         when(guaranteeService.isAllCompleted()).thenReturn(true);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContext);
-        verify(guaranteeService).registerComplete(Arrays.asList(0, 1));
+        verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
         verify(elasticJobListenerCaller).after();
         verify(guaranteeService).clearAllCompletedInfo();
     }
@@ -100,7 +101,7 @@ public final class DistributeOnceElasticJobListenerTest {
         when(guaranteeService.isAllCompleted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContext);
-        verify(guaranteeService).registerComplete(Arrays.asList(0, 1));
+        verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
         verify(guaranteeService, times(0)).clearAllCompletedInfo();
     }
     

@@ -23,7 +23,7 @@ package com.dangdang.ddframe.job.api.job.dataflow;
  * @author zhangliang
  */
 public enum DataFlowType {
-
+    
     THROUGHPUT, 
     SEQUENCE
 }

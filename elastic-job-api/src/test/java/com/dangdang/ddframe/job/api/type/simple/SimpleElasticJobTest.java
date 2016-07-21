@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.simple;
 
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
 import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Collections;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -65,30 +67,30 @@ public final class SimpleElasticJobTest {
     
     @Test
     public void assertExecuteWhenPreviousJobStillRunning() {
-        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(true);
+        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(true);
         simpleElasticJob.execute();
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
-        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems());
+        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
         verify(jobCaller, times(0)).process();
     }
     
     @Test
     public void assertExecuteWhenShardingItemsIsEmpty() {
-        JobExecutionMultipleShardingContext shardingContext = new JobExecutionMultipleShardingContext();
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         simpleElasticJob.execute();
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
-        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems());
+        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
         verify(jobCaller, times(0)).process();
     }
     
     @Test(expected = JobException.class)
     public void assertExecuteWhenRunOnceAndThrowException() {
-        JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
+        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         doThrow(RuntimeException.class).when(jobCaller).process();
         try {
@@ -96,7 +98,7 @@ public final class SimpleElasticJobTest {
         } finally {
             verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
             verify(jobFacade).getShardingContext();
-            verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems());
+            verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
             verify(jobFacade).registerJobBegin(shardingContext);
             verify(jobCaller).process();
             verify(jobFacade).registerJobCompleted(shardingContext);
@@ -105,7 +107,7 @@ public final class SimpleElasticJobTest {
     
     @Test
     public void assertExecuteWhenRunOnceSuccess() {
-        JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
+        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         simpleElasticJob.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
@@ -114,9 +116,9 @@ public final class SimpleElasticJobTest {
     
     @Test
     public void assertExecuteWhenRunOnceWithMisfireIsEmpty() {
-        JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
+        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
         simpleElasticJob.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
         verify(jobCaller).process();
@@ -124,27 +126,27 @@ public final class SimpleElasticJobTest {
     
     @Test
     public void assertExecuteWhenRunOnceWithMisfireIsNotEmptyButIsNotEligibleForJobRunning() {
-        JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
+        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
         when(jobFacade.isEligibleForJobRunning()).thenReturn(false);
         simpleElasticJob.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
         verify(jobCaller).process();
-        verify(jobFacade, times(0)).clearMisfire(shardingContext.getShardingItems());
+        verify(jobFacade, times(0)).clearMisfire(shardingContext.getShardingItems().keySet());
     }
     
     @Test
     public void assertExecuteWhenRunOnceWithMisfire() {
-        JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
+        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(true, false);
+        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(true, false);
         when(jobFacade.isNeedSharding()).thenReturn(false);
         simpleElasticJob.execute();
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
-        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems());
+        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
         verify(jobFacade, times(2)).registerJobBegin(shardingContext);
         verify(jobCaller, times(2)).process();
         verify(jobFacade, times(2)).registerJobCompleted(shardingContext);
@@ -152,9 +154,9 @@ public final class SimpleElasticJobTest {
     
     @Test(expected = JobException.class)
     public void assertBeforeJobExecutedFailure() {
-        JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
+        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(false);
         doThrow(RuntimeException.class).when(jobFacade).beforeJobExecuted(shardingContext);
         try {
             simpleElasticJob.execute();
@@ -165,10 +167,10 @@ public final class SimpleElasticJobTest {
     
     @Test(expected = JobException.class)
     public void assertAfterJobExecutedFailure() {
-        JobExecutionMultipleShardingContext shardingContext = ElasticJobAssert.getShardingContext();
+        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems())).thenReturn(false);
+        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
         doThrow(RuntimeException.class).when(jobFacade).afterJobExecuted(shardingContext);
         try {
             simpleElasticJob.execute();
