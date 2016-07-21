@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.executor;
 
+import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.cloud.api.CloudJobFacade;
 import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
@@ -67,8 +69,10 @@ public final class TaskExecutor implements Executor {
             String[] jobClasses = properties.getProperty("job.classes").split(",");
             for (String each : jobClasses) {
                 Class<?> cloudElasticJobClass = Class.forName(each);
-                Object cloudElasticJob = cloudElasticJobClass.getConstructor(ShardingContext.class).newInstance(shardingContext);
-                cloudElasticJobClass.getMethod("execute").invoke(cloudElasticJob);
+                // TODO 判断class类型
+                ElasticJob elasticJob = (ElasticJob) cloudElasticJobClass.getConstructor().newInstance();
+                elasticJob.setJobFacade(new CloudJobFacade(shardingContext));
+                elasticJob.execute();
             }
             executorDriver.sendStatusUpdate(TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_FINISHED).build());
         } catch (final IOException | ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException ex) {

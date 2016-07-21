@@ -123,7 +123,7 @@ public final class HardwareResource {
     public Protos.TaskInfo createTaskInfo(final JobContext jobContext, final int shardingItem) {
         CloudJobConfiguration jobConfig = jobContext.getJobConfig();
         Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new TaskContext(jobConfig.getJobName(), shardingItem, jobContext.getType(), offer.getSlaveId().getValue()).getId()).build();
-        ShardingContext shardingContext = new ShardingContext(shardingItem);
+        ShardingContext shardingContext = new ShardingContext(jobContext.getJobConfig().getJobName(), shardingItem);
         shardingContext.setStreamingProcess(jobConfig.isStreamingProcess());
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(true).build();
         String shardingContextJson = GsonFactory.getGson().toJson(shardingContext).replace("{", "\\{").replace("}", "\\}");

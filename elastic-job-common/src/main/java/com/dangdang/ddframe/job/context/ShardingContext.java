@@ -32,6 +32,8 @@ import lombok.ToString;
 @ToString
 public final class ShardingContext {
     
+    private final String jobName;
+    
     private final int shardingItem;
     
     @Setter

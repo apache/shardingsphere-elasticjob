@@ -18,14 +18,22 @@
 package com.dangdang.ddframe.job.cloud.example;
 
 import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
-import java.util.Date;
+import java.util.Collections;
+import java.util.List;
 
-public class SampleCloudJob extends AbstractSimpleElasticJob {
+public class DataFlowCloudJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
     
     @Override
-    public void process(final JobExecutionMultipleShardingContext shardingContext) {
-        System.out.println(new Date() + ":------sample cloud job-------:" + shardingContext);
+    public List<String> fetchData(final JobExecutionMultipleShardingContext shardingContext) {
+        System.out.println("---fetch data:" + shardingContext);
+        return Collections.singletonList("abc");
+    }
+    
+    @Override
+    public boolean processData(final JobExecutionMultipleShardingContext shardingContext, final String data) {
+        System.out.println("---process data:" + data);
+        return true;
     }
 }
