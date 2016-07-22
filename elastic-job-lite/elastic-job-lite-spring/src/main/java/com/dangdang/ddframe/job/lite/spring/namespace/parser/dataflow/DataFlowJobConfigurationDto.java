@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
@@ -33,14 +34,17 @@ import lombok.Setter;
 @Setter
 final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<DataFlowJobConfiguration, DataFlowElasticJob, DataFlowJobConfiguration.DataFlowJobConfigurationBuilder> {
     
+    private DataFlowType dataFlowType;
+    
     private Integer processCountIntervalSeconds;
     
     private Integer concurrentDataProcessThreadCount;
     
     private Boolean streamingProcess;
     
-    DataFlowJobConfigurationDto(final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final Integer shardingTotalCount, final String cron) {
+    DataFlowJobConfigurationDto(final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final Integer shardingTotalCount, final String cron, final DataFlowType dataFlowType) {
         super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron);
+        this.dataFlowType = dataFlowType;
     }
     
     @Override
@@ -50,7 +54,7 @@ final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<Data
     
     @Override
     protected DataFlowJobConfiguration.DataFlowJobConfigurationBuilder createCustomizedBuilder() {
-        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder(getJobName(), getJobClass(), getShardingTotalCount(), getCron());
+        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder(getJobName(), getJobClass(), getShardingTotalCount(), getCron(), getDataFlowType());
     }
     
     @Override

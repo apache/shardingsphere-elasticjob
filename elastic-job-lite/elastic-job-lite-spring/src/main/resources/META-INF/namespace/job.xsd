@@ -52,6 +52,14 @@
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="base">
+                    <xsd:attribute name="dataflow-type" use="required">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:NMTOKEN">
+                                <xsd:enumeration value="THROUGHPUT" />
+                                <xsd:enumeration value="SEQUENCE" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:attribute>
                     <xsd:attribute name="process-count-interval-seconds" type="xsd:string" />
                     <xsd:attribute name="concurrent-data-process-thread-count" type="xsd:string" />
                     <xsd:attribute name="streaming-process" type="xsd:string" />

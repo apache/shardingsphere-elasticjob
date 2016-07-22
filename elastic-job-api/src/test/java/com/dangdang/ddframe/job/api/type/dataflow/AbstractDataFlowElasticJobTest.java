@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.api.type.dataflow;
 import com.dangdang.ddframe.job.api.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
@@ -49,12 +50,15 @@ public abstract class AbstractDataFlowElasticJobTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
+        when(jobFacade.getDataFlowType()).thenReturn(getDataFlowType());
         when(jobFacade.isStreamingProcess()).thenReturn(isStreamingProcess());
         dataFlowElasticJob = createDataFlowElasticJob(jobCaller);
         dataFlowElasticJob.setJobFacade(jobFacade);
         shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
     }
+    
+    protected abstract DataFlowType getDataFlowType();
     
     protected abstract boolean isStreamingProcess();
     

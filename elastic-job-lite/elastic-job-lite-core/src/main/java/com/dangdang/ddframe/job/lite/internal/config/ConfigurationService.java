@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
@@ -91,6 +92,7 @@ public class ConfigurationService {
     
     private void fillDataFlowJobInfo() {
         DataFlowJobConfiguration jobConfiguration = (DataFlowJobConfiguration) jobNodeStorage.getJobConfiguration();
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.DATAFLOW_TYPE, jobConfiguration.getDataFlowType());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, jobConfiguration.getProcessCountIntervalSeconds());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, jobConfiguration.getConcurrentDataProcessThreadCount());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, jobConfiguration.isStreamingProcess());
@@ -170,6 +172,15 @@ public class ConfigurationService {
      */
     public boolean isMonitorExecution() {
         return Boolean.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_EXECUTION));
+    }
+    
+    /**
+     * 获取数据流作业类型.
+     *
+     * @return 数据流作业类型
+     */
+    public DataFlowType getDataFlowType() {
+        return DataFlowType.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.DATAFLOW_TYPE));
     }
     
     /**

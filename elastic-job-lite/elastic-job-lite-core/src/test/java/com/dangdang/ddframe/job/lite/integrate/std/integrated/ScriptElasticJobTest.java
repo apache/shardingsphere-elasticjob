@@ -17,11 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.integrated;
 
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.util.ScriptElasticJobUtil;
+import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -31,7 +33,7 @@ public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     
     public ScriptElasticJobTest() {
-        super(ScriptElasticJob.class);
+        super(ScriptElasticJob.class, Optional.<DataFlowType>absent());
     }
     
     @Test

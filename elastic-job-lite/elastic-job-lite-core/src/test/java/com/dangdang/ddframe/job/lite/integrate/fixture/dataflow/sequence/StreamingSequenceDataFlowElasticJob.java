@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.sequence;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,11 +45,6 @@ public final class StreamingSequenceDataFlowElasticJob extends AbstractDataFlowE
         for (String each : data) {
             processedData.add(each);
         }
-    }
-    
-    @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.SEQUENCE;
     }
     
     public static boolean isCompleted() {

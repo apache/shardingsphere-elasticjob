@@ -42,6 +42,8 @@ public final class ConfigurationNode {
     
     static final String MONITOR_EXECUTION = ROOT + "/monitorExecution";
     
+    static final String DATAFLOW_TYPE = ROOT + "/dataFlowType";
+    
     static final String PROCESS_COUNT_INTERVAL_SECONDS = ROOT + "/processCountIntervalSeconds";
     
     static final String CONCURRENT_DATA_PROCESS_THREAD_COUNT = ROOT + "/concurrentDataProcessThreadCount";

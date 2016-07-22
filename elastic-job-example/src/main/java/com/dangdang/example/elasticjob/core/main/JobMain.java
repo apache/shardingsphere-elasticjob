@@ -18,6 +18,7 @@
 package com.dangdang.example.elasticjob.core.main;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
@@ -54,10 +55,10 @@ public final class JobMain {
                 SimpleJobDemo.class, 10, "0/30 * * * * ?").build();
         
         final DataFlowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("throughputDataFlowElasticDemoJob", 
-                ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").streamingProcess(true).build();
+                ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?", DataFlowType.THROUGHPUT).streamingProcess(true).build();
         
         final DataFlowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("sequenceDataFlowElasticDemoJob", 
-                SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
+                SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?", DataFlowType.SEQUENCE).build();
         
         final ScriptJobConfiguration scriptJobConfig = JobConfigurationFactory.createScriptJobConfigurationBuilder("scriptElasticDemoJob", 10, "0/5 * * * * ?", 
                 buildScriptCommandLine()).build();

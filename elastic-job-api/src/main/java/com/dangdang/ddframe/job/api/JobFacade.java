@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+
 import java.util.Collection;
 
 /**
@@ -32,6 +34,13 @@ public interface JobFacade {
      * @return 作业名称
      */
     String getJobName();
+    
+    /**
+     * 获取数据流作业类型.
+     *
+     * @return 数据流作业类型
+     */
+    DataFlowType getDataFlowType();
     
     /**
      * 获取同时处理数据的并发线程数.

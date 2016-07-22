@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.api.config;
 
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
@@ -54,11 +55,12 @@ public final class JobConfigurationFactory {
      * @param jobClass 作业实现类名称
      * @param shardingTotalCount 分片总数
      * @param cron 作业启动时间的cron表达式
+     * @param dataFlowType 数据流作业类型
      * @return 数据流作业配置
      */
     public static DataFlowJobConfiguration.DataFlowJobConfigurationBuilder createDataFlowJobConfigurationBuilder(
-            final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final int shardingTotalCount, final String cron) {
-        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder(jobName, jobClass, shardingTotalCount, cron);
+            final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final int shardingTotalCount, final String cron, final DataFlowType dataFlowType) {
+        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder(jobName, jobClass, shardingTotalCount, cron, dataFlowType);
     }
 
     /**

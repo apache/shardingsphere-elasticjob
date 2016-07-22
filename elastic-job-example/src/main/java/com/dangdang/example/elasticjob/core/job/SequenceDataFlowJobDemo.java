@@ -19,7 +19,6 @@ package com.dangdang.example.elasticjob.core.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -46,10 +45,5 @@ public class SequenceDataFlowJobDemo extends AbstractDataFlowElasticJob<Foo> {
             fooRepository.setInactive(each.getId());
             updateOffset(context.getShardingItems().keySet().iterator().next(), String.valueOf(each.getId()));
         }
-    }
-    
-    @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.SEQUENCE;
     }
 }

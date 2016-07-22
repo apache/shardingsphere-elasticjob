@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.api;
 
 import com.dangdang.ddframe.job.api.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
@@ -36,6 +37,12 @@ public class CloudJobFacade implements JobFacade {
     @Override
     public String getJobName() {
         return shardingContext.getJobName();
+    }
+    
+    @Override
+    public DataFlowType getDataFlowType() {
+        // TODO
+        return DataFlowType.THROUGHPUT;
     }
     
     @Override

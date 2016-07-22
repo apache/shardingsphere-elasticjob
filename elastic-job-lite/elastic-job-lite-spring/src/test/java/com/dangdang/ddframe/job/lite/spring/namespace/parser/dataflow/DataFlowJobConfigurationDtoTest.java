@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.ThroughputDataFlowElasticJob;
 import org.junit.Test;
@@ -48,10 +49,10 @@ public final class DataFlowJobConfigurationDtoTest {
     }
     
     private DataFlowJobConfigurationDto createDataFlowJobConfigurationDto() {
-        return new DataFlowJobConfigurationDto("dataFlowJob", ThroughputDataFlowElasticJob.class, 10, "0/1 * * * * ?");
+        return new DataFlowJobConfigurationDto("dataFlowJob", ThroughputDataFlowElasticJob.class, 10, "0/1 * * * * ?", DataFlowType.THROUGHPUT);
     }
     
     private DataFlowJobConfiguration.DataFlowJobConfigurationBuilder createDataFlowJobConfigurationBuilder() {
-        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder("dataFlowJob", ThroughputDataFlowElasticJob.class, 10, "0/1 * * * * ?");
+        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder("dataFlowJob", ThroughputDataFlowElasticJob.class, 10, "0/1 * * * * ?", DataFlowType.THROUGHPUT);
     }
 }

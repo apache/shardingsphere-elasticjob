@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.api.type.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.api.type.fixture.FooUnstreamingThroughputDataFlowElasticJob;
@@ -122,6 +123,11 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
     public void assertUpdateOffset() {
         getDataFlowElasticJob().updateOffset(0, "offset1");
         verify(getJobFacade()).updateOffset(0, "offset1");
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
     }
     
     @Override

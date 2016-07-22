@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
 
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJobForExecuteThrowsException;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationFieldUtil;
+import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +37,7 @@ import static org.junit.Assert.assertTrue;
 public final class StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest extends AbstractBaseStdJobAutoInitTest {
     
     public StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest() {
-        super(StreamingThroughputDataFlowElasticJobForExecuteThrowsException.class);
+        super(StreamingThroughputDataFlowElasticJobForExecuteThrowsException.class, Optional.of(DataFlowType.THROUGHPUT));
     }
     
     @Before

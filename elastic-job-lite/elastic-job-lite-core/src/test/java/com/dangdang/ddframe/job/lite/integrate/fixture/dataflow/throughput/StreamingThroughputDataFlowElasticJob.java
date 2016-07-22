@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,11 +57,6 @@ public final class StreamingThroughputDataFlowElasticJob extends AbstractDataFlo
         for (int item : context.getShardingItems().keySet()) {
             updateOffset(item, "offset");
         }
-    }
-    
-    @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.THROUGHPUT;
     }
     
     public static boolean isCompleted() {

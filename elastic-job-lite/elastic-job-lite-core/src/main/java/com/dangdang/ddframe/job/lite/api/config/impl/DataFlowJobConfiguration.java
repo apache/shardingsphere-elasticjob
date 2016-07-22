@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.api.config.impl;
 
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 
@@ -29,6 +30,8 @@ import lombok.Getter;
 @Getter
 public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extends AbstractJobConfiguration<T> {
     
+    private final DataFlowType dataFlowType;
+    
     private final int processCountIntervalSeconds;
     
     private final int concurrentDataProcessThreadCount;
@@ -39,11 +42,12 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
     private DataFlowJobConfiguration(final String jobName, final Class<? extends T> jobClass, final int shardingTotalCount, final String cron,
                                    final String shardingItemParameters, final String jobParameter, final boolean monitorExecution, final int maxTimeDiffSeconds,
                                    final boolean isFailover, final boolean isMisfire, final int monitorPort, final String jobShardingStrategyClass, final String description,
-                                   final boolean disabled, final boolean overwrite, final int processCountIntervalSeconds, final int concurrentDataProcessThreadCount,
+                                   final boolean disabled, final boolean overwrite, final DataFlowType dataFlowType, final int processCountIntervalSeconds, final int concurrentDataProcessThreadCount,
                                    final boolean streamingProcess) {
         //CHECKSTYLE:ON
         super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire,
                 monitorPort, jobShardingStrategyClass, description, disabled, overwrite);
+        this.dataFlowType = dataFlowType;
         this.processCountIntervalSeconds = processCountIntervalSeconds;
         this.concurrentDataProcessThreadCount = concurrentDataProcessThreadCount;
         this.streamingProcess = streamingProcess;
@@ -51,6 +55,8 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
     
     
     public static class DataFlowJobConfigurationBuilder extends AbstractJobConfigurationBuilder<DataFlowJobConfiguration, DataFlowElasticJob, DataFlowJobConfigurationBuilder> {
+    
+        private final DataFlowType dataFlowType;
         
         private int processCountIntervalSeconds = 300;
         
@@ -58,8 +64,10 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
         
         private boolean streamingProcess;
         
-        public DataFlowJobConfigurationBuilder(final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final int shardingTotalCount, final String cron) {
+        public DataFlowJobConfigurationBuilder(
+                final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final int shardingTotalCount, final String cron, final DataFlowType dataFlowType) {
             super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron);
+            this.dataFlowType = dataFlowType;
         }
         
         /**
@@ -116,7 +124,7 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
             Preconditions.checkArgument(concurrentDataProcessThreadCount > 0, String.format("%d should larger than zero.", concurrentDataProcessThreadCount));
             return new DataFlowJobConfiguration(getJobName(), getJobClass(), getShardingTotalCount(), getCron(), getShardingItemParameters(), getJobParameter(),
                     isMonitorExecution(), getMaxTimeDiffSeconds(), isFailover(), isMisfire(), getMonitorPort(), getJobShardingStrategyClass(),
-                    getDescription(), isDisabled(), isOverwrite(), processCountIntervalSeconds, concurrentDataProcessThreadCount, streamingProcess);
+                    getDescription(), isDisabled(), isOverwrite(), dataFlowType, processCountIntervalSeconds, concurrentDataProcessThreadCount, streamingProcess);
         }
     }
 }

@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.api.type.dataflow.sequence;
 
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.FooUnstreamingSequenceDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
@@ -48,6 +49,11 @@ public class UnstreamingSequenceDataFlowElasticJobTest extends AbstractSequenceD
         verify(getJobCaller()).processData(4);
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(1, 1);
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.SEQUENCE;
     }
     
     @Override

@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.api.type.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.exception.JobException;
 import lombok.RequiredArgsConstructor;
 
@@ -44,10 +43,5 @@ public final class FooUnstreamingThroughputDataFlowElasticJob extends AbstractDa
     
     @Override
     public void handleJobExecutionException(final JobException jobException) {
-    }
-    
-    @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.THROUGHPUT;
     }
 }

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
@@ -71,7 +72,7 @@ public class SchedulerFacadeTest {
     @Mock
     private ListenerManager listenerManager;
     
-    private JobConfiguration jobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("testJob", TestDataFlowJob.class, 3, "0/1 * * * * ?").build();
+    private JobConfiguration jobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("testJob", TestDataFlowJob.class, 3, "0/1 * * * * ?", DataFlowType.THROUGHPUT).build();
     
     private SchedulerFacade schedulerFacade;
     

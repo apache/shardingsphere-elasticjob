@@ -45,17 +45,13 @@ public abstract class AbstractDataFlowElasticJob<T> extends AbstractElasticJob i
     
     private final ExecutorService executorService;
     
-    private final DataFlowType dataFlowType;
-    
     public AbstractDataFlowElasticJob() {
         executorService = getExecutorService();
-        dataFlowType = getDataFlowType();
     }
-    
-    protected abstract DataFlowType getDataFlowType();
     
     @Override
     protected final void executeJob(final ShardingContext shardingContext) {
+        DataFlowType dataFlowType = getJobFacade().getDataFlowType();
         boolean streamingProcess = getJobFacade().isStreamingProcess();
         if (DataFlowType.THROUGHPUT == dataFlowType) {
             if (streamingProcess) {

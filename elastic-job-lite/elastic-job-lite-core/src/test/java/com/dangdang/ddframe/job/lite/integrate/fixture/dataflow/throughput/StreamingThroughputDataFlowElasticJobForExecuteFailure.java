@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import lombok.Getter;
 
 import java.util.Collections;
@@ -41,11 +40,6 @@ public class StreamingThroughputDataFlowElasticJobForExecuteFailure extends Abst
     @Override
     public void processData(final ShardingContext context, final List<String> data) {
         completed = true;
-    }
-    
-    @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.THROUGHPUT;
     }
     
     public static void reset() {

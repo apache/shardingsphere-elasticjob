@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api.config;
 
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.lite.api.config.impl.AbstractJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataFlowJob;
@@ -41,7 +42,7 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
     
     @Override
     protected DataFlowJobConfiguration.DataFlowJobConfigurationBuilder getJobConfigurationBuilder() {
-        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder("dataFlowJob", TestDataFlowJob.class, 10, "0/1 * * * * ?");
+        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder("dataFlowJob", TestDataFlowJob.class, 10, "0/1 * * * * ?", DataFlowType.THROUGHPUT);
     }
     
     @Override

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
@@ -38,7 +39,8 @@ public final class JobConfigurationFactoryTest {
 
     @Test
     public void assertCreateDataFlowJobConfiguration() {
-        assertThat(JobConfigurationFactory.createDataFlowJobConfigurationBuilder("dataFlowJob", TestDataFlowJob.class, 10, "0/10 * * * *").build(), is(instanceOf(DataFlowJobConfiguration.class)));
+        assertThat(JobConfigurationFactory.createDataFlowJobConfigurationBuilder("dataFlowJob", TestDataFlowJob.class, 10, "0/10 * * * *", DataFlowType.THROUGHPUT).build(), 
+                is(instanceOf(DataFlowJobConfiguration.class)));
     }
 
     @Test

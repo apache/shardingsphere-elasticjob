@@ -19,7 +19,6 @@ package com.dangdang.example.elasticjob.spring.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -48,10 +47,5 @@ public class ThroughputDataFlowJobDemo extends AbstractDataFlowElasticJob<Foo> {
             printContext.printProcessDataMessage(each);
             fooRepository.setInactive(each.getId());
         }
-    }
-    
-    @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.THROUGHPUT;
     }
 }

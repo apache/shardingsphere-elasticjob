@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
@@ -101,6 +102,7 @@ public final class ConfigurationServiceTest {
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, jobConfig.isMonitorExecution());
         if (DataFlowElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
             DataFlowJobConfiguration dataFlowJobConfiguration = (DataFlowJobConfiguration) jobConfig;
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DATAFLOW_TYPE, dataFlowJobConfiguration.getDataFlowType());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, dataFlowJobConfiguration.getProcessCountIntervalSeconds());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, dataFlowJobConfiguration.getConcurrentDataProcessThreadCount());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, dataFlowJobConfiguration.isStreamingProcess());
@@ -187,6 +189,13 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.MONITOR_EXECUTION)).thenReturn("true");
         assertTrue(configService.isMonitorExecution());
         verify(jobNodeStorage).getJobNodeData(ConfigurationNode.MONITOR_EXECUTION);
+    }
+    
+    @Test
+    public void assertGetDataFlowType() {
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.DATAFLOW_TYPE)).thenReturn("SEQUENCE");
+        assertThat(configService.getDataFlowType(), is(DataFlowType.SEQUENCE));
+        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.DATAFLOW_TYPE);
     }
     
     @Test

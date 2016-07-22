@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.api.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
@@ -70,6 +71,11 @@ public class LiteJobFacade implements JobFacade {
     @Override
     public String getJobName() {
         return configService.getJobName();
+    }
+    
+    @Override
+    public DataFlowType getDataFlowType() {
+        return configService.getDataFlowType();
     }
     
     @Override

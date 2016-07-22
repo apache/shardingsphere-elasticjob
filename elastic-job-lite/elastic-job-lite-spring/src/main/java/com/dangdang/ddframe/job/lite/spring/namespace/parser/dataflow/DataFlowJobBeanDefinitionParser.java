@@ -36,6 +36,7 @@ public class DataFlowJobBeanDefinitionParser extends AbstractJobBeanDefinitionPa
     
     @Override
     protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
+        factory.addConstructorArgValue(element.getAttribute(DataFlowJobBeanDefinitionParserTag.DATAFLOW_TYPE_ATTRIBUTE));
         addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.PROCESS_COUNT_INTERVAL_SECONDS_ATTRIBUTE, "processCountIntervalSeconds", element, factory);
         addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE, "concurrentDataProcessThreadCount", element, factory);
         addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE, "streamingProcess", element, factory);

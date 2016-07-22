@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.api.type.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -39,10 +38,5 @@ public final class FooUnstreamingSequenceDataFlowElasticJob extends AbstractData
         for (Object each : data) {
             jobCaller.processData(each);
         }
-    }
-    
-    @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.SEQUENCE;
     }
 }

@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
@@ -101,6 +102,12 @@ public class LiteJobFacadeTest {
     public void assertCheckMaxTimeDiffSecondsTolerable() {
         liteJobFacade.checkMaxTimeDiffSecondsTolerable();
         verify(configService).checkMaxTimeDiffSecondsTolerable();
+    }
+    
+    @Test
+    public void assertGetDataFlowType() {
+        when(configService.getDataFlowType()).thenReturn(DataFlowType.SEQUENCE);
+        assertThat(liteJobFacade.getDataFlowType(), is(DataFlowType.SEQUENCE));
     }
     
     @Test

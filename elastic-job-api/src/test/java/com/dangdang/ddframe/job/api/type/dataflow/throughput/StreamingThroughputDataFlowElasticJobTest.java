@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.api.type.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.api.type.fixture.FooStreamingThroughputDataFlowElasticJob;
@@ -78,6 +79,11 @@ public class StreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowE
         verify(getJobCaller()).processData(2);
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 1);
+    }
+    
+    @Override
+    protected DataFlowType getDataFlowType() {
+        return DataFlowType.THROUGHPUT;
     }
     
     @Override
