@@ -17,13 +17,16 @@
 
 package com.dangdang.ddframe.job.cloud;
 
+import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.cloud.executor.TaskExecutor;
+import com.dangdang.ddframe.job.cloud.api.CloudJobFacade;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
-
 import lombok.RequiredArgsConstructor;
-import org.apache.mesos.MesosExecutorDriver;
-import org.apache.mesos.Protos.Status;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
 
 /**
  * 云作业启动执行器.
@@ -36,7 +39,19 @@ public final class AgentMain {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        MesosExecutorDriver driver = new MesosExecutorDriver(new TaskExecutor(GsonFactory.getGson().fromJson(args[0], ShardingContext.class)));
-        System.exit(Status.DRIVER_STOPPED == driver.run() ? 0 : -1);
+        try {
+            Properties properties = new Properties();
+            properties.load(new FileInputStream("conf/job.properties"));
+            String[] jobClasses = properties.getProperty("job.classes").split(",");
+            for (String each : jobClasses) {
+                Class<?> cloudElasticJobClass = Class.forName(each);
+                // TODO 判断class类型
+                ElasticJob elasticJob = (ElasticJob) cloudElasticJobClass.getConstructor().newInstance();
+                elasticJob.setJobFacade(new CloudJobFacade(GsonFactory.getGson().fromJson(args[0], ShardingContext.class)));
+                elasticJob.execute();
+            }
+        }  catch (final IOException | ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

@@ -127,16 +127,16 @@ public final class HardwareResource {
         // TODO 完善offset和param
         ShardingContext shardingContext = new ShardingContext(jobContext.getJobConfig().getJobName(), jobContext.getJobConfig().getShardingTotalCount(), "", 10, 
                 Collections.singletonList(new ShardingContext.ShardingItem(shardingItem, "", "")));
-        Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(true).build();
+        // TODO 上线前更改cache为true
+        Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(String.format(RUN_COMMAND, GsonFactory.getGson().toJson(shardingContext))).build();
-        Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
                 .setTaskId(taskId)
                 .setSlaveId(offer.getSlaveId())
                 .addResources(buildResource("cpus", jobConfig.getCpuCount()))
                 .addResources(buildResource("mem", jobConfig.getMemoryMB()))
-                .setExecutor(executorInfo)
+                .setCommand(command)
                 .build();
     }
     
