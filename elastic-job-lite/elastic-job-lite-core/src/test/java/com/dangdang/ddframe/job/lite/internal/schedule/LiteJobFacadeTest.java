@@ -146,14 +146,14 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertRegisterJobBegin() {
-        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         liteJobFacade.registerJobBegin(shardingContext);
         verify(executionService).registerJobBegin(shardingContext);
     }
     
     @Test
     public void assertRegisterJobCompletedWhenFailoverDisabled() {
-        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(false);
         liteJobFacade.registerJobCompleted(shardingContext);
         verify(executionService).registerJobCompleted(shardingContext);
@@ -162,7 +162,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertRegisterJobCompletedWhenFailoverEnabled() {
-        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(true);
         liteJobFacade.registerJobCompleted(shardingContext);
         verify(executionService).registerJobCompleted(shardingContext);
@@ -171,7 +171,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertGetShardingContextWhenIsFailoverEnableAndFailover() {
-        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(true);
         when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.singletonList(1));
         when(executionContextService.getJobShardingContext(Collections.singletonList(1))).thenReturn(shardingContext);
@@ -181,7 +181,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertGetShardingContextWhenIsFailoverEnableAndNotFailover() {
-        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(true);
         when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.<Integer>emptyList());
         when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
@@ -193,7 +193,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertGetShardingContextWhenIsFailoverDisable() {
-        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         when(configService.isFailover()).thenReturn(false);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
         when(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1))).thenReturn(shardingContext);
@@ -233,13 +233,13 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertBeforeJobExecuted() {
-        liteJobFacade.beforeJobExecuted(new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList()));
+        liteJobFacade.beforeJobExecuted(new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList()));
         verify(caller).before();
     }
     
     @Test
     public void assertAfterJobExecuted() {
-        liteJobFacade.afterJobExecuted(new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList()));
+        liteJobFacade.afterJobExecuted(new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList()));
         verify(caller).after();
     }
     

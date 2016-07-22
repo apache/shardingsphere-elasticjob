@@ -87,7 +87,7 @@ public final class ExecutionServiceTest {
     
     @Test
     public void assertRegisterJobBeginWhenNotAssignAnyItem() {
-        executionService.registerJobBegin(new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList()));
+        executionService.registerJobBegin(new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList()));
         verify(configService, times(0)).isMonitorExecution();
     }
     
@@ -136,7 +136,7 @@ public final class ExecutionServiceTest {
     @Test
     public void assertRegisterJobCompletedWhenNotMonitorExecution() {
         when(configService.isMonitorExecution()).thenReturn(false);
-        executionService.registerJobCompleted(new ShardingContext("test_job", 10, "", 10, Collections.<ShardingContext.ShardingItem>emptyList()));
+        executionService.registerJobCompleted(new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList()));
         verify(configService).isMonitorExecution();
         verify(serverService, times(0)).updateServerStatus(ServerStatus.READY);
     }
@@ -434,7 +434,7 @@ public final class ExecutionServiceTest {
     }
     
     private ShardingContext getShardingContext() {
-        ShardingContext result = new ShardingContext("test_job", 10, "", 10, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext result = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         result.getShardingItems().put(0, new ShardingContext.ShardingItem(0, "", ""));
         result.getShardingItems().put(1, new ShardingContext.ShardingItem(1, "", ""));
         result.getShardingItems().put(2, new ShardingContext.ShardingItem(2, "", ""));

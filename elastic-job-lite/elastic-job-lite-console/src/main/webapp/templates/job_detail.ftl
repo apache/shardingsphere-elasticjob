@@ -48,14 +48,9 @@
                         <div class="col-sm-2">
                             <input type="number" id="processCountIntervalSeconds" name="processCountIntervalSeconds" class="form-control" data-toggle="tooltip" data-placement="bottom" title="只对处理数据流类型作业起作用" />
                         </div>
-                        
-                        <label for="fetchDataCount" class="col-sm-2 control-label">每次抓取的数据量</label>
-                        <div class="col-sm-2">
-                            <input type="number" id="fetchDataCount" name="fetchDataCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="可在不重启作业的情况下灵活配置抓取数据量" />
-                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="fetchDataCount" class="col-sm-2 control-label">是否流式处理数据</label>
+                        <label for="streamingProcess" class="col-sm-2 control-label">是否流式处理数据</label>
                         <div class="col-sm-2">
                             <input type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 则处理数据完成后作业结束" />
                         </div>

@@ -60,8 +60,7 @@ public class ExecutionContextService {
     public ShardingContext getJobShardingContext(final List<Integer> shardingItems) {
         removeRunningIfMonitorExecution(shardingItems);
         if (shardingItems.isEmpty()) {
-            return new ShardingContext(jobConfiguration.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), configService.getFetchDataCount(), 
-                    Collections.<ShardingContext.ShardingItem>emptyList());
+            return new ShardingContext(jobConfiguration.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), Collections.<ShardingContext.ShardingItem>emptyList());
         }
         Map<Integer, String> shardingItemParameterMap = configService.getShardingItemParameters();
         Map<Integer, String>  offSetMap = offsetService.getOffsets(shardingItems);
@@ -69,7 +68,7 @@ public class ExecutionContextService {
         for (int each : shardingItems) {
             shardingItemList.add(new ShardingContext.ShardingItem(each, shardingItemParameterMap.get(each), offSetMap.get(each)));
         }
-        return new ShardingContext(jobConfiguration.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), configService.getFetchDataCount(), shardingItemList);
+        return new ShardingContext(jobConfiguration.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), shardingItemList);
     }
     
     private void removeRunningIfMonitorExecution(final List<Integer> shardingItems) {

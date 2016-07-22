@@ -54,7 +54,6 @@
                 <xsd:extension base="base">
                     <xsd:attribute name="process-count-interval-seconds" type="xsd:string" />
                     <xsd:attribute name="concurrent-data-process-thread-count" type="xsd:string" />
-                    <xsd:attribute name="fetch-data-count" type="xsd:string" />
                     <xsd:attribute name="streaming-process" type="xsd:string" />
                 </xsd:extension>
             </xsd:complexContent>

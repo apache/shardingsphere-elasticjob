@@ -31,8 +31,6 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
     
     private final int processCountIntervalSeconds;
     
-    private final int fetchDataCount;
-    
     private final int concurrentDataProcessThreadCount;
     
     private final boolean streamingProcess;
@@ -41,13 +39,12 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
     private DataFlowJobConfiguration(final String jobName, final Class<? extends T> jobClass, final int shardingTotalCount, final String cron,
                                    final String shardingItemParameters, final String jobParameter, final boolean monitorExecution, final int maxTimeDiffSeconds,
                                    final boolean isFailover, final boolean isMisfire, final int monitorPort, final String jobShardingStrategyClass, final String description,
-                                   final boolean disabled, final boolean overwrite, final int processCountIntervalSeconds, final int fetchDataCount, final int concurrentDataProcessThreadCount,
+                                   final boolean disabled, final boolean overwrite, final int processCountIntervalSeconds, final int concurrentDataProcessThreadCount,
                                    final boolean streamingProcess) {
         //CHECKSTYLE:ON
         super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire,
                 monitorPort, jobShardingStrategyClass, description, disabled, overwrite);
         this.processCountIntervalSeconds = processCountIntervalSeconds;
-        this.fetchDataCount = fetchDataCount;
         this.concurrentDataProcessThreadCount = concurrentDataProcessThreadCount;
         this.streamingProcess = streamingProcess;
     }
@@ -56,8 +53,6 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
     public static class DataFlowJobConfigurationBuilder extends AbstractJobConfigurationBuilder<DataFlowJobConfiguration, DataFlowElasticJob, DataFlowJobConfigurationBuilder> {
         
         private int processCountIntervalSeconds = 300;
-        
-        private int fetchDataCount = 1;
         
         private int concurrentDataProcessThreadCount = Runtime.getRuntime().availableProcessors() * 2;
         
@@ -80,22 +75,6 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
          */
         public final DataFlowJobConfigurationBuilder processCountIntervalSeconds(final int processCountIntervalSeconds) {
             this.processCountIntervalSeconds = processCountIntervalSeconds;
-            return this;
-        }
-        
-        /**
-         * 设置每次抓取的数据量.
-         *
-         * <p>
-         * 默认值: CPU核数 * 2. 不能小于1.
-         * </p>
-         *
-         * @param fetchDataCount 每次抓取的数据量
-         *
-         * @return 作业配置构建器
-         */
-        public final DataFlowJobConfigurationBuilder fetchDataCount(final int fetchDataCount) {
-            this.fetchDataCount = fetchDataCount;
             return this;
         }
         
@@ -134,11 +113,10 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
         @SuppressWarnings("unchecked")
         protected DataFlowJobConfiguration buildInternal() {
             Preconditions.checkArgument(processCountIntervalSeconds > 0, String.format("%d should larger than zero.", processCountIntervalSeconds));
-            Preconditions.checkArgument(fetchDataCount > 0, String.format("%d should larger than zero.", fetchDataCount));
             Preconditions.checkArgument(concurrentDataProcessThreadCount > 0, String.format("%d should larger than zero.", concurrentDataProcessThreadCount));
             return new DataFlowJobConfiguration(getJobName(), getJobClass(), getShardingTotalCount(), getCron(), getShardingItemParameters(), getJobParameter(),
                     isMonitorExecution(), getMaxTimeDiffSeconds(), isFailover(), isMisfire(), getMonitorPort(), getJobShardingStrategyClass(),
-                    getDescription(), isDisabled(), isOverwrite(), processCountIntervalSeconds, fetchDataCount, concurrentDataProcessThreadCount, streamingProcess);
+                    getDescription(), isDisabled(), isOverwrite(), processCountIntervalSeconds, concurrentDataProcessThreadCount, streamingProcess);
         }
     }
 }

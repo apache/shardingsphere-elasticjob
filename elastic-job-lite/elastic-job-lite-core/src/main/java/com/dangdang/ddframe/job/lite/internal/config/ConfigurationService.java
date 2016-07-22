@@ -93,7 +93,6 @@ public class ConfigurationService {
         DataFlowJobConfiguration jobConfiguration = (DataFlowJobConfiguration) jobNodeStorage.getJobConfiguration();
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, jobConfiguration.getProcessCountIntervalSeconds());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, jobConfiguration.getConcurrentDataProcessThreadCount());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, jobConfiguration.getFetchDataCount());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, jobConfiguration.isStreamingProcess());
     }
     
@@ -194,16 +193,6 @@ public class ConfigurationService {
      */
     public int getConcurrentDataProcessThreadCount() {
         return Integer.parseInt(jobNodeStorage.getJobNodeData(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT));
-    }
-    
-    /**
-     * 获取每次抓取的数据量.
-     * 
-     * @return 每次抓取的数据量
-     */
-    public int getFetchDataCount() {
-        String result = jobNodeStorage.getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT);
-        return null == result ? 0 : Integer.parseInt(result);
     }
     
     /**

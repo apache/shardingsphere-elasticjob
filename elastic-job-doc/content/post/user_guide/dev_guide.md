@@ -131,7 +131,7 @@ echo sharding execution context is $*
 
 作业运行时输出
 
-`sharding execution context is {"shardingItems":[0,1,2,3,4,5,6,7,8,9],"shardingItemParameters":{},"offsets":{},"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","monitorExecution":true,"fetchDataCount":1}`
+`sharding execution context is {"shardingItems":[0,1,2,3,4,5,6,7,8,9],"shardingItemParameters":{},"offsets":{},"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","monitorExecution":true}`
 
 ### 异常处理
 
@@ -267,7 +267,7 @@ public class JobMain {
 |cron                                |String |`是`    |     | `cron`表达式，用于配置作业触发时间                                             |
 |sharding-total-count                |int    |`是`    |     | 作业分片总数                                                                 |
 |sharding-item-parameters            |String |否      |     | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从`0`开始，不可大于或等于作业分片总数<br />如：<br/>`0=a,1=b,2=c`|
-|job-parameter                       |String |否      |     | 作业自定义参数<br />可以配置多个相同的作业，但是用不同的参数作为不同的调度实例     |
+|job-parameter                       |String |否      |     | 作业自定义参数<br />作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
 |monitor-execution                   |boolean|否      |true | 监控作业运行时状态<br />每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率。因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。<br />每次作业执行时间和间隔时间均较长的情况，建议监控作业运行时状态，可保证数据不会重复选取。|
 |monitor-port                        |int    |否      |-1   | 作业监控端口<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump" \| nc 127.0.0.1 9888|
 |max-time-diff-seconds               |int    |否      |-1   | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为`-1`表示不校验时间误差|
@@ -286,7 +286,6 @@ job:dataflow命名空间拥有job:simple命名空间的全部属性，以下仅�
 | ---------------------------------- |:------|:-------|:--------|:------------------------------------------------------------------------------------------------------------------------|
 |process-count-interval-seconds      |int    |否      |300      | 统计作业处理数据数量的间隔时间<br />单位：秒<br />                                                                            |
 |concurrent-data-process-thread-count|int    |否      |CPU核数*2 | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效                                                   |
-|fetch-data-count                    |int    |否      |1        | 每次抓取的数据量                                                                                                           |
 |streaming-process                   |boolean|否      |false    | 是否流式处理数据<br />如果流式处理数据, 则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
 
 #### job:script命名空间属性详细说明，基本属性参照job:simple命名空间属性详细说明

@@ -72,7 +72,6 @@ public class JobSettingsAPIImplTest {
         when(registryCenter.get("/testJob/config/monitorExecution")).thenReturn("true");
         when(registryCenter.get("/testJob/config/processCountIntervalSeconds")).thenReturn("300");
         when(registryCenter.get("/testJob/config/concurrentDataProcessThreadCount")).thenReturn("10");
-        when(registryCenter.get("/testJob/config/fetchDataCount")).thenReturn("100");
         when(registryCenter.get("/testJob/config/maxTimeDiffSeconds")).thenReturn("60000");
         when(registryCenter.get("/testJob/config/failover")).thenReturn("true");
         when(registryCenter.get("/testJob/config/misfire")).thenReturn("true");
@@ -107,7 +106,6 @@ public class JobSettingsAPIImplTest {
         verify(registryCenter).get("/testJob/config/monitorExecution");
         verify(registryCenter).get("/testJob/config/processCountIntervalSeconds");
         verify(registryCenter).get("/testJob/config/concurrentDataProcessThreadCount");
-        verify(registryCenter).get("/testJob/config/fetchDataCount");
         verify(registryCenter).get("/testJob/config/maxTimeDiffSeconds");
         verify(registryCenter).get("/testJob/config/failover");
         verify(registryCenter).get("/testJob/config/misfire");
@@ -125,10 +123,8 @@ public class JobSettingsAPIImplTest {
         jobSettings.setShardingTotalCount(10);
         jobSettings.setProcessCountIntervalSeconds(300);
         jobSettings.setConcurrentDataProcessThreadCount(10);
-        jobSettings.setFetchDataCount(100);
         jobSettings.setMaxTimeDiffSeconds(60000);
         jobSettings.setMonitorExecution(true);
-        
         jobSettings.setCron(null);
         jobSettings.setStreamingProcess(true);
         jobSettings.setFailover(false);

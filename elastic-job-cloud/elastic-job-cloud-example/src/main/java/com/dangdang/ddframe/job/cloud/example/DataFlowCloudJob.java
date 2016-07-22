@@ -42,4 +42,3 @@ public class DataFlowCloudJob extends AbstractDataFlowElasticJob<String> {
         return DataFlowType.THROUGHPUT;
     }
 }
- 

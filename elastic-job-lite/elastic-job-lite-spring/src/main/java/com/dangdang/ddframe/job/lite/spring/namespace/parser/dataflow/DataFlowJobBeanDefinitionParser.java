@@ -17,11 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.w3c.dom.Element;
-
 import com.dangdang.ddframe.job.lite.spring.namespace.constants.DataFlowJobBeanDefinitionParserTag;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobBeanDefinitionParser;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.w3c.dom.Element;
 
 /**
  * 数据流作业的命名空间解析器.
@@ -39,7 +38,6 @@ public class DataFlowJobBeanDefinitionParser extends AbstractJobBeanDefinitionPa
     protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
         addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.PROCESS_COUNT_INTERVAL_SECONDS_ATTRIBUTE, "processCountIntervalSeconds", element, factory);
         addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE, "concurrentDataProcessThreadCount", element, factory);
-        addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.FETCH_DATA_COUNT_ATTRIBUTE, "fetchDataCount", element, factory);
         addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE, "streamingProcess", element, factory);
     }
 }

@@ -30,8 +30,6 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
     
     private int concurrentDataProcessThreadCount = 100;
     
-    private int fetchDataCount = 20;
-    
     private int processCountIntervalSeconds = 10;
     
     private boolean streamingProcess = true;
@@ -52,14 +50,12 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
         JobConfiguration jobConfiguration = getJobConfiguration();
         try {
             ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("concurrentDataProcessThreadCount"), concurrentDataProcessThreadCount);
-            ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("fetchDataCount"), fetchDataCount);
             ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("processCountIntervalSeconds"), processCountIntervalSeconds);
             ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("streamingProcess"), streamingProcess);
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }
         assertThat(getJobConfigurationBuilder().concurrentDataProcessThreadCount(concurrentDataProcessThreadCount)
-                        .fetchDataCount(fetchDataCount)
                         .processCountIntervalSeconds(processCountIntervalSeconds)
                         .streamingProcess(streamingProcess)
                         .build(),
@@ -78,17 +74,6 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
         AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
         try {
             ReflectionUtils.setFieldValue(builder, DataFlowJobConfiguration.DataFlowJobConfigurationBuilder.class.getDeclaredField("concurrentDataProcessThreadCount"), 0);
-        } catch (final NoSuchFieldException ex) {
-            ex.printStackTrace();
-        }
-        builder.build();
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void testBuildDataFlowJobConfigurationWithWrongFetchDataCount() {
-        AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
-        try {
-            ReflectionUtils.setFieldValue(builder, DataFlowJobConfiguration.DataFlowJobConfigurationBuilder.class.getDeclaredField("fetchDataCount"), 0);
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }

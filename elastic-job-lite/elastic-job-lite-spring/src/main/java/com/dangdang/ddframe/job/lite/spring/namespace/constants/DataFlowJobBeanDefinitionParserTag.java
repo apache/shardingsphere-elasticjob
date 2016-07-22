@@ -32,7 +32,5 @@ public class DataFlowJobBeanDefinitionParserTag {
     
     public static final String CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE = "concurrent-data-process-thread-count";
     
-    public static final String FETCH_DATA_COUNT_ATTRIBUTE = "fetch-data-count";
-    
     public static final String STREAMING_PROCESS_ATTRIBUTE = "streaming-process";
 }

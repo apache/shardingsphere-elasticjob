@@ -54,20 +54,14 @@ public final class ShardingContext {
     private String jobParameter;
     
     /**
-     * 每次抓取的数据量.
-     */
-    private int fetchDataCount;
-    
-    /**
      * 分配于本作业实例的分片项.
      */
     private final Map<Integer, ShardingItem> shardingItems;
     
-    public ShardingContext(final String jobName, final int shardingTotalCount, final String jobParameter, final int fetchDataCount, final Collection<ShardingItem> shardingItems) {
+    public ShardingContext(final String jobName, final int shardingTotalCount, final String jobParameter, final Collection<ShardingItem> shardingItems) {
         this.jobName = jobName;
         this.shardingTotalCount = shardingTotalCount;
         this.jobParameter = jobParameter;
-        this.fetchDataCount = fetchDataCount;
         this.shardingItems = new LinkedHashMap<>(shardingTotalCount);
         for (ShardingItem each : shardingItems) {
             this.shardingItems.put(each.getItem(), each);
@@ -81,7 +75,7 @@ public final class ShardingContext {
      * @return 分片上下文
      */
     public ShardingContext getShardingContext(final int shardingItem) {
-        return new ShardingContext(jobName, shardingTotalCount, jobParameter, fetchDataCount, Collections.singletonList(shardingItems.get(shardingItem)));
+        return new ShardingContext(jobName, shardingTotalCount, jobParameter, Collections.singletonList(shardingItems.get(shardingItem)));
     }
     
     /**

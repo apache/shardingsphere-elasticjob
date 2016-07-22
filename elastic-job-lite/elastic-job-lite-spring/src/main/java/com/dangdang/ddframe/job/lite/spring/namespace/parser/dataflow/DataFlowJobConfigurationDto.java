@@ -35,8 +35,6 @@ final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<Data
     
     private Integer processCountIntervalSeconds;
     
-    private Integer fetchDataCount;
-    
     private Integer concurrentDataProcessThreadCount;
     
     private Boolean streamingProcess;
@@ -59,9 +57,6 @@ final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<Data
     protected DataFlowJobConfiguration.DataFlowJobConfigurationBuilder buildCustomizedProperties(final DataFlowJobConfiguration.DataFlowJobConfigurationBuilder builder) {
         if (null != getProcessCountIntervalSeconds()) {
             builder.processCountIntervalSeconds(getProcessCountIntervalSeconds());
-        }
-        if (null != getFetchDataCount()) {
-            builder.fetchDataCount(getFetchDataCount());
         }
         if (null != getConcurrentDataProcessThreadCount()) {
             builder.concurrentDataProcessThreadCount(getConcurrentDataProcessThreadCount());

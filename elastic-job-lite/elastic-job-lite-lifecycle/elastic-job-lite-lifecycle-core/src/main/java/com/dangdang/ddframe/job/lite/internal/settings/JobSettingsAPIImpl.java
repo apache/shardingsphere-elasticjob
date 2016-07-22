@@ -74,7 +74,6 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     private void buildDataFlowJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
         result.setProcessCountIntervalSeconds(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("processCountIntervalSeconds"))));
         result.setConcurrentDataProcessThreadCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("concurrentDataProcessThreadCount"))));
-        result.setFetchDataCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("fetchDataCount"))));
         result.setStreamingProcess(Boolean.parseBoolean(registryCenter.get(jobNodePath.getConfigNodePath("streamingProcess"))));
     }
     
@@ -92,7 +91,6 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         updateIfChanged(jobNodePath.getConfigNodePath("monitorExecution"), jobSettings.isMonitorExecution());
         updateIfChanged(jobNodePath.getConfigNodePath("processCountIntervalSeconds"), jobSettings.getProcessCountIntervalSeconds());
         updateIfChanged(jobNodePath.getConfigNodePath("concurrentDataProcessThreadCount"), jobSettings.getConcurrentDataProcessThreadCount());
-        updateIfChanged(jobNodePath.getConfigNodePath("fetchDataCount"), jobSettings.getFetchDataCount());
         updateIfChanged(jobNodePath.getConfigNodePath("maxTimeDiffSeconds"), jobSettings.getMaxTimeDiffSeconds());
         updateIfChanged(jobNodePath.getConfigNodePath("monitorPort"), jobSettings.getMonitorPort());
         updateIfChanged(jobNodePath.getConfigNodePath("failover"), jobSettings.isFailover());

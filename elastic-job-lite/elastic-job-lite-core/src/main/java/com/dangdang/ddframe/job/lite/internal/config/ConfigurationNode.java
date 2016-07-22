@@ -46,8 +46,6 @@ public final class ConfigurationNode {
     
     static final String CONCURRENT_DATA_PROCESS_THREAD_COUNT = ROOT + "/concurrentDataProcessThreadCount";
     
-    static final String FETCH_DATA_COUNT = ROOT + "/fetchDataCount";
-    
     static final String STREAMING_PROCESS = ROOT + "/streamingProcess";
     
     static final String MAX_TIME_DIFF_SECONDS = ROOT + "/maxTimeDiffSeconds";

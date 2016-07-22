@@ -36,7 +36,7 @@ public class ElasticJobAssert {
     public static final String JOB_NAME = "unit_test_job";
     
     public static ShardingContext getShardingContext() {
-        return new ShardingContext(JOB_NAME, 10, "", 0, Arrays.asList(new ShardingContext.ShardingItem(0, "", ""), new ShardingContext.ShardingItem(1, "", "")));
+        return new ShardingContext(JOB_NAME, 10, "", Arrays.asList(new ShardingContext.ShardingItem(0, "", ""), new ShardingContext.ShardingItem(1, "", "")));
     }
     
     public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContext shardingContext) {

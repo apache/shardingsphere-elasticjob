@@ -38,14 +38,13 @@ weight=30
 | -------------------------------- |:--------|:----------------------------------------------------------------------------|
 | jobClass                         | 否      | 作业实现类名称                                                                |
 | shardingTotalCount               | 否      | 作业分片总数                                                                  |
-| cron                             | 否      | 作业启动时间的`cron`表达式                                                       |
+| cron                             | 否      | 作业启动时间的`cron`表达式                                                     |
 | shardingItemParameters           | 否      | 分片序列号和个性化参数对照表                                                    |
-| jobParameter                     | 否      | 作业自定义参数                                                                |
+| jobParameter                     | 否      | 作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
 | monitorExecution                 | 否      | 监控作业执行时状态                                                             |
 | processCountIntervalSeconds      | 否      | 统计作业处理数据数量的间隔时间                                                   |
 | concurrentDataProcessThreadCount | 否      | 同时处理数据的并发线程数                                                        |
-| fetchDataCount                   | 否      | 每次抓取的数据量                                                               |
-| streaming-process                |否       | 是否流式处理数据<br />如果流式处理数据, 则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
+| streaming-process                | 否      | 是否流式处理数据<br />如果流式处理数据，则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
 | maxTimeDiffSeconds               | 否      | 允许的本机与注册中心的时间误差秒数                                               |
 | failover                         | 否      | 是否开启失效转移                                                               |
 | misfire                          | 否      | 是否开启错过任务重新执行                                                        |

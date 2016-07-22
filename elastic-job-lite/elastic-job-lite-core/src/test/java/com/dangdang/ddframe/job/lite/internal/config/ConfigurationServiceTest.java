@@ -103,7 +103,6 @@ public final class ConfigurationServiceTest {
             DataFlowJobConfiguration dataFlowJobConfiguration = (DataFlowJobConfiguration) jobConfig;
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, dataFlowJobConfiguration.getProcessCountIntervalSeconds());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, dataFlowJobConfiguration.getConcurrentDataProcessThreadCount());
-            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FETCH_DATA_COUNT, dataFlowJobConfiguration.getFetchDataCount());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, dataFlowJobConfiguration.isStreamingProcess());
         }
         if (ScriptElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
@@ -202,13 +201,6 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT)).thenReturn("1");
         assertThat(configService.getConcurrentDataProcessThreadCount(), is(1));
         verify(jobNodeStorage).getJobNodeData(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT);
-    }
-    
-    @Test
-    public void assertGetFetchDataCount() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT)).thenReturn("1");
-        assertThat(configService.getFetchDataCount(), is(1));
-        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.FETCH_DATA_COUNT);
     }
     
     @Test

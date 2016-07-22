@@ -53,8 +53,6 @@ public final class JobSettings implements Serializable {
     
     private int concurrentDataProcessThreadCount;
     
-    private int fetchDataCount;
-    
     private boolean streamingProcess;
     
     private int maxTimeDiffSeconds;

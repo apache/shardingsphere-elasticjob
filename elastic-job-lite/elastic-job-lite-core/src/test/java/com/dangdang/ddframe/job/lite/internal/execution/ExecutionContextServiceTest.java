@@ -79,12 +79,10 @@ public final class ExecutionContextServiceTest {
         when(configService.isFailover()).thenReturn(false);
         when(configService.isMonitorExecution()).thenReturn(false);
         when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
-        when(configService.getFetchDataCount()).thenReturn(10);
-        ShardingContext expected = new ShardingContext("testJob", 3, null, 10, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext expected = new ShardingContext("testJob", 3, null, Collections.<ShardingContext.ShardingItem>emptyList());
         assertThat(executionContextService.getJobShardingContext(Collections.<Integer>emptyList()), new ReflectionEquals(expected));
         verify(configService).getShardingTotalCount();
         verify(configService).isMonitorExecution();
-        verify(configService).getFetchDataCount();
     }
     
     @Test
@@ -93,7 +91,6 @@ public final class ExecutionContextServiceTest {
         when(configService.isFailover()).thenReturn(false);
         when(configService.isMonitorExecution()).thenReturn(false);
         when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
-        when(configService.getFetchDataCount()).thenReturn(10);
         Map<Integer, String> shardingItemParameters = new HashMap<>(3);
         shardingItemParameters.put(0, "A");
         shardingItemParameters.put(1, "B");
@@ -103,11 +100,10 @@ public final class ExecutionContextServiceTest {
         offsets.put(0, "offset0");
         offsets.put(1, "offset1");
         when(offsetService.getOffsets(Arrays.asList(0, 1))).thenReturn(offsets);
-        ShardingContext expected = new ShardingContext("testJob", 3, null, 10, Arrays.asList(new ShardingContext.ShardingItem(0, "A", "offset0"), new ShardingContext.ShardingItem(1, "B", "offset1")));
+        ShardingContext expected = new ShardingContext("testJob", 3, null, Arrays.asList(new ShardingContext.ShardingItem(0, "A", "offset0"), new ShardingContext.ShardingItem(1, "B", "offset1")));
         assertShardingContext(executionContextService.getJobShardingContext(Arrays.asList(0, 1)), expected);
         verify(configService).getShardingTotalCount();
         verify(configService).isMonitorExecution();
-        verify(configService).getFetchDataCount();
         verify(configService).getShardingItemParameters();
         verify(offsetService).getOffsets(Arrays.asList(0, 1));
     }
@@ -120,7 +116,6 @@ public final class ExecutionContextServiceTest {
         when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
         when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
-        when(configService.getFetchDataCount()).thenReturn(10);
         Map<Integer, String> shardingItemParameters = new HashMap<>(3);
         shardingItemParameters.put(0, "A");
         shardingItemParameters.put(1, "B");
@@ -129,13 +124,12 @@ public final class ExecutionContextServiceTest {
         Map<Integer, String> offsets = new HashMap<>(1);
         offsets.put(0, "offset0");
         when(offsetService.getOffsets(Collections.singletonList(0))).thenReturn(offsets);
-        ShardingContext expected = new ShardingContext("testJob", 3, null, 10, Collections.singletonList(new ShardingContext.ShardingItem(0, "A", "offset0")));
+        ShardingContext expected = new ShardingContext("testJob", 3, null, Collections.singletonList(new ShardingContext.ShardingItem(0, "A", "offset0")));
         assertShardingContext(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1)), expected);
         verify(configService).getShardingTotalCount();
         verify(configService).isMonitorExecution();
         verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
         verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
-        verify(configService).getFetchDataCount();
         verify(configService).getShardingItemParameters();
         verify(offsetService).getOffsets(Collections.singletonList(0));
     }
@@ -144,7 +138,6 @@ public final class ExecutionContextServiceTest {
         assertThat(actual.getJobName(), is(expected.getJobName()));
         assertThat(actual.getShardingTotalCount(), is(expected.getShardingTotalCount()));
         assertThat(actual.getJobParameter(), is(expected.getJobParameter()));
-        assertThat(actual.getFetchDataCount(), is(expected.getFetchDataCount()));
         assertThat(actual.getShardingItems().size(), is(expected.getShardingItems().size()));
         for (int i = 0; i < expected.getShardingItems().size(); i++) {
             assertThat(actual.getShardingItems().get(i).getItem(), is(expected.getShardingItems().get(i).getItem()));

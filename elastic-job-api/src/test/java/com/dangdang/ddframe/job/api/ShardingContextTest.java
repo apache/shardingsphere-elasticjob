@@ -33,7 +33,6 @@ public class ShardingContextTest {
         assertThat(actual.getJobName(), is(expected.getJobName()));
         assertThat(actual.getShardingTotalCount(), is(expected.getShardingTotalCount()));
         assertThat(actual.getJobParameter(), is(expected.getJobParameter()));
-        assertThat(actual.getFetchDataCount(), is(expected.getFetchDataCount()));
         assertThat(expected.getShardingItems().size(), is(1));
         assertThat(expected.getShardingItems().get(0).getItem(), is(0));
         assertThat(expected.getShardingItems().get(0).getParameter(), is("sharding_param_0"));
@@ -42,12 +41,12 @@ public class ShardingContextTest {
     
     @Test
     public void assertToJson() {
-        assertThat(createShardingContext().toJson(), is("{\"jobName\":\"test_job\",\"shardingTotalCount\":10,\"jobParameter\":\"job_param\",\"fetchDataCount\":0,"
+        assertThat(createShardingContext().toJson(), is("{\"jobName\":\"test_job\",\"shardingTotalCount\":10,\"jobParameter\":\"job_param\","
                 + "\"shardingItems\":{\"0\":{\"item\":0,\"parameter\":\"sharding_param_0\",\"offset\":\"\"},\"1\":{\"item\":1,\"parameter\":\"sharding_param_1\",\"offset\":\"\"}}}"));
     }
     
     private ShardingContext createShardingContext() {
-        return new ShardingContext("test_job", 10, "job_param", 0, 
+        return new ShardingContext("test_job", 10, "job_param", 
                 Arrays.asList(new ShardingContext.ShardingItem(0, "sharding_param_0", ""), new ShardingContext.ShardingItem(1, "sharding_param_1", "")));
     }
 }

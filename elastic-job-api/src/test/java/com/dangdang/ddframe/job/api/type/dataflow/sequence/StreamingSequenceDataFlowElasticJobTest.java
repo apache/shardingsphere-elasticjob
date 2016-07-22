@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.api.type.dataflow.sequence;
 
 import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.dataflow.sequence.AbstractSequenceDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.api.type.fixture.FooStreamingSequenceDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import org.junit.Test;

@@ -67,7 +67,7 @@ public final class SimpleElasticJobTest {
     
     @Test
     public void assertExecuteWhenPreviousJobStillRunning() {
-        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(true);
         simpleElasticJob.execute();
@@ -79,7 +79,7 @@ public final class SimpleElasticJobTest {
     
     @Test
     public void assertExecuteWhenShardingItemsIsEmpty() {
-        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", 0, Collections.<ShardingContext.ShardingItem>emptyList());
+        ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         simpleElasticJob.execute();
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();

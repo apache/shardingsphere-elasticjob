@@ -32,16 +32,14 @@ public final class DataFlowJobConfigurationDtoTest {
     public void testBuildDataFlowJobConfigurationDtoWithCustomizedProperties() {
         int concurrentDataProcessThreadCount = 200;
         int processCountIntervalSeconds = 1000;
-        int fetchDataCount = 100;
         DataFlowJobConfigurationDto jobConfigurationDto = createDataFlowJobConfigurationDto();
         jobConfigurationDto.setConcurrentDataProcessThreadCount(concurrentDataProcessThreadCount);
         jobConfigurationDto.setProcessCountIntervalSeconds(processCountIntervalSeconds);
-        jobConfigurationDto.setFetchDataCount(fetchDataCount);
         jobConfigurationDto.setStreamingProcess(true);
         DataFlowJobConfiguration.DataFlowJobConfigurationBuilder builder = 
                 (DataFlowJobConfiguration.DataFlowJobConfigurationBuilder) buildJobConfigurationBuilder(createDataFlowJobConfigurationBuilder());
         assertThat(buildJobConfigurationDto(jobConfigurationDto), new ReflectionEquals(builder.concurrentDataProcessThreadCount(concurrentDataProcessThreadCount)
-                .processCountIntervalSeconds(processCountIntervalSeconds).fetchDataCount(fetchDataCount).streamingProcess(true).build()));
+                .processCountIntervalSeconds(processCountIntervalSeconds).streamingProcess(true).build()));
     }
     
     @Test
