@@ -24,7 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     SimpleJobConfigurationTest.class,
-    DataFlowJobConfigurationTest.class, 
+    DataflowJobConfigurationTest.class, 
     ScriptJobConfigurationTest.class
     })
 public final class AllApiConfigTests {

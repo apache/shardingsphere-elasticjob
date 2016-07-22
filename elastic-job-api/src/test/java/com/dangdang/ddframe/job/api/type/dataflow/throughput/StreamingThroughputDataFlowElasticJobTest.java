@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.fixture.FooStreamingThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataflowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.fixture.FooStreamingThroughputDataflowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import org.junit.Test;
 
@@ -34,12 +34,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class StreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowElasticJobTest {
+public class StreamingThroughputDataflowElasticJobTest extends AbstractDataflowElasticJobTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNull() {
         when(getJobCaller().fetchData()).thenReturn(null);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
@@ -49,7 +49,7 @@ public class StreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowE
     @Test
     public void assertExecuteWhenFetchDataIsEmpty() {
         when(getJobCaller().fetchData()).thenReturn(Collections.emptyList());
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
@@ -60,7 +60,7 @@ public class StreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowE
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsNotEligibleForJobRunning() {
         when(getJobCaller().fetchData()).thenReturn(Collections.<Object>singletonList(1));
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(false);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).fetchData();
         verify(getJobCaller()).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
@@ -73,7 +73,7 @@ public class StreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowE
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3), Collections.emptyList());
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
         doThrow(new IllegalStateException()).when(getJobCaller()).processData(3);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller(), times(2)).fetchData();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
@@ -82,8 +82,8 @@ public class StreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowE
     }
     
     @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.THROUGHPUT;
+    protected DataflowType getDataflowType() {
+        return DataflowType.THROUGHPUT;
     }
     
     @Override
@@ -92,7 +92,7 @@ public class StreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowE
     }
     
     @Override
-    protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
-        return new FooStreamingThroughputDataFlowElasticJob(jobCaller);
+    protected AbstractDataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller) {
+        return new FooStreamingThroughputDataflowElasticJob(jobCaller);
     }
 }

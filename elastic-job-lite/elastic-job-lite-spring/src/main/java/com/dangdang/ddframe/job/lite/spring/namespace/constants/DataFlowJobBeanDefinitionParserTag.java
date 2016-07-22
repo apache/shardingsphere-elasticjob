@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
  * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DataFlowJobBeanDefinitionParserTag {
+public class DataflowJobBeanDefinitionParserTag {
     
     public static final String DATAFLOW_TYPE_ATTRIBUTE = "dataflow-type";
     

@@ -18,14 +18,14 @@
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.sequence;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public final class OneOffSequenceDataFlowElasticJob extends AbstractDataFlowElasticJob<String> {
+public final class OneOffSequenceDataflowElasticJob extends AbstractDataflowElasticJob<String> {
     
     private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     

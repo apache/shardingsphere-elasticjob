@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestDataFlowJob;
+import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.integrate.fixture.simple.SimpleElasticJob;
 import org.junit.Test;
 
@@ -38,13 +38,13 @@ public final class JobConfigurationFactoryTest {
     }
 
     @Test
-    public void assertCreateDataFlowJobConfiguration() {
-        assertThat(JobConfigurationFactory.createDataFlowJobConfigurationBuilder("dataFlowJob", TestDataFlowJob.class, 10, "0/10 * * * *", DataFlowType.THROUGHPUT).build(), 
-                is(instanceOf(DataFlowJobConfiguration.class)));
+    public void assertCreateDataflowJobConfiguration() {
+        assertThat(JobConfigurationFactory.createDataflowJobConfigurationBuilder("dataflowJob", TestDataflowJob.class, 10, "0/10 * * * *", DataflowType.THROUGHPUT).build(), 
+                is(instanceOf(DataflowJobConfiguration.class)));
     }
 
     @Test
     public void assertCreateScriptJobConfiguration() {
-        assertThat(JobConfigurationFactory.createScriptJobConfigurationBuilder("dataFlowJob", 10, "0/10 * * * *", "test.sh").build(), is(instanceOf(ScriptJobConfiguration.class)));
+        assertThat(JobConfigurationFactory.createScriptJobConfigurationBuilder("scriptJob", 10, "0/10 * * * *", "test.sh").build(), is(instanceOf(ScriptJobConfiguration.class)));
     }
 }

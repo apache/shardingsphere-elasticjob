@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -68,7 +68,7 @@ public class ConfigurationService {
     private void registerJobInfo() {
         fillSimpleJobInfo();
         if (JobType.DATA_FLOW == jobNodeStorage.getJobConfiguration().getJobType()) {
-            fillDataFlowJobInfo();
+            fillDataflowJobInfo();
         } else if (JobType.SCRIPT == jobNodeStorage.getJobConfiguration().getJobType()) {
             fillScriptJobInfo();
         }
@@ -90,9 +90,9 @@ public class ConfigurationService {
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, jobNodeStorage.getJobConfiguration().getMonitorPort());
     }
     
-    private void fillDataFlowJobInfo() {
-        DataFlowJobConfiguration jobConfiguration = (DataFlowJobConfiguration) jobNodeStorage.getJobConfiguration();
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.DATAFLOW_TYPE, jobConfiguration.getDataFlowType());
+    private void fillDataflowJobInfo() {
+        DataflowJobConfiguration jobConfiguration = (DataflowJobConfiguration) jobNodeStorage.getJobConfiguration();
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.DATAFLOW_TYPE, jobConfiguration.getDataflowType());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, jobConfiguration.getProcessCountIntervalSeconds());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, jobConfiguration.getConcurrentDataProcessThreadCount());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, jobConfiguration.isStreamingProcess());
@@ -179,8 +179,8 @@ public class ConfigurationService {
      *
      * @return 数据流作业类型
      */
-    public DataFlowType getDataFlowType() {
-        return DataFlowType.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.DATAFLOW_TYPE));
+    public DataflowType getDataflowType() {
+        return DataflowType.valueOf(jobNodeStorage.getJobNodeData(ConfigurationNode.DATAFLOW_TYPE));
     }
     
     /**
@@ -197,7 +197,7 @@ public class ConfigurationService {
      * 
      * <p>
      * 不能小于1.
-     * 仅ThroughputDataFlow作业有效.
+     * 仅ThroughputDataflow作业有效.
      * </p>
      * 
      * @return 同时处理数据的并发线程数

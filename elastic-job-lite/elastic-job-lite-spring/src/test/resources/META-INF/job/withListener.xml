@@ -12,5 +12,5 @@
         <job:listener class="com.dangdang.ddframe.job.lite.fixture.listener.SimpleOnceListener" started-timeout-milliseconds="10000" completed-timeout-milliseconds="20000" />
         <job:listener class="com.dangdang.ddframe.job.lite.fixture.listener.SimpleListener" />
     </job:simple>
-    <job:dataflow id="throughputDataFlowElasticJob_namespace_listener" class="com.dangdang.ddframe.job.lite.fixture.ThroughputDataFlowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" dataflow-type="THROUGHPUT" process-count-interval-seconds="10" concurrent-data-process-thread-count="3" description="中文描述" overwrite="true" />
+    <job:dataflow id="throughputDataflowElasticJob_namespace_listener" class="com.dangdang.ddframe.job.lite.fixture.ThroughputDataflowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" dataflow-type="THROUGHPUT" process-count-interval-seconds="10" concurrent-data-process-thread-count="3" description="中文描述" overwrite="true" />
 </beans>

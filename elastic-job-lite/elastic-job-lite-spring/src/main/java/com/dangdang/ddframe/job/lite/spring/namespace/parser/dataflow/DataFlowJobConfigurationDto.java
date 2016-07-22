@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
 import lombok.Getter;
@@ -32,9 +32,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<DataFlowJobConfiguration, DataFlowElasticJob, DataFlowJobConfiguration.DataFlowJobConfigurationBuilder> {
+final class DataflowJobConfigurationDto extends AbstractJobConfigurationDto<DataflowJobConfiguration, DataflowElasticJob, DataflowJobConfiguration.DataflowJobConfigurationBuilder> {
     
-    private DataFlowType dataFlowType;
+    private DataflowType dataflowType;
     
     private Integer processCountIntervalSeconds;
     
@@ -42,23 +42,23 @@ final class DataFlowJobConfigurationDto extends AbstractJobConfigurationDto<Data
     
     private Boolean streamingProcess;
     
-    DataFlowJobConfigurationDto(final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final Integer shardingTotalCount, final String cron, final DataFlowType dataFlowType) {
+    DataflowJobConfigurationDto(final String jobName, final Class<? extends DataflowElasticJob> jobClass, final Integer shardingTotalCount, final String cron, final DataflowType dataflowType) {
         super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron);
-        this.dataFlowType = dataFlowType;
+        this.dataflowType = dataflowType;
     }
     
     @Override
-    public DataFlowJobConfiguration toJobConfiguration() {
+    public DataflowJobConfiguration toJobConfiguration() {
         return createBuilder().build();
     }
     
     @Override
-    protected DataFlowJobConfiguration.DataFlowJobConfigurationBuilder createCustomizedBuilder() {
-        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder(getJobName(), getJobClass(), getShardingTotalCount(), getCron(), getDataFlowType());
+    protected DataflowJobConfiguration.DataflowJobConfigurationBuilder createCustomizedBuilder() {
+        return new DataflowJobConfiguration.DataflowJobConfigurationBuilder(getJobName(), getJobClass(), getShardingTotalCount(), getCron(), getDataflowType());
     }
     
     @Override
-    protected DataFlowJobConfiguration.DataFlowJobConfigurationBuilder buildCustomizedProperties(final DataFlowJobConfiguration.DataFlowJobConfigurationBuilder builder) {
+    protected DataflowJobConfiguration.DataflowJobConfigurationBuilder buildCustomizedProperties(final DataflowJobConfiguration.DataflowJobConfigurationBuilder builder) {
         if (null != getProcessCountIntervalSeconds()) {
             builder.processCountIntervalSeconds(getProcessCountIntervalSeconds());
         }

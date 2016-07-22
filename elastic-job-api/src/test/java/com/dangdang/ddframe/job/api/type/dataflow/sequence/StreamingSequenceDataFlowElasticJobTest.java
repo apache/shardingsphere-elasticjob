@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.sequence;
 
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.fixture.FooStreamingSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.type.fixture.FooStreamingSequenceDataflowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class StreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDataFlowElasticJobTest {
+public class StreamingSequenceDataflowElasticJobTest extends AbstractSequenceDataflowElasticJobTest {
     
     @SuppressWarnings("unchecked")
     @Test
@@ -41,7 +41,7 @@ public class StreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDat
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2), Collections.emptyList());
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4), Collections.emptyList());
         doThrow(new IllegalStateException()).when(getJobCaller()).processData(4);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller(), times(2)).fetchData(0);
         verify(getJobCaller(), times(2)).fetchData(1);
         verify(getJobCaller()).processData(1);
@@ -59,7 +59,7 @@ public class StreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDat
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
         doThrow(new IllegalStateException()).when(getJobCaller()).processData(4);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).fetchData(0);
         verify(getJobCaller()).fetchData(1);
         verify(getJobCaller()).processData(1);
@@ -71,8 +71,8 @@ public class StreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDat
     }
     
     @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.SEQUENCE;
+    protected DataflowType getDataflowType() {
+        return DataflowType.SEQUENCE;
     }
     
     @Override
@@ -81,7 +81,7 @@ public class StreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDat
     }
     
     @Override
-    protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
-        return new FooStreamingSequenceDataFlowElasticJob(jobCaller);
+    protected AbstractDataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller) {
+        return new FooStreamingSequenceDataflowElasticJob(jobCaller);
     }
 }

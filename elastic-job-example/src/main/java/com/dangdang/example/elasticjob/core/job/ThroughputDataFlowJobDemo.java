@@ -18,7 +18,7 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ThroughputDataFlowJobDemo extends AbstractDataFlowElasticJob<Foo> {
+public class ThroughputDataflowJobDemo extends AbstractDataflowElasticJob<Foo> {
     
-    private PrintContext printContext = new PrintContext(ThroughputDataFlowJobDemo.class);
+    private PrintContext printContext = new PrintContext(ThroughputDataflowJobDemo.class);
     
     private FooRepository fooRepository = new FooRepository();
     

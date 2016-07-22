@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.sequence;
 
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.fixture.FooUnstreamingSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.type.fixture.FooUnstreamingSequenceDataflowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,14 +33,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Getter(AccessLevel.PROTECTED)
-public class UnstreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDataFlowElasticJobTest {
+public class UnstreamingSequenceDataflowElasticJobTest extends AbstractSequenceDataflowElasticJobTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() {
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
         doThrow(new IllegalStateException()).when(getJobCaller()).processData(4);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).fetchData(0);
         verify(getJobCaller()).fetchData(1);
         verify(getJobCaller()).processData(1);
@@ -52,8 +52,8 @@ public class UnstreamingSequenceDataFlowElasticJobTest extends AbstractSequenceD
     }
     
     @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.SEQUENCE;
+    protected DataflowType getDataflowType() {
+        return DataflowType.SEQUENCE;
     }
     
     @Override
@@ -62,7 +62,7 @@ public class UnstreamingSequenceDataFlowElasticJobTest extends AbstractSequenceD
     }
     
     @Override
-    protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
-        return new FooUnstreamingSequenceDataFlowElasticJob(jobCaller);
+    protected AbstractDataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller) {
+        return new FooUnstreamingSequenceDataflowElasticJob(jobCaller);
     }
 }

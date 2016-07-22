@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.spring.integrate;
 
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.lite.fixture.SimpleElasticJob;
-import com.dangdang.ddframe.job.lite.fixture.ThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.lite.fixture.ThroughputDataflowElasticJob;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.test.AbstractZookeeperJUnit4SpringContextTests;
@@ -39,7 +39,7 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     
     private final String simpleJobName;
     
-    private final String throughputDataFlowJobName;
+    private final String throughputDataflowJobName;
     
     @Resource
     private CoordinatorRegistryCenter regCenter;
@@ -48,20 +48,20 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     @After
     public void reset() {
         SimpleElasticJob.reset();
-        ThroughputDataFlowElasticJob.reset();
-        ProcessCountStatistics.reset(throughputDataFlowJobName);
+        ThroughputDataflowElasticJob.reset();
+        ProcessCountStatistics.reset(throughputDataflowJobName);
     }
     
     @After
     public void tearDown() {
         JobRegistry.getInstance().getJobScheduleController(simpleJobName).shutdown();
-        JobRegistry.getInstance().getJobScheduleController(throughputDataFlowJobName).shutdown();
+        JobRegistry.getInstance().getJobScheduleController(throughputDataflowJobName).shutdown();
     }
     
     @Test
     public void assertSpringJobBean() {
         assertSimpleElasticJobBean();
-        assertThroughputDataFlowElasticJobBean();
+        assertThroughputDataflowElasticJobBean();
     }
     
     private void assertSimpleElasticJobBean() {
@@ -73,12 +73,12 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/execution"));
     }
     
-    private void assertThroughputDataFlowElasticJobBean() {
-        while (!ThroughputDataFlowElasticJob.isCompleted()) {
+    private void assertThroughputDataflowElasticJobBean() {
+        while (!ThroughputDataflowElasticJob.isCompleted()) {
             sleep(100L);
         }
-        assertTrue(ThroughputDataFlowElasticJob.isCompleted());
-        assertTrue(regCenter.isExisted("/" + throughputDataFlowJobName + "/execution"));
+        assertTrue(ThroughputDataflowElasticJob.isCompleted());
+        assertTrue(regCenter.isExisted("/" + throughputDataflowJobName + "/execution"));
     }
     
     private static void sleep(final long millis) {

@@ -41,25 +41,25 @@ import java.util.concurrent.Executors;
  * @param <T> 数据流作业处理的数据实体类型
  */
 @Slf4j
-public abstract class AbstractDataFlowElasticJob<T> extends AbstractElasticJob implements DataFlowElasticJob<T> {
+public abstract class AbstractDataflowElasticJob<T> extends AbstractElasticJob implements DataflowElasticJob<T> {
     
     private final ExecutorService executorService;
     
-    public AbstractDataFlowElasticJob() {
+    public AbstractDataflowElasticJob() {
         executorService = getExecutorService();
     }
     
     @Override
     protected final void executeJob(final ShardingContext shardingContext) {
-        DataFlowType dataFlowType = getJobFacade().getDataFlowType();
+        DataflowType dataflowType = getJobFacade().getDataflowType();
         boolean streamingProcess = getJobFacade().isStreamingProcess();
-        if (DataFlowType.THROUGHPUT == dataFlowType) {
+        if (DataflowType.THROUGHPUT == dataflowType) {
             if (streamingProcess) {
                 executeThroughputStreamingJob(shardingContext);
             } else {
                 executeThroughputOneOffJob(shardingContext);
             }
-        } else if (DataFlowType.SEQUENCE == dataFlowType) {
+        } else if (DataflowType.SEQUENCE == dataflowType) {
             if (streamingProcess) {
                 executeSequenceStreamingJob(shardingContext);
             } else {

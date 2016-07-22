@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.ThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.lite.fixture.ThroughputDataflowElasticJob;
 import org.junit.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 
@@ -27,32 +27,32 @@ import static com.dangdang.ddframe.job.lite.spring.util.JobConfigurationDtoHelpe
 import static com.dangdang.ddframe.job.lite.spring.util.JobConfigurationDtoHelper.buildJobConfigurationDto;
 import static org.junit.Assert.assertThat;
 
-public final class DataFlowJobConfigurationDtoTest {
+public final class DataflowJobConfigurationDtoTest {
     
     @Test
-    public void testBuildDataFlowJobConfigurationDtoWithCustomizedProperties() {
+    public void testBuildDataflowJobConfigurationDtoWithCustomizedProperties() {
         int concurrentDataProcessThreadCount = 200;
         int processCountIntervalSeconds = 1000;
-        DataFlowJobConfigurationDto jobConfigurationDto = createDataFlowJobConfigurationDto();
+        DataflowJobConfigurationDto jobConfigurationDto = createDataflowJobConfigurationDto();
         jobConfigurationDto.setConcurrentDataProcessThreadCount(concurrentDataProcessThreadCount);
         jobConfigurationDto.setProcessCountIntervalSeconds(processCountIntervalSeconds);
         jobConfigurationDto.setStreamingProcess(true);
-        DataFlowJobConfiguration.DataFlowJobConfigurationBuilder builder = 
-                (DataFlowJobConfiguration.DataFlowJobConfigurationBuilder) buildJobConfigurationBuilder(createDataFlowJobConfigurationBuilder());
+        DataflowJobConfiguration.DataflowJobConfigurationBuilder builder = 
+                (DataflowJobConfiguration.DataflowJobConfigurationBuilder) buildJobConfigurationBuilder(createDataflowJobConfigurationBuilder());
         assertThat(buildJobConfigurationDto(jobConfigurationDto), new ReflectionEquals(builder.concurrentDataProcessThreadCount(concurrentDataProcessThreadCount)
                 .processCountIntervalSeconds(processCountIntervalSeconds).streamingProcess(true).build()));
     }
     
     @Test
-    public void testBuildDataFlowJobConfigurationDtoWithDefaultProperties() {
-        assertThat(createDataFlowJobConfigurationDto().toJobConfiguration(), new ReflectionEquals(createDataFlowJobConfigurationBuilder().build()));
+    public void testBuildDataflowJobConfigurationDtoWithDefaultProperties() {
+        assertThat(createDataflowJobConfigurationDto().toJobConfiguration(), new ReflectionEquals(createDataflowJobConfigurationBuilder().build()));
     }
     
-    private DataFlowJobConfigurationDto createDataFlowJobConfigurationDto() {
-        return new DataFlowJobConfigurationDto("dataFlowJob", ThroughputDataFlowElasticJob.class, 10, "0/1 * * * * ?", DataFlowType.THROUGHPUT);
+    private DataflowJobConfigurationDto createDataflowJobConfigurationDto() {
+        return new DataflowJobConfigurationDto("dataflowJob", ThroughputDataflowElasticJob.class, 10, "0/1 * * * * ?", DataflowType.THROUGHPUT);
     }
     
-    private DataFlowJobConfiguration.DataFlowJobConfigurationBuilder createDataFlowJobConfigurationBuilder() {
-        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder("dataFlowJob", ThroughputDataFlowElasticJob.class, 10, "0/1 * * * * ?", DataFlowType.THROUGHPUT);
+    private DataflowJobConfiguration.DataflowJobConfigurationBuilder createDataflowJobConfigurationBuilder() {
+        return new DataflowJobConfiguration.DataflowJobConfigurationBuilder("dataflowJob", ThroughputDataflowElasticJob.class, 10, "0/1 * * * * ?", DataflowType.THROUGHPUT);
     }
 }

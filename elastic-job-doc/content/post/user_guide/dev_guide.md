@@ -11,7 +11,7 @@ weight=11
 
 ### 作业类型
 
-提供`Simple`、`DataFlow`和`Script` `3`种作业类型。
+提供`Simple`、`Dataflow`和`Script` `3`种作业类型。
 
 方法参数`shardingContext`包含作业配置、片和运行时信息。可通过`getShardingTotalCount()`, `getShardingItems()`等方法分别获取分片总数，运行在本作业服务器的分片序列号集合等。
 
@@ -29,8 +29,8 @@ public class MyElasticJob extends AbstractSimpleElasticJob {
 }
 ```
 
-#### 2. DataFlow类型作业
-`DataFlow`类型用于处理数据流，又提供`2`种作业类型，分别是`ThroughputDataFlow`和`SequenceDataFlow`，需继承相应抽象类。抽象类提供`2`个方法可供覆盖，分别用于抓取(`fetchData`)和处理(`processData`)数据。
+#### 2. Dataflow类型作业
+`Dataflow`类型用于处理数据流，又提供`2`种作业类型，分别是`ThroughputDataflow`和`SequenceDataflow`，需继承相应抽象类。抽象类提供`2`个方法可供覆盖，分别用于抓取(`fetchData`)和处理(`processData`)数据。
 
 ***
 
@@ -55,20 +55,20 @@ public class MyElasticJob extends AbstractSimpleElasticJob {
 
 **逐条/批量处理**
 
-为了提高数据处理效率，`DataFlow`类型作业提供了批量处理数据的功能。
-使用逐条或批量处理数据需要分别继承AbstractIndividual`XXX`DataFlowElasticJob和AbstractBatch`XXX`FlowElasticJob。其中`XXX`是`Throughput`或`Sequence`，下文会详细说明。
+为了提高数据处理效率，`Dataflow`类型作业提供了批量处理数据的功能。
+使用逐条或批量处理数据需要分别继承AbstractIndividual`XXX`DataflowElasticJob和AbstractBatch`XXX`FlowElasticJob。其中`XXX`是`Throughput`或`Sequence`，下文会详细说明。
 不同之处在于逐条和批量处理`processData`方法的第二个入参分别为泛型类型和泛型集合；返回值分别为`boolean`类型和`int`类型，`int`用于表示一批数据处理的成功数量。
 
 ***
 
-**ThroughputDataFlow类型作业**
+**ThroughputDataflow类型作业**
 
-意为高吞吐的数据流作业。需继承`AbstractIndividualThroughputDataFlowElasticJob`或`AbstractBatchThroughputDataFlowElasticJob`并可指定返回值泛型。
+意为高吞吐的数据流作业。需继承`AbstractIndividualThroughputDataflowElasticJob`或`AbstractBatchThroughputDataflowElasticJob`并可指定返回值泛型。
 
 作业执行时会将`fetchData`的数据传递给`processData`处理，`processData`得到的数据是通过多线程（线程池大小可配）拆分的。
 
 ```java
-public class MyElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<Foo> {
+public class MyElasticJob extends AbstractIndividualThroughputDataflowElasticJob<Foo> {
     
     @Override
     public List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
@@ -93,13 +93,13 @@ public class MyElasticJob extends AbstractIndividualThroughputDataFlowElasticJob
 
 ***
 
-**SequenceDataFlow类型作业**
+**SequenceDataflow类型作业**
 
-`SequenceDataFlow`类型作业和`ThroughputDataFlow`作业类型极为相似，所不同的是`ThroughputDataFlow`作业类型可以将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。
-如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，配置为两个线程处理，则第`1`个线程处理前`50`条数据，第`2`个线程处理后`50`条数据，无视分片项；`SequenceDataFlow`类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，则系统自动分配两个线程处理，第`1`个线程处理第`1`个分片的`40`条数据，第`2`个线程处理第`2`个分片的`60`条数据。由于`ThroughputDataFlow`作业可以使用多于分片项的任意线程数处理，所以性能调优的可能会优于`SequenceDataFlow`作业。
+`SequenceDataflow`类型作业和`ThroughputDataflow`作业类型极为相似，所不同的是`ThroughputDataflow`作业类型可以将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。
+如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，配置为两个线程处理，则第`1`个线程处理前`50`条数据，第`2`个线程处理后`50`条数据，无视分片项；`SequenceDataflow`类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，则系统自动分配两个线程处理，第`1`个线程处理第`1`个分片的`40`条数据，第`2`个线程处理第`2`个分片的`60`条数据。由于`ThroughputDataflow`作业可以使用多于分片项的任意线程数处理，所以性能调优的可能会优于`SequenceDataflow`作业。
 
 ```java
-public class MyElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<Foo> {
+public class MyElasticJob extends AbstractIndividualSequenceDataflowElasticJob<Foo> {
     
     @Override
     public List<Foo> fetchData(JobExecutionSingleShardingContext context) {
@@ -244,7 +244,7 @@ public class JobMain {
     <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
     
     <!-- 配置数据流作业-->
-    <job:dataflow id="throughputDataFlow" class="xxx.MyThroughputDataFlowElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="10" />
+    <job:dataflow id="throughputDataflow" class="xxx.MyThroughputDataflowElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="10" />
     
     <!-- 配置脚本作业-->
     <job:script id="scriptElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" script-command-line="/your/file/path/demo.sh" />
@@ -285,7 +285,7 @@ job:dataflow命名空间拥有job:simple命名空间的全部属性，以下仅�
 | 属性名                              | 类型  |是否必填 |缺省值| 描述                                                                                                                         |
 | ---------------------------------- |:------|:-------|:--------|:------------------------------------------------------------------------------------------------------------------------|
 |process-count-interval-seconds      |int    |否      |300      | 统计作业处理数据数量的间隔时间<br />单位：秒<br />                                                                            |
-|concurrent-data-process-thread-count|int    |否      |CPU核数*2 | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataFlow`作业有效                                                   |
+|concurrent-data-process-thread-count|int    |否      |CPU核数*2 | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataflow`作业有效                                                   |
 |streaming-process                   |boolean|否      |false    | 是否流式处理数据<br />如果流式处理数据, 则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
 
 #### job:script命名空间属性详细说明，基本属性参照job:simple命名空间属性详细说明
@@ -333,8 +333,8 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.example.elasticjob.core.job.SimpleJobDemo;
-import com.dangdang.example.elasticjob.core.job.ThroughputDataFlowJobDemo;
-import com.dangdang.example.elasticjob.core.job.SequenceDataFlowJobDemo;
+import com.dangdang.example.elasticjob.core.job.ThroughputDataflowJobDemo;
+import com.dangdang.example.elasticjob.core.job.SequenceDataflowJobDemo;
 import com.dangdang.ddframe.job.plugin.job.type.integrated.ScriptElasticJob;
 
 public class JobDemo {
@@ -350,12 +350,12 @@ public class JobDemo {
                     SimpleJobDemo.class, 10, "0/30 * * * * ?").build();
     
     // 定义高吞吐流式处理的数据流作业配置对象
-    private final DataFlowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("throughputDataFlowElasticDemoJob", 
-                    ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?").streamingProcess(true).build();
+    private final DataflowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataflowJobConfigurationBuilder("throughputDataflowElasticDemoJob", 
+                    ThroughputDataflowJobDemo.class, 10, "0/5 * * * * ?").streamingProcess(true).build();
     
     // 定义顺序的数据流作业配置对象
-    private final DataFlowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("sequenceDataFlowElasticDemoJob", 
-                    SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?").build();
+    private final DataflowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataflowJobConfigurationBuilder("sequenceDataflowElasticDemoJob", 
+                    SequenceDataflowJobDemo.class, 10, "0/5 * * * * ?").build();
     
     // 定义脚本作业配置对象
     private final ScriptJobConfiguration scriptJobConfig = JobConfigurationFactory.createScriptJobConfigurationBuilder("scriptElasticDemoJob", 

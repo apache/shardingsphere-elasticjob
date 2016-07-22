@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
-import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataflowElasticJob;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationFieldUtil;
 
 import com.google.common.base.Optional;
@@ -31,16 +31,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 
-public final class StreamingThroughputDataFlowElasticJobForPausedTest extends AbstractBaseStdJobAutoInitTest {
+public final class StreamingThroughputDataflowElasticJobForPausedTest extends AbstractBaseStdJobAutoInitTest {
     
-    public StreamingThroughputDataFlowElasticJobForPausedTest() {
-        super(StreamingThroughputDataFlowElasticJob.class, Optional.of(DataFlowType.THROUGHPUT));
+    public StreamingThroughputDataflowElasticJobForPausedTest() {
+        super(StreamingThroughputDataflowElasticJob.class, Optional.of(DataflowType.THROUGHPUT));
     }
     
     @Before
     @After
     public void reset() {
-        StreamingThroughputDataFlowElasticJob.reset();
+        StreamingThroughputDataflowElasticJob.reset();
     }
     
     @Override
@@ -50,7 +50,7 @@ public final class StreamingThroughputDataFlowElasticJobForPausedTest extends Ab
     
     @Test
     public void assertClearPausedJobStatusWhenRestartingJob() {
-        while (!StreamingThroughputDataFlowElasticJob.isCompleted()) {
+        while (!StreamingThroughputDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
         getRegCenter().persist("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/paused", "");

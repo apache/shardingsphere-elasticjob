@@ -21,14 +21,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow.DataFlowJobConfigurationDtoTest;
+import com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow.DataflowJobConfigurationDtoTest;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.script.ScriptJobConfigurationDtoTest;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.simple.SimpleJobConfigurationDtoTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
     SimpleJobConfigurationDtoTest.class, 
-    DataFlowJobConfigurationDtoTest.class,
+    DataflowJobConfigurationDtoTest.class,
     ScriptJobConfigurationDtoTest.class
     })
 public class AllSpringNamespaceTests {

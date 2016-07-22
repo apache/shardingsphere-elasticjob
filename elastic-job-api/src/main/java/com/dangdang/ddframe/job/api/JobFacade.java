@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 
 import java.util.Collection;
 
@@ -40,14 +40,14 @@ public interface JobFacade {
      *
      * @return 数据流作业类型
      */
-    DataFlowType getDataFlowType();
+    DataflowType getDataflowType();
     
     /**
      * 获取同时处理数据的并发线程数.
      *
      * <p>
      * 不能小于1.
-     * 仅ThroughputDataFlow作业有效.
+     * 仅ThroughputDataflow作业有效.
      * </p>
      *
      * @return 同时处理数据的并发线程数

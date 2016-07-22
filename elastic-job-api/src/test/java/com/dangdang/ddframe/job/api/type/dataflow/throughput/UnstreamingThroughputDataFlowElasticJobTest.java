@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.fixture.FooUnstreamingThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataflowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.fixture.FooUnstreamingThroughputDataflowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,12 +37,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Getter(AccessLevel.PROTECTED)
-public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowElasticJobTest {
+public class UnstreamingThroughputDataflowElasticJobTest extends AbstractDataflowElasticJobTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNull() {
         when(getJobCaller().fetchData()).thenReturn(null);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
@@ -51,7 +51,7 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
     @Test
     public void assertExecuteWhenFetchDataIsEmpty() {
         when(getJobCaller().fetchData()).thenReturn(Collections.emptyList());
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 0);
@@ -61,7 +61,7 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
     public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOne() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobFacade()).getConcurrentDataProcessThreadCount();
@@ -73,7 +73,7 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
     public void assertExecuteWhenFetchDataIsNotEmptyAndDataIsOne() {
         when(getJobCaller().fetchData()).thenReturn(Collections.<Object>singletonList(1));
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobFacade()).getConcurrentDataProcessThreadCount();
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
@@ -85,7 +85,7 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         doThrow(IllegalStateException.class).when(getJobCaller()).processData(2);
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobFacade()).getConcurrentDataProcessThreadCount();
@@ -97,7 +97,7 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
     public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOneAndProcessFailureWithWrongResult() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobFacade()).getConcurrentDataProcessThreadCount();
@@ -109,7 +109,7 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
     public void assertExecuteWhenFetchDataIsNotEmptyForMultipleThread() {
         when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3, 4));
         when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
-        getDataFlowElasticJob().execute();
+        getDataflowElasticJob().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobCaller()).processData(3);
@@ -121,13 +121,13 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
     
     @Test
     public void assertUpdateOffset() {
-        getDataFlowElasticJob().updateOffset(0, "offset1");
+        getDataflowElasticJob().updateOffset(0, "offset1");
         verify(getJobFacade()).updateOffset(0, "offset1");
     }
     
     @Override
-    protected DataFlowType getDataFlowType() {
-        return DataFlowType.THROUGHPUT;
+    protected DataflowType getDataflowType() {
+        return DataflowType.THROUGHPUT;
     }
     
     @Override
@@ -136,7 +136,7 @@ public class UnstreamingThroughputDataFlowElasticJobTest extends AbstractDataFlo
     }
     
     @Override
-    protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
-        return new FooUnstreamingThroughputDataFlowElasticJob(jobCaller);
+    protected AbstractDataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller) {
+        return new FooUnstreamingThroughputDataflowElasticJob(jobCaller);
     }
 }

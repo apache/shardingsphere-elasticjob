@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.spring.namespace;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
-import com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow.DataFlowJobBeanDefinitionParser;
+import com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow.DataflowJobBeanDefinitionParser;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.script.ScriptJobBeanDefinitionParser;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.simple.SimpleJobBeanDefinitionParser;
 
@@ -33,7 +33,7 @@ public class JobNamespaceHandler extends NamespaceHandlerSupport {
     @Override
     public void init() {
         registerBeanDefinitionParser("simple", new SimpleJobBeanDefinitionParser());
-        registerBeanDefinitionParser("dataflow", new DataFlowJobBeanDefinitionParser());
+        registerBeanDefinitionParser("dataflow", new DataflowJobBeanDefinitionParser());
         registerBeanDefinitionParser("script", new ScriptJobBeanDefinitionParser());
     }
 }

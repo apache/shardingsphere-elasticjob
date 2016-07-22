@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.integrated;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
@@ -33,7 +33,7 @@ public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     
     public ScriptElasticJobTest() {
-        super(ScriptElasticJob.class, Optional.<DataFlowType>absent());
+        super(ScriptElasticJob.class, Optional.<DataflowType>absent());
     }
     
     @Test

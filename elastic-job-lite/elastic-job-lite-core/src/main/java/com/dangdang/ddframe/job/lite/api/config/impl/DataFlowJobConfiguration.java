@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.api.config.impl;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 
@@ -28,9 +28,9 @@ import lombok.Getter;
  * @author caohao
  */
 @Getter
-public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extends AbstractJobConfiguration<T> {
+public final class DataflowJobConfiguration<T extends DataflowElasticJob> extends AbstractJobConfiguration<T> {
     
-    private final DataFlowType dataFlowType;
+    private final DataflowType dataflowType;
     
     private final int processCountIntervalSeconds;
     
@@ -39,24 +39,24 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
     private final boolean streamingProcess;
     
     //CHECKSTYLE:OFF
-    private DataFlowJobConfiguration(final String jobName, final Class<? extends T> jobClass, final int shardingTotalCount, final String cron,
-                                   final String shardingItemParameters, final String jobParameter, final boolean monitorExecution, final int maxTimeDiffSeconds,
-                                   final boolean isFailover, final boolean isMisfire, final int monitorPort, final String jobShardingStrategyClass, final String description,
-                                   final boolean disabled, final boolean overwrite, final DataFlowType dataFlowType, final int processCountIntervalSeconds, final int concurrentDataProcessThreadCount,
-                                   final boolean streamingProcess) {
+    private DataflowJobConfiguration(final String jobName, final Class<? extends T> jobClass, final int shardingTotalCount, final String cron,
+                                     final String shardingItemParameters, final String jobParameter, final boolean monitorExecution, final int maxTimeDiffSeconds,
+                                     final boolean isFailover, final boolean isMisfire, final int monitorPort, final String jobShardingStrategyClass, final String description,
+                                     final boolean disabled, final boolean overwrite, final DataflowType dataflowType, final int processCountIntervalSeconds, final int concurrentDataProcessThreadCount,
+                                     final boolean streamingProcess) {
         //CHECKSTYLE:ON
         super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire,
                 monitorPort, jobShardingStrategyClass, description, disabled, overwrite);
-        this.dataFlowType = dataFlowType;
+        this.dataflowType = dataflowType;
         this.processCountIntervalSeconds = processCountIntervalSeconds;
         this.concurrentDataProcessThreadCount = concurrentDataProcessThreadCount;
         this.streamingProcess = streamingProcess;
     }
     
     
-    public static class DataFlowJobConfigurationBuilder extends AbstractJobConfigurationBuilder<DataFlowJobConfiguration, DataFlowElasticJob, DataFlowJobConfigurationBuilder> {
+    public static class DataflowJobConfigurationBuilder extends AbstractJobConfigurationBuilder<DataflowJobConfiguration, DataflowElasticJob, DataflowJobConfigurationBuilder> {
     
-        private final DataFlowType dataFlowType;
+        private final DataflowType dataflowType;
         
         private int processCountIntervalSeconds = 300;
         
@@ -64,10 +64,10 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
         
         private boolean streamingProcess;
         
-        public DataFlowJobConfigurationBuilder(
-                final String jobName, final Class<? extends DataFlowElasticJob> jobClass, final int shardingTotalCount, final String cron, final DataFlowType dataFlowType) {
+        public DataflowJobConfigurationBuilder(
+                final String jobName, final Class<? extends DataflowElasticJob> jobClass, final int shardingTotalCount, final String cron, final DataflowType dataflowType) {
             super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron);
-            this.dataFlowType = dataFlowType;
+            this.dataflowType = dataflowType;
         }
         
         /**
@@ -81,7 +81,7 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
          *
          * @return 作业配置构建器
          */
-        public final DataFlowJobConfigurationBuilder processCountIntervalSeconds(final int processCountIntervalSeconds) {
+        public final DataflowJobConfigurationBuilder processCountIntervalSeconds(final int processCountIntervalSeconds) {
             this.processCountIntervalSeconds = processCountIntervalSeconds;
             return this;
         }
@@ -97,7 +97,7 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
          *
          * @return 作业配置构建器
          */
-        public final DataFlowJobConfigurationBuilder concurrentDataProcessThreadCount(final int concurrentDataProcessThreadCount) {
+        public final DataflowJobConfigurationBuilder concurrentDataProcessThreadCount(final int concurrentDataProcessThreadCount) {
             this.concurrentDataProcessThreadCount = concurrentDataProcessThreadCount;
             return this;
         }
@@ -113,18 +113,18 @@ public final class DataFlowJobConfiguration<T extends DataFlowElasticJob> extend
          * 
          * @return 作业配置构建器
          */
-        public final DataFlowJobConfigurationBuilder streamingProcess(final boolean streamingProcess) {
+        public final DataflowJobConfigurationBuilder streamingProcess(final boolean streamingProcess) {
             this.streamingProcess = streamingProcess;
             return this;
         }
         
         @SuppressWarnings("unchecked")
-        protected DataFlowJobConfiguration buildInternal() {
+        protected DataflowJobConfiguration buildInternal() {
             Preconditions.checkArgument(processCountIntervalSeconds > 0, String.format("%d should larger than zero.", processCountIntervalSeconds));
             Preconditions.checkArgument(concurrentDataProcessThreadCount > 0, String.format("%d should larger than zero.", concurrentDataProcessThreadCount));
-            return new DataFlowJobConfiguration(getJobName(), getJobClass(), getShardingTotalCount(), getCron(), getShardingItemParameters(), getJobParameter(),
+            return new DataflowJobConfiguration(getJobName(), getJobClass(), getShardingTotalCount(), getCron(), getShardingItemParameters(), getJobParameter(),
                     isMonitorExecution(), getMaxTimeDiffSeconds(), isFailover(), isMisfire(), getMonitorPort(), getJobShardingStrategyClass(),
-                    getDescription(), isDisabled(), isOverwrite(), dataFlowType, processCountIntervalSeconds, concurrentDataProcessThreadCount, streamingProcess);
+                    getDescription(), isDisabled(), isOverwrite(), dataflowType, processCountIntervalSeconds, concurrentDataProcessThreadCount, streamingProcess);
         }
     }
 }

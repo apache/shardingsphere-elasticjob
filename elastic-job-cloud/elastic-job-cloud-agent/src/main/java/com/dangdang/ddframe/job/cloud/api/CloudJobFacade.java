@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.api;
 
 import com.dangdang.ddframe.job.api.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
@@ -40,9 +40,9 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public DataFlowType getDataFlowType() {
+    public DataflowType getDataflowType() {
         // TODO
-        return DataFlowType.THROUGHPUT;
+        return DataflowType.THROUGHPUT;
     }
     
     @Override

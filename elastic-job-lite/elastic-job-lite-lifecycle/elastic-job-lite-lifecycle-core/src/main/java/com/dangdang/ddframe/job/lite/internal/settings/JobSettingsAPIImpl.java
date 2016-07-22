@@ -43,7 +43,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         String jobType = registryCenter.get(jobNodePath.getConfigNodePath("jobType"));
         buildSimpleJobSettings(jobName, result, jobNodePath, jobType);
         if (JobType.DATA_FLOW.name().equals(jobType)) {
-            buildDataFlowJobSettings(result, jobNodePath);
+            buildDataflowJobSettings(result, jobNodePath);
         }
         if (JobType.SCRIPT.name().equals(jobType)) {
             buildScriptJobSettings(result, jobNodePath);
@@ -71,7 +71,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setDescription(registryCenter.get(jobNodePath.getConfigNodePath("description")));
     }
     
-    private void buildDataFlowJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
+    private void buildDataflowJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
         result.setProcessCountIntervalSeconds(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("processCountIntervalSeconds"))));
         result.setConcurrentDataProcessThreadCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("concurrentDataProcessThreadCount"))));
         result.setStreamingProcess(Boolean.parseBoolean(registryCenter.get(jobNodePath.getConfigNodePath("streamingProcess"))));

@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutorService;
  * 
  * @param <T> 数据流作业处理的数据实体类型
  */
-public interface DataFlowElasticJob<T> extends ElasticJob {
+public interface DataflowElasticJob<T> extends ElasticJob {
     
     /**
      * 获取待处理的数据.

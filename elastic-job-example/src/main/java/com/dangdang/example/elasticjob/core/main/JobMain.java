@@ -18,19 +18,19 @@
 package com.dangdang.example.elasticjob.core.main;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.example.elasticjob.core.job.SequenceDataFlowJobDemo;
+import com.dangdang.example.elasticjob.core.job.SequenceDataflowJobDemo;
 import com.dangdang.example.elasticjob.core.job.SimpleJobDemo;
-import com.dangdang.example.elasticjob.core.job.ThroughputDataFlowJobDemo;
+import com.dangdang.example.elasticjob.core.job.ThroughputDataflowJobDemo;
 
 import static com.dangdang.example.elasticjob.utils.ScriptCommandLineHelper.buildScriptCommandLine;
 
@@ -54,11 +54,11 @@ public final class JobMain {
         final SimpleJobConfiguration simpleJobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleElasticDemoJob", 
                 SimpleJobDemo.class, 10, "0/30 * * * * ?").build();
         
-        final DataFlowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("throughputDataFlowElasticDemoJob", 
-                ThroughputDataFlowJobDemo.class, 10, "0/5 * * * * ?", DataFlowType.THROUGHPUT).streamingProcess(true).build();
+        final DataflowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataflowJobConfigurationBuilder("throughputDataflowElasticDemoJob", 
+                ThroughputDataflowJobDemo.class, 10, "0/5 * * * * ?", DataflowType.THROUGHPUT).streamingProcess(true).build();
         
-        final DataFlowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataFlowJobConfigurationBuilder("sequenceDataFlowElasticDemoJob", 
-                SequenceDataFlowJobDemo.class, 10, "0/5 * * * * ?", DataFlowType.SEQUENCE).build();
+        final DataflowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataflowJobConfigurationBuilder("sequenceDataflowElasticDemoJob", 
+                SequenceDataflowJobDemo.class, 10, "0/5 * * * * ?", DataflowType.SEQUENCE).build();
         
         final ScriptJobConfiguration scriptJobConfig = JobConfigurationFactory.createScriptJobConfigurationBuilder("scriptElasticDemoJob", 10, "0/5 * * * * ?", 
                 buildScriptCommandLine()).build();

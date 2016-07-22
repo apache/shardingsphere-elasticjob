@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
-import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataFlowElasticJobForExecuteFailure;
+import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataflowElasticJobForExecuteFailure;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationFieldUtil;
 import com.google.common.base.Optional;
 import org.junit.After;
@@ -33,16 +33,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class StreamingThroughputDataFlowElasticJobForExecuteFailureTest extends AbstractBaseStdJobAutoInitTest {
+public final class StreamingThroughputDataflowElasticJobForExecuteFailureTest extends AbstractBaseStdJobAutoInitTest {
     
-    public StreamingThroughputDataFlowElasticJobForExecuteFailureTest() {
-        super(StreamingThroughputDataFlowElasticJobForExecuteFailure.class, Optional.of(DataFlowType.THROUGHPUT));
+    public StreamingThroughputDataflowElasticJobForExecuteFailureTest() {
+        super(StreamingThroughputDataflowElasticJobForExecuteFailure.class, Optional.of(DataflowType.THROUGHPUT));
     }
     
     @Before
     @After
     public void reset() {
-        StreamingThroughputDataFlowElasticJobForExecuteFailure.reset();
+        StreamingThroughputDataflowElasticJobForExecuteFailure.reset();
     }
     
     @Override
@@ -52,7 +52,7 @@ public final class StreamingThroughputDataFlowElasticJobForExecuteFailureTest ex
     
     @Test
     public void assertJobInit() {
-        while (!StreamingThroughputDataFlowElasticJobForExecuteFailure.isCompleted()) {
+        while (!StreamingThroughputDataflowElasticJobForExecuteFailure.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));

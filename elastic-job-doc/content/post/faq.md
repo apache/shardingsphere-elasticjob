@@ -90,7 +90,7 @@ weight=40
 
 * 变更`JobConfiguration`类为接口，通过工厂方法配合构建者模式为每种作业类型分别提供了配置实现类。
 
-* 取消`DataFlowElasticJob`接口中`isStreamingProcess`的方法签名，归入`DataFlow`型作业配置，默认值为`false`非流式处理。
+* 取消`DataflowElasticJob`接口中`isStreamingProcess`的方法签名，归入`Dataflow`型作业配置，默认值为`false`非流式处理。
 
 **重新定义`Spring`命名空间**
 

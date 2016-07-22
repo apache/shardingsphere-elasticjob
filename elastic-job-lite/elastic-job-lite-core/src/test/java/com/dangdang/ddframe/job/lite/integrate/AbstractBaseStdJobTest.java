@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.lite.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
 import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
@@ -84,9 +84,9 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_testJob";
     
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled, final Optional<DataFlowType> dataFlowType) {
+    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled, final Optional<DataflowType> dataflowType) {
         this.disabled = disabled;
-        jobConfig = initJobConfig(elasticJobClass, dataFlowType);
+        jobConfig = initJobConfig(elasticJobClass, dataflowType);
         jobScheduler = new JobScheduler(regCenter, jobConfig, new ElasticJobListener() {
             
             @Override
@@ -112,18 +112,18 @@ public abstract class AbstractBaseStdJobTest {
         leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
     }
     
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort, final Optional<DataFlowType> dataFlowType) {
+    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort, final Optional<DataflowType> dataflowType) {
         this.monitorPort = monitorPort;
-        jobConfig = initJobConfig(elasticJobClass, dataFlowType);
+        jobConfig = initJobConfig(elasticJobClass, dataflowType);
         jobScheduler = new JobScheduler(regCenter, jobConfig);
         disabled = false;
         leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
     }
     
     @SuppressWarnings("unchecked")
-    private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataFlowType> dataFlowType) {
-        if (DataFlowElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return JobConfigurationFactory.createDataFlowJobConfigurationBuilder(jobName, (Class<? extends DataFlowElasticJob>) elasticJobClass, 3, "0/1 * * * * ?", dataFlowType.get())
+    private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataflowType> dataflowType) {
+        if (DataflowElasticJob.class.isAssignableFrom(elasticJobClass)) {
+            return JobConfigurationFactory.createDataflowJobConfigurationBuilder(jobName, (Class<? extends DataflowElasticJob>) elasticJobClass, 3, "0/1 * * * * ?", dataflowType.get())
                     .monitorPort(monitorPort)
                     .shardingItemParameters("0=A,1=B,2=C")
                     .disabled(disabled)

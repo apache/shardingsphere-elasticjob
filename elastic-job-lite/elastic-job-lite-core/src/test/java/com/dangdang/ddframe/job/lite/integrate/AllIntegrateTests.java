@@ -21,15 +21,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.sequence.OneOffSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.sequence.StreamingSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.OneOffThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForExecuteFailureTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForMultipleThreadsTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForNotMonitorTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobForPausedTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.sequence.OneOffSequenceDataflowElasticJobTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.sequence.StreamingSequenceDataflowElasticJobTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.OneOffThroughputDataflowElasticJobTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobForExecuteFailureTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobForExecuteThrowsExceptionTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobForMultipleThreadsTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobForNotMonitorTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobForPausedTest;
+import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobTest;
 import com.dangdang.ddframe.job.lite.integrate.std.integrated.ScriptElasticJobTest;
 import com.dangdang.ddframe.job.lite.integrate.std.simple.DisabledJobTest;
 import com.dangdang.ddframe.job.lite.integrate.std.simple.SimpleElasticJobTest;
@@ -38,15 +38,15 @@ import com.dangdang.ddframe.job.lite.integrate.std.simple.SimpleElasticJobTest;
 @SuiteClasses({
     DisabledJobTest.class, 
     SimpleElasticJobTest.class, 
-    OneOffSequenceDataFlowElasticJobTest.class, 
-    StreamingSequenceDataFlowElasticJobTest.class, 
-    OneOffThroughputDataFlowElasticJobTest.class, 
-    StreamingThroughputDataFlowElasticJobTest.class, 
-    StreamingThroughputDataFlowElasticJobForNotMonitorTest.class, 
-    StreamingThroughputDataFlowElasticJobForMultipleThreadsTest.class, 
-    StreamingThroughputDataFlowElasticJobForExecuteFailureTest.class, 
-    StreamingThroughputDataFlowElasticJobForExecuteThrowsExceptionTest.class, 
-    StreamingThroughputDataFlowElasticJobForPausedTest.class,
+    OneOffSequenceDataflowElasticJobTest.class, 
+    StreamingSequenceDataflowElasticJobTest.class, 
+    OneOffThroughputDataflowElasticJobTest.class, 
+    StreamingThroughputDataflowElasticJobTest.class, 
+    StreamingThroughputDataflowElasticJobForNotMonitorTest.class, 
+    StreamingThroughputDataflowElasticJobForMultipleThreadsTest.class, 
+    StreamingThroughputDataflowElasticJobForExecuteFailureTest.class, 
+    StreamingThroughputDataflowElasticJobForExecuteThrowsExceptionTest.class, 
+    StreamingThroughputDataflowElasticJobForPausedTest.class,
     ScriptElasticJobTest.class
     })
 public final class AllIntegrateTests {

@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.api.type;
 
-import com.dangdang.ddframe.job.api.type.dataflow.sequence.StreamingSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.sequence.UnstreamingSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.throughput.StreamingThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.throughput.UnstreamingThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.sequence.StreamingSequenceDataflowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.sequence.UnstreamingSequenceDataflowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.throughput.StreamingThroughputDataflowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.throughput.UnstreamingThroughputDataflowElasticJobTest;
 import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJobTest;
 import com.dangdang.ddframe.job.api.type.simple.SimpleElasticJobTest;
 import org.junit.runner.RunWith;
@@ -30,10 +30,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         SimpleElasticJobTest.class,
-        StreamingSequenceDataFlowElasticJobTest.class, 
-        StreamingThroughputDataFlowElasticJobTest.class, 
-        UnstreamingSequenceDataFlowElasticJobTest.class, 
-        UnstreamingThroughputDataFlowElasticJobTest.class, 
+        StreamingSequenceDataflowElasticJobTest.class, 
+        StreamingThroughputDataflowElasticJobTest.class, 
+        UnstreamingSequenceDataflowElasticJobTest.class, 
+        UnstreamingThroughputDataflowElasticJobTest.class, 
         ScriptElasticJobTest.class
     })
 public final class AllTypeTests {

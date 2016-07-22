@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.api.type.dataflow;
 
 import com.dangdang.ddframe.job.api.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
@@ -34,7 +34,7 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.when;
 
 @Getter(AccessLevel.PROTECTED)
-public abstract class AbstractDataFlowElasticJobTest {
+public abstract class AbstractDataflowElasticJobTest {
     
     @Mock
     private JobCaller jobCaller;
@@ -44,21 +44,21 @@ public abstract class AbstractDataFlowElasticJobTest {
     
     private ShardingContext shardingContext;
     
-    private AbstractDataFlowElasticJob dataFlowElasticJob;
+    private AbstractDataflowElasticJob dataflowElasticJob;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
-        when(jobFacade.getDataFlowType()).thenReturn(getDataFlowType());
+        when(jobFacade.getDataflowType()).thenReturn(getDataflowType());
         when(jobFacade.isStreamingProcess()).thenReturn(isStreamingProcess());
-        dataFlowElasticJob = createDataFlowElasticJob(jobCaller);
-        dataFlowElasticJob.setJobFacade(jobFacade);
+        dataflowElasticJob = createDataflowElasticJob(jobCaller);
+        dataflowElasticJob.setJobFacade(jobFacade);
         shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
     }
     
-    protected abstract DataFlowType getDataFlowType();
+    protected abstract DataflowType getDataflowType();
     
     protected abstract boolean isStreamingProcess();
     
@@ -67,5 +67,5 @@ public abstract class AbstractDataFlowElasticJobTest {
         ProcessCountStatistics.reset(ElasticJobAssert.JOB_NAME);
     }
     
-    protected abstract AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller);
+    protected abstract AbstractDataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller);
 }

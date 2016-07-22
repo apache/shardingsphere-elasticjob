@@ -17,15 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
@@ -100,12 +100,12 @@ public final class ConfigurationServiceTest {
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, jobConfig.getJobParameter());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, jobConfig.getCron());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, jobConfig.isMonitorExecution());
-        if (DataFlowElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
-            DataFlowJobConfiguration dataFlowJobConfiguration = (DataFlowJobConfiguration) jobConfig;
-            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DATAFLOW_TYPE, dataFlowJobConfiguration.getDataFlowType());
-            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, dataFlowJobConfiguration.getProcessCountIntervalSeconds());
-            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, dataFlowJobConfiguration.getConcurrentDataProcessThreadCount());
-            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, dataFlowJobConfiguration.isStreamingProcess());
+        if (DataflowElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
+            DataflowJobConfiguration dataflowJobConfiguration = (DataflowJobConfiguration) jobConfig;
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DATAFLOW_TYPE, dataflowJobConfiguration.getDataflowType());
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, dataflowJobConfiguration.getProcessCountIntervalSeconds());
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, dataflowJobConfiguration.getConcurrentDataProcessThreadCount());
+            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, dataflowJobConfiguration.isStreamingProcess());
         }
         if (ScriptElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
             ScriptJobConfiguration scriptJobConfiguration = (ScriptJobConfiguration) jobConfig;
@@ -192,9 +192,9 @@ public final class ConfigurationServiceTest {
     }
     
     @Test
-    public void assertGetDataFlowType() {
+    public void assertGetDataflowType() {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.DATAFLOW_TYPE)).thenReturn("SEQUENCE");
-        assertThat(configService.getDataFlowType(), is(DataFlowType.SEQUENCE));
+        assertThat(configService.getDataflowType(), is(DataflowType.SEQUENCE));
         verify(jobNodeStorage).getJobNodeData(ConfigurationNode.DATAFLOW_TYPE);
     }
     

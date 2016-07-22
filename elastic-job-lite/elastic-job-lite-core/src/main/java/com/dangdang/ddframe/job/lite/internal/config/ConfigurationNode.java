@@ -42,7 +42,7 @@ public final class ConfigurationNode {
     
     static final String MONITOR_EXECUTION = ROOT + "/monitorExecution";
     
-    static final String DATAFLOW_TYPE = ROOT + "/dataFlowType";
+    static final String DATAFLOW_TYPE = ROOT + "/dataflowType";
     
     static final String PROCESS_COUNT_INTERVAL_SECONDS = ROOT + "/processCountIntervalSeconds";
     

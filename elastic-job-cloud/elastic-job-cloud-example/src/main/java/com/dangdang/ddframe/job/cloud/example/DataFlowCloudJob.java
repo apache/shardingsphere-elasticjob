@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.cloud.example;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
 
 import java.util.Collections;
 import java.util.List;
 
-public class DataFlowCloudJob extends AbstractDataFlowElasticJob<String> {
+public class DataflowCloudJob extends AbstractDataflowElasticJob<String> {
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
