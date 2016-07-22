@@ -18,8 +18,8 @@
 package com.dangdang.example.elasticjob.spring.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractBatchSequenceDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasticJob<Foo> {
+public class SequenceDataFlowJobDemo extends AbstractDataFlowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(SequenceDataFlowJobDemo.class);
     
@@ -44,14 +44,11 @@ public class SequenceDataFlowJobDemo extends AbstractBatchSequenceDataFlowElasti
     }
     
     @Override
-    public int processData(final ShardingContext context, final List<Foo> data) {
+    public void processData(final ShardingContext context, final List<Foo> data) {
         printContext.printProcessDataMessage(data);
-        int successCount = 0;
         for (Foo each : data) {
             fooRepository.setInactive(each.getId());
-            successCount++;
         }
-        return successCount;
     }
     
     @Override

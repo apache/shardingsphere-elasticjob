@@ -56,7 +56,7 @@ public final class StreamingThroughputDataFlowElasticJobForNotMonitorTest extend
             WaitingUtils.waitingShortTime();
         }
         assertFalse(getRegCenter().isExisted("/" + getJobName() + "/execution"));
-        assertTrue(ProcessCountStatistics.getProcessSuccessCount(getJobName()) >= 10);
+        assertTrue(ProcessCountStatistics.getProcessSuccessCount(getJobName()) >= 1);
         assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

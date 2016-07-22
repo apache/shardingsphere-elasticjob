@@ -15,23 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.dataflow.throughput.streaming;
+package com.dangdang.ddframe.job.api.type.dataflow.throughput;
 
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataFlowElasticJobTest;
-import lombok.AccessLevel;
-import lombok.Getter;
+import com.dangdang.ddframe.job.api.type.fixture.FooStreamingThroughputDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Getter(AccessLevel.PROTECTED)
-public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowElasticJobTest {
+public class StreamingThroughputDataFlowElasticJobTest extends AbstractDataFlowElasticJobTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNull() {
@@ -61,6 +63,30 @@ public abstract class AbstractStreamingThroughputDataFlowElasticJobTest extends 
         verify(getJobCaller()).fetchData();
         verify(getJobCaller()).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
+        ElasticJobAssert.assertProcessCountStatistics(1, 0);
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void assertExecuteWhenFetchDataIsNotEmpty() {
+        when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3), Collections.emptyList());
+        when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
+        doThrow(new IllegalStateException()).when(getJobCaller()).processData(3);
+        getDataFlowElasticJob().execute();
+        verify(getJobCaller(), times(2)).fetchData();
+        verify(getJobCaller()).processData(1);
+        verify(getJobCaller()).processData(2);
+        ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
         ElasticJobAssert.assertProcessCountStatistics(0, 1);
+    }
+    
+    @Override
+    protected boolean isStreamingProcess() {
+        return true;
+    }
+    
+    @Override
+    protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
+        return new FooStreamingThroughputDataFlowElasticJob(jobCaller);
     }
 }

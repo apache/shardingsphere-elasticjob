@@ -27,5 +27,5 @@ public interface JobCaller {
     
     List<Object> fetchData(int shardingItem);
     
-    boolean processData(Object data);
+    void processData(Object data);
 }

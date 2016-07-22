@@ -55,7 +55,7 @@ public final class OneOffThroughputDataFlowElasticJobTest extends AbstractBaseSt
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(10));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(1));
         assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

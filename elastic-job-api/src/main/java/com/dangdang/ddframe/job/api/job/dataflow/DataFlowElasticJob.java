@@ -41,6 +41,14 @@ public interface DataFlowElasticJob<T> extends ElasticJob {
     List<T> fetchData(final ShardingContext shardingContext);
     
     /**
+     * 处理数据.
+     *
+     * @param shardingContext 作业分片规则配置上下文
+     * @param data 待处理的数据集合
+     */
+    void processData(final ShardingContext shardingContext, final List<T> data);
+    
+    /**
      * 更新数据处理位置.
      * 
      * @param item 分片项

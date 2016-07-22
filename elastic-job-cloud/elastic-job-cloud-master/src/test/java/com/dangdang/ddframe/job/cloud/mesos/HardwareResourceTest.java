@@ -31,7 +31,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public final class HardwareResourceTest {
     
@@ -95,13 +94,6 @@ public final class HardwareResourceTest {
         assertThat(actual.getResources(0).getScalar().getValue(), is(1d));
         assertThat(actual.getResources(1).getName(), is("mem"));
         assertThat(actual.getResources(1).getScalar().getValue(), is(128d));
-        assertThat(actual.getExecutor().getExecutorId().getValue(), startsWith("test_job@-@0@-@READY@-@"));
-        assertThat(actual.getExecutor().getCommand().getValue(), startsWith("sh bin/start.sh"));
-        assertTrue(actual.getExecutor().getCommand().getShell());
-        assertThat(actual.getExecutor().getCommand().getUrisCount(), is(1));
-        assertThat(actual.getExecutor().getCommand().getUris(0).getValue(), is("http://localhost/app.jar"));
-        assertTrue(actual.getExecutor().getCommand().getUris(0).getCache());
-        assertTrue(actual.getExecutor().getCommand().getUris(0).getExtract());
     }
     
     @Test

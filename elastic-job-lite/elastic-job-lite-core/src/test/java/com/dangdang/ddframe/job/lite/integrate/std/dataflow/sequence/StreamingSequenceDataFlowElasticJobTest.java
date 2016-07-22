@@ -54,7 +54,7 @@ public final class StreamingSequenceDataFlowElasticJobTest extends AbstractBaseS
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(30));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(3));
         assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

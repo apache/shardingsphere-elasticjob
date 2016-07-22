@@ -18,8 +18,8 @@
 package com.dangdang.example.elasticjob.spring.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -29,7 +29,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Component
-public class ThroughputDataFlowJobDemo extends AbstractIndividualThroughputDataFlowElasticJob<Foo> {
+public class ThroughputDataFlowJobDemo extends AbstractDataFlowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(ThroughputDataFlowJobDemo.class);
     
@@ -43,13 +43,11 @@ public class ThroughputDataFlowJobDemo extends AbstractIndividualThroughputDataF
     }
     
     @Override
-    public boolean processData(final ShardingContext context, final Foo data) {
-        printContext.printProcessDataMessage(data);
-        if (9 == data.getId() % 10) {
-            return false;
+    public void processData(final ShardingContext context, final List<Foo> data) {
+        for (Foo each : data) {
+            printContext.printProcessDataMessage(each);
+            fooRepository.setInactive(each.getId());
         }
-        fooRepository.setInactive(data.getId());
-        return true;
     }
     
     @Override

@@ -18,15 +18,15 @@
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import com.dangdang.ddframe.job.exception.JobException;
 import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
 
-public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException extends AbstractIndividualThroughputDataFlowElasticJob<String> {
+public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException extends AbstractDataFlowElasticJob<String> {
     
     @Getter
     private static volatile boolean completed;
@@ -40,7 +40,7 @@ public class StreamingThroughputDataFlowElasticJobForExecuteThrowsException exte
     }
     
     @Override
-    public boolean processData(final ShardingContext context, final String data) {
+    public void processData(final ShardingContext context, final List<String> data) {
         completed = true;
         throw new JobException("");
     }

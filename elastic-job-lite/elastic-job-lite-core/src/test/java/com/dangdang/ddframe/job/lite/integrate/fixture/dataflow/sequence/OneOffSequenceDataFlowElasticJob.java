@@ -18,15 +18,15 @@
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.sequence;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public final class OneOffSequenceDataFlowElasticJob extends AbstractIndividualSequenceDataFlowElasticJob<String> {
+public final class OneOffSequenceDataFlowElasticJob extends AbstractDataFlowElasticJob<String> {
     
     private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     
@@ -38,9 +38,10 @@ public final class OneOffSequenceDataFlowElasticJob extends AbstractIndividualSe
     }
     
     @Override
-    public boolean processData(final ShardingContext singleContext, final String data) {
-        processedData.add(data);
-        return true;
+    public void processData(final ShardingContext singleContext, final List<String> data) {
+        for (String each : data) {
+            processedData.add(each);
+        }
     }
     
     @Override

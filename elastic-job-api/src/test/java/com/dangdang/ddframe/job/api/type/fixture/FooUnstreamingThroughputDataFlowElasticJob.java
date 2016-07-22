@@ -18,38 +18,36 @@
 package com.dangdang.ddframe.job.api.type.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractBatchSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.exception.JobException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public final class FooUnstreamingBatchSequenceDataFlowElasticJob extends AbstractBatchSequenceDataFlowElasticJob<Object> {
+public final class FooUnstreamingThroughputDataFlowElasticJob extends AbstractDataFlowElasticJob<Object> {
     
     private final JobCaller jobCaller;
     
     @Override
     public List<Object> fetchData(final ShardingContext shardingContext) {
-        return jobCaller.fetchData(shardingContext.getShardingItems().keySet().iterator().next());
+        return jobCaller.fetchData();
     }
     
     @Override
-    public int processData(final ShardingContext shardingContext, final List<Object> data) {
-        int result = 0;
+    public void processData(final ShardingContext shardingContext, final List<Object> data) {
         for (Object each : data) {
-            try {
-                if (jobCaller.processData(each)) {
-                    result++;
-                }
-            } catch (final IllegalStateException ex) {
-            }
+            jobCaller.processData(each);
         }
-        return result;
+    }
+    
+    @Override
+    public void handleJobExecutionException(final JobException jobException) {
     }
     
     @Override
     protected DataFlowType getDataFlowType() {
-        return DataFlowType.SEQUENCE;
+        return DataFlowType.THROUGHPUT;
     }
 }

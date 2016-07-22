@@ -17,14 +17,10 @@
 
 package com.dangdang.ddframe.job.api.type;
 
-import com.dangdang.ddframe.job.api.type.dataflow.sequence.streaming.StreamingBatchSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.sequence.streaming.StreamingIndividualSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.sequence.unstreaming.UnstreamingBatchSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.sequence.unstreaming.UnstreamingIndividualSequenceDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.throughput.streaming.StreamingBatchThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.throughput.streaming.StreamingIndividualThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.throughput.unstreaming.UnstreamingBatchThroughputDataFlowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.throughput.unstreaming.UnstreamingIndividualThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.sequence.StreamingSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.sequence.UnstreamingSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.throughput.StreamingThroughputDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.throughput.UnstreamingThroughputDataFlowElasticJobTest;
 import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJobTest;
 import com.dangdang.ddframe.job.api.type.simple.SimpleElasticJobTest;
 import org.junit.runner.RunWith;
@@ -33,15 +29,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        SimpleElasticJobTest.class, 
-        StreamingIndividualThroughputDataFlowElasticJobTest.class,
-        StreamingBatchThroughputDataFlowElasticJobTest.class, 
-        StreamingIndividualSequenceDataFlowElasticJobTest.class,
-        StreamingBatchSequenceDataFlowElasticJobTest.class, 
-        UnstreamingIndividualThroughputDataFlowElasticJobTest.class,
-        UnstreamingBatchThroughputDataFlowElasticJobTest.class, 
-        UnstreamingIndividualSequenceDataFlowElasticJobTest.class,
-        UnstreamingBatchSequenceDataFlowElasticJobTest.class, 
+        SimpleElasticJobTest.class,
+        StreamingSequenceDataFlowElasticJobTest.class, 
+        StreamingThroughputDataFlowElasticJobTest.class, 
+        UnstreamingSequenceDataFlowElasticJobTest.class, 
+        UnstreamingThroughputDataFlowElasticJobTest.class, 
         ScriptElasticJobTest.class
     })
 public final class AllTypeTests {

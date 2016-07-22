@@ -18,13 +18,13 @@
 package com.dangdang.ddframe.job.cloud.example;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 
 import java.util.Collections;
 import java.util.List;
 
-public class DataFlowCloudJob extends AbstractIndividualThroughputDataFlowElasticJob<String> {
+public class DataFlowCloudJob extends AbstractDataFlowElasticJob<String> {
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
@@ -33,9 +33,8 @@ public class DataFlowCloudJob extends AbstractIndividualThroughputDataFlowElasti
     }
     
     @Override
-    public boolean processData(final ShardingContext shardingContext, final String data) {
+    public void processData(final ShardingContext shardingContext, final List<String> data) {
         System.out.println("---process data:" + data);
-        return true;
     }
     
     @Override
@@ -43,3 +42,4 @@ public class DataFlowCloudJob extends AbstractIndividualThroughputDataFlowElasti
         return DataFlowType.THROUGHPUT;
     }
 }
+ 

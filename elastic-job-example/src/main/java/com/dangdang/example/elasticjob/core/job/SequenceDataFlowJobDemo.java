@@ -18,8 +18,8 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualSequenceDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -27,7 +27,7 @@ import com.dangdang.example.elasticjob.utils.PrintContext;
 import java.util.Collections;
 import java.util.List;
 
-public class SequenceDataFlowJobDemo extends AbstractIndividualSequenceDataFlowElasticJob<Foo> {
+public class SequenceDataFlowJobDemo extends AbstractDataFlowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(SequenceDataFlowJobDemo.class);
     
@@ -40,11 +40,12 @@ public class SequenceDataFlowJobDemo extends AbstractIndividualSequenceDataFlowE
     }
     
     @Override
-    public boolean processData(final ShardingContext context, final Foo data) {
-        printContext.printProcessDataMessage(data);
-        fooRepository.setInactive(data.getId());
-        updateOffset(context.getShardingItems().keySet().iterator().next(), String.valueOf(data.getId()));
-        return true;
+    public void processData(final ShardingContext context, final List<Foo> data) {
+        for (Foo each : data) {
+            printContext.printProcessDataMessage(each);
+            fooRepository.setInactive(each.getId());
+            updateOffset(context.getShardingItems().keySet().iterator().next(), String.valueOf(each.getId()));
+        }
     }
     
     @Override

@@ -55,7 +55,7 @@ public final class StreamingThroughputDataFlowElasticJobForExecuteFailureTest ex
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(0));
-        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), not(0));
+        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(1));
+        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

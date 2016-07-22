@@ -18,14 +18,14 @@
 package com.dangdang.ddframe.job.api.type.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractIndividualThroughputDataFlowElasticJob;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public final class FooStreamingIndividualThroughputDataFlowElasticJob extends AbstractIndividualThroughputDataFlowElasticJob<Object> {
+public final class FooStreamingThroughputDataFlowElasticJob extends AbstractDataFlowElasticJob<Object> {
     
     private final JobCaller jobCaller;
     
@@ -35,8 +35,10 @@ public final class FooStreamingIndividualThroughputDataFlowElasticJob extends Ab
     }
     
     @Override
-    public boolean processData(final ShardingContext shardingContext, final Object data) {
-        return jobCaller.processData(data);
+    public void processData(final ShardingContext shardingContext, final List<Object> data) {
+        for (Object each : data) {
+            jobCaller.processData(each);
+        }
     }
     
     @Override

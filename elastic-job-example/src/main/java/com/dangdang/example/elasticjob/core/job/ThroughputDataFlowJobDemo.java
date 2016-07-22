@@ -18,8 +18,8 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractBatchThroughputDataFlowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ThroughputDataFlowJobDemo extends AbstractBatchThroughputDataFlowElasticJob<Foo> {
+public class ThroughputDataFlowJobDemo extends AbstractDataFlowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(ThroughputDataFlowJobDemo.class);
     
@@ -41,16 +41,11 @@ public class ThroughputDataFlowJobDemo extends AbstractBatchThroughputDataFlowEl
     }
     
     @Override
-    public int processData(final ShardingContext context, final List<Foo> data) {
+    public void processData(final ShardingContext context, final List<Foo> data) {
         printContext.printProcessDataMessage(data);
-        int successCount = 0;
         for (Foo each : data) {
-            if (9 != each.getId() % 10) {
-                successCount++;
-                fooRepository.setInactive(each.getId());
-            }
+            fooRepository.setInactive(each.getId());
         }
-        return successCount;
     }
     
     @Override

@@ -15,20 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.dataflow.sequence.streaming;
+package com.dangdang.ddframe.job.api.type.dataflow.sequence;
 
+import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataFlowElasticJob;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.sequence.AbstractSequenceDataFlowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.fixture.FooStreamingSequenceDataFlowElasticJob;
+import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public abstract class AbstractStreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDataFlowElasticJobTest {
+public class StreamingSequenceDataFlowElasticJobTest extends AbstractSequenceDataFlowElasticJobTest {
     
     @SuppressWarnings("unchecked")
     @Test
@@ -36,10 +40,7 @@ public abstract class AbstractStreamingSequenceDataFlowElasticJobTest extends Ab
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2), Collections.emptyList());
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4), Collections.emptyList());
-        when(getJobCaller().processData(1)).thenReturn(true);
-        when(getJobCaller().processData(2)).thenReturn(true);
-        when(getJobCaller().processData(3)).thenReturn(false);
-        when(getJobCaller().processData(4)).thenThrow(new IllegalStateException());
+        doThrow(new IllegalStateException()).when(getJobCaller()).processData(4);
         getDataFlowElasticJob().execute();
         verify(getJobCaller(), times(2)).fetchData(0);
         verify(getJobCaller(), times(2)).fetchData(1);
@@ -48,7 +49,7 @@ public abstract class AbstractStreamingSequenceDataFlowElasticJobTest extends Ab
         verify(getJobCaller()).processData(3);
         verify(getJobCaller()).processData(4);
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-        ElasticJobAssert.assertProcessCountStatistics(2, 2);
+        ElasticJobAssert.assertProcessCountStatistics(1, 1);
     }
     
     @SuppressWarnings("unchecked")
@@ -57,10 +58,7 @@ public abstract class AbstractStreamingSequenceDataFlowElasticJobTest extends Ab
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(false);
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
-        when(getJobCaller().processData(1)).thenReturn(true);
-        when(getJobCaller().processData(2)).thenReturn(true);
-        when(getJobCaller().processData(3)).thenReturn(false);
-        when(getJobCaller().processData(4)).thenThrow(new IllegalStateException());
+        doThrow(new IllegalStateException()).when(getJobCaller()).processData(4);
         getDataFlowElasticJob().execute();
         verify(getJobCaller()).fetchData(0);
         verify(getJobCaller()).fetchData(1);
@@ -69,6 +67,16 @@ public abstract class AbstractStreamingSequenceDataFlowElasticJobTest extends Ab
         verify(getJobCaller()).processData(3);
         verify(getJobCaller()).processData(4);
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-        ElasticJobAssert.assertProcessCountStatistics(2, 2);
+        ElasticJobAssert.assertProcessCountStatistics(1, 1);
+    }
+    
+    @Override
+    protected boolean isStreamingProcess() {
+        return true;
+    }
+    
+    @Override
+    protected AbstractDataFlowElasticJob createDataFlowElasticJob(final JobCaller jobCaller) {
+        return new FooStreamingSequenceDataFlowElasticJob(jobCaller);
     }
 }

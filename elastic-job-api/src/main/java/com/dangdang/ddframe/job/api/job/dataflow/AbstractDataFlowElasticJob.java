@@ -184,7 +184,17 @@ public abstract class AbstractDataFlowElasticJob<T> extends AbstractElasticJob i
         latchAwait(latch);
     }
     
-    protected abstract void processDataWithStatistics(ShardingContext shardingContext, List<T> data);
+    private void processDataWithStatistics(final ShardingContext shardingContext, final List<T> data) {
+        try {
+            processData(shardingContext, data);
+            ProcessCountStatistics.incrementProcessSuccessCount(shardingContext.getJobName());
+            // CHECKSTYLE:OFF
+        } catch (final Throwable cause) {
+            // CHECKSTYLE:ON
+            ProcessCountStatistics.incrementProcessFailureCount(shardingContext.getJobName());
+            handleJobExecutionException(new JobException(cause));
+        }
+    }
     
     @Override
     public final void updateOffset(final int item, final String offset) {
