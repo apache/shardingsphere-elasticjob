@@ -20,11 +20,12 @@ package com.dangdang.ddframe.job.api.script;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.internal.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.internal.JobFacade;
-import com.google.common.base.Preconditions;
+import com.dangdang.ddframe.job.exception.JobException;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.Executor;
 
 import java.io.IOException;
 
@@ -37,18 +38,24 @@ import java.io.IOException;
 @Slf4j
 public final class ScriptElasticJobExecutor extends AbstractElasticJobExecutor {
     
+    private final Executor executor;
+    
     public ScriptElasticJobExecutor(final JobFacade jobFacade) {
         super(jobFacade);
+        executor = new DefaultExecutor();
     }
     
     @Override
     protected void process(final ShardingContext shardingContext) {
         String scriptCommandLine = getJobFacade().getScriptCommandLine();
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(scriptCommandLine), "Cannot find script command line.");
+        if (Strings.isNullOrEmpty(scriptCommandLine)) {
+            handleException(new JobException("Cannot find script command line for job '{}', job is not executed.", shardingContext.getJobName()));
+            return;
+        }
         CommandLine commandLine = CommandLine.parse(scriptCommandLine);
         commandLine.addArgument(shardingContext.toJson(), false);
         try {
-            new DefaultExecutor().execute(commandLine);
+            executor.execute(commandLine);
         } catch (final IOException ex) {
             handleException(ex);
         }

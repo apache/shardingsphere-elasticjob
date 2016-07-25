@@ -17,23 +17,42 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow;
 
+import com.dangdang.ddframe.job.api.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJobExecutor;
 import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
+import com.dangdang.ddframe.job.api.type.fixture.FooDataflowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
 
+import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RequiredArgsConstructor
 @Getter(AccessLevel.PROTECTED)
 public abstract class AbstractDataflowElasticJobExecutorTest {
+    
+    private final DataflowType dataflowType;
+    
+    private final boolean streamingProcess;
     
     @Mock
     private JobCaller jobCaller;
@@ -45,20 +64,41 @@ public abstract class AbstractDataflowElasticJobExecutorTest {
     
     private DataflowElasticJobExecutor dataflowElasticJobExecutor;
     
+    private ExecutorService executorService = Executors.newCachedThreadPool();
+    
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
+        shardingContext = ElasticJobAssert.getShardingContext();
+        when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         when(jobFacade.getDataflowType()).thenReturn(getDataflowType());
         when(jobFacade.isStreamingProcess()).thenReturn(isStreamingProcess());
-        dataflowElasticJobExecutor = new DataflowElasticJobExecutor(createDataflowElasticJob(jobCaller), jobFacade);
-        shardingContext = ElasticJobAssert.getShardingContext();
+        dataflowElasticJobExecutor = new DataflowElasticJobExecutor(new FooDataflowElasticJob(jobCaller), jobFacade);
+        dataflowElasticJobExecutor.setJobExceptionHandler(new JobExceptionHandler() {
+            
+            @Override
+            public void handleException(final Throwable cause) {
+            }
+        });
+        dataflowElasticJobExecutor.setExecutorService(executorService);
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
     }
     
-    protected abstract DataflowType getDataflowType();
+    @After
+    public void tearDown() throws NoSuchFieldException {
+        assertThat((ExecutorService) ReflectionUtils.getFieldValue(dataflowElasticJobExecutor, DataflowElasticJobExecutor.class.getDeclaredField("executorService")), is(executorService));
+        ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
+    }
     
-    protected abstract boolean isStreamingProcess();
     
-    protected abstract DataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller);
+    @Test
+    public final void assertExecuteWhenFetchDataIsNullAndEmpty() {
+        when(getJobCaller().fetchData(0)).thenReturn(null);
+        when(getJobCaller().fetchData(1)).thenReturn(Collections.emptyList());
+        getDataflowElasticJobExecutor().execute();
+        verify(getJobCaller()).fetchData(0);
+        verify(getJobCaller()).fetchData(1);
+        verify(getJobCaller(), times(0)).processData(any());
+    }
 }

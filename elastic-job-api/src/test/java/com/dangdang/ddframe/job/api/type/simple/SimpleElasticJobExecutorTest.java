@@ -69,7 +69,7 @@ public final class SimpleElasticJobExecutorTest {
             simpleElasticJobExecutor.execute();
         } finally {
             verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
-            verify(jobCaller, times(0)).process();
+            verify(jobCaller, times(0)).execute();
         }
     }
     
@@ -82,7 +82,7 @@ public final class SimpleElasticJobExecutorTest {
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
-        verify(jobCaller, times(0)).process();
+        verify(jobCaller, times(0)).execute();
     }
     
     @Test
@@ -93,14 +93,14 @@ public final class SimpleElasticJobExecutorTest {
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
-        verify(jobCaller, times(0)).process();
+        verify(jobCaller, times(0)).execute();
     }
     
     @Test(expected = JobException.class)
     public void assertExecuteWhenRunOnceAndThrowException() {
         ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
-        doThrow(RuntimeException.class).when(jobCaller).process();
+        doThrow(RuntimeException.class).when(jobCaller).execute();
         try {
             simpleElasticJobExecutor.execute();
         } finally {
@@ -108,7 +108,7 @@ public final class SimpleElasticJobExecutorTest {
             verify(jobFacade).getShardingContext();
             verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
             verify(jobFacade).registerJobBegin(shardingContext);
-            verify(jobCaller).process();
+            verify(jobCaller).execute();
             verify(jobFacade).registerJobCompleted(shardingContext);
         }
     }
@@ -119,7 +119,7 @@ public final class SimpleElasticJobExecutorTest {
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         simpleElasticJobExecutor.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
-        verify(jobCaller).process();
+        verify(jobCaller).execute();
     }
     
     @Test
@@ -129,7 +129,7 @@ public final class SimpleElasticJobExecutorTest {
         when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
         simpleElasticJobExecutor.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
-        verify(jobCaller).process();
+        verify(jobCaller).execute();
     }
     
     @Test
@@ -140,7 +140,7 @@ public final class SimpleElasticJobExecutorTest {
         when(jobFacade.isEligibleForJobRunning()).thenReturn(false);
         simpleElasticJobExecutor.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
-        verify(jobCaller).process();
+        verify(jobCaller).execute();
         verify(jobFacade, times(0)).clearMisfire(shardingContext.getShardingItems().keySet());
     }
     
@@ -156,7 +156,7 @@ public final class SimpleElasticJobExecutorTest {
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
         verify(jobFacade, times(2)).registerJobBegin(shardingContext);
-        verify(jobCaller, times(2)).process();
+        verify(jobCaller, times(2)).execute();
         verify(jobFacade, times(2)).registerJobCompleted(shardingContext);
     }
     
@@ -169,7 +169,7 @@ public final class SimpleElasticJobExecutorTest {
         try {
             simpleElasticJobExecutor.execute();
         } finally {
-            verify(jobCaller, times(0)).process();
+            verify(jobCaller, times(0)).execute();
         }
     }
     
@@ -183,7 +183,7 @@ public final class SimpleElasticJobExecutorTest {
         try {
             simpleElasticJobExecutor.execute();
         } finally {
-            verify(jobCaller).process();
+            verify(jobCaller).execute();
         }
     }
 }

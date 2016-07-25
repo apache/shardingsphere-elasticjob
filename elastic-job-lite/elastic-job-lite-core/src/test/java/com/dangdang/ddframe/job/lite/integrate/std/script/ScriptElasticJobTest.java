@@ -26,18 +26,19 @@ import com.dangdang.ddframe.job.lite.util.ScriptElasticJobUtil;
 import com.google.common.base.Optional;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
-    
     
     public ScriptElasticJobTest() {
         super(ScriptElasticJob.class, Optional.<DataflowType>absent());
     }
     
     @Test
-    public void assertJobInit() {
+    public void assertJobInit() throws IOException {
         ScriptElasticJobUtil.buildScriptCommandLine();
         WaitingUtils.waitingShortTime();
         String scriptCommandLine = ((ScriptJobConfiguration) getJobConfig()).getScriptCommandLine();

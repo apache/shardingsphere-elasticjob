@@ -17,13 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.sequence;
 
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.fixture.FooUnstreamingSequenceDataflowElasticJob;
-import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
-import lombok.AccessLevel;
-import lombok.Getter;
+import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataflowElasticJobExecutorTest;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -32,8 +27,11 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Getter(AccessLevel.PROTECTED)
-public class UnstreamingSequenceDataflowElasticJobTest extends AbstractSequenceDataflowElasticJobTest {
+public final class UnstreamingSequenceDataflowElasticJobTest extends AbstractDataflowElasticJobExecutorTest {
+    
+    public UnstreamingSequenceDataflowElasticJobTest() {
+        super(DataflowType.SEQUENCE, false);
+    }
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() {
@@ -47,21 +45,5 @@ public class UnstreamingSequenceDataflowElasticJobTest extends AbstractSequenceD
         verify(getJobCaller()).processData(2);
         verify(getJobCaller()).processData(3);
         verify(getJobCaller()).processData(4);
-        ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-    }
-    
-    @Override
-    protected DataflowType getDataflowType() {
-        return DataflowType.SEQUENCE;
-    }
-    
-    @Override
-    protected boolean isStreamingProcess() {
-        return false;
-    }
-    
-    @Override
-    protected DataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller) {
-        return new FooUnstreamingSequenceDataflowElasticJob(jobCaller);
     }
 }

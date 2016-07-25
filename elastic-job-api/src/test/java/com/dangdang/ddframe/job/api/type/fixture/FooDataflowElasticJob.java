@@ -21,16 +21,24 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import lombok.RequiredArgsConstructor;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public final class FooStreamingThroughputDataflowElasticJob implements DataflowElasticJob<Object> {
+public final class FooDataflowElasticJob implements DataflowElasticJob<Object> {
     
     private final JobCaller jobCaller;
     
     @Override
     public List<Object> fetchData(final ShardingContext shardingContext) {
-        return jobCaller.fetchData();
+        List<Object> result = new LinkedList<>();
+        for (int each : shardingContext.getShardingItems().keySet()) {
+            List<Object> data = jobCaller.fetchData(each);
+            if (null != data) {
+                result.addAll(data);
+            }
+        }
+        return result;
     }
     
     @Override

@@ -17,12 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataflowElasticJobExecutorTest;
-import com.dangdang.ddframe.job.api.type.fixture.FooStreamingThroughputDataflowElasticJob;
-import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -34,61 +30,48 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class StreamingThroughputDataflowElasticJobTest extends AbstractDataflowElasticJobExecutorTest {
+public final class StreamingThroughputDataflowElasticJobTest extends AbstractDataflowElasticJobExecutorTest {
     
-    @Test
-    public void assertExecuteWhenFetchDataIsNull() {
-        when(getJobCaller().fetchData()).thenReturn(null);
-        getDataflowElasticJobExecutor().execute();
-        verify(getJobCaller()).fetchData();
-        verify(getJobCaller(), times(0)).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-    }
-    
-    @Test
-    public void assertExecuteWhenFetchDataIsEmpty() {
-        when(getJobCaller().fetchData()).thenReturn(Collections.emptyList());
-        getDataflowElasticJobExecutor().execute();
-        verify(getJobCaller()).fetchData();
-        verify(getJobCaller(), times(0)).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
+    public StreamingThroughputDataflowElasticJobTest() {
+        super(DataflowType.THROUGHPUT, true);
     }
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsNotEligibleForJobRunning() {
-        when(getJobCaller().fetchData()).thenReturn(Collections.<Object>singletonList(1));
+        when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1));
+        when(getJobCaller().fetchData(1)).thenReturn(null);
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(false);
         getDataflowElasticJobExecutor().execute();
-        verify(getJobCaller()).fetchData();
+        verify(getJobCaller()).fetchData(0);
+        verify(getJobCaller()).fetchData(1);
         verify(getJobCaller()).processData(any());
-        ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
     }
     
     @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() {
-        when(getJobCaller().fetchData()).thenReturn(Arrays.<Object>asList(1, 2, 3), Collections.emptyList());
+        when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1), Collections.emptyList());
+        when(getJobCaller().fetchData(1)).thenReturn(Collections.<Object>singletonList(2), Collections.emptyList());
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
-        doThrow(new IllegalStateException()).when(getJobCaller()).processData(3);
         getDataflowElasticJobExecutor().execute();
-        verify(getJobCaller(), times(2)).fetchData();
+        verify(getJobCaller(), times(2)).fetchData(0);
+        verify(getJobCaller(), times(2)).fetchData(1);
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
-        ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
     }
     
-    @Override
-    protected DataflowType getDataflowType() {
-        return DataflowType.THROUGHPUT;
-    }
-    
-    @Override
-    protected boolean isStreamingProcess() {
-        return true;
-    }
-    
-    @Override
-    protected DataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller) {
-        return new FooStreamingThroughputDataflowElasticJob(jobCaller);
+    @SuppressWarnings("unchecked")
+    @Test
+    public void assertExecuteWhenFetchDataIsNotEmptyAndProcessFailureWithException() {
+        when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1), Collections.emptyList());
+        when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(2, 3), Collections.emptyList());
+        when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
+        doThrow(new IllegalStateException()).when(getJobCaller()).processData(2);
+        getDataflowElasticJobExecutor().execute();
+        verify(getJobCaller(), times(2)).fetchData(0);
+        verify(getJobCaller(), times(2)).fetchData(1);
+        verify(getJobCaller()).processData(1);
+        verify(getJobCaller()).processData(2);
+        verify(getJobCaller(), times(0)).processData(3);
     }
 }

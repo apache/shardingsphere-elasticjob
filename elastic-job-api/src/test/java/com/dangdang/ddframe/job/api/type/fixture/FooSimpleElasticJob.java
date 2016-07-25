@@ -28,6 +28,6 @@ public class FooSimpleElasticJob implements SimpleElasticJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {
-        jobCaller.process();
+        jobCaller.execute();
     }
 }

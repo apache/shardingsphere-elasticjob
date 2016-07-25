@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.util;
 
+import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -25,34 +26,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.HashSet;
-import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScriptElasticJobUtil {
     
-    public static String buildScriptCommandLine() {
-        try {
-            if (System.getProperties().getProperty("os.name").contains("Windows")) {
-                return Paths.get(ScriptElasticJobUtil.class.getResource("/script/test.bat").getPath().substring(1)).toString();
-            } else {
-                Path result = Paths.get(ScriptElasticJobUtil.class.getResource("/script/test.sh").getPath());
-                changeFilePermissions(result);
-                return result.toString();
-            } 
-        } catch (final IOException ex) {
-            throw new RuntimeException(ex);
+    public static String buildScriptCommandLine() throws IOException {
+        if (System.getProperties().getProperty("os.name").contains("Windows")) {
+            return Paths.get(ScriptElasticJobUtil.class.getResource("/script/test.bat").getPath().substring(1)).toString();
         }
-    }
-    
-    private static void changeFilePermissions(final Path path) throws IOException {
-        Set<PosixFilePermission> permissionsSet = new HashSet<>();
-        permissionsSet.add(PosixFilePermission.OWNER_READ);
-        permissionsSet.add(PosixFilePermission.OWNER_EXECUTE);
-        permissionsSet.add(PosixFilePermission.GROUP_READ);
-        permissionsSet.add(PosixFilePermission.GROUP_EXECUTE);
-        permissionsSet.add(PosixFilePermission.OTHERS_READ);
-        permissionsSet.add(PosixFilePermission.OTHERS_EXECUTE);
-        Files.setPosixFilePermissions(path, permissionsSet);
+        Path result = Paths.get(ScriptElasticJobUtil.class.getResource("/script/test.sh").getPath());
+        Files.setPosixFilePermissions(result, Sets.newHashSet(PosixFilePermission.OWNER_READ,
+                PosixFilePermission.OWNER_EXECUTE, PosixFilePermission.GROUP_READ, PosixFilePermission.GROUP_EXECUTE, PosixFilePermission.OTHERS_READ, PosixFilePermission.OTHERS_EXECUTE));
+        return result.toString();
     }
 }

@@ -21,9 +21,7 @@ import java.util.List;
 
 public interface JobCaller {
     
-    void process();
-    
-    List<Object> fetchData();
+    void execute();
     
     List<Object> fetchData(int shardingItem);
     

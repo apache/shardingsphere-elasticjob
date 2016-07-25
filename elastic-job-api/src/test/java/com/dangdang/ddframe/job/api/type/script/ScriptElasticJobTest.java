@@ -17,18 +17,23 @@
 
 package com.dangdang.ddframe.job.api.type.script;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.script.ScriptElasticJobExecutor;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.util.ScriptElasticJobUtil;
+import com.dangdang.ddframe.job.exception.JobException;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.Executor;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
 
 import java.io.IOException;
 
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,37 +42,51 @@ public class ScriptElasticJobTest {
     @Mock
     private JobFacade jobFacade;
     
+    @Mock
+    private Executor executor;
+    
     private ScriptElasticJobExecutor scriptElasticJobExecutor;
     
-    private String scriptCommandLine;
-    
     @Before
-    public void setUp() throws NoSuchFieldException, IOException {
+    public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
-        ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
-        ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
+        ElasticJobAssert.prepareForIsNotMisfire(jobFacade, ElasticJobAssert.getShardingContext());
         scriptElasticJobExecutor = new ScriptElasticJobExecutor(jobFacade);
-        scriptCommandLine = ScriptElasticJobUtil.buildScriptCommandLine();
+        ReflectionUtils.setFieldValue(scriptElasticJobExecutor, "executor", executor);
+        scriptElasticJobExecutor.setJobExceptionHandler(new JobExceptionHandler() {
+            
+            @Override
+            public void handleException(final Throwable cause) {
+                throw new JobException(cause);
+            }
+        });
     }
     
-    @Test
-    public void assertExecuteWhenFileNotExists() {
-        when(jobFacade.getScriptCommandLine()).thenReturn("wrong name");
+    @Test(expected = JobException.class)
+    public void assertExecuteWhenScriptCommandLineIsEmpty() throws IOException {
+        when(jobFacade.getScriptCommandLine()).thenReturn("");
         scriptElasticJobExecutor.execute();
+        verify(executor, times(0)).execute(Matchers.<CommandLine>any());
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test(expected = JobException.class)
+    public void assertExecuteWhenExecuteFailure() throws IOException {
+        when(jobFacade.getScriptCommandLine()).thenReturn("not_exists_file");
+        when(executor.execute(Matchers.<CommandLine>any())).thenThrow(IOException.class);
+        try {
+            scriptElasticJobExecutor.execute();
+        } finally {
+            verify(executor).execute(Matchers.<CommandLine>any());
+        }
     }
     
     @Test
-    public void assertExecuteWhenFileExists() {
-        when(jobFacade.getScriptCommandLine()).thenReturn(scriptCommandLine);
+    public void assertExecuteWhenFileExists() throws IOException {
+        when(jobFacade.getScriptCommandLine()).thenReturn("exists_file param0 param1");
         scriptElasticJobExecutor.execute();
         verify(jobFacade).getScriptCommandLine();
-    }
-    
-    @Test
-    public void assertExecuteWhenFileExistsWithArguments() {
-        when(jobFacade.getScriptCommandLine()).thenReturn(scriptCommandLine + " foo bar");
-        scriptElasticJobExecutor.execute();
-        verify(jobFacade).getScriptCommandLine();
+        verify(executor).execute(Matchers.<CommandLine>any());
     }
 }
