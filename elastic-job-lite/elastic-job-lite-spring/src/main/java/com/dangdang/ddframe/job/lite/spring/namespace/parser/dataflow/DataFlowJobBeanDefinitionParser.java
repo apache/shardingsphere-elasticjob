@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import com.dangdang.ddframe.job.lite.spring.namespace.constants.DataFlowJobBeanDefinitionParserTag;
+import com.dangdang.ddframe.job.lite.spring.namespace.constants.DataflowJobBeanDefinitionParserTag;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobBeanDefinitionParser;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.w3c.dom.Element;
@@ -27,18 +27,18 @@ import org.w3c.dom.Element;
  * 
  * @author caohao
  */
-public class DataFlowJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
+public class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
     
     @Override
-    protected Class<DataFlowJobConfigurationDto> getJobConfigurationDTO() {
-        return DataFlowJobConfigurationDto.class;
+    protected Class<DataflowJobConfigurationDto> getJobConfigurationDTO() {
+        return DataflowJobConfigurationDto.class;
     }
     
     @Override
     protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
-        factory.addConstructorArgValue(element.getAttribute(DataFlowJobBeanDefinitionParserTag.DATAFLOW_TYPE_ATTRIBUTE));
-        addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.PROCESS_COUNT_INTERVAL_SECONDS_ATTRIBUTE, "processCountIntervalSeconds", element, factory);
-        addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE, "concurrentDataProcessThreadCount", element, factory);
-        addPropertyValueIfNotEmpty(DataFlowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE, "streamingProcess", element, factory);
+        factory.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.DATAFLOW_TYPE_ATTRIBUTE));
+        addPropertyValueIfNotEmpty(DataflowJobBeanDefinitionParserTag.PROCESS_COUNT_INTERVAL_SECONDS_ATTRIBUTE, "processCountIntervalSeconds", element, factory);
+        addPropertyValueIfNotEmpty(DataflowJobBeanDefinitionParserTag.CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE, "concurrentDataProcessThreadCount", element, factory);
+        addPropertyValueIfNotEmpty(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE, "streamingProcess", element, factory);
     }
 }

@@ -17,17 +17,17 @@
 
 package com.dangdang.ddframe.job.lite.api.config;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataFlowType;
+import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
 import com.dangdang.ddframe.job.lite.api.config.impl.AbstractJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataFlowJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestDataFlowJob;
+import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import org.junit.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.unitils.util.ReflectionUtils;
 
 import static org.junit.Assert.assertThat;
 
-public final class DataFlowJobConfigurationTest extends AbstractJobConfigurationTest<DataFlowJobConfiguration, DataFlowJobConfiguration.DataFlowJobConfigurationBuilder> {
+public final class DataflowJobConfigurationTest extends AbstractJobConfigurationTest<DataflowJobConfiguration, DataflowJobConfiguration.DataflowJobConfigurationBuilder> {
     
     private int concurrentDataProcessThreadCount = 100;
     
@@ -36,13 +36,13 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
     private boolean streamingProcess = true;
     
     @Override
-    protected DataFlowJobConfiguration getJobConfiguration() {
+    protected DataflowJobConfiguration getJobConfiguration() {
         return getJobConfigurationBuilder().build();
     }
     
     @Override
-    protected DataFlowJobConfiguration.DataFlowJobConfigurationBuilder getJobConfigurationBuilder() {
-        return new DataFlowJobConfiguration.DataFlowJobConfigurationBuilder("dataFlowJob", TestDataFlowJob.class, 10, "0/1 * * * * ?", DataFlowType.THROUGHPUT);
+    protected DataflowJobConfiguration.DataflowJobConfigurationBuilder getJobConfigurationBuilder() {
+        return new DataflowJobConfiguration.DataflowJobConfigurationBuilder("dataflowJob", TestDataflowJob.class, 10, "0/1 * * * * ?", DataflowType.THROUGHPUT);
     }
     
     @Override
@@ -50,9 +50,9 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
     public void testBuildJobConfigurationWithCustomizedProperties() {
         JobConfiguration jobConfiguration = getJobConfiguration();
         try {
-            ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("concurrentDataProcessThreadCount"), concurrentDataProcessThreadCount);
-            ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("processCountIntervalSeconds"), processCountIntervalSeconds);
-            ReflectionUtils.setFieldValue(jobConfiguration, DataFlowJobConfiguration.class.getDeclaredField("streamingProcess"), streamingProcess);
+            ReflectionUtils.setFieldValue(jobConfiguration, DataflowJobConfiguration.class.getDeclaredField("concurrentDataProcessThreadCount"), concurrentDataProcessThreadCount);
+            ReflectionUtils.setFieldValue(jobConfiguration, DataflowJobConfiguration.class.getDeclaredField("processCountIntervalSeconds"), processCountIntervalSeconds);
+            ReflectionUtils.setFieldValue(jobConfiguration, DataflowJobConfiguration.class.getDeclaredField("streamingProcess"), streamingProcess);
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }
@@ -64,17 +64,17 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
     }
     
     @Test
-    public void testBuildDataFlowJobConfigurationWithDefaultProperties() {
+    public void testBuildDataflowJobConfigurationWithDefaultProperties() {
         JobConfiguration jobConfiguration = getJobConfiguration();
         assertThat(getJobConfigurationBuilder().build(),
                 new ReflectionEquals(jobConfiguration));
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testBuildDataFlowJobConfigurationWithWrongConcurrentDataProcessThreadCount() {
+    public void testBuildDataflowJobConfigurationWithWrongConcurrentDataProcessThreadCount() {
         AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
         try {
-            ReflectionUtils.setFieldValue(builder, DataFlowJobConfiguration.DataFlowJobConfigurationBuilder.class.getDeclaredField("concurrentDataProcessThreadCount"), 0);
+            ReflectionUtils.setFieldValue(builder, DataflowJobConfiguration.DataflowJobConfigurationBuilder.class.getDeclaredField("concurrentDataProcessThreadCount"), 0);
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }
@@ -82,10 +82,10 @@ public final class DataFlowJobConfigurationTest extends AbstractJobConfiguration
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void testBuildDataFlowJobConfigurationWithWrongProcessCountIntervalSeconds() {
+    public void testBuildDataflowJobConfigurationWithWrongProcessCountIntervalSeconds() {
         AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
         try {
-            ReflectionUtils.setFieldValue(builder, DataFlowJobConfiguration.DataFlowJobConfigurationBuilder.class.getDeclaredField("processCountIntervalSeconds"), 0);
+            ReflectionUtils.setFieldValue(builder, DataflowJobConfiguration.DataflowJobConfigurationBuilder.class.getDeclaredField("processCountIntervalSeconds"), 0);
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }
