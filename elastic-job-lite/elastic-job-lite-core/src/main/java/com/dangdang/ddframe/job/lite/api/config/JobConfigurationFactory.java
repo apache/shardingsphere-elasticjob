@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.api.config;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
@@ -44,7 +44,7 @@ public final class JobConfigurationFactory {
      * @return 简单作业配置
      */
     public static SimpleJobConfiguration.SimpleJobConfigurationBuilder createSimpleJobConfigurationBuilder(
-            final String jobName, final Class<? extends AbstractSimpleElasticJob> jobClass, final int shardingTotalCount, final String cron) {
+            final String jobName, final Class<? extends SimpleElasticJob> jobClass, final int shardingTotalCount, final String cron) {
         return new SimpleJobConfiguration.SimpleJobConfigurationBuilder(jobName, jobClass, shardingTotalCount, cron);
     }
 

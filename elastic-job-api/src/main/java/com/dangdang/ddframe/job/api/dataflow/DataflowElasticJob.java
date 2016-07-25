@@ -15,32 +15,35 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.simple;
+package com.dangdang.ddframe.job.api.dataflow;
 
+import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.AbstractElasticJob;
+
+import java.util.List;
 
 /**
- * 简单的分布式作业.
- * 
- * <p>
- * 仅保证作业可被分布式定时调用, 不提供任何作业处理逻辑.
- * </p>
+ * 数据流分布式作业接口.
  * 
  * @author zhangliang
- * @author caohao
+ * 
+ * @param <T> 数据类型
  */
-public abstract class AbstractSimpleElasticJob extends AbstractElasticJob {
-    
-    @Override
-    protected final void executeJob(final ShardingContext shardingContext) {
-        process(shardingContext);
-    }
+public interface DataflowElasticJob<T> extends ElasticJob {
     
     /**
-     * 执行作业.
-     * 
-     * @param shardingContext 作业分片上下文
+     * 获取待处理数据.
+     *
+     * @param shardingContext 分片上下文
+     * @return 待处理的数据集合
      */
-    public abstract void process(final ShardingContext shardingContext);
+    List<T> fetchData(final ShardingContext shardingContext);
+    
+    /**
+     * 处理数据.
+     *
+     * @param shardingContext 分片上下文
+     * @param data 待处理数据集合
+     */
+    void processData(final ShardingContext shardingContext, final List<T> data);
 }

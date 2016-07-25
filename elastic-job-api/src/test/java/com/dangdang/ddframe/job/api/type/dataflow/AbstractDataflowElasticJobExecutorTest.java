@@ -17,11 +17,12 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow;
 
-import com.dangdang.ddframe.job.api.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJobExecutor;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import lombok.AccessLevel;
@@ -34,7 +35,7 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.when;
 
 @Getter(AccessLevel.PROTECTED)
-public abstract class AbstractDataflowElasticJobTest {
+public abstract class AbstractDataflowElasticJobExecutorTest {
     
     @Mock
     private JobCaller jobCaller;
@@ -44,7 +45,7 @@ public abstract class AbstractDataflowElasticJobTest {
     
     private ShardingContext shardingContext;
     
-    private AbstractDataflowElasticJob dataflowElasticJob;
+    private DataflowElasticJobExecutor dataflowElasticJobExecutor;
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -52,8 +53,7 @@ public abstract class AbstractDataflowElasticJobTest {
         when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
         when(jobFacade.getDataflowType()).thenReturn(getDataflowType());
         when(jobFacade.isStreamingProcess()).thenReturn(isStreamingProcess());
-        dataflowElasticJob = createDataflowElasticJob(jobCaller);
-        dataflowElasticJob.setJobFacade(jobFacade);
+        dataflowElasticJobExecutor = new DataflowElasticJobExecutor(createDataflowElasticJob(jobCaller), jobFacade);
         shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
     }
@@ -67,5 +67,5 @@ public abstract class AbstractDataflowElasticJobTest {
         ProcessCountStatistics.reset(ElasticJobAssert.JOB_NAME);
     }
     
-    protected abstract AbstractDataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller);
+    protected abstract DataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller);
 }

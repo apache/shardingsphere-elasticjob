@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.api.config.impl;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 

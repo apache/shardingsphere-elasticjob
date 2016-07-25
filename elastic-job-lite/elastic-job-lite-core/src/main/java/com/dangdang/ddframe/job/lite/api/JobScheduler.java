@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
+import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 import org.quartz.JobBuilder;
@@ -31,6 +33,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -47,8 +50,11 @@ public class JobScheduler {
     
     private final JobExecutor jobExecutor;
     
+    private final JobFacade jobFacade;
+    
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
         jobExecutor = new JobExecutor(regCenter, jobConfig, elasticJobListeners);
+        jobFacade = new LiteJobFacade(regCenter, jobConfig, Arrays.asList(elasticJobListeners));
     }
     
     /**
@@ -58,6 +64,7 @@ public class JobScheduler {
         jobExecutor.init();
         JobDetail jobDetail = JobBuilder.newJob(LiteJob.class).withIdentity(jobExecutor.getJobName()).build();
         jobDetail.getJobDataMap().put("elasticJob", jobExecutor.getElasticJob());
+        jobDetail.getJobDataMap().put("jobFacade", jobFacade);
         JobScheduleController jobScheduleController;
         try {
             jobScheduleController = new JobScheduleController(

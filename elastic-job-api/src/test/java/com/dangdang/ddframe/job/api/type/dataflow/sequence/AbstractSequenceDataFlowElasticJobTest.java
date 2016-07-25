@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.type.dataflow.sequence;
 
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataflowElasticJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataflowElasticJobExecutorTest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.junit.Test;
@@ -31,13 +31,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Getter(AccessLevel.PROTECTED)
-public abstract class AbstractSequenceDataflowElasticJobTest extends AbstractDataflowElasticJobTest {
+public abstract class AbstractSequenceDataflowElasticJobTest extends AbstractDataflowElasticJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNullAndEmpty() {
         when(getJobCaller().fetchData(0)).thenReturn(null);
         when(getJobCaller().fetchData(1)).thenReturn(Collections.emptyList());
-        getDataflowElasticJob().execute();
+        getDataflowElasticJobExecutor().execute();
         verify(getJobCaller()).fetchData(0);
         verify(getJobCaller()).fetchData(1);
         verify(getJobCaller(), times(0)).processData(any());

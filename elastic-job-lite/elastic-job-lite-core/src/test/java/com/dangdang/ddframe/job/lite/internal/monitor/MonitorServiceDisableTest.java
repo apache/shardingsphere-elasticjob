@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.monitor;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
 import com.google.common.base.Optional;

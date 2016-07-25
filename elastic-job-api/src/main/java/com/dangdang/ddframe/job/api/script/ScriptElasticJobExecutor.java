@@ -15,36 +15,42 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.integrated;
+package com.dangdang.ddframe.job.api.script;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.AbstractElasticJob;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.internal.AbstractElasticJobExecutor;
+import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 
 import java.io.IOException;
 
 /**
- * 脚本类型作业.
- *
+ * 简单作业执行器.
+ * 
+ * @author zhangliang
  * @author caohao
  */
-public final class ScriptElasticJob extends AbstractElasticJob {
+@Slf4j
+public final class ScriptElasticJobExecutor extends AbstractElasticJobExecutor {
+    
+    public ScriptElasticJobExecutor(final JobFacade jobFacade) {
+        super(jobFacade);
+    }
     
     @Override
-    protected void executeJob(final ShardingContext shardingContext) {
+    protected void process(final ShardingContext shardingContext) {
         String scriptCommandLine = getJobFacade().getScriptCommandLine();
         Preconditions.checkArgument(!Strings.isNullOrEmpty(scriptCommandLine), "Cannot find script command line.");
-        CommandLine cmdLine = CommandLine.parse(scriptCommandLine);
-        cmdLine.addArgument(shardingContext.toJson(), false);
-        DefaultExecutor executor = new DefaultExecutor();
+        CommandLine commandLine = CommandLine.parse(scriptCommandLine);
+        commandLine.addArgument(shardingContext.toJson(), false);
         try {
-            executor.execute(cmdLine);
+            new DefaultExecutor().execute(commandLine);
         } catch (final IOException ex) {
-            throw new JobException(ex);
+            handleException(ex);
         }
     }
 }

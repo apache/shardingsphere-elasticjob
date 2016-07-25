@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.api.type;
 
-import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

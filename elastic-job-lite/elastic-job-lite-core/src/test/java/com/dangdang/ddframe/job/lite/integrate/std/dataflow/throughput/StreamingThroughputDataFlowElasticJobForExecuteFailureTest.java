@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;

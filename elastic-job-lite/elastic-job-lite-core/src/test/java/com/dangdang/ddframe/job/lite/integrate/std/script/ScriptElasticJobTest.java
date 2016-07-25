@@ -15,10 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.integrate.std.integrated;
+package com.dangdang.ddframe.job.lite.integrate.std.script;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;

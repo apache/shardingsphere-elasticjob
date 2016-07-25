@@ -15,19 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.fixture;
+package com.dangdang.ddframe.job.api.dataflow;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public class FooSimpleElasticJob implements SimpleElasticJob {
+/**
+ * 数据流作业支持的处理类型.
+ * 
+ * @author zhangliang
+ */
+public enum DataflowType {
     
-    private final JobCaller jobCaller;
-    
-    @Override
-    public void execute(final ShardingContext shardingContext) {
-        jobCaller.process();
-    }
+    THROUGHPUT, 
+    SEQUENCE
 }

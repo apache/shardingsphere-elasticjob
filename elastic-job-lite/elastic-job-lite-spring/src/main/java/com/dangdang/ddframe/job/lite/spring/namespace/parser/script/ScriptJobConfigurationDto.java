@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.script;
 
-import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api.config;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import com.dangdang.ddframe.job.lite.api.config.impl.AbstractJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;

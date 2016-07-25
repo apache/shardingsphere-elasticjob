@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.statistics;
 
-import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;

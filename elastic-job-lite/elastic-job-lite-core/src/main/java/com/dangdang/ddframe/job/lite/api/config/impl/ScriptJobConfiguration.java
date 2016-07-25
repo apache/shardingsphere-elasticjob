@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api.config.impl;
 
-import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.Getter;
@@ -37,11 +37,12 @@ public final class ScriptJobConfiguration extends AbstractJobConfiguration<Scrip
                                      final String shardingItemParameters, final String jobParameter, final boolean monitorExecution, final Integer maxTimeDiffSeconds,
                                      final Boolean isFailover, final Boolean isMisfire, final Integer monitorPort, final String jobShardingStrategyClass, final String description,
                                      final Boolean disabled, final Boolean overwrite, final String scriptCommandLine) {
+    //CHECKSTYLE:ON
         super(jobName, JobType.SCRIPT, ScriptElasticJob.class, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire,
                 monitorPort, jobShardingStrategyClass, description, disabled, overwrite);
         this.scriptCommandLine = scriptCommandLine;
     }
-    //CHECKSTYLE:ON
+    
     
     public static class ScriptJobConfigurationBuilder extends AbstractJobConfigurationBuilder<ScriptJobConfiguration, ScriptElasticJob, ScriptJobConfigurationBuilder> {
         

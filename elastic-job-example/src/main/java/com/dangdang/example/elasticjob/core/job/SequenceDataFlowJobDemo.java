@@ -18,7 +18,7 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import com.dangdang.example.elasticjob.fixture.entity.Foo;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
@@ -26,7 +26,7 @@ import com.dangdang.example.elasticjob.utils.PrintContext;
 import java.util.Collections;
 import java.util.List;
 
-public class SequenceDataflowJobDemo extends AbstractDataflowElasticJob<Foo> {
+public class SequenceDataflowJobDemo implements DataflowElasticJob<Foo> {
     
     private PrintContext printContext = new PrintContext(SequenceDataflowJobDemo.class);
     
@@ -43,7 +43,8 @@ public class SequenceDataflowJobDemo extends AbstractDataflowElasticJob<Foo> {
         for (Foo each : data) {
             printContext.printProcessDataMessage(each);
             fooRepository.setInactive(each.getId());
-            updateOffset(context.getShardingItems().keySet().iterator().next(), String.valueOf(each.getId()));
+            // TODO offset
+            // updateOffset(context.getShardingItems().keySet().iterator().next(), String.valueOf(each.getId()));
         }
     }
 }

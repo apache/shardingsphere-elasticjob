@@ -18,13 +18,13 @@
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
 
-public class StreamingThroughputDataflowElasticJobForExecuteFailure extends AbstractDataflowElasticJob<String> {
+public class StreamingThroughputDataflowElasticJobForExecuteFailure implements DataflowElasticJob<String> {
     
     @Getter
     private static volatile boolean completed;

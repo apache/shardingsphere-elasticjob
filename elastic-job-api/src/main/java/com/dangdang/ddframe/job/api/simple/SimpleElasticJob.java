@@ -15,19 +15,22 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.fixture;
+package com.dangdang.ddframe.job.api.simple;
 
+import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class FooSimpleElasticJob implements SimpleElasticJob {
+/**
+ * 简单分布式作业接口.
+ * 
+ * @author zhangliang
+ */
+public interface SimpleElasticJob extends ElasticJob {
     
-    private final JobCaller jobCaller;
-    
-    @Override
-    public void execute(final ShardingContext shardingContext) {
-        jobCaller.process();
-    }
+    /**
+     * 执行作业.
+     *
+     * @param shardingContext 分片上下文
+     */
+    void execute(ShardingContext shardingContext);
 }

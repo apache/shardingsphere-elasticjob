@@ -15,15 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.job.dataflow;
+package com.dangdang.ddframe.job.api.script;
+
+import com.dangdang.ddframe.job.api.ElasticJob;
 
 /**
- * 数据流作业支持的处理类型.
+ * 脚本分布式作业接口.
  * 
  * @author zhangliang
  */
-public enum DataflowType {
-    
-    THROUGHPUT, 
-    SEQUENCE
+public interface ScriptElasticJob extends ElasticJob {
 }

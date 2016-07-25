@@ -18,6 +18,14 @@
 package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJobExecutor;
+import com.dangdang.ddframe.job.api.internal.AbstractElasticJobExecutor;
+import com.dangdang.ddframe.job.api.internal.JobFacade;
+import com.dangdang.ddframe.job.api.script.ScriptElasticJobExecutor;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJobExecutor;
+import com.dangdang.ddframe.job.exception.JobException;
 import lombok.Setter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -33,8 +41,22 @@ public class LiteJob implements Job {
     @Setter
     private ElasticJob elasticJob;
     
+    @Setter
+    private JobFacade jobFacade;
+    
     @Override
+    // TODO 和cloud一起提炼
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        elasticJob.execute();
+        AbstractElasticJobExecutor elasticJobExecutor;
+        if (null == elasticJob) {
+            elasticJobExecutor = new ScriptElasticJobExecutor(jobFacade);
+        } else if (elasticJob instanceof SimpleElasticJob) {
+            elasticJobExecutor = new SimpleElasticJobExecutor((SimpleElasticJob) elasticJob, jobFacade);
+        } else if (elasticJob instanceof DataflowElasticJob) {
+            elasticJobExecutor = new DataflowElasticJobExecutor((DataflowElasticJob) elasticJob, jobFacade);
+        } else {
+            throw new JobException(String.format("Cannot support job type '%s'"), elasticJob.getClass());
+        }
+        elasticJobExecutor.execute();
     }
 }

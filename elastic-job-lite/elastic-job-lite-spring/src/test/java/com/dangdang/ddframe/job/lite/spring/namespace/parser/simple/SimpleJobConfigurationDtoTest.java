@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.simple;
 
 import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.SimpleElasticJob;
+import com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.lite.spring.util.JobConfigurationDtoHelper;
 import org.junit.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThat;
 
 public final class SimpleJobConfigurationDtoTest {
     
-    private SimpleJobConfigurationDto jobConfigurationDto = new SimpleJobConfigurationDto("simpleJob", SimpleElasticJob.class, 10, "0/1 * * * * ?");
+    private SimpleJobConfigurationDto jobConfigurationDto = new SimpleJobConfigurationDto("simpleJob", FooSimpleElasticJob.class, 10, "0/1 * * * * ?");
     
     private SimpleJobConfiguration.SimpleJobConfigurationBuilder jobConfigurationBuilder = createSimpleJobConfigurationBuilder();
     
@@ -43,6 +43,6 @@ public final class SimpleJobConfigurationDtoTest {
     }
     
     private SimpleJobConfiguration.SimpleJobConfigurationBuilder createSimpleJobConfigurationBuilder() {
-        return new SimpleJobConfiguration.SimpleJobConfigurationBuilder("simpleJob", SimpleElasticJob.class, 10, "0/1 * * * * ?");
+        return new SimpleJobConfiguration.SimpleJobConfigurationBuilder("simpleJob", FooSimpleElasticJob.class, 10, "0/1 * * * * ?");
     }
 }

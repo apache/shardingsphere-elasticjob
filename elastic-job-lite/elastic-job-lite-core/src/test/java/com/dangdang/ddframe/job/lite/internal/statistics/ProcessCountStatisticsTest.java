@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.statistics;
 
-import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

@@ -15,9 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.api.internal;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 
 import java.util.Collection;
 

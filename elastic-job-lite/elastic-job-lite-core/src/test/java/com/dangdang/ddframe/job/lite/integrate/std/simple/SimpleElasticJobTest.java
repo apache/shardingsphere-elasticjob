@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.simple;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
-import com.dangdang.ddframe.job.lite.integrate.fixture.simple.SimpleElasticJob;
+import com.dangdang.ddframe.job.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;
@@ -31,18 +31,18 @@ import static org.junit.Assert.assertTrue;
 public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public SimpleElasticJobTest() {
-        super(SimpleElasticJob.class, Optional.<DataflowType>absent());
+        super(FooSimpleElasticJob.class, Optional.<DataflowType>absent());
     }
     
     @Before
     @After
     public void reset() {
-        SimpleElasticJob.reset();
+        FooSimpleElasticJob.reset();
     }
     
     @Test
     public void assertJobInit() {
-        while (!SimpleElasticJob.isCompleted()) {
+        while (!FooSimpleElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));

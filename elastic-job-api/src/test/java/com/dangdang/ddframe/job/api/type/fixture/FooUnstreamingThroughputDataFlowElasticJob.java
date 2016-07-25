@@ -18,14 +18,13 @@
 package com.dangdang.ddframe.job.api.type.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public final class FooUnstreamingThroughputDataflowElasticJob extends AbstractDataflowElasticJob<Object> {
+public final class FooUnstreamingThroughputDataflowElasticJob implements DataflowElasticJob<Object> {
     
     private final JobCaller jobCaller;
     
@@ -39,9 +38,5 @@ public final class FooUnstreamingThroughputDataflowElasticJob extends AbstractDa
         for (Object each : data) {
             jobCaller.processData(each);
         }
-    }
-    
-    @Override
-    public void handleJobExecutionException(final JobException jobException) {
     }
 }

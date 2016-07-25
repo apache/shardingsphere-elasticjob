@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.sequence;
 
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.FooStreamingSequenceDataflowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
@@ -41,7 +41,7 @@ public class StreamingSequenceDataflowElasticJobTest extends AbstractSequenceDat
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2), Collections.emptyList());
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4), Collections.emptyList());
         doThrow(new IllegalStateException()).when(getJobCaller()).processData(4);
-        getDataflowElasticJob().execute();
+        getDataflowElasticJobExecutor().execute();
         verify(getJobCaller(), times(2)).fetchData(0);
         verify(getJobCaller(), times(2)).fetchData(1);
         verify(getJobCaller()).processData(1);
@@ -59,7 +59,7 @@ public class StreamingSequenceDataflowElasticJobTest extends AbstractSequenceDat
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
         doThrow(new IllegalStateException()).when(getJobCaller()).processData(4);
-        getDataflowElasticJob().execute();
+        getDataflowElasticJobExecutor().execute();
         verify(getJobCaller()).fetchData(0);
         verify(getJobCaller()).fetchData(1);
         verify(getJobCaller()).processData(1);
@@ -81,7 +81,7 @@ public class StreamingSequenceDataflowElasticJobTest extends AbstractSequenceDat
     }
     
     @Override
-    protected AbstractDataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller) {
+    protected DataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller) {
         return new FooStreamingSequenceDataflowElasticJob(jobCaller);
     }
 }

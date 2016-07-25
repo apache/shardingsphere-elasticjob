@@ -18,11 +18,11 @@
 package com.dangdang.ddframe.job.lite.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 
 import java.util.List;
 
-public class TestDataflowJob extends AbstractDataflowElasticJob {
+public class TestDataflowJob implements DataflowElasticJob {
     
     @Override
     public List fetchData(final ShardingContext shardingContext) {

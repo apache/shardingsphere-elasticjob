@@ -18,18 +18,18 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 
-public class SimpleJobDemo extends AbstractSimpleElasticJob {
+public class SimpleJobDemo implements SimpleElasticJob {
     
     private PrintContext printContext = new PrintContext(SimpleJobDemo.class);
     
     private FooRepository fooRepository = new FooRepository();
     
     @Override
-    public void process(final ShardingContext context) {
+    public void execute(final ShardingContext context) {
         printContext.printProcessJobMessage(context.getShardingItems().keySet());
         fooRepository.findActive(context.getShardingItems().keySet());
         // do something

@@ -17,8 +17,10 @@
 
 package com.dangdang.ddframe.job.api.type.simple;
 
-import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.internal.JobFacade;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJobExecutor;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
@@ -36,7 +38,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public final class SimpleElasticJobTest {
+public final class SimpleElasticJobExecutorTest {
     
     @Mock
     private JobCaller jobCaller;
@@ -44,21 +46,27 @@ public final class SimpleElasticJobTest {
     @Mock
     private JobFacade jobFacade;
     
-    private FooSimpleElasticJob simpleElasticJob;
+    private SimpleElasticJobExecutor simpleElasticJobExecutor;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.getJobName()).thenReturn("testJob");
-        simpleElasticJob = new FooSimpleElasticJob(jobCaller);
-        simpleElasticJob.setJobFacade(jobFacade);
+        simpleElasticJobExecutor = new SimpleElasticJobExecutor(new FooSimpleElasticJob(jobCaller), jobFacade);
+        simpleElasticJobExecutor.setJobExceptionHandler(new JobExceptionHandler() {
+            
+            @Override
+            public void handleException(final Throwable cause) {
+                throw new JobException(cause);
+            }
+        });
     }
     
     @Test(expected = TimeDiffIntolerableException.class)
     public void assertExecuteWhenCheckMaxTimeDiffSecondsIntolerable() {
         doThrow(TimeDiffIntolerableException.class).when(jobFacade).checkMaxTimeDiffSecondsTolerable();
         try {
-            simpleElasticJob.execute();
+            simpleElasticJobExecutor.execute();
         } finally {
             verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
             verify(jobCaller, times(0)).process();
@@ -70,7 +78,7 @@ public final class SimpleElasticJobTest {
         ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(true);
-        simpleElasticJob.execute();
+        simpleElasticJobExecutor.execute();
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
@@ -81,7 +89,7 @@ public final class SimpleElasticJobTest {
     public void assertExecuteWhenShardingItemsIsEmpty() {
         ShardingContext shardingContext = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
-        simpleElasticJob.execute();
+        simpleElasticJobExecutor.execute();
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
@@ -94,7 +102,7 @@ public final class SimpleElasticJobTest {
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
         doThrow(RuntimeException.class).when(jobCaller).process();
         try {
-            simpleElasticJob.execute();
+            simpleElasticJobExecutor.execute();
         } finally {
             verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
             verify(jobFacade).getShardingContext();
@@ -109,7 +117,7 @@ public final class SimpleElasticJobTest {
     public void assertExecuteWhenRunOnceSuccess() {
         ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
-        simpleElasticJob.execute();
+        simpleElasticJobExecutor.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
         verify(jobCaller).process();
     }
@@ -119,7 +127,7 @@ public final class SimpleElasticJobTest {
         ShardingContext shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
-        simpleElasticJob.execute();
+        simpleElasticJobExecutor.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
         verify(jobCaller).process();
     }
@@ -130,7 +138,7 @@ public final class SimpleElasticJobTest {
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
         when(jobFacade.isEligibleForJobRunning()).thenReturn(false);
-        simpleElasticJob.execute();
+        simpleElasticJobExecutor.execute();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
         verify(jobCaller).process();
         verify(jobFacade, times(0)).clearMisfire(shardingContext.getShardingItems().keySet());
@@ -143,7 +151,7 @@ public final class SimpleElasticJobTest {
         when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(false);
         when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(true, false);
         when(jobFacade.isNeedSharding()).thenReturn(false);
-        simpleElasticJob.execute();
+        simpleElasticJobExecutor.execute();
         verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
@@ -159,7 +167,7 @@ public final class SimpleElasticJobTest {
         when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(false);
         doThrow(RuntimeException.class).when(jobFacade).beforeJobExecuted(shardingContext);
         try {
-            simpleElasticJob.execute();
+            simpleElasticJobExecutor.execute();
         } finally {
             verify(jobCaller, times(0)).process();
         }
@@ -173,7 +181,7 @@ public final class SimpleElasticJobTest {
         when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
         doThrow(RuntimeException.class).when(jobFacade).afterJobExecuted(shardingContext);
         try {
-            simpleElasticJob.execute();
+            simpleElasticJobExecutor.execute();
         } finally {
             verify(jobCaller).process();
         }

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.job.dataflow;
+package com.dangdang.ddframe.job.api.dataflow;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

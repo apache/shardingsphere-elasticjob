@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.spring.integrate;
 
-import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
-import com.dangdang.ddframe.job.lite.fixture.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.lite.fixture.ThroughputDataflowElasticJob;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -47,7 +47,7 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     @Before
     @After
     public void reset() {
-        SimpleElasticJob.reset();
+        FooSimpleElasticJob.reset();
         ThroughputDataflowElasticJob.reset();
         ProcessCountStatistics.reset(throughputDataflowJobName);
     }
@@ -65,11 +65,11 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     }
     
     private void assertSimpleElasticJobBean() {
-        while (!SimpleElasticJob.isCompleted() || null == SimpleElasticJob.getJobValue()) {
+        while (!FooSimpleElasticJob.isCompleted() || null == FooSimpleElasticJob.getJobValue()) {
             sleep(100L);
         }
-        assertTrue(SimpleElasticJob.isCompleted());
-        assertThat(SimpleElasticJob.getJobValue(), is("simple"));
+        assertTrue(FooSimpleElasticJob.isCompleted());
+        assertThat(FooSimpleElasticJob.getJobValue(), is("simple"));
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/execution"));
     }
     

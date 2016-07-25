@@ -16,7 +16,7 @@
     <context:component-scan base-package="com.dangdang.ddframe.job.lite.fixture.service"/>
     <aop:aspectj-autoproxy proxy-target-class="true"/>
     <import resource="base.xml"/>
-    <job:simple id="simpleElasticJob_namespace_listener_cglib" class="com.dangdang.ddframe.job.lite.fixture.SimpleElasticJob" registry-center-ref="regCenter" cron="${simpleElasticJob.cron}" sharding-total-count="${simpleElasticJob.shardingTotalCount}" sharding-item-parameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
+    <job:simple id="simpleElasticJob_namespace_listener_cglib" class="com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob" registry-center-ref="regCenter" cron="${simpleElasticJob.cron}" sharding-total-count="${simpleElasticJob.shardingTotalCount}" sharding-item-parameters="${simpleElasticJob.shardingItemParameters}" disabled="${simpleElasticJob.disabled}" overwrite="${simpleElasticJob.overwrite}">
         <job:listener class="com.dangdang.ddframe.job.lite.fixture.listener.SimpleCglibListener" />
     </job:simple>
     <job:dataflow id="throughputDataflowElasticJob_namespace_listener_cglib" class="com.dangdang.ddframe.job.lite.fixture.ThroughputDataflowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" dataflow-type="THROUGHPUT" process-count-interval-seconds="10" concurrent-data-process-thread-count="3" description="中文描述" overwrite="true" streaming-process="true"/>

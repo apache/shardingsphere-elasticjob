@@ -19,11 +19,11 @@ package com.dangdang.ddframe.job.lite.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.job.dataflow.ProcessCountStatistics;
-import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJob;
-import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
@@ -137,7 +137,7 @@ public abstract class AbstractBaseStdJobTest {
                     .overwrite(true)
                     .build();
         } else {
-            return JobConfigurationFactory.createSimpleJobConfigurationBuilder(jobName, (Class<? extends AbstractSimpleElasticJob>) elasticJobClass, 3, "0/1 * * * * ?")
+            return JobConfigurationFactory.createSimpleJobConfigurationBuilder(jobName, (Class<? extends SimpleElasticJob>) elasticJobClass, 3, "0/1 * * * * ?")
                     .monitorPort(monitorPort)
                     .shardingItemParameters("0=A,1=B,2=C")
                     .disabled(disabled)

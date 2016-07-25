@@ -30,7 +30,7 @@ import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.Streaming
 import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobForNotMonitorTest;
 import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobForPausedTest;
 import com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput.StreamingThroughputDataflowElasticJobTest;
-import com.dangdang.ddframe.job.lite.integrate.std.integrated.ScriptElasticJobTest;
+import com.dangdang.ddframe.job.lite.integrate.std.script.ScriptElasticJobTest;
 import com.dangdang.ddframe.job.lite.integrate.std.simple.DisabledJobTest;
 import com.dangdang.ddframe.job.lite.integrate.std.simple.SimpleElasticJobTest;
 

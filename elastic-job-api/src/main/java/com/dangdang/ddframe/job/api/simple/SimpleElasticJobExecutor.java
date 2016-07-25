@@ -15,28 +15,30 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.fixture;
+package com.dangdang.ddframe.job.api.simple;
 
+import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
-import lombok.RequiredArgsConstructor;
+import com.dangdang.ddframe.job.api.internal.AbstractElasticJobExecutor;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
-@RequiredArgsConstructor
-public final class FooStreamingThroughputDataflowElasticJob implements DataflowElasticJob<Object> {
+/**
+ * 简单作业执行器.
+ * 
+ * @author zhangliang
+ */
+@Slf4j
+public final class SimpleElasticJobExecutor extends AbstractElasticJobExecutor {
     
-    private final JobCaller jobCaller;
+    private final SimpleElasticJob simpleElasticJob;
     
-    @Override
-    public List<Object> fetchData(final ShardingContext shardingContext) {
-        return jobCaller.fetchData();
+    public SimpleElasticJobExecutor(final SimpleElasticJob simpleElasticJob, final JobFacade jobFacade) {
+        super(jobFacade);
+        this.simpleElasticJob = simpleElasticJob;
     }
     
     @Override
-    public void processData(final ShardingContext shardingContext, final List<Object> data) {
-        for (Object each : data) {
-            jobCaller.processData(each);
-        }
+    protected void process(final ShardingContext shardingContext) {
+        simpleElasticJob.execute(shardingContext);
     }
 }

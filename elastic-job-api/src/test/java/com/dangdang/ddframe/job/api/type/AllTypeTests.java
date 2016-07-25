@@ -21,15 +21,15 @@ import com.dangdang.ddframe.job.api.type.dataflow.sequence.StreamingSequenceData
 import com.dangdang.ddframe.job.api.type.dataflow.sequence.UnstreamingSequenceDataflowElasticJobTest;
 import com.dangdang.ddframe.job.api.type.dataflow.throughput.StreamingThroughputDataflowElasticJobTest;
 import com.dangdang.ddframe.job.api.type.dataflow.throughput.UnstreamingThroughputDataflowElasticJobTest;
-import com.dangdang.ddframe.job.api.type.integrated.ScriptElasticJobTest;
-import com.dangdang.ddframe.job.api.type.simple.SimpleElasticJobTest;
+import com.dangdang.ddframe.job.api.type.script.ScriptElasticJobTest;
+import com.dangdang.ddframe.job.api.type.simple.SimpleElasticJobExecutorTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        SimpleElasticJobTest.class,
+        SimpleElasticJobExecutorTest.class,
         StreamingSequenceDataflowElasticJobTest.class, 
         StreamingThroughputDataflowElasticJobTest.class, 
         UnstreamingSequenceDataflowElasticJobTest.class, 

@@ -15,23 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.integrate.fixture.simple;
+package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
-import lombok.Getter;
-
-public final class SimpleElasticJob extends AbstractSimpleElasticJob {
+/**
+ * 作业异常处理器.
+ *
+ * @author zhangliang
+ */
+public interface JobExceptionHandler {
     
-    @Getter
-    private static volatile boolean completed;
-    
-    @Override
-    public void process(final ShardingContext context) {
-        completed = true;
-    }
-    
-    public static void reset() {
-        completed = false;
-    }
+    /**
+     * 处理作业异常.
+     * 
+     * @param cause 异常原因
+     */
+    void handleException(Throwable cause);
 }

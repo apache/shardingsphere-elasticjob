@@ -15,26 +15,34 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.job;
+package com.dangdang.ddframe.job.api.internal;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.exception.JobException;
+import com.google.common.base.Optional;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 弹性化分布式作业的基类.
+ * 弹性化分布式作业执行器.
  * 
  * @author zhangliang
- * @author caohao
  */
+@RequiredArgsConstructor
 @Slf4j
-public abstract class AbstractElasticJob implements ElasticJob {
+public abstract class AbstractElasticJobExecutor {
     
-    private JobFacade jobFacade;
+    @Getter(AccessLevel.PROTECTED)
+    private final JobFacade jobFacade;
     
-    @Override
+    private Optional<JobExceptionHandler> jobExceptionHandler = Optional.absent();
+    
+    /**
+     * 执行作业.
+     */
     public final void execute() {
         log.trace("Elastic job: job execute begin.");
         jobFacade.checkMaxTimeDiffSecondsTolerable();
@@ -49,14 +57,14 @@ public abstract class AbstractElasticJob implements ElasticJob {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            handleJobExecutionException(new JobException(cause));
+            handleException(new JobException(cause));
         }
-        executeJobInternal(shardingContext);
+        execute(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
         while (jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())) {
             log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
             jobFacade.clearMisfire(shardingContext.getShardingItems().keySet());
-            executeJobInternal(shardingContext);
+            execute(shardingContext);
             log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
         jobFacade.failoverIfNecessary();
@@ -65,43 +73,45 @@ public abstract class AbstractElasticJob implements ElasticJob {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            handleJobExecutionException(new JobException(cause));
+            handleException(new JobException(cause));
         }
         log.trace("Elastic job: execute all completed.");
     }
     
-    private void executeJobInternal(final ShardingContext shardingContext) {
+    private void execute(final ShardingContext shardingContext) {
         if (shardingContext.getShardingItems().isEmpty()) {
             log.trace("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
             return;
         }
         jobFacade.registerJobBegin(shardingContext);
         try {
-            executeJob(shardingContext);
+            process(shardingContext);
         //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
         //CHECKSTYLE:ON
-            handleJobExecutionException(new JobException(cause));
+            handleException(cause);
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             jobFacade.registerJobCompleted(shardingContext);
         }
     }
     
-    protected abstract void executeJob(final ShardingContext shardingContext);
-    
-    @Override
-    public void handleJobExecutionException(final JobException jobException) {
-        log.error("Elastic job: exception occur in job processing...", jobException.getCause());
+    protected void handleException(final Throwable cause) {
+        if (jobExceptionHandler.isPresent()) {
+            jobExceptionHandler.get().handleException(cause);
+        } else {
+            log.error("Elastic job: exception occur in job processing...", cause);
+        }
     }
     
-    @Override
-    public final JobFacade getJobFacade() {
-        return jobFacade;
-    }
+    protected abstract void process(final ShardingContext shardingContext);
     
-    @Override
-    public final void setJobFacade(final JobFacade jobFacade) {
-        this.jobFacade = jobFacade;
+    /**
+     * 设置作业异常处理器.
+     *
+     * @param jobExceptionHandler 作业异常处理器
+     */
+    public void setJobExceptionHandler(final JobExceptionHandler jobExceptionHandler) {
+        this.jobExceptionHandler = Optional.of(jobExceptionHandler);
     }
 }

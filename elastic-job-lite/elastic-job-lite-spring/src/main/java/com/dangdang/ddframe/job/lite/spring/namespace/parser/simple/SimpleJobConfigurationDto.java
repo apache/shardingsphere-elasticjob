@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.simple;
 
-import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
@@ -31,9 +31,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-class SimpleJobConfigurationDto extends AbstractJobConfigurationDto<SimpleJobConfiguration, AbstractSimpleElasticJob, SimpleJobConfiguration.SimpleJobConfigurationBuilder> {
+class SimpleJobConfigurationDto extends AbstractJobConfigurationDto<SimpleJobConfiguration, SimpleElasticJob, SimpleJobConfiguration.SimpleJobConfigurationBuilder> {
     
-    SimpleJobConfigurationDto(final String jobName, final Class<? extends AbstractSimpleElasticJob> jobClass, final int shardingTotalCount, final String cron) {
+    SimpleJobConfigurationDto(final String jobName, final Class<? extends SimpleElasticJob> jobClass, final int shardingTotalCount, final String cron) {
         super(jobName, JobType.SIMPLE, jobClass, shardingTotalCount, cron);
     }
     

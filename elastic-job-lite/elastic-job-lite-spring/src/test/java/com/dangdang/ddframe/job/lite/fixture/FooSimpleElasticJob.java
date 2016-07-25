@@ -18,11 +18,11 @@
 package com.dangdang.ddframe.job.lite.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
 import lombok.Getter;
 import lombok.Setter;
 
-public final class SimpleElasticJob extends AbstractSimpleElasticJob {
+public final class FooSimpleElasticJob implements SimpleElasticJob {
     
     @Getter
     private static volatile boolean completed;
@@ -34,7 +34,7 @@ public final class SimpleElasticJob extends AbstractSimpleElasticJob {
     private static String jobValue;
     
     @Override
-    public void process(final ShardingContext context) {
+    public void execute(final ShardingContext context) {
         completed = true;
         jobValue = springValue;
     }

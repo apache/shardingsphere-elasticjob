@@ -18,14 +18,14 @@
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public final class OneOffThroughputDataflowElasticJob extends AbstractDataflowElasticJob<String> {
+public final class OneOffThroughputDataflowElasticJob implements DataflowElasticJob<String> {
     
     private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     

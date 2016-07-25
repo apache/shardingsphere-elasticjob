@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.AbstractDataflowElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public final class StreamingThroughputDataflowElasticJob extends AbstractDataflowElasticJob<String> {
+public final class StreamingThroughputDataflowElasticJob implements DataflowElasticJob<String> {
     
     private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     
@@ -55,7 +55,8 @@ public final class StreamingThroughputDataflowElasticJob extends AbstractDataflo
             processedData.add(each);
         }
         for (int item : context.getShardingItems().keySet()) {
-            updateOffset(item, "offset");
+            // TODO offset
+            //updateOffset(item, "offset");
         }
     }
     

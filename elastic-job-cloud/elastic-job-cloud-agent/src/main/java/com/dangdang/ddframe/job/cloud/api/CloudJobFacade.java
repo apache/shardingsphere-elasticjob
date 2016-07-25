@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.api;
 
-import com.dangdang.ddframe.job.api.JobFacade;
+import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;

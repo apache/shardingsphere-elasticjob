@@ -69,8 +69,8 @@ public final class SpringJobFactory extends PropertySettingJobFactory {
         result.putAll(scheduler.getContext());
         result.putAll(bundle.getJobDetail().getJobDataMap());
         result.putAll(bundle.getTrigger().getJobDataMap());
-        elasticJobBean.setJobFacade(((ElasticJob) result.get("elasticJob")).getJobFacade());
         result.put("elasticJob", elasticJobBean);
+        // TODO setJobFacade ??
         return result;
     }
 }

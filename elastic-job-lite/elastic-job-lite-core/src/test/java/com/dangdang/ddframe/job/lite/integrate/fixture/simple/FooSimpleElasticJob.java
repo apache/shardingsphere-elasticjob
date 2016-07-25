@@ -15,33 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
+package com.dangdang.ddframe.job.lite.integrate.fixture.simple;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
 import lombok.Getter;
 
-import java.util.Collections;
-import java.util.List;
-
-public class StreamingThroughputDataflowElasticJobForExecuteThrowsException implements DataflowElasticJob<String> {
+public final class FooSimpleElasticJob implements SimpleElasticJob {
     
     @Getter
     private static volatile boolean completed;
     
     @Override
-    public List<String> fetchData(final ShardingContext context) {
-        if (completed) {
-            return null;
-        }
-        return Collections.singletonList("data");
-    }
-    
-    @Override
-    public void processData(final ShardingContext context, final List<String> data) {
+    public void execute(final ShardingContext context) {
         completed = true;
-        throw new JobException("");
     }
     
     public static void reset() {

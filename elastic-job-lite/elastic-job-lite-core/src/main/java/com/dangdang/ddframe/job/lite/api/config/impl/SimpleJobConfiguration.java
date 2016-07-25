@@ -17,14 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.api.config.impl;
 
-import com.dangdang.ddframe.job.api.type.simple.AbstractSimpleElasticJob;
+
+import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
 
 /**
  * 简单作业配置信息.
  * 
  * @author caohao
  */
-public final class SimpleJobConfiguration<T extends AbstractSimpleElasticJob> extends AbstractJobConfiguration {
+public final class SimpleJobConfiguration<T extends SimpleElasticJob> extends AbstractJobConfiguration {
     
     @SuppressWarnings("unchecked")
     //CHECKSTYLE:OFF
@@ -32,14 +33,14 @@ public final class SimpleJobConfiguration<T extends AbstractSimpleElasticJob> ex
                                  final String shardingItemParameters, final String jobParameter, final boolean monitorExecution, final int maxTimeDiffSeconds,
                                  final boolean isFailover, final boolean isMisfire, final int monitorPort, final String jobShardingStrategyClass, final String description,
                                  final boolean disabled, final boolean overwrite) {
+    //CHECKSTYLE:ON
         super(jobName, JobType.SIMPLE, jobClass, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire, 
                 monitorPort, jobShardingStrategyClass, description, disabled, overwrite);
     }
-    //CHECKSTYLE:ON
     
-    public static class SimpleJobConfigurationBuilder extends AbstractJobConfigurationBuilder<SimpleJobConfiguration, AbstractSimpleElasticJob, SimpleJobConfigurationBuilder> {
+    public static class SimpleJobConfigurationBuilder extends AbstractJobConfigurationBuilder<SimpleJobConfiguration, SimpleElasticJob, SimpleJobConfigurationBuilder> {
         
-        public SimpleJobConfigurationBuilder(final String jobName, final Class<? extends AbstractSimpleElasticJob> jobClass, final int shardingTotalCount, final String cron) {
+        public SimpleJobConfigurationBuilder(final String jobName, final Class<? extends SimpleElasticJob> jobClass, final int shardingTotalCount, final String cron) {
             super(jobName, JobType.SIMPLE, jobClass, shardingTotalCount, cron);
         }
         

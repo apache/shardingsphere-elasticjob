@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.lite.internal.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
-import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.Getter;
@@ -54,7 +54,7 @@ public class JobExecutor {
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, jobConfig, elasticJobListenerList);
-        elasticJob = createElasticJob(jobConfig, elasticJobListenerList);
+        elasticJob = createElasticJob(jobConfig);
         schedulerFacade = new SchedulerFacade(regCenter, jobConfig, elasticJobListenerList);
     }
     
@@ -67,14 +67,17 @@ public class JobExecutor {
         }
     }
     
-    private ElasticJob createElasticJob(final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListenerList) {
+    private ElasticJob createElasticJob(final JobConfiguration jobConfig) {
+        // TODO 代码需要梳理
+        if (jobConfig.getJobClass() == ScriptElasticJob.class) {
+            return null;
+        }
         ElasticJob result;
         try {
             result = (ElasticJob) jobConfig.getJobClass().newInstance();
         } catch (final InstantiationException | IllegalAccessException ex) {
             throw new JobException(ex);
         }
-        result.setJobFacade(new LiteJobFacade(regCenter, jobConfig, elasticJobListenerList));
         return result;
     }
     

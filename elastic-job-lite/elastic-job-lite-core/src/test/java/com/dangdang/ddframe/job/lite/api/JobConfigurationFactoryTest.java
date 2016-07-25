@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
-import com.dangdang.ddframe.job.api.job.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.impl.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
-import com.dangdang.ddframe.job.lite.integrate.fixture.simple.SimpleElasticJob;
+import com.dangdang.ddframe.job.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -34,7 +34,7 @@ public final class JobConfigurationFactoryTest {
     
     @Test
     public void assertCreateSimpleJobConfiguration() {
-        assertThat(JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleJob", SimpleElasticJob.class, 10, "0/10 * * * *").build(), is(instanceOf(SimpleJobConfiguration.class)));
+        assertThat(JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleJob", FooSimpleElasticJob.class, 10, "0/10 * * * *").build(), is(instanceOf(SimpleJobConfiguration.class)));
     }
 
     @Test
