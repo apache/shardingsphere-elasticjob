@@ -67,7 +67,7 @@ public class ConfigurationService {
     
     private void registerJobInfo() {
         fillSimpleJobInfo();
-        if (JobType.DATA_FLOW == jobNodeStorage.getJobConfiguration().getJobType()) {
+        if (JobType.DATAFLOW == jobNodeStorage.getJobConfiguration().getJobType()) {
             fillDataflowJobInfo();
         } else if (JobType.SCRIPT == jobNodeStorage.getJobConfiguration().getJobType()) {
             fillScriptJobInfo();

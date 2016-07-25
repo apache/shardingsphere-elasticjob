@@ -73,7 +73,7 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(configService.isFailover()).thenReturn(false);
         when(configService.isMonitorExecution()).thenReturn(false);
-        when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
+        when(configService.getJobType()).thenReturn(JobType.DATAFLOW);
         ShardingContext expected = new ShardingContext("testJob", 3, null, Collections.<ShardingContext.ShardingItem>emptyList());
         assertThat(executionContextService.getJobShardingContext(Collections.<Integer>emptyList()), new ReflectionEquals(expected));
         verify(configService).getShardingTotalCount();
@@ -85,7 +85,7 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingTotalCount()).thenReturn(3);
         when(configService.isFailover()).thenReturn(false);
         when(configService.isMonitorExecution()).thenReturn(false);
-        when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
+        when(configService.getJobType()).thenReturn(JobType.DATAFLOW);
         Map<Integer, String> shardingItemParameters = new HashMap<>(3);
         shardingItemParameters.put(0, "A");
         shardingItemParameters.put(1, "B");
@@ -105,7 +105,7 @@ public final class ExecutionContextServiceTest {
         when(configService.isMonitorExecution()).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
-        when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
+        when(configService.getJobType()).thenReturn(JobType.DATAFLOW);
         Map<Integer, String> shardingItemParameters = new HashMap<>(3);
         shardingItemParameters.put(0, "A");
         shardingItemParameters.put(1, "B");

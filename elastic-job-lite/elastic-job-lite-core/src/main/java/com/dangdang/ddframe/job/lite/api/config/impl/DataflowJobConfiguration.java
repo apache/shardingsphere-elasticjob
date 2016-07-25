@@ -45,7 +45,7 @@ public final class DataflowJobConfiguration<T extends DataflowElasticJob> extend
                                      final boolean disabled, final boolean overwrite, final DataflowType dataflowType, final int processCountIntervalSeconds, final int concurrentDataProcessThreadCount,
                                      final boolean streamingProcess) {
         //CHECKSTYLE:ON
-        super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire,
+        super(jobName, JobType.DATAFLOW, jobClass, shardingTotalCount, cron, shardingItemParameters, jobParameter, monitorExecution, maxTimeDiffSeconds, isFailover, isMisfire,
                 monitorPort, jobShardingStrategyClass, description, disabled, overwrite);
         this.dataflowType = dataflowType;
         this.processCountIntervalSeconds = processCountIntervalSeconds;
@@ -66,7 +66,7 @@ public final class DataflowJobConfiguration<T extends DataflowElasticJob> extend
         
         public DataflowJobConfigurationBuilder(
                 final String jobName, final Class<? extends DataflowElasticJob> jobClass, final int shardingTotalCount, final String cron, final DataflowType dataflowType) {
-            super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron);
+            super(jobName, JobType.DATAFLOW, jobClass, shardingTotalCount, cron);
             this.dataflowType = dataflowType;
         }
         

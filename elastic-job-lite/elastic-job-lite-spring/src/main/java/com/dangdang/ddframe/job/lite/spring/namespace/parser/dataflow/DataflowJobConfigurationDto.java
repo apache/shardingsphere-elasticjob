@@ -43,7 +43,7 @@ final class DataflowJobConfigurationDto extends AbstractJobConfigurationDto<Data
     private Boolean streamingProcess;
     
     DataflowJobConfigurationDto(final String jobName, final Class<? extends DataflowElasticJob> jobClass, final Integer shardingTotalCount, final String cron, final DataflowType dataflowType) {
-        super(jobName, JobType.DATA_FLOW, jobClass, shardingTotalCount, cron);
+        super(jobName, JobType.DATAFLOW, jobClass, shardingTotalCount, cron);
         this.dataflowType = dataflowType;
     }
     

@@ -76,7 +76,7 @@ public class SchedulerFacadeTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         schedulerFacade = new SchedulerFacade(null, jobConfig, Collections.<ElasticJobListener>emptyList());
-        when(configService.getJobType()).thenReturn(JobType.DATA_FLOW);
+        when(configService.getJobType()).thenReturn(JobType.DATAFLOW);
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);

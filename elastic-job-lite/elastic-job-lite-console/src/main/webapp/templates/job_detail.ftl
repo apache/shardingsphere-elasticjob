@@ -37,7 +37,7 @@
                         <input type="text" id="cron" name="cron" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业启动时间的cron表达式" required />
                     </div>
                 </div>
-                <#if jobType == "DATA_FLOW">
+                <#if jobType == "DATAFLOW">
                     <div class="form-group">
                         <label for="concurrentDataProcessThreadCount" class="col-sm-2 control-label">处理数据的并发线程数</label>
                         <div class="col-sm-1">

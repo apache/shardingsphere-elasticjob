@@ -24,5 +24,5 @@ package com.dangdang.ddframe.job.lite.api.config.impl;
  */
 public enum JobType {
     
-    SIMPLE, DATA_FLOW, SCRIPT
+    SIMPLE, DATAFLOW, SCRIPT
 }

@@ -42,7 +42,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         String jobType = registryCenter.get(jobNodePath.getConfigNodePath("jobType"));
         buildSimpleJobSettings(jobName, result, jobNodePath, jobType);
-        if (JobType.DATA_FLOW.name().equals(jobType)) {
+        if (JobType.DATAFLOW.name().equals(jobType)) {
             buildDataflowJobSettings(result, jobNodePath);
         }
         if (JobType.SCRIPT.name().equals(jobType)) {
