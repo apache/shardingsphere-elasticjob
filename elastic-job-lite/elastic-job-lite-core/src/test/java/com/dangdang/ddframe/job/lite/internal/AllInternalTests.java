@@ -17,10 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNodeTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationServiceTest;
@@ -41,14 +37,12 @@ import com.dangdang.ddframe.job.lite.internal.listener.JobListenerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorServiceDisableTest;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorServiceEnableTest;
-import com.dangdang.ddframe.job.lite.internal.offset.OffsetNodeTest;
-import com.dangdang.ddframe.job.lite.internal.offset.OffsetServiceTest;
 import com.dangdang.ddframe.job.lite.internal.reg.ItemUtilsTest;
 import com.dangdang.ddframe.job.lite.internal.reg.SensitiveInfoUtilsTest;
-import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistryTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleControllerTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListenerTest;
+import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNodeTest;
@@ -62,6 +56,9 @@ import com.dangdang.ddframe.job.lite.internal.statistics.ProcessCountStatisticsT
 import com.dangdang.ddframe.job.lite.internal.statistics.StatisticsServiceTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorageTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -88,8 +85,6 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorageTest;
     FailoverServiceTest.class, 
     FailoverNodeTest.class, 
     FailoverListenerManagerTest.class, 
-    OffsetServiceTest.class, 
-    OffsetNodeTest.class, 
     StatisticsServiceTest.class, 
     ProcessCountJobTest.class, 
     ProcessCountStatisticsTest.class, 

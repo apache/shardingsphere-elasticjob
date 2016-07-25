@@ -124,9 +124,9 @@ public final class HardwareResource {
     public Protos.TaskInfo createTaskInfo(final JobContext jobContext, final int shardingItem) {
         CloudJobConfiguration jobConfig = jobContext.getJobConfig();
         Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new TaskContext(jobConfig.getJobName(), shardingItem, jobContext.getType(), offer.getSlaveId().getValue()).getId()).build();
-        // TODO 完善offset和param
+        // TODO 完善param
         ShardingContext shardingContext = new ShardingContext(
-                jobConfig.getJobName(), jobConfig.getShardingTotalCount(), "", Collections.singletonList(new ShardingContext.ShardingItem(shardingItem, "", "")));
+                jobConfig.getJobName(), jobConfig.getShardingTotalCount(), "", Collections.singletonList(new ShardingContext.ShardingItem(shardingItem, "")));
         // TODO 上线前更改cache为true
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(String.format(RUN_COMMAND, GsonFactory.getGson().toJson(shardingContext))).build();

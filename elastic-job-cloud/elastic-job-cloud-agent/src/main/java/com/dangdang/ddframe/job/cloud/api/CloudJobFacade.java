@@ -109,11 +109,6 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void updateOffset(final int item, final String offset) {
-        // TODO
-    }
-    
-    @Override
     public void cleanPreviousExecutionInfo() {
     }
     

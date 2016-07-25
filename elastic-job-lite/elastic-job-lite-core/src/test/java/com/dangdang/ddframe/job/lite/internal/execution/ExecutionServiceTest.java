@@ -435,9 +435,9 @@ public final class ExecutionServiceTest {
     
     private ShardingContext getShardingContext() {
         ShardingContext result = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
-        result.getShardingItems().put(0, new ShardingContext.ShardingItem(0, "", ""));
-        result.getShardingItems().put(1, new ShardingContext.ShardingItem(1, "", ""));
-        result.getShardingItems().put(2, new ShardingContext.ShardingItem(2, "", ""));
+        result.getShardingItems().put(0, new ShardingContext.ShardingItem(0, ""));
+        result.getShardingItems().put(1, new ShardingContext.ShardingItem(1, ""));
+        result.getShardingItems().put(2, new ShardingContext.ShardingItem(2, ""));
         return result;
     }
 }

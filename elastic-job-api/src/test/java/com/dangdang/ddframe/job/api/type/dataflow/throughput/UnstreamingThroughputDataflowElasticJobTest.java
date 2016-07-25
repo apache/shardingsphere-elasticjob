@@ -119,13 +119,6 @@ public class UnstreamingThroughputDataflowElasticJobTest extends AbstractDataflo
         ElasticJobAssert.assertProcessCountStatistics(2, 0);
     }
     
-    // TODO offset
-//    @Test
-//    public void assertUpdateOffset() {
-//        getDataflowElasticJobExecutor().updateOffset(0, "offset1");
-//        verify(getJobFacade()).updateOffset(0, "offset1");
-//    }
-    
     @Override
     protected DataflowType getDataflowType() {
         return DataflowType.THROUGHPUT;

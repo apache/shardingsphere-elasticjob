@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.google.common.collect.Lists;
@@ -55,9 +54,6 @@ public final class ExecutionContextServiceTest {
     @Mock
     private ConfigurationService configService;
     
-    @Mock
-    private OffsetService offsetService;
-    
     private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
     
     private final ExecutionContextService executionContextService = new ExecutionContextService(null, jobConfig);
@@ -67,7 +63,6 @@ public final class ExecutionContextServiceTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(executionContextService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(executionContextService, "configService", configService);
-        ReflectionUtils.setFieldValue(executionContextService, "offsetService", offsetService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
         when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
@@ -96,16 +91,11 @@ public final class ExecutionContextServiceTest {
         shardingItemParameters.put(1, "B");
         shardingItemParameters.put(2, "C");
         when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
-        Map<Integer, String> offsets = new HashMap<>(2);
-        offsets.put(0, "offset0");
-        offsets.put(1, "offset1");
-        when(offsetService.getOffsets(Arrays.asList(0, 1))).thenReturn(offsets);
-        ShardingContext expected = new ShardingContext("testJob", 3, null, Arrays.asList(new ShardingContext.ShardingItem(0, "A", "offset0"), new ShardingContext.ShardingItem(1, "B", "offset1")));
+        ShardingContext expected = new ShardingContext("testJob", 3, null, Arrays.asList(new ShardingContext.ShardingItem(0, "A"), new ShardingContext.ShardingItem(1, "B")));
         assertShardingContext(executionContextService.getJobShardingContext(Arrays.asList(0, 1)), expected);
         verify(configService).getShardingTotalCount();
         verify(configService).isMonitorExecution();
         verify(configService).getShardingItemParameters();
-        verify(offsetService).getOffsets(Arrays.asList(0, 1));
     }
     
     @Test
@@ -121,17 +111,13 @@ public final class ExecutionContextServiceTest {
         shardingItemParameters.put(1, "B");
         shardingItemParameters.put(2, "C");
         when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
-        Map<Integer, String> offsets = new HashMap<>(1);
-        offsets.put(0, "offset0");
-        when(offsetService.getOffsets(Collections.singletonList(0))).thenReturn(offsets);
-        ShardingContext expected = new ShardingContext("testJob", 3, null, Collections.singletonList(new ShardingContext.ShardingItem(0, "A", "offset0")));
+        ShardingContext expected = new ShardingContext("testJob", 3, null, Collections.singletonList(new ShardingContext.ShardingItem(0, "A")));
         assertShardingContext(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1)), expected);
         verify(configService).getShardingTotalCount();
         verify(configService).isMonitorExecution();
         verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
         verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
         verify(configService).getShardingItemParameters();
-        verify(offsetService).getOffsets(Collections.singletonList(0));
     }
     
     private void assertShardingContext(final ShardingContext actual, final ShardingContext expected) {
@@ -142,7 +128,6 @@ public final class ExecutionContextServiceTest {
         for (int i = 0; i < expected.getShardingItems().size(); i++) {
             assertThat(actual.getShardingItems().get(i).getItem(), is(expected.getShardingItems().get(i).getItem()));
             assertThat(actual.getShardingItems().get(i).getParameter(), is(expected.getShardingItems().get(i).getParameter()));
-            assertThat(actual.getShardingItems().get(i).getOffset(), is(expected.getShardingItems().get(i).getOffset()));
         }
     }
 }

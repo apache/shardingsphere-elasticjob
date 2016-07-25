@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.internal.execution;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
@@ -42,13 +41,10 @@ public class ExecutionContextService {
     
     private final ConfigurationService configService;
     
-    private final OffsetService offsetService;
-    
     public ExecutionContextService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
         this.jobConfiguration = jobConfiguration;
         jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
         configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
     }
     
     /**
@@ -63,10 +59,9 @@ public class ExecutionContextService {
             return new ShardingContext(jobConfiguration.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), Collections.<ShardingContext.ShardingItem>emptyList());
         }
         Map<Integer, String> shardingItemParameterMap = configService.getShardingItemParameters();
-        Map<Integer, String>  offSetMap = offsetService.getOffsets(shardingItems);
         List<ShardingContext.ShardingItem> shardingItemList = new ArrayList<>(shardingItems.size());
         for (int each : shardingItems) {
-            shardingItemList.add(new ShardingContext.ShardingItem(each, shardingItemParameterMap.get(each), offSetMap.get(each)));
+            shardingItemList.add(new ShardingContext.ShardingItem(each, shardingItemParameterMap.get(each)));
         }
         return new ShardingContext(jobConfiguration.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), shardingItemList);
     }

@@ -29,7 +29,6 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.lite.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.google.common.collect.Lists;
@@ -70,9 +69,6 @@ public class LiteJobFacadeTest {
     private FailoverService failoverService;
     
     @Mock
-    private OffsetService offsetService;
-    
-    @Mock
     private ElasticJobListenerCaller caller;
     
     private JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
@@ -89,7 +85,6 @@ public class LiteJobFacadeTest {
         ReflectionUtils.setFieldValue(liteJobFacade, "executionContextService", executionContextService);
         ReflectionUtils.setFieldValue(liteJobFacade, "executionService", executionService);
         ReflectionUtils.setFieldValue(liteJobFacade, "failoverService", failoverService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "offsetService", offsetService);
     }
     
     @Test
@@ -224,12 +219,6 @@ public class LiteJobFacadeTest {
     public void assertIsNeedSharding() {
         when(shardingService.isNeedSharding()).thenReturn(true);
         assertThat(liteJobFacade.isNeedSharding(), is(true));
-    }
-    
-    @Test
-    public void assertUpdateOffset() {
-        liteJobFacade.updateOffset(0, "offset0");
-        verify(offsetService).updateOffset(0, "offset0");
     }
     
     @Test

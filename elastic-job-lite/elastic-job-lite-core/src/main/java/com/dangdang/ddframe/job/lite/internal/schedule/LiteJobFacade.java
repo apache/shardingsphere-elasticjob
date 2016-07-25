@@ -17,16 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.dataflow.DataflowType;
+import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.lite.internal.offset.OffsetService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -53,8 +52,6 @@ public class LiteJobFacade implements JobFacade {
     
     private final FailoverService failoverService;
     
-    private final OffsetService offsetService;
-    
     private final List<ElasticJobListener> elasticJobListeners;
     
     public LiteJobFacade(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
@@ -64,7 +61,6 @@ public class LiteJobFacade implements JobFacade {
         executionContextService = new ExecutionContextService(coordinatorRegistryCenter, jobConfiguration);
         executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
         failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
-        offsetService = new OffsetService(coordinatorRegistryCenter, jobConfiguration);
         this.elasticJobListeners = elasticJobListeners;
     }
     
@@ -158,11 +154,6 @@ public class LiteJobFacade implements JobFacade {
     @Override
     public boolean isNeedSharding() {
         return shardingService.isNeedSharding();
-    }
-    
-    @Override
-    public void updateOffset(final int item, final String offset) {
-        offsetService.updateOffset(item, offset);
     }
     
     @Override

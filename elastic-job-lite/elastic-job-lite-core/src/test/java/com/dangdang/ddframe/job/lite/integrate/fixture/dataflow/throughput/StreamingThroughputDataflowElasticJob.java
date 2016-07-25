@@ -22,31 +22,18 @@ import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public final class StreamingThroughputDataflowElasticJob implements DataflowElasticJob<String> {
     
     private static volatile Set<String> processedData = new CopyOnWriteArraySet<>();
     
-    private static volatile Map<Integer, String> offsets = new ConcurrentHashMap<>();
-    
     private static volatile List<String> result = Arrays.asList("data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9");
     
     @Override
     public List<String> fetchData(final ShardingContext context) {
-        for (Map.Entry<Integer, ShardingContext.ShardingItem> entry : context.getShardingItems().entrySet()) {
-            if (null != entry.getValue().getOffset()) {
-                offsets.put(entry.getKey(), entry.getValue().getOffset());    
-            }
-        }
-        if (processedData.isEmpty()) {
-            return result;
-        } else {
-            return null;
-        }
+        return processedData.isEmpty() ? result : null;
     }
     
     @Override
@@ -54,18 +41,13 @@ public final class StreamingThroughputDataflowElasticJob implements DataflowElas
         for (String each : data) {
             processedData.add(each);
         }
-        for (int item : context.getShardingItems().keySet()) {
-            // TODO offset
-            //updateOffset(item, "offset");
-        }
     }
     
     public static boolean isCompleted() {
-        return result.size() == processedData.size() && !offsets.isEmpty();
+        return result.size() == processedData.size();
     }
     
     public static void reset() {
         processedData.clear();
-        offsets.clear();
     }
 }

@@ -43,8 +43,6 @@ public class SequenceDataflowJobDemo implements DataflowElasticJob<Foo> {
         for (Foo each : data) {
             printContext.printProcessDataMessage(each);
             fooRepository.setInactive(each.getId());
-            // TODO offset
-            // updateOffset(context.getShardingItems().keySet().iterator().next(), String.valueOf(each.getId()));
         }
     }
 }

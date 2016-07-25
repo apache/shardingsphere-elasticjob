@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.api;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Collection;
@@ -99,16 +98,10 @@ public final class ShardingContext {
          * 运行在本作业服务器的分片序列号.
          */
         private final int item;
-    
+        
         /**
          * 分片序列号的个性化参数.
          */
         private final String parameter;
-    
-        /**
-         * 数据处理位置.
-         */
-        @Setter
-        private String offset;
     }
 }

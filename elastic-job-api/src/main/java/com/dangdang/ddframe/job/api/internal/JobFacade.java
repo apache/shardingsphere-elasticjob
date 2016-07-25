@@ -147,14 +147,6 @@ public interface JobFacade {
     boolean isNeedSharding();
     
     /**
-     * 更新数据处理位置.
-     *
-     * @param item 分片项
-     * @param offset 数据处理位置
-     */
-    void updateOffset(int item, String offset);
-    
-    /**
      * 清理作业上次运行时信息.
      * 只会在主节点进行.
      */

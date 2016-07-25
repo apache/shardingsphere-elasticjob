@@ -57,7 +57,7 @@ public final class DistributeOnceElasticJobListenerTest {
         distributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(elasticJobListenerCaller);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false), guaranteeService);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "timeService", false), timeService);
-        shardingContext = new ShardingContext("test_job", 10, "", Arrays.asList(new ShardingContext.ShardingItem(0, "", ""), new ShardingContext.ShardingItem(1, "", "")));
+        shardingContext = new ShardingContext("test_job", 10, "", Arrays.asList(new ShardingContext.ShardingItem(0, ""), new ShardingContext.ShardingItem(1, "")));
     }
     
     @Test
