@@ -96,6 +96,8 @@ public abstract class AbstractElasticJobExecutor {
         }
     }
     
+    protected abstract void process(final ShardingContext shardingContext);
+    
     protected void handleException(final Throwable cause) {
         if (jobExceptionHandler.isPresent()) {
             jobExceptionHandler.get().handleException(cause);
@@ -103,8 +105,6 @@ public abstract class AbstractElasticJobExecutor {
             log.error("Elastic job: exception occur in job processing...", cause);
         }
     }
-    
-    protected abstract void process(final ShardingContext shardingContext);
     
     /**
      * 设置作业异常处理器.

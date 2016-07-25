@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
@@ -29,9 +28,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public final class StreamingThroughputDataflowElasticJobForExecuteThrowsExceptionTest extends AbstractBaseStdJobAutoInitTest {
@@ -57,7 +53,5 @@ public final class StreamingThroughputDataflowElasticJobForExecuteThrowsExceptio
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
-        assertThat(ProcessCountStatistics.getProcessSuccessCount(getJobName()), is(0));
-        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), not(0));
     }
 }

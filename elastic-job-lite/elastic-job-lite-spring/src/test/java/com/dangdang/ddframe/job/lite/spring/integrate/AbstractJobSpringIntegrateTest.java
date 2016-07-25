@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.spring.integrate;
 
-import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.lite.fixture.ThroughputDataflowElasticJob;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -49,7 +48,6 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     public void reset() {
         FooSimpleElasticJob.reset();
         ThroughputDataflowElasticJob.reset();
-        ProcessCountStatistics.reset(throughputDataflowJobName);
     }
     
     @After

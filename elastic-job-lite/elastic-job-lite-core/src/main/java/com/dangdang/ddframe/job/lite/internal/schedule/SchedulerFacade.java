@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
@@ -27,7 +26,6 @@ import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.lite.internal.statistics.StatisticsService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
@@ -49,8 +47,6 @@ public class SchedulerFacade {
     
     private final ExecutionService executionService;
     
-    private final StatisticsService statisticsService;
-    
     private final MonitorService monitorService;
     
     private final ListenerManager listenerManager;
@@ -61,7 +57,6 @@ public class SchedulerFacade {
         serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
         shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
         executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
-        statisticsService = new StatisticsService(coordinatorRegistryCenter, jobConfiguration);
         monitorService = new MonitorService(coordinatorRegistryCenter, jobConfiguration);
         listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration, elasticJobListeners);
     }
@@ -82,9 +77,6 @@ public class SchedulerFacade {
         configService.persistJobConfiguration();
         serverService.persistServerOnline();
         serverService.clearJobPausedStatus();
-        if (JobType.DATA_FLOW == configService.getJobType()) {
-            statisticsService.startProcessCountJob();
-        }
         shardingService.setReshardingFlag();
         monitorService.listen();
     }
@@ -94,9 +86,6 @@ public class SchedulerFacade {
      */
     public void releaseJobResource() {
         monitorService.close();
-        if (JobType.DATA_FLOW.equals(configService.getJobType())) {
-            statisticsService.stopProcessCountJob();
-        }
         serverService.removeServerStatus();
     }
     

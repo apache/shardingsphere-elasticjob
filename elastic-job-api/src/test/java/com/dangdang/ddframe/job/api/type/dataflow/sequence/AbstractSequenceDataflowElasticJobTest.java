@@ -42,6 +42,5 @@ public abstract class AbstractSequenceDataflowElasticJobTest extends AbstractDat
         verify(getJobCaller()).fetchData(1);
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-        ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
 }

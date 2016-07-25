@@ -43,7 +43,6 @@ public class StreamingThroughputDataflowElasticJobTest extends AbstractDataflowE
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-        ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
     @Test
@@ -53,7 +52,6 @@ public class StreamingThroughputDataflowElasticJobTest extends AbstractDataflowE
         verify(getJobCaller()).fetchData();
         verify(getJobCaller(), times(0)).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-        ElasticJobAssert.assertProcessCountStatistics(0, 0);
     }
     
     @Test
@@ -64,7 +62,6 @@ public class StreamingThroughputDataflowElasticJobTest extends AbstractDataflowE
         verify(getJobCaller()).fetchData();
         verify(getJobCaller()).processData(any());
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-        ElasticJobAssert.assertProcessCountStatistics(1, 0);
     }
     
     @SuppressWarnings("unchecked")
@@ -78,7 +75,6 @@ public class StreamingThroughputDataflowElasticJobTest extends AbstractDataflowE
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         ElasticJobAssert.verifyForIsNotMisfire(getJobFacade(), getShardingContext());
-        ElasticJobAssert.assertProcessCountStatistics(0, 1);
     }
     
     @Override

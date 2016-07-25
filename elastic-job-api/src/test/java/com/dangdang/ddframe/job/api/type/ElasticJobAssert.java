@@ -17,16 +17,13 @@
 
 package com.dangdang.ddframe.job.api.type;
 
-import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
+import com.dangdang.ddframe.job.api.internal.JobFacade;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,10 +52,5 @@ public class ElasticJobAssert {
         verify(jobFacade).registerJobCompleted(shardingContext);
         verify(jobFacade).isExecuteMisfired(shardingContext.getShardingItems().keySet());
         verify(jobFacade).afterJobExecuted(shardingContext);
-    }
-    
-    public static void assertProcessCountStatistics(final int successCount, final int failureCount) {
-        assertThat(ProcessCountStatistics.getProcessSuccessCount(JOB_NAME), is(successCount));
-        assertThat(ProcessCountStatistics.getProcessFailureCount(JOB_NAME), is(failureCount));
     }
 }

@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.sequence;
 
 import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
@@ -29,8 +28,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public final class OneOffSequenceDataflowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
@@ -57,7 +54,5 @@ public final class OneOffSequenceDataflowElasticJobTest extends AbstractBaseStdJ
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
-        assertTrue(ProcessCountStatistics.getProcessSuccessCount(getJobName()) >= 3);
-        assertThat(ProcessCountStatistics.getProcessFailureCount(getJobName()), is(0));
     }
 }

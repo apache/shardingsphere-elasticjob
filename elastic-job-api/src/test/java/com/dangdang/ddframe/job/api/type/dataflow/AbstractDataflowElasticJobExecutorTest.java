@@ -21,13 +21,11 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJobExecutor;
 import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.api.internal.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -61,11 +59,6 @@ public abstract class AbstractDataflowElasticJobExecutorTest {
     protected abstract DataflowType getDataflowType();
     
     protected abstract boolean isStreamingProcess();
-    
-    @After
-    public void tearDown() throws NoSuchFieldException {
-        ProcessCountStatistics.reset(ElasticJobAssert.JOB_NAME);
-    }
     
     protected abstract DataflowElasticJob createDataflowElasticJob(final JobCaller jobCaller);
 }

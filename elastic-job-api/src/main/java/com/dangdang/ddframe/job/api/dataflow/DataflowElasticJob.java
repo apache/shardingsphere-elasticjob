@@ -37,7 +37,7 @@ public interface DataflowElasticJob<T> extends ElasticJob {
      * @param shardingContext 分片上下文
      * @return 待处理的数据集合
      */
-    List<T> fetchData(final ShardingContext shardingContext);
+    List<T> fetchData(ShardingContext shardingContext);
     
     /**
      * 处理数据.
@@ -45,5 +45,5 @@ public interface DataflowElasticJob<T> extends ElasticJob {
      * @param shardingContext 分片上下文
      * @param data 待处理数据集合
      */
-    void processData(final ShardingContext shardingContext, final List<T> data);
+    void processData(ShardingContext shardingContext, List<T> data);
 }

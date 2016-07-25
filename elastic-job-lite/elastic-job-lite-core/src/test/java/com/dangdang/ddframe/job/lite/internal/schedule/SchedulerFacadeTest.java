@@ -30,7 +30,6 @@ import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.lite.internal.statistics.StatisticsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -64,9 +63,6 @@ public class SchedulerFacadeTest {
     private ExecutionService executionService;
     
     @Mock
-    private StatisticsService statisticsService;
-    
-    @Mock
     private MonitorService monitorService;
     
     @Mock
@@ -86,7 +82,6 @@ public class SchedulerFacadeTest {
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(schedulerFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(schedulerFacade, "executionService", executionService);
-        ReflectionUtils.setFieldValue(schedulerFacade, "statisticsService", statisticsService);
         ReflectionUtils.setFieldValue(schedulerFacade, "monitorService", monitorService);
         ReflectionUtils.setFieldValue(schedulerFacade, "listenerManager", listenerManager);
     }
@@ -104,7 +99,6 @@ public class SchedulerFacadeTest {
         verify(leaderElectionService).leaderForceElection();
         verify(configService).persistJobConfiguration();
         verify(serverService).persistServerOnline();
-        verify(statisticsService).startProcessCountJob();
         verify(serverService).clearJobPausedStatus();
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
@@ -114,7 +108,6 @@ public class SchedulerFacadeTest {
     public void testReleaseJobResource() {
         schedulerFacade.releaseJobResource();
         verify(monitorService).close();
-        verify(statisticsService).stopProcessCountJob();
         verify(serverService).removeServerStatus();
     }
     

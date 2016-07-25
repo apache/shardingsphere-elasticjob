@@ -114,7 +114,7 @@ public final class DataflowElasticJobExecutor extends AbstractElasticJobExecutor
     private void processDataForThroughput(final ShardingContext shardingContext, final List<Object> data) {
         int threadCount = getJobFacade().getConcurrentDataProcessThreadCount();
         if (threadCount <= 1 || data.size() <= threadCount) {
-            processDataWithStatistics(shardingContext, data);
+            processData(shardingContext, data);
             return;
         }
         List<List<Object>> splitData = Lists.partition(data, data.size() / threadCount);
@@ -125,7 +125,7 @@ public final class DataflowElasticJobExecutor extends AbstractElasticJobExecutor
                 @Override
                 public void run() {
                     try {
-                        processDataWithStatistics(shardingContext, each);
+                        processData(shardingContext, each);
                     } finally {
                         latch.countDown();
                     }
@@ -168,7 +168,7 @@ public final class DataflowElasticJobExecutor extends AbstractElasticJobExecutor
                 @Override
                 public void run() {
                     try {
-                        processDataWithStatistics(shardingContext.getShardingContext(each.getKey()), each.getValue());
+                        processData(shardingContext.getShardingContext(each.getKey()), each.getValue());
                     } finally {
                         latch.countDown();
                     }
@@ -178,14 +178,12 @@ public final class DataflowElasticJobExecutor extends AbstractElasticJobExecutor
         latchAwait(latch);
     }
     
-    private void processDataWithStatistics(final ShardingContext shardingContext, final List<Object> data) {
+    private void processData(final ShardingContext shardingContext, final List<Object> data) {
         try {
             dataflowElasticJob.processData(shardingContext, data);
-            ProcessCountStatistics.incrementProcessSuccessCount(shardingContext.getJobName());
             // CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             // CHECKSTYLE:ON
-            ProcessCountStatistics.incrementProcessFailureCount(shardingContext.getJobName());
             handleException(cause);
         }
     }

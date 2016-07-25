@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.dataflow.ProcessCountStatistics;
 import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
 import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
@@ -155,13 +154,11 @@ public abstract class AbstractBaseStdJobTest {
     
     @Before
     public void setUp() {
-        ProcessCountStatistics.reset(jobName);
         regCenter.init();
     }
     
     @After
     public void tearDown() throws SchedulerException, NoSuchFieldException {
-        ProcessCountStatistics.reset(jobName);
         JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
         if (null != jobScheduleController) {
             JobRegistry.getInstance().getJobScheduleController(jobName).shutdown();
