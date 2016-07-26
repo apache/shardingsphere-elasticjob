@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.internal.JobFacade;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
@@ -54,13 +54,13 @@ public class LiteJobFacade implements JobFacade {
     
     private final List<ElasticJobListener> elasticJobListeners;
     
-    public LiteJobFacade(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        executionContextService = new ExecutionContextService(coordinatorRegistryCenter, jobConfiguration);
-        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
-        failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
+    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
+        configService = new ConfigurationService(regCenter, liteJobConfig);
+        shardingService = new ShardingService(regCenter, liteJobConfig);
+        serverService = new ServerService(regCenter, liteJobConfig);
+        executionContextService = new ExecutionContextService(regCenter, liteJobConfig);
+        executionService = new ExecutionService(regCenter, liteJobConfig);
+        failoverService = new FailoverService(regCenter, liteJobConfig);
         this.elasticJobListeners = elasticJobListeners;
     }
     
@@ -70,7 +70,7 @@ public class LiteJobFacade implements JobFacade {
     }
     
     @Override
-    public DataflowType getDataflowType() {
+    public DataflowJobConfiguration.DataflowType getDataflowType() {
         return configService.getDataflowType();
     }
     

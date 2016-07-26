@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.guarantee;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -43,16 +43,17 @@ public final class GuaranteeServiceTest {
     @Mock
     private ConfigurationService configService;
     
-    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").overwrite(true).build();
+    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).overwrite(true).build();
     
-    private final GuaranteeService guaranteeService = new GuaranteeService(null, jobConfig);
+    private final GuaranteeService guaranteeService = new GuaranteeService(null, liteJobConfig);
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(guaranteeService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(guaranteeService, "configService", configService);
-        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test

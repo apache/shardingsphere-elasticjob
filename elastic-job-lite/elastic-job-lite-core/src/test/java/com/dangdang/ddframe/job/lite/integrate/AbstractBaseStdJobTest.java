@@ -17,15 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.ScriptElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
-import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.internal.ElasticJob;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
@@ -70,7 +70,7 @@ public abstract class AbstractBaseStdJobTest {
     private final LocalHostService localHostService = new LocalHostService();
     
     @Getter(AccessLevel.PROTECTED)
-    private final JobConfiguration jobConfig;
+    private final LiteJobConfiguration liteJobConfig;
     
     private final JobScheduler jobScheduler;
     
@@ -83,10 +83,10 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_testJob";
     
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled, final Optional<DataflowType> dataflowType) {
+    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
         this.disabled = disabled;
-        jobConfig = initJobConfig(elasticJobClass, dataflowType);
-        jobScheduler = new JobScheduler(regCenter, jobConfig, new ElasticJobListener() {
+        liteJobConfig = initJobConfig(elasticJobClass, dataflowType);
+        jobScheduler = new JobScheduler(regCenter, liteJobConfig, new ElasticJobListener() {
             
             @Override
             public void beforeJobExecuted(final ShardingContext shardingContext) {
@@ -108,40 +108,34 @@ public abstract class AbstractBaseStdJobTest {
             }
         });
         monitorPort = -1;
-        leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
     }
     
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort, final Optional<DataflowType> dataflowType) {
+    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
         this.monitorPort = monitorPort;
-        jobConfig = initJobConfig(elasticJobClass, dataflowType);
-        jobScheduler = new JobScheduler(regCenter, jobConfig);
+        liteJobConfig = initJobConfig(elasticJobClass, dataflowType);
+        jobScheduler = new JobScheduler(regCenter, liteJobConfig);
         disabled = false;
-        leaderElectionService = new LeaderElectionService(regCenter, jobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
     }
     
     @SuppressWarnings("unchecked")
-    private JobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataflowType> dataflowType) {
+    private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
         if (DataflowElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return JobConfigurationFactory.createDataflowJobConfigurationBuilder(jobName, (Class<? extends DataflowElasticJob>) elasticJobClass, 3, "0/1 * * * * ?", dataflowType.get())
-                    .monitorPort(monitorPort)
-                    .shardingItemParameters("0=A,1=B,2=C")
-                    .disabled(disabled)
-                    .overwrite(true)
-                    .build();
+            return new LiteJobConfiguration.LiteJobConfigurationBuilder(
+                    JobConfigurationFactory.createDataflowJobConfigurationBuilder(jobName, (Class<? extends DataflowElasticJob>) elasticJobClass, "0/1 * * * * ?", 3, dataflowType.get())
+                            .shardingItemParameters("0=A,1=B,2=C").build())
+                    .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
         } else if (ScriptElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return JobConfigurationFactory.createScriptJobConfigurationBuilder(jobName, 3, "0/1 * * * * ?", AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath())
-                    .monitorPort(monitorPort)
-                    .shardingItemParameters("0=A,1=B,2=C")
-                    .disabled(disabled)
-                    .overwrite(true)
-                    .build();
+            return new LiteJobConfiguration.LiteJobConfigurationBuilder(
+                    JobConfigurationFactory.createScriptJobConfigurationBuilder(jobName, "0/1 * * * * ?", 3, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath())
+                            .shardingItemParameters("0=A,1=B,2=C").build())
+                    .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
         } else {
-            return JobConfigurationFactory.createSimpleJobConfigurationBuilder(jobName, (Class<? extends SimpleElasticJob>) elasticJobClass, 3, "0/1 * * * * ?")
-                    .monitorPort(monitorPort)
-                    .shardingItemParameters("0=A,1=B,2=C")
-                    .disabled(disabled)
-                    .overwrite(true)
-                    .build();
+            return new LiteJobConfiguration.LiteJobConfigurationBuilder(
+                    JobConfigurationFactory.createSimpleJobConfigurationBuilder(jobName, (Class<? extends SimpleElasticJob>) elasticJobClass, "0/1 * * * * ?", 3)
+                            .shardingItemParameters("0=A,1=B,2=C").build())
+                    .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
         }
     }
     

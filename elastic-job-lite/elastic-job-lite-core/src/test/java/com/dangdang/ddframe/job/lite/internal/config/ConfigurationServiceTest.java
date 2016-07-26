@@ -17,16 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.impl.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.impl.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -53,9 +52,10 @@ public final class ConfigurationServiceTest {
     @Mock
     private JobNodeStorage jobNodeStorage;
     
-    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
+    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build();
     
-    private final ConfigurationService configService = new ConfigurationService(null, jobConfig);
+    private final ConfigurationService configService = new ConfigurationService(null, liteJobConfig);
     
     @Before
     public void initMocks() throws NoSuchFieldException {
@@ -67,19 +67,19 @@ public final class ConfigurationServiceTest {
     public void assertPersistJobConfigurationForJobConflict() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.JOB_CLASS)).thenReturn(true);
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS)).thenReturn("ConflictJob");
-        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
         try {
             configService.persistJobConfiguration();
         } finally {
             verify(jobNodeStorage).isJobNodeExisted(ConfigurationNode.JOB_CLASS);
             verify(jobNodeStorage).getJobNodeData(ConfigurationNode.JOB_CLASS);
-            verify(jobNodeStorage, times(2)).getJobConfiguration();
+            verify(jobNodeStorage, times(2)).getLiteJobConfig();
         }
     }
     
     @Test
     public void assertPersistNewJobConfiguration() {
-        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
         configService.persistJobConfiguration();
         verifyPersistJobConfiguration();
     }
@@ -88,35 +88,34 @@ public final class ConfigurationServiceTest {
     public void assertPersistExistedJobConfiguration() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.JOB_CLASS)).thenReturn(true);
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS)).thenReturn(TestJob.class.getCanonicalName());
-        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
         configService.persistJobConfiguration();
         verifyPersistJobConfiguration();
     }
     
     private void verifyPersistJobConfiguration() {
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_CLASS, TestJob.class.getCanonicalName());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, jobConfig.getShardingTotalCount());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, jobConfig.getShardingItemParameters());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, jobConfig.getJobParameter());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, jobConfig.getCron());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, jobConfig.isMonitorExecution());
-        if (DataflowElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
-            DataflowJobConfiguration dataflowJobConfiguration = (DataflowJobConfiguration) jobConfig;
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, liteJobConfig.getJobConfig().getCron());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, liteJobConfig.getJobConfig().getShardingTotalCount());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, liteJobConfig.getJobConfig().getShardingItemParameters());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, liteJobConfig.getJobConfig().getJobParameter());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, liteJobConfig.getJobConfig().isFailover());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, liteJobConfig.getJobConfig().isMisfire());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, liteJobConfig.getJobConfig().getDescription());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, liteJobConfig.isMonitorExecution());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MAX_TIME_DIFF_SECONDS, liteJobConfig.getMaxTimeDiffSeconds());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, liteJobConfig.getJobShardingStrategyClass());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, liteJobConfig.getMonitorPort());
+        if (DataflowElasticJob.class.isAssignableFrom(liteJobConfig.getJobConfig().getJobClass())) {
+            DataflowJobConfiguration dataflowJobConfiguration = (DataflowJobConfiguration) liteJobConfig.getJobConfig();
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DATAFLOW_TYPE, dataflowJobConfiguration.getDataflowType());
-            verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS, dataflowJobConfiguration.getProcessCountIntervalSeconds());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, dataflowJobConfiguration.getConcurrentDataProcessThreadCount());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, dataflowJobConfiguration.isStreamingProcess());
         }
-        if (ScriptElasticJob.class.isAssignableFrom(jobConfig.getJobClass())) {
-            ScriptJobConfiguration scriptJobConfiguration = (ScriptJobConfiguration) jobConfig;
+        if (ScriptElasticJob.class.isAssignableFrom(liteJobConfig.getJobConfig().getJobClass())) {
+            ScriptJobConfiguration scriptJobConfiguration = (ScriptJobConfiguration) liteJobConfig.getJobConfig();
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, scriptJobConfiguration.getScriptCommandLine());
         }
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MAX_TIME_DIFF_SECONDS, jobConfig.getMaxTimeDiffSeconds());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, jobConfig.isFailover());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, jobConfig.isMisfire());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, jobConfig.getJobShardingStrategyClass());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, jobConfig.getDescription());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, jobConfig.getMonitorPort());
     }
     
     @Test
@@ -194,15 +193,8 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertGetDataflowType() {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.DATAFLOW_TYPE)).thenReturn("SEQUENCE");
-        assertThat(configService.getDataflowType(), is(DataflowType.SEQUENCE));
+        assertThat(configService.getDataflowType(), is(DataflowJobConfiguration.DataflowType.SEQUENCE));
         verify(jobNodeStorage).getJobNodeData(ConfigurationNode.DATAFLOW_TYPE);
-    }
-    
-    @Test
-    public void assertGetProcessCountIntervalSeconds() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS)).thenReturn("300");
-        assertThat(configService.getProcessCountIntervalSeconds(), is(300));
-        verify(jobNodeStorage).getJobNodeData(ConfigurationNode.PROCESS_COUNT_INTERVAL_SECONDS);
     }
     
     @Test
@@ -295,8 +287,8 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertGetJobName() {
-        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
         assertThat(configService.getJobName(), is("testJob"));
-        verify(jobNodeStorage).getJobConfiguration();
+        verify(jobNodeStorage).getLiteJobConfig();
     }
 }

@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.example;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.DataflowElasticJob;
 
 import java.util.Collections;
 import java.util.List;

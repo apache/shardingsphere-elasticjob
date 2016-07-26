@@ -17,12 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.lite.internal.reg.BlockUtils;
-import com.dangdang.ddframe.job.lite.internal.reg.ItemUtils;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyFactory;
@@ -30,6 +28,8 @@ import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrat
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
+import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
+import com.dangdang.ddframe.job.lite.internal.util.ItemUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
@@ -65,14 +65,14 @@ public class ShardingService {
 
     private final JobNodePath jobNodePath;
     
-    public ShardingService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        jobName = jobConfiguration.getJobName();
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
-        jobNodePath = new JobNodePath(jobConfiguration.getJobName());
+    public ShardingService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        jobName = liteJobConfig.getJobConfig().getJobName();
+        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
+        configService = new ConfigurationService(regCenter, liteJobConfig);
+        serverService = new ServerService(regCenter, liteJobConfig);
+        executionService = new ExecutionService(regCenter, liteJobConfig);
+        jobNodePath = new JobNodePath(jobName);
     }
     
     /**

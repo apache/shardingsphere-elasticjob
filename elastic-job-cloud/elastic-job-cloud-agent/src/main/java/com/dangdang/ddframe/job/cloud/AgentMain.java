@@ -17,16 +17,16 @@
 
 package com.dangdang.ddframe.job.cloud;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.internal.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJobExecutor;
-import com.dangdang.ddframe.job.api.internal.AbstractElasticJobExecutor;
-import com.dangdang.ddframe.job.api.internal.JobFacade;
-import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
-import com.dangdang.ddframe.job.api.script.ScriptElasticJobExecutor;
-import com.dangdang.ddframe.job.api.simple.SimpleElasticJob;
-import com.dangdang.ddframe.job.api.simple.SimpleElasticJobExecutor;
+import com.dangdang.ddframe.job.api.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowElasticJobExecutor;
+import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.type.script.ScriptElasticJobExecutor;
+import com.dangdang.ddframe.job.api.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.type.simple.SimpleElasticJobExecutor;
 import com.dangdang.ddframe.job.cloud.api.CloudJobFacade;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.util.json.GsonFactory;

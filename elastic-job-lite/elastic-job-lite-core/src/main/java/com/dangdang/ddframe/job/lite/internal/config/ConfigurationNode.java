@@ -32,9 +32,9 @@ public final class ConfigurationNode {
     
     static final String JOB_CLASS = ROOT + "/jobClass";
     
-    static final String SHARDING_TOTAL_COUNT = ROOT + "/shardingTotalCount";
-    
     static final String CRON = ROOT + "/cron";
+    
+    static final String SHARDING_TOTAL_COUNT = ROOT + "/shardingTotalCount";
     
     static final String SHARDING_ITEM_PARAMETERS = ROOT + "/shardingItemParameters";
     
@@ -44,11 +44,9 @@ public final class ConfigurationNode {
     
     static final String DATAFLOW_TYPE = ROOT + "/dataflowType";
     
-    static final String PROCESS_COUNT_INTERVAL_SECONDS = ROOT + "/processCountIntervalSeconds";
+    static final String STREAMING_PROCESS = ROOT + "/streamingProcess";
     
     static final String CONCURRENT_DATA_PROCESS_THREAD_COUNT = ROOT + "/concurrentDataProcessThreadCount";
-    
-    static final String STREAMING_PROCESS = ROOT + "/streamingProcess";
     
     static final String MAX_TIME_DIFF_SECONDS = ROOT + "/maxTimeDiffSeconds";
     

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
@@ -51,14 +51,14 @@ public class SchedulerFacade {
     
     private final ListenerManager listenerManager;
     
-    public SchedulerFacade(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
-        monitorService = new MonitorService(coordinatorRegistryCenter, jobConfiguration);
-        listenerManager = new ListenerManager(coordinatorRegistryCenter, jobConfiguration, elasticJobListeners);
+    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
+        configService = new ConfigurationService(regCenter, liteJobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
+        serverService = new ServerService(regCenter, liteJobConfig);
+        shardingService = new ShardingService(regCenter, liteJobConfig);
+        executionService = new ExecutionService(regCenter, liteJobConfig);
+        monitorService = new MonitorService(regCenter, liteJobConfig);
+        listenerManager = new ListenerManager(regCenter, liteJobConfig, elasticJobListeners);
     }
     
     /**

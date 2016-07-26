@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
@@ -56,8 +57,8 @@ public final class FailoverListenerManagerTest {
     @Mock
     private FailoverService failoverService;
     
-    private final FailoverListenerManager failoverListenerManager = new FailoverListenerManager(null, 
-            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build());
+    private final FailoverListenerManager failoverListenerManager = new FailoverListenerManager(null,
+            new LiteJobConfiguration.LiteJobConfigurationBuilder(JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build());
     
     @Before
     public void setUp() throws NoSuchFieldException {

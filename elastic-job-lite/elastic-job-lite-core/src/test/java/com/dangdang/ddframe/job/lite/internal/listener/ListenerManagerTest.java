@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
@@ -60,8 +61,8 @@ public class ListenerManagerTest {
     @Mock
     private GuaranteeListenerManager guaranteeListenerManager;
     
-    private final ListenerManager listenerManager = new ListenerManager(null, 
-            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build(), 
+    private final ListenerManager listenerManager = new ListenerManager(null,
+            new LiteJobConfiguration.LiteJobConfigurationBuilder(JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build(), 
             Collections.<ElasticJobListener>emptyList());
     
     @Before

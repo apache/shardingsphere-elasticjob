@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService.LeaderElectionExecutionCallback;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
@@ -51,9 +51,10 @@ public final class LeaderElectionServiceTest {
     @Mock
     private ServerService serverService;
     
-    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").overwrite(true).build();
+    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).overwrite(true).build();
     
-    private final LeaderElectionService leaderElectionService = new LeaderElectionService(null, jobConfig);
+    private final LeaderElectionService leaderElectionService = new LeaderElectionService(null, liteJobConfig);
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -63,7 +64,7 @@ public final class LeaderElectionServiceTest {
         ReflectionUtils.setFieldValue(leaderElectionService, "serverService", serverService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
-        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test

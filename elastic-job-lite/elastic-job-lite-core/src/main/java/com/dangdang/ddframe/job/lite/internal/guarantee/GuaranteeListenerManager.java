@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.guarantee;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
@@ -40,9 +40,9 @@ public class GuaranteeListenerManager extends AbstractListenerManager {
     
     private final List<ElasticJobListener> elasticJobListeners;
     
-    public GuaranteeListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
-        super(coordinatorRegistryCenter, jobConfiguration);
-        this.guaranteeNode = new GuaranteeNode(jobConfiguration.getJobName());
+    public GuaranteeListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
+        super(regCenter, liteJobConfig);
+        this.guaranteeNode = new GuaranteeNode(liteJobConfig.getJobConfig().getJobName());
         this.elasticJobListeners = elasticJobListeners;
     }
     

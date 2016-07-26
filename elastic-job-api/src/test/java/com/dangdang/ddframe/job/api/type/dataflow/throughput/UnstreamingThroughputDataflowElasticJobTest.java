@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
 import com.dangdang.ddframe.job.api.type.dataflow.AbstractDataflowElasticJobExecutorTest;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 public final class UnstreamingThroughputDataflowElasticJobTest extends AbstractDataflowElasticJobExecutorTest {
     
     public UnstreamingThroughputDataflowElasticJobTest() {
-        super(DataflowType.THROUGHPUT, false);
+        super(DataflowJobConfiguration.DataflowType.THROUGHPUT, false);
     }
     
     @Test

@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.executor;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
@@ -50,9 +50,10 @@ public final class JobExecutorTest {
     @Mock
     private ElasticJobListenerCaller caller;
     
-    private JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
+    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build();
     
-    private JobExecutor jobExecutor = new JobExecutor(regCenter, jobConfig);
+    private JobExecutor jobExecutor = new JobExecutor(regCenter, liteJobConfig);
     
     @Before
     public void initMocks() throws NoSuchFieldException {
@@ -65,9 +66,9 @@ public final class JobExecutorTest {
     public void testNew() throws NoSuchFieldException {
         TestDistributeOnceElasticJobListener testDistributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(caller);
         assertNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
-        JobExecutor actualJobExecutor = new JobExecutor(null, jobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
+        JobExecutor actualJobExecutor = new JobExecutor(null, liteJobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
         assertNotNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
-        assertThat(ReflectionUtils.getFieldValue(actualJobExecutor, ReflectionUtils.getFieldWithName(JobExecutor.class, "elasticJob", false)), instanceOf(jobConfig.getJobClass()));
+        assertThat(ReflectionUtils.getFieldValue(actualJobExecutor, ReflectionUtils.getFieldWithName(JobExecutor.class, "elasticJob", false)), instanceOf(liteJobConfig.getJobConfig().getJobClass()));
     }
     
     @Test

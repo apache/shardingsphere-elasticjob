@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.lite.internal.execution;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.lite.internal.reg.BlockUtils;
+import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class ExecutionService {
     
-    private final JobConfiguration jobConfiguration;
+    private final LiteJobConfiguration liteJobConfig;
     
     private final JobNodeStorage jobNodeStorage;
     
@@ -54,12 +54,12 @@ public class ExecutionService {
     
     private final LeaderElectionService leaderElectionService;
     
-    public ExecutionService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        this.jobConfiguration = jobConfiguration;
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
+    public ExecutionService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+        this.liteJobConfig = liteJobConfig;
+        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
+        configService = new ConfigurationService(coordinatorRegistryCenter, liteJobConfig);
+        serverService = new ServerService(coordinatorRegistryCenter, liteJobConfig);
+        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, liteJobConfig);
     }
     
     /**
@@ -73,7 +73,7 @@ public class ExecutionService {
             for (int each : shardingContext.getShardingItems().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
-                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobConfiguration.getJobName());
+                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobConfig().getJobName());
                 if (null == jobScheduleController) {
                     continue;
                 }

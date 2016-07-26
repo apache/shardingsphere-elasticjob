@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationFieldUtil;
@@ -47,9 +47,10 @@ public final class ServerServiceTest {
     @Mock
     private LocalHostService localHostService;
     
-    private final JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").overwrite(true).build();
+    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).overwrite(true).build();
     
-    private final ServerService serverService = new ServerService(null, jobConfig);
+    private final ServerService serverService = new ServerService(null, liteJobConfig);
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -58,7 +59,7 @@ public final class ServerServiceTest {
         ReflectionUtils.setFieldValue(serverService, "localHostService", localHostService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
-        when(jobNodeStorage.getJobConfiguration()).thenReturn(jobConfig);
+        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test
@@ -70,24 +71,24 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineWhenOverwriteDisabled() {
-        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "overwrite", false);
+        JobConfigurationFieldUtil.setFieldValue(liteJobConfig, "overwrite", false);
         serverService.persistServerOnline();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(3)).getIp();
         verify(localHostService).getHostName();
-        verify(jobNodeStorage).getJobConfiguration();
+        verify(jobNodeStorage).getLiteJobConfig();
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
     }
     
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
-        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "disabled", true);
+        JobConfigurationFieldUtil.setFieldValue(liteJobConfig, "disabled", true);
         serverService.persistServerOnline();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
-        verify(jobNodeStorage, times(2)).getJobConfiguration();
+        verify(jobNodeStorage, times(2)).getLiteJobConfig();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/disabled", "");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
@@ -99,7 +100,7 @@ public final class ServerServiceTest {
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
-        verify(jobNodeStorage, times(2)).getJobConfiguration();
+        verify(jobNodeStorage, times(2)).getLiteJobConfig();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/disabled");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
     }

@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestElasticJobListener;
@@ -71,14 +71,15 @@ public class LiteJobFacadeTest {
     @Mock
     private ElasticJobListenerCaller caller;
     
-    private JobConfiguration jobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build();
+    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build();
     
     private LiteJobFacade liteJobFacade;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        liteJobFacade = new LiteJobFacade(null, jobConfig, Collections.<ElasticJobListener>singletonList(new TestElasticJobListener(caller)));
+        liteJobFacade = new LiteJobFacade(null, liteJobConfig, Collections.<ElasticJobListener>singletonList(new TestElasticJobListener(caller)));
         ReflectionUtils.setFieldValue(liteJobFacade, "configService", configService);
         ReflectionUtils.setFieldValue(liteJobFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(liteJobFacade, "shardingService", shardingService);
@@ -101,8 +102,8 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertGetDataflowType() {
-        when(configService.getDataflowType()).thenReturn(DataflowType.SEQUENCE);
-        assertThat(liteJobFacade.getDataflowType(), is(DataflowType.SEQUENCE));
+        when(configService.getDataflowType()).thenReturn(DataflowJobConfiguration.DataflowType.SEQUENCE);
+        assertThat(liteJobFacade.getDataflowType(), is(DataflowJobConfiguration.DataflowType.SEQUENCE));
     }
     
     @Test

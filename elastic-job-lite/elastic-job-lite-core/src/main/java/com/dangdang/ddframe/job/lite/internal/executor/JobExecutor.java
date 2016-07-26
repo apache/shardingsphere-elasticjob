@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.executor;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.script.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.internal.ElasticJob;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
@@ -49,17 +49,17 @@ public class JobExecutor {
     
     private final SchedulerFacade schedulerFacade;
     
-    public JobExecutor(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        jobName = jobConfig.getJobName();
+    public JobExecutor(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
+        jobName = liteJobConfig.getJobConfig().getJobName();
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
-        setGuaranteeServiceForElasticJobListeners(regCenter, jobConfig, elasticJobListenerList);
-        elasticJob = createElasticJob(jobConfig);
-        schedulerFacade = new SchedulerFacade(regCenter, jobConfig, elasticJobListenerList);
+        setGuaranteeServiceForElasticJobListeners(regCenter, liteJobConfig, elasticJobListenerList);
+        elasticJob = createElasticJob(liteJobConfig);
+        schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig, elasticJobListenerList);
     }
     
-    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final List<ElasticJobListener> elasticJobListeners) {
-        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobConfig);
+    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
+        GuaranteeService guaranteeService = new GuaranteeService(regCenter, liteJobConfig);
         for (ElasticJobListener each : elasticJobListeners) {
             if (each instanceof AbstractDistributeOnceElasticJobListener) {
                 ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
@@ -67,14 +67,14 @@ public class JobExecutor {
         }
     }
     
-    private ElasticJob createElasticJob(final JobConfiguration jobConfig) {
+    private ElasticJob createElasticJob(final LiteJobConfiguration liteJobConfig) {
         // TODO 代码需要梳理
-        if (jobConfig.getJobClass() == ScriptElasticJob.class) {
+        if (liteJobConfig.getJobConfig().getJobClass() == ScriptElasticJob.class) {
             return null;
         }
         ElasticJob result;
         try {
-            result = (ElasticJob) jobConfig.getJobClass().newInstance();
+            result = (ElasticJob) liteJobConfig.getJobConfig().getJobClass().newInstance();
         } catch (final InstantiationException | IllegalAccessException ex) {
             throw new JobException(ex);
         }

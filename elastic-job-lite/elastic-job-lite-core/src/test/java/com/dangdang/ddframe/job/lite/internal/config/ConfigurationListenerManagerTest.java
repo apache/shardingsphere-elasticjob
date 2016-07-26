@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager.CronSettingChangedJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -43,8 +44,9 @@ public final class ConfigurationListenerManagerTest {
     @Mock
     private JobScheduleController jobScheduleController;
     
-    private final ConfigurationListenerManager configurationListenerManager = new ConfigurationListenerManager(null, 
-            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, 3, "0/1 * * * * ?").build());
+    private final ConfigurationListenerManager configurationListenerManager = new ConfigurationListenerManager(null,
+            new LiteJobConfiguration.LiteJobConfigurationBuilder(
+                    JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build());
     
     @Before
     public void setUp() throws NoSuchFieldException {

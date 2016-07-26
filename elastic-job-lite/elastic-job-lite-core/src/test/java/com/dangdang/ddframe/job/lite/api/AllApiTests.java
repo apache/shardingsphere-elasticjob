@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
-import com.dangdang.ddframe.job.lite.api.config.AllApiConfigTests;
 import com.dangdang.ddframe.job.lite.api.listener.DistributeOnceElasticJobListenerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -26,9 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         JobSchedulerTest.class,
-        DistributeOnceElasticJobListenerTest.class, 
-        JobConfigurationFactoryTest.class,
-        AllApiConfigTests.class
+        DistributeOnceElasticJobListenerTest.class
     })
 public final class AllApiTests {
 }

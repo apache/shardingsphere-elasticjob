@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.settings;
 
+import com.dangdang.ddframe.job.api.internal.config.JobType;
 import com.dangdang.ddframe.job.lite.api.JobSettingsAPI;
-import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
 import com.dangdang.ddframe.job.lite.domain.JobSettings;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;

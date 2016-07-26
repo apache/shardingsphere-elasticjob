@@ -21,22 +21,20 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.unitils.util.ReflectionUtils;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobConfigurationFieldUtil {
     
-    public static void setSuperFieldValue(final JobConfiguration jobConfig, final String fieldName, final Object fieldValue) {
+    public static void setSuperFieldValue(final Object config, final String fieldName, final Object fieldValue) {
         try {
-            ReflectionUtils.setFieldValue(jobConfig, jobConfig.getClass().getSuperclass().getDeclaredField(fieldName), fieldValue);
+            ReflectionUtils.setFieldValue(config, config.getClass().getSuperclass().getDeclaredField(fieldName), fieldValue);
         } catch (final NoSuchFieldException ex) {
             throw new RuntimeException(ex);
         }
     }
     
-    public static void setFieldValue(final JobConfiguration jobConfig, final String fieldName, final Object fieldValue) {
+    public static void setFieldValue(final Object config, final String fieldName, final Object fieldValue) {
         try {
-            ReflectionUtils.setFieldValue(jobConfig, jobConfig.getClass().getDeclaredField(fieldName), fieldValue);
+            ReflectionUtils.setFieldValue(config, config.getClass().getDeclaredField(fieldName), fieldValue);
         } catch (final NoSuchFieldException ex) {
             throw new RuntimeException(ex);
         }

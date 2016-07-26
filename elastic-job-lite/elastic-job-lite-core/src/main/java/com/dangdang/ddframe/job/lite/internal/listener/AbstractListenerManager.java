@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener;
 
-import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-import org.apache.curator.framework.state.ConnectionStateListener;
-
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.apache.curator.framework.state.ConnectionStateListener;
 
 /**
  * 作业注册中心的监听器管理者的抽象类.
@@ -33,8 +32,8 @@ public abstract class AbstractListenerManager {
     
     private final JobNodeStorage jobNodeStorage;
     
-    protected AbstractListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
+    protected AbstractListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
     }
 
     /**

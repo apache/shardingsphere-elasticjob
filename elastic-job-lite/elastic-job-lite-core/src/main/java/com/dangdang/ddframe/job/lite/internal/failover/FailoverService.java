@@ -17,22 +17,21 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import com.dangdang.ddframe.job.util.env.LocalHostService;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 作业失效转移服务.
@@ -44,7 +43,7 @@ public class FailoverService {
     
     private final LocalHostService localHostService = new LocalHostService();
     
-    private final JobConfiguration jobConfiguration;
+    private final LiteJobConfiguration liteJobConfig;
     
     private final JobNodeStorage jobNodeStorage;
     
@@ -52,11 +51,11 @@ public class FailoverService {
     
     private final ShardingService shardingService;
     
-    public FailoverService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        this.jobConfiguration = jobConfiguration;
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
+    public FailoverService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        this.liteJobConfig = liteJobConfig;
+        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
+        serverService = new ServerService(regCenter, liteJobConfig);
+        shardingService = new ShardingService(regCenter, liteJobConfig);
     }
     
     /**
@@ -154,7 +153,7 @@ public class FailoverService {
             log.debug("Elastic job: failover job begin, crashed item:{}.", crashedItem);
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
-            JobRegistry.getInstance().getJobScheduleController(jobConfiguration.getJobName()).triggerJob();
+            JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobConfig().getJobName()).triggerJob();
         }
     }
 }

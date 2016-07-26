@@ -17,11 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
@@ -30,6 +26,9 @@ import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 失效转移监听管理器.
@@ -52,15 +51,16 @@ public class FailoverListenerManager extends AbstractListenerManager {
     
     private final FailoverNode failoverNode;
     
-    public FailoverListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        super(coordinatorRegistryCenter, jobConfiguration);
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
-        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        failoverService = new FailoverService(coordinatorRegistryCenter, jobConfiguration);
-        configNode = new ConfigurationNode(jobConfiguration.getJobName());
-        executionNode = new ExecutionNode(jobConfiguration.getJobName());
-        failoverNode = new FailoverNode(jobConfiguration.getJobName());
+    public FailoverListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        super(regCenter, liteJobConfig);
+        configService = new ConfigurationService(regCenter, liteJobConfig);
+        executionService = new ExecutionService(regCenter, liteJobConfig);
+        shardingService = new ShardingService(regCenter, liteJobConfig);
+        failoverService = new FailoverService(regCenter, liteJobConfig);
+        String jobName = liteJobConfig.getJobConfig().getJobName();
+        configNode = new ConfigurationNode(jobName);
+        executionNode = new ExecutionNode(jobName);
+        failoverNode = new FailoverNode(jobName);
     }
     
     @Override

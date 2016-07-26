@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.guarantee;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -35,9 +35,9 @@ public class GuaranteeService {
     
     private final ConfigurationService configService;
     
-    public GuaranteeService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
+    public GuaranteeService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
+        configService = new ConfigurationService(coordinatorRegistryCenter, liteJobConfig);
     }
     
     /**

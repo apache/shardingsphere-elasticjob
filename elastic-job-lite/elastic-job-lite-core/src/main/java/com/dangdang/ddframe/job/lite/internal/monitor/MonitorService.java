@@ -17,6 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.internal.monitor;
 
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
+import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtils;
+import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Joiner;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.curator.framework.recipes.cache.TreeCache;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -26,17 +35,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCache;
-
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.reg.SensitiveInfoUtils;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 作业监控服务.
@@ -58,10 +56,10 @@ public class MonitorService {
     
     private volatile boolean closed;
     
-    public MonitorService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        jobName = jobConfiguration.getJobName();
+    public MonitorService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+        jobName = liteJobConfig.getJobConfig().getJobName();
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
-        configService = new ConfigurationService(coordinatorRegistryCenter, jobConfiguration);
+        configService = new ConfigurationService(coordinatorRegistryCenter, liteJobConfig);
     }
     
     /**

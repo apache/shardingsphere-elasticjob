@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
-import com.dangdang.ddframe.job.api.internal.JobFacade;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -52,9 +52,9 @@ public class JobScheduler {
     
     private final JobFacade jobFacade;
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final JobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
-        jobExecutor = new JobExecutor(regCenter, jobConfig, elasticJobListeners);
-        jobFacade = new LiteJobFacade(regCenter, jobConfig, Arrays.asList(elasticJobListeners));
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
+        jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
+        jobFacade = new LiteJobFacade(regCenter, liteJobConfig, Arrays.asList(elasticJobListeners));
     }
     
     /**

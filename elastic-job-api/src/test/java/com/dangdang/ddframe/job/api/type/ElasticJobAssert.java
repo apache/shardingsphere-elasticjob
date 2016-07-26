@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.type;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.internal.JobFacade;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

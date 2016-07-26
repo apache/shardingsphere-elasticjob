@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
 
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataflowElasticJobForExecuteFailure;
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 public final class StreamingThroughputDataflowElasticJobForExecuteFailureTest extends AbstractBaseStdJobAutoInitTest {
     
     public StreamingThroughputDataflowElasticJobForExecuteFailureTest() {
-        super(StreamingThroughputDataflowElasticJobForExecuteFailure.class, Optional.of(DataflowType.THROUGHPUT));
+        super(StreamingThroughputDataflowElasticJobForExecuteFailure.class, Optional.of(DataflowJobConfiguration.DataflowType.THROUGHPUT));
     }
     
     @Before
@@ -43,8 +43,8 @@ public final class StreamingThroughputDataflowElasticJobForExecuteFailureTest ex
     }
     
     @Override
-    protected void setJobConfig(final JobConfiguration jobConfig) {
-        JobConfigurationFieldUtil.setFieldValue(jobConfig, "streamingProcess", true);
+    protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
+        JobConfigurationFieldUtil.setFieldValue(liteJobConfig.getJobConfig(), "streamingProcess", true);
     }
     
     @Test

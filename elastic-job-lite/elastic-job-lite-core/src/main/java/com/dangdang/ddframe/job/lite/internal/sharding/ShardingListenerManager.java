@@ -17,17 +17,16 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 分片监听管理器.
@@ -44,12 +43,13 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
-    public ShardingListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        super(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
-        configurationNode = new ConfigurationNode(jobConfiguration.getJobName());
-        serverNode = new ServerNode(jobConfiguration.getJobName());
+    public ShardingListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        super(regCenter, liteJobConfig);
+        shardingService = new ShardingService(regCenter, liteJobConfig);
+        executionService = new ExecutionService(regCenter, liteJobConfig);
+        String jobName = liteJobConfig.getJobConfig().getJobName();
+        configurationNode = new ConfigurationNode(jobName);
+        serverNode = new ServerNode(jobName);
     }
     
     @Override

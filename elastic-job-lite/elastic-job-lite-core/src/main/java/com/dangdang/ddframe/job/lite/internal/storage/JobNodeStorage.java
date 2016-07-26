@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.storage;
 
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
 import lombok.Getter;
@@ -45,14 +45,14 @@ public class JobNodeStorage {
     private final CoordinatorRegistryCenter coordinatorRegistryCenter;
     
     @Getter
-    private final JobConfiguration jobConfiguration;
+    private final LiteJobConfiguration liteJobConfig;
     
     private final JobNodePath jobNodePath;
     
-    public JobNodeStorage(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
+    public JobNodeStorage(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
-        this.jobConfiguration = jobConfiguration;
-        jobNodePath = new JobNodePath(jobConfiguration.getJobName());
+        this.liteJobConfig = liteJobConfig;
+        jobNodePath = new JobNodePath(liteJobConfig.getJobConfig().getJobName());
     }
     
     /**
@@ -109,7 +109,7 @@ public class JobNodeStorage {
     }
     
     private boolean isJobRootNodeExisted() {
-        return coordinatorRegistryCenter.isExisted("/" + jobConfiguration.getJobName());
+        return coordinatorRegistryCenter.isExisted("/" + liteJobConfig.getJobConfig().getJobName());
     }
     
     /**
@@ -130,7 +130,7 @@ public class JobNodeStorage {
      * @param value 作业节点数据值
      */
     public void fillJobNodeIfNullOrOverwrite(final String node, final Object value) {
-        if (!isJobNodeExisted(node) || (jobConfiguration.isOverwrite() && !value.toString().equals(getJobNodeDataDirectly(node)))) {
+        if (!isJobNodeExisted(node) || (liteJobConfig.isOverwrite() && !value.toString().equals(getJobNodeDataDirectly(node)))) {
             coordinatorRegistryCenter.persist(jobNodePath.getFullPath(node), value.toString());
         }
     }
@@ -223,7 +223,7 @@ public class JobNodeStorage {
      * 注册数据监听器.
      */
     public void addDataListener(final TreeCacheListener listener) {
-        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + jobConfiguration.getJobName());
+        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + liteJobConfig.getJobConfig().getJobName());
         cache.getListenable().addListener(listener);
     }
     

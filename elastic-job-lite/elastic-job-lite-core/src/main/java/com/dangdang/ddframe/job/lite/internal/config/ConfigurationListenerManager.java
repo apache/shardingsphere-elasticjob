@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -38,9 +38,9 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    public ConfigurationListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        super(coordinatorRegistryCenter, jobConfiguration);
-        jobName = jobConfiguration.getJobName();
+    public ConfigurationListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+        super(coordinatorRegistryCenter, liteJobConfig);
+        jobName = liteJobConfig.getJobConfig().getJobName();
         configNode = new ConfigurationNode(jobName);
     }
     

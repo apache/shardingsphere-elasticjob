@@ -17,11 +17,9 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow;
 
-import com.dangdang.ddframe.job.api.JobExceptionHandler;
+import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJobExecutor;
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.api.internal.JobFacade;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.FooDataflowElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;
@@ -50,7 +48,7 @@ import static org.mockito.Mockito.when;
 @Getter(AccessLevel.PROTECTED)
 public abstract class AbstractDataflowElasticJobExecutorTest {
     
-    private final DataflowType dataflowType;
+    private final DataflowJobConfiguration.DataflowType dataflowType;
     
     private final boolean streamingProcess;
     

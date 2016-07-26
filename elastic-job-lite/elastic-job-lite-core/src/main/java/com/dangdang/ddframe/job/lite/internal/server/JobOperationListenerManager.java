@@ -17,13 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
-import org.apache.curator.framework.state.ConnectionState;
-import org.apache.curator.framework.state.ConnectionStateListener;
-
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
@@ -32,6 +26,11 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
+import org.apache.curator.framework.state.ConnectionState;
+import org.apache.curator.framework.state.ConnectionStateListener;
 
 /**
  * 作业控制监听管理器.
@@ -52,14 +51,14 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final ExecutionService executionService;
     
-    public JobOperationListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        super(coordinatorRegistryCenter, jobConfiguration);
-        jobName = jobConfiguration.getJobName();
+    public JobOperationListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        super(regCenter, liteJobConfig);
+        jobName = liteJobConfig.getJobConfig().getJobName();
         serverNode = new ServerNode(jobName);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
-        shardingService = new ShardingService(coordinatorRegistryCenter, jobConfiguration);
-        executionService = new ExecutionService(coordinatorRegistryCenter, jobConfiguration);
+        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
+        serverService = new ServerService(regCenter, liteJobConfig);
+        shardingService = new ShardingService(regCenter, liteJobConfig);
+        executionService = new ExecutionService(regCenter, liteJobConfig);
     }
     
     @Override

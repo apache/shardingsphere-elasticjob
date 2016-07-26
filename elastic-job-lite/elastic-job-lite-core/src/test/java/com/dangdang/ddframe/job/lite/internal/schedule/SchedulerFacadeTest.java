@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.impl.JobType;
+import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.internal.config.JobType;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
@@ -68,14 +68,15 @@ public class SchedulerFacadeTest {
     @Mock
     private ListenerManager listenerManager;
     
-    private JobConfiguration jobConfig = JobConfigurationFactory.createDataflowJobConfigurationBuilder("testJob", TestDataflowJob.class, 3, "0/1 * * * * ?", DataflowType.THROUGHPUT).build();
+    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            JobConfigurationFactory.createDataflowJobConfigurationBuilder("testJob", TestDataflowJob.class, "0/1 * * * * ?", 3, DataflowJobConfiguration.DataflowType.THROUGHPUT).build()).build();
     
     private SchedulerFacade schedulerFacade;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        schedulerFacade = new SchedulerFacade(null, jobConfig, Collections.<ElasticJobListener>emptyList());
+        schedulerFacade = new SchedulerFacade(null, liteJobConfig, Collections.<ElasticJobListener>emptyList());
         when(configService.getJobType()).thenReturn(JobType.DATAFLOW);
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);

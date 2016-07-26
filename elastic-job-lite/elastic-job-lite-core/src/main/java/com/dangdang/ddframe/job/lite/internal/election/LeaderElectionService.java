@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
-import com.dangdang.ddframe.job.util.env.LocalHostService;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.lite.internal.reg.BlockUtils;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +41,9 @@ public class LeaderElectionService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    public LeaderElectionService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
-        serverService = new ServerService(coordinatorRegistryCenter, jobConfiguration);
+    public LeaderElectionService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
+        serverService = new ServerService(coordinatorRegistryCenter, liteJobConfig);
     }
     
     /**

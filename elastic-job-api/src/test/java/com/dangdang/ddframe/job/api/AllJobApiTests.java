@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.config.AllApiConfigTests;
 import com.dangdang.ddframe.job.api.type.AllTypeTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,7 +25,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        ShardingContextTest.class, 
+        ShardingContextTest.class,
+        JobConfigurationFactoryTest.class,
+        AllApiConfigTests.class, 
         AllTypeTests.class
     })
 public final class AllJobApiTests {

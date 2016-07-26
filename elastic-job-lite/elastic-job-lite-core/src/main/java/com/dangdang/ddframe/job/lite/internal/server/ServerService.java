@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.util.env.LocalHostService;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
@@ -38,8 +38,8 @@ public class ServerService {
     
     private final LocalHostService localHostService = new LocalHostService();
     
-    public ServerService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration) {
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, jobConfiguration);
+    public ServerService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
     }
     
     /**
@@ -61,10 +61,10 @@ public class ServerService {
     }
     
     private void persistDisabled() {
-        if (!jobNodeStorage.getJobConfiguration().isOverwrite()) {
+        if (!jobNodeStorage.getLiteJobConfig().isOverwrite()) {
             return;
         }
-        if (jobNodeStorage.getJobConfiguration().isDisabled()) {
+        if (jobNodeStorage.getLiteJobConfig().isDisabled()) {
             jobNodeStorage.fillJobNodeIfNullOrOverwrite(ServerNode.getDisabledNode(localHostService.getIp()), "");
         } else {
             jobNodeStorage.removeJobNodeIfExisted(ServerNode.getDisabledNode(localHostService.getIp()));

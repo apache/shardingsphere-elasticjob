@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.type.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowElasticJob;
+import com.dangdang.ddframe.job.api.DataflowElasticJob;
 import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedList;

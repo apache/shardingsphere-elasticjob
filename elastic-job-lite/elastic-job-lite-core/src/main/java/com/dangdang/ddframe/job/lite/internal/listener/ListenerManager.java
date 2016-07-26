@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener;
 
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
@@ -51,14 +51,14 @@ public class ListenerManager {
 
     private final GuaranteeListenerManager guaranteeListenerManager;
     
-    public ListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final JobConfiguration jobConfiguration, final List<ElasticJobListener> elasticJobListeners) {
-        electionListenerManager = new ElectionListenerManager(coordinatorRegistryCenter, jobConfiguration);
-        shardingListenerManager = new ShardingListenerManager(coordinatorRegistryCenter, jobConfiguration);
-        executionListenerManager = new ExecutionListenerManager(coordinatorRegistryCenter, jobConfiguration);
-        failoverListenerManager = new FailoverListenerManager(coordinatorRegistryCenter, jobConfiguration);
-        jobOperationListenerManager = new JobOperationListenerManager(coordinatorRegistryCenter, jobConfiguration);
-        configurationListenerManager = new ConfigurationListenerManager(coordinatorRegistryCenter, jobConfiguration);
-        guaranteeListenerManager = new GuaranteeListenerManager(coordinatorRegistryCenter, jobConfiguration, elasticJobListeners);
+    public ListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
+        electionListenerManager = new ElectionListenerManager(regCenter, liteJobConfig);
+        shardingListenerManager = new ShardingListenerManager(regCenter, liteJobConfig);
+        executionListenerManager = new ExecutionListenerManager(regCenter, liteJobConfig);
+        failoverListenerManager = new FailoverListenerManager(regCenter, liteJobConfig);
+        jobOperationListenerManager = new JobOperationListenerManager(regCenter, liteJobConfig);
+        configurationListenerManager = new ConfigurationListenerManager(regCenter, liteJobConfig);
+        guaranteeListenerManager = new GuaranteeListenerManager(regCenter, liteJobConfig, elasticJobListeners);
     }
     
     /**

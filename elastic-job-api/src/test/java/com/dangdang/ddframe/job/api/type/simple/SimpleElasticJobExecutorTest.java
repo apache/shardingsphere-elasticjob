@@ -17,10 +17,9 @@
 
 package com.dangdang.ddframe.job.api.type.simple;
 
-import com.dangdang.ddframe.job.api.JobExceptionHandler;
+import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.internal.JobFacade;
-import com.dangdang.ddframe.job.api.simple.SimpleElasticJobExecutor;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.fixture.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.api.type.fixture.JobCaller;

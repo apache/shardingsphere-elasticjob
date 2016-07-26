@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.sequence;
 
-import com.dangdang.ddframe.job.api.dataflow.DataflowType;
-import com.dangdang.ddframe.job.lite.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.sequence.OneOffSequenceDataflowElasticJob;
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 public final class OneOffSequenceDataflowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public OneOffSequenceDataflowElasticJobTest() {
-        super(OneOffSequenceDataflowElasticJob.class, Optional.of(DataflowType.SEQUENCE));
+        super(OneOffSequenceDataflowElasticJob.class, Optional.of(DataflowJobConfiguration.DataflowType.SEQUENCE));
     }
     
     @Before
@@ -43,9 +43,9 @@ public final class OneOffSequenceDataflowElasticJobTest extends AbstractBaseStdJ
     }
     
     @Override
-    protected void setJobConfig(final JobConfiguration jobConfig) {
-        JobConfigurationFieldUtil.setSuperFieldValue(jobConfig, "misfire", false);
-        JobConfigurationFieldUtil.setFieldValue(jobConfig, "streamingProcess", false);
+    protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
+        JobConfigurationFieldUtil.setSuperFieldValue(liteJobConfig.getJobConfig(), "misfire", false);
+        JobConfigurationFieldUtil.setFieldValue(liteJobConfig.getJobConfig(), "streamingProcess", false);
     }
     
     @Test
