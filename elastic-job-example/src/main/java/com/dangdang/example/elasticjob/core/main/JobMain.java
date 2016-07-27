@@ -17,11 +17,11 @@
 
 package com.dangdang.example.elasticjob.core.main;
 
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.type.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.type.simple.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
@@ -31,8 +31,7 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.example.elasticjob.core.job.SequenceDataflowJobDemo;
 import com.dangdang.example.elasticjob.core.job.SimpleJobDemo;
 import com.dangdang.example.elasticjob.core.job.ThroughputDataflowJobDemo;
-
-import static com.dangdang.example.elasticjob.utils.ScriptCommandLineHelper.buildScriptCommandLine;
+import com.dangdang.example.elasticjob.utils.ScriptCommandLineHelper;
 
 public final class JobMain {
     
@@ -51,21 +50,21 @@ public final class JobMain {
         zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         regCenter.init();
         
-        final SimpleJobConfiguration simpleJobConfig = JobConfigurationFactory.createSimpleJobConfigurationBuilder("simpleElasticDemoJob", SimpleJobDemo.class, "0/30 * * * * ?", 10).build();
+        final SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("simpleElasticDemoJob", "0/30 * * * * ?", 10).build(), SimpleJobDemo.class);
         
-        final DataflowJobConfiguration throughputJobConfig = JobConfigurationFactory.createDataflowJobConfigurationBuilder(
-                "throughputDataflowElasticDemoJob", ThroughputDataflowJobDemo.class, "0/5 * * * * ?", 10, DataflowJobConfiguration.DataflowType.THROUGHPUT).streamingProcess(true).build();
+        final DataflowJobConfiguration throughputJobConfig = new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("throughputDataflowElasticDemoJob", "0/5 * * * * ?", 10).build(), 
+                ThroughputDataflowJobDemo.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, true);
         
-        final DataflowJobConfiguration sequenceJobConfig = JobConfigurationFactory.createDataflowJobConfigurationBuilder(
-                "sequenceDataflowElasticDemoJob", SequenceDataflowJobDemo.class, "0/5 * * * * ?", 10, DataflowJobConfiguration.DataflowType.SEQUENCE).build();
+        final DataflowJobConfiguration sequenceJobConfig = new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("sequenceDataflowElasticDemoJob", "0/5 * * * * ?", 10).build(),
+                SequenceDataflowJobDemo.class, DataflowJobConfiguration.DataflowType.SEQUENCE, true);
         
-        final ScriptJobConfiguration scriptJobConfig = JobConfigurationFactory.createScriptJobConfigurationBuilder(
-                "scriptElasticDemoJob", "0/5 * * * * ?", 10, buildScriptCommandLine()).build();
-        
-        new JobScheduler(regCenter, LiteJobConfiguration.createBuilder(simpleJobConfig).build(), new SimpleDistributeOnceElasticJobListener()).init();
-        new JobScheduler(regCenter, LiteJobConfiguration.createBuilder(throughputJobConfig).build()).init();
-        new JobScheduler(regCenter, LiteJobConfiguration.createBuilder(sequenceJobConfig).build()).init();
-        new JobScheduler(regCenter, LiteJobConfiguration.createBuilder(scriptJobConfig).build()).init();
+        final ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("scriptElasticDemoJob", "0/5 * * * * ?", 10).build(), 
+                ScriptCommandLineHelper.buildScriptCommandLine());
+                
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), new SimpleDistributeOnceElasticJobListener()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(throughputJobConfig).build()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(sequenceJobConfig).build()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build()).init();
     }
     
     private class SimpleDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {

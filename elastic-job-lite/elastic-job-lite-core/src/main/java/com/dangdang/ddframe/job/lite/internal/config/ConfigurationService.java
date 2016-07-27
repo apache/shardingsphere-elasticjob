@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.api.internal.config.JobType;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.type.script.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.type.JobType;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
@@ -59,7 +59,7 @@ public class ConfigurationService {
             String registeredJobClassName = jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS);
             String toBeRegisteredJobClassName = jobNodeStorage.getLiteJobConfig().getJobConfig().getJobClass().getCanonicalName();
             if (!toBeRegisteredJobClassName.equals(registeredJobClassName)) {
-                throw new JobConflictException(jobNodeStorage.getLiteJobConfig().getJobConfig().getJobName(), registeredJobClassName, toBeRegisteredJobClassName);
+                throw new JobConflictException(jobNodeStorage.getLiteJobConfig().getJobName(), registeredJobClassName, toBeRegisteredJobClassName);
             }
         }
     }
@@ -76,16 +76,16 @@ public class ConfigurationService {
     private void fillSimpleJobInfo() {
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_TYPE, jobNodeStorage.getLiteJobConfig().getJobConfig().getJobType());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_CLASS, jobNodeStorage.getLiteJobConfig().getJobConfig().getJobClass().getCanonicalName());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, jobNodeStorage.getLiteJobConfig().getJobConfig().getShardingTotalCount());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, jobNodeStorage.getLiteJobConfig().getJobConfig().getShardingItemParameters());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, jobNodeStorage.getLiteJobConfig().getJobConfig().getJobParameter());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, jobNodeStorage.getLiteJobConfig().getJobConfig().getCron());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, jobNodeStorage.getLiteJobConfig().isMonitorExecution());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, jobNodeStorage.getLiteJobConfig().getJobConfig().getCoreConfig().getCron());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, jobNodeStorage.getLiteJobConfig().getJobConfig().getCoreConfig().getShardingTotalCount());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, jobNodeStorage.getLiteJobConfig().getJobConfig().getCoreConfig().getShardingItemParameters());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, jobNodeStorage.getLiteJobConfig().getJobConfig().getCoreConfig().getJobParameter());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, jobNodeStorage.getLiteJobConfig().getJobConfig().getCoreConfig().isFailover());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, jobNodeStorage.getLiteJobConfig().getJobConfig().getCoreConfig().isMisfire());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, jobNodeStorage.getLiteJobConfig().getJobConfig().getCoreConfig().getDescription());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MAX_TIME_DIFF_SECONDS, jobNodeStorage.getLiteJobConfig().getMaxTimeDiffSeconds());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, jobNodeStorage.getLiteJobConfig().getJobConfig().isFailover());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, jobNodeStorage.getLiteJobConfig().getJobConfig().isMisfire());
+        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, jobNodeStorage.getLiteJobConfig().isMonitorExecution());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, jobNodeStorage.getLiteJobConfig().getJobShardingStrategyClass());
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, jobNodeStorage.getLiteJobConfig().getJobConfig().getDescription());
         jobNodeStorage.fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, jobNodeStorage.getLiteJobConfig().getMonitorPort());
     }
     
@@ -260,7 +260,7 @@ public class ConfigurationService {
      * @return 作业名称
      */
     public String getJobName() {
-        return jobNodeStorage.getLiteJobConfig().getJobConfig().getJobName();
+        return jobNodeStorage.getLiteJobConfig().getJobName();
     }
     
     /**

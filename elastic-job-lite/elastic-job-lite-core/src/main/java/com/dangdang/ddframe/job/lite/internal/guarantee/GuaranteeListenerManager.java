@@ -42,7 +42,7 @@ public class GuaranteeListenerManager extends AbstractListenerManager {
     
     public GuaranteeListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
         super(regCenter, liteJobConfig);
-        this.guaranteeNode = new GuaranteeNode(liteJobConfig.getJobConfig().getJobName());
+        this.guaranteeNode = new GuaranteeNode(liteJobConfig.getJobName());
         this.elasticJobListeners = elasticJobListeners;
     }
     

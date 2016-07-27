@@ -47,7 +47,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
         super(regCenter, liteJobConfig);
         shardingService = new ShardingService(regCenter, liteJobConfig);
         executionService = new ExecutionService(regCenter, liteJobConfig);
-        String jobName = liteJobConfig.getJobConfig().getJobName();
+        String jobName = liteJobConfig.getJobName();
         configurationNode = new ConfigurationNode(jobName);
         serverNode = new ServerNode(jobName);
     }

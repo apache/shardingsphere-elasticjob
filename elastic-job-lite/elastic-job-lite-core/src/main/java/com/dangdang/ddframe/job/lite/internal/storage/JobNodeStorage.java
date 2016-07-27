@@ -52,7 +52,7 @@ public class JobNodeStorage {
     public JobNodeStorage(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
         this.liteJobConfig = liteJobConfig;
-        jobNodePath = new JobNodePath(liteJobConfig.getJobConfig().getJobName());
+        jobNodePath = new JobNodePath(liteJobConfig.getJobName());
     }
     
     /**
@@ -109,7 +109,7 @@ public class JobNodeStorage {
     }
     
     private boolean isJobRootNodeExisted() {
-        return coordinatorRegistryCenter.isExisted("/" + liteJobConfig.getJobConfig().getJobName());
+        return coordinatorRegistryCenter.isExisted("/" + liteJobConfig.getJobName());
     }
     
     /**
@@ -223,7 +223,7 @@ public class JobNodeStorage {
      * 注册数据监听器.
      */
     public void addDataListener(final TreeCacheListener listener) {
-        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + liteJobConfig.getJobConfig().getJobName());
+        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + liteJobConfig.getJobName());
         cache.getListenable().addListener(listener);
     }
     

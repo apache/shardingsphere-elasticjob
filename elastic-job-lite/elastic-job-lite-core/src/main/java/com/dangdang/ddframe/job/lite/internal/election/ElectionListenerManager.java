@@ -49,8 +49,8 @@ public class ElectionListenerManager extends AbstractListenerManager {
         super(coordinatorRegistryCenter, liteJobConfig);
         leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, liteJobConfig);
         serverService = new ServerService(coordinatorRegistryCenter, liteJobConfig);
-        electionNode = new ElectionNode(liteJobConfig.getJobConfig().getJobName());
-        serverNode = new ServerNode(liteJobConfig.getJobConfig().getJobName());
+        electionNode = new ElectionNode(liteJobConfig.getJobName());
+        serverNode = new ServerNode(liteJobConfig.getJobName());
     }
     
     @Override
@@ -88,7 +88,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
             private boolean isLeaderCrashed() {
                 return electionNode.isLeaderHostPath(path) && Type.NODE_REMOVED == event.getType();
             }
-    
+            
             private boolean isServerEnabled() {
                 return serverNode.isLocalServerDisabledPath(path) && Type.NODE_REMOVED == event.getType();
             }

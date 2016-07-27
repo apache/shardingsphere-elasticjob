@@ -18,11 +18,11 @@
 package com.dangdang.ddframe.job.cloud.example;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 
 import java.util.Date;
 
-public class SampleCloudJob implements SimpleElasticJob {
+public class SampleCloudJob implements SimpleJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {

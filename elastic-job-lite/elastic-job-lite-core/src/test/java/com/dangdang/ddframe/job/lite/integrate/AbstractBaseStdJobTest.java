@@ -17,13 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
-import com.dangdang.ddframe.job.api.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
-import com.dangdang.ddframe.job.api.ScriptElasticJob;
+import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.SimpleElasticJob;
-import com.dangdang.ddframe.job.api.internal.ElasticJob;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
@@ -121,21 +123,21 @@ public abstract class AbstractBaseStdJobTest {
     
     @SuppressWarnings("unchecked")
     private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
-        if (DataflowElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return LiteJobConfiguration.createBuilder(
-                    JobConfigurationFactory.createDataflowJobConfigurationBuilder(jobName, (Class<? extends DataflowElasticJob>) elasticJobClass, "0/1 * * * * ?", 3, dataflowType.get())
-                            .shardingItemParameters("0=A,1=B,2=C").build())
-                    .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
-        } else if (ScriptElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return LiteJobConfiguration.createBuilder(
-                    JobConfigurationFactory.createScriptJobConfigurationBuilder(jobName, "0/1 * * * * ?", 3, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath())
-                            .shardingItemParameters("0=A,1=B,2=C").build())
-                    .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
+        String cron = "0/1 * * * * ?";
+        int totalShardingCount = 3;
+        String shardingParameters = "0=A,1=B,2=C";
+        if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
+            DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(jobName, cron, totalShardingCount)
+                    .shardingItemParameters(shardingParameters).build(), (Class<? extends DataflowJob>) elasticJobClass, dataflowType.get(), false);
+            return LiteJobConfiguration.newBuilder(dataflowJobConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
+        } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
+            ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(jobName, cron, totalShardingCount)
+                    .shardingItemParameters(shardingParameters).build(), AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
+            return LiteJobConfiguration.newBuilder(scriptJobConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
         } else {
-            return LiteJobConfiguration.createBuilder(
-                    JobConfigurationFactory.createSimpleJobConfigurationBuilder(jobName, (Class<? extends SimpleElasticJob>) elasticJobClass, "0/1 * * * * ?", 3)
-                            .shardingItemParameters("0=A,1=B,2=C").build())
-                    .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
+            SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, cron, totalShardingCount)
+                    .shardingItemParameters(shardingParameters).build(), (Class<? extends SimpleJob>) elasticJobClass);
+            return LiteJobConfiguration.newBuilder(simpleJobConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
         }
     }
     

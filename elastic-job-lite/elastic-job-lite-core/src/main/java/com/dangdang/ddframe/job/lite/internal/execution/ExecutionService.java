@@ -73,7 +73,7 @@ public class ExecutionService {
             for (int each : shardingContext.getShardingItems().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
-                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobConfig().getJobName());
+                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobName());
                 if (null == jobScheduleController) {
                     continue;
                 }

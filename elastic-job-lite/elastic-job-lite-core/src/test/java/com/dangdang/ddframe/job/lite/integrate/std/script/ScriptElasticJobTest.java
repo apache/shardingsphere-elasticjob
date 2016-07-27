@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.script;
 
-import com.dangdang.ddframe.job.api.ScriptElasticJob;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.type.script.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.util.ScriptElasticJobUtil;
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
 public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public ScriptElasticJobTest() {
-        super(ScriptElasticJob.class, Optional.<DataflowJobConfiguration.DataflowType>absent());
+        super(ScriptJob.class, Optional.<DataflowJobConfiguration.DataflowType>absent());
     }
     
     @Test

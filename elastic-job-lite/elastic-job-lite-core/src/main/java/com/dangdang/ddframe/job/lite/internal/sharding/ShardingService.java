@@ -66,7 +66,7 @@ public class ShardingService {
     private final JobNodePath jobNodePath;
     
     public ShardingService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        jobName = liteJobConfig.getJobConfig().getJobName();
+        jobName = liteJobConfig.getJobName();
         jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
         leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
         configService = new ConfigurationService(regCenter, liteJobConfig);

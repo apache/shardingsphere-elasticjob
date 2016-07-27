@@ -48,12 +48,21 @@ public class LiteJobConfiguration {
     private final boolean overwrite;
     
     /**
+     * 获取作业名称.
+     * 
+     * @return 作业名称
+     */
+    public String getJobName() {
+        return jobConfig.getCoreConfig().getJobName();
+    }
+    
+    /**
      * 创建Lite作业配置构建器.
      * 
      * @param jobConfig 作业配置
      * @return Lite作业配置构建器
      */
-    public static Builder createBuilder(final JobConfiguration jobConfig) {
+    public static Builder newBuilder(final JobConfiguration jobConfig) {
         return new Builder(jobConfig);
     }
     

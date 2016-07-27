@@ -18,11 +18,11 @@
 package com.dangdang.example.elasticjob.core.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 
-public class SimpleJobDemo implements SimpleElasticJob {
+public class SimpleJobDemo implements SimpleJob {
     
     private PrintContext printContext = new PrintContext(SimpleJobDemo.class);
     

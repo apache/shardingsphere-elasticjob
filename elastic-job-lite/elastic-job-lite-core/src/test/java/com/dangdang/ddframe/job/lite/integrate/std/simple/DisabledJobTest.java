@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.simple;
 
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;

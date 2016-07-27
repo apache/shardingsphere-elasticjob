@@ -40,7 +40,7 @@ public class ExecutionListenerManager extends AbstractListenerManager {
     public ExecutionListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
         super(regCenter, liteJobConfig);
         executionService = new ExecutionService(regCenter, liteJobConfig);
-        configNode = new ConfigurationNode(liteJobConfig.getJobConfig().getJobName());
+        configNode = new ConfigurationNode(liteJobConfig.getJobName());
     }
     
     @Override

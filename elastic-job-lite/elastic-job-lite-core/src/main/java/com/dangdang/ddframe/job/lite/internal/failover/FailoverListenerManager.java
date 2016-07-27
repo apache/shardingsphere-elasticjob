@@ -57,7 +57,7 @@ public class FailoverListenerManager extends AbstractListenerManager {
         executionService = new ExecutionService(regCenter, liteJobConfig);
         shardingService = new ShardingService(regCenter, liteJobConfig);
         failoverService = new FailoverService(regCenter, liteJobConfig);
-        String jobName = liteJobConfig.getJobConfig().getJobName();
+        String jobName = liteJobConfig.getJobName();
         configNode = new ConfigurationNode(jobName);
         executionNode = new ExecutionNode(jobName);
         failoverNode = new FailoverNode(jobName);

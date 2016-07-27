@@ -17,22 +17,15 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.api.internal.ElasticJob;
-import com.dangdang.ddframe.job.api.internal.config.JobType;
+import com.dangdang.ddframe.job.api.type.JobType;
 
 /**
- * 作业基本配置信息.
+ * 作业配置标识接口.
  * 
  * @author caohao
+ * @author zhangliang
  */
-public interface JobConfiguration<T extends ElasticJob> {
-    
-    /**
-     * 获取作业名称.
-     *
-     * @return 作业名称
-     */
-    String getJobName();
+public interface JobConfiguration {
     
     /**
      * 获取作业类型.
@@ -42,73 +35,16 @@ public interface JobConfiguration<T extends ElasticJob> {
     JobType getJobType();
     
     /**
-     * 获取作业实现类名称.
-     * 
-     * @return 作业实现类名称
-     */
-    Class<? extends T> getJobClass();
-    
-    /**
-     * 获取作业启动时间的cron表达式.
+     * 获取作业实现类.
      *
-     * @return 作业启动时间的cron表达式
+     * @return 作业实现类
      */
-    String getCron();
+    Class<? extends ElasticJob> getJobClass();
     
     /**
-     * 获取作业分片总数.
+     * 获取作业核心配置.
      * 
-     * @return 作业分片总数
+     * @return 作业核心配置
      */
-    int getShardingTotalCount();
-    
-    /**
-     * 获取分片序列号和个性化参数对照表.
-     * 
-     * <p>
-     * 分片序列号和参数用等号分隔, 多个键值对用逗号分隔. 类似map.
-     * 分片序列号从0开始, 不可大于或等于作业分片总数.
-     * 如:
-     * 0=a,1=b,2=c
-     * </p>
-     * 
-     * @return 分片序列号和个性化参数对照表
-     */
-    String getShardingItemParameters();
-    
-    /**
-     * 获取作业自定义参数.
-     * 
-     * <p>
-     * 可以配置多个相同的作业, 但是用不同的参数作为不同的调度实例.
-     * </p>
-     * 
-     * @return 作业自定义参数
-     */
-    String getJobParameter();
-    
-    /**
-     * 获取是否开启失效转移.
-     * 
-     * <p>
-     * 只有对monitorExecution的情况下才可以开启失效转移.
-     * </p> 
-     * 
-     * @return 是否开启失效转移
-     */
-    boolean isFailover();
-    
-    /**
-     * 获取是否开启misfire.
-     * 
-     * @return misfire
-     */
-    boolean isMisfire();
-    
-    /**
-     * 获取作业描述信息.
-     * 
-     * @return 作业描述信息
-     */
-    String getDescription();
+    JobCoreConfiguration getCoreConfig(); 
 }

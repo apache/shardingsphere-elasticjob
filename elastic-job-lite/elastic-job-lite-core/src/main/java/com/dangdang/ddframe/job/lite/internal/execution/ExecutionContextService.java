@@ -57,14 +57,14 @@ public class ExecutionContextService {
         removeRunningIfMonitorExecution(shardingItems);
         if (shardingItems.isEmpty()) {
             return new ShardingContext(
-                    liteJobConfig.getJobConfig().getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), Collections.<ShardingContext.ShardingItem>emptyList());
+                    liteJobConfig.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), Collections.<ShardingContext.ShardingItem>emptyList());
         }
         Map<Integer, String> shardingItemParameterMap = configService.getShardingItemParameters();
         List<ShardingContext.ShardingItem> shardingItemList = new ArrayList<>(shardingItems.size());
         for (int each : shardingItems) {
             shardingItemList.add(new ShardingContext.ShardingItem(each, shardingItemParameterMap.get(each)));
         }
-        return new ShardingContext(liteJobConfig.getJobConfig().getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), shardingItemList);
+        return new ShardingContext(liteJobConfig.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), shardingItemList);
     }
     
     private void removeRunningIfMonitorExecution(final List<Integer> shardingItems) {

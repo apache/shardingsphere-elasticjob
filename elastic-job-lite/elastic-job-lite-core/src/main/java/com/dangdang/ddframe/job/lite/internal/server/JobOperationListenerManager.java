@@ -53,7 +53,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     public JobOperationListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
         super(regCenter, liteJobConfig);
-        jobName = liteJobConfig.getJobConfig().getJobName();
+        jobName = liteJobConfig.getJobName();
         serverNode = new ServerNode(jobName);
         leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
         serverService = new ServerService(regCenter, liteJobConfig);

@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.executor;
 
-import com.dangdang.ddframe.job.api.ScriptElasticJob;
-import com.dangdang.ddframe.job.api.internal.ElasticJob;
+import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
@@ -50,7 +50,7 @@ public class JobExecutor {
     private final SchedulerFacade schedulerFacade;
     
     public JobExecutor(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
-        jobName = liteJobConfig.getJobConfig().getJobName();
+        jobName = liteJobConfig.getJobName();
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, liteJobConfig, elasticJobListenerList);
@@ -69,12 +69,12 @@ public class JobExecutor {
     
     private ElasticJob createElasticJob(final LiteJobConfiguration liteJobConfig) {
         // TODO 代码需要梳理
-        if (liteJobConfig.getJobConfig().getJobClass() == ScriptElasticJob.class) {
+        if (liteJobConfig.getJobConfig().getJobClass() == ScriptJob.class) {
             return null;
         }
         ElasticJob result;
         try {
-            result = (ElasticJob) liteJobConfig.getJobConfig().getJobClass().newInstance();
+            result = liteJobConfig.getJobConfig().getJobClass().newInstance();
         } catch (final InstantiationException | IllegalAccessException ex) {
             throw new JobException(ex);
         }

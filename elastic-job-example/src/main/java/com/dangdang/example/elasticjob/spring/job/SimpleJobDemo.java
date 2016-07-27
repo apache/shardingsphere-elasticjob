@@ -18,7 +18,7 @@
 package com.dangdang.example.elasticjob.spring.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.example.elasticjob.fixture.repository.FooRepository;
 import com.dangdang.example.elasticjob.utils.PrintContext;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component
-public class SimpleJobDemo implements SimpleElasticJob {
+public class SimpleJobDemo implements SimpleJob {
     
     private PrintContext printContext = new PrintContext(SimpleJobDemo.class);
     

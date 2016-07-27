@@ -17,14 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
-import com.dangdang.ddframe.job.api.internal.ElasticJob;
-import com.dangdang.ddframe.job.api.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowElasticJobExecutor;
+import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
-import com.dangdang.ddframe.job.api.type.script.ScriptElasticJobExecutor;
-import com.dangdang.ddframe.job.api.SimpleElasticJob;
-import com.dangdang.ddframe.job.api.type.simple.SimpleElasticJobExecutor;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
+import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
+import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
+import com.dangdang.ddframe.job.api.type.simple.executor.SimpleJobExecutor;
 import com.dangdang.ddframe.job.exception.JobException;
 import lombok.Setter;
 import org.quartz.Job;
@@ -49,13 +49,13 @@ public class LiteJob implements Job {
     public void execute(final JobExecutionContext context) throws JobExecutionException {
         AbstractElasticJobExecutor elasticJobExecutor;
         if (null == elasticJob) {
-            elasticJobExecutor = new ScriptElasticJobExecutor(jobFacade);
-        } else if (elasticJob instanceof SimpleElasticJob) {
-            elasticJobExecutor = new SimpleElasticJobExecutor((SimpleElasticJob) elasticJob, jobFacade);
-        } else if (elasticJob instanceof DataflowElasticJob) {
-            elasticJobExecutor = new DataflowElasticJobExecutor((DataflowElasticJob) elasticJob, jobFacade);
+            elasticJobExecutor = new ScriptJobExecutor(jobFacade);
+        } else if (elasticJob instanceof SimpleJob) {
+            elasticJobExecutor = new SimpleJobExecutor((SimpleJob) elasticJob, jobFacade);
+        } else if (elasticJob instanceof DataflowJob) {
+            elasticJobExecutor = new DataflowJobExecutor((DataflowJob) elasticJob, jobFacade);
         } else {
-            throw new JobException(String.format("Cannot support job type '%s'"), elasticJob.getClass());
+            throw new JobException("Cannot support job type '%s'", elasticJob.getClass());
         }
         elasticJobExecutor.execute();
     }

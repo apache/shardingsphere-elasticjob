@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.api.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.ScriptElasticJob;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.type.script.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
@@ -94,24 +94,24 @@ public final class ConfigurationServiceTest {
     
     private void verifyPersistJobConfiguration() {
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_CLASS, TestJob.class.getCanonicalName());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, liteJobConfig.getJobConfig().getCron());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, liteJobConfig.getJobConfig().getShardingTotalCount());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, liteJobConfig.getJobConfig().getShardingItemParameters());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, liteJobConfig.getJobConfig().getJobParameter());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, liteJobConfig.getJobConfig().isFailover());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, liteJobConfig.getJobConfig().isMisfire());
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, liteJobConfig.getJobConfig().getDescription());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, liteJobConfig.getJobConfig().getCoreConfig().getCron());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, liteJobConfig.getJobConfig().getCoreConfig().getShardingItemParameters());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_PARAMETER, liteJobConfig.getJobConfig().getCoreConfig().getJobParameter());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.FAILOVER, liteJobConfig.getJobConfig().getCoreConfig().isFailover());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MISFIRE, liteJobConfig.getJobConfig().getCoreConfig().isMisfire());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DESCRIPTION, liteJobConfig.getJobConfig().getCoreConfig().getDescription());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_EXECUTION, liteJobConfig.isMonitorExecution());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MAX_TIME_DIFF_SECONDS, liteJobConfig.getMaxTimeDiffSeconds());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_SHARDING_STRATEGY_CLASS, liteJobConfig.getJobShardingStrategyClass());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.MONITOR_PORT, liteJobConfig.getMonitorPort());
-        if (DataflowElasticJob.class.isAssignableFrom(liteJobConfig.getJobConfig().getJobClass())) {
+        if (DataflowJob.class.isAssignableFrom(liteJobConfig.getJobConfig().getJobClass())) {
             DataflowJobConfiguration dataflowJobConfiguration = (DataflowJobConfiguration) liteJobConfig.getJobConfig();
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.DATAFLOW_TYPE, dataflowJobConfiguration.getDataflowType());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CONCURRENT_DATA_PROCESS_THREAD_COUNT, dataflowJobConfiguration.getConcurrentDataProcessThreadCount());
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.STREAMING_PROCESS, dataflowJobConfiguration.isStreamingProcess());
         }
-        if (ScriptElasticJob.class.isAssignableFrom(liteJobConfig.getJobConfig().getJobClass())) {
+        if (ScriptJob.class.isAssignableFrom(liteJobConfig.getJobConfig().getJobClass())) {
             ScriptJobConfiguration scriptJobConfiguration = (ScriptJobConfiguration) liteJobConfig.getJobConfig();
             verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SCRIPT_COMMAND_LINE, scriptJobConfiguration.getScriptCommandLine());
         }

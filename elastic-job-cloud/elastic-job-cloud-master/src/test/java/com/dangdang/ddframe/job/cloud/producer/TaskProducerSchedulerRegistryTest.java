@@ -84,6 +84,7 @@ public final class TaskProducerSchedulerRegistryTest {
         verify(configService).add(jobConfig);
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void assertRegisterExistedAndSame() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
@@ -94,6 +95,7 @@ public final class TaskProducerSchedulerRegistryTest {
         verify(configService, times(0)).update(jobConfig);
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void assertRegisterExistedAndDifferent() {
         CloudJobConfiguration oldJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
@@ -111,6 +113,7 @@ public final class TaskProducerSchedulerRegistryTest {
         verify(configService).remove("test_job");
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void assertDeregisterWhenExisted() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");

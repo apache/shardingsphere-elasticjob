@@ -17,16 +17,16 @@
 
 package com.dangdang.ddframe.job.cloud;
 
-import com.dangdang.ddframe.job.api.internal.ElasticJob;
+import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowElasticJobExecutor;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
+import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
 import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
-import com.dangdang.ddframe.job.api.ScriptElasticJob;
-import com.dangdang.ddframe.job.api.type.script.ScriptElasticJobExecutor;
-import com.dangdang.ddframe.job.api.SimpleElasticJob;
-import com.dangdang.ddframe.job.api.type.simple.SimpleElasticJobExecutor;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
+import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
+import com.dangdang.ddframe.job.api.type.simple.executor.SimpleJobExecutor;
 import com.dangdang.ddframe.job.cloud.api.CloudJobFacade;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
@@ -58,12 +58,12 @@ public final class AgentMain {
                 JobFacade jobFacade = new CloudJobFacade(GsonFactory.getGson().fromJson(args[0], ShardingContext.class));
                 // TODO 与lite一起提炼
                 AbstractElasticJobExecutor elasticJobExecutor;
-                if (elasticJob instanceof SimpleElasticJob) {
-                    elasticJobExecutor = new SimpleElasticJobExecutor((SimpleElasticJob) elasticJob, jobFacade);
-                } else if (elasticJob instanceof DataflowElasticJob) {
-                    elasticJobExecutor = new DataflowElasticJobExecutor((DataflowElasticJob) elasticJob, jobFacade);
-                } else if (elasticJob instanceof ScriptElasticJob) {
-                    elasticJobExecutor = new ScriptElasticJobExecutor(jobFacade);
+                if (elasticJob instanceof SimpleJob) {
+                    elasticJobExecutor = new SimpleJobExecutor((SimpleJob) elasticJob, jobFacade);
+                } else if (elasticJob instanceof DataflowJob) {
+                    elasticJobExecutor = new DataflowJobExecutor((DataflowJob) elasticJob, jobFacade);
+                } else if (elasticJob instanceof ScriptJob) {
+                    elasticJobExecutor = new ScriptJobExecutor(jobFacade);
                 } else {
                     throw new JobException(String.format("Cannot support job type '%s'"), elasticJob.getClass());
                 }

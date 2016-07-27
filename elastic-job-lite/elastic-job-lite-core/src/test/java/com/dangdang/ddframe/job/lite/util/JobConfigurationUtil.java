@@ -17,9 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.util;
 
-import com.dangdang.ddframe.job.api.DataflowElasticJob;
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import lombok.AccessLevel;
@@ -46,23 +47,14 @@ public final class JobConfigurationUtil {
     }
     
     public static LiteJobConfiguration createSimpleLiteJobConfiguration() {
-        return LiteJobConfiguration.createBuilder(JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), TestJob.class)).build();
     }
     
     public static LiteJobConfiguration createSimpleLiteJobConfiguration(final boolean overwrite) {
-        return LiteJobConfiguration.createBuilder(JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).overwrite(overwrite).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), TestJob.class)).overwrite(overwrite).build();
     }
     
     public static LiteJobConfiguration createDataflowLiteJobConfiguration(final DataflowJobConfiguration.DataflowType dataflowType) {
-        return LiteJobConfiguration.createBuilder(JobConfigurationFactory.createDataflowJobConfigurationBuilder("testJob", DataflowElasticJob.class, "0/1 * * * * ?", 3, dataflowType).build()).build();
-    }
-    
-    public static LiteJobConfiguration createDataflowLiteJobConfiguration(final DataflowJobConfiguration.DataflowType dataflowType, final boolean overwrite) {
-        return LiteJobConfiguration.createBuilder(
-                JobConfigurationFactory.createDataflowJobConfigurationBuilder("testJob", DataflowElasticJob.class, "0/1 * * * * ?", 3, dataflowType).build()).overwrite(overwrite).build();
-    }
-    
-    public static LiteJobConfiguration createScriptLiteJobConfiguration(final String scriptCommandLine) {
-        return LiteJobConfiguration.createBuilder(JobConfigurationFactory.createScriptJobConfigurationBuilder("testJob", "0/1 * * * * ?", 3, scriptCommandLine).build()).build();
+        return LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), DataflowJob.class, dataflowType, false)).build();
     }
 }

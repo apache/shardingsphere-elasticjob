@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow.sequence;
 
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;

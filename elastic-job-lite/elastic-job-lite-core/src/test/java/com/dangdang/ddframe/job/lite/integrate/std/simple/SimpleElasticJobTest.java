@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.simple;
 
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.simple.FooSimpleElasticJob;

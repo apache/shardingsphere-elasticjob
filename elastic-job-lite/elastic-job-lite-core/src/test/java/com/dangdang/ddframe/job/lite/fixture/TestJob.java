@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.lite.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.SimpleElasticJob;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 
-public class TestJob implements SimpleElasticJob {
+public class TestJob implements SimpleJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {

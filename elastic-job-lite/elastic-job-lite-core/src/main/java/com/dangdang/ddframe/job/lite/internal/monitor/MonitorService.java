@@ -57,7 +57,7 @@ public class MonitorService {
     private volatile boolean closed;
     
     public MonitorService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
-        jobName = liteJobConfig.getJobConfig().getJobName();
+        jobName = liteJobConfig.getJobName();
         this.coordinatorRegistryCenter = coordinatorRegistryCenter;
         configService = new ConfigurationService(coordinatorRegistryCenter, liteJobConfig);
     }

@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.api.internal.config.JobType;
-import com.dangdang.ddframe.job.api.type.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.JobType;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
