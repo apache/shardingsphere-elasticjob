@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Lite作业配置信息.
+ * Lite作业配置.
  * 
  * @author caohao
  * @author zhangliang
@@ -47,8 +47,18 @@ public class LiteJobConfiguration {
     
     private final boolean overwrite;
     
-    @RequiredArgsConstructor
-    public static class LiteJobConfigurationBuilder {
+    /**
+     * 创建Lite作业配置构建器.
+     * 
+     * @param jobConfig 作业配置
+     * @return Lite作业配置构建器
+     */
+    public static Builder createBuilder(final JobConfiguration jobConfig) {
+        return new Builder(jobConfig);
+    }
+    
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Builder {
         
         private final JobConfiguration jobConfig;
         
@@ -76,7 +86,7 @@ public class LiteJobConfiguration {
          *
          * @return 作业配置构建器
          */
-        public LiteJobConfigurationBuilder monitorExecution(final boolean monitorExecution) {
+        public Builder monitorExecution(final boolean monitorExecution) {
             this.monitorExecution = monitorExecution;
             return this;
         }
@@ -93,7 +103,7 @@ public class LiteJobConfiguration {
          *
          * @return 作业配置构建器
          */
-        public LiteJobConfigurationBuilder maxTimeDiffSeconds(final int maxTimeDiffSeconds) {
+        public Builder maxTimeDiffSeconds(final int maxTimeDiffSeconds) {
             this.maxTimeDiffSeconds = maxTimeDiffSeconds;
             return this;
         }
@@ -105,7 +115,7 @@ public class LiteJobConfiguration {
          *
          * @return 作业配置构建器
          */
-        public LiteJobConfigurationBuilder monitorPort(final int monitorPort) {
+        public Builder monitorPort(final int monitorPort) {
             this.monitorPort = monitorPort;
             return this;
         }
@@ -121,7 +131,7 @@ public class LiteJobConfiguration {
          *
          * @return 作业配置构建器
          */
-        public LiteJobConfigurationBuilder jobShardingStrategyClass(final String jobShardingStrategyClass) {
+        public Builder jobShardingStrategyClass(final String jobShardingStrategyClass) {
             if (null != jobShardingStrategyClass) {
                 this.jobShardingStrategyClass = jobShardingStrategyClass;
             }
@@ -139,7 +149,7 @@ public class LiteJobConfiguration {
          *
          * @return 作业配置构建器
          */
-        public LiteJobConfigurationBuilder disabled(final boolean disabled) {
+        public Builder disabled(final boolean disabled) {
             this.disabled = disabled;
             return this;
         }
@@ -155,7 +165,7 @@ public class LiteJobConfiguration {
          *
          * @return 作业配置构建器
          */
-        public LiteJobConfigurationBuilder overwrite(final boolean overwrite) {
+        public Builder overwrite(final boolean overwrite) {
             this.overwrite = overwrite;
             return this;
         }

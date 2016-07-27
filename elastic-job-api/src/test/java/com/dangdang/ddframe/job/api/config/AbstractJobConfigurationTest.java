@@ -26,7 +26,7 @@ import org.unitils.util.ReflectionUtils;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public abstract class AbstractJobConfigurationTest<T extends JobConfiguration, B extends AbstractJobConfiguration.AbstractJobConfigurationBuilder> {
+public abstract class AbstractJobConfigurationTest<T extends JobConfiguration, B extends AbstractJobConfiguration.Builder> {
     
     private String shardingItemParameters = "0=a,1=b,2=c";
     
@@ -75,9 +75,9 @@ public abstract class AbstractJobConfigurationTest<T extends JobConfiguration, B
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildJobConfigurationWithWrongJobName() {
-        AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
+        AbstractJobConfiguration.Builder builder = getJobConfigurationBuilder();
         try {
-            ReflectionUtils.setFieldValue(builder, AbstractJobConfiguration.AbstractJobConfigurationBuilder.class.getDeclaredField("jobName"), "");
+            ReflectionUtils.setFieldValue(builder, AbstractJobConfiguration.Builder.class.getDeclaredField("jobName"), "");
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }
@@ -86,9 +86,9 @@ public abstract class AbstractJobConfigurationTest<T extends JobConfiguration, B
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildJobConfigurationWithWrongJobClass() {
-        AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
+        AbstractJobConfiguration.Builder builder = getJobConfigurationBuilder();
         try {
-            ReflectionUtils.setFieldValue(builder, AbstractJobConfiguration.AbstractJobConfigurationBuilder.class.getDeclaredField("jobClass"), this.getClass());
+            ReflectionUtils.setFieldValue(builder, AbstractJobConfiguration.Builder.class.getDeclaredField("jobClass"), this.getClass());
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }
@@ -97,9 +97,9 @@ public abstract class AbstractJobConfigurationTest<T extends JobConfiguration, B
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildJobConfigurationWithWrongShardingTotalCount() {
-        AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
+        AbstractJobConfiguration.Builder builder = getJobConfigurationBuilder();
         try {
-            ReflectionUtils.setFieldValue(builder, AbstractJobConfiguration.AbstractJobConfigurationBuilder.class.getDeclaredField("shardingTotalCount"), 0);
+            ReflectionUtils.setFieldValue(builder, AbstractJobConfiguration.Builder.class.getDeclaredField("shardingTotalCount"), 0);
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }
@@ -108,9 +108,9 @@ public abstract class AbstractJobConfigurationTest<T extends JobConfiguration, B
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildJobConfigurationWithWrongCron() {
-        AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
+        AbstractJobConfiguration.Builder builder = getJobConfigurationBuilder();
         try {
-            ReflectionUtils.setFieldValue(builder, AbstractJobConfiguration.AbstractJobConfigurationBuilder.class.getDeclaredField("cron"), "");
+            ReflectionUtils.setFieldValue(builder, AbstractJobConfiguration.Builder.class.getDeclaredField("cron"), "");
         } catch (final NoSuchFieldException ex) {
             ex.printStackTrace();
         }

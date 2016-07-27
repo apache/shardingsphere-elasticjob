@@ -59,7 +59,7 @@ public final class DataflowJobConfiguration<T extends DataflowElasticJob> extend
         SEQUENCE
     }
     
-    public static class DataflowJobConfigurationBuilder extends AbstractJobConfigurationBuilder<DataflowJobConfiguration, DataflowElasticJob, DataflowJobConfigurationBuilder> {
+    public static class DataflowJobConfigurationBuilder extends Builder<DataflowJobConfiguration, DataflowElasticJob, DataflowJobConfigurationBuilder> {
         
         private final DataflowType dataflowType;
         

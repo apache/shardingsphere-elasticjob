@@ -17,11 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager.MonitorExecutionChangedJobListener;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -42,9 +40,7 @@ public final class ExecutionListenerManagerTest {
     @Mock
     private ExecutionService executionService;
     
-    private final ExecutionListenerManager executionListenerManager = new ExecutionListenerManager(null,
-            new LiteJobConfiguration.LiteJobConfigurationBuilder(
-                    JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build());
+    private final ExecutionListenerManager executionListenerManager = new ExecutionListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration());
     
     @Before
     public void setUp() throws NoSuchFieldException {

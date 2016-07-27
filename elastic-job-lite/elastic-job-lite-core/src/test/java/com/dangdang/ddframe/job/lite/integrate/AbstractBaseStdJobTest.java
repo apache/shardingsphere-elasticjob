@@ -122,17 +122,17 @@ public abstract class AbstractBaseStdJobTest {
     @SuppressWarnings("unchecked")
     private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
         if (DataflowElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            return LiteJobConfiguration.createBuilder(
                     JobConfigurationFactory.createDataflowJobConfigurationBuilder(jobName, (Class<? extends DataflowElasticJob>) elasticJobClass, "0/1 * * * * ?", 3, dataflowType.get())
                             .shardingItemParameters("0=A,1=B,2=C").build())
                     .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
         } else if (ScriptElasticJob.class.isAssignableFrom(elasticJobClass)) {
-            return new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            return LiteJobConfiguration.createBuilder(
                     JobConfigurationFactory.createScriptJobConfigurationBuilder(jobName, "0/1 * * * * ?", 3, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath())
                             .shardingItemParameters("0=A,1=B,2=C").build())
                     .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
         } else {
-            return new LiteJobConfiguration.LiteJobConfigurationBuilder(
+            return LiteJobConfiguration.createBuilder(
                     JobConfigurationFactory.createSimpleJobConfigurationBuilder(jobName, (Class<? extends SimpleElasticJob>) elasticJobClass, "0/1 * * * * ?", 3)
                             .shardingItemParameters("0=A,1=B,2=C").build())
                     .monitorPort(monitorPort).disabled(disabled).overwrite(true).build();

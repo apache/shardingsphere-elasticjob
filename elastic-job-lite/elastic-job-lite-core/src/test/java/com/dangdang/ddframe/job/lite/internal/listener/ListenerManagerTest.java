@@ -17,10 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener;
 
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
@@ -28,6 +25,7 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
+import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -61,9 +59,7 @@ public class ListenerManagerTest {
     @Mock
     private GuaranteeListenerManager guaranteeListenerManager;
     
-    private final ListenerManager listenerManager = new ListenerManager(null,
-            new LiteJobConfiguration.LiteJobConfigurationBuilder(JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build(), 
-            Collections.<ElasticJobListener>emptyList());
+    private final ListenerManager listenerManager = new ListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration(), Collections.<ElasticJobListener>emptyList());
     
     @Before
     public void setUp() throws NoSuchFieldException {

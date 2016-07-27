@@ -62,10 +62,10 @@ public final class JobMain {
         final ScriptJobConfiguration scriptJobConfig = JobConfigurationFactory.createScriptJobConfigurationBuilder(
                 "scriptElasticDemoJob", "0/5 * * * * ?", 10, buildScriptCommandLine()).build();
         
-        new JobScheduler(regCenter, new LiteJobConfiguration.LiteJobConfigurationBuilder(simpleJobConfig).build(), new SimpleDistributeOnceElasticJobListener()).init();
-        new JobScheduler(regCenter, new LiteJobConfiguration.LiteJobConfigurationBuilder(throughputJobConfig).build()).init();
-        new JobScheduler(regCenter, new LiteJobConfiguration.LiteJobConfigurationBuilder(sequenceJobConfig).build()).init();
-        new JobScheduler(regCenter, new LiteJobConfiguration.LiteJobConfigurationBuilder(scriptJobConfig).build()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.createBuilder(simpleJobConfig).build(), new SimpleDistributeOnceElasticJobListener()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.createBuilder(throughputJobConfig).build()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.createBuilder(sequenceJobConfig).build()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.createBuilder(scriptJobConfig).build()).init();
     }
     
     private class SimpleDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {

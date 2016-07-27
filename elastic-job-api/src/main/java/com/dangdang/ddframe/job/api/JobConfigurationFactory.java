@@ -40,9 +40,9 @@ public final class JobConfigurationFactory {
      * @param shardingTotalCount 分片总数
      * @return 简单作业配置
      */
-    public static SimpleJobConfiguration.SimpleJobConfigurationBuilder createSimpleJobConfigurationBuilder(
+    public static SimpleJobConfiguration.Builder createSimpleJobConfigurationBuilder(
             final String jobName, final Class<? extends SimpleElasticJob> jobClass, final String cron, final int shardingTotalCount) {
-        return new SimpleJobConfiguration.SimpleJobConfigurationBuilder(jobName, jobClass, cron, shardingTotalCount);
+        return new SimpleJobConfiguration.Builder(jobName, jobClass, cron, shardingTotalCount);
     }
 
     /**

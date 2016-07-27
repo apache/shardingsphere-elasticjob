@@ -42,7 +42,7 @@ public final class ScriptJobConfiguration extends AbstractJobConfiguration<Scrip
         this.scriptCommandLine = scriptCommandLine;
     }
     
-    public static class ScriptJobConfigurationBuilder extends AbstractJobConfigurationBuilder<ScriptJobConfiguration, ScriptElasticJob, ScriptJobConfigurationBuilder> {
+    public static class ScriptJobConfigurationBuilder extends Builder<ScriptJobConfiguration, ScriptElasticJob, ScriptJobConfigurationBuilder> {
         
         private String scriptCommandLine;
         

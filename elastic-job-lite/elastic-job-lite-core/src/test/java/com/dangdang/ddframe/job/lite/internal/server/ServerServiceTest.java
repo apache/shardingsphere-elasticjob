@@ -17,11 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationFieldUtil;
+import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +45,7 @@ public final class ServerServiceTest {
     @Mock
     private LocalHostService localHostService;
     
-    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
-            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).overwrite(true).build();
+    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
     
     private final ServerService serverService = new ServerService(null, liteJobConfig);
     
@@ -71,7 +68,7 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineWhenOverwriteDisabled() {
-        JobConfigurationFieldUtil.setFieldValue(liteJobConfig, "overwrite", false);
+        JobConfigurationUtil.setFieldValue(liteJobConfig, "overwrite", false);
         serverService.persistServerOnline();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(3)).getIp();
@@ -83,7 +80,7 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
-        JobConfigurationFieldUtil.setFieldValue(liteJobConfig, "disabled", true);
+        JobConfigurationUtil.setFieldValue(liteJobConfig, "disabled", true);
         serverService.persistServerOnline();
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();

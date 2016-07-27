@@ -17,12 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
@@ -49,8 +47,7 @@ public final class ShardingListenerManagerTest {
     
     private String ip = new LocalHostService().getIp();
     
-    private final ShardingListenerManager shardingListenerManager = new ShardingListenerManager(null,
-            new LiteJobConfiguration.LiteJobConfigurationBuilder(JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build());
+    private final ShardingListenerManager shardingListenerManager = new ShardingListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration());
     
     @Before
     public void setUp() throws NoSuchFieldException {

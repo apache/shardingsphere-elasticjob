@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.api.config;
 import com.dangdang.ddframe.job.api.config.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.api.type.simple.SimpleJobConfiguration;
 
-public final class SimpleJobConfigurationTest extends AbstractJobConfigurationTest<SimpleJobConfiguration, SimpleJobConfiguration.SimpleJobConfigurationBuilder> {
+public final class SimpleJobConfigurationTest extends AbstractJobConfigurationTest<SimpleJobConfiguration, SimpleJobConfiguration.Builder> {
     
     @Override
     protected SimpleJobConfiguration getJobConfiguration() {
@@ -28,7 +28,7 @@ public final class SimpleJobConfigurationTest extends AbstractJobConfigurationTe
     }
     
     @Override
-    protected SimpleJobConfiguration.SimpleJobConfigurationBuilder getJobConfigurationBuilder() {
-        return new SimpleJobConfiguration.SimpleJobConfigurationBuilder("simpleJob", TestSimpleJob.class, "0/1 * * * * ?", 10);
+    protected SimpleJobConfiguration.Builder getJobConfigurationBuilder() {
+        return new SimpleJobConfiguration.Builder("simpleJob", TestSimpleJob.class, "0/1 * * * * ?", 10);
     }
 }

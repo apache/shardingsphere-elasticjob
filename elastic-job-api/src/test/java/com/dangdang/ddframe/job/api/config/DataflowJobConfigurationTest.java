@@ -70,7 +70,7 @@ public final class DataflowJobConfigurationTest extends AbstractJobConfiguration
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildDataflowJobConfigurationWithWrongConcurrentDataProcessThreadCount() {
-        AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
+        AbstractJobConfiguration.Builder builder = getJobConfigurationBuilder();
         try {
             ReflectionUtils.setFieldValue(builder, DataflowJobConfiguration.DataflowJobConfigurationBuilder.class.getDeclaredField("concurrentDataProcessThreadCount"), 0);
         } catch (final NoSuchFieldException ex) {

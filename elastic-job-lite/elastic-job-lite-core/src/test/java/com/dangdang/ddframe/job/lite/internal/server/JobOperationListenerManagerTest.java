@@ -17,9 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -28,6 +25,7 @@ import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager.JobPausedStatusJobListener;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
@@ -67,8 +65,7 @@ public final class JobOperationListenerManagerTest {
     
     private String ip = new LocalHostService().getIp();
     
-    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null,
-            new LiteJobConfiguration.LiteJobConfigurationBuilder(JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build());
+    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration());
     
     @Before
     public void setUp() throws NoSuchFieldException {

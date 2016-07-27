@@ -17,13 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.internal.guarantee;
 
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -54,9 +52,7 @@ public final class GuaranteeListenerManagerTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        guaranteeListenerManager = new GuaranteeListenerManager(null, new LiteJobConfiguration.LiteJobConfigurationBuilder(
-                JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).build(),
-                Arrays.asList(elasticJobListener, distributeOnceElasticJobListener));
+        guaranteeListenerManager = new GuaranteeListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration(), Arrays.asList(elasticJobListener, distributeOnceElasticJobListener));
         ReflectionUtils.setFieldValue(guaranteeListenerManager, guaranteeListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
     }
     

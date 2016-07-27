@@ -17,10 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.storage;
 
-import com.dangdang.ddframe.job.api.JobConfigurationFactory;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationFieldUtil;
+import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransaction;
@@ -53,8 +51,7 @@ public final class JobNodeStorageTest {
     @Mock
     private CoordinatorRegistryCenter coordinatorRegistryCenter;
     
-    private final LiteJobConfiguration liteJobConfig = new LiteJobConfiguration.LiteJobConfigurationBuilder(
-            JobConfigurationFactory.createSimpleJobConfigurationBuilder("testJob", TestJob.class, "0/1 * * * * ?", 3).build()).overwrite(false).build();
+    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(false);
     
     private JobNodeStorage jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
     
@@ -66,7 +63,7 @@ public final class JobNodeStorageTest {
     
     @Before
     public void reset() {
-        JobConfigurationFieldUtil.setFieldValue(liteJobConfig, "overwrite", false);
+        JobConfigurationUtil.setFieldValue(liteJobConfig, "overwrite", false);
     }
     
     @Test
@@ -155,7 +152,7 @@ public final class JobNodeStorageTest {
     public void assertFillJobNodeIfNotNullAndOverwriteEnabledButValueSame() throws NoSuchFieldException {
         when(coordinatorRegistryCenter.isExisted("/testJob/config/cron")).thenReturn(true);
         when(coordinatorRegistryCenter.getDirectly("/testJob/config/cron")).thenReturn("0/1 * * * * ?");
-        JobConfigurationFieldUtil.setFieldValue(liteJobConfig, "overwrite", true);
+        JobConfigurationUtil.setFieldValue(liteJobConfig, "overwrite", true);
         jobNodeStorage.fillJobNodeIfNullOrOverwrite("config/cron", "0/1 * * * * ?");
         verify(coordinatorRegistryCenter).isExisted("/testJob/config/cron");
         verify(coordinatorRegistryCenter).getDirectly("/testJob/config/cron");
@@ -166,7 +163,7 @@ public final class JobNodeStorageTest {
     public void assertFillJobNodeIfNotNullAndOverwriteEnabledAndValueDifferent() throws NoSuchFieldException {
         when(coordinatorRegistryCenter.isExisted("/testJob/config/cron")).thenReturn(true);
         when(coordinatorRegistryCenter.getDirectly("/testJob/config/cron")).thenReturn("0/1 * * * * ?");
-        JobConfigurationFieldUtil.setFieldValue(liteJobConfig, "overwrite", true);
+        JobConfigurationUtil.setFieldValue(liteJobConfig, "overwrite", true);
         jobNodeStorage.fillJobNodeIfNullOrOverwrite("config/cron", "0/2 * * * * ?");
         verify(coordinatorRegistryCenter).isExisted("/testJob/config/cron");
         verify(coordinatorRegistryCenter).getDirectly("/testJob/config/cron");

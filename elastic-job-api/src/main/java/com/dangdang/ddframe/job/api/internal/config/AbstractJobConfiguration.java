@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
  * @author caohao
  */
 @Getter
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractJobConfiguration<T extends ElasticJob> implements JobConfiguration<T> {
     
     private final String jobName;
@@ -57,7 +57,7 @@ public abstract class AbstractJobConfiguration<T extends ElasticJob> implements 
     
     @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
     @Getter(AccessLevel.PROTECTED)
-    public abstract static class AbstractJobConfigurationBuilder<T extends AbstractJobConfiguration, J extends ElasticJob, B extends AbstractJobConfigurationBuilder> {
+    public abstract static class Builder<T extends AbstractJobConfiguration, J extends ElasticJob, B extends Builder> {
         
         private final String jobName;
         

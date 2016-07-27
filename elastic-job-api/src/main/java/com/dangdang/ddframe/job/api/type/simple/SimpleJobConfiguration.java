@@ -36,9 +36,9 @@ public final class SimpleJobConfiguration<T extends SimpleElasticJob> extends Ab
         super(jobName, JobType.SIMPLE, jobClass, cron, shardingTotalCount, shardingItemParameters, jobParameter, isFailover, isMisfire, description);
     }
     
-    public static class SimpleJobConfigurationBuilder extends AbstractJobConfigurationBuilder<SimpleJobConfiguration, SimpleElasticJob, SimpleJobConfigurationBuilder> {
+    public static class Builder extends AbstractJobConfiguration.Builder<SimpleJobConfiguration, SimpleElasticJob, Builder> {
         
-        public SimpleJobConfigurationBuilder(final String jobName, final Class<? extends SimpleElasticJob> jobClass, final String cron, final int shardingTotalCount) {
+        public Builder(final String jobName, final Class<? extends SimpleElasticJob> jobClass, final String cron, final int shardingTotalCount) {
             super(jobName, JobType.SIMPLE, jobClass, cron, shardingTotalCount);
         }
         

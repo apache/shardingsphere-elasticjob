@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.OneOffThroughputDataflowElasticJob;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationFieldUtil;
+import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;
@@ -44,8 +44,8 @@ public final class OneOffThroughputDataflowElasticJobTest extends AbstractBaseSt
     
     @Override
     protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
-        JobConfigurationFieldUtil.setSuperFieldValue(liteJobConfig.getJobConfig(), "misfire", false);
-        JobConfigurationFieldUtil.setFieldValue(liteJobConfig.getJobConfig(), "streamingProcess", false);
+        JobConfigurationUtil.setSuperFieldValue(liteJobConfig.getJobConfig(), "misfire", false);
+        JobConfigurationUtil.setFieldValue(liteJobConfig.getJobConfig(), "streamingProcess", false);
     }
     
     @Test

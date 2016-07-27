@@ -36,7 +36,7 @@ public final class ScriptJobConfigurationTest extends AbstractJobConfigurationTe
     
     @Test(expected = IllegalArgumentException.class)
     public void assertBuildScriptJobConfigurationWithWrongScriptCommandLine() {
-        AbstractJobConfiguration.AbstractJobConfigurationBuilder builder = getJobConfigurationBuilder();
+        AbstractJobConfiguration.Builder builder = getJobConfigurationBuilder();
         try {
             ReflectionUtils.setFieldValue(builder, ScriptJobConfiguration.ScriptJobConfigurationBuilder.class.getDeclaredField("scriptCommandLine"), "");
         } catch (final NoSuchFieldException ex) {
