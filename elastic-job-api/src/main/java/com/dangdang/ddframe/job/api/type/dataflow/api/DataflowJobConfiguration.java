@@ -45,7 +45,7 @@ public final class DataflowJobConfiguration implements JobConfiguration {
     
     private final boolean streamingProcess;
     
-    private int concurrentDataProcessThreadCount = Runtime.getRuntime().availableProcessors();
+    private int concurrentDataProcessThreadCount = Runtime.getRuntime().availableProcessors() * 2;
     
     /**
      * 数据流作业支持的处理类型.

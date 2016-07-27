@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.dangdang.com/schema/ddframe/reg
+                           http://www.dangdang.com/schema/ddframe/reg/reg.xsd
+                        ">
+    <context:property-placeholder location="classpath:conf/job/conf.properties" />
+    <reg:zookeeper id="regCenter" server-lists="localhost:3181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+    <bean id="simpleElasticJobBean" class="com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob">
+        <property name="springValue" value="simple" />
+    </bean>
+    <bean id="foo" class="com.dangdang.ddframe.job.lite.fixture.service.FooServiceImpl" />
+</beans>

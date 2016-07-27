@@ -13,7 +13,7 @@
     <modules>
         <module>elastic-job-lite-core</module>
         <module>elastic-job-lite-lifecycle</module>
-        <!--<module>elastic-job-lite-spring</module>-->
+        <module>elastic-job-lite-spring</module>
         <module>elastic-job-lite-console</module>
     </modules>
 </project>

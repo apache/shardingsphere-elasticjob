@@ -1,0 +1,96 @@
+/*
+ * Copyright 1999-2015 dangdang.com.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * </p>
+ */
+
+package com.dangdang.ddframe.job.lite.spring.namespace.parser.common;
+
+import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+/**
+ * 基本作业配置命名空间对象.
+ *
+ * @author caohao
+ * @author zhangliang
+ */
+@Setter
+@RequiredArgsConstructor
+public abstract class AbstractJobConfigurationDto {
+    
+    private final String jobName;
+    
+    private final String cron;
+    
+    private final int shardingTotalCount;
+    
+    private String shardingItemParameters;
+    
+    private String jobParameter;
+    
+    private Boolean failover;
+    
+    private Boolean misfire;
+    
+    private String description;
+    
+    private Boolean monitorExecution;
+    
+    private Integer maxTimeDiffSeconds;
+    
+    private Integer monitorPort;
+    
+    private String jobShardingStrategyClass;
+    
+    private Boolean disabled;
+    
+    private Boolean overwrite;
+    
+    public LiteJobConfiguration toLiteJobConfiguration() {
+        JobCoreConfiguration.Builder jobCoreConfigBuilder = JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount);
+        jobCoreConfigBuilder.shardingItemParameters(shardingItemParameters);
+        jobCoreConfigBuilder.jobParameter(jobParameter);
+        if (null != failover) {
+            jobCoreConfigBuilder.failover(failover);
+        }
+        if (null != misfire) {
+            jobCoreConfigBuilder.misfire(misfire);
+        }
+        jobCoreConfigBuilder.description(description);
+        LiteJobConfiguration.Builder result = LiteJobConfiguration.newBuilder(toJobConfiguration(jobCoreConfigBuilder.build()));
+        if (null != monitorExecution) {
+            result.monitorExecution(monitorExecution);
+        }
+        if (null != maxTimeDiffSeconds) {
+            result.maxTimeDiffSeconds(maxTimeDiffSeconds);
+        }
+        if (null != monitorPort) {
+            result.monitorPort(monitorPort);
+        }
+        result.jobShardingStrategyClass(jobShardingStrategyClass);
+        if (null != disabled) {
+            result.disabled(disabled);
+        }
+        if (null != overwrite) {
+            result.overwrite(overwrite);
+        }
+        return result.build();
+    }
+    
+    protected abstract JobConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig);
+}
