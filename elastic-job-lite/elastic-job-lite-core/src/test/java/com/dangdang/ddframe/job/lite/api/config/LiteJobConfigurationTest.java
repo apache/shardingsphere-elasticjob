@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.api.config;
 
 import com.dangdang.ddframe.job.api.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -31,7 +31,7 @@ public final class LiteJobConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestJob.class))
+        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).build();
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
@@ -43,7 +43,7 @@ public final class LiteJobConfigurationTest {
     
     @Test
     public void assertBuildRequiredProperties() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestJob.class)).build();
+        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build();
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
@@ -54,7 +54,7 @@ public final class LiteJobConfigurationTest {
     
     @Test
     public void assertBuildWhenOptionalParametersIsNull() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestJob.class))
+        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class))
                 .jobShardingStrategyClass(null).build();
         assertThat(actual.getJobShardingStrategyClass(), is(""));
     }

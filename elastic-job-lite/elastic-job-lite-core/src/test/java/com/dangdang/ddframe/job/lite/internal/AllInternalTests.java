@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.lite.internal;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNodeTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationServiceTest;
+import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactoryTest;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionNodeTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionServiceTest;
@@ -37,8 +38,6 @@ import com.dangdang.ddframe.job.lite.internal.listener.JobListenerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorServiceDisableTest;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorServiceEnableTest;
-import com.dangdang.ddframe.job.lite.internal.util.ItemUtilsTest;
-import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtilsTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistryTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleControllerTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListenerTest;
@@ -53,6 +52,8 @@ import com.dangdang.ddframe.job.lite.internal.sharding.ShardingServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyFactoryTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorageTest;
+import com.dangdang.ddframe.job.lite.internal.util.ItemUtilsTest;
+import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -65,7 +66,8 @@ import org.junit.runners.Suite.SuiteClasses;
     SensitiveInfoUtilsTest.class,
     ConfigurationServiceTest.class, 
     ConfigurationNodeTest.class, 
-    ConfigurationListenerManagerTest.class, 
+    ConfigurationListenerManagerTest.class,
+    LiteJobConfigurationGsonFactoryTest.class, 
     LeaderElectionServiceTest.class, 
     ElectionNodeTest.class, 
     ElectionListenerManagerTest.class, 

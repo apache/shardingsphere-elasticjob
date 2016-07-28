@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.monitor;
 
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
 import com.google.common.base.Optional;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import java.io.IOException;
 public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
     
     public MonitorServiceDisableTest() {
-        super(TestJob.class, -1, Optional.<DataflowJobConfiguration.DataflowType>absent());
+        super(TestSimpleJob.class, -1, Optional.<DataflowJobConfiguration.DataflowType>absent());
     }
     
     @Test(expected = IOException.class)

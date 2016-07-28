@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.unitils.util.ReflectionUtils;
@@ -47,11 +47,11 @@ public final class JobConfigurationUtil {
     }
     
     public static LiteJobConfiguration createSimpleLiteJobConfiguration() {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), TestJob.class)).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build();
     }
     
     public static LiteJobConfiguration createSimpleLiteJobConfiguration(final boolean overwrite) {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), TestJob.class)).overwrite(overwrite).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).overwrite(overwrite).build();
     }
     
     public static LiteJobConfiguration createDataflowLiteJobConfiguration(final DataflowJobConfiguration.DataflowType dataflowType) {

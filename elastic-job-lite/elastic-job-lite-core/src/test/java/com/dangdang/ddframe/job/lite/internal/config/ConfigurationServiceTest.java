@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.exception.JobConflictException;
 import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
@@ -86,14 +86,14 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertPersistExistedJobConfiguration() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.JOB_CLASS)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS)).thenReturn(TestJob.class.getCanonicalName());
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.JOB_CLASS)).thenReturn(TestSimpleJob.class.getCanonicalName());
         when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
         configService.persistJobConfiguration();
         verifyPersistJobConfiguration();
     }
     
     private void verifyPersistJobConfiguration() {
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_CLASS, TestJob.class.getCanonicalName());
+        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.JOB_CLASS, TestSimpleJob.class.getCanonicalName());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.CRON, liteJobConfig.getJobConfig().getCoreConfig().getCron());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_TOTAL_COUNT, liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount());
         verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite(ConfigurationNode.SHARDING_ITEM_PARAMETERS, liteJobConfig.getJobConfig().getCoreConfig().getShardingItemParameters());

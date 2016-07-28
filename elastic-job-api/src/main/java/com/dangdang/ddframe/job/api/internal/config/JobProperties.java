@@ -21,10 +21,12 @@ import com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHand
 import com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler;
 import com.dangdang.ddframe.job.api.internal.executor.ExecutorServiceHandler;
 import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -35,7 +37,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class JobProperties {
     
-    private final Map<JobPropertiesEnum, Class<?>> map = new HashMap<>(JobPropertiesEnum.values().length, 1);
+    private final Map<JobPropertiesEnum, Class<?>> map = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
     
     /**
      * 设置作业属性.
@@ -45,7 +47,7 @@ public final class JobProperties {
      */
     public void put(final String key, final Class<?> value) {
         JobPropertiesEnum jobPropertiesEnum = JobPropertiesEnum.from(key);
-        if (null == jobPropertiesEnum) {
+        if (null == jobPropertiesEnum || null == value) {
             return;
         }
         if (jobPropertiesEnum.getClassType().isAssignableFrom(value)) {
@@ -64,21 +66,34 @@ public final class JobProperties {
     }
     
     /**
+     * 获取所有键.
+     * 
+     * @return 键集合
+     */
+    public String json() {
+        Map<String, String> jsonMap = new HashMap<>(map.size(), 1);
+        for (Map.Entry<JobPropertiesEnum, Class<?>> entry : map.entrySet()) {
+            jsonMap.put(entry.getKey().getKey(), entry.getValue().getCanonicalName());
+        }
+        return GsonFactory.getGson().toJson(jsonMap);
+    }
+    
+    /**
      * 作业属性枚举.
      */
     @RequiredArgsConstructor
     @Getter
-    enum JobPropertiesEnum {
+    public enum JobPropertiesEnum {
         
         /**
          * 作业异常处理器.
          */
-        JOB_EXCEPTION_HANDLER("job.exception.handler", JobExceptionHandler.class, DefaultJobExceptionHandler.class),
+        JOB_EXCEPTION_HANDLER("job_exception_handler", JobExceptionHandler.class, DefaultJobExceptionHandler.class),
         
         /**
          * 线程池服务处理器.
          */
-        EXECUTOR_SERVICE_HANDLER("executor.service.handler", ExecutorServiceHandler.class, DefaultExecutorServiceHandler.class);
+        EXECUTOR_SERVICE_HANDLER("executor_service_handler", ExecutorServiceHandler.class, DefaultExecutorServiceHandler.class);
         
         private final String key;
         

@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.monitor;
 
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestJob;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
 import com.google.common.base.Optional;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public final class MonitorServiceEnableTest extends AbstractBaseStdJobTest {
     private static final int MONITOR_PORT = 9000;
     
     public MonitorServiceEnableTest() {
-        super(TestJob.class, MONITOR_PORT, Optional.<DataflowJobConfiguration.DataflowType>absent());
+        super(TestSimpleJob.class, MONITOR_PORT, Optional.<DataflowJobConfiguration.DataflowType>absent());
     }
     
     @Test
