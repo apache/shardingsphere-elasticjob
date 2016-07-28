@@ -42,13 +42,13 @@ import java.util.concurrent.Executors;
 @Slf4j
 public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
-    private final DataflowJob<Object> dataflowElasticJob;
+    private final DataflowJob<Object> dataflowJob;
     
     private ExecutorService executorService;
     
-    public DataflowJobExecutor(final DataflowJob dataflowElasticJob, final JobFacade jobFacade) {
+    public DataflowJobExecutor(final DataflowJob<Object> dataflowJob, final JobFacade jobFacade) {
         super(jobFacade);
-        this.dataflowElasticJob = dataflowElasticJob;
+        this.dataflowJob = dataflowJob;
         executorService = Executors.newCachedThreadPool();
     }
     
@@ -108,7 +108,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     }
     
     private List<Object> fetchDataForThroughput(final ShardingContext shardingContext) {
-        List<Object> result = dataflowElasticJob.fetchData(shardingContext);
+        List<Object> result = dataflowJob.fetchData(shardingContext);
         log.trace("Elastic job: fetch data size: {}.", result != null ? result.size() : 0);
         return result;
     }
@@ -147,7 +147,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
                 @Override
                 public void run() {
                     try {
-                        List<Object> data = dataflowElasticJob.fetchData(shardingContext.getShardingContext(each));
+                        List<Object> data = dataflowJob.fetchData(shardingContext.getShardingContext(each));
                         if (null != data && !data.isEmpty()) {
                             result.put(each, data);
                         }
@@ -182,7 +182,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     private void processData(final ShardingContext shardingContext, final List<Object> data) {
         try {
-            dataflowElasticJob.processData(shardingContext, data);
+            dataflowJob.processData(shardingContext, data);
             // CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             // CHECKSTYLE:ON

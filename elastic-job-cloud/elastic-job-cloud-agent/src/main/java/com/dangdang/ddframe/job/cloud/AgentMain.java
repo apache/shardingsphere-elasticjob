@@ -46,6 +46,7 @@ import java.util.Properties;
 public final class AgentMain {
     
     // CHECKSTYLE:OFF
+    @SuppressWarnings("unchecked")
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
         try {
@@ -61,7 +62,7 @@ public final class AgentMain {
                 if (elasticJob instanceof SimpleJob) {
                     elasticJobExecutor = new SimpleJobExecutor((SimpleJob) elasticJob, jobFacade);
                 } else if (elasticJob instanceof DataflowJob) {
-                    elasticJobExecutor = new DataflowJobExecutor((DataflowJob) elasticJob, jobFacade);
+                    elasticJobExecutor = new DataflowJobExecutor((DataflowJob<Object>) elasticJob, jobFacade);
                 } else if (elasticJob instanceof ScriptJob) {
                     elasticJobExecutor = new ScriptJobExecutor(jobFacade);
                 } else {

@@ -44,6 +44,7 @@ public class LiteJob implements Job {
     @Setter
     private JobFacade jobFacade;
     
+    @SuppressWarnings("unchecked")
     @Override
     // TODO 和cloud一起提炼
     public void execute(final JobExecutionContext context) throws JobExecutionException {
@@ -53,7 +54,7 @@ public class LiteJob implements Job {
         } else if (elasticJob instanceof SimpleJob) {
             elasticJobExecutor = new SimpleJobExecutor((SimpleJob) elasticJob, jobFacade);
         } else if (elasticJob instanceof DataflowJob) {
-            elasticJobExecutor = new DataflowJobExecutor((DataflowJob) elasticJob, jobFacade);
+            elasticJobExecutor = new DataflowJobExecutor((DataflowJob<Object>) elasticJob, jobFacade);
         } else {
             throw new JobException("Cannot support job type '%s'", elasticJob.getClass());
         }

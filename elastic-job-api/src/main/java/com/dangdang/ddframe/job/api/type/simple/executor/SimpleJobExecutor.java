@@ -31,15 +31,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
     
-    private final SimpleJob simpleElasticJob;
+    private final SimpleJob simpleJob;
     
-    public SimpleJobExecutor(final SimpleJob simpleElasticJob, final JobFacade jobFacade) {
+    public SimpleJobExecutor(final SimpleJob simpleJob, final JobFacade jobFacade) {
         super(jobFacade);
-        this.simpleElasticJob = simpleElasticJob;
+        this.simpleJob = simpleJob;
     }
     
     @Override
     protected void process(final ShardingContext shardingContext) {
-        simpleElasticJob.execute(shardingContext);
+        simpleJob.execute(shardingContext);
     }
 }

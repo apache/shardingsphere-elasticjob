@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
@@ -49,6 +50,8 @@ public final class JobCoreConfiguration {
     
     private final String description;
     
+    private final JobProperties jobProperties;
+    
     /**
      * 创建简单作业配置构建器.
      *
@@ -79,6 +82,8 @@ public final class JobCoreConfiguration {
         private boolean misfire = true;
         
         private String description = "";
+        
+        private final JobProperties jobProperties = new JobProperties();
         
         /**
          * 设置分片序列号和个性化参数对照表.
@@ -160,6 +165,19 @@ public final class JobCoreConfiguration {
             }
             return this;
         }
+    
+        /**
+         * 设置作业属性.
+         *
+         * @param key 属性键
+         * @param value 属性值
+         *
+         * @return 作业配置构建器
+         */
+        public Builder jobProperties(final String key, final Class<?> value) {
+            jobProperties.put(key, value);
+            return this;
+        }
         
         /**
          * 构建作业配置对象.
@@ -170,7 +188,7 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description);
+            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
         }
     }
 }
