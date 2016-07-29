@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
@@ -178,7 +178,7 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     private void assertRegCenterCommonInfo() {
-        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(regCenter.get("/" + jobName + "/config"), LiteJobConfiguration.class);
+        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(regCenter.get("/" + jobName + "/config"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));

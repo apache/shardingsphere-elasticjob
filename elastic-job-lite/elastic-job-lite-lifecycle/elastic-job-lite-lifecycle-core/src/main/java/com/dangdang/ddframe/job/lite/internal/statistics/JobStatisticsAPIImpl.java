@@ -51,7 +51,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
             JobNodePath jobNodePath = new JobNodePath(each);
             JobBriefInfo jobBriefInfo = new JobBriefInfo();
             jobBriefInfo.setJobName(each);
-            LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(registryCenter.get(jobNodePath.getConfigNodePath()), LiteJobConfiguration.class);
+            LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(registryCenter.get(jobNodePath.getConfigNodePath()));
             jobBriefInfo.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
             jobBriefInfo.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
             jobBriefInfo.setStatus(getJobStatus(each));

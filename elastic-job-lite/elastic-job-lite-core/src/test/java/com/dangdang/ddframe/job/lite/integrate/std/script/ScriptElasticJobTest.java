@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.script;
 
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
@@ -44,7 +44,7 @@ public final class ScriptElasticJobTest extends AbstractBaseStdJobAutoInitTest {
         ScriptElasticJobUtil.buildScriptCommandLine();
         WaitingUtils.waitingShortTime();
         String scriptCommandLine = ((ScriptJobConfiguration) getLiteJobConfig().getTypeConfig()).getScriptCommandLine();
-        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(getRegCenter().get("/" + getJobName() + "/config"), LiteJobConfiguration.class);
+        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(getRegCenter().get("/" + getJobName() + "/config"));
         assertThat(((ScriptJobConfiguration) liteJobConfig.getTypeConfig()).getScriptCommandLine(), is(scriptCommandLine));
     }
 }

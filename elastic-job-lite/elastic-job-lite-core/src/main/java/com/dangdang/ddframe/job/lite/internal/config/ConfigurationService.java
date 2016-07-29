@@ -60,7 +60,7 @@ public class ConfigurationService {
         } else {
             configJson = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
         }
-        return LiteJobConfigurationGsonFactory.getGson().fromJson(configJson, LiteJobConfiguration.class);
+        return LiteJobConfigurationGsonFactory.fromJson(configJson);
     }
     
     /**
@@ -69,7 +69,7 @@ public class ConfigurationService {
     public void persist() {
         checkConflictJob();
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || jobNodeStorage.getLiteJobConfig().isOverwrite()) {
-            jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, LiteJobConfigurationGsonFactory.getGson().toJson(jobNodeStorage.getLiteJobConfig()));
+            jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, LiteJobConfigurationGsonFactory.toJson(jobNodeStorage.getLiteJobConfig()));
         }
     }
     
@@ -88,7 +88,7 @@ public class ConfigurationService {
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)) {
             return Optional.absent();
         }
-        LiteJobConfiguration result = LiteJobConfigurationGsonFactory.getGson().fromJson(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT), LiteJobConfiguration.class);
+        LiteJobConfiguration result = LiteJobConfigurationGsonFactory.fromJson(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT));
         if (null == result) {
             // TODO 应该删除整个job node,并非仅仅删除config node
             jobNodeStorage.removeJobNodeIfExisted(ConfigurationNode.ROOT);

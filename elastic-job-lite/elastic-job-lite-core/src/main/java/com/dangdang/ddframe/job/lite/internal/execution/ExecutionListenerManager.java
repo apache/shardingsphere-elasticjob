@@ -54,7 +54,7 @@ public class ExecutionListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType()
-                    && !LiteJobConfigurationGsonFactory.getGson().fromJson(new String(event.getData().getData()), LiteJobConfiguration.class).isMonitorExecution()) {
+                    && !LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).isMonitorExecution()) {
                 executionService.removeExecutionInfo();
             }
         }

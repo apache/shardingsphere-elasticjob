@@ -109,7 +109,7 @@ public final class ConfigurationServiceTest {
     public void assertPersistNewJobConfiguration() {
         when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
         configService.persist();
-        verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.getGson().toJson(liteJobConfig));
+        verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
     }
     
     @Test
@@ -120,7 +120,7 @@ public final class ConfigurationServiceTest {
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
         when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
         configService.persist();
-        verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.getGson().toJson(liteJobConfig));
+        verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
     }
     
     @Test

@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
 /**
- * Lite作业配置的Gson.
+ * Lite作业配置的Gson工厂.
  *
  * @author zhangliang
  */
@@ -52,12 +52,34 @@ public final class LiteJobConfigurationGsonFactory {
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(LiteJobConfiguration.class, new LiteJobConfigurationGsonTypeAdapter()).create();
     
     /**
-     * 获取Gson实例.
-     *
-     * @return Gson实例
+     * 将作业配置转换为JSON字符串.
+     * 
+     * @param liteJobConfig 作业配置对象
+     * @return 作业配置JSON字符串
      */
-    public static Gson getGson() {
-        return GSON;
+    public static String toJson(final LiteJobConfiguration liteJobConfig) {
+        return GSON.toJson(liteJobConfig);
+    }
+    
+    /**
+     * 将作业配置转换为JSON字符串.
+     *
+     * @param liteJobConfig 作业配置对象
+     * @return 作业配置JSON字符串
+     */
+    // TODO API模块jobSettings使用,未来需调整并删除
+    public static String toJsonForObject(final Object liteJobConfig) {
+        return GSON.toJson(liteJobConfig);
+    }
+    
+    /**
+     * 将JSON字符串转换为作业配置.
+     *
+     * @param liteJobConfigJson 作业配置JSON字符串
+     * @return 作业配置对象
+     */
+    public static LiteJobConfiguration fromJson(final String liteJobConfigJson) {
+        return GSON.fromJson(liteJobConfigJson, LiteJobConfiguration.class);
     }
     
     /**
