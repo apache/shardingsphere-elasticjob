@@ -90,7 +90,7 @@ public final class FacadeServiceTest {
     public void assertStart() {
         facadeService.start();
         verify(runningService).clear();
-        verify(taskProducerSchedulerRegistry).registerFromRegistryCenter();
+        verify(taskProducerSchedulerRegistry).startup();
     }
     
     @Test

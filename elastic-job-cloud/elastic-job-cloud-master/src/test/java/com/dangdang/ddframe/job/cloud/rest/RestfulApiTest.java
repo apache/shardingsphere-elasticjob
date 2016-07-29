@@ -64,15 +64,15 @@ public final class RestfulApiTest {
                 + "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\",\"failover\":true,\"misfire\":true,\"streamingProcess\":false}";
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", jobConfigJson), is(204));
-        verify(regCenter).isExisted("/config/test_job");
         verify(regCenter).persist("/config/test_job", jobConfigJson);
+        sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
     }
     
     @Test
     public void assertDeregister() throws Exception {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job"), is(204));
-        verify(regCenter).remove("/config/test_job");
+        verify(regCenter).isExisted("/config/test_job");
     }
     
     private static int sentRequest(final String url, final String method, final String content) throws Exception {

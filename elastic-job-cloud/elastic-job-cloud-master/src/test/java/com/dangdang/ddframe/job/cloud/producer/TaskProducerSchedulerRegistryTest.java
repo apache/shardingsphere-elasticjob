@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +31,7 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,17 +46,17 @@ public final class TaskProducerSchedulerRegistryTest {
     @Mock
     private ConfigurationService configService;
     
+    @Mock
+    private TaskProducerScheduler taskProducerScheduler;
+    
     private TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
+    
+    private CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
         taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(regCenter);
         ReflectionUtils.setFieldValue(taskProducerSchedulerRegistry, "configService", configService);
-    }
-    
-    @After
-    public void tearDown() {
-        taskProducerSchedulerRegistry.deregister("test_job");
     }
     
     @Test
@@ -66,33 +65,30 @@ public final class TaskProducerSchedulerRegistryTest {
     }
     
     @Test
-    public void assertRegisterFromRegistryCenter() {
-        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+    public void assertStartup() {
         when(configService.loadAll()).thenReturn(Collections.singletonList(jobConfig));
-        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
-        taskProducerSchedulerRegistry.registerFromRegistryCenter();
+        taskProducerSchedulerRegistry.startup();
         verify(configService).loadAll();
-        verify(configService).add(jobConfig);
-        
     }
     
     @Test
     public void assertRegisterNew() {
-        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         taskProducerSchedulerRegistry.register(jobConfig);
         verify(configService).add(jobConfig);
+        when(configService.load("test_job")).thenReturn(Optional.of(jobConfig));
+        taskProducerSchedulerRegistry.deregister("test_job");
     }
     
     @SuppressWarnings("unchecked")
     @Test
     public void assertRegisterExistedAndSame() {
-        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent(), Optional.of(jobConfig));
         taskProducerSchedulerRegistry.register(jobConfig);
         taskProducerSchedulerRegistry.register(jobConfig);
-        verify(configService).add(jobConfig);
+        verify(configService, times(1)).add(jobConfig);
         verify(configService, times(0)).update(jobConfig);
+        taskProducerSchedulerRegistry.deregister("test_job");
     }
     
     @SuppressWarnings("unchecked")
@@ -105,21 +101,21 @@ public final class TaskProducerSchedulerRegistryTest {
         taskProducerSchedulerRegistry.register(newJobConfig);
         verify(configService).add(oldJobConfig);
         verify(configService).update(newJobConfig);
-    }
-    
-    @Test
-    public void assertDeregisterWhenNotExisted() {
         taskProducerSchedulerRegistry.deregister("test_job");
-        verify(configService).remove("test_job");
     }
     
     @SuppressWarnings("unchecked")
     @Test
     public void assertDeregisterWhenExisted() {
-        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent(), Optional.of(jobConfig));
         taskProducerSchedulerRegistry.register(jobConfig);
         taskProducerSchedulerRegistry.deregister("test_job");
         verify(configService).remove("test_job");
+    }
+    
+    @Test
+    public void assertShutdown() {
+        taskProducerScheduler.shutdown();
+        verify(taskProducerScheduler).shutdown();
     }
 }

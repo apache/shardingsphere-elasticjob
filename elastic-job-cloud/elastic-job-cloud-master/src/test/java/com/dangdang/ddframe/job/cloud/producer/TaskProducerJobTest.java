@@ -23,12 +23,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.quartz.JobBuilder;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class TaskProducerJobTest {
+    
+    @Mock
+    private JobExecutionContext jobExecutionContext;
     
     @Mock
     private ReadyService readyService;
@@ -38,13 +45,15 @@ public final class TaskProducerJobTest {
     @Before
     public void setUp() {
         taskProducerJob = new TaskProducerJob();
-        taskProducerJob.setJobName("test_job");
         taskProducerJob.setReadyService(readyService);
     }
     
     @Test
     public void assertExecute() throws JobExecutionException {
-        taskProducerJob.execute(null);
+        when(jobExecutionContext.getJobDetail()).thenReturn(JobBuilder.newJob(TaskProducerJob.class).withIdentity("0/30 * * * * ?").build());
+        TaskProducerJobContext.getInstance().put(JobKey.jobKey("0/30 * * * * ?"), "test_job");
+        taskProducerJob.execute(jobExecutionContext);
         verify(readyService).add("test_job");
+        TaskProducerJobContext.getInstance().remove("test_job");
     }
 }

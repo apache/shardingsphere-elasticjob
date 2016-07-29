@@ -69,7 +69,7 @@ public class FacadeService {
      */
     public void start() {
         runningService.clear();
-        taskProducerSchedulerRegistry.registerFromRegistryCenter();
+        taskProducerSchedulerRegistry.startup();
     }
     
     /**

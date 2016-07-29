@@ -23,20 +23,25 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import java.util.List;
+
 /**
  * 发布任务的作业.
  *
- * @author zhangliang
+ * @author caohao
  */
 @Setter
 public final class TaskProducerJob implements Job {
-    
-    private String jobName;
     
     private ReadyService readyService;
     
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        readyService.add(jobName);
+        List<String> jobNames = TaskProducerJobContext.getInstance().get(context.getJobDetail().getKey());
+        if (jobNames != null) {
+            for (String each : jobNames) {
+                readyService.add(each);
+            }
+        }
     }
 }

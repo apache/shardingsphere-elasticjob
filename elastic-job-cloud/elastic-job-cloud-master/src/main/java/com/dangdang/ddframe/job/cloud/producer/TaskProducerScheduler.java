@@ -17,38 +17,37 @@
 
 package com.dangdang.ddframe.job.cloud.producer;
 
-import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.simpl.SimpleThreadPool;
 
+import java.util.Collection;
 import java.util.Properties;
 
 /**
  * 发布任务作业的调度器.
  *
- * @author zhangliang
+ * @author caohao
  */
-public final class TaskProducerScheduler {
-    
-    private final CloudJobConfiguration jobConfig;
+class TaskProducerScheduler {
     
     private final CoordinatorRegistryCenter registryCenter;
     
     private final Scheduler scheduler;
     
-    public TaskProducerScheduler(final CloudJobConfiguration jobConfig, final CoordinatorRegistryCenter registryCenter) {
-        this.jobConfig = jobConfig;
+    TaskProducerScheduler(final CoordinatorRegistryCenter registryCenter) {
         this.registryCenter = registryCenter;
         scheduler = getScheduler();
     }
@@ -67,22 +66,14 @@ public final class TaskProducerScheduler {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", Integer.toString(Runtime.getRuntime().availableProcessors() * 2));
-        result.put("org.quartz.scheduler.instanceName", createIdentity("Scheduler"));
+        result.put("org.quartz.scheduler.instanceName", "ELASTIC_JOB_CLOUD");
         return result;
     }
     
-    /**
-     * 启动调度作业.
-     */
-    public void startup() {
-        JobDetail jobDetail = JobBuilder.newJob(TaskProducerJob.class).withIdentity(jobConfig.getJobName()).build();
-        jobDetail.getJobDataMap().put("jobName", jobConfig.getJobName());
-        jobDetail.getJobDataMap().put("readyService", new ReadyService(registryCenter));
+    void startup(final Collection<CloudJobConfiguration> jobConfigs) {
         try {
-            if (!scheduler.checkExists(jobDetail.getKey())) {
-                Trigger trigger = TriggerBuilder.newTrigger().withIdentity(createIdentity("Trigger"))
-                        .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getCron()).withMisfireHandlingInstructionDoNothing()).build();
-                scheduler.scheduleJob(jobDetail, trigger);
+            for (CloudJobConfiguration each : jobConfigs) {
+                scheduleJob(each);
             }
             scheduler.start();
         } catch (final SchedulerException ex) {
@@ -90,14 +81,38 @@ public final class TaskProducerScheduler {
         }
     }
     
-    private String createIdentity(final String identityAppendix) {
-        return Joiner.on("_").join(jobConfig.getJobName(), identityAppendix);
+    //TODO 并发优化
+    synchronized void register(final CloudJobConfiguration jobConfig) {
+        JobKey jobKey = buildJobKey(jobConfig.getCron());
+        TaskProducerJobContext.getInstance().put(jobKey, jobConfig.getJobName());
+        try {
+            if (!scheduler.checkExists(jobKey)) {
+                scheduleJob(jobConfig);
+            }
+        } catch (final SchedulerException ex) {
+            throw new JobException(ex);
+        }
     }
     
-    /**
-     * 停止调度作业.
-     */
-    public void shutdown() {
+    private void scheduleJob(final CloudJobConfiguration jobConfig) throws SchedulerException {
+        JobDetail jobDetail = buildJobDetail(jobConfig.getCron());
+        TaskProducerJobContext.getInstance().put(jobDetail.getKey(), jobConfig.getJobName());
+        jobDetail.getJobDataMap().put("readyService", new ReadyService(registryCenter));
+        scheduler.scheduleJob(jobDetail, buildTrigger(jobConfig.getCron()));
+    }
+    
+    void deregister(final CloudJobConfiguration jobConfig) {
+        TaskProducerJobContext.getInstance().remove(jobConfig.getJobName());
+        if (!TaskProducerJobContext.getInstance().contains(buildJobKey(jobConfig.getCron()))) {
+            try {
+                scheduler.unscheduleJob(TriggerKey.triggerKey(jobConfig.getCron()));
+            } catch (final SchedulerException ex) {
+                throw new JobException(ex);
+            }
+        }
+    }
+    
+    void shutdown() {
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.shutdown();
@@ -105,5 +120,19 @@ public final class TaskProducerScheduler {
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
+    }
+    
+    private Trigger buildTrigger(final String cron) {
+        return TriggerBuilder.newTrigger().withIdentity(cron)
+                .withSchedule(CronScheduleBuilder.cronSchedule(cron)
+                        .withMisfireHandlingInstructionDoNothing()).build();
+    }
+    
+    private JobDetail buildJobDetail(final String cron) {
+        return JobBuilder.newJob(TaskProducerJob.class).withIdentity(cron).build();
+    }
+    
+    private JobKey buildJobKey(final String cron) {
+        return JobKey.jobKey(cron);
     }
 }
