@@ -57,7 +57,7 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
                 JobScheduleController jobScheduler = JobRegistry.getInstance().getJobScheduleController(jobName);
                 if (null != jobScheduler) {
                     jobScheduler.rescheduleJob(
-                            LiteJobConfigurationGsonFactory.getGson().fromJson(new String(event.getData().getData()), LiteJobConfiguration.class).getJobTypeConfig().getCoreConfig().getCron());
+                            LiteJobConfigurationGsonFactory.getGson().fromJson(new String(event.getData().getData()), LiteJobConfiguration.class).getTypeConfig().getCoreConfig().getCron());
                 }
             }
         }

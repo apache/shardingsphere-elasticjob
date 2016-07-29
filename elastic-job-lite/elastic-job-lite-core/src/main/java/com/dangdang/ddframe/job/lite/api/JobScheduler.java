@@ -69,7 +69,7 @@ public class JobScheduler {
         try {
             jobScheduleController = new JobScheduleController(
                     initializeScheduler(jobDetail.getKey().toString()), jobDetail, jobExecutor.getSchedulerFacade(), Joiner.on("_").join(jobExecutor.getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX));
-            jobScheduleController.scheduleJob(jobExecutor.getSchedulerFacade().loadJobConfiguration().getJobTypeConfig().getCoreConfig().getCron());
+            jobScheduleController.scheduleJob(jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig().getCoreConfig().getCron());
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
         }
@@ -89,7 +89,7 @@ public class JobScheduler {
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
-        if (!jobExecutor.getSchedulerFacade().loadJobConfiguration().getJobTypeConfig().getCoreConfig().isMisfire()) {
+        if (!jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig().getCoreConfig().isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
         prepareEnvironments(result);

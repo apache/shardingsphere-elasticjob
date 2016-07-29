@@ -68,9 +68,9 @@ public class ConfigurationService {
         if (!liteJobConfig.isPresent()) {
             return;
         }
-        if (liteJobConfig.get().getJobTypeConfig().getJobClass() != jobNodeStorage.getLiteJobConfig().getJobTypeConfig().getJobClass()) {
+        if (liteJobConfig.get().getTypeConfig().getJobClass() != jobNodeStorage.getLiteJobConfig().getTypeConfig().getJobClass()) {
             throw new JobConflictException(
-                    jobNodeStorage.getLiteJobConfig().getJobName(), liteJobConfig.get().getJobTypeConfig().getJobClass(), jobNodeStorage.getLiteJobConfig().getJobTypeConfig().getJobClass());
+                    jobNodeStorage.getLiteJobConfig().getJobName(), liteJobConfig.get().getTypeConfig().getJobClass(), jobNodeStorage.getLiteJobConfig().getTypeConfig().getJobClass());
         }
     }
     
@@ -92,7 +92,7 @@ public class ConfigurationService {
      * @return 分片序列号和个性化参数对照表
      */
     public Map<Integer, String> getShardingItemParameters() {
-        String value = load().getJobTypeConfig().getCoreConfig().getShardingItemParameters();
+        String value = load().getTypeConfig().getCoreConfig().getShardingItemParameters();
         if (Strings.isNullOrEmpty(value)) {
             return Collections.emptyMap();
         }
@@ -133,6 +133,6 @@ public class ConfigurationService {
      */
     public boolean isFailover() {
         LiteJobConfiguration liteJobConfig = load();
-        return liteJobConfig.isMonitorExecution() && liteJobConfig.getJobTypeConfig().getCoreConfig().isFailover();
+        return liteJobConfig.isMonitorExecution() && liteJobConfig.getTypeConfig().getCoreConfig().isFailover();
     }
 }

@@ -54,7 +54,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     @Override
     protected void process(final ShardingContext shardingContext) {
-        DataflowJobConfiguration jobConfig = (DataflowJobConfiguration) getJobFacade().loadJobConfiguration().getJobTypeConfig();
+        DataflowJobConfiguration jobConfig = (DataflowJobConfiguration) getJobFacade().loadJobConfiguration().getTypeConfig();
         if (DataflowJobConfiguration.DataflowType.THROUGHPUT == jobConfig.getDataflowType()) {
             if (jobConfig.isStreamingProcess()) {
                 executeThroughputStreamingJob(jobConfig.getConcurrentDataProcessThreadCount(), shardingContext);

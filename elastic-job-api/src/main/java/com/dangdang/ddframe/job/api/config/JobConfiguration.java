@@ -29,5 +29,5 @@ public interface JobConfiguration {
      * 
      * @return 作业类型配置
      */
-    JobTypeConfiguration getJobTypeConfig();
+    JobTypeConfiguration getTypeConfig();
 }

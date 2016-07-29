@@ -58,7 +58,7 @@ public class GuaranteeService {
      */
     public boolean isAllStarted() {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT)
-                && configService.load().getJobTypeConfig().getCoreConfig().getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
+                && configService.load().getTypeConfig().getCoreConfig().getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
     }
     
     /**
@@ -86,7 +86,7 @@ public class GuaranteeService {
      */
     public boolean isAllCompleted() {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT)
-                && configService.load().getJobTypeConfig().getCoreConfig().getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
+                && configService.load().getTypeConfig().getCoreConfig().getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
     }
     
     /**

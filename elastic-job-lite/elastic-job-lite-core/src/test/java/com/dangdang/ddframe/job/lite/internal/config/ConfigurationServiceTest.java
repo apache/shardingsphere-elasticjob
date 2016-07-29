@@ -63,8 +63,8 @@ public final class ConfigurationServiceTest {
                         + "\"shardingTotalCount\":3,\"scriptCommandLine\":\"test.sh\"}");
         LiteJobConfiguration actual = configService.load();
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getJobTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(actual.getJobTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
     }
     
     @Test(expected = JobConflictException.class)

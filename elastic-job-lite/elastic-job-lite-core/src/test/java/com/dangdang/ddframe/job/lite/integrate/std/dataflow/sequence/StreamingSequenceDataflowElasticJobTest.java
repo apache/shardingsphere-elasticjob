@@ -44,7 +44,7 @@ public final class StreamingSequenceDataflowElasticJobTest extends AbstractBaseS
     
     @Override
     protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
-        JobConfigurationUtil.setFieldValue(liteJobConfig.getJobTypeConfig(), "streamingProcess", true);
+        JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig(), "streamingProcess", true);
     }
     
     @Test

@@ -81,7 +81,7 @@ public class JobScheduleController {
     
     private CronTrigger createTrigger(final String cronExpression) {
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-        if (schedulerFacade.loadJobConfiguration().getJobTypeConfig().getCoreConfig().isMisfire()) {
+        if (schedulerFacade.loadJobConfiguration().getTypeConfig().getCoreConfig().isMisfire()) {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
         } else {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();

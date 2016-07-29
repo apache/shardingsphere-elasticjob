@@ -44,8 +44,8 @@ public final class OneOffThroughputDataflowElasticJobTest extends AbstractBaseSt
     
     @Override
     protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
-        JobConfigurationUtil.setFieldValue(liteJobConfig.getJobTypeConfig().getCoreConfig(), "misfire", false);
-        JobConfigurationUtil.setFieldValue(liteJobConfig.getJobTypeConfig(), "streamingProcess", false);
+        JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig().getCoreConfig(), "misfire", false);
+        JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig(), "streamingProcess", false);
     }
     
     @Test

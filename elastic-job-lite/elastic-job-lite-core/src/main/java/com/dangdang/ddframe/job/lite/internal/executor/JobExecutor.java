@@ -69,12 +69,12 @@ public class JobExecutor {
     
     private ElasticJob createElasticJob(final LiteJobConfiguration liteJobConfig) {
         // TODO 代码需要梳理
-        if (liteJobConfig.getJobTypeConfig().getJobClass() == ScriptJob.class) {
+        if (liteJobConfig.getTypeConfig().getJobClass() == ScriptJob.class) {
             return null;
         }
         ElasticJob result;
         try {
-            result = liteJobConfig.getJobTypeConfig().getJobClass().newInstance();
+            result = liteJobConfig.getTypeConfig().getJobClass().newInstance();
         } catch (final InstantiationException | IllegalAccessException ex) {
             throw new JobException(ex);
         }

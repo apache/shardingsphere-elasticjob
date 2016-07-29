@@ -106,7 +106,7 @@ public class FailoverListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType()
-                    && !LiteJobConfigurationGsonFactory.getGson().fromJson(new String(event.getData().getData()), LiteJobConfiguration.class).getJobTypeConfig().getCoreConfig().isFailover()) {
+                    && !LiteJobConfigurationGsonFactory.getGson().fromJson(new String(event.getData().getData()), LiteJobConfiguration.class).getTypeConfig().getCoreConfig().isFailover()) {
                 failoverService.removeFailoverInfo();
             }
         }

@@ -30,7 +30,7 @@ public final class TestFinalScriptJobConfiguration implements JobConfiguration {
     private final String scriptCommandLine;
     
     @Override
-    public JobTypeConfiguration getJobTypeConfig() {
+    public JobTypeConfiguration getTypeConfig() {
         return new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10).build(), scriptCommandLine); 
     }
 }

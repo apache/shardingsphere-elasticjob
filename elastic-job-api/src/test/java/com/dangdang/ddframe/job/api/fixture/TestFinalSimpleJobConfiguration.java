@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public final class TestFinalSimpleJobConfiguration implements JobConfiguration {
     
     @Override
-    public JobTypeConfiguration getJobTypeConfig() {
+    public JobTypeConfiguration getTypeConfig() {
         return new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10).build(), TestSimpleJob.class); 
     }
 }

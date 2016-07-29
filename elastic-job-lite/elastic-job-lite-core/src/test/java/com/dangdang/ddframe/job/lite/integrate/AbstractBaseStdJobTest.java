@@ -179,9 +179,9 @@ public abstract class AbstractBaseStdJobTest {
     
     private void assertRegCenterCommonInfo() {
         LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(regCenter.get("/" + jobName + "/config"), LiteJobConfiguration.class);
-        assertThat(liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
-        assertThat(liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
-        assertThat(liteJobConfig.getJobTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
+        assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
             assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));

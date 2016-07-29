@@ -242,29 +242,29 @@ public final class LiteJobConfigurationGsonFactory {
         public void write(final JsonWriter out, final LiteJobConfiguration value) throws IOException {
             out.beginObject();
             out.name("jobName").value(value.getJobName());
-            out.name("jobClass").value(value.getJobTypeConfig().getJobClass().getCanonicalName());
-            out.name("jobType").value(value.getJobTypeConfig().getJobType().name());
-            out.name("cron").value(value.getJobTypeConfig().getCoreConfig().getCron());
-            out.name("shardingTotalCount").value(value.getJobTypeConfig().getCoreConfig().getShardingTotalCount());
-            out.name("shardingItemParameters").value(value.getJobTypeConfig().getCoreConfig().getShardingItemParameters());
-            out.name("jobParameter").value(value.getJobTypeConfig().getCoreConfig().getJobParameter());
-            out.name("failover").value(value.getJobTypeConfig().getCoreConfig().isFailover());
-            out.name("misfire").value(value.getJobTypeConfig().getCoreConfig().isMisfire());
-            out.name("description").value(value.getJobTypeConfig().getCoreConfig().getDescription());
-            out.name("jobProperties").jsonValue(value.getJobTypeConfig().getCoreConfig().getJobProperties().json());
+            out.name("jobClass").value(value.getTypeConfig().getJobClass().getCanonicalName());
+            out.name("jobType").value(value.getTypeConfig().getJobType().name());
+            out.name("cron").value(value.getTypeConfig().getCoreConfig().getCron());
+            out.name("shardingTotalCount").value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
+            out.name("shardingItemParameters").value(value.getTypeConfig().getCoreConfig().getShardingItemParameters());
+            out.name("jobParameter").value(value.getTypeConfig().getCoreConfig().getJobParameter());
+            out.name("failover").value(value.getTypeConfig().getCoreConfig().isFailover());
+            out.name("misfire").value(value.getTypeConfig().getCoreConfig().isMisfire());
+            out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
+            out.name("jobProperties").jsonValue(value.getTypeConfig().getCoreConfig().getJobProperties().json());
             out.name("monitorExecution").value(value.isMonitorExecution());
             out.name("maxTimeDiffSeconds").value(value.getMaxTimeDiffSeconds());
             out.name("monitorPort").value(value.getMonitorPort());
             out.name("jobShardingStrategyClass").value(value.getJobShardingStrategyClass());
             out.name("disabled").value(value.isDisabled());
             out.name("overwrite").value(value.isOverwrite());
-            if (DataflowJob.class.isAssignableFrom(value.getJobTypeConfig().getJobClass())) {
-                DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getJobTypeConfig();
+            if (DataflowJob.class.isAssignableFrom(value.getTypeConfig().getJobClass())) {
+                DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getTypeConfig();
                 out.name("dataflowType").value(dataflowJobConfig.getDataflowType().name());
                 out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());
                 out.name("concurrentDataProcessThreadCount").value(dataflowJobConfig.getConcurrentDataProcessThreadCount());
-            } else if (ScriptJob.class == value.getJobTypeConfig().getJobClass()) {
-                ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getJobTypeConfig();
+            } else if (ScriptJob.class == value.getTypeConfig().getJobClass()) {
+                ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
                 out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());
             }
             out.endObject();

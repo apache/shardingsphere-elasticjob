@@ -123,14 +123,14 @@ public class LiteJobFacade implements JobFacade {
     
     @Override
     public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
-        return isEligibleForJobRunning() && configService.load().getJobTypeConfig().getCoreConfig().isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
+        return isEligibleForJobRunning() && configService.load().getTypeConfig().getCoreConfig().isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
     }
     
     @Override
     public boolean isEligibleForJobRunning() {
         LiteJobConfiguration liteJobConfig = configService.load();
-        if (liteJobConfig.getJobTypeConfig() instanceof DataflowJobConfiguration) {
-            return !serverService.isJobPausedManually() && !shardingService.isNeedSharding() && ((DataflowJobConfiguration) liteJobConfig.getJobTypeConfig()).isStreamingProcess();    
+        if (liteJobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
+            return !serverService.isJobPausedManually() && !shardingService.isNeedSharding() && ((DataflowJobConfiguration) liteJobConfig.getTypeConfig()).isStreamingProcess();    
         }
         return !serverService.isJobPausedManually() && !shardingService.isNeedSharding();
     }

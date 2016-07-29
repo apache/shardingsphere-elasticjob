@@ -66,7 +66,7 @@ public final class JobExecutorTest {
         assertNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
         JobExecutor actualJobExecutor = new JobExecutor(null, liteJobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
         assertNotNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
-        assertThat(ReflectionUtils.getFieldValue(actualJobExecutor, ReflectionUtils.getFieldWithName(JobExecutor.class, "elasticJob", false)), instanceOf(liteJobConfig.getJobTypeConfig().getJobClass()));
+        assertThat(ReflectionUtils.getFieldValue(actualJobExecutor, ReflectionUtils.getFieldWithName(JobExecutor.class, "elasticJob", false)), instanceOf(liteJobConfig.getTypeConfig().getJobClass()));
     }
     
     @Test

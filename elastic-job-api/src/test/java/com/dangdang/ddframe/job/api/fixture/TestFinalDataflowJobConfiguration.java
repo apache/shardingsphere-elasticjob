@@ -34,7 +34,7 @@ public final class TestFinalDataflowJobConfiguration implements JobConfiguration
     private final int concurrentDataProcessThreadCount;
     
     @Override
-    public JobTypeConfiguration getJobTypeConfig() {
+    public JobTypeConfiguration getTypeConfig() {
         return new DataflowJobConfiguration(
                 JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10).build(), TestDataflowJob.class, dataflowType, streamingProcess, concurrentDataProcessThreadCount); 
     }
