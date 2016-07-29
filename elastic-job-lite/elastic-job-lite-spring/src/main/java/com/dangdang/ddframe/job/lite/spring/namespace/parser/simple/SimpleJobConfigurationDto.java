@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.simple;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
@@ -39,7 +39,7 @@ final class SimpleJobConfigurationDto extends AbstractJobConfigurationDto {
     }
     
     @Override
-    protected JobConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
+    protected JobTypeConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
         return new SimpleJobConfiguration(jobCoreConfig, jobClass);
     }
 }

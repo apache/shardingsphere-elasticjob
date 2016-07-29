@@ -109,7 +109,7 @@ public class ShardingService {
         clearShardingInfo();
         LiteJobConfiguration liteJobConfig = configService.load();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
-        JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount(), configService.getShardingItemParameters());
+        JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingTotalCount(), configService.getShardingItemParameters());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
         log.debug("Elastic job: sharding completed.");
     }

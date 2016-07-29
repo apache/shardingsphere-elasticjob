@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
@@ -49,7 +49,7 @@ final class DataflowJobConfigurationDto extends AbstractJobConfigurationDto {
     }
     
     @Override
-    protected JobConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
+    protected JobTypeConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
         return null == concurrentDataProcessThreadCount
                 ? new DataflowJobConfiguration(jobCoreConfig, jobClass, dataflowType, null == streamingProcess ? false : streamingProcess)
                 : new DataflowJobConfiguration(jobCoreConfig, jobClass, dataflowType, null == streamingProcess ? false : streamingProcess, concurrentDataProcessThreadCount);

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.api.config;
 
 import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.google.common.base.Preconditions;

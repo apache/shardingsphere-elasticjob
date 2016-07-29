@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.script.api;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.JobType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
-public final class ScriptJobConfiguration implements JobConfiguration {
+public final class ScriptJobConfiguration implements JobTypeConfiguration {
     
     private final JobCoreConfiguration coreConfig;
     

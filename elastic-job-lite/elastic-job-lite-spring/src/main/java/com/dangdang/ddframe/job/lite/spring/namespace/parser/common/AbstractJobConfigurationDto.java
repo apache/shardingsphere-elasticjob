@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.common;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -92,5 +92,5 @@ public abstract class AbstractJobConfigurationDto {
         return result.build();
     }
     
-    protected abstract JobConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig);
+    protected abstract JobTypeConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig);
 }

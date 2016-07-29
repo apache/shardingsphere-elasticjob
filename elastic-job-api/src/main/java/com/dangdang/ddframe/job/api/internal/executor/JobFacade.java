@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.internal.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.internal.config.FinalJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 
 import java.util.Collection;
 
@@ -34,7 +34,7 @@ public interface JobFacade {
      * 
      * @return 作业配置
      */
-    FinalJobConfiguration loadFinalJobConfiguration();
+    JobConfiguration loadJobConfiguration();
     
     /**
      * 检查本机与注册中心的时间误差秒数是否在允许范围.

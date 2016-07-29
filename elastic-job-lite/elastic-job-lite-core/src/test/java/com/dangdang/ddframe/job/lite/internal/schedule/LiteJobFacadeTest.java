@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
@@ -91,7 +91,7 @@ public class LiteJobFacadeTest {
     public void assertLoad() {
         LiteJobConfiguration expected = LiteJobConfiguration.newBuilder(null).build();
         when(configService.load()).thenReturn(expected);
-        assertThat(liteJobFacade.loadFinalJobConfiguration(), is(expected));
+        assertThat(liteJobFacade.loadJobConfiguration(), is(expected));
     }
     
     @Test

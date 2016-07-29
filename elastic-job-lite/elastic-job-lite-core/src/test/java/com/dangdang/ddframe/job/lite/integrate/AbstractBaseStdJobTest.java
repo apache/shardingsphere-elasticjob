@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
@@ -179,9 +179,9 @@ public abstract class AbstractBaseStdJobTest {
     
     private void assertRegCenterCommonInfo() {
         LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(regCenter.get("/" + jobName + "/config"), LiteJobConfiguration.class);
-        assertThat(liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount(), is(3));
-        assertThat(liteJobConfig.getJobConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
-        assertThat(liteJobConfig.getJobConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
+        assertThat(liteJobConfig.getJobTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
             assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));

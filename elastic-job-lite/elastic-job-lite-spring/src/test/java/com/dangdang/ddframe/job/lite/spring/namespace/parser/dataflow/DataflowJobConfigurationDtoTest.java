@@ -34,9 +34,9 @@ public final class DataflowJobConfigurationDtoTest {
         LiteJobConfiguration actual = new DataflowJobConfigurationDto(
                 "dataflowJob", "0/1 * * * * ?", 10, ThroughputDataflowElasticJob.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, true, 10).toLiteJobConfiguration();
         assertThat(actual.getJobName(), is("dataflowJob"));
-        assertThat(((DataflowJobConfiguration) actual.getJobConfig()).getDataflowType(), is(DataflowJobConfiguration.DataflowType.THROUGHPUT));
-        assertTrue(((DataflowJobConfiguration) actual.getJobConfig()).isStreamingProcess());
-        assertThat(((DataflowJobConfiguration) actual.getJobConfig()).getConcurrentDataProcessThreadCount(), is(10));
+        assertThat(((DataflowJobConfiguration) actual.getJobTypeConfig()).getDataflowType(), is(DataflowJobConfiguration.DataflowType.THROUGHPUT));
+        assertTrue(((DataflowJobConfiguration) actual.getJobTypeConfig()).isStreamingProcess());
+        assertThat(((DataflowJobConfiguration) actual.getJobTypeConfig()).getConcurrentDataProcessThreadCount(), is(10));
     }
     
     @Test
@@ -44,7 +44,7 @@ public final class DataflowJobConfigurationDtoTest {
         LiteJobConfiguration actual = new DataflowJobConfigurationDto(
                 "dataflowJob", "0/1 * * * * ?", 10, ThroughputDataflowElasticJob.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, null, null).toLiteJobConfiguration();
         assertThat(actual.getJobName(), is("dataflowJob"));
-        assertFalse(((DataflowJobConfiguration) actual.getJobConfig()).isStreamingProcess());
-        assertThat(((DataflowJobConfiguration) actual.getJobConfig()).getConcurrentDataProcessThreadCount(), is(Runtime.getRuntime().availableProcessors() * 2));
+        assertFalse(((DataflowJobConfiguration) actual.getJobTypeConfig()).isStreamingProcess());
+        assertThat(((DataflowJobConfiguration) actual.getJobTypeConfig()).getConcurrentDataProcessThreadCount(), is(Runtime.getRuntime().availableProcessors() * 2));
     }
 }

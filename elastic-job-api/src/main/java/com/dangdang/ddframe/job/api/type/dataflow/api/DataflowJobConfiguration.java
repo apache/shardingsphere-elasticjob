@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.api;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.JobType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
-public final class DataflowJobConfiguration implements JobConfiguration {
+public final class DataflowJobConfiguration implements JobTypeConfiguration {
     
     private final JobCoreConfiguration coreConfig;
     

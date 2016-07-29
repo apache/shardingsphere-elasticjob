@@ -17,15 +17,15 @@
 
 package com.dangdang.ddframe.job.api.fixture;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.FinalJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class TestFinalDataflowJobConfiguration implements FinalJobConfiguration {
+public final class TestFinalDataflowJobConfiguration implements JobConfiguration {
     
     private final DataflowJobConfiguration.DataflowType dataflowType;
     
@@ -34,7 +34,7 @@ public final class TestFinalDataflowJobConfiguration implements FinalJobConfigur
     private final int concurrentDataProcessThreadCount;
     
     @Override
-    public JobConfiguration getJobConfig() {
+    public JobTypeConfiguration getJobTypeConfig() {
         return new DataflowJobConfiguration(
                 JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10).build(), TestDataflowJob.class, dataflowType, streamingProcess, concurrentDataProcessThreadCount); 
     }

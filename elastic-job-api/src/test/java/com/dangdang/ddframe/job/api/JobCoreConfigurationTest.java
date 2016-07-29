@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;

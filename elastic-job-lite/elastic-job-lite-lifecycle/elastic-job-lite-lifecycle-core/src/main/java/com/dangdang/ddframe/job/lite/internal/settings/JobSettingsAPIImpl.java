@@ -44,32 +44,32 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
         LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(registryCenter.get(jobNodePath.getConfigNodePath()), LiteJobConfiguration.class);
-        String jobType = liteJobConfig.getJobConfig().getJobType().name();
+        String jobType = liteJobConfig.getJobTypeConfig().getJobType().name();
         buildSimpleJobSettings(jobName, result, liteJobConfig);
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            buildDataflowJobSettings(result, (DataflowJobConfiguration) liteJobConfig.getJobConfig());
+            buildDataflowJobSettings(result, (DataflowJobConfiguration) liteJobConfig.getJobTypeConfig());
         }
         if (JobType.SCRIPT.name().equals(jobType)) {
-            buildScriptJobSettings(result, (ScriptJobConfiguration) liteJobConfig.getJobConfig());
+            buildScriptJobSettings(result, (ScriptJobConfiguration) liteJobConfig.getJobTypeConfig());
         }
         return result;
     }
     
     private void buildSimpleJobSettings(final String jobName, final JobSettings result, final LiteJobConfiguration liteJobConfig) {
         result.setJobName(jobName);
-        result.setJobType(liteJobConfig.getJobConfig().getJobType().name());
-        result.setJobClass(liteJobConfig.getJobConfig().getJobClass().getCanonicalName());
-        result.setShardingTotalCount(liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount());
-        result.setCron(liteJobConfig.getJobConfig().getCoreConfig().getCron());
-        result.setShardingItemParameters(liteJobConfig.getJobConfig().getCoreConfig().getShardingItemParameters());
-        result.setJobParameter(liteJobConfig.getJobConfig().getCoreConfig().getJobParameter());
+        result.setJobType(liteJobConfig.getJobTypeConfig().getJobType().name());
+        result.setJobClass(liteJobConfig.getJobTypeConfig().getJobClass().getCanonicalName());
+        result.setShardingTotalCount(liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingTotalCount());
+        result.setCron(liteJobConfig.getJobTypeConfig().getCoreConfig().getCron());
+        result.setShardingItemParameters(liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingItemParameters());
+        result.setJobParameter(liteJobConfig.getJobTypeConfig().getCoreConfig().getJobParameter());
         result.setMonitorExecution(liteJobConfig.isMonitorExecution());
         result.setMaxTimeDiffSeconds(liteJobConfig.getMaxTimeDiffSeconds());
         result.setMonitorPort(liteJobConfig.getMonitorPort());
-        result.setFailover(liteJobConfig.getJobConfig().getCoreConfig().isFailover());
-        result.setMisfire(liteJobConfig.getJobConfig().getCoreConfig().isMisfire());
+        result.setFailover(liteJobConfig.getJobTypeConfig().getCoreConfig().isFailover());
+        result.setMisfire(liteJobConfig.getJobTypeConfig().getCoreConfig().isMisfire());
         result.setJobShardingStrategyClass(liteJobConfig.getJobShardingStrategyClass());
-        result.setDescription(liteJobConfig.getJobConfig().getCoreConfig().getDescription());
+        result.setDescription(liteJobConfig.getJobTypeConfig().getCoreConfig().getDescription());
     } 
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {

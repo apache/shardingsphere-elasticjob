@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.script;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
 import lombok.Setter;
@@ -41,7 +41,7 @@ final class ScriptJobConfigurationDto extends AbstractJobConfigurationDto {
     }
     
     @Override
-    protected JobConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
+    protected JobTypeConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
         return new ScriptJobConfiguration(jobCoreConfig, scriptCommandLine);
     }
 }

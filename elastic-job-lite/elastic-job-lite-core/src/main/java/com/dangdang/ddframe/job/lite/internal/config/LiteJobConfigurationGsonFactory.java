@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
@@ -170,7 +170,7 @@ public final class LiteJobConfigurationGsonFactory {
             in.endObject();
             JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
                     jobParameter, failover, misfire, description, jobProperties);
-            JobConfiguration jobConfig = getJobConfiguration(coreConfig, jobType, jobClass, dataflowType, streamingProcess, concurrentDataProcessThreadCount, scriptCommandLine);
+            JobTypeConfiguration jobConfig = getJobConfiguration(coreConfig, jobType, jobClass, dataflowType, streamingProcess, concurrentDataProcessThreadCount, scriptCommandLine);
             return getLiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, disabled, overwrite);
         }
         
@@ -203,7 +203,7 @@ public final class LiteJobConfigurationGsonFactory {
             }
         }
         
-        private LiteJobConfiguration getLiteJobConfiguration(final JobConfiguration jobConfig, final boolean monitorExecution, final int maxTimeDiffSeconds, 
+        private LiteJobConfiguration getLiteJobConfiguration(final JobTypeConfiguration jobConfig, final boolean monitorExecution, final int maxTimeDiffSeconds,
                                                              final int monitorPort, final String jobShardingStrategyClass, final boolean disabled, final boolean overwrite) {
             return LiteJobConfiguration.newBuilder(jobConfig).monitorExecution(monitorExecution).maxTimeDiffSeconds(maxTimeDiffSeconds)
                     .monitorPort(monitorPort).jobShardingStrategyClass(jobShardingStrategyClass).disabled(disabled).overwrite(overwrite).build();
@@ -219,9 +219,9 @@ public final class LiteJobConfigurationGsonFactory {
         }
         
         @SuppressWarnings("unchecked")
-        private JobConfiguration getJobConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final Object jobClass, final DataflowJobConfiguration.DataflowType dataflowType, 
-                                                     final boolean streamingProcess, final int concurrentDataProcessThreadCount, final String scriptCommandLine) {
-            JobConfiguration result;
+        private JobTypeConfiguration getJobConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final Object jobClass, final DataflowJobConfiguration.DataflowType dataflowType,
+                                                         final boolean streamingProcess, final int concurrentDataProcessThreadCount, final String scriptCommandLine) {
+            JobTypeConfiguration result;
             switch (jobType) {
                 case SIMPLE:
                     result = new SimpleJobConfiguration(coreConfig, (Class<? extends SimpleJob>) jobClass);
@@ -242,29 +242,29 @@ public final class LiteJobConfigurationGsonFactory {
         public void write(final JsonWriter out, final LiteJobConfiguration value) throws IOException {
             out.beginObject();
             out.name("jobName").value(value.getJobName());
-            out.name("jobClass").value(value.getJobConfig().getJobClass().getCanonicalName());
-            out.name("jobType").value(value.getJobConfig().getJobType().name());
-            out.name("cron").value(value.getJobConfig().getCoreConfig().getCron());
-            out.name("shardingTotalCount").value(value.getJobConfig().getCoreConfig().getShardingTotalCount());
-            out.name("shardingItemParameters").value(value.getJobConfig().getCoreConfig().getShardingItemParameters());
-            out.name("jobParameter").value(value.getJobConfig().getCoreConfig().getJobParameter());
-            out.name("failover").value(value.getJobConfig().getCoreConfig().isFailover());
-            out.name("misfire").value(value.getJobConfig().getCoreConfig().isMisfire());
-            out.name("description").value(value.getJobConfig().getCoreConfig().getDescription());
-            out.name("jobProperties").jsonValue(value.getJobConfig().getCoreConfig().getJobProperties().json());
+            out.name("jobClass").value(value.getJobTypeConfig().getJobClass().getCanonicalName());
+            out.name("jobType").value(value.getJobTypeConfig().getJobType().name());
+            out.name("cron").value(value.getJobTypeConfig().getCoreConfig().getCron());
+            out.name("shardingTotalCount").value(value.getJobTypeConfig().getCoreConfig().getShardingTotalCount());
+            out.name("shardingItemParameters").value(value.getJobTypeConfig().getCoreConfig().getShardingItemParameters());
+            out.name("jobParameter").value(value.getJobTypeConfig().getCoreConfig().getJobParameter());
+            out.name("failover").value(value.getJobTypeConfig().getCoreConfig().isFailover());
+            out.name("misfire").value(value.getJobTypeConfig().getCoreConfig().isMisfire());
+            out.name("description").value(value.getJobTypeConfig().getCoreConfig().getDescription());
+            out.name("jobProperties").jsonValue(value.getJobTypeConfig().getCoreConfig().getJobProperties().json());
             out.name("monitorExecution").value(value.isMonitorExecution());
             out.name("maxTimeDiffSeconds").value(value.getMaxTimeDiffSeconds());
             out.name("monitorPort").value(value.getMonitorPort());
             out.name("jobShardingStrategyClass").value(value.getJobShardingStrategyClass());
             out.name("disabled").value(value.isDisabled());
             out.name("overwrite").value(value.isOverwrite());
-            if (DataflowJob.class.isAssignableFrom(value.getJobConfig().getJobClass())) {
-                DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getJobConfig();
+            if (DataflowJob.class.isAssignableFrom(value.getJobTypeConfig().getJobClass())) {
+                DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getJobTypeConfig();
                 out.name("dataflowType").value(dataflowJobConfig.getDataflowType().name());
                 out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());
                 out.name("concurrentDataProcessThreadCount").value(dataflowJobConfig.getConcurrentDataProcessThreadCount());
-            } else if (ScriptJob.class == value.getJobConfig().getJobClass()) {
-                ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getJobConfig();
+            } else if (ScriptJob.class == value.getJobTypeConfig().getJobClass()) {
+                ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getJobTypeConfig();
                 out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());
             }
             out.endObject();

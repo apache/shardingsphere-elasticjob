@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.api.config;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.FinalJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,9 +32,9 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class LiteJobConfiguration implements FinalJobConfiguration {
+public class LiteJobConfiguration implements JobConfiguration {
     
-    private final JobConfiguration jobConfig;
+    private final JobTypeConfiguration jobTypeConfig;
     
     private final boolean monitorExecution;
     
@@ -54,7 +54,7 @@ public class LiteJobConfiguration implements FinalJobConfiguration {
      * @return 作业名称
      */
     public String getJobName() {
-        return jobConfig.getCoreConfig().getJobName();
+        return jobTypeConfig.getCoreConfig().getJobName();
     }
     
     /**
@@ -63,14 +63,14 @@ public class LiteJobConfiguration implements FinalJobConfiguration {
      * @param jobConfig 作业配置
      * @return Lite作业配置构建器
      */
-    public static Builder newBuilder(final JobConfiguration jobConfig) {
+    public static Builder newBuilder(final JobTypeConfiguration jobConfig) {
         return new Builder(jobConfig);
     }
     
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder {
         
-        private final JobConfiguration jobConfig;
+        private final JobTypeConfiguration jobConfig;
         
         private boolean monitorExecution = true;
         

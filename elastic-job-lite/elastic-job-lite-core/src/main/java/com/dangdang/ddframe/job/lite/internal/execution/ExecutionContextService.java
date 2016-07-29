@@ -57,8 +57,8 @@ public class ExecutionContextService {
         LiteJobConfiguration liteJobConfig = configService.load();
         removeRunningIfMonitorExecution(liteJobConfig.isMonitorExecution(), shardingItems);
         if (shardingItems.isEmpty()) {
-            return new ShardingContext(liteJobConfig.getJobName(), liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount(), 
-                    liteJobConfig.getJobConfig().getCoreConfig().getJobParameter(), Collections.<ShardingContext.ShardingItem>emptyList());
+            return new ShardingContext(liteJobConfig.getJobName(), liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingTotalCount(), 
+                    liteJobConfig.getJobTypeConfig().getCoreConfig().getJobParameter(), Collections.<ShardingContext.ShardingItem>emptyList());
         }
         Map<Integer, String> shardingItemParameterMap = configService.getShardingItemParameters();
         List<ShardingContext.ShardingItem> shardingItemList = new ArrayList<>(shardingItems.size());
@@ -66,7 +66,7 @@ public class ExecutionContextService {
             shardingItemList.add(new ShardingContext.ShardingItem(each, shardingItemParameterMap.get(each)));
         }
         return new ShardingContext(liteJobConfig.getJobName(), 
-                liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount(), liteJobConfig.getJobConfig().getCoreConfig().getJobParameter(), shardingItemList);
+                liteJobConfig.getJobTypeConfig().getCoreConfig().getShardingTotalCount(), liteJobConfig.getJobTypeConfig().getCoreConfig().getJobParameter(), shardingItemList);
     }
     
     private void removeRunningIfMonitorExecution(final boolean monitorExecution, final List<Integer> shardingItems) {

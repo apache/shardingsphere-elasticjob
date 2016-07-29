@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.simple.api;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.JobType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +31,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public final class SimpleJobConfiguration implements JobConfiguration {
+public final class SimpleJobConfiguration implements JobTypeConfiguration {
     
     private final JobCoreConfiguration coreConfig;
     

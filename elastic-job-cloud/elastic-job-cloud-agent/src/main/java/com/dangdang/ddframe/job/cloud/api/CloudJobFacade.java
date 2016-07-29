@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.api;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.internal.config.FinalJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +35,7 @@ public class CloudJobFacade implements JobFacade {
     private final ShardingContext shardingContext;
     
     @Override
-    public FinalJobConfiguration loadFinalJobConfiguration() {
+    public JobConfiguration loadJobConfiguration() {
         // TODO
         return null;
     }

@@ -17,18 +17,18 @@
 
 package com.dangdang.ddframe.job.api.fixture;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
-import com.dangdang.ddframe.job.api.JobCoreConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.FinalJobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class TestFinalSimpleJobConfiguration implements FinalJobConfiguration {
+public final class TestFinalSimpleJobConfiguration implements JobConfiguration {
     
     @Override
-    public JobConfiguration getJobConfig() {
+    public JobTypeConfiguration getJobTypeConfig() {
         return new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10).build(), TestSimpleJob.class); 
     }
 }

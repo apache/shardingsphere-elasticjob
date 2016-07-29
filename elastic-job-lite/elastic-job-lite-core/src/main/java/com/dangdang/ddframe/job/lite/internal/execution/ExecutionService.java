@@ -110,7 +110,7 @@ public class ExecutionService {
     }
     
     private void fixExecutionInfo(final List<Integer> items) {
-        int newShardingTotalCount = configService.load().getJobConfig().getCoreConfig().getShardingTotalCount();
+        int newShardingTotalCount = configService.load().getJobTypeConfig().getCoreConfig().getShardingTotalCount();
         int currentShardingTotalCount = items.size();
         if (newShardingTotalCount > currentShardingTotalCount) {
             for (int i = currentShardingTotalCount; i < newShardingTotalCount; i++) {

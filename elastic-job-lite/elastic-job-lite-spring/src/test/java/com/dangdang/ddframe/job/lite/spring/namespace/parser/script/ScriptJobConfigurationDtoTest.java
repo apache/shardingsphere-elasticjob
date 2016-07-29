@@ -30,6 +30,6 @@ public final class ScriptJobConfigurationDtoTest {
     public void assertToLiteJobConfiguration() {
         LiteJobConfiguration actual = new ScriptJobConfigurationDto("scriptJob", "0/1 * * * * ?", 10, "test.sh").toLiteJobConfiguration();
         assertThat(actual.getJobName(), is("scriptJob"));
-        assertThat(((ScriptJobConfiguration) actual.getJobConfig()).getScriptCommandLine(), is("test.sh"));
+        assertThat(((ScriptJobConfiguration) actual.getJobTypeConfig()).getScriptCommandLine(), is("test.sh"));
     }
 }

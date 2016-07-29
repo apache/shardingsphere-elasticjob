@@ -15,21 +15,37 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.internal.config;
+package com.dangdang.ddframe.job.api.config;
 
-import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.type.JobType;
 
 /**
- * 最终使用的作业配置标识接口.
- *
+ * 作业类型配置.
+ * 
+ * @author caohao
  * @author zhangliang
  */
-public interface FinalJobConfiguration {
+public interface JobTypeConfiguration {
     
     /**
-     * 获取作业配置.
+     * 获取作业类型.
      * 
-     * @return 作业配置
+     * @return 作业类型
      */
-    JobConfiguration getJobConfig();
+    JobType getJobType();
+    
+    /**
+     * 获取作业实现类.
+     *
+     * @return 作业实现类
+     */
+    Class<? extends ElasticJob> getJobClass();
+    
+    /**
+     * 获取作业核心配置.
+     * 
+     * @return 作业核心配置
+     */
+    JobCoreConfiguration getCoreConfig(); 
 }
