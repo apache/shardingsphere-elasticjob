@@ -15,20 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.fixture;
+package com.dangdang.ddframe.job.api.fixture.config;
 
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.fixture.handler.ThrowJobExceptionHandler;
+import com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob;
+import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class TestFinalSimpleJobConfiguration implements JobConfiguration {
+public final class TestSimpleJobConfiguration implements JobConfiguration {
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
-        return new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10).build(), TestSimpleJob.class); 
+        return new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10)
+                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), ThrowJobExceptionHandler.class).build(), TestSimpleJob.class); 
     }
 }

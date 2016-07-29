@@ -15,19 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.fixture;
+package com.dangdang.ddframe.job.api.fixture.handler;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
-import lombok.RequiredArgsConstructor;
+import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
+import com.dangdang.ddframe.job.exception.JobException;
 
-@RequiredArgsConstructor
-public class TestSimpleJob implements SimpleJob {
-    
-    private final JobCaller jobCaller;
+public final class ThrowJobExceptionHandler implements JobExceptionHandler {
     
     @Override
-    public void execute(final ShardingContext shardingContext) {
-        jobCaller.execute();
+    public void handleException(final Throwable cause) {
+        throw new JobException(cause);
     }
 }

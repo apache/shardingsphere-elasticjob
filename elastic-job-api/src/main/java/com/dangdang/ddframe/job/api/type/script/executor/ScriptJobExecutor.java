@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;
@@ -36,7 +35,6 @@ import java.io.IOException;
  * @author zhangliang
  * @author caohao
  */
-@Slf4j
 public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
     
     private final Executor executor;
@@ -48,7 +46,7 @@ public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
     
     @Override
     protected void process(final ShardingContext shardingContext) {
-        String scriptCommandLine = ((ScriptJobConfiguration) getJobFacade().loadJobConfiguration(true).getTypeConfig()).getScriptCommandLine();
+        String scriptCommandLine = ((ScriptJobConfiguration) getJobConfig().getTypeConfig()).getScriptCommandLine();
         if (Strings.isNullOrEmpty(scriptCommandLine)) {
             handleException(new JobException("Cannot find script command line for job '{}', job is not executed.", shardingContext.getJobName()));
             return;

@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.api.type.dataflow.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.fixture.JobCaller;
-import com.dangdang.ddframe.job.api.fixture.TestDataflowJob;
-import com.dangdang.ddframe.job.api.fixture.TestFinalDataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
+import com.dangdang.ddframe.job.api.fixture.job.JobCaller;
+import com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob;
+import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
@@ -39,8 +39,7 @@ import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,23 +70,16 @@ public abstract class AbstractDataflowJobExecutorTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestFinalDataflowJobConfiguration(dataflowType, streamingProcess, concurrentDataProcessThreadCount));
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(dataflowType, streamingProcess, concurrentDataProcessThreadCount));
         shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         dataflowJobExecutor = new DataflowJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
-        dataflowJobExecutor.setJobExceptionHandler(new JobExceptionHandler() {
-            
-            @Override
-            public void handleException(final Throwable cause) {
-            }
-        });
-        dataflowJobExecutor.setExecutorService(executorService);
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
     }
     
     @After
     public void tearDown() throws NoSuchFieldException {
-        assertThat((ExecutorService) ReflectionUtils.getFieldValue(dataflowJobExecutor, DataflowJobExecutor.class.getDeclaredField("executorService")), is(executorService));
+        assertNotNull(ReflectionUtils.getFieldValue(dataflowJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("executorService")));
         verify(jobFacade).loadJobConfiguration(true);
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
     }

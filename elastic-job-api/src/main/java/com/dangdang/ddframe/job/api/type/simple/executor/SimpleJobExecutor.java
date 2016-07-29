@@ -17,18 +17,16 @@
 
 package com.dangdang.ddframe.job.api.type.simple.executor;
 
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
-import lombok.extern.slf4j.Slf4j;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 
 /**
  * 简单作业执行器.
  * 
  * @author zhangliang
  */
-@Slf4j
 public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
     
     private final SimpleJob simpleJob;

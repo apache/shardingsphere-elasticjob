@@ -17,8 +17,7 @@
 
 package com.dangdang.ddframe.job.api.type.script.executor;
 
-import com.dangdang.ddframe.job.api.fixture.TestFinalScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
+import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.exception.JobException;
@@ -51,28 +50,23 @@ public class ScriptJobExecutorTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, ElasticJobAssert.getShardingContext());
-        scriptJobExecutor = new ScriptJobExecutor(jobFacade);
-        ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
-        scriptJobExecutor.setJobExceptionHandler(new JobExceptionHandler() {
-            
-            @Override
-            public void handleException(final Throwable cause) {
-                throw new JobException(cause);
-            }
-        });
     }
     
     @Test(expected = JobException.class)
-    public void assertExecuteWhenScriptCommandLineIsEmpty() throws IOException {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestFinalScriptJobConfiguration(""));
+    public void assertExecuteWhenScriptCommandLineIsEmpty() throws IOException, NoSuchFieldException {
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration(""));
+        scriptJobExecutor = new ScriptJobExecutor(jobFacade);
+        ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         scriptJobExecutor.execute();
         verify(executor, times(0)).execute(Matchers.<CommandLine>any());
     }
     
     @SuppressWarnings("unchecked")
     @Test(expected = JobException.class)
-    public void assertExecuteWhenExecuteFailure() throws IOException {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestFinalScriptJobConfiguration("not_exists_file"));
+    public void assertExecuteWhenExecuteFailure() throws IOException, NoSuchFieldException {
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file"));
+        scriptJobExecutor = new ScriptJobExecutor(jobFacade);
+        ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         when(executor.execute(Matchers.<CommandLine>any())).thenThrow(IOException.class);
         try {
             scriptJobExecutor.execute();
@@ -82,8 +76,10 @@ public class ScriptJobExecutorTest {
     }
     
     @Test
-    public void assertExecuteWhenFileExists() throws IOException {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestFinalScriptJobConfiguration("exists_file param0 param1"));
+    public void assertExecuteWhenFileExists() throws IOException, NoSuchFieldException {
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration("exists_file param0 param1"));
+        scriptJobExecutor = new ScriptJobExecutor(jobFacade);
+        ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         scriptJobExecutor.execute();
         verify(jobFacade).loadJobConfiguration(true);
         verify(executor).execute(Matchers.<CommandLine>any());

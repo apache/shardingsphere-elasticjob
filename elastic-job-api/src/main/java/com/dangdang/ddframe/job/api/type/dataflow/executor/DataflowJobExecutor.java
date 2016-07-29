@@ -31,11 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * 简单作业执行器.
+ * 数据流作业执行器.
  * 
  * @author zhangliang
  */
@@ -44,25 +42,22 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     private final DataflowJob<Object> dataflowJob;
     
-    private ExecutorService executorService;
-    
     public DataflowJobExecutor(final DataflowJob<Object> dataflowJob, final JobFacade jobFacade) {
         super(jobFacade);
         this.dataflowJob = dataflowJob;
-        executorService = Executors.newCachedThreadPool();
     }
     
     @Override
     protected void process(final ShardingContext shardingContext) {
-        DataflowJobConfiguration jobConfig = (DataflowJobConfiguration) getJobFacade().loadJobConfiguration(true).getTypeConfig();
-        if (DataflowJobConfiguration.DataflowType.THROUGHPUT == jobConfig.getDataflowType()) {
-            if (jobConfig.isStreamingProcess()) {
-                executeThroughputStreamingJob(jobConfig.getConcurrentDataProcessThreadCount(), shardingContext);
+        DataflowJobConfiguration dataflowConfig = (DataflowJobConfiguration) getJobConfig().getTypeConfig();
+        if (DataflowJobConfiguration.DataflowType.THROUGHPUT == dataflowConfig.getDataflowType()) {
+            if (dataflowConfig.isStreamingProcess()) {
+                executeThroughputStreamingJob(dataflowConfig.getConcurrentDataProcessThreadCount(), shardingContext);
             } else {
-                executeThroughputOneOffJob(jobConfig.getConcurrentDataProcessThreadCount(), shardingContext);
+                executeThroughputOneOffJob(dataflowConfig.getConcurrentDataProcessThreadCount(), shardingContext);
             }
-        } else if (DataflowJobConfiguration.DataflowType.SEQUENCE == jobConfig.getDataflowType()) {
-            if (jobConfig.isStreamingProcess()) {
+        } else if (DataflowJobConfiguration.DataflowType.SEQUENCE == dataflowConfig.getDataflowType()) {
+            if (dataflowConfig.isStreamingProcess()) {
                 executeSequenceStreamingJob(shardingContext);
             } else {
                 executeSequenceOneOffJob(shardingContext);
@@ -120,7 +115,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
         List<List<Object>> splitData = Lists.partition(data, data.size() / concurrentDataProcessThreadCount);
         final CountDownLatch latch = new CountDownLatch(splitData.size());
         for (final List<Object> each : splitData) {
-            executorService.submit(new Runnable() {
+            getExecutorService().submit(new Runnable() {
                 
                 @Override
                 public void run() {
@@ -140,7 +135,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
         final Map<Integer, List<Object>> result = new ConcurrentHashMap<>(items.size());
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
-            executorService.submit(new Runnable() {
+            getExecutorService().submit(new Runnable() {
                 
                 @Override
                 public void run() {
@@ -163,7 +158,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     private void processDataForSequence(final ShardingContext shardingContext, final Map<Integer, List<Object>> data) {
         final CountDownLatch latch = new CountDownLatch(data.size());
         for (final Map.Entry<Integer, List<Object>> each : data.entrySet()) {
-            executorService.submit(new Runnable() {
+            getExecutorService().submit(new Runnable() {
                 
                 @Override
                 public void run() {
@@ -194,14 +189,5 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
-    }
-    
-    /**
-     * 设置线程执行服务.
-     * 
-     * @param executorService 线程执行服务
-     */
-    public void setExecutorService(final ExecutorService executorService) {
-        this.executorService = executorService;
     }
 }

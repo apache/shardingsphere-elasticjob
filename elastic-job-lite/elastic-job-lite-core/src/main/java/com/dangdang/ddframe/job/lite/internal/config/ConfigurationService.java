@@ -51,7 +51,15 @@ public class ConfigurationService {
      * @return 作业配置
      */
     public LiteJobConfiguration load(final boolean fromCache) {
-        String configJson = fromCache ? jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT) : jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
+        String configJson;
+        if (fromCache) {
+            configJson = jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT);
+            if (null == configJson) {
+                configJson = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
+            }
+        } else {
+            configJson = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
+        }
         return LiteJobConfigurationGsonFactory.getGson().fromJson(configJson, LiteJobConfiguration.class);
     }
     

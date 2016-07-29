@@ -15,17 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.fixture;
+package com.dangdang.ddframe.job.api.fixture.config;
 
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.fixture.handler.IgnoreJobExceptionHandler;
+import com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob;
+import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class TestFinalDataflowJobConfiguration implements JobConfiguration {
+public final class TestDataflowJobConfiguration implements JobConfiguration {
     
     private final DataflowJobConfiguration.DataflowType dataflowType;
     
@@ -35,7 +38,8 @@ public final class TestFinalDataflowJobConfiguration implements JobConfiguration
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
-        return new DataflowJobConfiguration(
-                JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10).build(), TestDataflowJob.class, dataflowType, streamingProcess, concurrentDataProcessThreadCount); 
+        return new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10)
+                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class).build(), 
+                TestDataflowJob.class, dataflowType, streamingProcess, concurrentDataProcessThreadCount);
     }
 }

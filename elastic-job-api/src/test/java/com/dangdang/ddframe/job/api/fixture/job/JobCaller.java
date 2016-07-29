@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.fixture;
+package com.dangdang.ddframe.job.api.fixture.job;
 
 import java.util.List;
 

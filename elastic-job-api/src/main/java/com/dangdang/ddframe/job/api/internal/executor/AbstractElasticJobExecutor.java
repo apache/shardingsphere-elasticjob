@@ -18,26 +18,53 @@
 package com.dangdang.ddframe.job.api.internal.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.exception.JobException;
-import com.google.common.base.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * 弹性化分布式作业执行器.
  * 
  * @author zhangliang
  */
-@RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 @Slf4j
 public abstract class AbstractElasticJobExecutor {
     
-    @Getter(AccessLevel.PROTECTED)
     private final JobFacade jobFacade;
     
-    private Optional<JobExceptionHandler> jobExceptionHandler = Optional.absent();
+    private final JobConfiguration jobConfig;
+    
+    private final ExecutorService executorService;
+    
+    @Getter(AccessLevel.NONE)
+    private final JobExceptionHandler jobExceptionHandler;
+    
+    protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
+        this.jobFacade = jobFacade;
+        jobConfig = this.jobFacade.loadJobConfiguration(true);
+        executorService = ((ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER)).createExecutorService();
+        jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
+    }
+    
+    private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {
+        Class<?> handlerClass = jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
+        try {
+            return handlerClass.newInstance();
+        } catch (final InstantiationException | IllegalAccessException ex) {
+            log.warn("Cannot instantiation class '{}', use default {} class.", handlerClass, jobPropertiesEnum.getKey());
+            try {
+                return jobPropertiesEnum.getDefaultValue().newInstance();
+            } catch (final InstantiationException | IllegalAccessException e) {
+                throw new JobException(e);
+            }
+        }
+    }
     
     /**
      * 执行作业.
@@ -98,19 +125,6 @@ public abstract class AbstractElasticJobExecutor {
     protected abstract void process(final ShardingContext shardingContext);
     
     protected void handleException(final Throwable cause) {
-        if (jobExceptionHandler.isPresent()) {
-            jobExceptionHandler.get().handleException(cause);
-        } else {
-            log.error("Elastic job: exception occur in job processing...", cause);
-        }
-    }
-    
-    /**
-     * 设置作业异常处理器.
-     *
-     * @param jobExceptionHandler 作业异常处理器
-     */
-    public void setJobExceptionHandler(final JobExceptionHandler jobExceptionHandler) {
-        this.jobExceptionHandler = Optional.of(jobExceptionHandler);
+        jobExceptionHandler.handleException(cause);
     }
 }
