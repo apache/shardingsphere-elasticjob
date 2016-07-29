@@ -58,8 +58,6 @@ public final class JobNodePath {
     
     private static final String CONFIG_NODE = "config";
     
-    private static final String LEADER_NODE = "leader";
-    
     private static final String SERVERS_NODE = "servers";
     
     private static final String EXECUTION_NODE = "execution";
@@ -79,11 +77,10 @@ public final class JobNodePath {
     /**
      * 获取配置节点路径.
      *
-     * @param nodeName 子节点名称
      * @return 配置节点路径
      */
-    public String getConfigNodePath(final String nodeName) {
-        return String.format("/%s/%s/%s", jobName, CONFIG_NODE, nodeName);
+    public String getConfigNodePath() {
+        return String.format("/%s/%s", jobName, CONFIG_NODE);
     }
     
     /**

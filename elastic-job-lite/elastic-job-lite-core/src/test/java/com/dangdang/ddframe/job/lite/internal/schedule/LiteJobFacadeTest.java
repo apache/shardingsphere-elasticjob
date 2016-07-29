@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestElasticJobListener;
+import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
@@ -41,7 +43,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -87,39 +88,16 @@ public class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertGetJobName() {
-        when(configService.getJobName()).thenReturn("testJob");
-        assertThat(liteJobFacade.getJobName(), is("testJob"));
+    public void assertLoad() {
+        LiteJobConfiguration expected = LiteJobConfiguration.newBuilder(null).build();
+        when(configService.load()).thenReturn(expected);
+        assertThat(liteJobFacade.loadFinalJobConfiguration(), is(expected));
     }
     
     @Test
     public void assertCheckMaxTimeDiffSecondsTolerable() {
         liteJobFacade.checkMaxTimeDiffSecondsTolerable();
         verify(configService).checkMaxTimeDiffSecondsTolerable();
-    }
-    
-    @Test
-    public void assertGetDataflowType() {
-        when(configService.getDataflowType()).thenReturn(DataflowJobConfiguration.DataflowType.SEQUENCE);
-        assertThat(liteJobFacade.getDataflowType(), is(DataflowJobConfiguration.DataflowType.SEQUENCE));
-    }
-    
-    @Test
-    public void assertGetConcurrentDataProcessThreadCount() {
-        when(configService.getConcurrentDataProcessThreadCount()).thenReturn(100);
-        assertThat(liteJobFacade.getConcurrentDataProcessThreadCount(), is(100));
-    }
-    
-    @Test
-    public void assertIsStreamingProcess() {
-        when(configService.isStreamingProcess()).thenReturn(false);
-        assertFalse(liteJobFacade.isStreamingProcess());
-    }
-    
-    @Test
-    public void assertGetScriptCommandLine() {
-        when(configService.getScriptCommandLine()).thenReturn("echo hello");
-        assertThat(liteJobFacade.getScriptCommandLine(), is("echo hello"));
     }
     
     @Test
@@ -240,6 +218,8 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertNotEligibleForJobRunningWhenJobPausedManually() {
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, true)).build());
         when(serverService.isJobPausedManually()).thenReturn(true);
         assertThat(liteJobFacade.isEligibleForJobRunning(), is(false));
         verify(serverService).isJobPausedManually();
@@ -247,6 +227,8 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertNotEligibleForJobRunningWhenNeedSharding() {
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, true)).build());
         when(shardingService.isNeedSharding()).thenReturn(true);
         assertThat(liteJobFacade.isEligibleForJobRunning(), is(false));
         verify(shardingService).isNeedSharding();
@@ -254,19 +236,21 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertNotEligibleForJobRunningWhenUnStreamingProcess() {
-        when(configService.isStreamingProcess()).thenReturn(false);
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, false)).build());
         assertThat(liteJobFacade.isEligibleForJobRunning(), is(false));
-        verify(configService).isStreamingProcess();
+        verify(configService).load();
     }
     
     @Test
     public void assertEligibleForJobRunningWhenNotJobPausedManuallyAndNotNeedShardingAndStreamingProcess() {
         when(serverService.isJobPausedManually()).thenReturn(false);
         when(shardingService.isNeedSharding()).thenReturn(false);
-        when(configService.isStreamingProcess()).thenReturn(true);
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, true)).build());
         assertThat(liteJobFacade.isEligibleForJobRunning(), is(true));
         verify(serverService).isJobPausedManually();
         verify(shardingService).isNeedSharding();
-        verify(configService).isStreamingProcess();
+        verify(configService).load();
     }
 }

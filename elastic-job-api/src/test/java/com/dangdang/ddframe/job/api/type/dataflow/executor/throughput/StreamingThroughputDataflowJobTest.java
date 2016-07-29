@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 public final class StreamingThroughputDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
     public StreamingThroughputDataflowJobTest() {
-        super(DataflowJobConfiguration.DataflowType.THROUGHPUT, true);
+        super(DataflowJobConfiguration.DataflowType.THROUGHPUT, true, 10);
     }
     
     @Test

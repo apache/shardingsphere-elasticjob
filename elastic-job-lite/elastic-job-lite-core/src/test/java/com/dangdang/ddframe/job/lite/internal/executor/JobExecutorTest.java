@@ -73,7 +73,7 @@ public final class JobExecutorTest {
     public void assertInit() throws NoSuchFieldException, SchedulerException {
         jobExecutor.init();
         verify(schedulerFacade).clearPreviousServerStatus();
-        verify(regCenter).addCacheData("/testJob");
+        verify(regCenter).addCacheData("/test_job");
         verify(schedulerFacade).registerStartUpInfo();
     }
 }

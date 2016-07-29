@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
+import com.dangdang.ddframe.job.exception.JobException;
 import lombok.RequiredArgsConstructor;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -26,8 +27,6 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
-
-import com.dangdang.ddframe.job.exception.JobException;
 
 import java.util.Date;
 import java.util.List;
@@ -67,12 +66,13 @@ public class JobScheduleController {
     /**
      * 重新调度作业.
      * 
-     * @param cronExpression CRON表达式
+     * @param cron CRON表达式
      */
-    public void rescheduleJob(final String cronExpression) {
+    public void rescheduleJob(final String cron) {
         try {
-            if (!scheduler.isShutdown()) {
-                scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createTrigger(cronExpression));
+            CronTrigger trigger = (CronTrigger) scheduler.getTrigger(TriggerKey.triggerKey(triggerIdentity));
+            if (!scheduler.isShutdown() && null != trigger && !cron.equals(trigger.getCronExpression())) {
+                scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createTrigger(cron));
             }
         } catch (final SchedulerException ex) {
             throw new JobException(ex);
@@ -81,7 +81,7 @@ public class JobScheduleController {
     
     private CronTrigger createTrigger(final String cronExpression) {
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-        if (schedulerFacade.isMisfire()) {
+        if (schedulerFacade.loadJobConfiguration().getJobConfig().getCoreConfig().isMisfire()) {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
         } else {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();

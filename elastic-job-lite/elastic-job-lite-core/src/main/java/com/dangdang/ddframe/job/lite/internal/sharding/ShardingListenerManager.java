@@ -39,7 +39,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ExecutionService executionService;
     
-    private final ConfigurationNode configurationNode;
+    private final ConfigurationNode configNode;
     
     private final ServerNode serverNode;
     
@@ -48,7 +48,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
         shardingService = new ShardingService(regCenter, liteJobConfig);
         executionService = new ExecutionService(regCenter, liteJobConfig);
         String jobName = liteJobConfig.getJobName();
-        configurationNode = new ConfigurationNode(jobName);
+        configNode = new ConfigurationNode(jobName);
         serverNode = new ServerNode(jobName);
     }
     
@@ -62,7 +62,8 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (configurationNode.isShardingTotalCountPath(path)) {
+            // TODO 缓存totalShardingCount, 对比,只有修改了totalShardingCount再重分片
+            if (configNode.isConfigPath(path)) {
                 shardingService.setReshardingFlag();
                 executionService.setNeedFixExecutionInfoFlag();
             }

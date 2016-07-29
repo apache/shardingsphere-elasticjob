@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.executor.throughput;
 
-import com.dangdang.ddframe.job.api.type.dataflow.executor.AbstractDataflowJobExecutorTest;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.executor.AbstractDataflowJobExecutorTest;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -29,31 +29,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public final class UnstreamingThroughputDataflowJobTest extends AbstractDataflowJobExecutorTest {
+public final class UnstreamingAndOneThreadThroughputDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
-    public UnstreamingThroughputDataflowJobTest() {
-        super(DataflowJobConfiguration.DataflowType.THROUGHPUT, false);
-    }
-    
-    @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyAndDataIsOne() {
-        when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1));
-        when(getJobCaller().fetchData(1)).thenReturn(Collections.emptyList());
-        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
-        getDataflowJobExecutor().execute();
-        verify(getJobCaller()).processData(1);
-        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
+    public UnstreamingAndOneThreadThroughputDataflowJobTest() {
+        super(DataflowJobConfiguration.DataflowType.THROUGHPUT, false, 1);
     }
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndConcurrentDataProcessThreadCountIsOne() {
         when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1));
         when(getJobCaller().fetchData(1)).thenReturn(Collections.<Object>singletonList(2));
-        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
         getDataflowJobExecutor().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
-        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
     }
     
     @Test
@@ -61,24 +49,9 @@ public final class UnstreamingThroughputDataflowJobTest extends AbstractDataflow
         when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1));
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(2, 3));
         doThrow(IllegalStateException.class).when(getJobCaller()).processData(2);
-        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(1);
         getDataflowJobExecutor().execute();
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobCaller(), times(0)).processData(3);
-        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
-    }
-    
-    @Test
-    public void assertExecuteWhenFetchDataIsNotEmptyForMultipleThread() {
-        when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
-        when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
-        when(getJobFacade().getConcurrentDataProcessThreadCount()).thenReturn(2);
-        getDataflowJobExecutor().execute();
-        verify(getJobCaller()).processData(1);
-        verify(getJobCaller()).processData(2);
-        verify(getJobCaller()).processData(3);
-        verify(getJobCaller()).processData(4);
-        verify(getJobFacade()).getConcurrentDataProcessThreadCount();
     }
 }

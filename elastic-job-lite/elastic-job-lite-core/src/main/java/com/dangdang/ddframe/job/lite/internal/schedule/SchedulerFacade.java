@@ -74,7 +74,7 @@ public class SchedulerFacade {
     public void registerStartUpInfo() {
         listenerManager.startAllListeners();
         leaderElectionService.leaderForceElection();
-        configService.persistJobConfiguration();
+        configService.persist();
         serverService.persistServerOnline();
         serverService.clearJobPausedStatus();
         shardingService.setReshardingFlag();
@@ -90,21 +90,12 @@ public class SchedulerFacade {
     }
     
     /**
-     * 获取作业启动时间的cron表达式.
+     * 读取作业配置.
      *
-     * @return 作业启动时间的cron表达式
+     * @return 作业配置
      */
-    public String getCron() {
-        return configService.getCron();
-    }
-    
-    /**
-     * 获取是否开启misfire.
-     *
-     * @return 是否开启misfire
-     */
-    public boolean isMisfire() {
-        return configService.isMisfire();
+    public LiteJobConfiguration loadJobConfiguration() {
+        return configService.load();
     }
     
     /**

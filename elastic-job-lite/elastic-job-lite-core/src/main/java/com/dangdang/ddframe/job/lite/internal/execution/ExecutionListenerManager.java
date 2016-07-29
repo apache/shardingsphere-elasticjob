@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.execution;
 
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
+import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -52,10 +53,9 @@ public class ExecutionListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (configNode.isMonitorExecutionPath(path) && Type.NODE_UPDATED == event.getType()) {
-                if (!Boolean.valueOf(new String(event.getData().getData()))) {
-                    executionService.removeExecutionInfo();
-                }
+            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType()
+                    && !LiteJobConfigurationGsonFactory.getGson().fromJson(new String(event.getData().getData()), LiteJobConfiguration.class).isMonitorExecution()) {
+                executionService.removeExecutionInfo();
             }
         }
     }

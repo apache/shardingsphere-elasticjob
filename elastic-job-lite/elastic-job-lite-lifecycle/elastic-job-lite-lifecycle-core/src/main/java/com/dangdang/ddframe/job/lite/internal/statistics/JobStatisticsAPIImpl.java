@@ -18,9 +18,11 @@
 package com.dangdang.ddframe.job.lite.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.api.JobStatisticsAPI;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.domain.ServerInfo;
+import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
@@ -49,10 +51,11 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
             JobNodePath jobNodePath = new JobNodePath(each);
             JobBriefInfo jobBriefInfo = new JobBriefInfo();
             jobBriefInfo.setJobName(each);
-            jobBriefInfo.setJobType(registryCenter.get(jobNodePath.getConfigNodePath("jobType")));
-            jobBriefInfo.setDescription(registryCenter.get(jobNodePath.getConfigNodePath("description")));
+            LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(registryCenter.get(jobNodePath.getConfigNodePath()), LiteJobConfiguration.class);
+            jobBriefInfo.setJobType(liteJobConfig.getJobConfig().getJobType().name());
+            jobBriefInfo.setDescription(liteJobConfig.getJobConfig().getCoreConfig().getDescription());
             jobBriefInfo.setStatus(getJobStatus(each));
-            jobBriefInfo.setCron(registryCenter.get(jobNodePath.getConfigNodePath("cron")));
+            jobBriefInfo.setCron(liteJobConfig.getJobConfig().getCoreConfig().getCron());
             result.add(jobBriefInfo);
         }
         Collections.sort(result);

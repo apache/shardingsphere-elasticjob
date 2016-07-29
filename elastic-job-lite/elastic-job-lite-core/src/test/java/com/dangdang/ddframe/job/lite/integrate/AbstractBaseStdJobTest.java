@@ -30,10 +30,12 @@ import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
+import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
@@ -51,7 +53,6 @@ import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -177,13 +178,16 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     private void assertRegCenterCommonInfo() {
-        assertThat(regCenter.get("/" + jobName + "/config/shardingTotalCount"), is("3"));
-        assertThat(regCenter.get("/" + jobName + "/config/shardingItemParameters"), is("0=A,1=B,2=C"));
-        assertThat(regCenter.get("/" + jobName + "/config/cron"), is("0/1 * * * * ?"));
+        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(regCenter.get("/" + jobName + "/config"), LiteJobConfiguration.class);
+        assertThat(liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount(), is(3));
+        assertThat(liteJobConfig.getJobConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
+        assertThat(liteJobConfig.getJobConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
             assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
-            assertNull(regCenter.get("/" + jobName + "/leader/election/host"));
+            while (null != regCenter.get("/" + jobName + "/leader/election/host")) {
+                BlockUtils.sleep(100L);
+            }
         } else {
             assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
             assertThat(regCenter.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));

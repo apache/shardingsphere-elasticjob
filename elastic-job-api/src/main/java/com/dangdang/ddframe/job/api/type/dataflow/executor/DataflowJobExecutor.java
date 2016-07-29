@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.executor;
 
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -54,16 +54,15 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     @Override
     protected void process(final ShardingContext shardingContext) {
-        DataflowJobConfiguration.DataflowType dataflowType = getJobFacade().getDataflowType();
-        boolean streamingProcess = getJobFacade().isStreamingProcess();
-        if (DataflowJobConfiguration.DataflowType.THROUGHPUT == dataflowType) {
-            if (streamingProcess) {
-                executeThroughputStreamingJob(shardingContext);
+        DataflowJobConfiguration jobConfig = (DataflowJobConfiguration) getJobFacade().loadFinalJobConfiguration().getJobConfig();
+        if (DataflowJobConfiguration.DataflowType.THROUGHPUT == jobConfig.getDataflowType()) {
+            if (jobConfig.isStreamingProcess()) {
+                executeThroughputStreamingJob(jobConfig.getConcurrentDataProcessThreadCount(), shardingContext);
             } else {
-                executeThroughputOneOffJob(shardingContext);
+                executeThroughputOneOffJob(jobConfig.getConcurrentDataProcessThreadCount(), shardingContext);
             }
-        } else if (DataflowJobConfiguration.DataflowType.SEQUENCE == dataflowType) {
-            if (streamingProcess) {
+        } else if (DataflowJobConfiguration.DataflowType.SEQUENCE == jobConfig.getDataflowType()) {
+            if (jobConfig.isStreamingProcess()) {
                 executeSequenceStreamingJob(shardingContext);
             } else {
                 executeSequenceOneOffJob(shardingContext);
@@ -71,10 +70,10 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
         }
     }
     
-    private void executeThroughputStreamingJob(final ShardingContext shardingContext) {
+    private void executeThroughputStreamingJob(final int concurrentDataProcessThreadCount, final ShardingContext shardingContext) {
         List<Object> data = fetchDataForThroughput(shardingContext);
         while (!CollectionUtils.isEmpty(data)) {
-            processDataForThroughput(shardingContext, data);
+            processDataForThroughput(concurrentDataProcessThreadCount, shardingContext, data);
             if (!getJobFacade().isEligibleForJobRunning()) {
                 break;
             }
@@ -82,10 +81,10 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
         }
     }
     
-    private void executeThroughputOneOffJob(final ShardingContext shardingContext) {
+    private void executeThroughputOneOffJob(final int concurrentDataProcessThreadCount, final ShardingContext shardingContext) {
         List<Object> data = fetchDataForThroughput(shardingContext);
         if (!CollectionUtils.isEmpty(data)) {
-            processDataForThroughput(shardingContext, data);
+            processDataForThroughput(concurrentDataProcessThreadCount, shardingContext, data);
         }
     }
     
@@ -113,13 +112,12 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
         return result;
     }
     
-    private void processDataForThroughput(final ShardingContext shardingContext, final List<Object> data) {
-        int threadCount = getJobFacade().getConcurrentDataProcessThreadCount();
-        if (threadCount <= 1 || data.size() <= threadCount) {
+    private void processDataForThroughput(final int concurrentDataProcessThreadCount, final ShardingContext shardingContext, final List<Object> data) {
+        if (concurrentDataProcessThreadCount <= 1 || data.size() <= concurrentDataProcessThreadCount) {
             processData(shardingContext, data);
             return;
         }
-        List<List<Object>> splitData = Lists.partition(data, data.size() / threadCount);
+        List<List<Object>> splitData = Lists.partition(data, data.size() / concurrentDataProcessThreadCount);
         final CountDownLatch latch = new CountDownLatch(splitData.size());
         for (final List<Object> each : splitData) {
             executorService.submit(new Runnable() {

@@ -53,11 +53,11 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (configNode.isCronPath(path) && Type.NODE_UPDATED == event.getType()) {
-                String cronExpression = new String(event.getData().getData());
+            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType()) {
                 JobScheduleController jobScheduler = JobRegistry.getInstance().getJobScheduleController(jobName);
                 if (null != jobScheduler) {
-                    jobScheduler.rescheduleJob(cronExpression);
+                    jobScheduler.rescheduleJob(
+                            LiteJobConfigurationGsonFactory.getGson().fromJson(new String(event.getData().getData()), LiteJobConfiguration.class).getJobConfig().getCoreConfig().getCron());
                 }
             }
         }

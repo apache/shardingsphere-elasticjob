@@ -26,41 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
  */
 public final class ConfigurationNode {
     
-    private static final String ROOT = "config";
-    
-    static final String JOB_TYPE = ROOT + "/jobType";
-    
-    static final String JOB_CLASS = ROOT + "/jobClass";
-    
-    static final String CRON = ROOT + "/cron";
-    
-    static final String SHARDING_TOTAL_COUNT = ROOT + "/shardingTotalCount";
-    
-    static final String SHARDING_ITEM_PARAMETERS = ROOT + "/shardingItemParameters";
-    
-    static final String JOB_PARAMETER = ROOT + "/jobParameter";
-    
-    static final String MONITOR_EXECUTION = ROOT + "/monitorExecution";
-    
-    static final String DATAFLOW_TYPE = ROOT + "/dataflowType";
-    
-    static final String STREAMING_PROCESS = ROOT + "/streamingProcess";
-    
-    static final String CONCURRENT_DATA_PROCESS_THREAD_COUNT = ROOT + "/concurrentDataProcessThreadCount";
-    
-    static final String MAX_TIME_DIFF_SECONDS = ROOT + "/maxTimeDiffSeconds";
-    
-    static final String FAILOVER = ROOT + "/failover";
-    
-    static final String MISFIRE = ROOT + "/misfire";
-    
-    static final String JOB_SHARDING_STRATEGY_CLASS = ROOT + "/jobShardingStrategyClass";
-    
-    static final String DESCRIPTION = ROOT + "/description";
-    
-    static final String MONITOR_PORT = ROOT + "/monitorPort";
-
-    static final String SCRIPT_COMMAND_LINE = ROOT + "/scriptCommandLine";
+    static final String ROOT = "config";
     
     private final JobNodePath jobNodePath;
     
@@ -69,42 +35,12 @@ public final class ConfigurationNode {
     }
     
     /**
-     * 判断是否为作业分片总数路径.
+     * 判断是否为作业配置根路径.
      * 
      * @param path 节点路径
-     * @return 是否为作业分片总数路径
+     * @return 是否为作业配置根路径
      */
-    public boolean isShardingTotalCountPath(final String path) {
-        return jobNodePath.getFullPath(SHARDING_TOTAL_COUNT).equals(path);
-    }
-    
-    /**
-     * 判断是否为监控作业执行时状态路径.
-     * 
-     * @param path 节点路径
-     * @return 是否为监控作业执行时状态路径
-     */
-    public boolean isMonitorExecutionPath(final String path) {
-        return jobNodePath.getFullPath(MONITOR_EXECUTION).equals(path);
-    }
-    
-    /**
-     * 判断是否为失效转移设置路径.
-     * 
-     * @param path 节点路径
-     * @return 是否为失效转移设置路径
-     */
-    public boolean isFailoverPath(final String path) {
-        return jobNodePath.getFullPath(FAILOVER).equals(path);
-    }
-    
-    /**
-     * 判断是否为作业调度配置路径.
-     * 
-     * @param path 节点路径
-     * @return 是否为作业调度配置路径
-     */
-    public boolean isCronPath(final String path) {
-        return jobNodePath.getFullPath(CRON).equals(path);
+    public boolean isConfigPath(final String path) {
+        return jobNodePath.getConfigNodePath().equals(path);
     }
 }

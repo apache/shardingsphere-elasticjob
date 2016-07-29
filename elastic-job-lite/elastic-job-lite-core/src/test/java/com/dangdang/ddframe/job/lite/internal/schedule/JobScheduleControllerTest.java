@@ -17,7 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -29,6 +33,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
+import org.quartz.impl.triggers.CronTriggerImpl;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -174,6 +179,9 @@ public final class JobScheduleControllerTest {
     
     @Test(expected = JobException.class)
     public void assertRescheduleJobFailure() throws NoSuchFieldException, SchedulerException {
+        when(schedulerFacade.loadJobConfiguration()).thenReturn(
+                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build());
+        when(scheduler.getTrigger(TriggerKey.triggerKey("testJob_Trigger"))).thenReturn(new CronTriggerImpl());
         doThrow(SchedulerException.class).when(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         try {
@@ -185,9 +193,22 @@ public final class JobScheduleControllerTest {
     
     @Test
     public void assertRescheduleJobSuccess() throws NoSuchFieldException, SchedulerException {
+        when(schedulerFacade.loadJobConfiguration()).thenReturn(
+                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build());
+        when(scheduler.getTrigger(TriggerKey.triggerKey("testJob_Trigger"))).thenReturn(new CronTriggerImpl());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         when(scheduler.isShutdown()).thenReturn(false);
         jobScheduleController.rescheduleJob("0/1 * * * * ?");
         verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
+    }
+    
+    @Test
+    public void assertRescheduleJobWhenTriggerIsNull() throws NoSuchFieldException, SchedulerException {
+        when(schedulerFacade.loadJobConfiguration()).thenReturn(
+                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build());
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        when(scheduler.isShutdown()).thenReturn(false);
+        jobScheduleController.rescheduleJob("0/1 * * * * ?");
+        verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("testJob_Trigger")), Matchers.<Trigger>any());
     }
 }

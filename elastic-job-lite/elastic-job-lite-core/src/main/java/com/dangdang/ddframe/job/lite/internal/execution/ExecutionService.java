@@ -21,12 +21,12 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -68,7 +68,7 @@ public class ExecutionService {
      * @param shardingContext 分片上下文
      */
     public void registerJobBegin(final ShardingContext shardingContext) {
-        if (!shardingContext.getShardingItems().isEmpty() && configService.isMonitorExecution()) {
+        if (!shardingContext.getShardingItems().isEmpty() && configService.load().isMonitorExecution()) {
             serverService.updateServerStatus(ServerStatus.RUNNING);
             for (int each : shardingContext.getShardingItems().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
@@ -110,7 +110,7 @@ public class ExecutionService {
     }
     
     private void fixExecutionInfo(final List<Integer> items) {
-        int newShardingTotalCount = configService.getShardingTotalCount();
+        int newShardingTotalCount = configService.load().getJobConfig().getCoreConfig().getShardingTotalCount();
         int currentShardingTotalCount = items.size();
         if (newShardingTotalCount > currentShardingTotalCount) {
             for (int i = currentShardingTotalCount; i < newShardingTotalCount; i++) {
@@ -130,7 +130,7 @@ public class ExecutionService {
      * @param shardingContext 分片上下文
      */
     public void registerJobCompleted(final ShardingContext shardingContext) {
-        if (!configService.isMonitorExecution()) {
+        if (!configService.load().isMonitorExecution()) {
             return;
         }
         serverService.updateServerStatus(ServerStatus.READY);
@@ -183,7 +183,7 @@ public class ExecutionService {
      * @param items 需要设置错过执行的任务分片项
      */
     public void setMisfire(final Collection<Integer> items) {
-        if (!configService.isMonitorExecution()) {
+        if (!configService.load().isMonitorExecution()) {
             return;
         }
         for (int each : items) {
@@ -242,7 +242,7 @@ public class ExecutionService {
      * @return 分片项中是否还有执行中的作业
      */
     public boolean hasRunningItems(final Collection<Integer> items) {
-        if (!configService.isMonitorExecution()) {
+        if (!configService.load().isMonitorExecution()) {
             return false;
         }
         for (int each : items) {

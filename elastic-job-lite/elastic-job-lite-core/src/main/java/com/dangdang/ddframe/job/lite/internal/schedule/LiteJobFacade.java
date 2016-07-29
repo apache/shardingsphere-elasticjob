@@ -65,28 +65,8 @@ public class LiteJobFacade implements JobFacade {
     }
     
     @Override
-    public String getJobName() {
-        return configService.getJobName();
-    }
-    
-    @Override
-    public DataflowJobConfiguration.DataflowType getDataflowType() {
-        return configService.getDataflowType();
-    }
-    
-    @Override
-    public int getConcurrentDataProcessThreadCount() {
-        return configService.getConcurrentDataProcessThreadCount();
-    }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        return configService.isStreamingProcess();
-    }
-    
-    @Override
-    public String getScriptCommandLine() {
-        return configService.getScriptCommandLine();
+    public LiteJobConfiguration loadFinalJobConfiguration() {
+        return configService.load();
     }
     
     @Override
@@ -143,12 +123,16 @@ public class LiteJobFacade implements JobFacade {
     
     @Override
     public boolean isExecuteMisfired(final Collection<Integer> shardingItems) {
-        return isEligibleForJobRunning() && configService.isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
+        return isEligibleForJobRunning() && configService.load().getJobConfig().getCoreConfig().isMisfire() && !executionService.getMisfiredJobItems(shardingItems).isEmpty();
     }
     
     @Override
     public boolean isEligibleForJobRunning() {
-        return !serverService.isJobPausedManually() && !shardingService.isNeedSharding() && configService.isStreamingProcess();
+        LiteJobConfiguration liteJobConfig = configService.load();
+        if (liteJobConfig.getJobConfig() instanceof DataflowJobConfiguration) {
+            return !serverService.isJobPausedManually() && !shardingService.isNeedSharding() && ((DataflowJobConfiguration) liteJobConfig.getJobConfig()).isStreamingProcess();    
+        }
+        return !serverService.isJobPausedManually() && !shardingService.isNeedSharding();
     }
     
     @Override

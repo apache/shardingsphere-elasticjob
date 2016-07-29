@@ -17,10 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.api.type.JobType;
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
@@ -40,7 +41,6 @@ import java.util.Collections;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -75,7 +75,8 @@ public class SchedulerFacadeTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         schedulerFacade = new SchedulerFacade(null, liteJobConfig, Collections.<ElasticJobListener>emptyList());
-        when(configService.getJobType()).thenReturn(JobType.DATAFLOW);
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, false)).build());
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
@@ -96,7 +97,7 @@ public class SchedulerFacadeTest {
         schedulerFacade.registerStartUpInfo();
         verify(listenerManager).startAllListeners();
         verify(leaderElectionService).leaderForceElection();
-        verify(configService).persistJobConfiguration();
+        verify(configService).persist();
         verify(serverService).persistServerOnline();
         verify(serverService).clearJobPausedStatus();
         verify(shardingService).setReshardingFlag();
@@ -111,15 +112,10 @@ public class SchedulerFacadeTest {
     }
     
     @Test
-    public void testGetCron() {
-        when(configService.getCron()).thenReturn("0 * * * * *");
-        assertThat(schedulerFacade.getCron(), is("0 * * * * *"));
-    }
-    
-    @Test
-    public void testIsMisfire() {
-        when(configService.isMisfire()).thenReturn(true);
-        assertTrue(schedulerFacade.isMisfire());
+    public void testLoadJobConfiguration() {
+        LiteJobConfiguration expected = LiteJobConfiguration.newBuilder(null).build();
+        when(configService.load()).thenReturn(expected);
+        assertThat(schedulerFacade.loadJobConfiguration(), is(expected));
     }
     
     @Test

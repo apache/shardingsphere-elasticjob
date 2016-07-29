@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.api.type.dataflow.executor;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.fixture.JobCaller;
 import com.dangdang.ddframe.job.api.fixture.TestDataflowJob;
+import com.dangdang.ddframe.job.api.fixture.TestFinalDataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
@@ -53,6 +54,8 @@ public abstract class AbstractDataflowJobExecutorTest {
     
     private final boolean streamingProcess;
     
+    private final int concurrentDataProcessThreadCount;
+    
     @Mock
     private JobCaller jobCaller;
     
@@ -68,11 +71,9 @@ public abstract class AbstractDataflowJobExecutorTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
+        when(jobFacade.loadFinalJobConfiguration()).thenReturn(new TestFinalDataflowJobConfiguration(dataflowType, streamingProcess, concurrentDataProcessThreadCount));
         shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.getDataflowType()).thenReturn(getDataflowType());
-        when(jobFacade.isStreamingProcess()).thenReturn(isStreamingProcess());
         dataflowJobExecutor = new DataflowJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
         dataflowJobExecutor.setJobExceptionHandler(new JobExceptionHandler() {
             
@@ -87,6 +88,7 @@ public abstract class AbstractDataflowJobExecutorTest {
     @After
     public void tearDown() throws NoSuchFieldException {
         assertThat((ExecutorService) ReflectionUtils.getFieldValue(dataflowJobExecutor, DataflowJobExecutor.class.getDeclaredField("executorService")), is(executorService));
+        verify(jobFacade).loadFinalJobConfiguration();
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
     }
     

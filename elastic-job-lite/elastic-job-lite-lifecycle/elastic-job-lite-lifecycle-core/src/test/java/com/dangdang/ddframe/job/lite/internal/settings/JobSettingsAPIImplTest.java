@@ -26,8 +26,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,93 +47,66 @@ public class JobSettingsAPIImplTest {
     
     @Test
     public void assertGetJobSettingsWithMonitorPort() {
-        createExpected();
-        when(registryCenter.get("/testJob/config/monitorPort")).thenReturn("-1");
-        JobSettings actual = jobSettingsAPI.getJobSettings("testJob");
+        String dataflowJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
+                + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
+                + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
+                + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
+        when(registryCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
+        JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
         assertJobSettings(actual);
         assertThat(actual.getMonitorPort(), is(-1));
-        verifyCall();
-        verify(registryCenter).get("/testJob/config/monitorPort");
+        verify(registryCenter).get("/test_job/config");
     }
     
     @Test
     public void assertGetJobSettingsWithoutMonitorPort() {
-        createExpected();
-        assertJobSettings(jobSettingsAPI.getJobSettings("testJob"));
-        verifyCall();
-    }
-    
-    private void createExpected() {
-        when(registryCenter.get("/testJob/config/jobClass")).thenReturn("TestJob");
-        when(registryCenter.get("/testJob/config/jobType")).thenReturn("DATAFLOW");
-        when(registryCenter.get("/testJob/config/shardingTotalCount")).thenReturn("1");
-        when(registryCenter.get("/testJob/config/cron")).thenReturn("0/30 * * * * *");
-        when(registryCenter.get("/testJob/config/shardingItemParameters")).thenReturn("0=A");
-        when(registryCenter.get("/testJob/config/jobParameter")).thenReturn("param");
-        when(registryCenter.get("/testJob/config/monitorExecution")).thenReturn("true");
-        when(registryCenter.get("/testJob/config/processCountIntervalSeconds")).thenReturn("300");
-        when(registryCenter.get("/testJob/config/concurrentDataProcessThreadCount")).thenReturn("10");
-        when(registryCenter.get("/testJob/config/maxTimeDiffSeconds")).thenReturn("60000");
-        when(registryCenter.get("/testJob/config/failover")).thenReturn("true");
-        when(registryCenter.get("/testJob/config/misfire")).thenReturn("true");
-        when(registryCenter.get("/testJob/config/streamingProcess")).thenReturn("false");
-        when(registryCenter.get("/testJob/config/jobShardingStrategyClass")).thenReturn("MyJobShardingStrategy");
-        when(registryCenter.get("/testJob/config/description")).thenReturn("description");
+        String dataflowJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
+                + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
+                + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
+                + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
+        when(registryCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
+        assertJobSettings(jobSettingsAPI.getJobSettings("test_job"));
+        verify(registryCenter).get("/test_job/config");
     }
     
     private void assertJobSettings(final JobSettings jobSettings) {
-        assertThat(jobSettings.getJobName(), is("testJob"));
+        assertThat(jobSettings.getJobName(), is("test_job"));
         assertThat(jobSettings.getJobType(), is("DATAFLOW"));
-        assertThat(jobSettings.getJobClass(), is("TestJob"));
-        assertThat(jobSettings.getShardingTotalCount(), is(1));
-        assertThat(jobSettings.getCron(), is("0/30 * * * * *"));
-        assertThat(jobSettings.getShardingItemParameters(), is("0=A"));
-        assertThat(jobSettings.getJobParameter(), is("param"));
+        assertThat(jobSettings.getJobClass(), is("com.dangdang.ddframe.job.lite.fixture.TestDataflowJob"));
+        assertThat(jobSettings.getShardingTotalCount(), is(3));
+        assertThat(jobSettings.getCron(), is("0/1 * * * * ?"));
+        assertThat(jobSettings.getShardingItemParameters(), is(""));
+        assertThat(jobSettings.getJobParameter(), is(""));
         assertThat(jobSettings.isMonitorExecution(), is(true));
-        assertThat(jobSettings.getMaxTimeDiffSeconds(), is(60000));
-        assertThat(jobSettings.isFailover(), is(true));
-        assertThat(jobSettings.isMisfire(), is(true));
-        assertThat(jobSettings.isStreamingProcess(), is(false));
-        assertThat(jobSettings.getJobShardingStrategyClass(), is("MyJobShardingStrategy"));
-        assertThat(jobSettings.getDescription(), is("description"));
-    }
-    
-    private void verifyCall() {
-        verify(registryCenter).get("/testJob/config/jobClass");
-        verify(registryCenter).get("/testJob/config/shardingTotalCount");
-        verify(registryCenter).get("/testJob/config/cron");
-        verify(registryCenter).get("/testJob/config/shardingItemParameters");
-        verify(registryCenter).get("/testJob/config/jobParameter");
-        verify(registryCenter).get("/testJob/config/monitorExecution");
-        verify(registryCenter).get("/testJob/config/processCountIntervalSeconds");
-        verify(registryCenter).get("/testJob/config/concurrentDataProcessThreadCount");
-        verify(registryCenter).get("/testJob/config/maxTimeDiffSeconds");
-        verify(registryCenter).get("/testJob/config/failover");
-        verify(registryCenter).get("/testJob/config/misfire");
-        verify(registryCenter).get("/testJob/config/jobShardingStrategyClass");
-        verify(registryCenter).get("/testJob/config/description");
-        verify(registryCenter).get("/testJob/config/streamingProcess");
+        assertThat(jobSettings.getMaxTimeDiffSeconds(), is(-1));
+        assertFalse(jobSettings.isFailover());
+        assertTrue(jobSettings.isMisfire());
+        assertTrue(jobSettings.isStreamingProcess());
+        assertThat(jobSettings.getJobShardingStrategyClass(), is(""));
+        assertThat(jobSettings.getDescription(), is(""));
     }
     
     @Test
     public void assertUpdateJobSettings() {
-        createExpected();
+        String dataflowJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
+                + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
+                + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
+                + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
+        when(registryCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
         JobSettings jobSettings = new JobSettings();
-        jobSettings.setJobName("testJob");
-        jobSettings.setJobClass("TestJob");
+        jobSettings.setJobName("test_job");
+        jobSettings.setJobClass("com.dangdang.ddframe.job.lite.fixture.TestDataflowJob");
         jobSettings.setShardingTotalCount(10);
-        jobSettings.setProcessCountIntervalSeconds(300);
         jobSettings.setConcurrentDataProcessThreadCount(10);
-        jobSettings.setMaxTimeDiffSeconds(60000);
+        jobSettings.setMaxTimeDiffSeconds(-1);
         jobSettings.setMonitorExecution(true);
-        jobSettings.setCron(null);
+        jobSettings.setCron("0/1 * * * * ?");
         jobSettings.setStreamingProcess(true);
         jobSettings.setFailover(false);
-        jobSettings.setMisfire(false);
+        jobSettings.setMisfire(true);
         jobSettingsAPI.updateJobSettings(jobSettings);
-        verify(registryCenter, times(0)).update("/testJob/config/cron", null);
-        verify(registryCenter).update("/testJob/config/streamingProcess", "true");
-        verify(registryCenter).update("/testJob/config/failover", "false");
-        verify(registryCenter).update("/testJob/config/misfire", "false");
+        verify(registryCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"cron\":\"0/1 * * * * ?\","
+                + "\"shardingTotalCount\":10,\"monitorExecution\":true,\"concurrentDataProcessThreadCount\":10,\"streamingProcess\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,"
+                + "\"failover\":false,\"misfire\":true}");
     }
 }

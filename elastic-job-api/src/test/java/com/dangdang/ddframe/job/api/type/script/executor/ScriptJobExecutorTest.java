@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.api.type.script.executor;
 
+import com.dangdang.ddframe.job.api.fixture.TestFinalScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
@@ -49,7 +50,6 @@ public class ScriptJobExecutorTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(jobFacade.getJobName()).thenReturn(ElasticJobAssert.JOB_NAME);
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, ElasticJobAssert.getShardingContext());
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
         ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
@@ -64,7 +64,7 @@ public class ScriptJobExecutorTest {
     
     @Test(expected = JobException.class)
     public void assertExecuteWhenScriptCommandLineIsEmpty() throws IOException {
-        when(jobFacade.getScriptCommandLine()).thenReturn("");
+        when(jobFacade.loadFinalJobConfiguration()).thenReturn(new TestFinalScriptJobConfiguration(""));
         scriptJobExecutor.execute();
         verify(executor, times(0)).execute(Matchers.<CommandLine>any());
     }
@@ -72,7 +72,7 @@ public class ScriptJobExecutorTest {
     @SuppressWarnings("unchecked")
     @Test(expected = JobException.class)
     public void assertExecuteWhenExecuteFailure() throws IOException {
-        when(jobFacade.getScriptCommandLine()).thenReturn("not_exists_file");
+        when(jobFacade.loadFinalJobConfiguration()).thenReturn(new TestFinalScriptJobConfiguration("not_exists_file"));
         when(executor.execute(Matchers.<CommandLine>any())).thenThrow(IOException.class);
         try {
             scriptJobExecutor.execute();
@@ -83,9 +83,9 @@ public class ScriptJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFileExists() throws IOException {
-        when(jobFacade.getScriptCommandLine()).thenReturn("exists_file param0 param1");
+        when(jobFacade.loadFinalJobConfiguration()).thenReturn(new TestFinalScriptJobConfiguration("exists_file param0 param1"));
         scriptJobExecutor.execute();
-        verify(jobFacade).getScriptCommandLine();
+        verify(jobFacade).loadFinalJobConfiguration();
         verify(executor).execute(Matchers.<CommandLine>any());
     }
 }

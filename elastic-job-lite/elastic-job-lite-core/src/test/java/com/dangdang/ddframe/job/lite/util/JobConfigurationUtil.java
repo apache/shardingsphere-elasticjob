@@ -47,14 +47,14 @@ public final class JobConfigurationUtil {
     }
     
     public static LiteJobConfiguration createSimpleLiteJobConfiguration() {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build();
     }
     
     public static LiteJobConfiguration createSimpleLiteJobConfiguration(final boolean overwrite) {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).overwrite(overwrite).build();
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).overwrite(overwrite).build();
     }
     
     public static LiteJobConfiguration createDataflowLiteJobConfiguration(final DataflowJobConfiguration.DataflowType dataflowType) {
-        return LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("testJob", "0/1 * * * * ?", 3).build(), DataflowJob.class, dataflowType, false)).build();
+        return LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), DataflowJob.class, dataflowType, false)).build();
     }
 }

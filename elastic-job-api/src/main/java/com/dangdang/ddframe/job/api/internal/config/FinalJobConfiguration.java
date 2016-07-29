@@ -15,18 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.api.internal.config;
 
-import org.junit.Test;
+import com.dangdang.ddframe.job.api.JobConfiguration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-public final class JobConflictExceptionTest {
+/**
+ * 最终使用的作业配置标识接口.
+ *
+ * @author zhangliang
+ */
+public interface FinalJobConfiguration {
     
-    @Test
-    public void assertGetMessage() {
-        assertThat(new JobConflictException("test_job", String.class, Object.class).getMessage(), 
-                is("Job conflict with register center. The job 'test_job' in register center's class is 'java.lang.String', your job class is 'java.lang.Object'"));
-    }
+    /**
+     * 获取作业配置.
+     * 
+     * @return 作业配置
+     */
+    JobConfiguration getJobConfig();
 }

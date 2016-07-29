@@ -147,7 +147,7 @@ public final class FailoverServiceTest {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
         when(serverService.isLocalhostServerReady()).thenReturn(true);
-        JobRegistry.getInstance().addJobScheduleController("testJob", jobScheduleController);
+        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         failoverService.new FailoverLeaderExecutionCallback().execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage, times(2)).getJobNodeChildrenKeys("leader/failover/items");

@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.internal.config;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public final class ConfigurationNodeTest {
@@ -27,42 +26,7 @@ public final class ConfigurationNodeTest {
     private ConfigurationNode configurationNode = new ConfigurationNode("testJob");
     
     @Test
-    public void assertIsShardingTotalCountPath() {
-        assertTrue(configurationNode.isShardingTotalCountPath("/testJob/config/shardingTotalCount"));
-    }
-    
-    @Test
-    public void assertIsNotShardingTotalCountPath() {
-        assertFalse(configurationNode.isShardingTotalCountPath("/testJob/config/shardingTotalCount1"));
-    }
-    
-    @Test
-    public void assertIsMonitorExecutionPath() {
-        assertTrue(configurationNode.isMonitorExecutionPath("/testJob/config/monitorExecution"));
-    }
-    
-    @Test
-    public void assertIsNotMonitorExecutionPath() {
-        assertFalse(configurationNode.isMonitorExecutionPath("/testJob/config/monitorExecution1"));
-    }
-    
-    @Test
-    public void assertIsFailoverPath() {
-        assertTrue(configurationNode.isFailoverPath("/testJob/config/failover"));
-    }
-    
-    @Test
-    public void assertIsNotFailoverPath() {
-        assertFalse(configurationNode.isFailoverPath("/testJob/config/failover1"));
-    }
-    
-    @Test
-    public void assertIsCronPath() {
-        assertTrue(configurationNode.isCronPath("/testJob/config/cron"));
-    }
-    
-    @Test
-    public void assertIsNotCronPath() {
-        assertFalse(configurationNode.isCronPath("/testJob/config/cron1"));
+    public void assertIsConfigPath() {
+        assertTrue(configurationNode.isConfigPath("/testJob/config"));
     }
 }

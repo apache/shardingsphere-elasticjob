@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.api.config;
 
 import com.dangdang.ddframe.job.api.JobConfiguration;
+import com.dangdang.ddframe.job.api.internal.config.FinalJobConfiguration;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +32,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class LiteJobConfiguration {
+public class LiteJobConfiguration implements FinalJobConfiguration {
     
     private final JobConfiguration jobConfig;
     

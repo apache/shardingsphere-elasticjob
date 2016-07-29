@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.cloud.api;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.internal.config.FinalJobConfiguration;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
@@ -35,32 +35,9 @@ public class CloudJobFacade implements JobFacade {
     private final ShardingContext shardingContext;
     
     @Override
-    public String getJobName() {
-        return shardingContext.getJobName();
-    }
-    
-    @Override
-    public DataflowJobConfiguration.DataflowType getDataflowType() {
+    public FinalJobConfiguration loadFinalJobConfiguration() {
         // TODO
-        return DataflowJobConfiguration.DataflowType.THROUGHPUT;
-    }
-    
-    @Override
-    public int getConcurrentDataProcessThreadCount() {
-        // TODO
-        return 1;
-    }
-    
-    @Override
-    public boolean isStreamingProcess() {
-        // TODO
-        return true;
-    }
-    
-    @Override
-    public String getScriptCommandLine() {
-        // TODO
-        return "";
+        return null;
     }
     
     @Override
@@ -100,6 +77,7 @@ public class CloudJobFacade implements JobFacade {
     
     @Override
     public boolean isEligibleForJobRunning() {
+        // TODO
         return true;
     }
     

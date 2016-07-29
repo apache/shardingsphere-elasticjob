@@ -57,7 +57,8 @@ public class GuaranteeService {
      * @return 是否所有的任务均启动完毕
      */
     public boolean isAllStarted() {
-        return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT) && configService.getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
+        return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT)
+                && configService.load().getJobConfig().getCoreConfig().getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
     }
     
     /**
@@ -84,7 +85,8 @@ public class GuaranteeService {
      * @return 是否所有的任务均执行完毕
      */
     public boolean isAllCompleted() {
-        return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT) && configService.getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
+        return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT)
+                && configService.load().getJobConfig().getCoreConfig().getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
     }
     
     /**

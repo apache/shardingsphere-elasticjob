@@ -68,132 +68,132 @@ public final class JobNodeStorageTest {
     
     @Test
     public void assertIsJobNodeExisted() {
-        when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(true);
+        when(coordinatorRegistryCenter.isExisted("/test_job/config")).thenReturn(true);
         assertTrue(jobNodeStorage.isJobNodeExisted("config"));
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config");
     }
     
     @Test
     public void assertGetJobNodeData() {
-        when(coordinatorRegistryCenter.get("/testJob/config/cron")).thenReturn("0/1 * * * * ?");
+        when(coordinatorRegistryCenter.get("/test_job/config/cron")).thenReturn("0/1 * * * * ?");
         assertThat(jobNodeStorage.getJobNodeData("config/cron"), is("0/1 * * * * ?"));
-        verify(coordinatorRegistryCenter).get("/testJob/config/cron");
+        verify(coordinatorRegistryCenter).get("/test_job/config/cron");
     }
     
     @Test
     public void assertGetJobNodeDataDirectly() {
-        when(coordinatorRegistryCenter.getDirectly("/testJob/config/cron")).thenReturn("0/1 * * * * ?");
+        when(coordinatorRegistryCenter.getDirectly("/test_job/config/cron")).thenReturn("0/1 * * * * ?");
         assertThat(jobNodeStorage.getJobNodeDataDirectly("config/cron"), is("0/1 * * * * ?"));
-        verify(coordinatorRegistryCenter).getDirectly("/testJob/config/cron");
+        verify(coordinatorRegistryCenter).getDirectly("/test_job/config/cron");
     }
     
     @Test
     public void assertGetJobNodeChildrenKeys() {
-        when(coordinatorRegistryCenter.getChildrenKeys("/testJob/servers")).thenReturn(Arrays.asList("host0", "host1"));
+        when(coordinatorRegistryCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("host0", "host1"));
         assertThat(jobNodeStorage.getJobNodeChildrenKeys("servers"), is(Arrays.asList("host0", "host1")));
-        verify(coordinatorRegistryCenter).getChildrenKeys("/testJob/servers");
+        verify(coordinatorRegistryCenter).getChildrenKeys("/test_job/servers");
     }
     
     @Test
     public void assertCreateJobNodeIfNeeded() {
-        when(coordinatorRegistryCenter.isExisted("/testJob")).thenReturn(true);
-        when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(false);
+        when(coordinatorRegistryCenter.isExisted("/test_job")).thenReturn(true);
+        when(coordinatorRegistryCenter.isExisted("/test_job/config")).thenReturn(false);
         jobNodeStorage.createJobNodeIfNeeded("config");
-        verify(coordinatorRegistryCenter).isExisted("/testJob");
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config");
-        verify(coordinatorRegistryCenter).persist("/testJob/config", "");
+        verify(coordinatorRegistryCenter).isExisted("/test_job");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config");
+        verify(coordinatorRegistryCenter).persist("/test_job/config", "");
     }
     
     @Test
     public void assertCreateJobNodeIfRootJobNodeIsNotExist() {
-        when(coordinatorRegistryCenter.isExisted("/testJob")).thenReturn(false);
-        when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(true);
+        when(coordinatorRegistryCenter.isExisted("/test_job")).thenReturn(false);
+        when(coordinatorRegistryCenter.isExisted("/test_job/config")).thenReturn(true);
         jobNodeStorage.createJobNodeIfNeeded("config");
-        verify(coordinatorRegistryCenter).isExisted("/testJob");
-        verify(coordinatorRegistryCenter, times(0)).isExisted("/testJob/config");
-        verify(coordinatorRegistryCenter, times(0)).persist("/testJob/config", "");
+        verify(coordinatorRegistryCenter).isExisted("/test_job");
+        verify(coordinatorRegistryCenter, times(0)).isExisted("/test_job/config");
+        verify(coordinatorRegistryCenter, times(0)).persist("/test_job/config", "");
     }
     
     @Test
     public void assertCreateJobNodeIfNotNeeded() {
-        when(coordinatorRegistryCenter.isExisted("/testJob")).thenReturn(true);
-        when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(true);
+        when(coordinatorRegistryCenter.isExisted("/test_job")).thenReturn(true);
+        when(coordinatorRegistryCenter.isExisted("/test_job/config")).thenReturn(true);
         jobNodeStorage.createJobNodeIfNeeded("config");
-        verify(coordinatorRegistryCenter).isExisted("/testJob");
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config");
-        verify(coordinatorRegistryCenter, times(0)).persist("/testJob/config", "");
+        verify(coordinatorRegistryCenter).isExisted("/test_job");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config");
+        verify(coordinatorRegistryCenter, times(0)).persist("/test_job/config", "");
     }
     
     @Test
     public void assertRemoveJobNodeIfNeeded() {
-        when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(true);
+        when(coordinatorRegistryCenter.isExisted("/test_job/config")).thenReturn(true);
         jobNodeStorage.removeJobNodeIfExisted("config");
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config");
-        verify(coordinatorRegistryCenter).remove("/testJob/config");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config");
+        verify(coordinatorRegistryCenter).remove("/test_job/config");
     }
     
     @Test
     public void assertRemoveJobNodeIfNotNeeded() {
-        when(coordinatorRegistryCenter.isExisted("/testJob/config")).thenReturn(false);
+        when(coordinatorRegistryCenter.isExisted("/test_job/config")).thenReturn(false);
         jobNodeStorage.removeJobNodeIfExisted("config");
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config");
-        verify(coordinatorRegistryCenter, times(0)).remove("/testJob/config");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config");
+        verify(coordinatorRegistryCenter, times(0)).remove("/test_job/config");
     }
     
     @Test
     public void assertFillJobNodeIfNotNullAndOverwriteDisabled() {
-        when(coordinatorRegistryCenter.isExisted("/testJob/config/cron")).thenReturn(true);
+        when(coordinatorRegistryCenter.isExisted("/test_job/config/cron")).thenReturn(true);
         jobNodeStorage.fillJobNodeIfNullOrOverwrite("config/cron", "0/1 * * * * ?");
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config/cron");
-        verify(coordinatorRegistryCenter, times(0)).persist("/testJob/config/cron", "0/1 * * * * ?");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config/cron");
+        verify(coordinatorRegistryCenter, times(0)).persist("/test_job/config/cron", "0/1 * * * * ?");
     }
     
     @Test
     public void assertFillJobNodeIfNotNullAndOverwriteEnabledButValueSame() throws NoSuchFieldException {
-        when(coordinatorRegistryCenter.isExisted("/testJob/config/cron")).thenReturn(true);
-        when(coordinatorRegistryCenter.getDirectly("/testJob/config/cron")).thenReturn("0/1 * * * * ?");
+        when(coordinatorRegistryCenter.isExisted("/test_job/config/cron")).thenReturn(true);
+        when(coordinatorRegistryCenter.getDirectly("/test_job/config/cron")).thenReturn("0/1 * * * * ?");
         JobConfigurationUtil.setFieldValue(liteJobConfig, "overwrite", true);
         jobNodeStorage.fillJobNodeIfNullOrOverwrite("config/cron", "0/1 * * * * ?");
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config/cron");
-        verify(coordinatorRegistryCenter).getDirectly("/testJob/config/cron");
-        verify(coordinatorRegistryCenter, times(0)).persist("/testJob/config", "0/1 * * * * ?");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config/cron");
+        verify(coordinatorRegistryCenter).getDirectly("/test_job/config/cron");
+        verify(coordinatorRegistryCenter, times(0)).persist("/test_job/config", "0/1 * * * * ?");
     }
     
     @Test
     public void assertFillJobNodeIfNotNullAndOverwriteEnabledAndValueDifferent() throws NoSuchFieldException {
-        when(coordinatorRegistryCenter.isExisted("/testJob/config/cron")).thenReturn(true);
-        when(coordinatorRegistryCenter.getDirectly("/testJob/config/cron")).thenReturn("0/1 * * * * ?");
+        when(coordinatorRegistryCenter.isExisted("/test_job/config/cron")).thenReturn(true);
+        when(coordinatorRegistryCenter.getDirectly("/test_job/config/cron")).thenReturn("0/1 * * * * ?");
         JobConfigurationUtil.setFieldValue(liteJobConfig, "overwrite", true);
         jobNodeStorage.fillJobNodeIfNullOrOverwrite("config/cron", "0/2 * * * * ?");
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config/cron");
-        verify(coordinatorRegistryCenter).getDirectly("/testJob/config/cron");
-        verify(coordinatorRegistryCenter).persist("/testJob/config/cron", "0/2 * * * * ?");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config/cron");
+        verify(coordinatorRegistryCenter).getDirectly("/test_job/config/cron");
+        verify(coordinatorRegistryCenter).persist("/test_job/config/cron", "0/2 * * * * ?");
     }
     
     @Test
     public void assertFillJobNodeIfNull() {
-        when(coordinatorRegistryCenter.isExisted("/testJob/config/cron")).thenReturn(false);
+        when(coordinatorRegistryCenter.isExisted("/test_job/config/cron")).thenReturn(false);
         jobNodeStorage.fillJobNodeIfNullOrOverwrite("config/cron", "0/2 * * * * ?");
-        verify(coordinatorRegistryCenter).isExisted("/testJob/config/cron");
-        verify(coordinatorRegistryCenter).persist("/testJob/config/cron", "0/2 * * * * ?");
+        verify(coordinatorRegistryCenter).isExisted("/test_job/config/cron");
+        verify(coordinatorRegistryCenter).persist("/test_job/config/cron", "0/2 * * * * ?");
     }
     
     @Test
     public void assertFillEphemeralJobNode() {
         jobNodeStorage.fillEphemeralJobNode("config/cron", "0/1 * * * * ?");
-        verify(coordinatorRegistryCenter).persistEphemeral("/testJob/config/cron", "0/1 * * * * ?");
+        verify(coordinatorRegistryCenter).persistEphemeral("/test_job/config/cron", "0/1 * * * * ?");
     }
     
     @Test
     public void assertUpdateJobNode() {
         jobNodeStorage.updateJobNode("config/cron", "0/1 * * * * ?");
-        verify(coordinatorRegistryCenter).update("/testJob/config/cron", "0/1 * * * * ?");
+        verify(coordinatorRegistryCenter).update("/test_job/config/cron", "0/1 * * * * ?");
     }
     
     @Test
     public void assertReplaceJobNode() {
         jobNodeStorage.replaceJobNode("config/cron", "0/1 * * * * ?");
-        verify(coordinatorRegistryCenter).persist("/testJob/config/cron", "0/1 * * * * ?");
+        verify(coordinatorRegistryCenter).persist("/test_job/config/cron", "0/1 * * * * ?");
     }
     
     @Test
@@ -281,16 +281,16 @@ public final class JobNodeStorageTest {
         Listenable<TreeCacheListener> listeners = mock(Listenable.class);
         TreeCacheListener listener = mock(TreeCacheListener.class);
         when(treeCache.getListenable()).thenReturn(listeners);
-        when(coordinatorRegistryCenter.getRawCache("/testJob")).thenReturn(treeCache);
+        when(coordinatorRegistryCenter.getRawCache("/test_job")).thenReturn(treeCache);
         jobNodeStorage.addDataListener(listener);
         verify(listeners).addListener(listener);
     }
     
     @Test
     public void assertGetRegistryCenterTime() {
-        when(coordinatorRegistryCenter.getRegistryCenterTime("/testJob/systemTime/current")).thenReturn(0L);
+        when(coordinatorRegistryCenter.getRegistryCenterTime("/test_job/systemTime/current")).thenReturn(0L);
         assertThat(jobNodeStorage.getRegistryCenterTime(), is(0L));
-        verify(coordinatorRegistryCenter).getRegistryCenterTime("/testJob/systemTime/current");
+        verify(coordinatorRegistryCenter).getRegistryCenterTime("/test_job/systemTime/current");
     }
     
     @Test

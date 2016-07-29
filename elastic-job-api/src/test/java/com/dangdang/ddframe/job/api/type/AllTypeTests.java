@@ -20,7 +20,8 @@ package com.dangdang.ddframe.job.api.type;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.sequence.StreamingSequenceDataflowJobTest;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.sequence.UnstreamingSequenceDataflowJobTest;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.throughput.StreamingThroughputDataflowJobTest;
-import com.dangdang.ddframe.job.api.type.dataflow.executor.throughput.UnstreamingThroughputDataflowJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.executor.throughput.UnstreamingAndOneThreadThroughputDataflowJobTest;
+import com.dangdang.ddframe.job.api.type.dataflow.executor.throughput.UnstreamingAndTwoThreadsThroughputDataflowJobTest;
 import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutorTest;
 import com.dangdang.ddframe.job.api.type.simple.executor.SimpleJobExecutorTest;
 import org.junit.runner.RunWith;
@@ -32,8 +33,9 @@ import org.junit.runners.Suite.SuiteClasses;
         SimpleJobExecutorTest.class,
         StreamingSequenceDataflowJobTest.class, 
         StreamingThroughputDataflowJobTest.class, 
-        UnstreamingSequenceDataflowJobTest.class, 
-        UnstreamingThroughputDataflowJobTest.class, 
+        UnstreamingSequenceDataflowJobTest.class,
+        UnstreamingAndOneThreadThroughputDataflowJobTest.class, 
+        UnstreamingAndTwoThreadsThroughputDataflowJobTest.class, 
         ScriptJobExecutorTest.class
     })
 public final class AllTypeTests {

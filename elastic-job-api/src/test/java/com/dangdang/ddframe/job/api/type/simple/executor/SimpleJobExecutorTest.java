@@ -17,12 +17,13 @@
 
 package com.dangdang.ddframe.job.api.type.simple.executor;
 
-import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.fixture.JobCaller;
+import com.dangdang.ddframe.job.api.fixture.TestFinalSimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.fixture.TestSimpleJob;
+import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.fixture.TestSimpleJob;
-import com.dangdang.ddframe.job.api.fixture.JobCaller;
 import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
 import org.junit.Before;
@@ -50,7 +51,7 @@ public final class SimpleJobExecutorTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(jobFacade.getJobName()).thenReturn("testJob");
+        when(jobFacade.loadFinalJobConfiguration()).thenReturn(new TestFinalSimpleJobConfiguration());
         simpleJobExecutor = new SimpleJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
         simpleJobExecutor.setJobExceptionHandler(new JobExceptionHandler() {
             

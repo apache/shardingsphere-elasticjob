@@ -36,6 +36,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -45,6 +46,7 @@ import java.io.IOException;
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public final class LiteJobConfigurationGsonFactory {
     
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(LiteJobConfiguration.class, new LiteJobConfigurationGsonTypeAdapter()).create();
@@ -68,27 +70,27 @@ public final class LiteJobConfigurationGsonFactory {
         @SuppressWarnings("unchecked")
         @Override
         public LiteJobConfiguration read(final JsonReader in) throws IOException {
-            String jobName = null;
-            String cron = null;
+            String jobName = "";
+            String cron = "";
             int shardingTotalCount = 0;
-            String shardingItemParameters = null;
-            String jobParameter = null;
+            String shardingItemParameters = "";
+            String jobParameter = "";
             boolean failover = false;
             boolean misfire = failover;
-            String description = null;
-            JobProperties jobProperties = null;
+            String description = "";
+            JobProperties jobProperties = new JobProperties();
             JobType jobType = null;
             Class<? extends ElasticJob> jobClass = null;
             boolean monitorExecution = false;
             int maxTimeDiffSeconds = 0;
             int monitorPort = 0;
-            String jobShardingStrategyClass = null;
+            String jobShardingStrategyClass = "";
             boolean disabled = false;
             boolean overwrite = false;
             DataflowJobConfiguration.DataflowType dataflowType = null;
             boolean streamingProcess = false;
             int concurrentDataProcessThreadCount = 0;
-            String scriptCommandLine = null;
+            String scriptCommandLine = "";
             in.beginObject();
             while (in.hasNext()) {
                 switch (in.nextName()) {
@@ -123,10 +125,12 @@ public final class LiteJobConfigurationGsonFactory {
                         jobType = JobType.valueOf(in.nextString());
                         break;
                     case "jobClass":
+                        String jobClassName = in.nextString();
                         try {
-                            jobClass = (Class<? extends ElasticJob>) Class.forName(in.nextString());
+                            jobClass = (Class<? extends ElasticJob>) Class.forName(jobClassName);
                         } catch (final ClassNotFoundException ex) {
-                            throw new RuntimeException(ex);
+                            log.warn("Elastic-Job: Job class '{}' is not in classpath, return null job configuration.", jobClassName);
+                            return null;
                         }
                         break;
                     case "monitorExecution":
@@ -176,18 +180,10 @@ public final class LiteJobConfigurationGsonFactory {
             while (in.hasNext()) {
                 switch (in.nextName()) {
                     case "job_exception_handler":
-                        try {
-                            result.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), Class.forName(in.nextString()));
-                        } catch (final ClassNotFoundException ex) {
-                            throw new RuntimeException(ex);
-                        }
+                        result.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), getJobPropertiesValue(in, JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
                         break;
                     case "executor_service_handler":
-                        try {
-                            result.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), Class.forName(in.nextString()));
-                        } catch (final ClassNotFoundException ex) {
-                            throw new RuntimeException(ex);
-                        }
+                        result.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), getJobPropertiesValue(in, JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
                         break;
                     default:
                         break;
@@ -195,6 +191,16 @@ public final class LiteJobConfigurationGsonFactory {
             }
             in.endObject();
             return result;
+        }
+        
+        private Class<?> getJobPropertiesValue(final JsonReader in, final JobProperties.JobPropertiesEnum jobPropertiesEnum) throws IOException {
+            String jobPropertiesClassName = in.nextString();
+            try {
+                return Class.forName(jobPropertiesClassName);
+            } catch (final ClassNotFoundException ex) {
+                log.warn("Cannot load class '{}', use default {} class.", jobPropertiesClassName, jobPropertiesEnum.getKey());
+                return jobPropertiesEnum.getDefaultValue();
+            }
         }
         
         private LiteJobConfiguration getLiteJobConfiguration(final JobConfiguration jobConfig, final boolean monitorExecution, final int maxTimeDiffSeconds, 

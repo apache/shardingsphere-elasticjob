@@ -66,7 +66,7 @@ public class MonitorService {
      * 初始化作业监听服务.
      */
     public void listen() {
-        int port = configService.getMonitorPort();
+        int port = configService.load().getMonitorPort();
         if (port < 0) {
             return;
         }

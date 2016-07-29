@@ -15,32 +15,37 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.dataflow.executor.sequence;
+package com.dangdang.ddframe.job.api.type.dataflow.executor.throughput;
 
-import com.dangdang.ddframe.job.api.type.dataflow.executor.AbstractDataflowJobExecutorTest;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.executor.AbstractDataflowJobExecutorTest;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public final class UnstreamingSequenceDataflowJobTest extends AbstractDataflowJobExecutorTest {
+public final class UnstreamingAndTwoThreadsThroughputDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
-    public UnstreamingSequenceDataflowJobTest() {
-        super(DataflowJobConfiguration.DataflowType.SEQUENCE, false, 10);
+    public UnstreamingAndTwoThreadsThroughputDataflowJobTest() {
+        super(DataflowJobConfiguration.DataflowType.THROUGHPUT, false, 2);
     }
     
     @Test
-    public void assertExecuteWhenFetchDataIsNotEmpty() {
+    public void assertExecuteWhenFetchDataIsNotEmptyAndDataIsOne() {
+        when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1));
+        when(getJobCaller().fetchData(1)).thenReturn(Collections.emptyList());
+        getDataflowJobExecutor().execute();
+        verify(getJobCaller()).processData(1);
+    }
+    
+    @Test
+    public void assertExecuteWhenFetchDataIsNotEmptyForMultipleThread() {
         when(getJobCaller().fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
         when(getJobCaller().fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
-        doThrow(new IllegalStateException()).when(getJobCaller()).processData(4);
         getDataflowJobExecutor().execute();
-        verify(getJobCaller()).fetchData(0);
-        verify(getJobCaller()).fetchData(1);
         verify(getJobCaller()).processData(1);
         verify(getJobCaller()).processData(2);
         verify(getJobCaller()).processData(3);

@@ -71,9 +71,9 @@ public final class JobProperties {
      * @return 键集合
      */
     public String json() {
-        Map<String, String> jsonMap = new HashMap<>(map.size(), 1);
-        for (Map.Entry<JobPropertiesEnum, Class<?>> entry : map.entrySet()) {
-            jsonMap.put(entry.getKey().getKey(), entry.getValue().getCanonicalName());
+        Map<String, String> jsonMap = new HashMap<>(JobPropertiesEnum.values().length, 1);
+        for (JobPropertiesEnum each : JobPropertiesEnum.values()) {
+            jsonMap.put(each.getKey(), get(each).getCanonicalName());
         }
         return GsonFactory.getGson().toJson(jsonMap);
     }

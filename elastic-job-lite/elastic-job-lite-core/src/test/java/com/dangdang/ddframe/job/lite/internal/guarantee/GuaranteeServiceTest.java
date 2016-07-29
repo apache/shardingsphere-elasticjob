@@ -17,7 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.internal.guarantee;
 
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
@@ -69,6 +74,8 @@ public final class GuaranteeServiceTest {
     
     @Test
     public void assertIsNotAllStarted() {
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, true)).build());
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1"));
         assertFalse(guaranteeService.isAllStarted());
@@ -77,7 +84,8 @@ public final class GuaranteeServiceTest {
     @Test
     public void assertIsAllStarted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
-        when(configService.getShardingTotalCount()).thenReturn(3);
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class)).build());
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1", "2"));
         assertTrue(guaranteeService.isAllStarted());
     }
@@ -103,7 +111,8 @@ public final class GuaranteeServiceTest {
     
     @Test
     public void assertIsNotAllCompleted() {
-        when(configService.getShardingTotalCount()).thenReturn(10);
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 10).build(),
+                TestSimpleJob.class)).build());
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1"));
         assertFalse(guaranteeService.isAllCompleted());
@@ -112,7 +121,8 @@ public final class GuaranteeServiceTest {
     @Test
     public void assertIsAllCompleted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
-        when(configService.getShardingTotalCount()).thenReturn(3);
+        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class)).build());
         when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1", "2"));
         assertTrue(guaranteeService.isAllCompleted());
     }

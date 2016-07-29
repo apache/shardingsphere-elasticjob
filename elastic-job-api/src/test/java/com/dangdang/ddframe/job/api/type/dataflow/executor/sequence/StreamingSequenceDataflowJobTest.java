@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 public final class StreamingSequenceDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
     public StreamingSequenceDataflowJobTest() {
-        super(DataflowJobConfiguration.DataflowType.SEQUENCE, true);
+        super(DataflowJobConfiguration.DataflowType.SEQUENCE, true, 10);
     }
     
     @SuppressWarnings("unchecked")

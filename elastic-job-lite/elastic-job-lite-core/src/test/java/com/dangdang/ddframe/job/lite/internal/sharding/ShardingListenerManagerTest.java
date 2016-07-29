@@ -66,14 +66,14 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsNotShardingTotalCountPath() {
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/config/other", null, "3".getBytes())), "/testJob/config/other");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config/other", null, "3".getBytes())), "/test_job/config/other");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsShardingTotalCountPath() {
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/config/shardingTotalCount", null, "3".getBytes())), "/testJob/config/shardingTotalCount");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, "3".getBytes())), "/test_job/config");
         verify(shardingService).setReshardingFlag();
         verify(executionService).setNeedFixExecutionInfoFlag();
     }
@@ -81,28 +81,28 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertListenServersChangedJobListenerWhenIsNotServerStatusPath() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/servers/" + ip + "/other", null, "".getBytes())), "/testJob/servers/" + ip + "/other");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/other", null, "".getBytes())), "/test_job/servers/" + ip + "/other");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerStatusPathButUpdate() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/servers/" + ip + "/status", null, "".getBytes())), "/testJob/servers/" + ip + "/status");
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip + "/status", null, "".getBytes())), "/test_job/servers/" + ip + "/status");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerStatusPathAndAdd() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/testJob/servers/" + ip + "/status", null, "".getBytes())), "/testJob/servers/" + ip + "/status");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/status", null, "".getBytes())), "/test_job/servers/" + ip + "/status");
         verify(shardingService).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerStatusPathButUpdateAndIsServerDisabledPath() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/testJob/servers/" + ip + "/disabled", null, "".getBytes())), "/testJob/servers/" + ip + "/disabled");
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip + "/disabled", null, "".getBytes())), "/test_job/servers/" + ip + "/disabled");
         verify(shardingService).setReshardingFlag();
     }
 }

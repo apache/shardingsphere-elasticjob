@@ -17,8 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
+import com.dangdang.ddframe.job.api.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
@@ -83,8 +86,8 @@ public final class JobSchedulerTest {
     private void mockInit(final boolean isMisfire) {
         when(jobExecutor.getJobName()).thenReturn("testJob");
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
-        when(schedulerFacade.getCron()).thenReturn("* * 0/10 * * ? 2050");
-        when(schedulerFacade.isMisfire()).thenReturn(isMisfire);
+        when(schedulerFacade.loadJobConfiguration()).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).misfire(isMisfire).build(), TestSimpleJob.class)).build());
     }
     
     private void assertInit() throws NoSuchFieldException, SchedulerException {

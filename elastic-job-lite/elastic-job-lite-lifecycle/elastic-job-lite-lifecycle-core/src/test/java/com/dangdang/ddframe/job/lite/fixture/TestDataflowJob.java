@@ -15,18 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.lite.fixture;
 
-import org.junit.Test;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import java.util.List;
 
-public final class JobConflictExceptionTest {
+public class TestDataflowJob implements DataflowJob {
     
-    @Test
-    public void assertGetMessage() {
-        assertThat(new JobConflictException("test_job", String.class, Object.class).getMessage(), 
-                is("Job conflict with register center. The job 'test_job' in register center's class is 'java.lang.String', your job class is 'java.lang.Object'"));
+    @Override
+    public List fetchData(final ShardingContext shardingContext) {
+        return null;
+    }
+    
+    @Override
+    public void processData(final ShardingContext shardingContext, final List data) {
     }
 }

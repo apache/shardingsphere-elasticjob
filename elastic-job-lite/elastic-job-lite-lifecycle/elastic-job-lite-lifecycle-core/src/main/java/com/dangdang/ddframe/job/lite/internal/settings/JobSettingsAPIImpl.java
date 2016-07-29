@@ -18,11 +18,14 @@
 package com.dangdang.ddframe.job.lite.internal.settings;
 
 import com.dangdang.ddframe.job.api.type.JobType;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobSettingsAPI;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.domain.JobSettings;
+import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -40,71 +43,48 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     public JobSettings getJobSettings(final String jobName) {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        String jobType = registryCenter.get(jobNodePath.getConfigNodePath("jobType"));
-        buildSimpleJobSettings(jobName, result, jobNodePath, jobType);
+        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.getGson().fromJson(registryCenter.get(jobNodePath.getConfigNodePath()), LiteJobConfiguration.class);
+        String jobType = liteJobConfig.getJobConfig().getJobType().name();
+        buildSimpleJobSettings(jobName, result, liteJobConfig);
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            buildDataflowJobSettings(result, jobNodePath);
+            buildDataflowJobSettings(result, (DataflowJobConfiguration) liteJobConfig.getJobConfig());
         }
         if (JobType.SCRIPT.name().equals(jobType)) {
-            buildScriptJobSettings(result, jobNodePath);
+            buildScriptJobSettings(result, (ScriptJobConfiguration) liteJobConfig.getJobConfig());
         }
         return result;
     }
     
-    private void buildSimpleJobSettings(final String jobName, final JobSettings result, final JobNodePath jobNodePath, final String jobType) {
+    private void buildSimpleJobSettings(final String jobName, final JobSettings result, final LiteJobConfiguration liteJobConfig) {
         result.setJobName(jobName);
-        result.setJobType(jobType);
-        result.setJobClass(registryCenter.get(jobNodePath.getConfigNodePath("jobClass")));
-        result.setShardingTotalCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("shardingTotalCount"))));
-        result.setCron(registryCenter.get(jobNodePath.getConfigNodePath("cron")));
-        result.setShardingItemParameters(registryCenter.get(jobNodePath.getConfigNodePath("shardingItemParameters")));
-        result.setJobParameter(registryCenter.get(jobNodePath.getConfigNodePath("jobParameter")));
-        result.setMonitorExecution(Boolean.valueOf(registryCenter.get(jobNodePath.getConfigNodePath("monitorExecution"))));
-        result.setMaxTimeDiffSeconds(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("maxTimeDiffSeconds"))));
-        String monitorPort = registryCenter.get(jobNodePath.getConfigNodePath("monitorPort"));
-        if (!Strings.isNullOrEmpty(monitorPort)) {
-            result.setMonitorPort(Integer.parseInt(monitorPort));
-        }
-        result.setFailover(Boolean.valueOf(registryCenter.get(jobNodePath.getConfigNodePath("failover"))));
-        result.setMisfire(Boolean.valueOf(registryCenter.get(jobNodePath.getConfigNodePath("misfire"))));
-        result.setJobShardingStrategyClass(registryCenter.get(jobNodePath.getConfigNodePath("jobShardingStrategyClass")));
-        result.setDescription(registryCenter.get(jobNodePath.getConfigNodePath("description")));
+        result.setJobType(liteJobConfig.getJobConfig().getJobType().name());
+        result.setJobClass(liteJobConfig.getJobConfig().getJobClass().getCanonicalName());
+        result.setShardingTotalCount(liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount());
+        result.setCron(liteJobConfig.getJobConfig().getCoreConfig().getCron());
+        result.setShardingItemParameters(liteJobConfig.getJobConfig().getCoreConfig().getShardingItemParameters());
+        result.setJobParameter(liteJobConfig.getJobConfig().getCoreConfig().getJobParameter());
+        result.setMonitorExecution(liteJobConfig.isMonitorExecution());
+        result.setMaxTimeDiffSeconds(liteJobConfig.getMaxTimeDiffSeconds());
+        result.setMonitorPort(liteJobConfig.getMonitorPort());
+        result.setFailover(liteJobConfig.getJobConfig().getCoreConfig().isFailover());
+        result.setMisfire(liteJobConfig.getJobConfig().getCoreConfig().isMisfire());
+        result.setJobShardingStrategyClass(liteJobConfig.getJobShardingStrategyClass());
+        result.setDescription(liteJobConfig.getJobConfig().getCoreConfig().getDescription());
+    } 
+    
+    private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {
+        result.setConcurrentDataProcessThreadCount(config.getConcurrentDataProcessThreadCount());
+        result.setStreamingProcess(config.isStreamingProcess());
     }
     
-    private void buildDataflowJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
-        result.setProcessCountIntervalSeconds(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("processCountIntervalSeconds"))));
-        result.setConcurrentDataProcessThreadCount(Integer.parseInt(registryCenter.get(jobNodePath.getConfigNodePath("concurrentDataProcessThreadCount"))));
-        result.setStreamingProcess(Boolean.parseBoolean(registryCenter.get(jobNodePath.getConfigNodePath("streamingProcess"))));
+    private void buildScriptJobSettings(final JobSettings result, final ScriptJobConfiguration config) {
+        result.setScriptCommandLine(config.getScriptCommandLine());
     }
     
-    private void buildScriptJobSettings(final JobSettings result, final JobNodePath jobNodePath) {
-        result.setScriptCommandLine(registryCenter.get(jobNodePath.getConfigNodePath("scriptCommandLine")));
-    }
-    
+    // TODO JobProperties未更新
     @Override
     public void updateJobSettings(final JobSettings jobSettings) {
         JobNodePath jobNodePath = new JobNodePath(jobSettings.getJobName());
-        updateIfChanged(jobNodePath.getConfigNodePath("shardingTotalCount"), jobSettings.getShardingTotalCount());
-        updateIfChanged(jobNodePath.getConfigNodePath("cron"), jobSettings.getCron());
-        updateIfChanged(jobNodePath.getConfigNodePath("shardingItemParameters"), jobSettings.getShardingItemParameters());
-        updateIfChanged(jobNodePath.getConfigNodePath("jobParameter"), jobSettings.getJobParameter());
-        updateIfChanged(jobNodePath.getConfigNodePath("monitorExecution"), jobSettings.isMonitorExecution());
-        updateIfChanged(jobNodePath.getConfigNodePath("processCountIntervalSeconds"), jobSettings.getProcessCountIntervalSeconds());
-        updateIfChanged(jobNodePath.getConfigNodePath("concurrentDataProcessThreadCount"), jobSettings.getConcurrentDataProcessThreadCount());
-        updateIfChanged(jobNodePath.getConfigNodePath("maxTimeDiffSeconds"), jobSettings.getMaxTimeDiffSeconds());
-        updateIfChanged(jobNodePath.getConfigNodePath("monitorPort"), jobSettings.getMonitorPort());
-        updateIfChanged(jobNodePath.getConfigNodePath("failover"), jobSettings.isFailover());
-        updateIfChanged(jobNodePath.getConfigNodePath("misfire"), jobSettings.isMisfire());
-        updateIfChanged(jobNodePath.getConfigNodePath("streamingProcess"), jobSettings.isStreamingProcess());
-        updateIfChanged(jobNodePath.getConfigNodePath("jobShardingStrategyClass"), jobSettings.getJobShardingStrategyClass());
-        updateIfChanged(jobNodePath.getConfigNodePath("description"), jobSettings.getDescription());
-        updateIfChanged(jobNodePath.getConfigNodePath("scriptCommandLine"), jobSettings.getScriptCommandLine());
-    }
-    
-    private void updateIfChanged(final String nodePath, final Object value) {
-        if (null == value || value.toString().equals(registryCenter.get(nodePath))) {
-            return;
-        }
-        registryCenter.update(nodePath, value.toString());
+        registryCenter.update(jobNodePath.getConfigNodePath(), LiteJobConfigurationGsonFactory.getGson().toJson(jobSettings));
     }
 }

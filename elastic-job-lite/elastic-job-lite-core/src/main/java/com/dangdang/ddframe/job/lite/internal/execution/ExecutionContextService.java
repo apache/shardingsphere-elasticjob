@@ -54,21 +54,23 @@ public class ExecutionContextService {
      * @return 分片上下文
      */
     public ShardingContext getJobShardingContext(final List<Integer> shardingItems) {
-        removeRunningIfMonitorExecution(shardingItems);
+        LiteJobConfiguration liteJobConfig = configService.load();
+        removeRunningIfMonitorExecution(liteJobConfig.isMonitorExecution(), shardingItems);
         if (shardingItems.isEmpty()) {
-            return new ShardingContext(
-                    liteJobConfig.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), Collections.<ShardingContext.ShardingItem>emptyList());
+            return new ShardingContext(liteJobConfig.getJobName(), liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount(), 
+                    liteJobConfig.getJobConfig().getCoreConfig().getJobParameter(), Collections.<ShardingContext.ShardingItem>emptyList());
         }
         Map<Integer, String> shardingItemParameterMap = configService.getShardingItemParameters();
         List<ShardingContext.ShardingItem> shardingItemList = new ArrayList<>(shardingItems.size());
         for (int each : shardingItems) {
             shardingItemList.add(new ShardingContext.ShardingItem(each, shardingItemParameterMap.get(each)));
         }
-        return new ShardingContext(liteJobConfig.getJobName(), configService.getShardingTotalCount(), configService.getJobParameter(), shardingItemList);
+        return new ShardingContext(liteJobConfig.getJobName(), 
+                liteJobConfig.getJobConfig().getCoreConfig().getShardingTotalCount(), liteJobConfig.getJobConfig().getCoreConfig().getJobParameter(), shardingItemList);
     }
     
-    private void removeRunningIfMonitorExecution(final List<Integer> shardingItems) {
-        if (!configService.isMonitorExecution()) {
+    private void removeRunningIfMonitorExecution(final boolean monitorExecution, final List<Integer> shardingItems) {
+        if (!monitorExecution) {
             return;
         }
         List<Integer> runningShardingItems = new ArrayList<>(shardingItems.size());

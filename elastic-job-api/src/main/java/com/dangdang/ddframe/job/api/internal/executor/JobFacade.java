@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.internal.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.internal.config.FinalJobConfiguration;
 
 import java.util.Collection;
 
@@ -30,52 +30,11 @@ import java.util.Collection;
 public interface JobFacade {
     
     /**
-     * 获取作业名称.
-     *
-     * @return 作业名称
+     * 读取作业配置.
+     * 
+     * @return 作业配置
      */
-    String getJobName();
-    
-    /**
-     * 获取数据流作业类型.
-     *
-     * @return 数据流作业类型
-     */
-    DataflowJobConfiguration.DataflowType getDataflowType();
-    
-    /**
-     * 获取同时处理数据的并发线程数.
-     *
-     * <p>
-     * 不能小于1.
-     * 仅ThroughputDataflow作业有效.
-     * </p>
-     *
-     * @return 同时处理数据的并发线程数
-     */
-    int getConcurrentDataProcessThreadCount();
-    
-    /**
-     * 获取是否流式处理数据.
-     *
-     * <p>
-     * 如果流式处理数据, 则fetchData不返回空结果将持续执行作业. 如果非流式处理数据, 则处理数据完成后作业结束.
-     * </p>
-     *
-     * @return 是否流式处理数据
-     */
-    boolean isStreamingProcess();
-    
-    /**
-     * 获取脚本型作业执行命令行.
-     *
-     * <p>
-     * 仅脚本作业有效.
-     * </p>
-     *
-     * @return 脚本型作业执行命令行
-     */
-    String getScriptCommandLine();
+    FinalJobConfiguration loadFinalJobConfiguration();
     
     /**
      * 检查本机与注册中心的时间误差秒数是否在允许范围.
