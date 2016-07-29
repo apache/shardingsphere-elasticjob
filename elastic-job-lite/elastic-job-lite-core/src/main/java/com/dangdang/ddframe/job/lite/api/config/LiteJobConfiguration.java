@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class LiteJobConfiguration implements JobConfiguration {
     
-    private final JobTypeConfiguration jobTypeConfig;
+    private final JobTypeConfiguration typeConfig;
     
     private final boolean monitorExecution;
     
@@ -54,7 +54,7 @@ public class LiteJobConfiguration implements JobConfiguration {
      * @return 作业名称
      */
     public String getJobName() {
-        return jobTypeConfig.getCoreConfig().getJobName();
+        return typeConfig.getCoreConfig().getJobName();
     }
     
     /**

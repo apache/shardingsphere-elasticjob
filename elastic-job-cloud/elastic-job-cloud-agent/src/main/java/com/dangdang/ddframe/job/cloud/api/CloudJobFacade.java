@@ -35,7 +35,7 @@ public class CloudJobFacade implements JobFacade {
     private final ShardingContext shardingContext;
     
     @Override
-    public JobConfiguration loadJobConfiguration() {
+    public JobConfiguration loadJobConfiguration(final boolean fromCache) {
         // TODO
         return null;
     }

@@ -32,9 +32,10 @@ public interface JobFacade {
     /**
      * 读取作业配置.
      * 
+     * @param fromCache 是否从缓存中读取
      * @return 作业配置
      */
-    JobConfiguration loadJobConfiguration();
+    JobConfiguration loadJobConfiguration(boolean fromCache);
     
     /**
      * 检查本机与注册中心的时间误差秒数是否在允许范围.

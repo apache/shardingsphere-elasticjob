@@ -47,10 +47,12 @@ public class ConfigurationService {
     /**
      * 读取作业配置.
      * 
+     * @param fromCache 是否从缓存中读取
      * @return 作业配置
      */
-    public LiteJobConfiguration load() {
-        return LiteJobConfigurationGsonFactory.getGson().fromJson(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT), LiteJobConfiguration.class);
+    public LiteJobConfiguration load(final boolean fromCache) {
+        String configJson = fromCache ? jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT) : jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
+        return LiteJobConfigurationGsonFactory.getGson().fromJson(configJson, LiteJobConfiguration.class);
     }
     
     /**
@@ -92,7 +94,7 @@ public class ConfigurationService {
      * @return 分片序列号和个性化参数对照表
      */
     public Map<Integer, String> getShardingItemParameters() {
-        String value = load().getTypeConfig().getCoreConfig().getShardingItemParameters();
+        String value = load(true).getTypeConfig().getCoreConfig().getShardingItemParameters();
         if (Strings.isNullOrEmpty(value)) {
             return Collections.emptyMap();
         }
@@ -116,7 +118,7 @@ public class ConfigurationService {
      * 检查本机与注册中心的时间误差秒数是否在允许范围.
      */
     public void checkMaxTimeDiffSecondsTolerable() {
-        int maxTimeDiffSeconds =  load().getMaxTimeDiffSeconds();
+        int maxTimeDiffSeconds =  load(true).getMaxTimeDiffSeconds();
         if (-1  == maxTimeDiffSeconds) {
             return;
         }
@@ -132,7 +134,7 @@ public class ConfigurationService {
      * @return 是否开启失效转移
      */
     public boolean isFailover() {
-        LiteJobConfiguration liteJobConfig = load();
+        LiteJobConfiguration liteJobConfig = load(true);
         return liteJobConfig.isMonitorExecution() && liteJobConfig.getTypeConfig().getCoreConfig().isFailover();
     }
 }

@@ -68,7 +68,7 @@ public class ExecutionService {
      * @param shardingContext 分片上下文
      */
     public void registerJobBegin(final ShardingContext shardingContext) {
-        if (!shardingContext.getShardingItems().isEmpty() && configService.load().isMonitorExecution()) {
+        if (!shardingContext.getShardingItems().isEmpty() && configService.load(true).isMonitorExecution()) {
             serverService.updateServerStatus(ServerStatus.RUNNING);
             for (int each : shardingContext.getShardingItems().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
@@ -110,7 +110,7 @@ public class ExecutionService {
     }
     
     private void fixExecutionInfo(final List<Integer> items) {
-        int newShardingTotalCount = configService.load().getTypeConfig().getCoreConfig().getShardingTotalCount();
+        int newShardingTotalCount = configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount();
         int currentShardingTotalCount = items.size();
         if (newShardingTotalCount > currentShardingTotalCount) {
             for (int i = currentShardingTotalCount; i < newShardingTotalCount; i++) {
@@ -130,7 +130,7 @@ public class ExecutionService {
      * @param shardingContext 分片上下文
      */
     public void registerJobCompleted(final ShardingContext shardingContext) {
-        if (!configService.load().isMonitorExecution()) {
+        if (!configService.load(true).isMonitorExecution()) {
             return;
         }
         serverService.updateServerStatus(ServerStatus.READY);
@@ -183,7 +183,7 @@ public class ExecutionService {
      * @param items 需要设置错过执行的任务分片项
      */
     public void setMisfire(final Collection<Integer> items) {
-        if (!configService.load().isMonitorExecution()) {
+        if (!configService.load(true).isMonitorExecution()) {
             return;
         }
         for (int each : items) {
@@ -242,7 +242,7 @@ public class ExecutionService {
      * @return 分片项中是否还有执行中的作业
      */
     public boolean hasRunningItems(final Collection<Integer> items) {
-        if (!configService.load().isMonitorExecution()) {
+        if (!configService.load(true).isMonitorExecution()) {
             return false;
         }
         for (int each : items) {

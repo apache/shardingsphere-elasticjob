@@ -48,7 +48,7 @@ public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
     
     @Override
     protected void process(final ShardingContext shardingContext) {
-        String scriptCommandLine = ((ScriptJobConfiguration) getJobFacade().loadJobConfiguration().getTypeConfig()).getScriptCommandLine();
+        String scriptCommandLine = ((ScriptJobConfiguration) getJobFacade().loadJobConfiguration(true).getTypeConfig()).getScriptCommandLine();
         if (Strings.isNullOrEmpty(scriptCommandLine)) {
             handleException(new JobException("Cannot find script command line for job '{}', job is not executed.", shardingContext.getJobName()));
             return;

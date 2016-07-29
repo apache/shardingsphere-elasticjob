@@ -95,7 +95,7 @@ public class SchedulerFacade {
      * @return 作业配置
      */
     public LiteJobConfiguration loadJobConfiguration() {
-        return configService.load();
+        return configService.load(false);
     }
     
     /**

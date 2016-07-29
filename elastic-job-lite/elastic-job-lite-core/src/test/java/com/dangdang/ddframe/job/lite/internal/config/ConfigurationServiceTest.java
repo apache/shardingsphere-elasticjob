@@ -57,11 +57,22 @@ public final class ConfigurationServiceTest {
     }
     
     @Test
-    public void assertLoad() {
+    public void assertLoadDirectly() {
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"scriptCommandLine\":\"test.sh\"}");
-        LiteJobConfiguration actual = configService.load();
+        LiteJobConfiguration actual = configService.load(false);
+        assertThat(actual.getJobName(), is("test_job"));
+        assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
+        assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
+    }
+    
+    @Test
+    public void assertLoadFromCache() {
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
+                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
+                        + "\"shardingTotalCount\":3,\"scriptCommandLine\":\"test.sh\"}");
+        LiteJobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
@@ -102,7 +113,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertGetShardingItemParametersWhenIsEmpty() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"scriptCommandLine\":\"test.sh\"}");
         assertThat(configService.getShardingItemParameters(), is(Collections.EMPTY_MAP));
@@ -110,7 +121,7 @@ public final class ConfigurationServiceTest {
     
     @Test(expected = ShardingItemParametersException.class)
     public void assertGetShardingItemParametersWhenPairFormatInvalid() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"xxx-xxx\",\"scriptCommandLine\":\"test.sh\"}");
         configService.getShardingItemParameters();
@@ -118,7 +129,7 @@ public final class ConfigurationServiceTest {
     
     @Test(expected = ShardingItemParametersException.class)
     public void assertGetShardingItemParametersWhenItemIsNotNumber() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"xxx=xxx\",\"scriptCommandLine\":\"test.sh\"}");
         configService.getShardingItemParameters();
@@ -126,7 +137,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertGetShardingItemParameters() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"0=A,1=B,2=C\",\"scriptCommandLine\":\"test.sh\"}");
         Map<Integer, String> expected = new HashMap<>(3);
@@ -138,7 +149,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertIsMaxTimeDiffSecondsTolerableWithDefaultValue() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"-1\",\"scriptCommandLine\":\"test.sh\"}");
         configService.checkMaxTimeDiffSecondsTolerable();
@@ -146,7 +157,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertIsMaxTimeDiffSecondsTolerable() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"60\",\"scriptCommandLine\":\"test.sh\"}");
         when(jobNodeStorage.getRegistryCenterTime()).thenReturn(System.currentTimeMillis());
@@ -156,7 +167,7 @@ public final class ConfigurationServiceTest {
     
     @Test(expected = TimeDiffIntolerableException.class)
     public void assertIsNotMaxTimeDiffSecondsTolerable() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"60\",\"scriptCommandLine\":\"test.sh\"}");
         when(jobNodeStorage.getRegistryCenterTime()).thenReturn(0L);
@@ -169,7 +180,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertIsNotFailoverWhenNotMonitorExecution() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"failover\":false,\"monitorExecution\":false,\"scriptCommandLine\":\"test.sh\"}");
         assertFalse(configService.isFailover());
@@ -177,7 +188,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertIsNotFailoverWhenMonitorExecution() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"failover\":false,\"monitorExecution\":true,\"scriptCommandLine\":\"test.sh\"}");
         assertFalse(configService.isFailover());
@@ -185,7 +196,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertIsFailover() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"failover\":true,\"monitorExecution\":true,\"scriptCommandLine\":\"test.sh\"}");
         assertTrue(configService.isFailover());

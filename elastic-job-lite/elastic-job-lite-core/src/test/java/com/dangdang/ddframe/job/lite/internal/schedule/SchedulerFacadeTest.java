@@ -75,7 +75,7 @@ public class SchedulerFacadeTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         schedulerFacade = new SchedulerFacade(null, liteJobConfig, Collections.<ElasticJobListener>emptyList());
-        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, false)).build());
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
@@ -114,7 +114,7 @@ public class SchedulerFacadeTest {
     @Test
     public void testLoadJobConfiguration() {
         LiteJobConfiguration expected = LiteJobConfiguration.newBuilder(null).build();
-        when(configService.load()).thenReturn(expected);
+        when(configService.load(false)).thenReturn(expected);
         assertThat(schedulerFacade.loadJobConfiguration(), is(expected));
     }
     

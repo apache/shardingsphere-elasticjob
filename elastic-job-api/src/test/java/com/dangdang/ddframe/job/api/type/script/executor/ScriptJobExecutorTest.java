@@ -64,7 +64,7 @@ public class ScriptJobExecutorTest {
     
     @Test(expected = JobException.class)
     public void assertExecuteWhenScriptCommandLineIsEmpty() throws IOException {
-        when(jobFacade.loadJobConfiguration()).thenReturn(new TestFinalScriptJobConfiguration(""));
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestFinalScriptJobConfiguration(""));
         scriptJobExecutor.execute();
         verify(executor, times(0)).execute(Matchers.<CommandLine>any());
     }
@@ -72,7 +72,7 @@ public class ScriptJobExecutorTest {
     @SuppressWarnings("unchecked")
     @Test(expected = JobException.class)
     public void assertExecuteWhenExecuteFailure() throws IOException {
-        when(jobFacade.loadJobConfiguration()).thenReturn(new TestFinalScriptJobConfiguration("not_exists_file"));
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestFinalScriptJobConfiguration("not_exists_file"));
         when(executor.execute(Matchers.<CommandLine>any())).thenThrow(IOException.class);
         try {
             scriptJobExecutor.execute();
@@ -83,9 +83,9 @@ public class ScriptJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFileExists() throws IOException {
-        when(jobFacade.loadJobConfiguration()).thenReturn(new TestFinalScriptJobConfiguration("exists_file param0 param1"));
+        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestFinalScriptJobConfiguration("exists_file param0 param1"));
         scriptJobExecutor.execute();
-        verify(jobFacade).loadJobConfiguration();
+        verify(jobFacade).loadJobConfiguration(true);
         verify(executor).execute(Matchers.<CommandLine>any());
     }
 }

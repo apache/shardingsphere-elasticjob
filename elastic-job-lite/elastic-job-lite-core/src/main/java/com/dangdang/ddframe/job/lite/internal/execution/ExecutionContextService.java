@@ -54,7 +54,7 @@ public class ExecutionContextService {
      * @return 分片上下文
      */
     public ShardingContext getJobShardingContext(final List<Integer> shardingItems) {
-        LiteJobConfiguration liteJobConfig = configService.load();
+        LiteJobConfiguration liteJobConfig = configService.load(false);
         removeRunningIfMonitorExecution(liteJobConfig.isMonitorExecution(), shardingItems);
         if (shardingItems.isEmpty()) {
             return new ShardingContext(liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 

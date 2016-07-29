@@ -71,16 +71,16 @@ public final class ExecutionContextServiceTest {
     
     @Test
     public void assertGetShardingContextWhenNotAssignShardingItem() {
-        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
+        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
                 TestDataflowJob.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, true)).monitorExecution(false).build());
         ShardingContext expected = new ShardingContext("test_job", 3, "", Collections.<ShardingContext.ShardingItem>emptyList());
         assertThat(executionContextService.getJobShardingContext(Collections.<Integer>emptyList()), new ReflectionEquals(expected));
-        verify(configService).load();
+        verify(configService).load(false);
     }
     
     @Test
     public void assertGetShardingContextWhenAssignShardingItems() {
-        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, true)).monitorExecution(false).build());
         Map<Integer, String> shardingItemParameters = new HashMap<>(3);
         shardingItemParameters.put(0, "A");
@@ -89,13 +89,13 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
         ShardingContext expected = new ShardingContext("test_job", 3, "", Arrays.asList(new ShardingContext.ShardingItem(0, "A"), new ShardingContext.ShardingItem(1, "B")));
         assertShardingContext(executionContextService.getJobShardingContext(Arrays.asList(0, 1)), expected);
-        verify(configService).load();
+        verify(configService).load(false);
         verify(configService).getShardingItemParameters();
     }
     
     @Test
     public void assertGetShardingContextWhenHasRunningItems() {
-        when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, true)).monitorExecution(true).build());
         when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
@@ -106,7 +106,7 @@ public final class ExecutionContextServiceTest {
         when(configService.getShardingItemParameters()).thenReturn(shardingItemParameters);
         ShardingContext expected = new ShardingContext("test_job", 3, "", Collections.singletonList(new ShardingContext.ShardingItem(0, "A")));
         assertShardingContext(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1)), expected);
-        verify(configService).load();
+        verify(configService).load(false);
         verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
         verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
         verify(configService).getShardingItemParameters();

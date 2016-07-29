@@ -101,13 +101,13 @@ public class ShardingService {
             blockUntilShardingCompleted();
             return;
         }
-        if (configService.load().isMonitorExecution()) {
+        LiteJobConfiguration liteJobConfig = configService.load(false);
+        if (liteJobConfig.isMonitorExecution()) {
             waitingOtherJobCompleted();
         }
         log.debug("Elastic job: sharding begin.");
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
-        LiteJobConfiguration liteJobConfig = configService.load();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
         JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), configService.getShardingItemParameters());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
