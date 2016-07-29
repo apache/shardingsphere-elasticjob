@@ -93,21 +93,21 @@ public final class JobStatisticsAPIImplTest {
     
     @Test
     public void assertGetServers() {
-        when(registryCenter.getChildrenKeys("/testJob/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(registryCenter.get("/testJob/servers/ip1/hostName")).thenReturn("host1");
-        when(registryCenter.get("/testJob/servers/ip2/hostName")).thenReturn("host2");
-        when(registryCenter.get("/testJob/servers/ip1/processSuccessCount")).thenReturn("101");
-        when(registryCenter.get("/testJob/servers/ip2/processSuccessCount")).thenReturn("102");
-        when(registryCenter.get("/testJob/servers/ip1/processFailureCount")).thenReturn("11");
-        when(registryCenter.get("/testJob/servers/ip2/processFailureCount")).thenReturn("12");
-        when(registryCenter.get("/testJob/servers/ip1/sharding")).thenReturn("0,1");
-        when(registryCenter.get("/testJob/servers/ip2/sharding")).thenReturn("2,3");
-        when(registryCenter.get("/testJob/servers/ip1/status")).thenReturn("RUNNING");
-        when(registryCenter.get("/testJob/servers/ip2/status")).thenReturn("READY");
+        when(registryCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
+        when(registryCenter.get("/test_job/servers/ip1/hostName")).thenReturn("host1");
+        when(registryCenter.get("/test_job/servers/ip2/hostName")).thenReturn("host2");
+        when(registryCenter.get("/test_job/servers/ip1/processSuccessCount")).thenReturn("101");
+        when(registryCenter.get("/test_job/servers/ip2/processSuccessCount")).thenReturn("102");
+        when(registryCenter.get("/test_job/servers/ip1/processFailureCount")).thenReturn("11");
+        when(registryCenter.get("/test_job/servers/ip2/processFailureCount")).thenReturn("12");
+        when(registryCenter.get("/test_job/servers/ip1/sharding")).thenReturn("0,1");
+        when(registryCenter.get("/test_job/servers/ip2/sharding")).thenReturn("2,3");
+        when(registryCenter.get("/test_job/servers/ip1/status")).thenReturn("RUNNING");
+        when(registryCenter.get("/test_job/servers/ip2/status")).thenReturn("READY");
         int i = 0;
-        for (ServerInfo each : jobStatisticsAPI.getServers("testJob")) {
+        for (ServerInfo each : jobStatisticsAPI.getServers("test_job")) {
             i++;
-            assertThat(each.getJobName(), is("testJob"));
+            assertThat(each.getJobName(), is("test_job"));
             assertThat(each.getIp(), is("ip" + i));
             assertThat(each.getHostName(), is("host" + i));
             switch (i) {
@@ -129,34 +129,34 @@ public final class JobStatisticsAPIImplTest {
     
     @Test
     public void assertGetExecutionInfoWithoutMonitorExecution() {
-        when(registryCenter.isExisted("/testJob/execution")).thenReturn(false);
-        assertTrue(jobStatisticsAPI.getExecutionInfo("testJob").isEmpty());
+        when(registryCenter.isExisted("/test_job/execution")).thenReturn(false);
+        assertTrue(jobStatisticsAPI.getExecutionInfo("test_job").isEmpty());
     }
     
     @Test
     public void assertGetExecutionInfoWithMonitorExecution() {
-        when(registryCenter.isExisted("/testJob/execution")).thenReturn(true);
-        when(registryCenter.getChildrenKeys("/testJob/execution")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(registryCenter.isExisted("/testJob/execution/0/running")).thenReturn(true);
-        when(registryCenter.isExisted("/testJob/execution/1/running")).thenReturn(false);
-        when(registryCenter.isExisted("/testJob/execution/1/completed")).thenReturn(true);
-        when(registryCenter.isExisted("/testJob/execution/2/running")).thenReturn(false);
-        when(registryCenter.isExisted("/testJob/execution/2/completed")).thenReturn(false);
-        when(registryCenter.isExisted("/testJob/execution/0/failover")).thenReturn(false);
-        when(registryCenter.isExisted("/testJob/execution/1/failover")).thenReturn(false);
-        when(registryCenter.isExisted("/testJob/execution/2/failover")).thenReturn(true);
-        when(registryCenter.get("/testJob/execution/2/failover")).thenReturn("ip0");
-        when(registryCenter.get("/testJob/execution/0/lastBeginTime")).thenReturn("0");
-        when(registryCenter.get("/testJob/execution/1/lastBeginTime")).thenReturn("0");
-        when(registryCenter.get("/testJob/execution/2/lastBeginTime")).thenReturn(null);
-        when(registryCenter.get("/testJob/execution/0/nextFireTime")).thenReturn("0");
-        when(registryCenter.get("/testJob/execution/1/nextFireTime")).thenReturn("0");
-        when(registryCenter.get("/testJob/execution/2/nextFireTime")).thenReturn(null);
-        when(registryCenter.get("/testJob/execution/0/lastCompleteTime")).thenReturn("0");
-        when(registryCenter.get("/testJob/execution/1/lastCompleteTime")).thenReturn("0");
-        when(registryCenter.get("/testJob/execution/2/lastCompleteTime")).thenReturn(null);
+        when(registryCenter.isExisted("/test_job/execution")).thenReturn(true);
+        when(registryCenter.getChildrenKeys("/test_job/execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(registryCenter.isExisted("/test_job/execution/0/running")).thenReturn(true);
+        when(registryCenter.isExisted("/test_job/execution/1/running")).thenReturn(false);
+        when(registryCenter.isExisted("/test_job/execution/1/completed")).thenReturn(true);
+        when(registryCenter.isExisted("/test_job/execution/2/running")).thenReturn(false);
+        when(registryCenter.isExisted("/test_job/execution/2/completed")).thenReturn(false);
+        when(registryCenter.isExisted("/test_job/execution/0/failover")).thenReturn(false);
+        when(registryCenter.isExisted("/test_job/execution/1/failover")).thenReturn(false);
+        when(registryCenter.isExisted("/test_job/execution/2/failover")).thenReturn(true);
+        when(registryCenter.get("/test_job/execution/2/failover")).thenReturn("ip0");
+        when(registryCenter.get("/test_job/execution/0/lastBeginTime")).thenReturn("0");
+        when(registryCenter.get("/test_job/execution/1/lastBeginTime")).thenReturn("0");
+        when(registryCenter.get("/test_job/execution/2/lastBeginTime")).thenReturn(null);
+        when(registryCenter.get("/test_job/execution/0/nextFireTime")).thenReturn("0");
+        when(registryCenter.get("/test_job/execution/1/nextFireTime")).thenReturn("0");
+        when(registryCenter.get("/test_job/execution/2/nextFireTime")).thenReturn(null);
+        when(registryCenter.get("/test_job/execution/0/lastCompleteTime")).thenReturn("0");
+        when(registryCenter.get("/test_job/execution/1/lastCompleteTime")).thenReturn("0");
+        when(registryCenter.get("/test_job/execution/2/lastCompleteTime")).thenReturn(null);
         int i = 0;
-        for (ExecutionInfo each : jobStatisticsAPI.getExecutionInfo("testJob")) {
+        for (ExecutionInfo each : jobStatisticsAPI.getExecutionInfo("test_job")) {
             i++;
             assertThat(each.getItem(), is(i - 1));
             switch (i) {

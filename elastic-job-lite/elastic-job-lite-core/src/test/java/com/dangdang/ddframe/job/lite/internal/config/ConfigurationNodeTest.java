@@ -23,10 +23,10 @@ import static org.junit.Assert.assertTrue;
 
 public final class ConfigurationNodeTest {
     
-    private ConfigurationNode configurationNode = new ConfigurationNode("testJob");
+    private ConfigurationNode configurationNode = new ConfigurationNode("test_job");
     
     @Test
     public void assertIsConfigPath() {
-        assertTrue(configurationNode.isConfigPath("/testJob/config"));
+        assertTrue(configurationNode.isConfigPath("/test_job/config"));
     }
 }

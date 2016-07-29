@@ -83,6 +83,6 @@ public final class AverageAllocationJobShardingStrategyTest {
     }
     
     private JobShardingStrategyOption getJobShardingStrategyOption(final int shardingTotalCount) {
-        return new JobShardingStrategyOption("testJob", shardingTotalCount, Collections.<Integer, String>emptyMap());
+        return new JobShardingStrategyOption("test_job", shardingTotalCount, Collections.<Integer, String>emptyMap());
     }
 }

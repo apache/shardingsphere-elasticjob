@@ -84,7 +84,7 @@ public abstract class AbstractBaseStdJobTest {
     private final LeaderElectionService leaderElectionService;
     
     @Getter(AccessLevel.PROTECTED)
-    private final String jobName = System.nanoTime() + "_testJob";
+    private final String jobName = System.nanoTime() + "_test_job";
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
         this.disabled = disabled;

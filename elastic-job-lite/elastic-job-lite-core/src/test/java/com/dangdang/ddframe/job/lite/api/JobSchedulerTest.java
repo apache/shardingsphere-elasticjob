@@ -84,7 +84,7 @@ public final class JobSchedulerTest {
     }
     
     private void mockInit(final boolean isMisfire) {
-        when(jobExecutor.getJobName()).thenReturn("testJob");
+        when(jobExecutor.getJobName()).thenReturn("test_job");
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         when(schedulerFacade.loadJobConfiguration()).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).misfire(isMisfire).build(), TestSimpleJob.class)).build());
@@ -92,7 +92,7 @@ public final class JobSchedulerTest {
     
     private void assertInit() throws NoSuchFieldException, SchedulerException {
         verify(jobExecutor).init();
-        Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("testJob"), JobScheduleController.class.getDeclaredField("scheduler"));
+        Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), JobScheduleController.class.getDeclaredField("scheduler"));
         assertThat(scheduler.getListenerManager().getTriggerListeners().size(), is(1));
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());

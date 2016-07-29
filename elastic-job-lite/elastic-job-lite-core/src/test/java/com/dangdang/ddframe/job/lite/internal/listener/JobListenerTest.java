@@ -51,7 +51,7 @@ public final class JobListenerTest {
     
     @Test
     public void assertChildEventSuccess() throws Exception {
-        when(event.getData()).thenReturn(new ChildData("/testJob", null, null));
+        when(event.getData()).thenReturn(new ChildData("/test_job", null, null));
         fooJobListener.childEvent(client, event);
         verify(client).getNamespace();
     }

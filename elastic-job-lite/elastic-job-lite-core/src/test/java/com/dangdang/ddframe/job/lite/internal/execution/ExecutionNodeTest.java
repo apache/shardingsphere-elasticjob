@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 
 public final class ExecutionNodeTest {
     
-    private ExecutionNode executionNode = new ExecutionNode("testJob");
+    private ExecutionNode executionNode = new ExecutionNode("test_job");
     
     @Test
     public void assertGetRunningNode() {
@@ -59,11 +59,11 @@ public final class ExecutionNodeTest {
     
     @Test
     public void assertGetItemWhenNotRunningItemPath() {
-        assertNull(executionNode.getItemByRunningItemPath("/testJob/execution/0/completed"));
+        assertNull(executionNode.getItemByRunningItemPath("/test_job/execution/0/completed"));
     }
     
     @Test
     public void assertGetItemByRunningItemPath() {
-        assertThat(executionNode.getItemByRunningItemPath("/testJob/execution/0/running"), is(0));
+        assertThat(executionNode.getItemByRunningItemPath("/test_job/execution/0/running"), is(0));
     }
 }

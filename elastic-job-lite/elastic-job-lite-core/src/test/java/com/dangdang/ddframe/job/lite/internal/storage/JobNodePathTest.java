@@ -24,25 +24,25 @@ import static org.junit.Assert.assertThat;
 
 public final class JobNodePathTest {
     
-    private JobNodePath jobNodePath = new JobNodePath("testJob");
+    private JobNodePath jobNodePath = new JobNodePath("test_job");
     
     @Test
     public void assertGetFullPath() {
-        assertThat(jobNodePath.getFullPath("node"), is("/testJob/node"));
+        assertThat(jobNodePath.getFullPath("node"), is("/test_job/node"));
     }
     
     @Test
     public void assertGetServerNodePath() {
-        assertThat(jobNodePath.getServerNodePath(), is("/testJob/servers"));
+        assertThat(jobNodePath.getServerNodePath(), is("/test_job/servers"));
     }
     
     @Test
     public void assertGetServerNodePathForServerIp() {
-        assertThat(jobNodePath.getServerNodePath("ip0"), is("/testJob/servers/ip0"));
+        assertThat(jobNodePath.getServerNodePath("ip0"), is("/test_job/servers/ip0"));
     }
     
     @Test
     public void assertGetServerNodePathForServerIpAndNameNode() {
-        assertThat(jobNodePath.getServerNodePath("ip0", "node"), is("/testJob/servers/ip0/node"));
+        assertThat(jobNodePath.getServerNodePath("ip0", "node"), is("/test_job/servers/ip0/node"));
     }
 }

@@ -24,15 +24,15 @@ import static org.junit.Assert.assertTrue;
 
 public final class ElectionNodeTest {
     
-    private ElectionNode electionNode = new ElectionNode("testJob");
+    private ElectionNode electionNode = new ElectionNode("test_job");
     
     @Test
     public void assertIsShardingTotalCountPath() {
-        assertTrue(electionNode.isLeaderHostPath("/testJob/leader/election/host"));
+        assertTrue(electionNode.isLeaderHostPath("/test_job/leader/election/host"));
     }
     
     @Test
     public void assertIsNotShardingTotalCountPath() {
-        assertFalse(electionNode.isLeaderHostPath("/testJob/leader/election/host1"));
+        assertFalse(electionNode.isLeaderHostPath("/test_job/leader/election/host1"));
     }
 }

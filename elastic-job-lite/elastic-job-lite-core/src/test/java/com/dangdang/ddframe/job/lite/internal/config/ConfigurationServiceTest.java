@@ -92,7 +92,7 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertPersistExistedJobConfiguration() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn("{\"jobName\":\"testJob\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\","
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn("{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\","
                 + "\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":4}");
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
         when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);

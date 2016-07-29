@@ -28,7 +28,7 @@ public final class JobRegistryTest {
     @Test
     public void assertAddJobScheduler() {
         JobScheduleController jobScheduleController = mock(JobScheduleController.class);
-        JobRegistry.getInstance().addJobScheduleController("testJob_AddJobScheduler", jobScheduleController);
-        assertThat(JobRegistry.getInstance().getJobScheduleController("testJob_AddJobScheduler"), is(jobScheduleController));
+        JobRegistry.getInstance().addJobScheduleController("test_job_AddJobScheduler", jobScheduleController);
+        assertThat(JobRegistry.getInstance().getJobScheduleController("test_job_AddJobScheduler"), is(jobScheduleController));
     }
 }

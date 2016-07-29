@@ -106,7 +106,7 @@ public final class ExecutionServiceTest {
         when(configService.load()).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class)).monitorExecution(true).build());
         when(jobScheduleController.getNextFireTime()).thenReturn(null);
-        JobRegistry.getInstance().addJobScheduleController("testJob", jobScheduleController);
+        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         executionService.registerJobBegin(getShardingContext());
         verify(configService).load();
         verify(serverService).updateServerStatus(ServerStatus.RUNNING);

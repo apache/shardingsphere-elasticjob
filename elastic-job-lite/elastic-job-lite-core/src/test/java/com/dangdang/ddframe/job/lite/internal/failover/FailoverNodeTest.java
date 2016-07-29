@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 
 public final class FailoverNodeTest {
     
-    private FailoverNode failoverNode = new FailoverNode("testJob");
+    private FailoverNode failoverNode = new FailoverNode("test_job");
     
     @Test
     public void assertGetItemsNode() {
@@ -39,11 +39,11 @@ public final class FailoverNodeTest {
     
     @Test
     public void assertGetItemWhenNotExecutionFailoverPath() {
-        assertNull(failoverNode.getItemByExecutionFailoverPath("/testJob/execution/0/completed"));
+        assertNull(failoverNode.getItemByExecutionFailoverPath("/test_job/execution/0/completed"));
     }
     
     @Test
     public void assertGetItemByExecutionFailoverPath() {
-        assertThat(failoverNode.getItemByExecutionFailoverPath("/testJob/execution/0/failover"), is(0));
+        assertThat(failoverNode.getItemByExecutionFailoverPath("/test_job/execution/0/failover"), is(0));
     }
 }

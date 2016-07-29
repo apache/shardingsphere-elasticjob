@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 public final class GuaranteeNodeTest {
     
-    private GuaranteeNode guaranteeNode = new GuaranteeNode("testJob");
+    private GuaranteeNode guaranteeNode = new GuaranteeNode("test_job");
     
     @Test
     public void testGetStartedNode() {
@@ -40,7 +40,7 @@ public final class GuaranteeNodeTest {
     
     @Test
     public void testIsStartedRootNode() {
-        assertTrue(guaranteeNode.isStartedRootNode("/testJob/guarantee/started"));
+        assertTrue(guaranteeNode.isStartedRootNode("/test_job/guarantee/started"));
     }
     
     @Test
@@ -50,7 +50,7 @@ public final class GuaranteeNodeTest {
     
     @Test
     public void testIsCompletedRootNode() {
-        assertTrue(guaranteeNode.isCompletedRootNode("/testJob/guarantee/completed"));
+        assertTrue(guaranteeNode.isCompletedRootNode("/test_job/guarantee/completed"));
     }
     
     @Test
