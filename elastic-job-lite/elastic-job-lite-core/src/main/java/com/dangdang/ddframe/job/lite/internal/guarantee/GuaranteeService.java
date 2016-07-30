@@ -35,9 +35,9 @@ public class GuaranteeService {
     
     private final ConfigurationService configService;
     
-    public GuaranteeService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
-        configService = new ConfigurationService(coordinatorRegistryCenter, liteJobConfig);
+    public GuaranteeService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
+        configService = new ConfigurationService(regCenter, liteJobConfig);
     }
     
     /**

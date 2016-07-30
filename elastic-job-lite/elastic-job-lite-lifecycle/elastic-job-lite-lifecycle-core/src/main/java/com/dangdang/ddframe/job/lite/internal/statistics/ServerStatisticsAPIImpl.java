@@ -39,20 +39,20 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     @Override
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         Map<String, String> serverHostMap = new HashMap<>();
         Collection<String> aliveServers = new ArrayList<>();
         Collection<String> crashedServers = new ArrayList<>();
-        List<String> jobs = registryCenter.getChildrenKeys("/");
+        List<String> jobs = regCenter.getChildrenKeys("/");
         for (String jobName : jobs) {
             JobNodePath jobNodePath = new JobNodePath(jobName);
-            List<String> servers = registryCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+            List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
             for (String server : servers) {
-                serverHostMap.put(server, registryCenter.get(jobNodePath.getServerNodePath(server, "hostName")));
-                if (!registryCenter.isExisted(jobNodePath.getServerNodePath(server, "shutdown")) && registryCenter.isExisted(jobNodePath.getServerNodePath(server, "status"))) {
+                serverHostMap.put(server, regCenter.get(jobNodePath.getServerNodePath(server, "hostName")));
+                if (!regCenter.isExisted(jobNodePath.getServerNodePath(server, "shutdown")) && regCenter.isExisted(jobNodePath.getServerNodePath(server, "status"))) {
                     aliveServers.add(server);
                 } else {
                     crashedServers.add(server);
@@ -77,11 +77,11 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
     
     @Override
     public Collection<ServerInfo> getJobs(final String serverIp) {
-        List<String> jobs = registryCenter.getChildrenKeys("/");
+        List<String> jobs = regCenter.getChildrenKeys("/");
         Collection<ServerInfo> result = new ArrayList<>(jobs.size());
         for (String each : jobs) {
             JobNodePath jobNodePath = new JobNodePath(each);
-            if (registryCenter.isExisted(jobNodePath.getServerNodePath(serverIp))) {
+            if (regCenter.isExisted(jobNodePath.getServerNodePath(serverIp))) {
                 result.add(getJob(serverIp, each));
             }
         }
@@ -93,16 +93,16 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         result.setJobName(jobName);
         result.setIp(serverIp);
-        result.setHostName(registryCenter.get(jobNodePath.getServerNodePath(serverIp, "hostName")));
-        String processSuccessCount = registryCenter.get(jobNodePath.getServerNodePath(serverIp, "processSuccessCount"));
+        result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp, "hostName")));
+        String processSuccessCount = regCenter.get(jobNodePath.getServerNodePath(serverIp, "processSuccessCount"));
         result.setProcessSuccessCount(null == processSuccessCount ? 0 : Integer.parseInt(processSuccessCount));
-        String processFailureCount = registryCenter.get(jobNodePath.getServerNodePath(serverIp, "processFailureCount"));
+        String processFailureCount = regCenter.get(jobNodePath.getServerNodePath(serverIp, "processFailureCount"));
         result.setProcessFailureCount(null == processFailureCount ? 0 : Integer.parseInt(processFailureCount));
-        result.setSharding(registryCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
-        String status = registryCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
-        boolean disabled = registryCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
-        boolean paused = registryCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "paused"));
-        boolean shutdown = registryCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
+        result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
+        String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
+        boolean disabled = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
+        boolean paused = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "paused"));
+        boolean shutdown = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
         result.setStatus(ServerInfo.ServerStatus.getServerStatus(status, disabled, paused, shutdown));
         return result;
     }

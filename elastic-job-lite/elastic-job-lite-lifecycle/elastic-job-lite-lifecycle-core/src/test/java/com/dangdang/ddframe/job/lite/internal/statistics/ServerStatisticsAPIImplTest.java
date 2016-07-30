@@ -38,30 +38,30 @@ public final class ServerStatisticsAPIImplTest {
     private ServerStatisticsAPI serverStatisticsAPI;
     
     @Mock
-    private CoordinatorRegistryCenter registryCenter;
+    private CoordinatorRegistryCenter regCenter;
     
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        serverStatisticsAPI = new ServerStatisticsAPIImpl(registryCenter);
+        serverStatisticsAPI = new ServerStatisticsAPIImpl(regCenter);
     }
     
     @Test
     public void assertGetAllServersBriefInfo() {
-        when(registryCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        when(registryCenter.getChildrenKeys("/test_job1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(registryCenter.getChildrenKeys("/test_job2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
-        when(registryCenter.get("/test_job1/servers/ip1/hostName")).thenReturn("host1");
-        when(registryCenter.get("/test_job1/servers/ip2/hostName")).thenReturn("host2");
-        when(registryCenter.get("/test_job2/servers/ip3/hostName")).thenReturn("host3");
-        when(registryCenter.get("/test_job2/servers/ip4/hostName")).thenReturn("host4");
-        when(registryCenter.isExisted("/test_job1/servers/ip1/shutdown")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job1/servers/ip1/status")).thenReturn(true);
-        when(registryCenter.isExisted("/test_job1/servers/ip2/shutdown")).thenReturn(true);
-        when(registryCenter.isExisted("/test_job2/servers/ip3/shutdown")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job2/servers/ip3/status")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job2/servers/ip4/shutdown")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job2/servers/ip4/status")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
+        when(regCenter.getChildrenKeys("/test_job1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
+        when(regCenter.getChildrenKeys("/test_job2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
+        when(regCenter.get("/test_job1/servers/ip1/hostName")).thenReturn("host1");
+        when(regCenter.get("/test_job1/servers/ip2/hostName")).thenReturn("host2");
+        when(regCenter.get("/test_job2/servers/ip3/hostName")).thenReturn("host3");
+        when(regCenter.get("/test_job2/servers/ip4/hostName")).thenReturn("host4");
+        when(regCenter.isExisted("/test_job1/servers/ip1/shutdown")).thenReturn(false);
+        when(regCenter.isExisted("/test_job1/servers/ip1/status")).thenReturn(true);
+        when(regCenter.isExisted("/test_job1/servers/ip2/shutdown")).thenReturn(true);
+        when(regCenter.isExisted("/test_job2/servers/ip3/shutdown")).thenReturn(false);
+        when(regCenter.isExisted("/test_job2/servers/ip3/status")).thenReturn(false);
+        when(regCenter.isExisted("/test_job2/servers/ip4/shutdown")).thenReturn(false);
+        when(regCenter.isExisted("/test_job2/servers/ip4/status")).thenReturn(true);
         int i = 0;
         for (ServerBriefInfo each : serverStatisticsAPI.getAllServersBriefInfo()) {
             i++;
@@ -88,26 +88,26 @@ public final class ServerStatisticsAPIImplTest {
     
     @Test
     public void assertGetJobs() {
-        when(registryCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2", "test_job3"));
-        when(registryCenter.isExisted("/test_job1/servers/localhost")).thenReturn(true);
-        when(registryCenter.isExisted("/test_job2/servers/localhost")).thenReturn(true);
-        when(registryCenter.isExisted("/test_job3/servers/localhost")).thenReturn(false);
-        when(registryCenter.get("/test_job1/servers/localhost/hostName")).thenReturn("localhost");
-        when(registryCenter.get("/test_job2/servers/localhost/hostName")).thenReturn("localhost");
-        when(registryCenter.get("/test_job1/servers/localhost/processSuccessCount")).thenReturn("100");
-        when(registryCenter.get("/test_job2/servers/localhost/processSuccessCount")).thenReturn(null);
-        when(registryCenter.get("/test_job1/servers/localhost/processFailureCount")).thenReturn("10");
-        when(registryCenter.get("/test_job2/servers/localhost/processFailureCount")).thenReturn(null);
-        when(registryCenter.get("/test_job1/servers/localhost/sharding")).thenReturn("0,1");
-        when(registryCenter.get("/test_job2/servers/localhost/sharding")).thenReturn("2");
-        when(registryCenter.get("/test_job1/servers/localhost/status")).thenReturn("RUNNING");
-        when(registryCenter.get("/test_job2/servers/localhost/status")).thenReturn("RUNNING");
-        when(registryCenter.isExisted("/test_job1/servers/localhost/disabled")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job2/servers/localhost/disabled")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job1/servers/localhost/paused")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job2/servers/localhost/paused")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job1/servers/localhost/shutdown")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job2/servers/localhost/shutdown")).thenReturn(false);
+        when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2", "test_job3"));
+        when(regCenter.isExisted("/test_job1/servers/localhost")).thenReturn(true);
+        when(regCenter.isExisted("/test_job2/servers/localhost")).thenReturn(true);
+        when(regCenter.isExisted("/test_job3/servers/localhost")).thenReturn(false);
+        when(regCenter.get("/test_job1/servers/localhost/hostName")).thenReturn("localhost");
+        when(regCenter.get("/test_job2/servers/localhost/hostName")).thenReturn("localhost");
+        when(regCenter.get("/test_job1/servers/localhost/processSuccessCount")).thenReturn("100");
+        when(regCenter.get("/test_job2/servers/localhost/processSuccessCount")).thenReturn(null);
+        when(regCenter.get("/test_job1/servers/localhost/processFailureCount")).thenReturn("10");
+        when(regCenter.get("/test_job2/servers/localhost/processFailureCount")).thenReturn(null);
+        when(regCenter.get("/test_job1/servers/localhost/sharding")).thenReturn("0,1");
+        when(regCenter.get("/test_job2/servers/localhost/sharding")).thenReturn("2");
+        when(regCenter.get("/test_job1/servers/localhost/status")).thenReturn("RUNNING");
+        when(regCenter.get("/test_job2/servers/localhost/status")).thenReturn("RUNNING");
+        when(regCenter.isExisted("/test_job1/servers/localhost/disabled")).thenReturn(false);
+        when(regCenter.isExisted("/test_job2/servers/localhost/disabled")).thenReturn(false);
+        when(regCenter.isExisted("/test_job1/servers/localhost/paused")).thenReturn(false);
+        when(regCenter.isExisted("/test_job2/servers/localhost/paused")).thenReturn(false);
+        when(regCenter.isExisted("/test_job1/servers/localhost/shutdown")).thenReturn(false);
+        when(regCenter.isExisted("/test_job2/servers/localhost/shutdown")).thenReturn(false);
         int i = 0;
         for (ServerInfo each : serverStatisticsAPI.getJobs("localhost")) {
             i++;

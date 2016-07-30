@@ -42,15 +42,15 @@ import java.util.List;
  */
 public class JobNodeStorage {
     
-    private final CoordinatorRegistryCenter coordinatorRegistryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     @Getter
     private final LiteJobConfiguration liteJobConfig;
     
     private final JobNodePath jobNodePath;
     
-    public JobNodeStorage(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
-        this.coordinatorRegistryCenter = coordinatorRegistryCenter;
+    public JobNodeStorage(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        this.regCenter = regCenter;
         this.liteJobConfig = liteJobConfig;
         jobNodePath = new JobNodePath(liteJobConfig.getJobName());
     }
@@ -62,7 +62,7 @@ public class JobNodeStorage {
      * @return 作业节点是否存在
      */
     public boolean isJobNodeExisted(final String node) {
-        return coordinatorRegistryCenter.isExisted(jobNodePath.getFullPath(node));
+        return regCenter.isExisted(jobNodePath.getFullPath(node));
     }
     
     /**
@@ -72,7 +72,7 @@ public class JobNodeStorage {
      * @return 作业节点数据值
      */
     public String getJobNodeData(final String node) {
-        return coordinatorRegistryCenter.get(jobNodePath.getFullPath(node));
+        return regCenter.get(jobNodePath.getFullPath(node));
     }
     
     /**
@@ -82,7 +82,7 @@ public class JobNodeStorage {
      * @return 作业节点数据值
      */
     public String getJobNodeDataDirectly(final String node) {
-        return coordinatorRegistryCenter.getDirectly(jobNodePath.getFullPath(node));
+        return regCenter.getDirectly(jobNodePath.getFullPath(node));
     }
     
     /**
@@ -92,7 +92,7 @@ public class JobNodeStorage {
      * @return 作业节点子节点名称列表
      */
     public List<String> getJobNodeChildrenKeys(final String node) {
-        return coordinatorRegistryCenter.getChildrenKeys(jobNodePath.getFullPath(node));
+        return regCenter.getChildrenKeys(jobNodePath.getFullPath(node));
     }
     
     /**
@@ -104,12 +104,12 @@ public class JobNodeStorage {
      */
     public void createJobNodeIfNeeded(final String node) {
         if (isJobRootNodeExisted() && !isJobNodeExisted(node)) {
-            coordinatorRegistryCenter.persist(jobNodePath.getFullPath(node), "");
+            regCenter.persist(jobNodePath.getFullPath(node), "");
         }
     }
     
     private boolean isJobRootNodeExisted() {
-        return coordinatorRegistryCenter.isExisted("/" + liteJobConfig.getJobName());
+        return regCenter.isExisted("/" + liteJobConfig.getJobName());
     }
     
     /**
@@ -119,7 +119,7 @@ public class JobNodeStorage {
      */
     public void removeJobNodeIfExisted(final String node) {
         if (isJobNodeExisted(node)) {
-            coordinatorRegistryCenter.remove(jobNodePath.getFullPath(node));
+            regCenter.remove(jobNodePath.getFullPath(node));
         }
     }
     
@@ -131,7 +131,7 @@ public class JobNodeStorage {
      */
     public void fillJobNodeIfNullOrOverwrite(final String node, final Object value) {
         if (!isJobNodeExisted(node) || (liteJobConfig.isOverwrite() && !value.toString().equals(getJobNodeDataDirectly(node)))) {
-            coordinatorRegistryCenter.persist(jobNodePath.getFullPath(node), value.toString());
+            regCenter.persist(jobNodePath.getFullPath(node), value.toString());
         }
     }
     
@@ -142,7 +142,7 @@ public class JobNodeStorage {
      * @param value 作业节点数据值
      */
     public void fillEphemeralJobNode(final String node, final Object value) {
-        coordinatorRegistryCenter.persistEphemeral(jobNodePath.getFullPath(node), value.toString());
+        regCenter.persistEphemeral(jobNodePath.getFullPath(node), value.toString());
     }
     
     /**
@@ -152,7 +152,7 @@ public class JobNodeStorage {
      * @param value 作业节点数据值
      */
     public void updateJobNode(final String node, final Object value) {
-        coordinatorRegistryCenter.update(jobNodePath.getFullPath(node), value.toString());
+        regCenter.update(jobNodePath.getFullPath(node), value.toString());
     }
     
     /**
@@ -162,7 +162,7 @@ public class JobNodeStorage {
      * @param value 待替换的数据
      */
     public void replaceJobNode(final String node, final Object value) {
-        coordinatorRegistryCenter.persist(jobNodePath.getFullPath(node), value.toString());
+        regCenter.persist(jobNodePath.getFullPath(node), value.toString());
     }
 
     /**
@@ -216,14 +216,14 @@ public class JobNodeStorage {
     }
     
     private CuratorFramework getClient() {
-        return (CuratorFramework) coordinatorRegistryCenter.getRawClient();
+        return (CuratorFramework) regCenter.getRawClient();
     }
     
     /**
      * 注册数据监听器.
      */
     public void addDataListener(final TreeCacheListener listener) {
-        TreeCache cache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + liteJobConfig.getJobName());
+        TreeCache cache = (TreeCache) regCenter.getRawCache("/" + liteJobConfig.getJobName());
         cache.getListenable().addListener(listener);
     }
     
@@ -233,6 +233,6 @@ public class JobNodeStorage {
      * @return 注册中心当前时间
      */
     public long getRegistryCenterTime() {
-        return coordinatorRegistryCenter.getRegistryCenterTime(jobNodePath.getFullPath("systemTime/current"));
+        return regCenter.getRegistryCenterTime(jobNodePath.getFullPath("systemTime/current"));
     }
 }

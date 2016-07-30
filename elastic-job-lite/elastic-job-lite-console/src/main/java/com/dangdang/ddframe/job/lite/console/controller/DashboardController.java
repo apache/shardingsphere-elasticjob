@@ -35,11 +35,11 @@ import javax.annotation.Resource;
 public class DashboardController {
     
     @Resource
-    private RegistryCenterService registryCenterService;
+    private RegistryCenterService regCenterService;
     
     @RequestMapping(method = RequestMethod.GET)
     public String homepage(final ModelMap model) {
-        Optional<RegistryCenterConfiguration> activatedRegCenterConfig = registryCenterService.loadActivated();
+        Optional<RegistryCenterConfiguration> activatedRegCenterConfig = regCenterService.loadActivated();
         if (activatedRegCenterConfig.isPresent()) {
             model.put(RegistryCenterController.REG_CENTER_CONFIG_KEY, activatedRegCenterConfig.get());
             return "redirect:overview";

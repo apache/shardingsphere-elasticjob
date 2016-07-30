@@ -43,16 +43,16 @@ import java.util.Set;
  */
 public class FailoverService {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     private final ConfigurationService configService;
     
     private final RunningService runningService;
     
-    public FailoverService(final CoordinatorRegistryCenter registryCenter) {
-        this.registryCenter = registryCenter;
-        configService = new ConfigurationService(registryCenter);
-        runningService = new RunningService(registryCenter);
+    public FailoverService(final CoordinatorRegistryCenter regCenter) {
+        this.regCenter = regCenter;
+        configService = new ConfigurationService(regCenter);
+        runningService = new RunningService(regCenter);
     }
     
     /**
@@ -62,8 +62,8 @@ public class FailoverService {
      */
     public void add(final TaskContext taskContext) {
         String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo().toString());
-        if (!registryCenter.isExisted(failoverTaskNodePath) && !runningService.isTaskRunning(taskContext.getMetaInfo())) {
-            registryCenter.persist(failoverTaskNodePath, taskContext.getId());
+        if (!regCenter.isExisted(failoverTaskNodePath) && !runningService.isTaskRunning(taskContext.getMetaInfo())) {
+            regCenter.persist(failoverTaskNodePath, taskContext.getId());
         }
     }
     
@@ -73,21 +73,21 @@ public class FailoverService {
      * @return 有资格执行的作业上下文集合
      */
     public Collection<JobContext> getAllEligibleJobContexts() {
-        if (!registryCenter.isExisted(FailoverNode.ROOT)) {
+        if (!regCenter.isExisted(FailoverNode.ROOT)) {
             return Collections.emptyList();
         }
-        List<String> jobNames = registryCenter.getChildrenKeys(FailoverNode.ROOT);
+        List<String> jobNames = regCenter.getChildrenKeys(FailoverNode.ROOT);
         Collection<JobContext> result = new ArrayList<>(jobNames.size());
         Set<HashCode> assignedTasks = new HashSet<>(jobNames.size() * 10, 1);
         for (String each : jobNames) {
-            List<String> taskMetaInfoList = registryCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
+            List<String> taskMetaInfoList = regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
             if (taskMetaInfoList.isEmpty()) {
-                registryCenter.remove(FailoverNode.getFailoverJobNodePath(each));
+                regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
             Optional<CloudJobConfiguration> jobConfig = configService.load(each);
             if (!jobConfig.isPresent()) {
-                registryCenter.remove(FailoverNode.getFailoverJobNodePath(each));
+                regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
             List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskMetaInfoList, assignedTasks);
@@ -116,7 +116,7 @@ public class FailoverService {
      */
     public void remove(final Collection<TaskContext.MetaInfo> metaInfoList) {
         for (TaskContext.MetaInfo each : metaInfoList) {
-            registryCenter.remove(FailoverNode.getFailoverTaskNodePath(each.toString()));
+            regCenter.remove(FailoverNode.getFailoverTaskNodePath(each.toString()));
         }
     }
 }

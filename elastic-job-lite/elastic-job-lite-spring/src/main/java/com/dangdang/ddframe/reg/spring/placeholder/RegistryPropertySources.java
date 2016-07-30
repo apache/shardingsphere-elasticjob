@@ -32,7 +32,7 @@ import com.dangdang.ddframe.reg.base.RegistryCenter;
  */
 public class RegistryPropertySources extends MutablePropertySources {
     
-    public RegistryPropertySources(final RegistryCenter registryCenter) {
-        addLast(new RegistryPropertySource(registryCenter));
+    public RegistryPropertySources(final RegistryCenter regCenter) {
+        addLast(new RegistryPropertySource(regCenter));
     }
 }

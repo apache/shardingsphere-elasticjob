@@ -37,12 +37,12 @@ public class JobSettingsAPIImplTest {
     private JobSettingsAPI jobSettingsAPI;
     
     @Mock
-    private CoordinatorRegistryCenter registryCenter;
+    private CoordinatorRegistryCenter regCenter;
     
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        jobSettingsAPI = new JobSettingsAPIImpl(registryCenter);
+        jobSettingsAPI = new JobSettingsAPIImpl(regCenter);
     }
     
     @Test
@@ -51,11 +51,11 @@ public class JobSettingsAPIImplTest {
                 + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
                 + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
                 + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
-        when(registryCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
+        when(regCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
         assertJobSettings(actual);
         assertThat(actual.getMonitorPort(), is(-1));
-        verify(registryCenter).get("/test_job/config");
+        verify(regCenter).get("/test_job/config");
     }
     
     @Test
@@ -64,9 +64,9 @@ public class JobSettingsAPIImplTest {
                 + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
                 + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
                 + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
-        when(registryCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
+        when(regCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
         assertJobSettings(jobSettingsAPI.getJobSettings("test_job"));
-        verify(registryCenter).get("/test_job/config");
+        verify(regCenter).get("/test_job/config");
     }
     
     private void assertJobSettings(final JobSettings jobSettings) {
@@ -92,7 +92,7 @@ public class JobSettingsAPIImplTest {
                 + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
                 + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
                 + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
-        when(registryCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
+        when(regCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
         JobSettings jobSettings = new JobSettings();
         jobSettings.setJobName("test_job");
         jobSettings.setJobClass("com.dangdang.ddframe.job.lite.fixture.TestDataflowJob");
@@ -105,7 +105,7 @@ public class JobSettingsAPIImplTest {
         jobSettings.setFailover(false);
         jobSettings.setMisfire(true);
         jobSettingsAPI.updateJobSettings(jobSettings);
-        verify(registryCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"cron\":\"0/1 * * * * ?\","
+        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"cron\":\"0/1 * * * * ?\","
                 + "\"shardingTotalCount\":10,\"monitorExecution\":true,\"concurrentDataProcessThreadCount\":10,\"streamingProcess\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,"
                 + "\"failover\":false,\"misfire\":true}");
     }

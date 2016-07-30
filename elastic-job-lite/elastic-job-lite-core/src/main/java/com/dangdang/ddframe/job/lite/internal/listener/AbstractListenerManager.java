@@ -32,8 +32,8 @@ public abstract class AbstractListenerManager {
     
     private final JobNodeStorage jobNodeStorage;
     
-    protected AbstractListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
+    protected AbstractListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
     }
 
     /**

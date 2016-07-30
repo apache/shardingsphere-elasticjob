@@ -35,22 +35,22 @@ public class TaskProducerSchedulerRegistry {
     
     private ConfigurationService configService;
     
-    private TaskProducerSchedulerRegistry(final CoordinatorRegistryCenter registryCenter) {
-        configService = new ConfigurationService(registryCenter);
-        schedulerInstance = new TaskProducerScheduler(registryCenter);
+    private TaskProducerSchedulerRegistry(final CoordinatorRegistryCenter regCenter) {
+        configService = new ConfigurationService(regCenter);
+        schedulerInstance = new TaskProducerScheduler(regCenter);
     }
     
     /**
      * 获取实例.
      * 
-     * @param registryCenter 注册中心对象
+     * @param regCenter 注册中心对象
      * @return 实例对象
      */
-    public static TaskProducerSchedulerRegistry getInstance(final CoordinatorRegistryCenter registryCenter) {
+    public static TaskProducerSchedulerRegistry getInstance(final CoordinatorRegistryCenter regCenter) {
         if (null == instance) {
             synchronized (TaskProducerSchedulerRegistry.class) {
                 if (null == instance) {
-                    instance = new TaskProducerSchedulerRegistry(registryCenter);
+                    instance = new TaskProducerSchedulerRegistry(regCenter);
                 }
             }
         }

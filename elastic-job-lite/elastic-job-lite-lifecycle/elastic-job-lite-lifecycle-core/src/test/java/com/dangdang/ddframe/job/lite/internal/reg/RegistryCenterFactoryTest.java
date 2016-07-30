@@ -54,9 +54,9 @@ public final class RegistryCenterFactoryTest extends AbstractNestedZookeeperBase
         assertNull(zkConfig.getDigest());
     }
     
-    private ZookeeperConfiguration getZookeeperConfiguration(final CoordinatorRegistryCenter registryCenter) throws ReflectiveOperationException {
+    private ZookeeperConfiguration getZookeeperConfiguration(final CoordinatorRegistryCenter regCenter) throws ReflectiveOperationException {
         Method method = ZookeeperRegistryCenter.class.getDeclaredMethod("getZkConfig");
         method.setAccessible(true);
-        return (ZookeeperConfiguration) method.invoke(registryCenter);
+        return (ZookeeperConfiguration) method.invoke(regCenter);
     }
 }

@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
 public final class TaskProducerSchedulerTest {
     
     @Mock
-    private CoordinatorRegistryCenter registryCenter;
+    private CoordinatorRegistryCenter regCenter;
     
     @Mock
     private Scheduler scheduler;
@@ -61,7 +61,7 @@ public final class TaskProducerSchedulerTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        taskProducerScheduler = new TaskProducerScheduler(registryCenter);
+        taskProducerScheduler = new TaskProducerScheduler(regCenter);
         ReflectionUtils.setFieldValue(taskProducerScheduler, "scheduler", scheduler);
     }
     

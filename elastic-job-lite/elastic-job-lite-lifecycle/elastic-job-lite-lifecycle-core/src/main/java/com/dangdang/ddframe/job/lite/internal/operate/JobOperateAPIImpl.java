@@ -31,13 +31,13 @@ import java.util.Collection;
  */
 public final class JobOperateAPIImpl implements JobOperateAPI {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     private final JobOperateTemplate jobOperatorTemplate;
     
-    public JobOperateAPIImpl(final CoordinatorRegistryCenter registryCenter) {
-        this.registryCenter = registryCenter;
-        jobOperatorTemplate = new JobOperateTemplate(registryCenter);
+    public JobOperateAPIImpl(final CoordinatorRegistryCenter regCenter) {
+        this.regCenter = regCenter;
+        jobOperatorTemplate = new JobOperateTemplate(regCenter);
     }
     
     @Override
@@ -46,7 +46,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             
             @Override
             public boolean doOperate(final String jobName, final String serverIp) {
-                registryCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.TRIGGER_NODE), "");
+                regCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.TRIGGER_NODE), "");
                 return true;
             }
         });
@@ -58,7 +58,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             
             @Override
             public boolean doOperate(final String jobName, final String serverIp) {
-                registryCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.PAUSED_NODE), "");
+                regCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.PAUSED_NODE), "");
                 return true;
             }
         });
@@ -70,7 +70,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
         
             @Override
             public boolean doOperate(final String jobName, final String serverIp) {
-                registryCenter.remove(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.PAUSED_NODE));
+                regCenter.remove(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.PAUSED_NODE));
                 return true;
             }
         });
@@ -82,7 +82,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             
             @Override
             public boolean doOperate(final String jobName, final String serverIp) {
-                registryCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.DISABLED_NODE), "");
+                regCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.DISABLED_NODE), "");
                 return true;
             }
         });
@@ -94,7 +94,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             
             @Override
             public boolean doOperate(final String jobName, final String serverIp) {
-                registryCenter.remove(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.DISABLED_NODE));
+                regCenter.remove(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.DISABLED_NODE));
                 return true;
             }
         });
@@ -106,7 +106,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             
             @Override
             public boolean doOperate(final String jobName, final String serverIp) {
-                registryCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.SHUTDOWN_NODE), "");
+                regCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.SHUTDOWN_NODE), "");
                 return true;
             }
         });
@@ -119,12 +119,12 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             @Override
             public boolean doOperate(final String jobName, final String serverIp) {
                 JobNodePath jobNodePath = new JobNodePath(jobName);
-                if (registryCenter.isExisted(jobNodePath.getServerNodePath(serverIp, JobNodePath.STATUS_NODE))) {
+                if (regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, JobNodePath.STATUS_NODE))) {
                     return false;
                 }
-                registryCenter.remove(jobNodePath.getServerNodePath(serverIp));
-                if (registryCenter.getChildrenKeys(jobNodePath.getServerNodePath()).isEmpty()) {
-                    registryCenter.remove("/" + jobName);
+                regCenter.remove(jobNodePath.getServerNodePath(serverIp));
+                if (regCenter.getChildrenKeys(jobNodePath.getServerNodePath()).isEmpty()) {
+                    regCenter.remove("/" + jobName);
                 }
                 return true;
             }

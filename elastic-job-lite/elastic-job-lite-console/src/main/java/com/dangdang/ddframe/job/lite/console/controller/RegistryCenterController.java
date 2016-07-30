@@ -37,30 +37,30 @@ public class RegistryCenterController {
     public static final String REG_CENTER_CONFIG_KEY = "reg_center_config_key";
     
     @Resource
-    private RegistryCenterService registryCenterService;
+    private RegistryCenterService regCenterService;
     
     @RequestMapping(method = RequestMethod.GET)
     public Collection<RegistryCenterConfiguration> load(final HttpSession session) {
-        Optional<RegistryCenterConfiguration> regCenterConfig = registryCenterService.loadActivated();
+        Optional<RegistryCenterConfiguration> regCenterConfig = regCenterService.loadActivated();
         if (regCenterConfig.isPresent()) {
             setRegistryCenterNameToSession(regCenterConfig.get(), session);
         }
-        return registryCenterService.loadAll();
+        return regCenterService.loadAll();
     }
     
     @RequestMapping(method = RequestMethod.POST)
     public boolean add(final RegistryCenterConfiguration config) {
-        return registryCenterService.add(config);
+        return regCenterService.add(config);
     }
     
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public void delete(final RegistryCenterConfiguration config) {
-        registryCenterService.delete(config.getName());
+        regCenterService.delete(config.getName());
     }
     
     @RequestMapping(value = "connect", method = RequestMethod.POST)
     public boolean connect(final RegistryCenterConfiguration config, final HttpSession session) {
-        return setRegistryCenterNameToSession(registryCenterService.load(config.getName()), session);
+        return setRegistryCenterNameToSession(regCenterService.load(config.getName()), session);
     }
     
     private boolean setRegistryCenterNameToSession(final RegistryCenterConfiguration regCenterConfig, final HttpSession session) {

@@ -36,7 +36,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public final class JobOperateTemplate {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     /**
      * 作业操作.
@@ -58,7 +58,7 @@ public final class JobOperateTemplate {
             }
         } else if (jobName.isPresent()) {
             JobNodePath jobNodePath = new JobNodePath(jobName.get());
-            List<String> ipList = registryCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+            List<String> ipList = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
             result = new ArrayList<>(ipList.size());
             for (String each : ipList) {
                 boolean isSuccess = callback.doOperate(jobName.get(), each);
@@ -67,7 +67,7 @@ public final class JobOperateTemplate {
                 }
             }
         } else {
-            List<String> jobNames = registryCenter.getChildrenKeys("/");
+            List<String> jobNames = regCenter.getChildrenKeys("/");
             result = new ArrayList<>(jobNames.size());
             for (String each : jobNames) {
                 boolean isSuccess = callback.doOperate(each, serverIp.get());

@@ -38,8 +38,8 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    public ConfigurationListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
-        super(coordinatorRegistryCenter, liteJobConfig);
+    public ConfigurationListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        super(regCenter, liteJobConfig);
         jobName = liteJobConfig.getJobName();
         configNode = new ConfigurationNode(jobName);
     }

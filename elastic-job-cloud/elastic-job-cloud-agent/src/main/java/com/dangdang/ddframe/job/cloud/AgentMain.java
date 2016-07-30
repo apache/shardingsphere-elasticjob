@@ -66,7 +66,7 @@ public final class AgentMain {
                 } else if (elasticJob instanceof ScriptJob) {
                     elasticJobExecutor = new ScriptJobExecutor(jobFacade);
                 } else {
-                    throw new JobException(String.format("Cannot support job type '%s'"), elasticJob.getClass());
+                    throw new JobException("Cannot support job type '%s'", elasticJob.getClass());
                 }
                 elasticJobExecutor.execute();
             }

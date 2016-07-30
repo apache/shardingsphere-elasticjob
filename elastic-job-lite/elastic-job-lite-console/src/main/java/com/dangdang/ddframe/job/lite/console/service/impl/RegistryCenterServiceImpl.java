@@ -31,16 +31,16 @@ import java.util.Collection;
 public class RegistryCenterServiceImpl implements RegistryCenterService {
     
     @Resource
-    private RegistryCenterConfigurationsXmlRepository registryCenterConfigurationsXmlRepository;
+    private RegistryCenterConfigurationsXmlRepository regCenterConfigurationsXmlRepository;
     
     @Override
     public Collection<RegistryCenterConfiguration> loadAll() {
-        return registryCenterConfigurationsXmlRepository.load().getRegistryCenterConfiguration();
+        return regCenterConfigurationsXmlRepository.load().getRegistryCenterConfiguration();
     }
     
     @Override
     public RegistryCenterConfiguration load(final String name) {
-        RegistryCenterConfigurations configs = registryCenterConfigurationsXmlRepository.load();
+        RegistryCenterConfigurations configs = regCenterConfigurationsXmlRepository.load();
         RegistryCenterConfiguration result = findRegistryCenterConfiguration(name, configs);
         setActivated(configs, result);
         return result;
@@ -62,13 +62,13 @@ public class RegistryCenterServiceImpl implements RegistryCenterService {
                 activatedConfig.setActivated(false);
             }
             toBeConnectedConfig.setActivated(true);
-            registryCenterConfigurationsXmlRepository.save(configs);
+            regCenterConfigurationsXmlRepository.save(configs);
         }
     }
     
     @Override
     public Optional<RegistryCenterConfiguration> loadActivated() {
-        RegistryCenterConfigurations configs = registryCenterConfigurationsXmlRepository.load();
+        RegistryCenterConfigurations configs = regCenterConfigurationsXmlRepository.load();
         RegistryCenterConfiguration result = findActivatedRegistryCenterConfiguration(configs);
         if (null == result) {
             return Optional.absent();
@@ -87,19 +87,19 @@ public class RegistryCenterServiceImpl implements RegistryCenterService {
     
     @Override
     public boolean add(final RegistryCenterConfiguration config) {
-        RegistryCenterConfigurations configs = registryCenterConfigurationsXmlRepository.load();
+        RegistryCenterConfigurations configs = regCenterConfigurationsXmlRepository.load();
         boolean result = configs.getRegistryCenterConfiguration().add(config);
         if (result) {
-            registryCenterConfigurationsXmlRepository.save(configs);
+            regCenterConfigurationsXmlRepository.save(configs);
         }
         return result;
     }
     
     @Override
     public void delete(final String name) {
-        RegistryCenterConfigurations configs = registryCenterConfigurationsXmlRepository.load();
+        RegistryCenterConfigurations configs = regCenterConfigurationsXmlRepository.load();
         if (configs.getRegistryCenterConfiguration().remove(new RegistryCenterConfiguration(name))) {
-            registryCenterConfigurationsXmlRepository.save(configs);
+            regCenterConfigurationsXmlRepository.save(configs);
         }
     }
 }

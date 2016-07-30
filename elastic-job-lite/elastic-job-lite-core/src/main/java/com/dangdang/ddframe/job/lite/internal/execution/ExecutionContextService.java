@@ -41,10 +41,10 @@ public class ExecutionContextService {
     
     private final ConfigurationService configService;
     
-    public ExecutionContextService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+    public ExecutionContextService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
         this.liteJobConfig = liteJobConfig;
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
-        configService = new ConfigurationService(coordinatorRegistryCenter, liteJobConfig);
+        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
+        configService = new ConfigurationService(regCenter, liteJobConfig);
     }
     
     /**

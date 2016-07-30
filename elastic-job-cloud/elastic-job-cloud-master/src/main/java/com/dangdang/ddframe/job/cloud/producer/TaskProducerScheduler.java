@@ -43,12 +43,12 @@ import java.util.Properties;
  */
 class TaskProducerScheduler {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     private final Scheduler scheduler;
     
-    TaskProducerScheduler(final CoordinatorRegistryCenter registryCenter) {
-        this.registryCenter = registryCenter;
+    TaskProducerScheduler(final CoordinatorRegistryCenter regCenter) {
+        this.regCenter = regCenter;
         scheduler = getScheduler();
     }
     
@@ -97,7 +97,7 @@ class TaskProducerScheduler {
     private void scheduleJob(final CloudJobConfiguration jobConfig) throws SchedulerException {
         JobDetail jobDetail = buildJobDetail(jobConfig.getCron());
         TaskProducerJobContext.getInstance().put(jobDetail.getKey(), jobConfig.getJobName());
-        jobDetail.getJobDataMap().put("readyService", new ReadyService(registryCenter));
+        jobDetail.getJobDataMap().put("readyService", new ReadyService(regCenter));
         scheduler.scheduleJob(jobDetail, buildTrigger(jobConfig.getCron()));
     }
     

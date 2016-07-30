@@ -54,12 +54,12 @@ public class ExecutionService {
     
     private final LeaderElectionService leaderElectionService;
     
-    public ExecutionService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+    public ExecutionService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
         this.liteJobConfig = liteJobConfig;
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
-        configService = new ConfigurationService(coordinatorRegistryCenter, liteJobConfig);
-        serverService = new ServerService(coordinatorRegistryCenter, liteJobConfig);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, liteJobConfig);
+        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
+        configService = new ConfigurationService(regCenter, liteJobConfig);
+        serverService = new ServerService(regCenter, liteJobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
     }
     
     /**

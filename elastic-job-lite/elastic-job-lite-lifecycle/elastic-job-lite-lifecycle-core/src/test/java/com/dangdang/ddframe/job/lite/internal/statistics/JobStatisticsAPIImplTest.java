@@ -42,17 +42,17 @@ public final class JobStatisticsAPIImplTest {
     private JobStatisticsAPI jobStatisticsAPI;
     
     @Mock
-    private CoordinatorRegistryCenter registryCenter;
+    private CoordinatorRegistryCenter regCenter;
     
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        jobStatisticsAPI = new JobStatisticsAPIImpl(registryCenter);
+        jobStatisticsAPI = new JobStatisticsAPIImpl(regCenter);
     }
     
     @Test
     public void assertGetAllJobsBriefInfo() {
-        when(registryCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
+        when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         String simpleJobJson1 =  "{\"jobName\":\"test_job_1\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
                 + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"0\\u003da,1\\u003db\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,\"description\":\"desc1\","
                 + "\"jobProperties\":{\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
@@ -63,15 +63,15 @@ public final class JobStatisticsAPIImplTest {
                 + "\"jobProperties\":{\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
                 + "\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\"},"
                 + "\"monitorExecution\":false,\"maxTimeDiffSeconds\":1000,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true}";
-        when(registryCenter.get("/test_job_1/config")).thenReturn(simpleJobJson1);
-        when(registryCenter.get("/test_job_2/config")).thenReturn(simpleJobJson2);
-        when(registryCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(registryCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
-        when(registryCenter.get("/test_job_1/servers/ip1/status")).thenReturn("RUNNING");
-        when(registryCenter.get("/test_job_1/servers/ip2/status")).thenReturn("READY");
-        when(registryCenter.isExisted("/test_job_1/servers/ip2/disabled")).thenReturn(true);
-        when(registryCenter.isExisted("/test_job_2/servers/ip3/paused")).thenReturn(true);
-        when(registryCenter.isExisted("/test_job_2/servers/ip4/shutdown")).thenReturn(true);
+        when(regCenter.get("/test_job_1/config")).thenReturn(simpleJobJson1);
+        when(regCenter.get("/test_job_2/config")).thenReturn(simpleJobJson2);
+        when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
+        when(regCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
+        when(regCenter.get("/test_job_1/servers/ip1/status")).thenReturn("RUNNING");
+        when(regCenter.get("/test_job_1/servers/ip2/status")).thenReturn("READY");
+        when(regCenter.isExisted("/test_job_1/servers/ip2/disabled")).thenReturn(true);
+        when(regCenter.isExisted("/test_job_2/servers/ip3/paused")).thenReturn(true);
+        when(regCenter.isExisted("/test_job_2/servers/ip4/shutdown")).thenReturn(true);
         int i = 0;
         for (JobBriefInfo each : jobStatisticsAPI.getAllJobsBriefInfo()) {
             i++;
@@ -93,17 +93,17 @@ public final class JobStatisticsAPIImplTest {
     
     @Test
     public void assertGetServers() {
-        when(registryCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(registryCenter.get("/test_job/servers/ip1/hostName")).thenReturn("host1");
-        when(registryCenter.get("/test_job/servers/ip2/hostName")).thenReturn("host2");
-        when(registryCenter.get("/test_job/servers/ip1/processSuccessCount")).thenReturn("101");
-        when(registryCenter.get("/test_job/servers/ip2/processSuccessCount")).thenReturn("102");
-        when(registryCenter.get("/test_job/servers/ip1/processFailureCount")).thenReturn("11");
-        when(registryCenter.get("/test_job/servers/ip2/processFailureCount")).thenReturn("12");
-        when(registryCenter.get("/test_job/servers/ip1/sharding")).thenReturn("0,1");
-        when(registryCenter.get("/test_job/servers/ip2/sharding")).thenReturn("2,3");
-        when(registryCenter.get("/test_job/servers/ip1/status")).thenReturn("RUNNING");
-        when(registryCenter.get("/test_job/servers/ip2/status")).thenReturn("READY");
+        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
+        when(regCenter.get("/test_job/servers/ip1/hostName")).thenReturn("host1");
+        when(regCenter.get("/test_job/servers/ip2/hostName")).thenReturn("host2");
+        when(regCenter.get("/test_job/servers/ip1/processSuccessCount")).thenReturn("101");
+        when(regCenter.get("/test_job/servers/ip2/processSuccessCount")).thenReturn("102");
+        when(regCenter.get("/test_job/servers/ip1/processFailureCount")).thenReturn("11");
+        when(regCenter.get("/test_job/servers/ip2/processFailureCount")).thenReturn("12");
+        when(regCenter.get("/test_job/servers/ip1/sharding")).thenReturn("0,1");
+        when(regCenter.get("/test_job/servers/ip2/sharding")).thenReturn("2,3");
+        when(regCenter.get("/test_job/servers/ip1/status")).thenReturn("RUNNING");
+        when(regCenter.get("/test_job/servers/ip2/status")).thenReturn("READY");
         int i = 0;
         for (ServerInfo each : jobStatisticsAPI.getServers("test_job")) {
             i++;
@@ -129,32 +129,32 @@ public final class JobStatisticsAPIImplTest {
     
     @Test
     public void assertGetExecutionInfoWithoutMonitorExecution() {
-        when(registryCenter.isExisted("/test_job/execution")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/execution")).thenReturn(false);
         assertTrue(jobStatisticsAPI.getExecutionInfo("test_job").isEmpty());
     }
     
     @Test
     public void assertGetExecutionInfoWithMonitorExecution() {
-        when(registryCenter.isExisted("/test_job/execution")).thenReturn(true);
-        when(registryCenter.getChildrenKeys("/test_job/execution")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(registryCenter.isExisted("/test_job/execution/0/running")).thenReturn(true);
-        when(registryCenter.isExisted("/test_job/execution/1/running")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job/execution/1/completed")).thenReturn(true);
-        when(registryCenter.isExisted("/test_job/execution/2/running")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job/execution/2/completed")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job/execution/0/failover")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job/execution/1/failover")).thenReturn(false);
-        when(registryCenter.isExisted("/test_job/execution/2/failover")).thenReturn(true);
-        when(registryCenter.get("/test_job/execution/2/failover")).thenReturn("ip0");
-        when(registryCenter.get("/test_job/execution/0/lastBeginTime")).thenReturn("0");
-        when(registryCenter.get("/test_job/execution/1/lastBeginTime")).thenReturn("0");
-        when(registryCenter.get("/test_job/execution/2/lastBeginTime")).thenReturn(null);
-        when(registryCenter.get("/test_job/execution/0/nextFireTime")).thenReturn("0");
-        when(registryCenter.get("/test_job/execution/1/nextFireTime")).thenReturn("0");
-        when(registryCenter.get("/test_job/execution/2/nextFireTime")).thenReturn(null);
-        when(registryCenter.get("/test_job/execution/0/lastCompleteTime")).thenReturn("0");
-        when(registryCenter.get("/test_job/execution/1/lastCompleteTime")).thenReturn("0");
-        when(registryCenter.get("/test_job/execution/2/lastCompleteTime")).thenReturn(null);
+        when(regCenter.isExisted("/test_job/execution")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/test_job/execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(regCenter.isExisted("/test_job/execution/0/running")).thenReturn(true);
+        when(regCenter.isExisted("/test_job/execution/1/running")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/execution/1/completed")).thenReturn(true);
+        when(regCenter.isExisted("/test_job/execution/2/running")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/execution/2/completed")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/execution/0/failover")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/execution/1/failover")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/execution/2/failover")).thenReturn(true);
+        when(regCenter.get("/test_job/execution/2/failover")).thenReturn("ip0");
+        when(regCenter.get("/test_job/execution/0/lastBeginTime")).thenReturn("0");
+        when(regCenter.get("/test_job/execution/1/lastBeginTime")).thenReturn("0");
+        when(regCenter.get("/test_job/execution/2/lastBeginTime")).thenReturn(null);
+        when(regCenter.get("/test_job/execution/0/nextFireTime")).thenReturn("0");
+        when(regCenter.get("/test_job/execution/1/nextFireTime")).thenReturn("0");
+        when(regCenter.get("/test_job/execution/2/nextFireTime")).thenReturn(null);
+        when(regCenter.get("/test_job/execution/0/lastCompleteTime")).thenReturn("0");
+        when(regCenter.get("/test_job/execution/1/lastCompleteTime")).thenReturn("0");
+        when(regCenter.get("/test_job/execution/2/lastCompleteTime")).thenReturn(null);
         int i = 0;
         for (ExecutionInfo each : jobStatisticsAPI.getExecutionInfo("test_job")) {
             i++;

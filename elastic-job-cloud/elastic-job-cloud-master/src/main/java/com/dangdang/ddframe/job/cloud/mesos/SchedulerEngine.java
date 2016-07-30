@@ -47,8 +47,8 @@ public final class SchedulerEngine implements Scheduler {
     
     private final FacadeService facadeService;
     
-    public SchedulerEngine(final CoordinatorRegistryCenter registryCenter) {
-        facadeService = new FacadeService(registryCenter);
+    public SchedulerEngine(final CoordinatorRegistryCenter regCenter) {
+        facadeService = new FacadeService(regCenter);
     }
     
     @Override

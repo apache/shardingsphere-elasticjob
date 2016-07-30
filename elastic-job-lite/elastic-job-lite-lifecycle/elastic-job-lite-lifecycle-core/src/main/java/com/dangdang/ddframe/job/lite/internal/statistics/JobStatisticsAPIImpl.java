@@ -41,17 +41,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     @Override
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {
-        List<String> jobNames = registryCenter.getChildrenKeys("/");
+        List<String> jobNames = regCenter.getChildrenKeys("/");
         List<JobBriefInfo> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
             JobNodePath jobNodePath = new JobNodePath(each);
             JobBriefInfo jobBriefInfo = new JobBriefInfo();
             jobBriefInfo.setJobName(each);
-            LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(registryCenter.get(jobNodePath.getConfigNodePath()));
+            LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(regCenter.get(jobNodePath.getConfigNodePath()));
             jobBriefInfo.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
             jobBriefInfo.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
             jobBriefInfo.setStatus(getJobStatus(each));
@@ -64,7 +64,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     
     private JobBriefInfo.JobStatus getJobStatus(final String jobName) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        List<String> servers = registryCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+        List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
         int okCount = 0;
         int crashedCount = 0;
         int disabledCount = 0;
@@ -92,7 +92,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     @Override
     public Collection<ServerInfo> getServers(final String jobName) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        List<String> serverIps = registryCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+        List<String> serverIps = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
         Collection<ServerInfo> result = new ArrayList<>(serverIps.size());
         for (String each : serverIps) {
             result.add(getJobServer(jobName, each));
@@ -105,32 +105,32 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         result.setJobName(jobName);
         result.setIp(serverIp);
-        result.setHostName(registryCenter.get(jobNodePath.getServerNodePath(serverIp, "hostName")));
-        String processSuccessCount = registryCenter.get(jobNodePath.getServerNodePath(serverIp, "processSuccessCount"));
+        result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp, "hostName")));
+        String processSuccessCount = regCenter.get(jobNodePath.getServerNodePath(serverIp, "processSuccessCount"));
         result.setProcessSuccessCount(null == processSuccessCount ? 0 : Integer.parseInt(processSuccessCount));
-        String processFailureCount = registryCenter.get(jobNodePath.getServerNodePath(serverIp, "processFailureCount"));
+        String processFailureCount = regCenter.get(jobNodePath.getServerNodePath(serverIp, "processFailureCount"));
         result.setProcessFailureCount(null == processFailureCount ? 0 : Integer.parseInt(processFailureCount));
-        result.setSharding(registryCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
+        result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
         result.setStatus(getServerStatus(jobName, serverIp));
         return result;
     }
     
     private ServerInfo.ServerStatus getServerStatus(final String jobName, final String serverIp) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        String status = registryCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
-        boolean disabled = registryCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
-        boolean paused = registryCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "paused"));
-        boolean shutdown = registryCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
+        String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
+        boolean disabled = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
+        boolean paused = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "paused"));
+        boolean shutdown = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
         return ServerInfo.ServerStatus.getServerStatus(status, disabled, paused, shutdown);
     }
     
     @Override
     public Collection<ExecutionInfo> getExecutionInfo(final String jobName) {
         String executionRootPath = new JobNodePath(jobName).getExecutionNodePath();
-        if (!registryCenter.isExisted(executionRootPath)) {
+        if (!regCenter.isExisted(executionRootPath)) {
             return Collections.emptyList();
         }
-        List<String> items = registryCenter.getChildrenKeys(executionRootPath);
+        List<String> items = regCenter.getChildrenKeys(executionRootPath);
         List<ExecutionInfo> result = new ArrayList<>(items.size());
         for (String each : items) {
             result.add(getExecutionInfo(jobName, each));
@@ -143,17 +143,17 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         ExecutionInfo result = new ExecutionInfo();
         result.setItem(Integer.parseInt(item));
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        boolean running = registryCenter.isExisted(jobNodePath.getExecutionNodePath(item, "running"));
-        boolean completed = registryCenter.isExisted(jobNodePath.getExecutionNodePath(item, "completed"));
+        boolean running = regCenter.isExisted(jobNodePath.getExecutionNodePath(item, "running"));
+        boolean completed = regCenter.isExisted(jobNodePath.getExecutionNodePath(item, "completed"));
         result.setStatus(ExecutionInfo.ExecutionStatus.getExecutionStatus(running, completed));
-        if (registryCenter.isExisted(jobNodePath.getExecutionNodePath(item, "failover"))) {
-            result.setFailoverIp(registryCenter.get(jobNodePath.getExecutionNodePath(item, "failover")));
+        if (regCenter.isExisted(jobNodePath.getExecutionNodePath(item, "failover"))) {
+            result.setFailoverIp(regCenter.get(jobNodePath.getExecutionNodePath(item, "failover")));
         }
-        String lastBeginTime = registryCenter.get(jobNodePath.getExecutionNodePath(item, "lastBeginTime"));
+        String lastBeginTime = regCenter.get(jobNodePath.getExecutionNodePath(item, "lastBeginTime"));
         result.setLastBeginTime(null == lastBeginTime ? null : new Date(Long.parseLong(lastBeginTime)));
-        String nextFireTime = registryCenter.get(jobNodePath.getExecutionNodePath(item, "nextFireTime"));
+        String nextFireTime = regCenter.get(jobNodePath.getExecutionNodePath(item, "nextFireTime"));
         result.setNextFireTime(null == nextFireTime ? null : new Date(Long.parseLong(nextFireTime)));
-        String lastCompleteTime = registryCenter.get(jobNodePath.getExecutionNodePath(item, "lastCompleteTime"));
+        String lastCompleteTime = regCenter.get(jobNodePath.getExecutionNodePath(item, "lastCompleteTime"));
         result.setLastCompleteTime(null == lastCompleteTime ? null : new Date(Long.parseLong(lastCompleteTime)));
         return result;
     }

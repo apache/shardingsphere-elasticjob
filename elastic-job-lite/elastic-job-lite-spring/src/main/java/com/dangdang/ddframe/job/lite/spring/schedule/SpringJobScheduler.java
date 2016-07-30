@@ -36,12 +36,12 @@ public class SpringJobScheduler extends JobScheduler implements ApplicationConte
     
     private ApplicationContext applicationContext;
     
-    public SpringJobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final AbstractJobConfigurationDto jobConfigurationDto) {
-        super(coordinatorRegistryCenter, jobConfigurationDto.toLiteJobConfiguration());
+    public SpringJobScheduler(final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigurationDto) {
+        super(regCenter, jobConfigurationDto.toLiteJobConfiguration());
     }
     
-    public SpringJobScheduler(final CoordinatorRegistryCenter coordinatorRegistryCenter, final AbstractJobConfigurationDto jobConfigurationDto, final ElasticJobListener[] elasticJobListeners) {
-        super(coordinatorRegistryCenter, jobConfigurationDto.toLiteJobConfiguration(), getTargetElasticJobListeners(elasticJobListeners));
+    public SpringJobScheduler(final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigurationDto, final ElasticJobListener[] elasticJobListeners) {
+        super(regCenter, jobConfigurationDto.toLiteJobConfiguration(), getTargetElasticJobListeners(elasticJobListeners));
     }
     
     private static ElasticJobListener[] getTargetElasticJobListeners(final ElasticJobListener[] elasticJobListeners) {

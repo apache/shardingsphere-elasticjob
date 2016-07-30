@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RunningService {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     /**
      * 将任务运行时上下文放入运行时队列.
@@ -38,8 +38,8 @@ public class RunningService {
      */
     public void add(final TaskContext taskContext) {
         String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString());
-        if (!registryCenter.isExisted(runningTaskNodePath)) {
-            registryCenter.persist(runningTaskNodePath, taskContext.getId());
+        if (!regCenter.isExisted(runningTaskNodePath)) {
+            regCenter.persist(runningTaskNodePath, taskContext.getId());
         }
     }
     
@@ -49,10 +49,10 @@ public class RunningService {
      * @param metaInfo 任务元信息
      */
     public void remove(final TaskContext.MetaInfo metaInfo) {
-        registryCenter.remove(RunningNode.getRunningTaskNodePath(metaInfo.toString()));
+        regCenter.remove(RunningNode.getRunningTaskNodePath(metaInfo.toString()));
         String jobRootNode = RunningNode.getRunningJobNodePath(metaInfo.getJobName());
-        if (registryCenter.isExisted(jobRootNode) && registryCenter.getChildrenKeys(jobRootNode).isEmpty()) {
-            registryCenter.remove(jobRootNode);
+        if (regCenter.isExisted(jobRootNode) && regCenter.getChildrenKeys(jobRootNode).isEmpty()) {
+            regCenter.remove(jobRootNode);
         }
     }
     
@@ -63,7 +63,7 @@ public class RunningService {
      * @return 作业是否运行
      */
     public boolean isJobRunning(final String jobName) {
-        return !registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(jobName)).isEmpty();
+        return !regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(jobName)).isEmpty();
     }
     
     /**
@@ -73,10 +73,10 @@ public class RunningService {
      * @return 任务是否运行
      */
     public boolean isTaskRunning(final TaskContext.MetaInfo metaInfo) {
-        if (!registryCenter.isExisted(RunningNode.getRunningJobNodePath(metaInfo.getJobName()))) {
+        if (!regCenter.isExisted(RunningNode.getRunningJobNodePath(metaInfo.getJobName()))) {
             return false;
         }
-        for (String each : registryCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(metaInfo.getJobName()))) {
+        for (String each : regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(metaInfo.getJobName()))) {
             if (TaskContext.MetaInfo.from(each).getShardingItem() == metaInfo.getShardingItem()) {
                 return true;
             }
@@ -88,6 +88,6 @@ public class RunningService {
      * 清理所有运行时状态.
      */
     public void clear() {
-        registryCenter.remove(RunningNode.ROOT);
+        regCenter.remove(RunningNode.ROOT);
     }
 }

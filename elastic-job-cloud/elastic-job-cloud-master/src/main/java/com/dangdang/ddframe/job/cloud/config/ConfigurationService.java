@@ -35,7 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConfigurationService {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     /**
      * 添加云作业配置.
@@ -43,7 +43,7 @@ public class ConfigurationService {
      * @param jobConfig 云作业配置对象
      */
     public void add(final CloudJobConfiguration jobConfig) {
-        registryCenter.persist(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), new Gson().toJson(jobConfig));
+        regCenter.persist(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), new Gson().toJson(jobConfig));
     }
     
     /**
@@ -52,7 +52,7 @@ public class ConfigurationService {
      * @param jobConfig 云作业配置对象
      */
     public void update(final CloudJobConfiguration jobConfig) {
-        registryCenter.update(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), new Gson().toJson(jobConfig));
+        regCenter.update(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), new Gson().toJson(jobConfig));
     }
     
     /**
@@ -61,10 +61,10 @@ public class ConfigurationService {
      * @return 注册的云作业配置
      */
     public Collection<CloudJobConfiguration> loadAll() {
-        if (!registryCenter.isExisted(ConfigurationNode.ROOT)) {
+        if (!regCenter.isExisted(ConfigurationNode.ROOT)) {
             return Collections.emptyList();
         }
-        List<String> jobNames = registryCenter.getChildrenKeys(ConfigurationNode.ROOT);
+        List<String> jobNames = regCenter.getChildrenKeys(ConfigurationNode.ROOT);
         Collection<CloudJobConfiguration> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
             Optional<CloudJobConfiguration> config = load(each);
@@ -82,8 +82,8 @@ public class ConfigurationService {
      * @return 云作业配置
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
-        return !registryCenter.isExisted(ConfigurationNode.getRootNodePath(jobName)) ? Optional.<CloudJobConfiguration>absent()
-                : Optional.of(new Gson().fromJson(registryCenter.get(ConfigurationNode.getRootNodePath(jobName)), CloudJobConfiguration.class));
+        return !regCenter.isExisted(ConfigurationNode.getRootNodePath(jobName)) ? Optional.<CloudJobConfiguration>absent()
+                : Optional.of(new Gson().fromJson(regCenter.get(ConfigurationNode.getRootNodePath(jobName)), CloudJobConfiguration.class));
     }
     
     /**
@@ -92,6 +92,6 @@ public class ConfigurationService {
      * @param jobName 作业名称
      */
     public void remove(final String jobName) {
-        registryCenter.remove(ConfigurationNode.getRootNodePath(jobName));
+        regCenter.remove(ConfigurationNode.getRootNodePath(jobName));
     }
 }

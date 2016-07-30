@@ -41,9 +41,9 @@ public class LeaderElectionService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    public LeaderElectionService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
-        jobNodeStorage = new JobNodeStorage(coordinatorRegistryCenter, liteJobConfig);
-        serverService = new ServerService(coordinatorRegistryCenter, liteJobConfig);
+    public LeaderElectionService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
+        serverService = new ServerService(regCenter, liteJobConfig);
     }
     
     /**

@@ -45,10 +45,10 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
-    public ElectionListenerManager(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
-        super(coordinatorRegistryCenter, liteJobConfig);
-        leaderElectionService = new LeaderElectionService(coordinatorRegistryCenter, liteJobConfig);
-        serverService = new ServerService(coordinatorRegistryCenter, liteJobConfig);
+    public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+        super(regCenter, liteJobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
+        serverService = new ServerService(regCenter, liteJobConfig);
         electionNode = new ElectionNode(liteJobConfig.getJobName());
         serverNode = new ServerNode(liteJobConfig.getJobName());
     }

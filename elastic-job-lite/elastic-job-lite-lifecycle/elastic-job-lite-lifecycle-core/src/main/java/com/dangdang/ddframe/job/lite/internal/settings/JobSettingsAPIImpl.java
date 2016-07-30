@@ -37,13 +37,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class JobSettingsAPIImpl implements JobSettingsAPI {
     
-    private final CoordinatorRegistryCenter registryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     @Override
     public JobSettings getJobSettings(final String jobName) {
         JobSettings result = new JobSettings();
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(registryCenter.get(jobNodePath.getConfigNodePath()));
+        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(regCenter.get(jobNodePath.getConfigNodePath()));
         String jobType = liteJobConfig.getTypeConfig().getJobType().name();
         buildSimpleJobSettings(jobName, result, liteJobConfig);
         if (JobType.DATAFLOW.name().equals(jobType)) {
@@ -85,6 +85,6 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     @Override
     public void updateJobSettings(final JobSettings jobSettings) {
         JobNodePath jobNodePath = new JobNodePath(jobSettings.getJobName());
-        registryCenter.update(jobNodePath.getConfigNodePath(), LiteJobConfigurationGsonFactory.toJsonForObject(jobSettings));
+        regCenter.update(jobNodePath.getConfigNodePath(), LiteJobConfigurationGsonFactory.toJsonForObject(jobSettings));
     }
 }

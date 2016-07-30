@@ -55,13 +55,13 @@ public class FacadeService {
     
     private final TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
     
-    public FacadeService(final CoordinatorRegistryCenter registryCenter) {
-        configService = new ConfigurationService(registryCenter);
-        readyService = new ReadyService(registryCenter);
-        runningService = new RunningService(registryCenter);
-        failoverService = new FailoverService(registryCenter);
-        misfiredService = new MisfiredService(registryCenter);
-        taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(registryCenter);
+    public FacadeService(final CoordinatorRegistryCenter regCenter) {
+        configService = new ConfigurationService(regCenter);
+        readyService = new ReadyService(regCenter);
+        runningService = new RunningService(regCenter);
+        failoverService = new FailoverService(regCenter);
+        misfiredService = new MisfiredService(regCenter);
+        taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(regCenter);
     }
     
     /**

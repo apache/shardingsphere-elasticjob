@@ -48,7 +48,7 @@ public class MonitorService {
     
     private final String jobName;
     
-    private final CoordinatorRegistryCenter coordinatorRegistryCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     private final ConfigurationService configService;
     
@@ -56,10 +56,10 @@ public class MonitorService {
     
     private volatile boolean closed;
     
-    public MonitorService(final CoordinatorRegistryCenter coordinatorRegistryCenter, final LiteJobConfiguration liteJobConfig) {
+    public MonitorService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
         jobName = liteJobConfig.getJobName();
-        this.coordinatorRegistryCenter = coordinatorRegistryCenter;
-        configService = new ConfigurationService(coordinatorRegistryCenter, liteJobConfig);
+        this.regCenter = regCenter;
+        configService = new ConfigurationService(regCenter, liteJobConfig);
     }
     
     /**
@@ -112,13 +112,13 @@ public class MonitorService {
     }
     
     private void dumpDirectly(final String path, final List<String> result) {
-        for (String each : coordinatorRegistryCenter.getChildrenKeys(path)) {
+        for (String each : regCenter.getChildrenKeys(path)) {
             String zkPath = path + "/" + each;
-            String zkValue = coordinatorRegistryCenter.get(zkPath);
+            String zkValue = regCenter.get(zkPath);
             if (null == zkValue) {
                 zkValue = "";
             }
-            TreeCache treeCache = (TreeCache) coordinatorRegistryCenter.getRawCache("/" + jobName);
+            TreeCache treeCache = (TreeCache) regCenter.getRawCache("/" + jobName);
             ChildData treeCacheData = treeCache.getCurrentData(zkPath);
             String treeCachePath =  null == treeCacheData ? "" : treeCacheData.getPath();
             String treeCacheValue = null == treeCacheData ? "" : new String(treeCacheData.getData());
