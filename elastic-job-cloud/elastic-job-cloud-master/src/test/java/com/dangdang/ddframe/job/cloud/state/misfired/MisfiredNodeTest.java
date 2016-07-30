@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 public final class MisfiredNodeTest {
     
     @Test
-    public void testGetMisfiredJobNodePath() {
+    public void assertGetMisfiredJobNodePath() {
         assertThat(MisfiredNode.getMisfiredJobNodePath("test_job"), is("/state/misfired/test_job"));
     }
 }

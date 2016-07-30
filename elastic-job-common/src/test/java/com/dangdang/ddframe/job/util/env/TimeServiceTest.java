@@ -27,7 +27,7 @@ public class TimeServiceTest {
     private TimeService timeService = new TimeService();
     
     @Test
-    public void testGetCurrentMillis() throws Exception {
+    public void assertGetCurrentMillis() throws Exception {
         assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
     }
 }

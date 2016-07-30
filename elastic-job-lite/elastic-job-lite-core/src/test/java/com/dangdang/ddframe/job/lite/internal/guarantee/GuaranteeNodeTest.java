@@ -29,32 +29,32 @@ public final class GuaranteeNodeTest {
     private GuaranteeNode guaranteeNode = new GuaranteeNode("test_job");
     
     @Test
-    public void testGetStartedNode() {
+    public void assertGetStartedNode() {
         assertThat(GuaranteeNode.getStartedNode(1), is("guarantee/started/1"));
     }
     
     @Test
-    public void testGetCompletedNode() {
+    public void assertGetCompletedNode() {
         assertThat(GuaranteeNode.getCompletedNode(1), is("guarantee/completed/1"));
     }
     
     @Test
-    public void testIsStartedRootNode() {
+    public void assertIsStartedRootNode() {
         assertTrue(guaranteeNode.isStartedRootNode("/test_job/guarantee/started"));
     }
     
     @Test
-    public void testIsNotStartedRootNode() {
+    public void assertIsNotStartedRootNode() {
         assertFalse(guaranteeNode.isStartedRootNode("/otherJob/guarantee/started"));
     }
     
     @Test
-    public void testIsCompletedRootNode() {
+    public void assertIsCompletedRootNode() {
         assertTrue(guaranteeNode.isCompletedRootNode("/test_job/guarantee/completed"));
     }
     
     @Test
-    public void testIsNotCompletedRootNode() {
+    public void assertIsNotCompletedRootNode() {
         assertFalse(guaranteeNode.isCompletedRootNode("/otherJob/guarantee/completed"));
     }
 }

@@ -61,7 +61,7 @@ public final class JobExecutorTest {
     }
     
     @Test
-    public void testNew() throws NoSuchFieldException {
+    public void assertNew() throws NoSuchFieldException {
         TestDistributeOnceElasticJobListener testDistributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(caller);
         assertNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
         JobExecutor actualJobExecutor = new JobExecutor(null, liteJobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
