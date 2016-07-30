@@ -54,7 +54,7 @@ public class JobScheduler {
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
         jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
-        jobFacade = new LiteJobFacade(regCenter, liteJobConfig, Arrays.asList(elasticJobListeners));
+        jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners));
     }
     
     /**

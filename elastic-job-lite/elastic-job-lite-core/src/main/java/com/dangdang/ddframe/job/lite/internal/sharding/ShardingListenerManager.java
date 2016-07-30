@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
@@ -43,11 +42,10 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
-    public ShardingListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        super(regCenter, liteJobConfig);
-        shardingService = new ShardingService(regCenter, liteJobConfig);
-        executionService = new ExecutionService(regCenter, liteJobConfig);
-        String jobName = liteJobConfig.getJobName();
+    public ShardingListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        super(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
         configNode = new ConfigurationNode(jobName);
         serverNode = new ServerNode(jobName);
     }

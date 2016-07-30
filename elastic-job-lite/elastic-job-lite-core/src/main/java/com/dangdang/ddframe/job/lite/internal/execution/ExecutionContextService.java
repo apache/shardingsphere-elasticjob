@@ -35,16 +35,13 @@ import java.util.Map;
  */
 public class ExecutionContextService {
     
-    private final LiteJobConfiguration liteJobConfig;
-    
     private final JobNodeStorage jobNodeStorage;
     
     private final ConfigurationService configService;
     
-    public ExecutionContextService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        this.liteJobConfig = liteJobConfig;
-        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
-        configService = new ConfigurationService(regCenter, liteJobConfig);
+    public ExecutionContextService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        configService = new ConfigurationService(regCenter, jobName);
     }
     
     /**

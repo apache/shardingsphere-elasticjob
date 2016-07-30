@@ -87,39 +87,39 @@ public class SchedulerFacadeTest {
     }
     
     @Test
-    public void testClearPreviousServerStatus() {
+    public void assertClearPreviousServerStatus() {
         schedulerFacade.clearPreviousServerStatus();
         verify(serverService).clearPreviousServerStatus();
     }
     
     @Test
-    public void testRegisterStartUpInfo() {
-        schedulerFacade.registerStartUpInfo();
+    public void assertRegisterStartUpInfo() {
+        schedulerFacade.registerStartUpInfo(liteJobConfig);
         verify(listenerManager).startAllListeners();
         verify(leaderElectionService).leaderForceElection();
-        verify(configService).persist();
-        verify(serverService).persistServerOnline();
+        verify(configService).persist(liteJobConfig);
+        verify(serverService).persistServerOnline(liteJobConfig);
         verify(serverService).clearJobPausedStatus();
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
     }
     
     @Test
-    public void testReleaseJobResource() {
+    public void assertReleaseJobResource() {
         schedulerFacade.releaseJobResource();
         verify(monitorService).close();
         verify(serverService).removeServerStatus();
     }
     
     @Test
-    public void testLoadJobConfiguration() {
+    public void assertLoadJobConfiguration() {
         LiteJobConfiguration expected = LiteJobConfiguration.newBuilder(null).build();
         when(configService.load(false)).thenReturn(expected);
         assertThat(schedulerFacade.loadJobConfiguration(), is(expected));
     }
     
     @Test
-    public void testNewJobTriggerListener() {
+    public void assertNewJobTriggerListener() {
         assertThat(schedulerFacade.newJobTriggerListener(), instanceOf(JobTriggerListener.class));
     }
 }

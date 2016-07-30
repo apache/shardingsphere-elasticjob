@@ -17,11 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService.LeaderElectionExecutionCallback;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,9 +48,7 @@ public final class LeaderElectionServiceTest {
     @Mock
     private ServerService serverService;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
-    
-    private final LeaderElectionService leaderElectionService = new LeaderElectionService(null, liteJobConfig);
+    private final LeaderElectionService leaderElectionService = new LeaderElectionService(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -62,7 +58,6 @@ public final class LeaderElectionServiceTest {
         ReflectionUtils.setFieldValue(leaderElectionService, "serverService", serverService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
-        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test

@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
@@ -45,12 +44,12 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
-    public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        super(regCenter, liteJobConfig);
-        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
-        serverService = new ServerService(regCenter, liteJobConfig);
-        electionNode = new ElectionNode(liteJobConfig.getJobName());
-        serverNode = new ServerNode(liteJobConfig.getJobName());
+    public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        super(regCenter, jobName);
+        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        electionNode = new ElectionNode(jobName);
+        serverNode = new ServerNode(jobName);
     }
     
     @Override

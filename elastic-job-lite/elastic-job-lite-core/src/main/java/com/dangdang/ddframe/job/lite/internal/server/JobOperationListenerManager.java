@@ -39,7 +39,7 @@ import org.apache.curator.framework.state.ConnectionStateListener;
  */
 public class JobOperationListenerManager extends AbstractListenerManager {
     
-    private final String jobName;
+    private final LiteJobConfiguration liteJobConfig;
     
     private final ServerNode serverNode;
     
@@ -52,13 +52,14 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     private final ExecutionService executionService;
     
     public JobOperationListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        super(regCenter, liteJobConfig);
-        jobName = liteJobConfig.getJobName();
+        super(regCenter, liteJobConfig.getJobName());
+        this.liteJobConfig = liteJobConfig;
+        String jobName = liteJobConfig.getJobName();
         serverNode = new ServerNode(jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
-        serverService = new ServerService(regCenter, liteJobConfig);
-        shardingService = new ShardingService(regCenter, liteJobConfig);
-        executionService = new ExecutionService(regCenter, liteJobConfig);
+        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
     }
     
     @Override
@@ -73,14 +74,14 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         
         @Override
         public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobName());
             if (ConnectionState.LOST == newState) {
                 jobScheduleController.pauseJob();
             } else if (ConnectionState.RECONNECTED == newState) {
                 if (!leaderElectionService.hasLeader()) {
                     leaderElectionService.leaderElection();
                 }
-                serverService.persistServerOnline();
+                serverService.persistServerOnline(liteJobConfig);
                 executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
                 if (!serverService.isJobPausedManually()) {
                     jobScheduleController.resumeJob();
@@ -97,7 +98,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
                 return;
             }
             serverService.clearJobTriggerStatus();
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobName());
             if (null == jobScheduleController) {
                 return;
             }
@@ -114,7 +115,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
             if (!serverNode.isLocalJobPausedPath(path)) {
                 return;
             }
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobName());
             if (null == jobScheduleController) {
                 return;
             }
@@ -135,7 +136,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
             if (!serverNode.isLocalJobShutdownPath(path)) {
                 return;
             }
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobName());
             if (null != jobScheduleController && Type.NODE_ADDED == event.getType()) {
                 jobScheduleController.shutdown();
                 serverService.processServerShutdown();

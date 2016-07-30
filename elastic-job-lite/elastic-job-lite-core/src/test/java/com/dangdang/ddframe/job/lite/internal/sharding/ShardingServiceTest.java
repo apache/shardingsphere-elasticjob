@@ -28,7 +28,6 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
 import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
@@ -75,9 +74,7 @@ public final class ShardingServiceTest {
     @Mock
     private ServerService serverService;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
-    
-    private final ShardingService shardingService = new ShardingService(null, liteJobConfig);
+    private final ShardingService shardingService = new ShardingService(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -90,7 +87,6 @@ public final class ShardingServiceTest {
         ReflectionUtils.setFieldValue(shardingService, "serverService", serverService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
-        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test

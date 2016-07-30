@@ -17,14 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -55,9 +54,7 @@ public final class ExecutionContextServiceTest {
     @Mock
     private ConfigurationService configService;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
-    
-    private final ExecutionContextService executionContextService = new ExecutionContextService(null, liteJobConfig);
+    private final ExecutionContextService executionContextService = new ExecutionContextService(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -66,7 +63,6 @@ public final class ExecutionContextServiceTest {
         ReflectionUtils.setFieldValue(executionContextService, "configService", configService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
-        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test

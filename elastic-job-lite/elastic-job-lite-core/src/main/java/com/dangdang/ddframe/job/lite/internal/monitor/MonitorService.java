@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.monitor;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -56,10 +55,10 @@ public class MonitorService {
     
     private volatile boolean closed;
     
-    public MonitorService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        jobName = liteJobConfig.getJobName();
+    public MonitorService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
         this.regCenter = regCenter;
-        configService = new ConfigurationService(regCenter, liteJobConfig);
+        configService = new ConfigurationService(regCenter, jobName);
     }
     
     /**

@@ -74,6 +74,6 @@ public final class JobExecutorTest {
         jobExecutor.init();
         verify(schedulerFacade).clearPreviousServerStatus();
         verify(regCenter).addCacheData("/test_job");
-        verify(schedulerFacade).registerStartUpInfo();
+        verify(schedulerFacade).registerStartUpInfo(liteJobConfig);
     }
 }

@@ -40,8 +40,8 @@ public class ConfigurationService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    public ConfigurationService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig) {
-        jobNodeStorage = new JobNodeStorage(regCenter, jobConfig);
+    public ConfigurationService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
     }
     
     /**
@@ -51,40 +51,38 @@ public class ConfigurationService {
      * @return 作业配置
      */
     public LiteJobConfiguration load(final boolean fromCache) {
-        String configJson;
+        String result;
         if (fromCache) {
-            configJson = jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT);
-            if (null == configJson) {
-                configJson = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
+            result = jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT);
+            if (null == result) {
+                result = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
             }
         } else {
-            configJson = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
+            result = jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT);
         }
-        return LiteJobConfigurationGsonFactory.fromJson(configJson);
+        return LiteJobConfigurationGsonFactory.fromJson(result);
     }
     
     /**
      * 持久化分布式作业配置信息.
+     * 
+     * @param liteJobConfig 作业配置
      */
-    public void persist() {
-        checkConflictJob();
-        if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || jobNodeStorage.getLiteJobConfig().isOverwrite()) {
-            jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, LiteJobConfigurationGsonFactory.toJson(jobNodeStorage.getLiteJobConfig()));
+    public void persist(final LiteJobConfiguration liteJobConfig) {
+        checkConflictJob(liteJobConfig);
+        if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT) || liteJobConfig.isOverwrite()) {
+            jobNodeStorage.replaceJobNode(ConfigurationNode.ROOT, LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
         }
     }
     
-    private void checkConflictJob() {
-        Optional<LiteJobConfiguration> liteJobConfig = loadInternal();
-        if (!liteJobConfig.isPresent()) {
-            return;
-        }
-        if (liteJobConfig.get().getTypeConfig().getJobClass() != jobNodeStorage.getLiteJobConfig().getTypeConfig().getJobClass()) {
-            throw new JobConflictException(
-                    jobNodeStorage.getLiteJobConfig().getJobName(), liteJobConfig.get().getTypeConfig().getJobClass(), jobNodeStorage.getLiteJobConfig().getTypeConfig().getJobClass());
+    private void checkConflictJob(final LiteJobConfiguration liteJobConfig) {
+        Optional<LiteJobConfiguration> liteJobConfigFromZk = find();
+        if (liteJobConfigFromZk.isPresent() && liteJobConfigFromZk.get().getTypeConfig().getJobClass() != liteJobConfig.getTypeConfig().getJobClass()) {
+            throw new JobConflictException(liteJobConfig.getJobName(), liteJobConfigFromZk.get().getTypeConfig().getJobClass(), liteJobConfig.getTypeConfig().getJobClass());
         }
     }
     
-    private Optional<LiteJobConfiguration> loadInternal() {
+    private Optional<LiteJobConfiguration> find() {
         if (!jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)) {
             return Optional.absent();
         }

@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
@@ -41,9 +40,9 @@ import java.util.List;
 @Slf4j
 public class FailoverService {
     
-    private final LocalHostService localHostService = new LocalHostService();
+    private final String jobName;
     
-    private final LiteJobConfiguration liteJobConfig;
+    private final LocalHostService localHostService = new LocalHostService();
     
     private final JobNodeStorage jobNodeStorage;
     
@@ -51,11 +50,11 @@ public class FailoverService {
     
     private final ShardingService shardingService;
     
-    public FailoverService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        this.liteJobConfig = liteJobConfig;
-        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
-        serverService = new ServerService(regCenter, liteJobConfig);
-        shardingService = new ShardingService(regCenter, liteJobConfig);
+    public FailoverService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
     }
     
     /**
@@ -153,7 +152,7 @@ public class FailoverService {
             log.debug("Elastic job: failover job begin, crashed item:{}.", crashedItem);
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
-            JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobName()).triggerJob();
+            JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();
         }
     }
 }

@@ -52,13 +52,14 @@ public class ListenerManager {
     private final GuaranteeListenerManager guaranteeListenerManager;
     
     public ListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
-        electionListenerManager = new ElectionListenerManager(regCenter, liteJobConfig);
-        shardingListenerManager = new ShardingListenerManager(regCenter, liteJobConfig);
-        executionListenerManager = new ExecutionListenerManager(regCenter, liteJobConfig);
-        failoverListenerManager = new FailoverListenerManager(regCenter, liteJobConfig);
+        String jobName = liteJobConfig.getJobName();
+        electionListenerManager = new ElectionListenerManager(regCenter, jobName);
+        shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
+        executionListenerManager = new ExecutionListenerManager(regCenter, jobName);
+        failoverListenerManager = new FailoverListenerManager(regCenter, jobName);
         jobOperationListenerManager = new JobOperationListenerManager(regCenter, liteJobConfig);
-        configurationListenerManager = new ConfigurationListenerManager(regCenter, liteJobConfig);
-        guaranteeListenerManager = new GuaranteeListenerManager(regCenter, liteJobConfig, elasticJobListeners);
+        configurationListenerManager = new ConfigurationListenerManager(regCenter, jobName);
+        guaranteeListenerManager = new GuaranteeListenerManager(regCenter, jobName, elasticJobListeners);
     }
     
     /**

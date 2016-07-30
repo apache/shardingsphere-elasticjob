@@ -18,10 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.storage;
 
 import com.dangdang.ddframe.job.exception.JobException;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import lombok.Getter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.recipes.cache.TreeCache;
@@ -44,15 +42,14 @@ public class JobNodeStorage {
     
     private final CoordinatorRegistryCenter regCenter;
     
-    @Getter
-    private final LiteJobConfiguration liteJobConfig;
+    private final String jobName;
     
     private final JobNodePath jobNodePath;
     
-    public JobNodeStorage(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
+    public JobNodeStorage(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.regCenter = regCenter;
-        this.liteJobConfig = liteJobConfig;
-        jobNodePath = new JobNodePath(liteJobConfig.getJobName());
+        this.jobName = jobName;
+        jobNodePath = new JobNodePath(jobName);
     }
     
     /**
@@ -109,7 +106,7 @@ public class JobNodeStorage {
     }
     
     private boolean isJobRootNodeExisted() {
-        return regCenter.isExisted("/" + liteJobConfig.getJobName());
+        return regCenter.isExisted("/" + jobName);
     }
     
     /**
@@ -122,17 +119,15 @@ public class JobNodeStorage {
             regCenter.remove(jobNodePath.getFullPath(node));
         }
     }
-    
+        
     /**
-     * 如果节点不存在或允许覆盖则填充节点数据.
-     * 
+     * 填充节点数据.
+     *
      * @param node 作业节点名称
      * @param value 作业节点数据值
      */
-    public void fillJobNodeIfNullOrOverwrite(final String node, final Object value) {
-        if (!isJobNodeExisted(node) || (liteJobConfig.isOverwrite() && !value.toString().equals(getJobNodeDataDirectly(node)))) {
-            regCenter.persist(jobNodePath.getFullPath(node), value.toString());
-        }
+    public void fillJobNode(final String node, final Object value) {
+        regCenter.persist(jobNodePath.getFullPath(node), value.toString());
     }
     
     /**
@@ -223,7 +218,7 @@ public class JobNodeStorage {
      * 注册数据监听器.
      */
     public void addDataListener(final TreeCacheListener listener) {
-        TreeCache cache = (TreeCache) regCenter.getRawCache("/" + liteJobConfig.getJobName());
+        TreeCache cache = (TreeCache) regCenter.getRawCache("/" + jobName);
         cache.getListenable().addListener(listener);
     }
     

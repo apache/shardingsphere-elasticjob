@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -63,9 +64,11 @@ public final class JobOperationListenerManagerTest {
     @Mock
     private JobScheduleController jobScheduleController;
     
+    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
+    
     private String ip = new LocalHostService().getIp();
     
-    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration());
+    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, liteJobConfig);
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -97,7 +100,7 @@ public final class JobOperationListenerManagerTest {
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
         when(serverService.isJobPausedManually()).thenReturn(false);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
-        verify(serverService).persistServerOnline();
+        verify(serverService).persistServerOnline(liteJobConfig);
         verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
         verify(jobScheduleController).resumeJob();
     }
@@ -108,7 +111,7 @@ public final class JobOperationListenerManagerTest {
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
         when(serverService.isJobPausedManually()).thenReturn(true);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
-        verify(serverService).persistServerOnline();
+        verify(serverService).persistServerOnline(liteJobConfig);
         verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
         verify(jobScheduleController, times(0)).resumeJob();
     }

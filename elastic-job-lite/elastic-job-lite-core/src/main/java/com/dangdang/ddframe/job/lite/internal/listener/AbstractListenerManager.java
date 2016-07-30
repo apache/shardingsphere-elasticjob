@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
@@ -32,8 +31,8 @@ public abstract class AbstractListenerManager {
     
     private final JobNodeStorage jobNodeStorage;
     
-    protected AbstractListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
+    protected AbstractListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
     }
 
     /**

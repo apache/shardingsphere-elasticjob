@@ -52,12 +52,13 @@ public class SchedulerFacade {
     private final ListenerManager listenerManager;
     
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
-        configService = new ConfigurationService(regCenter, liteJobConfig);
-        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
-        serverService = new ServerService(regCenter, liteJobConfig);
-        shardingService = new ShardingService(regCenter, liteJobConfig);
-        executionService = new ExecutionService(regCenter, liteJobConfig);
-        monitorService = new MonitorService(regCenter, liteJobConfig);
+        String jobName = liteJobConfig.getJobName();
+        configService = new ConfigurationService(regCenter, jobName);
+        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
+        monitorService = new MonitorService(regCenter, jobName);
         listenerManager = new ListenerManager(regCenter, liteJobConfig, elasticJobListeners);
     }
     
@@ -70,12 +71,14 @@ public class SchedulerFacade {
     
     /**
      * 注册Elastic-Job启动信息.
+     * 
+     * @param liteJobConfig 作业配置
      */
-    public void registerStartUpInfo() {
+    public void registerStartUpInfo(final LiteJobConfiguration liteJobConfig) {
         listenerManager.startAllListeners();
         leaderElectionService.leaderForceElection();
-        configService.persist();
-        serverService.persistServerOnline();
+        configService.persist(liteJobConfig);
+        serverService.persistServerOnline(liteJobConfig);
         serverService.clearJobPausedStatus();
         shardingService.setReshardingFlag();
         monitorService.listen();

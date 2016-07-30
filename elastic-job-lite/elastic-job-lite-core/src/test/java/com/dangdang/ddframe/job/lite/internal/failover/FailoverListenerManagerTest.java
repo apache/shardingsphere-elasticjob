@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -55,7 +54,7 @@ public final class FailoverListenerManagerTest {
     @Mock
     private FailoverService failoverService;
     
-    private final FailoverListenerManager failoverListenerManager = new FailoverListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration());
+    private final FailoverListenerManager failoverListenerManager = new FailoverListenerManager(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {

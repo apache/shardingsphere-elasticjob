@@ -43,6 +43,8 @@ public class JobExecutor {
     
     private final String jobName;
     
+    private final LiteJobConfiguration liteJobConfig;
+    
     private final CoordinatorRegistryCenter regCenter;
     
     private final ElasticJob elasticJob;
@@ -51,15 +53,16 @@ public class JobExecutor {
     
     public JobExecutor(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
         jobName = liteJobConfig.getJobName();
+        this.liteJobConfig = liteJobConfig;
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
-        setGuaranteeServiceForElasticJobListeners(regCenter, liteJobConfig, elasticJobListenerList);
+        setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
         elasticJob = createElasticJob(liteJobConfig);
         schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig, elasticJobListenerList);
     }
     
-    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
-        GuaranteeService guaranteeService = new GuaranteeService(regCenter, liteJobConfig);
+    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
+        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobName);
         for (ElasticJobListener each : elasticJobListeners) {
             if (each instanceof AbstractDistributeOnceElasticJobListener) {
                 ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
@@ -88,6 +91,6 @@ public class JobExecutor {
         log.debug("Elastic job: job controller init, job name is: {}.", jobName);
         schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + jobName);
-        schedulerFacade.registerStartUpInfo();
+        schedulerFacade.registerStartUpInfo(liteJobConfig);
     }
 }

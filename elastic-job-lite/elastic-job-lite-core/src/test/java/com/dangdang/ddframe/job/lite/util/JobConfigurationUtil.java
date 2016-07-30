@@ -30,14 +30,6 @@ import org.unitils.util.ReflectionUtils;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobConfigurationUtil {
     
-    public static void setSuperFieldValue(final Object config, final String fieldName, final Object fieldValue) {
-        try {
-            ReflectionUtils.setFieldValue(config, config.getClass().getSuperclass().getDeclaredField(fieldName), fieldValue);
-        } catch (final NoSuchFieldException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-    
     public static void setFieldValue(final Object config, final String fieldName, final Object fieldValue) {
         try {
             ReflectionUtils.setFieldValue(config, config.getClass().getDeclaredField(fieldName), fieldValue);
@@ -52,6 +44,11 @@ public final class JobConfigurationUtil {
     
     public static LiteJobConfiguration createSimpleLiteJobConfiguration(final boolean overwrite) {
         return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).overwrite(overwrite).build();
+    }
+    
+    public static LiteJobConfiguration createSimpleLiteJobConfiguration(final boolean disabled, final boolean overwrite) {
+        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class))
+                .disabled(disabled).overwrite(overwrite).build();
     }
     
     public static LiteJobConfiguration createDataflowLiteJobConfiguration(final DataflowJobConfiguration.DataflowType dataflowType) {

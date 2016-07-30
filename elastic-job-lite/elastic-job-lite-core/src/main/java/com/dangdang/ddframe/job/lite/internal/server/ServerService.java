@@ -38,8 +38,8 @@ public class ServerService {
     
     private final LocalHostService localHostService = new LocalHostService();
     
-    public ServerService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
+    public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
     }
     
     /**
@@ -52,20 +52,22 @@ public class ServerService {
     
     /**
      * 持久化作业服务器上线相关信息.
+     * 
+     * @param liteJobConfig 作业配置
      */
-    public void persistServerOnline() {
-        jobNodeStorage.fillJobNodeIfNullOrOverwrite(ServerNode.getHostNameNode(localHostService.getIp()), localHostService.getHostName());
-        persistDisabled();
+    public void persistServerOnline(final LiteJobConfiguration liteJobConfig) {
+        jobNodeStorage.fillJobNode(ServerNode.getHostNameNode(localHostService.getIp()), localHostService.getHostName());
+        persistDisabled(liteJobConfig);
         jobNodeStorage.fillEphemeralJobNode(ServerNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
         jobNodeStorage.removeJobNodeIfExisted(ServerNode.getShutdownNode(localHostService.getIp()));
     }
     
-    private void persistDisabled() {
-        if (!jobNodeStorage.getLiteJobConfig().isOverwrite()) {
+    private void persistDisabled(final LiteJobConfiguration liteJobConfig) {
+        if (!liteJobConfig.isOverwrite()) {
             return;
         }
-        if (jobNodeStorage.getLiteJobConfig().isDisabled()) {
-            jobNodeStorage.fillJobNodeIfNullOrOverwrite(ServerNode.getDisabledNode(localHostService.getIp()), "");
+        if (liteJobConfig.isDisabled()) {
+            jobNodeStorage.fillJobNode(ServerNode.getDisabledNode(localHostService.getIp()), "");
         } else {
             jobNodeStorage.removeJobNodeIfExisted(ServerNode.getDisabledNode(localHostService.getIp()));
         }

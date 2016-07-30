@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
@@ -52,13 +51,12 @@ public class FailoverListenerManager extends AbstractListenerManager {
     
     private final FailoverNode failoverNode;
     
-    public FailoverListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        super(regCenter, liteJobConfig);
-        configService = new ConfigurationService(regCenter, liteJobConfig);
-        executionService = new ExecutionService(regCenter, liteJobConfig);
-        shardingService = new ShardingService(regCenter, liteJobConfig);
-        failoverService = new FailoverService(regCenter, liteJobConfig);
-        String jobName = liteJobConfig.getJobName();
+    public FailoverListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        super(regCenter, jobName);
+        configService = new ConfigurationService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        failoverService = new FailoverService(regCenter, jobName);
         configNode = new ConfigurationNode(jobName);
         executionNode = new ExecutionNode(jobName);
         failoverNode = new FailoverNode(jobName);

@@ -37,7 +37,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,9 +45,7 @@ public final class ConfigurationServiceTest {
     @Mock
     private JobNodeStorage jobNodeStorage;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
-    
-    private final ConfigurationService configService = new ConfigurationService(null, liteJobConfig);
+    private final ConfigurationService configService = new ConfigurationService(null, "test_job");
     
     @Before
     public void initMocks() throws NoSuchFieldException {
@@ -95,31 +92,28 @@ public final class ConfigurationServiceTest {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn("{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\","
                 + "\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"scriptCommandLine\":\"test.sh\"}");
-        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
         try {
-            configService.persist();
+            configService.persist(JobConfigurationUtil.createSimpleLiteJobConfiguration());
         } finally {
             verify(jobNodeStorage).isJobNodeExisted(ConfigurationNode.ROOT);
             verify(jobNodeStorage).getJobNodeDataDirectly(ConfigurationNode.ROOT);
-            verify(jobNodeStorage, times(3)).getLiteJobConfig();
         }
     }
     
     @Test
     public void assertPersistNewJobConfiguration() {
-        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
-        configService.persist();
+        LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
+        configService.persist(liteJobConfig);
         verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
     }
     
     @Test
-    public void assertPersistExistedJobConfiguration() {
+    public void assertPersistExistedJobConfiguration() throws NoSuchFieldException {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn("{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\","
                 + "\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":4}");
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
-        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
-        configService.persist();
+        configService.persist(liteJobConfig);
         verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
     }
     

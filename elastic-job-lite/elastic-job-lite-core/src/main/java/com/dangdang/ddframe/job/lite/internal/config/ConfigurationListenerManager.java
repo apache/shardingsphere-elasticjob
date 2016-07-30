@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -31,6 +30,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * 配置文件监听管理器.
  * 
  * @author caohao
+ * @author zhangliang
  */
 public class ConfigurationListenerManager extends AbstractListenerManager {
     
@@ -38,9 +38,9 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    public ConfigurationListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        super(regCenter, liteJobConfig);
-        jobName = liteJobConfig.getJobName();
+    public ConfigurationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        super(regCenter, jobName);
+        this.jobName = jobName;
         configNode = new ConfigurationNode(jobName);
     }
     
@@ -56,8 +56,7 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
             if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType()) {
                 JobScheduleController jobScheduler = JobRegistry.getInstance().getJobScheduleController(jobName);
                 if (null != jobScheduler) {
-                    jobScheduler.rescheduleJob(
-                            LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getTypeConfig().getCoreConfig().getCron());
+                    jobScheduler.rescheduleJob(LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getTypeConfig().getCoreConfig().getCron());
                 }
             }
         }

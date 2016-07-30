@@ -65,13 +65,13 @@ public class ShardingService {
 
     private final JobNodePath jobNodePath;
     
-    public ShardingService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        jobName = liteJobConfig.getJobName();
-        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
-        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
-        configService = new ConfigurationService(regCenter, liteJobConfig);
-        serverService = new ServerService(regCenter, liteJobConfig);
-        executionService = new ExecutionService(regCenter, liteJobConfig);
+    public ShardingService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        configService = new ConfigurationService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
         jobNodePath = new JobNodePath(jobName);
     }
     

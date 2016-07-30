@@ -54,13 +54,13 @@ public class LiteJobFacade implements JobFacade {
     
     private final List<ElasticJobListener> elasticJobListeners;
     
-    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
-        configService = new ConfigurationService(regCenter, liteJobConfig);
-        shardingService = new ShardingService(regCenter, liteJobConfig);
-        serverService = new ServerService(regCenter, liteJobConfig);
-        executionContextService = new ExecutionContextService(regCenter, liteJobConfig);
-        executionService = new ExecutionService(regCenter, liteJobConfig);
-        failoverService = new FailoverService(regCenter, liteJobConfig);
+    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+        configService = new ConfigurationService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        executionContextService = new ExecutionContextService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
+        failoverService = new FailoverService(regCenter, jobName);
         this.elasticJobListeners = elasticJobListeners;
     }
     

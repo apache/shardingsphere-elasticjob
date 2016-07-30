@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManage
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -48,7 +47,7 @@ public final class ConfigurationListenerManagerTest {
     @Mock
     private JobScheduleController jobScheduleController;
     
-    private final ConfigurationListenerManager configurationListenerManager = new ConfigurationListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration());
+    private final ConfigurationListenerManager configurationListenerManager = new ConfigurationListenerManager(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {

@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.execution;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -44,7 +43,7 @@ import java.util.List;
  */
 public class ExecutionService {
     
-    private final LiteJobConfiguration liteJobConfig;
+    private final String jobName;
     
     private final JobNodeStorage jobNodeStorage;
     
@@ -54,12 +53,12 @@ public class ExecutionService {
     
     private final LeaderElectionService leaderElectionService;
     
-    public ExecutionService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        this.liteJobConfig = liteJobConfig;
-        jobNodeStorage = new JobNodeStorage(regCenter, liteJobConfig);
-        configService = new ConfigurationService(regCenter, liteJobConfig);
-        serverService = new ServerService(regCenter, liteJobConfig);
-        leaderElectionService = new LeaderElectionService(regCenter, liteJobConfig);
+    public ExecutionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        configService = new ConfigurationService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        leaderElectionService = new LeaderElectionService(regCenter, jobName);
     }
     
     /**
@@ -73,7 +72,7 @@ public class ExecutionService {
             for (int each : shardingContext.getShardingItems().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
-                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(liteJobConfig.getJobName());
+                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
                 if (null == jobScheduleController) {
                     continue;
                 }

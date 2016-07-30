@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
@@ -45,9 +44,7 @@ public final class ServerServiceTest {
     @Mock
     private LocalHostService localHostService;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
-    
-    private final ServerService serverService = new ServerService(null, liteJobConfig);
+    private final ServerService serverService = new ServerService(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -56,7 +53,6 @@ public final class ServerServiceTest {
         ReflectionUtils.setFieldValue(serverService, "localHostService", localHostService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
-        when(jobNodeStorage.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test
@@ -68,36 +64,31 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineWhenOverwriteDisabled() {
-        JobConfigurationUtil.setFieldValue(liteJobConfig, "overwrite", false);
-        serverService.persistServerOnline();
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
+        serverService.persistServerOnline(JobConfigurationUtil.createSimpleLiteJobConfiguration(false));
+        verify(jobNodeStorage).fillJobNode("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(3)).getIp();
         verify(localHostService).getHostName();
-        verify(jobNodeStorage).getLiteJobConfig();
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
     }
     
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
-        JobConfigurationUtil.setFieldValue(liteJobConfig, "disabled", true);
-        serverService.persistServerOnline();
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
+        serverService.persistServerOnline(JobConfigurationUtil.createSimpleLiteJobConfiguration(true, true));
+        verify(jobNodeStorage).fillJobNode("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
-        verify(jobNodeStorage, times(2)).getLiteJobConfig();
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/disabled", "");
+        verify(jobNodeStorage).fillJobNode("servers/mockedIP/disabled", "");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
     }
     
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
-        serverService.persistServerOnline();
-        verify(jobNodeStorage).fillJobNodeIfNullOrOverwrite("servers/mockedIP/hostName", "mockedHostName");
+        serverService.persistServerOnline(JobConfigurationUtil.createSimpleLiteJobConfiguration(true));
+        verify(jobNodeStorage).fillJobNode("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
-        verify(jobNodeStorage, times(2)).getLiteJobConfig();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/disabled");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
     }

@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
@@ -38,10 +37,10 @@ public class ExecutionListenerManager extends AbstractListenerManager {
     
     private final ConfigurationNode configNode;
     
-    public ExecutionListenerManager(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig) {
-        super(regCenter, liteJobConfig);
-        executionService = new ExecutionService(regCenter, liteJobConfig);
-        configNode = new ConfigurationNode(liteJobConfig.getJobName());
+    public ExecutionListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        super(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
+        configNode = new ConfigurationNode(jobName);
     }
     
     @Override

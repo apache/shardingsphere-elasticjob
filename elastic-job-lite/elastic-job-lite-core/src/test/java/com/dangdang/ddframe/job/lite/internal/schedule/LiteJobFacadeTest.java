@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
@@ -31,7 +31,6 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,14 +70,12 @@ public class LiteJobFacadeTest {
     @Mock
     private ElasticJobListenerCaller caller;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
-    
     private LiteJobFacade liteJobFacade;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        liteJobFacade = new LiteJobFacade(null, liteJobConfig, Collections.<ElasticJobListener>singletonList(new TestElasticJobListener(caller)));
+        liteJobFacade = new LiteJobFacade(null, "test_job", Collections.<ElasticJobListener>singletonList(new TestElasticJobListener(caller)));
         ReflectionUtils.setFieldValue(liteJobFacade, "configService", configService);
         ReflectionUtils.setFieldValue(liteJobFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(liteJobFacade, "shardingService", shardingService);
