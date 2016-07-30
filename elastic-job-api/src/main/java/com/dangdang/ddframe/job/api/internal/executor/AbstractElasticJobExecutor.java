@@ -42,7 +42,6 @@ public abstract class AbstractElasticJobExecutor {
     
     private final ExecutorService executorService;
     
-    @Getter(AccessLevel.NONE)
     private final JobExceptionHandler jobExceptionHandler;
     
     protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
@@ -83,7 +82,7 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            handleException(new JobException(cause));
+            jobExceptionHandler.handleException(new JobException(cause));
         }
         execute(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
@@ -99,7 +98,7 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            handleException(new JobException(cause));
+            jobExceptionHandler.handleException(new JobException(cause));
         }
         log.trace("Elastic job: execute all completed.");
     }
@@ -115,7 +114,7 @@ public abstract class AbstractElasticJobExecutor {
         //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
         //CHECKSTYLE:ON
-            handleException(cause);
+            jobExceptionHandler.handleException(cause);
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             jobFacade.registerJobCompleted(shardingContext);
@@ -123,8 +122,4 @@ public abstract class AbstractElasticJobExecutor {
     }
     
     protected abstract void process(final ShardingContext shardingContext);
-    
-    protected void handleException(final Throwable cause) {
-        jobExceptionHandler.handleException(cause);
-    }
 }

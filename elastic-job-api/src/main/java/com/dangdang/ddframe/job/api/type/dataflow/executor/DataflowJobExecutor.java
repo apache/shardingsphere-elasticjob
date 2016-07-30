@@ -179,7 +179,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
             // CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             // CHECKSTYLE:ON
-            handleException(cause);
+            getJobExceptionHandler().handleException(cause);
         }
     }
     
