@@ -40,8 +40,8 @@ public class ConfigurationService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    public ConfigurationService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfiguration) {
-        jobNodeStorage = new JobNodeStorage(regCenter, jobConfiguration);
+    public ConfigurationService(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig) {
+        jobNodeStorage = new JobNodeStorage(regCenter, jobConfig);
     }
     
     /**

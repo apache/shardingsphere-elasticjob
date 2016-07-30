@@ -30,19 +30,19 @@ public final class SimpleJobConfigurationDtoTest {
     
     @Test
     public void assertToLiteJobConfigurationForAllProperties() {
-        SimpleJobConfigurationDto jobConfigurationDto = new SimpleJobConfigurationDto("simpleJob", "0/1 * * * * ?", 10, FooSimpleElasticJob.class);
-        jobConfigurationDto.setShardingItemParameters("0=a,1=b");
-        jobConfigurationDto.setJobParameter("param");
-        jobConfigurationDto.setFailover(true);
-        jobConfigurationDto.setMisfire(false);
-        jobConfigurationDto.setDescription("desc");
-        jobConfigurationDto.setMonitorExecution(true);
-        jobConfigurationDto.setMaxTimeDiffSeconds(10000);
-        jobConfigurationDto.setMonitorPort(8888);
-        jobConfigurationDto.setJobShardingStrategyClass("test_class");
-        jobConfigurationDto.setDisabled(true);
-        jobConfigurationDto.setOverwrite(true);
-        LiteJobConfiguration actual = jobConfigurationDto.toLiteJobConfiguration();
+        SimpleJobConfigurationDto jobConfigDto = new SimpleJobConfigurationDto("simpleJob", "0/1 * * * * ?", 10, FooSimpleElasticJob.class);
+        jobConfigDto.setShardingItemParameters("0=a,1=b");
+        jobConfigDto.setJobParameter("param");
+        jobConfigDto.setFailover(true);
+        jobConfigDto.setMisfire(false);
+        jobConfigDto.setDescription("desc");
+        jobConfigDto.setMonitorExecution(true);
+        jobConfigDto.setMaxTimeDiffSeconds(10000);
+        jobConfigDto.setMonitorPort(8888);
+        jobConfigDto.setJobShardingStrategyClass("test_class");
+        jobConfigDto.setDisabled(true);
+        jobConfigDto.setOverwrite(true);
+        LiteJobConfiguration actual = jobConfigDto.toLiteJobConfiguration();
         assertThat(actual.getJobName(), is("simpleJob"));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(10));
