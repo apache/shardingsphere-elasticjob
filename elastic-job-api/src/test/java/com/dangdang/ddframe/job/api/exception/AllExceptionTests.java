@@ -15,18 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.api.exception;
 
-/**
- * 分片序列号和个性化参数格式不正确抛出的异常.
- * 
- * @author zhangliang
- */
-public final class ShardingItemParametersException extends JobException {
-    
-    private static final long serialVersionUID = 6743804578144596967L;
-    
-    public ShardingItemParametersException(final String errorMsg, final Object... args) {
-        super(errorMsg, args);
-    }
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({
+        JobConfigurationExceptionTest.class,
+        JobExecutionEnvironmentExceptionTest.class,
+        JobSystemExceptionTest.class
+    })
+public final class AllExceptionTests {
 }

@@ -15,18 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.api.exception;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public final class JobConflictExceptionTest {
+public final class JobSystemExceptionTest {
     
     @Test
     public void assertGetMessage() {
-        assertThat(new JobConflictException("test_job", String.class, Object.class).getMessage(), 
-                is("Job conflict with register center. The job 'test_job' in register center's class is 'java.lang.String', your job class is 'java.lang.Object'"));
+        assertThat(new JobSystemException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
+    }
+    
+    @Test
+    public void assertGetCause() {
+        assertThat(new JobSystemException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }

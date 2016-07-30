@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import lombok.Getter;
 
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class StreamingThroughputDataflowElasticJobForExecuteThrowsException impl
     @Override
     public void processData(final ShardingContext context, final List<String> data) {
         completed = true;
-        throw new JobException("");
+        throw new JobSystemException("I want an error.");
     }
     
     public static void reset() {

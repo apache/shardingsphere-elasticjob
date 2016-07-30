@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import org.junit.Before;
@@ -112,7 +112,7 @@ public final class JobScheduleControllerTest {
         verify(scheduler, times(0)).triggerJob(jobKey);
     }
     
-    @Test(expected = JobException.class)
+    @Test(expected = JobSystemException.class)
     public void assertTriggerJobFailure() throws NoSuchFieldException, SchedulerException {
         JobKey jobKey = new JobKey("test_job");
         when(jobDetail.getKey()).thenReturn(jobKey);
@@ -148,7 +148,7 @@ public final class JobScheduleControllerTest {
         verify(scheduler, times(0)).shutdown();
     }
     
-    @Test(expected = JobException.class)
+    @Test(expected = JobSystemException.class)
     public void assertShutdownFailure() throws NoSuchFieldException, SchedulerException {
         doThrow(SchedulerException.class).when(scheduler).shutdown();
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
@@ -177,7 +177,7 @@ public final class JobScheduleControllerTest {
         verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), Matchers.<Trigger>any());
     }
     
-    @Test(expected = JobException.class)
+    @Test(expected = JobSystemException.class)
     public void assertRescheduleJobFailure() throws NoSuchFieldException, SchedulerException {
         when(schedulerFacade.loadJobConfiguration()).thenReturn(
                 LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build());

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding.strategy;
 
-import com.dangdang.ddframe.job.exception.JobShardingStrategyClassConfigurationException;
+import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.fixture.InvalidJobShardingStrategy;
 import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
 import org.junit.Test;
@@ -32,17 +32,17 @@ public class JobShardingStrategyFactoryTest {
         assertThat(JobShardingStrategyFactory.getStrategy(null), instanceOf(AverageAllocationJobShardingStrategy.class));
     }
     
-    @Test(expected = JobShardingStrategyClassConfigurationException.class)
+    @Test(expected = JobConfigurationException.class)
     public void assertGetStrategyFailureWhenClassNotFound() {
         JobShardingStrategyFactory.getStrategy("NotClass");
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = JobConfigurationException.class)
     public void assertGetStrategyFailureWhenNotStrategyClass() {
         JobShardingStrategyFactory.getStrategy(Object.class.getName());
     }
     
-    @Test(expected = JobShardingStrategyClassConfigurationException.class)
+    @Test(expected = JobConfigurationException.class)
     public void assertGetStrategyFailureWhenStrategyClassInvalid() {
         JobShardingStrategyFactory.getStrategy(InvalidJobShardingStrategy.class.getName());
     }

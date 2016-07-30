@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
-import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
@@ -79,7 +79,7 @@ public class JobExecutor {
         try {
             result = liteJobConfig.getTypeConfig().getJobClass().newInstance();
         } catch (final InstantiationException | IllegalAccessException ex) {
-            throw new JobException(ex);
+            throw new JobConfigurationException("Cannot create elastic job for class '%s', message details are: '%s'", ex.getMessage());
         }
         return result;
     }

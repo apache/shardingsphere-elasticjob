@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.producer;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
@@ -58,7 +58,7 @@ class TaskProducerScheduler {
             factory.initialize(getQuartzProperties());
             return factory.getScheduler();
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -77,7 +77,7 @@ class TaskProducerScheduler {
             }
             scheduler.start();
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -90,7 +90,7 @@ class TaskProducerScheduler {
                 scheduleJob(jobConfig);
             }
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -107,7 +107,7 @@ class TaskProducerScheduler {
             try {
                 scheduler.unscheduleJob(TriggerKey.triggerKey(jobConfig.getCron()));
             } catch (final SchedulerException ex) {
-                throw new JobException(ex);
+                throw new JobSystemException(ex);
             }
         }
     }
@@ -118,7 +118,7 @@ class TaskProducerScheduler {
                 scheduler.shutdown();
             }
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     

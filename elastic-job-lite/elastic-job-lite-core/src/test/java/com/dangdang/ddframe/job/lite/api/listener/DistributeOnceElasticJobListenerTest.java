@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.api.listener;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.exception.JobTimeoutException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
@@ -78,7 +78,7 @@ public final class DistributeOnceElasticJobListenerTest {
         verify(guaranteeService, times(0)).clearAllStartedInfo();
     }
     
-    @Test(expected = JobTimeoutException.class)
+    @Test(expected = JobSystemException.class)
     public void assertBeforeJobExecutedWhenIsNotAllStartedAndTimeout() {
         when(guaranteeService.isAllStarted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L, 2L);
@@ -105,7 +105,7 @@ public final class DistributeOnceElasticJobListenerTest {
         verify(guaranteeService, times(0)).clearAllCompletedInfo();
     }
     
-    @Test(expected = JobTimeoutException.class)
+    @Test(expected = JobSystemException.class)
     public void assertAfterJobExecutedWhenIsAllCompletedAndTimeout() {
         when(guaranteeService.isAllCompleted()).thenReturn(false);
         when(timeService.getCurrentMillis()).thenReturn(0L, 2L);

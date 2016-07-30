@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.api.internal.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 
 import java.util.Collection;
 
@@ -38,9 +39,11 @@ public interface JobFacade {
     JobConfiguration loadJobConfiguration(boolean fromCache);
     
     /**
-     * 检查本机与注册中心的时间误差秒数是否在允许范围.
+     * 检查作业执行环境.
+     * 
+     * @throws JobExecutionEnvironmentException 作业执行环境异常
      */
-    void checkMaxTimeDiffSecondsTolerable();
+    void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException;
     
     /**
      * 如果需要失效转移, 则设置作业失效转移.

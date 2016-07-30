@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
@@ -94,8 +95,8 @@ public class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertCheckMaxTimeDiffSecondsTolerable() {
-        liteJobFacade.checkMaxTimeDiffSecondsTolerable();
+    public void assertCheckMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
+        liteJobFacade.checkJobExecutionEnvironment();
         verify(configService).checkMaxTimeDiffSecondsTolerable();
     }
     

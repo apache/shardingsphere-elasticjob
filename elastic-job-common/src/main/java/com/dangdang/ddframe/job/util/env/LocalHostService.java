@@ -23,8 +23,6 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
-import com.dangdang.ddframe.job.exception.JobException;
-
 /**
  * 获取真实本机网络的服务.
  * 
@@ -52,7 +50,7 @@ public class LocalHostService {
         try {
             netInterfaces = NetworkInterface.getNetworkInterfaces();
         } catch (final SocketException ex) {
-            throw new JobException(ex);
+            throw new HostException(ex);
         }
         String localIpAddress = null;
         while (netInterfaces.hasMoreElements()) {
@@ -100,7 +98,7 @@ public class LocalHostService {
         try {
             result = InetAddress.getLocalHost();
         } catch (final UnknownHostException ex) {
-            throw new JobException(ex);
+            throw new HostException(ex);
         }
         return result;
     }

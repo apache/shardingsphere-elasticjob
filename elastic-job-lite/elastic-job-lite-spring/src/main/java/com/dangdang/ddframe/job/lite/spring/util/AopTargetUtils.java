@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.aop.support.AopUtils;
 
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -63,7 +63,7 @@ public final class AopTargetUtils {
         try {
             return getTargetObject(h.get(proxy));
         } catch (final IllegalAccessException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -79,7 +79,7 @@ public final class AopTargetUtils {
         // CHECKSTYLE:OFF
         } catch (final Exception ex) {
         // CHECKSTYLE:ON
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -91,7 +91,7 @@ public final class AopTargetUtils {
         // CHECKSTYLE:OFF
         } catch (final Exception ex) {
         // CHECKSTYLE:ON
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
 }

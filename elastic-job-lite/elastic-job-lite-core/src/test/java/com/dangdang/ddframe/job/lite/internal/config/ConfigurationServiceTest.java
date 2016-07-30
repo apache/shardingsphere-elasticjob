@@ -17,9 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.exception.JobConflictException;
-import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
-import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
+import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
@@ -85,7 +84,7 @@ public final class ConfigurationServiceTest {
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
     }
     
-    @Test(expected = JobConflictException.class)
+    @Test(expected = JobConfigurationException.class)
     public void assertPersistJobConfigurationForJobConflict() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
         when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn("{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\","
@@ -123,7 +122,7 @@ public final class ConfigurationServiceTest {
         assertThat(configService.getShardingItemParameters(), is(Collections.EMPTY_MAP));
     }
     
-    @Test(expected = ShardingItemParametersException.class)
+    @Test(expected = JobConfigurationException.class)
     public void assertGetShardingItemParametersWhenPairFormatInvalid() {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
@@ -131,7 +130,7 @@ public final class ConfigurationServiceTest {
         configService.getShardingItemParameters();
     }
     
-    @Test(expected = ShardingItemParametersException.class)
+    @Test(expected = JobConfigurationException.class)
     public void assertGetShardingItemParametersWhenItemIsNotNumber() {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
@@ -152,7 +151,7 @@ public final class ConfigurationServiceTest {
     }
     
     @Test
-    public void assertIsMaxTimeDiffSecondsTolerableWithDefaultValue() {
+    public void assertIsMaxTimeDiffSecondsTolerableWithDefaultValue() throws JobExecutionEnvironmentException {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"-1\",\"scriptCommandLine\":\"test.sh\"}");
@@ -160,7 +159,7 @@ public final class ConfigurationServiceTest {
     }
     
     @Test
-    public void assertIsMaxTimeDiffSecondsTolerable() {
+    public void assertIsMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"60\",\"scriptCommandLine\":\"test.sh\"}");
@@ -169,8 +168,8 @@ public final class ConfigurationServiceTest {
         verify(jobNodeStorage).getRegistryCenterTime();
     }
     
-    @Test(expected = TimeDiffIntolerableException.class)
-    public void assertIsNotMaxTimeDiffSecondsTolerable() {
+    @Test(expected = JobExecutionEnvironmentException.class)
+    public void assertIsNotMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
                 "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
                         + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"60\",\"scriptCommandLine\":\"test.sh\"}");

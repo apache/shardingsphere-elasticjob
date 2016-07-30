@@ -15,22 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.api.exception;
 
 /**
- * 分布式作业抛出的异常基类.
+ * 作业执行环境异常.
  * 
  * @author zhangliang
  */
-public class JobException extends RuntimeException {
+public class JobExecutionEnvironmentException extends Exception {
     
-    private static final long serialVersionUID = -5323792555332165319L;
+    private static final long serialVersionUID = -6670738108926897433L;
     
-    public JobException(final String errorMessage, final Object... args) {
+    public JobExecutionEnvironmentException(final String errorMessage, final Object... args) {
         super(String.format(errorMessage, args));
-    }
-    
-    public JobException(final Throwable cause) {
-        super(cause);
     }
 }

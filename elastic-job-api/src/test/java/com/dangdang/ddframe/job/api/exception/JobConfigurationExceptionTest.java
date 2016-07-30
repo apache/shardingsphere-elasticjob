@@ -15,18 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.api.exception;
 
-/**
- * 作业分片策略类配置错误抛出的异常.
- * 
- * @author zhangliang
- */
-public final class JobShardingStrategyClassConfigurationException extends JobException {
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class JobConfigurationExceptionTest {
     
-    private static final long serialVersionUID = -5017090222608389272L;
-    
-    public JobShardingStrategyClassConfigurationException(final Exception cause) {
-        super(cause);
+    @Test
+    public void assertGetMessage() {
+        assertThat(new JobConfigurationException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
     }
 }

@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.api.type;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -43,7 +44,11 @@ public class ElasticJobAssert {
     }
     
     public static void verifyForIsNotMisfire(final JobFacade jobFacade, final ShardingContext shardingContext) {
-        verify(jobFacade).checkMaxTimeDiffSecondsTolerable();
+        try {
+            verify(jobFacade).checkJobExecutionEnvironment();
+        } catch (final JobExecutionEnvironmentException ex) {
+            throw new RuntimeException(ex);
+        }
         verify(jobFacade).getShardingContext();
         verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
         verify(jobFacade).cleanPreviousExecutionInfo();

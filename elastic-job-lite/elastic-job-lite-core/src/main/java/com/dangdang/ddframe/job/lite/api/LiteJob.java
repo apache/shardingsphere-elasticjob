@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
@@ -25,7 +26,6 @@ import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
 import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.ddframe.job.api.type.simple.executor.SimpleJobExecutor;
-import com.dangdang.ddframe.job.exception.JobException;
 import lombok.Setter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -56,7 +56,7 @@ public class LiteJob implements Job {
         } else if (elasticJob instanceof DataflowJob) {
             elasticJobExecutor = new DataflowJobExecutor((DataflowJob<Object>) elasticJob, jobFacade);
         } else {
-            throw new JobException("Cannot support job type '%s'", elasticJob.getClass());
+            throw new JobConfigurationException("Cannot support job type '%s'", elasticJob.getClass());
         }
         elasticJobExecutor.execute();
     }

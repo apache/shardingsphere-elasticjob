@@ -17,9 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.exception.JobConflictException;
-import com.dangdang.ddframe.job.exception.ShardingItemParametersException;
-import com.dangdang.ddframe.job.exception.TimeDiffIntolerableException;
+import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -78,7 +77,8 @@ public class ConfigurationService {
     private void checkConflictJob(final LiteJobConfiguration liteJobConfig) {
         Optional<LiteJobConfiguration> liteJobConfigFromZk = find();
         if (liteJobConfigFromZk.isPresent() && liteJobConfigFromZk.get().getTypeConfig().getJobClass() != liteJobConfig.getTypeConfig().getJobClass()) {
-            throw new JobConflictException(liteJobConfig.getJobName(), liteJobConfigFromZk.get().getTypeConfig().getJobClass(), liteJobConfig.getTypeConfig().getJobClass());
+            throw new JobConfigurationException("Job conflict with register center. The job '%s' in register center's class is '%s', your job class is '%s'", 
+                    liteJobConfig.getJobName(), liteJobConfigFromZk.get().getTypeConfig().getJobClass().getCanonicalName(), liteJobConfig.getTypeConfig().getJobClass().getCanonicalName());
         }
     }
     
@@ -109,12 +109,12 @@ public class ConfigurationService {
         for (String each : shardingItemParameters) {
             String[] pair = each.trim().split("=");
             if (2 != pair.length) {
-                throw new ShardingItemParametersException("Sharding item parameters '%s' format error, should be int=xx,int=xx", value);
+                throw new JobConfigurationException("Sharding item parameters '%s' format error, should be int=xx,int=xx", value);
             }
             try {
                 result.put(Integer.parseInt(pair[0].trim()), pair[1].trim());
             } catch (final NumberFormatException ex) {
-                throw new ShardingItemParametersException("Sharding item parameters key '%s' is not an integer.", pair[0]);
+                throw new JobConfigurationException("Sharding item parameters key '%s' is not an integer.", pair[0]);
             }
         }
         return result;
@@ -122,15 +122,18 @@ public class ConfigurationService {
     
     /**
      * 检查本机与注册中心的时间误差秒数是否在允许范围.
+     * 
+     * @throws JobExecutionEnvironmentException 本机与注册中心的时间误差秒数不在允许范围所抛出的异常
      */
-    public void checkMaxTimeDiffSecondsTolerable() {
+    public void checkMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
         int maxTimeDiffSeconds =  load(true).getMaxTimeDiffSeconds();
         if (-1  == maxTimeDiffSeconds) {
             return;
         }
         long timeDiff = Math.abs(System.currentTimeMillis() - jobNodeStorage.getRegistryCenterTime());
         if (timeDiff > maxTimeDiffSeconds * 1000L) {
-            throw new TimeDiffIntolerableException(Long.valueOf(timeDiff / 1000).intValue(), maxTimeDiffSeconds);
+            throw new JobExecutionEnvironmentException(
+                    "Time different between job server and register center exceed '%s' seconds, max time different is '%s' seconds.", Long.valueOf(timeDiff / 1000).intValue(), maxTimeDiffSeconds);
         }
     }
 }

@@ -20,7 +20,8 @@ package com.dangdang.ddframe.job.api.internal.executor;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.internal.config.JobProperties;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,7 @@ public abstract class AbstractElasticJobExecutor {
             try {
                 return jobPropertiesEnum.getDefaultValue().newInstance();
             } catch (final InstantiationException | IllegalAccessException e) {
-                throw new JobException(e);
+                throw new JobSystemException(e);
             }
         }
     }
@@ -70,7 +71,12 @@ public abstract class AbstractElasticJobExecutor {
      */
     public final void execute() {
         log.trace("Elastic job: job execute begin.");
-        jobFacade.checkMaxTimeDiffSecondsTolerable();
+        try {
+            jobFacade.checkJobExecutionEnvironment();
+        } catch (final JobExecutionEnvironmentException cause) {
+            jobExceptionHandler.handleException(cause);
+        }
+        
         ShardingContext shardingContext = jobFacade.getShardingContext();
         if (jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())) {
             log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
@@ -82,7 +88,7 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobExceptionHandler.handleException(new JobException(cause));
+            jobExceptionHandler.handleException(cause);
         }
         execute(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
@@ -98,7 +104,7 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobExceptionHandler.handleException(new JobException(cause));
+            jobExceptionHandler.handleException(cause);
         }
         log.trace("Elastic job: execute all completed.");
     }

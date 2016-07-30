@@ -15,23 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.api.exception;
 
-/**
- * 作业超时抛出的异常.
- * 
- * @author zhangliang
- */
-public final class JobTimeoutException extends JobException {
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class JobExecutionEnvironmentExceptionTest {
     
-    private static final long serialVersionUID = 315323919916960589L;
-    
-    /**
-     * 作业超时抛出的异常.
-     * 
-     * @param timeoutMills 超时毫秒数
-     */
-    public JobTimeoutException(final long timeoutMills) {
-        super("Job timeout. timeout mills is %s.", timeoutMills);
+    @Test
+    public void assertGetMessage() {
+        assertThat(new JobExecutionEnvironmentException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
     }
 }

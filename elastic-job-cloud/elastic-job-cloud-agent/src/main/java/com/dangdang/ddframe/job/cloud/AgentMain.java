@@ -19,16 +19,16 @@ package com.dangdang.ddframe.job.cloud;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
-import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
+import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
+import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.ddframe.job.api.type.simple.executor.SimpleJobExecutor;
 import com.dangdang.ddframe.job.cloud.api.CloudJobFacade;
-import com.dangdang.ddframe.job.exception.JobException;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -66,7 +66,7 @@ public final class AgentMain {
                 } else if (elasticJob instanceof ScriptJob) {
                     elasticJobExecutor = new ScriptJobExecutor(jobFacade);
                 } else {
-                    throw new JobException("Cannot support job type '%s'", elasticJob.getClass());
+                    throw new JobConfigurationException("Cannot support job type '%s'", elasticJob.getClass());
                 }
                 elasticJobExecutor.execute();
             }

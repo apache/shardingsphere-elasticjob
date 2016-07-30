@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.api.type.script.executor;
 import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.Executor;
 import org.junit.Before;
@@ -52,7 +52,7 @@ public class ScriptJobExecutorTest {
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, ElasticJobAssert.getShardingContext());
     }
     
-    @Test(expected = JobException.class)
+    @Test(expected = JobSystemException.class)
     public void assertExecuteWhenScriptCommandLineIsEmpty() throws IOException, NoSuchFieldException {
         when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration(""));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
@@ -62,7 +62,7 @@ public class ScriptJobExecutorTest {
     }
     
     @SuppressWarnings("unchecked")
-    @Test(expected = JobException.class)
+    @Test(expected = JobSystemException.class)
     public void assertExecuteWhenExecuteFailure() throws IOException, NoSuchFieldException {
         when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file"));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);

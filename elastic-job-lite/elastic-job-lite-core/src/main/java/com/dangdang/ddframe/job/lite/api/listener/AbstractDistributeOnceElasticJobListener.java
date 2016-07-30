@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.api.listener;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.exception.JobTimeoutException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.util.env.TimeService;
 import lombok.Setter;
@@ -74,7 +74,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         }
         if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
             guaranteeService.clearAllStartedInfo();
-            throw new JobTimeoutException(startedTimeoutMilliseconds);
+            handleTimeout(startedTimeoutMilliseconds);
         }
     }
     
@@ -96,8 +96,12 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
         }
         if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
             guaranteeService.clearAllCompletedInfo();
-            throw new JobTimeoutException(completedTimeoutMilliseconds);
+            handleTimeout(completedTimeoutMilliseconds);
         }
+    }
+    
+    private void handleTimeout(final long timeoutMilliseconds) {
+        throw new JobSystemException("Job timeout. timeout mills is %s.", timeoutMilliseconds);
     }
     
     /**

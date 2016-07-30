@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
@@ -71,7 +71,7 @@ public class JobScheduler {
                     initializeScheduler(jobDetail.getKey().toString()), jobDetail, jobExecutor.getSchedulerFacade(), Joiner.on("_").join(jobExecutor.getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX));
             jobScheduleController.scheduleJob(jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig().getCoreConfig().getCron());
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
         JobRegistry.getInstance().addJobScheduleController(jobExecutor.getJobName(), jobScheduleController);
     }

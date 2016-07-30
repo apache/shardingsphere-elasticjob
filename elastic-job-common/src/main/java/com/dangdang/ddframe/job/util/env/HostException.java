@@ -15,18 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.util.env;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-public final class TimeDiffIntolerableExceptionTest {
+/**
+ * 网络异常.
+ * 
+ * @author zhangliang
+ */
+public class HostException extends RuntimeException {
     
-    @Test
-    public void assertGetMessage() {
-        assertThat(new TimeDiffIntolerableException(60, 10).getMessage(), 
-                is("Time different between job server and register center exceed [60] seconds, max time different is [10] seconds."));
+    private static final long serialVersionUID = 3589264847881174997L;
+    
+    public HostException(final Throwable cause) {
+        super(cause);
     }
 }

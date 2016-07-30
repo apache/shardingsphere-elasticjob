@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.api.fixture.handler;
 
 import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 
 public final class ThrowJobExceptionHandler implements JobExceptionHandler {
     
     @Override
     public void handleException(final Throwable cause) {
-        throw new JobException(cause);
+        throw new JobSystemException(cause);
     }
 }

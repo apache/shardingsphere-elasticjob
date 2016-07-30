@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.exception.JobException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import lombok.RequiredArgsConstructor;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -59,7 +59,7 @@ public class JobScheduleController {
             }
             scheduler.start();
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -75,7 +75,7 @@ public class JobScheduleController {
                 scheduler.rescheduleJob(TriggerKey.triggerKey(triggerIdentity), createTrigger(cron));
             }
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -127,7 +127,7 @@ public class JobScheduleController {
                 scheduler.pauseAll();
             }
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -140,7 +140,7 @@ public class JobScheduleController {
                 scheduler.resumeAll();
             }
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -153,7 +153,7 @@ public class JobScheduleController {
                 scheduler.triggerJob(jobDetail.getKey());
             }
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
     
@@ -167,7 +167,7 @@ public class JobScheduleController {
                 scheduler.shutdown();
             }
         } catch (final SchedulerException ex) {
-            throw new JobException(ex);
+            throw new JobSystemException(ex);
         }
     }
 }

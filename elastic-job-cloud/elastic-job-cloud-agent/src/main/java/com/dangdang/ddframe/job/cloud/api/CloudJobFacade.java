@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.api;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void checkMaxTimeDiffSecondsTolerable() {
+    public void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException {
     }
     
     @Override
