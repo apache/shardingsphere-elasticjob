@@ -133,14 +133,4 @@ public class ConfigurationService {
             throw new TimeDiffIntolerableException(Long.valueOf(timeDiff / 1000).intValue(), maxTimeDiffSeconds);
         }
     }
-    
-    /**
-     * 获取是否开启失效转移.
-     *
-     * @return 是否开启失效转移
-     */
-    public boolean isFailover() {
-        LiteJobConfiguration liteJobConfig = load(true);
-        return liteJobConfig.isMonitorExecution() && liteJobConfig.getTypeConfig().getCoreConfig().isFailover();
-    }
 }

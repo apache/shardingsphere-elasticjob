@@ -54,8 +54,25 @@ public final class LiteJobConfigurationTest {
     
     @Test
     public void assertBuildWhenOptionalParametersIsNull() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class))
-                .jobShardingStrategyClass(null).build();
-        assertThat(actual.getJobShardingStrategyClass(), is(""));
+        assertThat(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
+                TestSimpleJob.class)).jobShardingStrategyClass(null).build().getJobShardingStrategyClass(), is(""));
+    }
+    
+    @Test
+    public void assertIsNotFailoverWhenNotMonitorExecution() {
+        assertFalse(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class)).monitorExecution(false).build().isFailover());
+    }
+    
+    @Test
+    public void assertIsNotFailoverWhenMonitorExecution() {
+        assertFalse(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class)).monitorExecution(true).build().isFailover());
+    }
+    
+    @Test
+    public void assertIsFailover() {
+        assertTrue(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class)).monitorExecution(true).build().isFailover());
     }
 }

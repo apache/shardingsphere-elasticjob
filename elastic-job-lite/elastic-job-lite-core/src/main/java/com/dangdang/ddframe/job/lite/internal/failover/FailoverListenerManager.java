@@ -80,7 +80,7 @@ public class FailoverListenerManager extends AbstractListenerManager {
     }
     
     private boolean isJobCrashAndNeedFailover(final Integer item, final TreeCacheEvent event) {
-        return null != item && Type.NODE_REMOVED == event.getType() && !executionService.isCompleted(item) && configService.isFailover();
+        return null != item && Type.NODE_REMOVED == event.getType() && !executionService.isCompleted(item) && configService.load(true).isFailover();
     }
     
     class JobCrashedJobListener extends AbstractJobListener {

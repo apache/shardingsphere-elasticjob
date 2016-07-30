@@ -34,9 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -182,29 +180,5 @@ public final class ConfigurationServiceTest {
         } finally {
             verify(jobNodeStorage).getRegistryCenterTime();
         }
-    }
-    
-    @Test
-    public void assertIsNotFailoverWhenNotMonitorExecution() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"failover\":false,\"monitorExecution\":false,\"scriptCommandLine\":\"test.sh\"}");
-        assertFalse(configService.isFailover());
-    }
-    
-    @Test
-    public void assertIsNotFailoverWhenMonitorExecution() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"failover\":false,\"monitorExecution\":true,\"scriptCommandLine\":\"test.sh\"}");
-        assertFalse(configService.isFailover());
-    }
-    
-    @Test
-    public void assertIsFailover() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"failover\":true,\"monitorExecution\":true,\"scriptCommandLine\":\"test.sh\"}");
-        assertTrue(configService.isFailover());
     }
 }

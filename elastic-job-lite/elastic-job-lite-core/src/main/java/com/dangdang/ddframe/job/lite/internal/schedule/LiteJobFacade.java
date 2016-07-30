@@ -76,7 +76,7 @@ public class LiteJobFacade implements JobFacade {
     
     @Override
     public void failoverIfNecessary() {
-        if (configService.isFailover() && !serverService.isJobPausedManually()) {
+        if (configService.load(true).isFailover() && !serverService.isJobPausedManually()) {
             failoverService.failoverIfNecessary();
         }
     }
@@ -89,14 +89,14 @@ public class LiteJobFacade implements JobFacade {
     @Override
     public void registerJobCompleted(final ShardingContext shardingContext) {
         executionService.registerJobCompleted(shardingContext);
-        if (configService.isFailover()) {
+        if (configService.load(true).isFailover()) {
             failoverService.updateFailoverComplete(shardingContext.getShardingItems().keySet());
         }
     }
     
     @Override
     public ShardingContext getShardingContext() {
-        boolean isFailover = configService.isFailover();
+        boolean isFailover = configService.load(true).isFailover();
         if (isFailover) {
             List<Integer> failoverShardingItems = failoverService.getLocalHostFailoverItems();
             if (!failoverShardingItems.isEmpty()) {

@@ -58,6 +58,15 @@ public class LiteJobConfiguration implements JobConfiguration {
     }
     
     /**
+     * 获取是否开启失效转移.
+     *
+     * @return 是否开启失效转移
+     */
+    public boolean isFailover() {
+        return monitorExecution && typeConfig.getCoreConfig().isFailover();
+    }
+    
+    /**
      * 创建Lite作业配置构建器.
      * 
      * @param jobConfig 作业配置

@@ -17,6 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
@@ -98,24 +102,26 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedButDisableFailover() {
         when(executionService.isCompleted(0)).thenReturn(false);
-        when(configService.isFailover()).thenReturn(false);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class)).build());
         failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/running", null, "".getBytes())), "/test_job/execution/0/running");
         verify(executionService).isCompleted(0);
-        verify(configService).isFailover();
+        verify(configService).load(true);
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
     
     @Test
     public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFailoverButHasRunningItems() {
         when(executionService.isCompleted(0)).thenReturn(false);
-        when(configService.isFailover()).thenReturn(true);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class)).monitorExecution(true).build());
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
         when(executionService.hasRunningItems(Arrays.asList(1, 2))).thenReturn(true);
         failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/running", null, "".getBytes())), "/test_job/execution/0/running");
         verify(executionService).isCompleted(0);
-        verify(configService).isFailover();
+        verify(configService).load(true);
         verify(failoverService).setCrashedFailoverFlag(0);
         verify(shardingService).getLocalHostShardingItems();
         verify(executionService).hasRunningItems(Arrays.asList(1, 2));
@@ -125,13 +131,14 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFailoverAndHasNotRunningItems() {
         when(executionService.isCompleted(0)).thenReturn(false);
-        when(configService.isFailover()).thenReturn(true);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class)).monitorExecution(true).build());
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
         when(executionService.hasRunningItems(Arrays.asList(1, 2))).thenReturn(false);
         failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/running", null, "".getBytes())), "/test_job/execution/0/running");
         verify(executionService).isCompleted(0);
-        verify(configService).isFailover();
+        verify(configService).load(true);
         verify(failoverService).setCrashedFailoverFlag(0);
         verify(shardingService).getLocalHostShardingItems();
         verify(executionService).hasRunningItems(Arrays.asList(1, 2));
@@ -164,24 +171,26 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedButDisableFailover() {
         when(executionService.isCompleted(0)).thenReturn(false);
-        when(configService.isFailover()).thenReturn(false);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class)).build());
         failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/failover", null, "".getBytes())), "/test_job/execution/0/failover");
         verify(executionService).isCompleted(0);
-        verify(configService).isFailover();
+        verify(configService).load(true);
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
     
     @Test
     public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFailoverButHasRunningItems() {
         when(executionService.isCompleted(0)).thenReturn(false);
-        when(configService.isFailover()).thenReturn(true);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class)).monitorExecution(true).build());
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
         when(executionService.hasRunningItems(Arrays.asList(1, 2))).thenReturn(true);
         failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/failover", null, "".getBytes())), "/test_job/execution/0/failover");
         verify(executionService).isCompleted(0);
-        verify(configService).isFailover();
+        verify(configService).load(true);
         verify(failoverService).setCrashedFailoverFlag(0);
         verify(shardingService).getLocalHostShardingItems();
         verify(executionService).hasRunningItems(Arrays.asList(1, 2));
@@ -191,13 +200,14 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveAndItemNotCompletedAndEnableFailoverAndHasNotRunningItems() {
         when(executionService.isCompleted(0)).thenReturn(false);
-        when(configService.isFailover()).thenReturn(true);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class)).monitorExecution(true).build());
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
         when(executionService.hasRunningItems(Arrays.asList(1, 2))).thenReturn(false);
         failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/failover", null, "".getBytes())), "/test_job/execution/0/failover");
         verify(executionService).isCompleted(0);
-        verify(configService).isFailover();
+        verify(configService).load(true);
         verify(failoverService).setCrashedFailoverFlag(0);
         verify(shardingService).getLocalHostShardingItems();
         verify(executionService).hasRunningItems(Arrays.asList(1, 2));
