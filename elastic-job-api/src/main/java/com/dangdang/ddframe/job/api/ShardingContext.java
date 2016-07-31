@@ -17,14 +17,11 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.util.json.GsonFactory;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,6 +29,7 @@ import java.util.Map;
  * 
  * @author zhangliang
  */
+@RequiredArgsConstructor
 @Getter
 @ToString
 public final class ShardingContext {
@@ -39,33 +37,23 @@ public final class ShardingContext {
     /**
      * 作业名称.
      */
-    private String jobName;
+    private final String jobName;
     
     /**
      * 分片总数.
      */
-    private int shardingTotalCount;
+    private final int shardingTotalCount;
     
     /**
      * 作业自定义参数.
      * 可以配置多个相同的作业, 但是用不同的参数作为不同的调度实例.
      */
-    private String jobParameter;
+    private final String jobParameter;
     
     /**
      * 分配于本作业实例的分片项.
      */
-    private final Map<Integer, ShardingItem> shardingItems;
-    
-    public ShardingContext(final String jobName, final int shardingTotalCount, final String jobParameter, final Collection<ShardingItem> shardingItems) {
-        this.jobName = jobName;
-        this.shardingTotalCount = shardingTotalCount;
-        this.jobParameter = jobParameter;
-        this.shardingItems = new LinkedHashMap<>(shardingTotalCount);
-        for (ShardingItem each : shardingItems) {
-            this.shardingItems.put(each.getItem(), each);
-        }
-    }
+    private final Map<Integer, String> shardingItemParameters;
     
     /**
      * 根据分片项生成分片上下文.
@@ -74,34 +62,8 @@ public final class ShardingContext {
      * @return 分片上下文
      */
     public ShardingContext getShardingContext(final int shardingItem) {
-        return new ShardingContext(jobName, shardingTotalCount, jobParameter, Collections.singletonList(shardingItems.get(shardingItem)));
-    }
-    
-    /**
-     * 获取Json格式字符串.
-     *
-     * @return Json格式字符串
-     */
-    public String toJson() {
-        return GsonFactory.getGson().toJson(this);
-    }
-    
-    /**
-     * 分片项.
-     */
-    @AllArgsConstructor
-    @Getter
-    @ToString
-    public static final class ShardingItem {
-        
-        /**
-         * 运行在本作业服务器的分片序列号.
-         */
-        private final int item;
-        
-        /**
-         * 分片序列号的个性化参数.
-         */
-        private final String parameter;
+        Map<Integer, String> shardingItemParameters = new HashMap<>(1, 1);
+        shardingItemParameters.put(shardingItem, this.shardingItemParameters.get(shardingItem));
+        return new ShardingContext(jobName, shardingTotalCount, jobParameter, shardingItemParameters);
     }
 }

@@ -67,9 +67,9 @@ public class ExecutionService {
      * @param shardingContext 分片上下文
      */
     public void registerJobBegin(final ShardingContext shardingContext) {
-        if (!shardingContext.getShardingItems().isEmpty() && configService.load(true).isMonitorExecution()) {
+        if (!shardingContext.getShardingItemParameters().isEmpty() && configService.load(true).isMonitorExecution()) {
             serverService.updateServerStatus(ServerStatus.RUNNING);
-            for (int each : shardingContext.getShardingItems().keySet()) {
+            for (int each : shardingContext.getShardingItemParameters().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
                 JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
@@ -133,7 +133,7 @@ public class ExecutionService {
             return;
         }
         serverService.updateServerStatus(ServerStatus.READY);
-        for (int each : shardingContext.getShardingItems().keySet()) {
+        for (int each : shardingContext.getShardingItemParameters().keySet()) {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));
             jobNodeStorage.replaceJobNode(ExecutionNode.getLastCompleteTimeNode(each), System.currentTimeMillis());

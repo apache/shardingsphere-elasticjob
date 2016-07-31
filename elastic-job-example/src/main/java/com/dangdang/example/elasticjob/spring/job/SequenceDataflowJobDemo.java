@@ -38,8 +38,8 @@ public class SequenceDataflowJobDemo implements DataflowJob<Foo> {
     
     @Override
     public List<Foo> fetchData(final ShardingContext context) {
-        printContext.printFetchDataMessage(context.getShardingItems().keySet().iterator().next());
-        return fooRepository.findActive(Collections.singletonList(context.getShardingItems().keySet().iterator().next()));
+        printContext.printFetchDataMessage(context.getShardingItemParameters().keySet().iterator().next());
+        return fooRepository.findActive(Collections.singletonList(context.getShardingItemParameters().keySet().iterator().next()));
     }
     
     @Override

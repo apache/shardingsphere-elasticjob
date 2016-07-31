@@ -91,7 +91,7 @@ public class LiteJobFacade implements JobFacade {
     public void registerJobCompleted(final ShardingContext shardingContext) {
         executionService.registerJobCompleted(shardingContext);
         if (configService.load(true).isFailover()) {
-            failoverService.updateFailoverComplete(shardingContext.getShardingItems().keySet());
+            failoverService.updateFailoverComplete(shardingContext.getShardingItemParameters().keySet());
         }
     }
     

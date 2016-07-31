@@ -31,6 +31,8 @@ import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -57,7 +59,10 @@ public final class DistributeOnceElasticJobListenerTest {
         distributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(elasticJobListenerCaller);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false), guaranteeService);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "timeService", false), timeService);
-        shardingContext = new ShardingContext("test_job", 10, "", Arrays.asList(new ShardingContext.ShardingItem(0, ""), new ShardingContext.ShardingItem(1, "")));
+        Map map = new HashMap<>(2, 1);
+        map.put(0, "");
+        map.put(1, "");
+        shardingContext = new ShardingContext("test_job", 10, "", map);
     }
     
     @Test

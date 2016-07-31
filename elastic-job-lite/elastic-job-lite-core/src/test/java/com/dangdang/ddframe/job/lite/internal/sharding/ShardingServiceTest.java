@@ -127,7 +127,6 @@ public final class ShardingServiceTest {
                 TestSimpleJob.class)).monitorExecution(true).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
         when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
         when(executionService.hasRunningItems()).thenReturn(true, false);
-        when(configService.getShardingItemParameters()).thenReturn(Collections.<Integer, String>emptyMap());
         shardingService.shardingIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
         verify(leaderElectionService).isLeader();
@@ -136,7 +135,6 @@ public final class ShardingServiceTest {
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/sharding");
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/sharding");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
-        verify(configService).getShardingItemParameters();
         verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
     
@@ -147,7 +145,6 @@ public final class ShardingServiceTest {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class)).monitorExecution(false).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
         when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(configService.getShardingItemParameters()).thenReturn(Collections.<Integer, String>emptyMap());
         shardingService.shardingIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
         verify(leaderElectionService).isLeader();
@@ -155,7 +152,6 @@ public final class ShardingServiceTest {
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/sharding");
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/sharding");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
-        verify(configService).getShardingItemParameters();
         verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
     

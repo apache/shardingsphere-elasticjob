@@ -35,9 +35,9 @@ public class SimpleJobDemo implements SimpleJob {
     
     @Override
     public void execute(final ShardingContext context) {
-        printContext.printProcessJobMessage(context.getShardingItems().keySet());
+        printContext.printProcessJobMessage(context.getShardingItemParameters().keySet());
         System.out.println("-----------------------------" + fooRepository);
-        fooRepository.findActive(context.getShardingItems().keySet());
+        fooRepository.findActive(context.getShardingItemParameters().keySet());
         // do something
     }
 }

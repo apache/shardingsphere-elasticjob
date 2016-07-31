@@ -33,8 +33,8 @@ public class ThroughputDataflowJobDemo implements DataflowJob<Foo> {
     
     @Override
     public List<Foo> fetchData(final ShardingContext context) {
-        printContext.printFetchDataMessage(context.getShardingItems().keySet());
-        return fooRepository.findActive(context.getShardingItems().keySet());
+        printContext.printFetchDataMessage(context.getShardingItemParameters().keySet());
+        return fooRepository.findActive(context.getShardingItemParameters().keySet());
     }
     
     @Override

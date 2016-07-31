@@ -23,11 +23,6 @@ import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 弹性化分布式作业配置服务.
@@ -92,32 +87,6 @@ public class ConfigurationService {
             jobNodeStorage.removeJobNodeIfExisted(ConfigurationNode.ROOT);
         }
         return Optional.fromNullable(result);
-    }
-    
-    /**
-     * 获取分片序列号和个性化参数对照表.
-     * 
-     * @return 分片序列号和个性化参数对照表
-     */
-    public Map<Integer, String> getShardingItemParameters() {
-        String value = load(true).getTypeConfig().getCoreConfig().getShardingItemParameters();
-        if (Strings.isNullOrEmpty(value)) {
-            return Collections.emptyMap();
-        }
-        String[] shardingItemParameters = value.split(",");
-        Map<Integer, String> result = new HashMap<>(shardingItemParameters.length);
-        for (String each : shardingItemParameters) {
-            String[] pair = each.trim().split("=");
-            if (2 != pair.length) {
-                throw new JobConfigurationException("Sharding item parameters '%s' format error, should be int=xx,int=xx", value);
-            }
-            try {
-                result.put(Integer.parseInt(pair[0].trim()), pair[1].trim());
-            } catch (final NumberFormatException ex) {
-                throw new JobConfigurationException("Sharding item parameters key '%s' is not an integer.", pair[0]);
-            }
-        }
-        return result;
     }
     
     /**

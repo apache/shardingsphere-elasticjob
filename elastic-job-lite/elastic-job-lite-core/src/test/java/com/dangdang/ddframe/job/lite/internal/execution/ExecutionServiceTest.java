@@ -39,6 +39,8 @@ import org.unitils.util.ReflectionUtils;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -85,7 +87,7 @@ public final class ExecutionServiceTest {
     
     @Test
     public void assertRegisterJobBeginWhenNotAssignAnyItem() {
-        executionService.registerJobBegin(new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList()));
+        executionService.registerJobBegin(new ShardingContext("test_job", 10, "", Collections.<Integer, String>emptyMap()));
         verify(configService, times(0)).load(true);
     }
     
@@ -138,7 +140,7 @@ public final class ExecutionServiceTest {
     public void assertRegisterJobCompletedWhenNotMonitorExecution() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class)).monitorExecution(false).build());
-        executionService.registerJobCompleted(new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList()));
+        executionService.registerJobCompleted(new ShardingContext("test_job", 10, "", Collections.<Integer, String>emptyMap()));
         verify(configService).load(true);
         verify(serverService, times(0)).updateServerStatus(ServerStatus.READY);
     }
@@ -451,10 +453,11 @@ public final class ExecutionServiceTest {
     }
     
     private ShardingContext getShardingContext() {
-        ShardingContext result = new ShardingContext("test_job", 10, "", Collections.<ShardingContext.ShardingItem>emptyList());
-        result.getShardingItems().put(0, new ShardingContext.ShardingItem(0, ""));
-        result.getShardingItems().put(1, new ShardingContext.ShardingItem(1, ""));
-        result.getShardingItems().put(2, new ShardingContext.ShardingItem(2, ""));
+        Map<Integer, String> map = new HashMap<>(3, 1);
+        map.put(0, "");
+        map.put(1, "");
+        map.put(2, "");
+        ShardingContext result = new ShardingContext("test_job", 10, "", map);
         return result;
     }
 }

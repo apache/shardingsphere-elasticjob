@@ -32,7 +32,7 @@ public final class TestDataflowJob implements DataflowJob<Object> {
     @Override
     public List<Object> fetchData(final ShardingContext shardingContext) {
         List<Object> result = new LinkedList<>();
-        for (int each : shardingContext.getShardingItems().keySet()) {
+        for (int each : shardingContext.getShardingItemParameters().keySet()) {
             List<Object> data = jobCaller.fetchData(each);
             if (null != data) {
                 result.addAll(data);

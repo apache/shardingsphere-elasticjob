@@ -27,7 +27,8 @@ import lombok.EqualsAndHashCode;
 import org.apache.mesos.Protos;
 
 import java.math.BigDecimal;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 硬件资源.
@@ -125,8 +126,10 @@ public final class HardwareResource {
         CloudJobConfiguration jobConfig = jobContext.getJobConfig();
         Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new TaskContext(jobConfig.getJobName(), shardingItem, jobContext.getType(), offer.getSlaveId().getValue()).getId()).build();
         // TODO 完善param
+        Map<Integer, String> shardingItemParameters = new HashMap<>(1, 1);
+        shardingItemParameters.put(shardingItem, "");
         ShardingContext shardingContext = new ShardingContext(
-                jobConfig.getJobName(), jobConfig.getShardingTotalCount(), "", Collections.singletonList(new ShardingContext.ShardingItem(shardingItem, "")));
+                jobConfig.getJobName(), jobConfig.getShardingTotalCount(), "", shardingItemParameters);
         // TODO 上线前更改cache为true
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(String.format(RUN_COMMAND, GsonFactory.getGson().toJson(shardingContext))).build();

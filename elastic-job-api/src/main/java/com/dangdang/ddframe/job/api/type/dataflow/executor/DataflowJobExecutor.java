@@ -131,7 +131,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     }
     
     private Map<Integer, List<Object>> fetchDataForSequence(final ShardingContext shardingContext) {
-        Collection<Integer> items = shardingContext.getShardingItems().keySet();
+        Collection<Integer> items = shardingContext.getShardingItemParameters().keySet();
         final Map<Integer, List<Object>> result = new ConcurrentHashMap<>(items.size());
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {

@@ -78,7 +78,7 @@ public abstract class AbstractElasticJobExecutor {
         }
         
         ShardingContext shardingContext = jobFacade.getShardingContext();
-        if (jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())) {
+        if (jobFacade.misfireIfNecessary(shardingContext.getShardingItemParameters().keySet())) {
             log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
             return;
         }
@@ -92,9 +92,9 @@ public abstract class AbstractElasticJobExecutor {
         }
         execute(shardingContext);
         log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
-        while (jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())) {
+        while (jobFacade.isExecuteMisfired(shardingContext.getShardingItemParameters().keySet())) {
             log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
-            jobFacade.clearMisfire(shardingContext.getShardingItems().keySet());
+            jobFacade.clearMisfire(shardingContext.getShardingItemParameters().keySet());
             execute(shardingContext);
             log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
         }
@@ -110,7 +110,7 @@ public abstract class AbstractElasticJobExecutor {
     }
     
     private void execute(final ShardingContext shardingContext) {
-        if (shardingContext.getShardingItems().isEmpty()) {
+        if (shardingContext.getShardingItemParameters().isEmpty()) {
             log.trace("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
             return;
         }

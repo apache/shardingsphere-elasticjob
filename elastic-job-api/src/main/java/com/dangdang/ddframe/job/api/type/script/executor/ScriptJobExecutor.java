@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -52,7 +53,7 @@ public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
             return;
         }
         CommandLine commandLine = CommandLine.parse(scriptCommandLine);
-        commandLine.addArgument(shardingContext.toJson(), false);
+        commandLine.addArgument(GsonFactory.getGson().toJson(shardingContext), false);
         try {
             executor.execute(commandLine);
         } catch (final IOException ex) {

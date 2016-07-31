@@ -28,10 +28,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
@@ -112,42 +108,6 @@ public final class ConfigurationServiceTest {
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
         configService.persist(liteJobConfig);
         verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
-    }
-    
-    @Test
-    public void assertGetShardingItemParametersWhenIsEmpty() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"scriptCommandLine\":\"test.sh\"}");
-        assertThat(configService.getShardingItemParameters(), is(Collections.EMPTY_MAP));
-    }
-    
-    @Test(expected = JobConfigurationException.class)
-    public void assertGetShardingItemParametersWhenPairFormatInvalid() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"xxx-xxx\",\"scriptCommandLine\":\"test.sh\"}");
-        configService.getShardingItemParameters();
-    }
-    
-    @Test(expected = JobConfigurationException.class)
-    public void assertGetShardingItemParametersWhenItemIsNotNumber() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"xxx=xxx\",\"scriptCommandLine\":\"test.sh\"}");
-        configService.getShardingItemParameters();
-    }
-    
-    @Test
-    public void assertGetShardingItemParameters() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"0=A,1=B,2=C\",\"scriptCommandLine\":\"test.sh\"}");
-        Map<Integer, String> expected = new HashMap<>(3);
-        expected.put(0, "A");
-        expected.put(1, "B");
-        expected.put(2, "C");
-        assertThat(configService.getShardingItemParameters(), is(expected));
     }
     
     @Test

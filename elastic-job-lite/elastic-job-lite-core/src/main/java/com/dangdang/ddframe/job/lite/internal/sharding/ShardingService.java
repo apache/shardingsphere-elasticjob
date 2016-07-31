@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
+import com.dangdang.ddframe.job.api.config.ShardingItemParameters;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
@@ -109,7 +110,8 @@ public class ShardingService {
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
-        JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), configService.getShardingItemParameters());
+        JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
+                new ShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
         log.debug("Elastic job: sharding completed.");
     }

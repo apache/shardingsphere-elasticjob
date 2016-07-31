@@ -18,12 +18,13 @@
 package com.dangdang.ddframe.job.api.type;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,13 +35,16 @@ public class ElasticJobAssert {
     public static final String JOB_NAME = "unit_test_job";
     
     public static ShardingContext getShardingContext() {
-        return new ShardingContext(JOB_NAME, 10, "", Arrays.asList(new ShardingContext.ShardingItem(0, ""), new ShardingContext.ShardingItem(1, "")));
+        Map<Integer, String> map = new HashMap<>(2, 1);
+        map.put(0, "A");
+        map.put(1, "B");
+        return new ShardingContext(JOB_NAME, 10, "", map);
     }
     
     public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContext shardingContext) {
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItems().keySet())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItems().keySet())).thenReturn(false);
+        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItemParameters().keySet())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItemParameters().keySet())).thenReturn(false);
     }
     
     public static void verifyForIsNotMisfire(final JobFacade jobFacade, final ShardingContext shardingContext) {
@@ -50,12 +54,12 @@ public class ElasticJobAssert {
             throw new RuntimeException(ex);
         }
         verify(jobFacade).getShardingContext();
-        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItems().keySet());
+        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItemParameters().keySet());
         verify(jobFacade).cleanPreviousExecutionInfo();
         verify(jobFacade).beforeJobExecuted(shardingContext);
         verify(jobFacade).registerJobBegin(shardingContext);
         verify(jobFacade).registerJobCompleted(shardingContext);
-        verify(jobFacade).isExecuteMisfired(shardingContext.getShardingItems().keySet());
+        verify(jobFacade).isExecuteMisfired(shardingContext.getShardingItemParameters().keySet());
         verify(jobFacade).afterJobExecuted(shardingContext);
     }
 }
