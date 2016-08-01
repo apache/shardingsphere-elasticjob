@@ -36,7 +36,9 @@ import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBe
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.CRON_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DESCRIPTION_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISABLED_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.FAILOVER_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_PARAMETER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_SHARDING_STRATEGY_CLASS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.LISTENER_TAG;
@@ -84,6 +86,8 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         addPropertyValueIfNotEmpty(DESCRIPTION_ATTRIBUTE, "description", element, factory);
         addPropertyValueIfNotEmpty(DISABLED_ATTRIBUTE, "disabled", element, factory);
         addPropertyValueIfNotEmpty(OVERWRITE_ATTRIBUTE, "overwrite", element, factory);
+        addPropertyValueIfNotEmpty(EXECUTOR_SERVICE_HANDLER, "executorServiceHandler", element, factory);
+        addPropertyValueIfNotEmpty(JOB_EXCEPTION_HANDLER, "jobExceptionHandler", element, factory);
         setPropertiesValue(element, factory);
         String result = element.getAttribute(ID_ATTRIBUTE) + "Conf";
         parserContext.getRegistry().registerBeanDefinition(result, factory.getBeanDefinition());
@@ -115,7 +119,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         return result;
     }
     
-    protected final void addPropertyValueIfNotEmpty(final String attributeName, final String propertyName, final Element element, final BeanDefinitionBuilder factory) {
+    private void addPropertyValueIfNotEmpty(final String attributeName, final String propertyName, final Element element, final BeanDefinitionBuilder factory) {
         String attributeValue = element.getAttribute(attributeName);
         if (!Strings.isNullOrEmpty(attributeValue)) {
             factory.addPropertyValue(propertyName, attributeValue);

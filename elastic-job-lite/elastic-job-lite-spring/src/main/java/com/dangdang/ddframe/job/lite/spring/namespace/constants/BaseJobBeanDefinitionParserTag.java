@@ -63,4 +63,8 @@ public final class BaseJobBeanDefinitionParserTag {
     public static final String STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "started-timeout-milliseconds";
     
     public static final String COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "completed-timeout-milliseconds";
+    
+    public static final String EXECUTOR_SERVICE_HANDLER = "executor-service-handler";
+    
+    public static final String JOB_EXCEPTION_HANDLER = "job-exception-handler";
 }
