@@ -47,7 +47,7 @@ public abstract class AbstractElasticJobExecutor {
     
     protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
-        jobConfig = this.jobFacade.loadJobConfiguration(true);
+        jobConfig = jobFacade.loadJobConfiguration(true);
         executorService = ((ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER)).createExecutorService();
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
     }

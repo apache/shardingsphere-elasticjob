@@ -15,12 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.api;
+package com.dangdang.ddframe.job.cloud.api.internal;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
@@ -35,10 +35,11 @@ public class CloudJobFacade implements JobFacade {
     
     private final ShardingContext shardingContext;
     
+    private final CloudJobConfiguration jobConfig;
+    
     @Override
-    public JobConfiguration loadJobConfiguration(final boolean fromCache) {
-        // TODO
-        return null;
+    public CloudJobConfiguration loadJobConfiguration(final boolean fromCache) {
+        return jobConfig;
     }
     
     @Override

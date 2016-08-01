@@ -32,10 +32,8 @@ import org.mockito.MockitoAnnotations;
 import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
 public final class JobExecutorTest {
@@ -64,9 +62,8 @@ public final class JobExecutorTest {
     public void assertNew() throws NoSuchFieldException {
         TestDistributeOnceElasticJobListener testDistributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(caller);
         assertNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
-        JobExecutor actualJobExecutor = new JobExecutor(null, liteJobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
+        new JobExecutor(null, liteJobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
         assertNotNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
-        assertThat(ReflectionUtils.getFieldValue(actualJobExecutor, ReflectionUtils.getFieldWithName(JobExecutor.class, "elasticJob", false)), instanceOf(liteJobConfig.getTypeConfig().getJobClass()));
     }
     
     @Test

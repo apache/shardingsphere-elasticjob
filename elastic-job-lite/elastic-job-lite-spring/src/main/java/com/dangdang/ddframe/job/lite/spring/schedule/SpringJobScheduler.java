@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.spring.schedule;
 
-import com.dangdang.ddframe.job.lite.api.JobScheduler;
+import com.dangdang.ddframe.job.lite.api.bootstrap.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
 import com.dangdang.ddframe.job.lite.spring.util.AopTargetUtils;

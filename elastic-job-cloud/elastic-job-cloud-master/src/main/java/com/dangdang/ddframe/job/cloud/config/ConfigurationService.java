@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.cloud.config;
 
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class ConfigurationService {
      * @param jobConfig 云作业配置对象
      */
     public void add(final CloudJobConfiguration jobConfig) {
-        regCenter.persist(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), new Gson().toJson(jobConfig));
+        regCenter.persist(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), CloudJobConfigurationGsonFactory.toJson(jobConfig));
     }
     
     /**
@@ -52,7 +51,7 @@ public class ConfigurationService {
      * @param jobConfig 云作业配置对象
      */
     public void update(final CloudJobConfiguration jobConfig) {
-        regCenter.update(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), new Gson().toJson(jobConfig));
+        regCenter.update(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), CloudJobConfigurationGsonFactory.toJson(jobConfig));
     }
     
     /**
@@ -83,7 +82,7 @@ public class ConfigurationService {
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
         return !regCenter.isExisted(ConfigurationNode.getRootNodePath(jobName)) ? Optional.<CloudJobConfiguration>absent()
-                : Optional.of(new Gson().fromJson(regCenter.get(ConfigurationNode.getRootNodePath(jobName)), CloudJobConfiguration.class));
+                : Optional.of(CloudJobConfigurationGsonFactory.fromJson(regCenter.get(ConfigurationNode.getRootNodePath(jobName))));
     }
     
     /**

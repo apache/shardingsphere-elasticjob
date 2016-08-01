@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
@@ -38,7 +39,7 @@ import java.util.Map;
 @EqualsAndHashCode(of = "offerId")
 public final class HardwareResource {
     
-    private static final String RUN_COMMAND = "sh bin/start.sh %s '%s'";
+    private static final String RUN_COMMAND = "sh bin/start.sh %s '%s' '%s'";
     
     private final Protos.Offer offer;
     
@@ -129,11 +130,11 @@ public final class HardwareResource {
         Map<Integer, String> shardingItemParameters = new HashMap<>(1, 1);
         shardingItemParameters.put(shardingItem, "");
         ShardingContext shardingContext = new ShardingContext(
-                jobConfig.getJobName(), jobConfig.getShardingTotalCount(), "", shardingItemParameters);
+                jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), "", shardingItemParameters);
         // TODO 上线前更改cache为true
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
-        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true)
-                .setValue(String.format(RUN_COMMAND, jobConfig.getJobClass(), GsonFactory.getGson().toJson(shardingContext))).build();
+        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(
+                String.format(RUN_COMMAND, jobConfig.getTypeConfig().getJobClass(), GsonFactory.getGson().toJson(shardingContext), CloudJobConfigurationGsonFactory.toJson(jobConfig))).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
                 .setTaskId(taskId)

@@ -17,9 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.executor;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
@@ -41,28 +38,22 @@ import java.util.List;
 @Getter
 public class JobExecutor {
     
-    private final String jobName;
-    
     private final LiteJobConfiguration liteJobConfig;
     
     private final CoordinatorRegistryCenter regCenter;
     
-    private final ElasticJob elasticJob;
-    
     private final SchedulerFacade schedulerFacade;
     
     public JobExecutor(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
-        jobName = liteJobConfig.getJobName();
         this.liteJobConfig = liteJobConfig;
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
-        elasticJob = createElasticJob(liteJobConfig);
         schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig, elasticJobListenerList);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
-        GuaranteeService guaranteeService = new GuaranteeService(regCenter, jobName);
+        GuaranteeService guaranteeService = new GuaranteeService(regCenter, liteJobConfig.getJobName());
         for (ElasticJobListener each : elasticJobListeners) {
             if (each instanceof AbstractDistributeOnceElasticJobListener) {
                 ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
@@ -70,27 +61,13 @@ public class JobExecutor {
         }
     }
     
-    private ElasticJob createElasticJob(final LiteJobConfiguration liteJobConfig) {
-        // TODO 代码需要梳理
-        if (liteJobConfig.getTypeConfig().getJobClass() == ScriptJob.class) {
-            return null;
-        }
-        ElasticJob result;
-        try {
-            result = liteJobConfig.getTypeConfig().getJobClass().newInstance();
-        } catch (final InstantiationException | IllegalAccessException ex) {
-            throw new JobConfigurationException("Cannot create elastic job for class '%s', message details are: '%s'", ex.getMessage());
-        }
-        return result;
-    }
-    
     /**
      * 初始化作业.
      */
     public void init() {
-        log.debug("Elastic job: job controller init, job name is: {}.", jobName);
+        log.debug("Elastic job: job controller init, job name is: {}.", liteJobConfig.getJobName());
         schedulerFacade.clearPreviousServerStatus();
-        regCenter.addCacheData("/" + jobName);
+        regCenter.addCacheData("/" + liteJobConfig.getJobName());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
     }
 }

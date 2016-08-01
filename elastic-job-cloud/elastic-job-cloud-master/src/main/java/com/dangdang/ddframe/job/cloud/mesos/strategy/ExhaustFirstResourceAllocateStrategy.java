@@ -69,7 +69,7 @@ public final class ExhaustFirstResourceAllocateStrategy implements ResourceAlloc
             }
             startShardingItemIndex = assignedShardingCount;
         }
-        if (result.size() != jobConfig.getShardingTotalCount()) {
+        if (result.size() != jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount()) {
             if (!result.isEmpty()) {
                 log.warn("Resources not enough, job `{}` is not allocated. ", jobContext.getJobConfig().getJobName());
             }

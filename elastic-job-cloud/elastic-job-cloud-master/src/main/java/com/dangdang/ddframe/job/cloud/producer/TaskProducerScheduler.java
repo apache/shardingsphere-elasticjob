@@ -83,7 +83,7 @@ class TaskProducerScheduler {
     
     //TODO 并发优化
     synchronized void register(final CloudJobConfiguration jobConfig) {
-        JobKey jobKey = buildJobKey(jobConfig.getCron());
+        JobKey jobKey = buildJobKey(jobConfig.getTypeConfig().getCoreConfig().getCron());
         TaskProducerJobContext.getInstance().put(jobKey, jobConfig.getJobName());
         try {
             if (!scheduler.checkExists(jobKey)) {
@@ -95,17 +95,17 @@ class TaskProducerScheduler {
     }
     
     private void scheduleJob(final CloudJobConfiguration jobConfig) throws SchedulerException {
-        JobDetail jobDetail = buildJobDetail(jobConfig.getCron());
+        JobDetail jobDetail = buildJobDetail(jobConfig.getTypeConfig().getCoreConfig().getCron());
         TaskProducerJobContext.getInstance().put(jobDetail.getKey(), jobConfig.getJobName());
         jobDetail.getJobDataMap().put("readyService", new ReadyService(regCenter));
-        scheduler.scheduleJob(jobDetail, buildTrigger(jobConfig.getCron()));
+        scheduler.scheduleJob(jobDetail, buildTrigger(jobConfig.getTypeConfig().getCoreConfig().getCron()));
     }
     
     void deregister(final CloudJobConfiguration jobConfig) {
         TaskProducerJobContext.getInstance().remove(jobConfig.getJobName());
-        if (!TaskProducerJobContext.getInstance().contains(buildJobKey(jobConfig.getCron()))) {
+        if (!TaskProducerJobContext.getInstance().contains(buildJobKey(jobConfig.getTypeConfig().getCoreConfig().getCron()))) {
             try {
-                scheduler.unscheduleJob(TriggerKey.triggerKey(jobConfig.getCron()));
+                scheduler.unscheduleJob(TriggerKey.triggerKey(jobConfig.getTypeConfig().getCoreConfig().getCron()));
             } catch (final SchedulerException ex) {
                 throw new JobSystemException(ex);
             }

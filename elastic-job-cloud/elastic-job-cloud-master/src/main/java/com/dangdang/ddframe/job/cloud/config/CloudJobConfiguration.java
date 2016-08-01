@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.config;
 
-import lombok.EqualsAndHashCode;
+import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -28,16 +29,9 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode
-public final class CloudJobConfiguration {
+public final class CloudJobConfiguration implements JobConfiguration {
     
-    private final String jobName;
-    
-    private final String jobClass;
-    
-    private final String cron;
-    
-    private final int shardingTotalCount;
+    private final JobTypeConfiguration typeConfig;
     
     private final double cpuCount;
     
@@ -47,9 +41,12 @@ public final class CloudJobConfiguration {
     
     private final String appURL;
     
-    private final boolean failover;
-    
-    private final boolean misfire;
-    
-    private final boolean streamingProcess;
+    /**
+     * 获取作业名称.
+     *
+     * @return 作业名称
+     */
+    public String getJobName() {
+        return typeConfig.getCoreConfig().getJobName();
+    }
 }

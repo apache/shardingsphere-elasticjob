@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.bootstrap.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
@@ -67,6 +68,7 @@ public final class JobSchedulerTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "jobExecutor", jobExecutor);
         when(jobExecutor.getSchedulerFacade()).thenReturn(schedulerFacade);
+        when(jobExecutor.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test
@@ -84,7 +86,6 @@ public final class JobSchedulerTest {
     }
     
     private void mockInit(final boolean isMisfire) {
-        when(jobExecutor.getJobName()).thenReturn("test_job");
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         when(schedulerFacade.loadJobConfiguration()).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).misfire(isMisfire).build(), TestSimpleJob.class)).build());

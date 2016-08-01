@@ -47,7 +47,7 @@ public final class JobContext {
      * @return 作业运行上下文
      */
     public static JobContext from(final CloudJobConfiguration jobConfig, final ExecutionType type) {
-        int shardingTotalCount = jobConfig.getShardingTotalCount();
+        int shardingTotalCount = jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
         List<Integer> shardingItems = new ArrayList<>(shardingTotalCount);
         for (int i = 0; i < shardingTotalCount; i++) {
             shardingItems.add(i);

@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import java.util.Collection;
 
 /**
- * 为调度器提供内部服务的门面类.
+ * 作业内部服务门面服务.
  * 
  * @author zhangliang
  */

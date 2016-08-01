@@ -53,10 +53,10 @@ public final class TaskProducerSchedulerTest {
     
     private CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
-    private JobDetail jobDetail = JobBuilder.newJob(TaskProducerJob.class).withIdentity(jobConfig.getCron()).build();
+    private JobDetail jobDetail = JobBuilder.newJob(TaskProducerJob.class).withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron()).build();
     
-    private Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getCron())
-                        .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getCron())
+    private Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron())
+                        .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getTypeConfig().getCoreConfig().getCron())
                         .withMisfireHandlingInstructionDoNothing()).build();
     
     @Before
@@ -82,7 +82,7 @@ public final class TaskProducerSchedulerTest {
     @Test
     public void assertDeregister() throws SchedulerException {
         taskProducerScheduler.deregister(jobConfig);
-        verify(scheduler).unscheduleJob(TriggerKey.triggerKey(jobConfig.getCron()));
+        verify(scheduler).unscheduleJob(TriggerKey.triggerKey(jobConfig.getTypeConfig().getCoreConfig().getCron()));
     }
     
     @Test

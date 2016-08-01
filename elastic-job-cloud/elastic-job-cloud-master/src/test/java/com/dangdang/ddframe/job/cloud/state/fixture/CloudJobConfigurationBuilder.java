@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.state.fixture;
 
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -25,10 +27,12 @@ import lombok.NoArgsConstructor;
 public final class CloudJobConfigurationBuilder {
     
     public static CloudJobConfiguration createCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(jobName, "SampleJob", "0/1 * * * * ?", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true, false);
+        return new CloudJobConfiguration(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/1 * * * * ?", 10).failover(true).misfire(true).build(), TestSimpleJob.class), 
+                1.0d, 128.0d, "dockerImage", "http://localhost/app.jar");
     }
     
     public static CloudJobConfiguration createOtherCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(jobName, "SampleJob", "0/1 * * * * ?", 3, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", false, true, false);
+        return new CloudJobConfiguration(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/1 * * * * ?", 3).failover(false).misfire(true).build(), TestSimpleJob.class),
+                1.0d, 128.0d, "dockerImage", "http://localhost/app.jar");
     }
 }

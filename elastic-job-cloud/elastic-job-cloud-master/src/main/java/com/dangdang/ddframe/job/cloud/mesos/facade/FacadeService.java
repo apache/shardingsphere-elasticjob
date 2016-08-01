@@ -152,7 +152,7 @@ public class FacadeService {
     public void recordFailoverTask(final TaskContext taskContext) {
         TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
         Optional<CloudJobConfiguration> jobConfig = configService.load(metaInfo.getJobName());
-        if (jobConfig.isPresent() && jobConfig.get().isFailover()) {
+        if (jobConfig.isPresent() && jobConfig.get().getTypeConfig().getCoreConfig().isFailover()) {
             failoverService.add(taskContext);
         }
         runningService.remove(metaInfo);

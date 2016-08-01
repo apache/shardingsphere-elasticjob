@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.api.exception;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -27,5 +28,10 @@ public final class JobConfigurationExceptionTest {
     @Test
     public void assertGetMessage() {
         assertThat(new JobConfigurationException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
+    }
+    
+    @Test
+    public void assertGetCause() {
+        assertThat(new JobConfigurationException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }

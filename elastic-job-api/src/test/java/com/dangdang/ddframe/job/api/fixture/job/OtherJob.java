@@ -17,21 +17,7 @@
 
 package com.dangdang.ddframe.job.api.fixture.job;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
-import lombok.RequiredArgsConstructor;
+import com.dangdang.ddframe.job.api.ElasticJob;
 
-@RequiredArgsConstructor
-public final class TestSimpleJob implements SimpleJob {
-    
-    private final JobCaller jobCaller;
-    
-    public TestSimpleJob() {
-        jobCaller = null;
-    }
-    
-    @Override
-    public void execute(final ShardingContext shardingContext) {
-        jobCaller.execute();
-    }
+public final class OtherJob implements ElasticJob {
 }

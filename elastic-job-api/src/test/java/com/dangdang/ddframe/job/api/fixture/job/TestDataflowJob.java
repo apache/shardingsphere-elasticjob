@@ -29,6 +29,10 @@ public final class TestDataflowJob implements DataflowJob<Object> {
     
     private final JobCaller jobCaller;
     
+    public TestDataflowJob() {
+        jobCaller = null;
+    }
+    
     @Override
     public List<Object> fetchData(final ShardingContext shardingContext) {
         List<Object> result = new LinkedList<>();

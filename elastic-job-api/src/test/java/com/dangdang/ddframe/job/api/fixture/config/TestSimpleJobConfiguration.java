@@ -25,9 +25,7 @@ import com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob;
 import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public final class TestSimpleJobConfiguration implements JobConfiguration {
     
     @Override

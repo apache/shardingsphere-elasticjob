@@ -15,23 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.fixture.job;
+package com.dangdang.ddframe.job.cloud.state.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public final class TestSimpleJob implements SimpleJob {
-    
-    private final JobCaller jobCaller;
-    
-    public TestSimpleJob() {
-        jobCaller = null;
-    }
     
     @Override
     public void execute(final ShardingContext shardingContext) {
-        jobCaller.execute();
     }
 }

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.bootstrap.JobExecutorFactoryTest;
 import com.dangdang.ddframe.job.api.config.ShardingItemParametersTest;
 import com.dangdang.ddframe.job.api.exception.AllExceptionTests;
 import com.dangdang.ddframe.job.api.type.AllTypeTests;
@@ -28,7 +29,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
         JobCoreConfigurationTest.class, 
         ShardingContextTest.class,
-        ShardingItemParametersTest.class, 
+        ShardingItemParametersTest.class,
+        JobExecutorFactoryTest.class, 
         AllTypeTests.class,
         AllExceptionTests.class
     })

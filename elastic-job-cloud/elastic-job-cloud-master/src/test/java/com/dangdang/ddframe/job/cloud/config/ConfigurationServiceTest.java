@@ -45,8 +45,11 @@ public final class ConfigurationServiceTest {
     @InjectMocks
     private ConfigurationService configService;
     
-    private String jobConfigJson = "{\"jobName\":\"%s\",\"jobClass\":\"SampleJob\",\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"cpuCount\":1.0,\"memoryMB\":128.0," 
-            + "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\",\"failover\":true,\"misfire\":true,\"streamingProcess\":false}";
+    private String jobConfigJson = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
+            + "\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
+            + "\"jobProperties\":{\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
+            + "\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\"},\"cpuCount\":1.0,\"memoryMB\":128.0,"
+            + "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\"}";
     
     @Test
     public void assertAdd() {
