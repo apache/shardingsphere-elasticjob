@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.api.config;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.type.JobType;
 
 /**
@@ -36,11 +35,11 @@ public interface JobTypeConfiguration {
     JobType getJobType();
     
     /**
-     * 获取作业实现类.
+     * 获取作业实现类名称.
      *
-     * @return 作业实现类
+     * @return 作业实现类名称
      */
-    Class<? extends ElasticJob> getJobClass();
+    String getJobClass();
     
     /**
      * 获取作业核心配置.

@@ -40,6 +40,6 @@ public final class TestDataflowJobConfiguration implements JobConfiguration {
     public JobTypeConfiguration getTypeConfig() {
         return new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10)
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class).build(), 
-                TestDataflowJob.class, dataflowType, streamingProcess, concurrentDataProcessThreadCount);
+                TestDataflowJob.class.getCanonicalName(), dataflowType, streamingProcess, concurrentDataProcessThreadCount);
     }
 }

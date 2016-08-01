@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.script.api;
 
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.type.JobType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public final class ScriptJobConfiguration implements JobTypeConfiguration {
     
     private final JobType jobType = JobType.SCRIPT;
     
-    private final Class<ScriptJob> jobClass = ScriptJob.class;
+    private final String jobClass = ScriptJob.class.getCanonicalName();
     
     private final String scriptCommandLine;
 }

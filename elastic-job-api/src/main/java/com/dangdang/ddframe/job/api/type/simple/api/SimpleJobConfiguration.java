@@ -37,5 +37,5 @@ public final class SimpleJobConfiguration implements JobTypeConfiguration {
     
     private final JobType jobType = JobType.SIMPLE;
     
-    private final Class<? extends SimpleJob> jobClass;
+    private final String jobClass;
 }

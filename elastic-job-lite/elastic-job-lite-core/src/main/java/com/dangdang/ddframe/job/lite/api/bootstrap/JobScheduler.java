@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.api.bootstrap;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.bootstrap.JobExecutorFactory;
+import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
@@ -69,7 +70,11 @@ public class JobScheduler {
     public void init() {
         jobExecutor.init();
         JobDetail jobDetail = JobBuilder.newJob(LiteJob.class).withIdentity(jobExecutor.getLiteJobConfig().getJobName()).build();
-        jobDetail.getJobDataMap().put("elasticJobClass", jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass());
+        try {
+            jobDetail.getJobDataMap().put("elasticJobClass", Class.forName(jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass()));
+        } catch (final ClassNotFoundException ex) {
+            throw new JobConfigurationException("Elastic-Job: Job class '%s' is not in classpath, return null job configuration.", jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass());
+        }
         jobDetail.getJobDataMap().put("jobFacade", jobFacade);
         JobScheduleController jobScheduleController;
         try {

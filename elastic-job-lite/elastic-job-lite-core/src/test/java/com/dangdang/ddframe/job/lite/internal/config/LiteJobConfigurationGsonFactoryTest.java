@@ -33,7 +33,6 @@ import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -69,7 +68,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
                 .shardingItemParameters("0=a,1=b").jobParameter("param").failover(true).misfire(false).description("desc")
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class)
                 .jobProperties(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class)
-                .build(), TestSimpleJob.class))
+                .build(), TestSimpleJob.class.getCanonicalName()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
     }
@@ -77,7 +76,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     @Test
     public void assertToJsonForDataflowJob() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
-                TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, true, 10)).build();
+                TestDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, true, 10)).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     
@@ -91,7 +90,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     public void assertFromJsonForSimpleJob() {
         LiteJobConfiguration actual = LiteJobConfigurationGsonFactory.fromJson(simpleJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getJobClass().getCanonicalName(), is(TestSimpleJob.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getJobClass(), is(TestSimpleJob.class.getCanonicalName()));
         assertThat(actual.getTypeConfig().getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
@@ -116,7 +115,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     public void assertFromJsonForDataflowJob() {
         LiteJobConfiguration actual = LiteJobConfigurationGsonFactory.fromJson(dataflowJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getJobClass().getCanonicalName(), is(TestDataflowJob.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getJobClass(), is(TestDataflowJob.class.getCanonicalName()));
         assertThat(actual.getTypeConfig().getJobType(), is(JobType.DATAFLOW));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
@@ -144,7 +143,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     public void assertFromJsonForScriptJob() {
         LiteJobConfiguration actual = LiteJobConfigurationGsonFactory.fromJson(scriptJobJson);
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getTypeConfig().getJobClass().getCanonicalName(), is(ScriptJob.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getJobClass(), is(ScriptJob.class.getCanonicalName()));
         assertThat(actual.getTypeConfig().getJobType(), is(JobType.SCRIPT));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
@@ -164,11 +163,6 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
         assertThat(((ScriptJobConfiguration) actual.getTypeConfig()).getScriptCommandLine(), is("test.sh"));
-    }
-    
-    @Test
-    public void assertFromJsonForJobClassIsNotFound() {
-        assertNull(LiteJobConfigurationGsonFactory.fromJson("{\"jobClass\":\"NotExistedJob\"}"));
     }
     
     @Test

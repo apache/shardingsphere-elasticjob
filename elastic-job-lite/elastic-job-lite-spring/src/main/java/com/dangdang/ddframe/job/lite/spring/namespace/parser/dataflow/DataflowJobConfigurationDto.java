@@ -51,7 +51,7 @@ final class DataflowJobConfigurationDto extends AbstractJobConfigurationDto {
     @Override
     protected JobTypeConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
         return null == concurrentDataProcessThreadCount
-                ? new DataflowJobConfiguration(jobCoreConfig, jobClass, dataflowType, null == streamingProcess ? false : streamingProcess)
-                : new DataflowJobConfiguration(jobCoreConfig, jobClass, dataflowType, null == streamingProcess ? false : streamingProcess, concurrentDataProcessThreadCount);
+                ? new DataflowJobConfiguration(jobCoreConfig, jobClass.getCanonicalName(), dataflowType, null == streamingProcess ? false : streamingProcess)
+                : new DataflowJobConfiguration(jobCoreConfig, jobClass.getCanonicalName(), dataflowType, null == streamingProcess ? false : streamingProcess, concurrentDataProcessThreadCount);
     }
 }

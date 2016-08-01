@@ -40,6 +40,6 @@ final class SimpleJobConfigurationDto extends AbstractJobConfigurationDto {
     
     @Override
     protected JobTypeConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
-        return new SimpleJobConfiguration(jobCoreConfig, jobClass);
+        return new SimpleJobConfiguration(jobCoreConfig, jobClass.getCanonicalName());
     }
 }

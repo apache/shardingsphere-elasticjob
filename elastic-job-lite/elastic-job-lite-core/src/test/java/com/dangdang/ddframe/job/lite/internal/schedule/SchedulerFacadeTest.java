@@ -76,7 +76,7 @@ public class SchedulerFacadeTest {
         MockitoAnnotations.initMocks(this);
         schedulerFacade = new SchedulerFacade(null, liteJobConfig, Collections.<ElasticJobListener>emptyList());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestDataflowJob.class, DataflowJobConfiguration.DataflowType.SEQUENCE, false)).build());
+                TestDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, false)).build());
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);

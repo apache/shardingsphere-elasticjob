@@ -17,14 +17,10 @@
 
 package com.dangdang.ddframe.job.api.config;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.type.JobType;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -45,7 +41,6 @@ import java.util.Map;
 @Slf4j
 public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfiguration> extends TypeAdapter<T> {
     
-    @SuppressWarnings("unchecked") 
     @Override
     public T read(final JsonReader in) throws IOException {
         String jobName = "";
@@ -58,7 +53,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfi
         String description = "";
         JobProperties jobProperties = new JobProperties();
         JobType jobType = null;
-        Class<? extends ElasticJob> jobClass = null;
+        String jobClass = "";
         DataflowJobConfiguration.DataflowType dataflowType = null;
         boolean streamingProcess = false;
         int concurrentDataProcessThreadCount = 0;
@@ -99,13 +94,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfi
                     jobType = JobType.valueOf(in.nextString());
                     break;
                 case "jobClass":
-                    String jobClassName = in.nextString();
-                    try {
-                        jobClass = (Class<? extends ElasticJob>) Class.forName(jobClassName);
-                    } catch (final ClassNotFoundException ex) {
-                        log.warn("Elastic-Job: Job class '{}' is not in classpath, return null job configuration.", jobClassName);
-                        return null;
-                    }
+                    jobClass = in.nextString();
                     break;
                 case "dataflowType":
                     dataflowType = DataflowJobConfiguration.DataflowType.valueOf(in.nextString());
@@ -171,16 +160,15 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfi
                 .build();
     }
     
-    @SuppressWarnings("unchecked")
-    private JobTypeConfiguration getJobConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final Object jobClass, final DataflowJobConfiguration.DataflowType dataflowType,
+    private JobTypeConfiguration getJobConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final DataflowJobConfiguration.DataflowType dataflowType,
                                                      final boolean streamingProcess, final int concurrentDataProcessThreadCount, final String scriptCommandLine) {
         JobTypeConfiguration result;
         switch (jobType) {
             case SIMPLE:
-                result = new SimpleJobConfiguration(coreConfig, (Class<? extends SimpleJob>) jobClass);
+                result = new SimpleJobConfiguration(coreConfig, jobClass);
                 break;
             case DATAFLOW:
-                result = new DataflowJobConfiguration(coreConfig, (Class<? extends DataflowJob>) jobClass, dataflowType, streamingProcess, concurrentDataProcessThreadCount);
+                result = new DataflowJobConfiguration(coreConfig, jobClass, dataflowType, streamingProcess, concurrentDataProcessThreadCount);
                 break;
             case SCRIPT:
                 result = new ScriptJobConfiguration(coreConfig, scriptCommandLine);
@@ -197,7 +185,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfi
     public void write(final JsonWriter out, final T value) throws IOException {
         out.beginObject();
         out.name("jobName").value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name("jobClass").value(value.getTypeConfig().getJobClass().getCanonicalName());
+        out.name("jobClass").value(value.getTypeConfig().getJobClass());
         out.name("jobType").value(value.getTypeConfig().getJobType().name());
         out.name("cron").value(value.getTypeConfig().getCoreConfig().getCron());
         out.name("shardingTotalCount").value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
@@ -207,12 +195,12 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfi
         out.name("misfire").value(value.getTypeConfig().getCoreConfig().isMisfire());
         out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
         out.name("jobProperties").jsonValue(value.getTypeConfig().getCoreConfig().getJobProperties().json());
-        if (DataflowJob.class.isAssignableFrom(value.getTypeConfig().getJobClass())) {
+        if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
             DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getTypeConfig();
             out.name("dataflowType").value(dataflowJobConfig.getDataflowType().name());
             out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());
             out.name("concurrentDataProcessThreadCount").value(dataflowJobConfig.getConcurrentDataProcessThreadCount());
-        } else if (ScriptJob.class == value.getTypeConfig().getJobClass()) {
+        } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
             out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());
         }

@@ -31,7 +31,8 @@ public final class LiteJobConfigurationTest {
     
     @Test
     public void assertBuildAllProperties() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class))
+        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).build();
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
@@ -43,7 +44,8 @@ public final class LiteJobConfigurationTest {
     
     @Test
     public void assertBuildRequiredProperties() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build();
+        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build();
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));
@@ -55,24 +57,24 @@ public final class LiteJobConfigurationTest {
     @Test
     public void assertBuildWhenOptionalParametersIsNull() {
         assertThat(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
-                TestSimpleJob.class)).jobShardingStrategyClass(null).build().getJobShardingStrategyClass(), is(""));
+                TestSimpleJob.class.getCanonicalName())).jobShardingStrategyClass(null).build().getJobShardingStrategyClass(), is(""));
     }
     
     @Test
     public void assertIsNotFailoverWhenNotMonitorExecution() {
-        assertFalse(LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class)).monitorExecution(false).build().isFailover());
+        assertFalse(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build().isFailover());
     }
     
     @Test
     public void assertIsNotFailoverWhenMonitorExecution() {
-        assertFalse(LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class)).monitorExecution(true).build().isFailover());
+        assertFalse(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), 
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build().isFailover());
     }
     
     @Test
     public void assertIsFailover() {
-        assertTrue(LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class)).monitorExecution(true).build().isFailover());
+        assertTrue(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build().isFailover());
     }
 }

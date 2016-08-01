@@ -58,7 +58,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     private void buildSimpleJobSettings(final String jobName, final JobSettings result, final LiteJobConfiguration liteJobConfig) {
         result.setJobName(jobName);
         result.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
-        result.setJobClass(liteJobConfig.getTypeConfig().getJobClass().getCanonicalName());
+        result.setJobClass(liteJobConfig.getTypeConfig().getJobClass());
         result.setShardingTotalCount(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
         result.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
         result.setShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters());

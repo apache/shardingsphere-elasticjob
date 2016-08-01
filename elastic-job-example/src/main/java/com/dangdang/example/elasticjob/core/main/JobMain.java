@@ -50,13 +50,14 @@ public final class JobMain {
         zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         regCenter.init();
         
-        final SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("simpleElasticDemoJob", "0/30 * * * * ?", 10).build(), SimpleJobDemo.class);
+        final SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(
+                JobCoreConfiguration.newBuilder("simpleElasticDemoJob", "0/30 * * * * ?", 10).build(), SimpleJobDemo.class.getCanonicalName());
         
         final DataflowJobConfiguration throughputJobConfig = new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("throughputDataflowElasticDemoJob", "0/5 * * * * ?", 10).build(), 
-                ThroughputDataflowJobDemo.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, true);
+                ThroughputDataflowJobDemo.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.THROUGHPUT, true);
         
         final DataflowJobConfiguration sequenceJobConfig = new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("sequenceDataflowElasticDemoJob", "0/5 * * * * ?", 10).build(),
-                SequenceDataflowJobDemo.class, DataflowJobConfiguration.DataflowType.SEQUENCE, true);
+                SequenceDataflowJobDemo.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, true);
         
         final ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("scriptElasticDemoJob", "0/5 * * * * ?", 10).build(), 
                 ScriptCommandLineHelper.buildScriptCommandLine());

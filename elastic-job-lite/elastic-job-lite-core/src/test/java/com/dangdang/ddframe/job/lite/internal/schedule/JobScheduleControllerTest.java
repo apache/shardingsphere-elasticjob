@@ -180,7 +180,7 @@ public final class JobScheduleControllerTest {
     @Test(expected = JobSystemException.class)
     public void assertRescheduleJobFailure() throws NoSuchFieldException, SchedulerException {
         when(schedulerFacade.loadJobConfiguration()).thenReturn(
-                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build());
+                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new CronTriggerImpl());
         doThrow(SchedulerException.class).when(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), Matchers.<Trigger>any());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
@@ -194,7 +194,7 @@ public final class JobScheduleControllerTest {
     @Test
     public void assertRescheduleJobSuccess() throws NoSuchFieldException, SchedulerException {
         when(schedulerFacade.loadJobConfiguration()).thenReturn(
-                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build());
+                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new CronTriggerImpl());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         when(scheduler.isShutdown()).thenReturn(false);
@@ -205,7 +205,7 @@ public final class JobScheduleControllerTest {
     @Test
     public void assertRescheduleJobWhenTriggerIsNull() throws NoSuchFieldException, SchedulerException {
         when(schedulerFacade.loadJobConfiguration()).thenReturn(
-                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class)).build());
+                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         when(scheduler.isShutdown()).thenReturn(false);
         jobScheduleController.rescheduleJob("0/1 * * * * ?");

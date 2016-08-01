@@ -26,7 +26,6 @@ import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.bootstrap.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
@@ -125,7 +124,6 @@ public abstract class AbstractBaseStdJobTest {
         leaderElectionService = new LeaderElectionService(regCenter, jobName);
     }
     
-    @SuppressWarnings("unchecked")
     private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
         String cron = "0/1 * * * * ?";
         int totalShardingCount = 3;
@@ -134,11 +132,11 @@ public abstract class AbstractBaseStdJobTest {
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class).build();
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, (Class<? extends DataflowJob>) elasticJobClass, dataflowType.get(), false);
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, elasticJobClass.getCanonicalName(), dataflowType.get(), false);
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
             jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
         } else {
-            jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig, (Class<? extends SimpleJob>) elasticJobClass);
+            jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig, elasticJobClass.getCanonicalName());
         }
         return LiteJobConfiguration.newBuilder(jobTypeConfig).monitorPort(monitorPort).disabled(disabled).overwrite(true).build();
     }
