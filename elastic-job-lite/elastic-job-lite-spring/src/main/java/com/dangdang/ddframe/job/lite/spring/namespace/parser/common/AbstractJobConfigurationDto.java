@@ -17,11 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.common;
 
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration.Builder;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.internal.config.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基本作业配置命名空间对象.
@@ -31,6 +34,7 @@ import lombok.Setter;
  */
 @Setter
 @RequiredArgsConstructor
+@Slf4j
 public abstract class AbstractJobConfigurationDto {
     
     private final String jobName;
@@ -61,8 +65,17 @@ public abstract class AbstractJobConfigurationDto {
     
     private Boolean overwrite;
     
+    private String executorServiceHandler;
+    
+    private String jobExceptionHandler;
+    
     public LiteJobConfiguration toLiteJobConfiguration() {
-        JobCoreConfiguration.Builder jobCoreConfigBuilder = JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount);
+        JobCoreConfiguration jobCoreConfig = buildJobCoreConfiguration();
+        return buildLiteJobConfiguration(jobCoreConfig);
+    }
+    
+    private JobCoreConfiguration buildJobCoreConfiguration() {
+        Builder jobCoreConfigBuilder = JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount);
         jobCoreConfigBuilder.shardingItemParameters(shardingItemParameters);
         jobCoreConfigBuilder.jobParameter(jobParameter);
         if (null != failover) {
@@ -71,8 +84,26 @@ public abstract class AbstractJobConfigurationDto {
         if (null != misfire) {
             jobCoreConfigBuilder.misfire(misfire);
         }
+        if (null != executorServiceHandler) {
+            try {
+                jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), Class.forName(executorServiceHandler));
+            } catch (final ClassNotFoundException ex) {
+                log.warn("Cannot load executor service handler '{}', use default {} class.", executorServiceHandler, JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name());
+            }
+        }
+        if (null != jobExceptionHandler) {
+            try {
+                jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), Class.forName(jobExceptionHandler));
+            } catch (final ClassNotFoundException ex) {
+                log.warn("Cannot load job exception handler '{}', use default {} class.", jobExceptionHandler, JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name());
+            }
+        }
         jobCoreConfigBuilder.description(description);
-        LiteJobConfiguration.Builder result = LiteJobConfiguration.newBuilder(toJobConfiguration(jobCoreConfigBuilder.build()));
+        return jobCoreConfigBuilder.build();
+    }
+    
+    private LiteJobConfiguration buildLiteJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
+        LiteJobConfiguration.Builder result = LiteJobConfiguration.newBuilder(toJobConfiguration(jobCoreConfig));
         if (null != monitorExecution) {
             result.monitorExecution(monitorExecution);
         }
@@ -85,6 +116,9 @@ public abstract class AbstractJobConfigurationDto {
         result.jobShardingStrategyClass(jobShardingStrategyClass);
         if (null != disabled) {
             result.disabled(disabled);
+        }
+        if (null != overwrite) {
+            result.overwrite(overwrite);
         }
         if (null != overwrite) {
             result.overwrite(overwrite);
