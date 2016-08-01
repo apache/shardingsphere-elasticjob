@@ -174,7 +174,7 @@ public final class JobCoreConfiguration {
          *
          * @return 作业配置构建器
          */
-        public Builder jobProperties(final String key, final Class<?> value) {
+        public Builder jobProperties(final String key, final String value) {
             jobProperties.put(key, value);
             return this;
         }

@@ -34,6 +34,6 @@ public final class TestScriptJobConfiguration implements JobConfiguration {
     @Override
     public JobTypeConfiguration getTypeConfig() {
         return new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10)
-                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), ThrowJobExceptionHandler.class).build(), scriptCommandLine);
+                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), ThrowJobExceptionHandler.class.getCanonicalName()).build(), scriptCommandLine);
     }
 }

@@ -37,7 +37,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class JobProperties {
     
-    private final Map<JobPropertiesEnum, Class<?>> map = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
+    private final Map<JobPropertiesEnum, String> map = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
     
     /**
      * 设置作业属性.
@@ -45,14 +45,12 @@ public final class JobProperties {
      * @param key 属性键
      * @param value 属性值
      */
-    public void put(final String key, final Class<?> value) {
+    public void put(final String key, final String value) {
         JobPropertiesEnum jobPropertiesEnum = JobPropertiesEnum.from(key);
         if (null == jobPropertiesEnum || null == value) {
             return;
         }
-        if (jobPropertiesEnum.getClassType().isAssignableFrom(value)) {
-            map.put(jobPropertiesEnum, value);
-        }
+        map.put(jobPropertiesEnum, value);
     }
     
     /**
@@ -61,7 +59,7 @@ public final class JobProperties {
      * @param jobPropertiesEnum 作业属性枚举
      * @return 属性值
      */
-    public Class<?> get(final JobPropertiesEnum jobPropertiesEnum) {
+    public String get(final JobPropertiesEnum jobPropertiesEnum) {
         return map.containsKey(jobPropertiesEnum) ? map.get(jobPropertiesEnum) : jobPropertiesEnum.getDefaultValue();
     }
     
@@ -73,7 +71,7 @@ public final class JobProperties {
     public String json() {
         Map<String, String> jsonMap = new HashMap<>(JobPropertiesEnum.values().length, 1);
         for (JobPropertiesEnum each : JobPropertiesEnum.values()) {
-            jsonMap.put(each.getKey(), get(each).getCanonicalName());
+            jsonMap.put(each.getKey(), get(each));
         }
         return GsonFactory.getGson().toJson(jsonMap);
     }
@@ -88,18 +86,18 @@ public final class JobProperties {
         /**
          * 作业异常处理器.
          */
-        JOB_EXCEPTION_HANDLER("job_exception_handler", JobExceptionHandler.class, DefaultJobExceptionHandler.class),
+        JOB_EXCEPTION_HANDLER("job_exception_handler", JobExceptionHandler.class, DefaultJobExceptionHandler.class.getCanonicalName()),
         
         /**
          * 线程池服务处理器.
          */
-        EXECUTOR_SERVICE_HANDLER("executor_service_handler", ExecutorServiceHandler.class, DefaultExecutorServiceHandler.class);
+        EXECUTOR_SERVICE_HANDLER("executor_service_handler", ExecutorServiceHandler.class, DefaultExecutorServiceHandler.class.getCanonicalName());
         
         private final String key;
-        
+    
         private final Class<?> classType;
         
-        private final Class<?> defaultValue;
+        private final String defaultValue;
         
         /**
          * 通过属性键获取枚举.

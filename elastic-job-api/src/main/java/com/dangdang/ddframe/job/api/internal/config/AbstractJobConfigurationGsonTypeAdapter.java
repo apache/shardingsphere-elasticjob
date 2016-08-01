@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.api.internal.config;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
@@ -129,10 +128,10 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfi
         while (in.hasNext()) {
             switch (in.nextName()) {
                 case "job_exception_handler":
-                    result.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), getJobPropertiesValue(in, JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
+                    result.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), in.nextString());
                     break;
                 case "executor_service_handler":
-                    result.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), getJobPropertiesValue(in, JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+                    result.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), in.nextString());
                     break;
                 default:
                     break;
@@ -140,16 +139,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfi
         }
         in.endObject();
         return result;
-    }
-    
-    private Class<?> getJobPropertiesValue(final JsonReader in, final JobProperties.JobPropertiesEnum jobPropertiesEnum) throws IOException {
-        String jobPropertiesClassName = in.nextString();
-        try {
-            return Class.forName(jobPropertiesClassName);
-        } catch (final ClassNotFoundException ex) {
-            log.warn("Cannot load class '{}', use default {} class.", jobPropertiesClassName, jobPropertiesEnum.getKey());
-            return jobPropertiesEnum.getDefaultValue();
-        }
     }
     
     protected abstract void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException;

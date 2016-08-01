@@ -66,8 +66,8 @@ public final class LiteJobConfigurationGsonFactoryTest {
     public void assertToJsonForSimpleJob() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3)
                 .shardingItemParameters("0=a,1=b").jobParameter("param").failover(true).misfire(false).description("desc")
-                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class)
-                .jobProperties(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class)
+                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName())
+                .jobProperties(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class.getCanonicalName())
                 .build(), TestSimpleJob.class.getCanonicalName()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
@@ -99,9 +99,8 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertTrue(actual.getTypeConfig().getCoreConfig().isFailover());
         assertFalse(actual.getTypeConfig().getCoreConfig().isMisfire());
         assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is("desc"));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER).getCanonicalName(),
-                is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER).getCanonicalName(),
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), 
                 is(DefaultExecutorServiceHandler.class.getCanonicalName()));
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
@@ -124,9 +123,9 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertFalse(actual.getTypeConfig().getCoreConfig().isFailover());
         assertTrue(actual.getTypeConfig().getCoreConfig().isMisfire());
         assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER).getCanonicalName(),
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER),
                 is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER).getCanonicalName(),
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER),
                 is(DefaultExecutorServiceHandler.class.getCanonicalName()));
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
@@ -152,9 +151,9 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertFalse(actual.getTypeConfig().getCoreConfig().isFailover());
         assertTrue(actual.getTypeConfig().getCoreConfig().isMisfire());
         assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER).getCanonicalName(),
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER),
                 is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER).getCanonicalName(),
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER),
                 is(DefaultExecutorServiceHandler.class.getCanonicalName()));
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
@@ -163,14 +162,5 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
         assertThat(((ScriptJobConfiguration) actual.getTypeConfig()).getScriptCommandLine(), is("test.sh"));
-    }
-    
-    @Test
-    public void assertFromJsonForJobPropertiesClassesAreNotFound() {
-        LiteJobConfiguration actual = LiteJobConfigurationGsonFactory.fromJson(propertiesClassNotFoundJson);
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER).getCanonicalName(),
-                is(DefaultJobExceptionHandler.class.getCanonicalName()));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER).getCanonicalName(),
-                is(DefaultExecutorServiceHandler.class.getCanonicalName()));
     }
 }

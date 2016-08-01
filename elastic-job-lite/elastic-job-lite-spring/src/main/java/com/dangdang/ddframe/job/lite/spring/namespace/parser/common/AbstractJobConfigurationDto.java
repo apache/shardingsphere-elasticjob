@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.common;
 
+import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration.Builder;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.internal.config.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import lombok.RequiredArgsConstructor;
@@ -85,18 +85,10 @@ public abstract class AbstractJobConfigurationDto {
             jobCoreConfigBuilder.misfire(misfire);
         }
         if (null != executorServiceHandler) {
-            try {
-                jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), Class.forName(executorServiceHandler));
-            } catch (final ClassNotFoundException ex) {
-                log.warn("Cannot load executor service handler '{}', use default {} class.", executorServiceHandler, JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name());
-            }
+            jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), executorServiceHandler);
         }
         if (null != jobExceptionHandler) {
-            try {
-                jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), Class.forName(jobExceptionHandler));
-            } catch (final ClassNotFoundException ex) {
-                log.warn("Cannot load job exception handler '{}', use default {} class.", jobExceptionHandler, JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name());
-            }
+            jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobExceptionHandler);
         }
         jobCoreConfigBuilder.description(description);
         return jobCoreConfigBuilder.build();

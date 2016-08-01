@@ -19,9 +19,9 @@ package com.dangdang.ddframe.job.api.internal.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -53,16 +53,24 @@ public abstract class AbstractElasticJobExecutor {
     }
     
     private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {
-        Class<?> handlerClass = jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
+        String handlerClassName = jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
         try {
-            return handlerClass.newInstance();
-        } catch (final InstantiationException | IllegalAccessException ex) {
-            log.warn("Cannot instantiation class '{}', use default {} class.", handlerClass, jobPropertiesEnum.getKey());
-            try {
-                return jobPropertiesEnum.getDefaultValue().newInstance();
-            } catch (final InstantiationException | IllegalAccessException e) {
-                throw new JobSystemException(e);
+            Class<?> handlerClass = Class.forName(handlerClassName);
+            if (jobPropertiesEnum.getClassType().isAssignableFrom(handlerClass)) {
+                return handlerClass.newInstance();
             }
+            return getDefaultHandler(jobPropertiesEnum, handlerClassName);
+        } catch (final ReflectiveOperationException ex) {
+            return getDefaultHandler(jobPropertiesEnum, handlerClassName);
+        }
+    }
+    
+    private Object getDefaultHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum, final String handlerClassName) {
+        log.warn("Cannot instantiation class '{}', use default {} class.", handlerClassName, jobPropertiesEnum.getKey());
+        try {
+            return Class.forName(jobPropertiesEnum.getDefaultValue()).newInstance();
+        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new JobSystemException(e);
         }
     }
     
