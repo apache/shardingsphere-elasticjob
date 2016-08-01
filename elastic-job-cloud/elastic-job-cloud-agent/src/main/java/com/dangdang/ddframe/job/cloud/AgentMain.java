@@ -32,10 +32,7 @@ import com.dangdang.ddframe.job.cloud.api.CloudJobFacade;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import lombok.RequiredArgsConstructor;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
 
 /**
  * 云作业启动执行器.
@@ -50,27 +47,23 @@ public final class AgentMain {
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
         try {
-            Properties properties = new Properties();
-            properties.load(new FileInputStream("conf/job.properties"));
-            String[] jobClasses = properties.getProperty("job.classes").split(",");
-            for (String each : jobClasses) {
-                Class<?> cloudElasticJobClass = Class.forName(each);
-                ElasticJob elasticJob = (ElasticJob) cloudElasticJobClass.getConstructor().newInstance();
-                JobFacade jobFacade = new CloudJobFacade(GsonFactory.getGson().fromJson(args[0], ShardingContext.class));
-                // TODO 与lite一起提炼
-                AbstractElasticJobExecutor elasticJobExecutor;
-                if (elasticJob instanceof SimpleJob) {
-                    elasticJobExecutor = new SimpleJobExecutor((SimpleJob) elasticJob, jobFacade);
-                } else if (elasticJob instanceof DataflowJob) {
-                    elasticJobExecutor = new DataflowJobExecutor((DataflowJob<Object>) elasticJob, jobFacade);
-                } else if (elasticJob instanceof ScriptJob) {
-                    elasticJobExecutor = new ScriptJobExecutor(jobFacade);
-                } else {
-                    throw new JobConfigurationException("Cannot support job type '%s'", elasticJob.getClass());
-                }
-                elasticJobExecutor.execute();
+            String jobClass = args[0];
+            Class<?> cloudElasticJobClass = Class.forName(jobClass);
+            ElasticJob elasticJob = (ElasticJob) cloudElasticJobClass.getConstructor().newInstance();
+            JobFacade jobFacade = new CloudJobFacade(GsonFactory.getGson().fromJson(args[1], ShardingContext.class));
+            // TODO 与lite一起提炼
+            AbstractElasticJobExecutor elasticJobExecutor;
+            if (elasticJob instanceof SimpleJob) {
+                elasticJobExecutor = new SimpleJobExecutor((SimpleJob) elasticJob, jobFacade);
+            } else if (elasticJob instanceof DataflowJob) {
+                elasticJobExecutor = new DataflowJobExecutor((DataflowJob<Object>) elasticJob, jobFacade);
+            } else if (elasticJob instanceof ScriptJob) {
+                elasticJobExecutor = new ScriptJobExecutor(jobFacade);
+            } else {
+                throw new JobConfigurationException(String.format("Cannot support job type '%s'", elasticJob.getClass()));
             }
-        }  catch (final IOException | ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException ex) {
+            elasticJobExecutor.execute();
+        }  catch (final ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException ex) {
             throw new RuntimeException(ex);
         }
     }

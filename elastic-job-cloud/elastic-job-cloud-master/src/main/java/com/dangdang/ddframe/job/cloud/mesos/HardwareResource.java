@@ -38,7 +38,7 @@ import java.util.Map;
 @EqualsAndHashCode(of = "offerId")
 public final class HardwareResource {
     
-    private static final String RUN_COMMAND = "sh bin/start.sh '%s'";
+    private static final String RUN_COMMAND = "sh bin/start.sh %s '%s'";
     
     private final Protos.Offer offer;
     
@@ -132,7 +132,8 @@ public final class HardwareResource {
                 jobConfig.getJobName(), jobConfig.getShardingTotalCount(), "", shardingItemParameters);
         // TODO 上线前更改cache为true
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
-        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(String.format(RUN_COMMAND, GsonFactory.getGson().toJson(shardingContext))).build();
+        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true)
+                .setValue(String.format(RUN_COMMAND, jobConfig.getJobClass(), GsonFactory.getGson().toJson(shardingContext))).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
                 .setTaskId(taskId)

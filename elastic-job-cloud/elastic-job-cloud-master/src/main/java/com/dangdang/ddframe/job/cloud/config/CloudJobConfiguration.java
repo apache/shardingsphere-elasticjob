@@ -33,6 +33,8 @@ public final class CloudJobConfiguration {
     
     private final String jobName;
     
+    private final String jobClass;
+    
     private final String cron;
     
     private final int shardingTotalCount;

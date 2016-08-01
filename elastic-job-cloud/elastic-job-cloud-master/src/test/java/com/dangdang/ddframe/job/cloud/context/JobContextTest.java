@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.context;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -27,7 +28,7 @@ public final class JobContextTest {
     
     @Test
     public void assertFrom() {
-        CloudJobConfiguration jobConfig = new CloudJobConfiguration("test_job", "5/10 * * * * *", 10, 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", true, true, false);
+        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         JobContext actual = JobContext.from(jobConfig, ExecutionType.READY);
         assertThat(actual.getAssignedShardingItems().size(), is(10));
         for (int i = 0; i < actual.getAssignedShardingItems().size(); i++) {
