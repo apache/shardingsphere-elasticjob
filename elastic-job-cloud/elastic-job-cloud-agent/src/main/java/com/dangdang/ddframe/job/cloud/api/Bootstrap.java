@@ -18,10 +18,12 @@
 package com.dangdang.ddframe.job.cloud.api;
 
 import com.dangdang.ddframe.job.api.bootstrap.JobExecutorFactory;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.cloud.api.internal.ArgumentsParser;
 import com.dangdang.ddframe.job.cloud.api.internal.CloudJobFacade;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 云作业启动器.
@@ -32,15 +34,17 @@ import lombok.NoArgsConstructor;
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public final class Bootstrap {
     
     /**
      * 执行作业.
      * 
      * @param args 命令行参数
+     * @throws JobExecutionEnvironmentException 作业执行环境异常
      */
-    public static void execute(final String[] args) {
+    public static void execute(final String[] args) throws JobExecutionEnvironmentException {
         ArgumentsParser parser = ArgumentsParser.parse(args);
-        JobExecutorFactory.getJobExecutor(parser.getElasticJobClass(), new CloudJobFacade(parser.getShardingContext(), parser.getJobConfig())).execute();
+        JobExecutorFactory.getJobExecutor(parser.getElasticJob(), new CloudJobFacade(parser.getShardingContext(), parser.getJobConfig())).execute();
     }
 }

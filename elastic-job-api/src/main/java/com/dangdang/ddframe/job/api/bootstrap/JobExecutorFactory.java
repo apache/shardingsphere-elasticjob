@@ -19,12 +19,10 @@ package com.dangdang.ddframe.job.api.bootstrap;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.ddframe.job.api.type.simple.executor.SimpleJobExecutor;
@@ -42,20 +40,14 @@ public final class JobExecutorFactory {
     /**
      * 获取作业执行器.
      *
-     * @param elasticJobClass 作业类
+     * @param elasticJob 分布式弹性作业
      * @param jobFacade 作业内部服务门面服务
      * @return 作业执行器
      */
     @SuppressWarnings("unchecked")
-    public static AbstractElasticJobExecutor getJobExecutor(final Class<? extends ElasticJob> elasticJobClass, final JobFacade jobFacade) {
-        if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
+    public static AbstractElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
+        if (null == elasticJob) {
             return new ScriptJobExecutor(jobFacade);
-        }
-        ElasticJob elasticJob;
-        try {
-            elasticJob = elasticJobClass.getConstructor().newInstance();
-        }  catch (final ReflectiveOperationException ex) {
-            throw new JobSystemException("Elastic job class must have a no argument constructor, class initialize failure, the error message is : '%s'", ex.getMessage());
         }
         if (elasticJob instanceof SimpleJob) {
             return new SimpleJobExecutor((SimpleJob) elasticJob, jobFacade);
@@ -63,6 +55,6 @@ public final class JobExecutorFactory {
         if (elasticJob instanceof DataflowJob) {
             return new DataflowJobExecutor((DataflowJob) elasticJob, jobFacade);
         }
-        throw new JobConfigurationException("Cannot support job type '%s'", elasticJobClass.getCanonicalName());
+        throw new JobConfigurationException("Cannot support job type '%s'", elasticJob.getClass().getCanonicalName());
     }
 }

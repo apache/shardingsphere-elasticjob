@@ -17,9 +17,7 @@
 
 package com.dangdang.ddframe.job.api.bootstrap;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;
@@ -29,7 +27,6 @@ import com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;
 import com.dangdang.ddframe.job.api.type.simple.executor.SimpleJobExecutor;
 import org.junit.Test;
@@ -50,30 +47,24 @@ public final class JobExecutorFactoryTest {
     @Test
     public void assertGetJobExecutorForScriptJob() {
         when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh"));
-        assertThat(JobExecutorFactory.getJobExecutor(ScriptJob.class, jobFacade), instanceOf(ScriptJobExecutor.class));
+        assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), instanceOf(ScriptJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForSimpleJob() {
         when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
-        assertThat(JobExecutorFactory.getJobExecutor(TestSimpleJob.class, jobFacade), instanceOf(SimpleJobExecutor.class));
+        assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(), jobFacade), instanceOf(SimpleJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForDataflowJob() {
         when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(DataflowJobConfiguration.DataflowType.SEQUENCE, false, 1));
-        assertThat(JobExecutorFactory.getJobExecutor(TestDataflowJob.class, jobFacade), instanceOf(DataflowJobExecutor.class));
-    }
-    
-    @Test(expected = JobSystemException.class)
-    public void assertGetJobExecutorWhenJobClassWithoutNoArgumentConstructor() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
-        JobExecutorFactory.getJobExecutor(ElasticJob.class, jobFacade);
+        assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(), jobFacade), instanceOf(DataflowJobExecutor.class));
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetJobExecutorWhenJobClassWhenUnsupportedJob() {
         when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
-        JobExecutorFactory.getJobExecutor(OtherJob.class, jobFacade);
+        JobExecutorFactory.getJobExecutor(new OtherJob(), jobFacade);
     }
 }

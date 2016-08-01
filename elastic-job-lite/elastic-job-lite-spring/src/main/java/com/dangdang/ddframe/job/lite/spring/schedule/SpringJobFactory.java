@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.spring.schedule;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.lite.api.bootstrap.JobScheduler;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.quartz.Job;
@@ -57,7 +58,8 @@ public final class SpringJobFactory extends PropertySettingJobFactory {
     
     private Optional<ElasticJob> findElasticJobBean(final TriggerFiredBundle bundle) {
         for (ElasticJob each : applicationContext.getBeansOfType(ElasticJob.class).values()) {
-            if (bundle.getJobDetail().getJobDataMap().containsKey("elasticJob") && AopUtils.getTargetClass(each) == bundle.getJobDetail().getJobDataMap().get("elasticJob").getClass()) {
+            if (bundle.getJobDetail().getJobDataMap().containsKey(JobScheduler.ELASTIC_JOB_DATA_MAP_KEY)
+                    && AopUtils.getTargetClass(each) == bundle.getJobDetail().getJobDataMap().get(JobScheduler.ELASTIC_JOB_DATA_MAP_KEY).getClass()) {
                 return Optional.of(each);
             }
         }
@@ -69,8 +71,7 @@ public final class SpringJobFactory extends PropertySettingJobFactory {
         result.putAll(scheduler.getContext());
         result.putAll(bundle.getJobDetail().getJobDataMap());
         result.putAll(bundle.getTrigger().getJobDataMap());
-        result.put("elasticJob", elasticJobBean);
-        // TODO setJobFacade ??
+        result.put(JobScheduler.ELASTIC_JOB_DATA_MAP_KEY, elasticJobBean);
         return result;
     }
 }

@@ -51,6 +51,10 @@ import java.util.Properties;
  */
 public class JobScheduler {
     
+    public static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
+    
+    private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
+    
     private static final String SCHEDULER_INSTANCE_NAME_SUFFIX = "Scheduler";
     
     private static final String CRON_TRIGGER_IDENTITY_SUFFIX = "Trigger";
@@ -71,11 +75,11 @@ public class JobScheduler {
         jobExecutor.init();
         JobDetail jobDetail = JobBuilder.newJob(LiteJob.class).withIdentity(jobExecutor.getLiteJobConfig().getJobName()).build();
         try {
-            jobDetail.getJobDataMap().put("elasticJobClass", Class.forName(jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass()));
-        } catch (final ClassNotFoundException ex) {
-            throw new JobConfigurationException("Elastic-Job: Job class '%s' is not in classpath, return null job configuration.", jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass());
+            jobDetail.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass()).newInstance());
+        } catch (final ReflectiveOperationException ex) {
+            throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass());
         }
-        jobDetail.getJobDataMap().put("jobFacade", jobFacade);
+        jobDetail.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         JobScheduleController jobScheduleController;
         try {
             jobScheduleController = new JobScheduleController(initializeScheduler(jobDetail.getKey().toString()), jobDetail, 
@@ -118,14 +122,14 @@ public class JobScheduler {
     public static final class LiteJob implements Job {
         
         @Setter
-        private Class<ElasticJob> elasticJobClass;
+        private ElasticJob elasticJob;
         
         @Setter
         private JobFacade jobFacade;
         
         @Override
         public void execute(final JobExecutionContext context) throws JobExecutionException {
-            JobExecutorFactory.getJobExecutor(elasticJobClass, jobFacade).execute();
+            JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
         }
     }
 }

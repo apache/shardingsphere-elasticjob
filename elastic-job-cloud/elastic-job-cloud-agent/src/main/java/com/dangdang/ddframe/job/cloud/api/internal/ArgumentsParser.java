@@ -19,7 +19,8 @@ package com.dangdang.ddframe.job.cloud.api.internal;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
@@ -36,7 +37,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public final class ArgumentsParser {
     
-    private Class<? extends ElasticJob> elasticJobClass;
+    private ElasticJob elasticJob;
     
     private ShardingContext shardingContext;
     
@@ -46,14 +47,20 @@ public final class ArgumentsParser {
      * 解析.
      * @param args 命令行参数
      * @return 解析对象
+     * @throws JobExecutionEnvironmentException 作业执行环境异常
      */
-    @SuppressWarnings("unchecked")
-    public static ArgumentsParser parse(final String[] args) {
+    public static ArgumentsParser parse(final String[] args) throws JobExecutionEnvironmentException {
         ArgumentsParser result = new ArgumentsParser();
         try {
-            result.elasticJobClass = (Class<? extends ElasticJob>) Class.forName(args[0]);
-        } catch (final ClassNotFoundException ex) {
-            throw new JobConfigurationException(ex);
+            Class<?> elasticJobClass = Class.forName(args[0]);
+            if (!ElasticJob.class.isAssignableFrom(elasticJobClass)) {
+                throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' must implements ElasticJob interface.", args[0]);
+            }
+            if (elasticJobClass != ScriptJob.class) {
+                result.elasticJob = (ElasticJob) elasticJobClass.newInstance();
+            }
+        } catch (final ReflectiveOperationException ex) {
+            throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", args[0], ex.getMessage());
         }
         result.shardingContext = GsonFactory.getGson().fromJson(args[1], ShardingContext.class);
         result.jobConfig = CloudJobConfigurationGsonFactory.fromJson(args[2]);
