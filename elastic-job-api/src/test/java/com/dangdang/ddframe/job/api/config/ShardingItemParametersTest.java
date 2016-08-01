@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.api.config;
 
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.api.internal.config.ShardingItemParameters;
 import org.junit.Test;
 
 import java.util.Collections;

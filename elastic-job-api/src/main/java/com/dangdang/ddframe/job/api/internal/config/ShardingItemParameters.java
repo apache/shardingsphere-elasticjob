@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.config;
+package com.dangdang.ddframe.job.api.internal.config;
 
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.google.common.base.Strings;
