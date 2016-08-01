@@ -82,6 +82,7 @@ public class SchedulerFacade {
         serverService.clearJobPausedStatus();
         shardingService.setReshardingFlag();
         monitorService.listen();
+        listenerManager.setCurrentShardingTotalCount(configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount());
     }
     
     /**

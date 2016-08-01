@@ -18,11 +18,13 @@
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
+import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import lombok.Setter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
@@ -42,6 +44,9 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
+    @Setter
+    private int currentShardingTotalCount;
+    
     public ShardingListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
@@ -60,10 +65,13 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            // TODO 缓存totalShardingCount, 对比,只有修改了totalShardingCount再重分片
-            if (configNode.isConfigPath(path)) {
-                shardingService.setReshardingFlag();
-                executionService.setNeedFixExecutionInfoFlag();
+            if (configNode.isConfigPath(path) && 0 != currentShardingTotalCount) {
+                int newShardingTotalCount = LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getTypeConfig().getCoreConfig().getShardingTotalCount();
+                if (newShardingTotalCount != currentShardingTotalCount) {
+                    shardingService.setReshardingFlag();
+                    executionService.setNeedFixExecutionInfoFlag();
+                    currentShardingTotalCount = newShardingTotalCount;
+                }
             }
         }
     }

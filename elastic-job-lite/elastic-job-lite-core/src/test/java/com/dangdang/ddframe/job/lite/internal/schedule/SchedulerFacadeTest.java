@@ -94,6 +94,8 @@ public class SchedulerFacadeTest {
     
     @Test
     public void assertRegisterStartUpInfo() {
+        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, false)).build());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
         verify(listenerManager).startAllListeners();
         verify(leaderElectionService).leaderForceElection();
@@ -102,6 +104,8 @@ public class SchedulerFacadeTest {
         verify(serverService).clearJobPausedStatus();
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
+        verify(configService).load(false);
+        verify(listenerManager).setCurrentShardingTotalCount(3);
     }
     
     @Test

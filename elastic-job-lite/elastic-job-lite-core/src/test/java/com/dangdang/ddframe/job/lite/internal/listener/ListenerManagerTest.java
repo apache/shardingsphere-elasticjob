@@ -84,4 +84,10 @@ public class ListenerManagerTest {
         verify(configurationListenerManager).start();
         verify(guaranteeListenerManager).start();
     }
+    
+    @Test
+    public void assertSetCurrentShardingTotalCount() {
+        listenerManager.setCurrentShardingTotalCount(10);
+        verify(shardingListenerManager).setCurrentShardingTotalCount(10);
+    }
 }
