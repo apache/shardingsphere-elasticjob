@@ -17,8 +17,12 @@
 
 package com.dangdang.ddframe.job.api.internal.executor;
 
+import com.google.common.util.concurrent.MoreExecutors;
+
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 默认线程池服务处理器.
@@ -29,6 +33,7 @@ public final class DefaultExecutorServiceHandler implements ExecutorServiceHandl
     
     @Override
     public ExecutorService createExecutorService() {
-        return Executors.newCachedThreadPool();
+        return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(
+                new ThreadPoolExecutor(0, Runtime.getRuntime().availableProcessors() * 2, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
     }
 }
