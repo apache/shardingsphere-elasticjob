@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.Internal.config;
 
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.fixture.JsonConstants;
+import com.dangdang.ddframe.job.api.fixture.APIJsonConstants;
 import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestJobRootConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
@@ -46,25 +46,25 @@ public final class JobConfigurationGsonTypeAdapterTest {
     @Test
     public void assertToSimpleJobJson() {
         assertThat(GSON.toJson(new TestJobRootConfiguration(new TestSimpleJobConfiguration().getTypeConfig())), 
-                is(JsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+                is(APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test
     public void assertToDataflowJobJson() {
         assertThat(GSON.toJson(new TestJobRootConfiguration(new TestDataflowJobConfiguration(DataflowJobConfiguration.DataflowType.SEQUENCE, true, 10).getTypeConfig())),
-                is(JsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName())));
+                is(APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test
     public void assertToScriptJobJson() {
         assertThat(GSON.toJson(new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh").getTypeConfig())),
-                is(JsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+                is(APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test
     public void assertFromSimpleJobJson() {
         TestJobRootConfiguration actual = GSON.fromJson(
-                JsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
+                APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
         TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestSimpleJobConfiguration().getTypeConfig());
         assertThat(GSON.toJson(actual), is(GSON.toJson(expected)));
     }
@@ -72,7 +72,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
     @Test
     public void assertFromDataflowJobJson() {
         TestJobRootConfiguration actual = GSON.fromJson(
-                JsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
+                APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
         TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestDataflowJobConfiguration(DataflowJobConfiguration.DataflowType.SEQUENCE, true, 10).getTypeConfig());
         assertThat(GSON.toJson(actual), is(GSON.toJson(expected)));
     }
@@ -80,7 +80,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
     @Test
     public void assertFromScriptJobJson() {
         TestJobRootConfiguration actual = GSON.fromJson(
-                JsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
+                APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
         TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh").getTypeConfig());
         assertThat(GSON.toJson(actual), is(GSON.toJson(expected)));
     }

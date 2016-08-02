@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.config;
 
+import com.dangdang.ddframe.job.cloud.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
@@ -45,24 +46,18 @@ public final class ConfigurationServiceTest {
     @InjectMocks
     private ConfigurationService configService;
     
-    private String jobConfigJson = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
-            + "\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
-            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"},\"cpuCount\":1.0,\"memoryMB\":128.0,"
-            + "\"dockerImageName\":\"dockerImage\",\"appURL\":\"http://localhost/app.jar\"}";
-    
     @Test
     public void assertAdd() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.add(jobConfig);
-        verify(regCenter).persist("/config/test_job", String.format(jobConfigJson, "test_job"));
+        verify(regCenter).persist("/config/test_job", CloudJsonConstants.getJobJson());
     }
     
     @Test
     public void assertUpdate() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.update(jobConfig);
-        verify(regCenter).update("/config/test_job", String.format(jobConfigJson, "test_job"));
+        verify(regCenter).update("/config/test_job", CloudJsonConstants.getJobJson());
     }
     
     @Test
@@ -78,7 +73,7 @@ public final class ConfigurationServiceTest {
         when(regCenter.getChildrenKeys(ConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         when(regCenter.isExisted("/config/test_job_1")).thenReturn(true);
         when(regCenter.isExisted("/config/test_job_2")).thenReturn(false);
-        when(regCenter.get("/config/test_job_1")).thenReturn(String.format(jobConfigJson, "test_job_1"));
+        when(regCenter.get("/config/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
         Collection<CloudJobConfiguration> actual = configService.loadAll();
         assertThat(actual.size(), is(1));
         assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
@@ -99,7 +94,7 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertLoadWithConfig() {
         when(regCenter.isExisted("/config/test_job")).thenReturn(true);
-        when(regCenter.get("/config/test_job")).thenReturn(String.format(jobConfigJson, "test_job"));
+        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
         assertTrue(actual.isPresent());
         assertThat(actual.get().getJobName(), is("test_job"));

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.Internal.config;
 
-import com.dangdang.ddframe.job.api.fixture.JsonConstants;
+import com.dangdang.ddframe.job.api.fixture.APIJsonConstants;
 import com.dangdang.ddframe.job.api.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler;
@@ -75,7 +75,7 @@ public final class JobPropertiesTest {
     
     @Test
     public void assertJson() {
-        assertThat(new JobProperties().json(), is(JsonConstants.getJobPropertiesJson(DefaultJobExceptionHandler.class.getCanonicalName())));
+        assertThat(new JobProperties().json(), is(APIJsonConstants.getJobPropertiesJson(DefaultJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test

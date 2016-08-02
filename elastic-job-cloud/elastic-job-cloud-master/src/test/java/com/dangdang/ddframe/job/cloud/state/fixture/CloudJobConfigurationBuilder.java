@@ -28,13 +28,13 @@ public final class CloudJobConfigurationBuilder {
     
     public static CloudJobConfiguration createCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/1 * * * * ?", 10).failover(true).misfire(true).build(), TestSimpleJob.class.getCanonicalName()), 
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 10).failover(true).misfire(true).build(), TestSimpleJob.class.getCanonicalName()), 
                 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar");
     }
     
     public static CloudJobConfiguration createOtherCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/1 * * * * ?", 3).failover(false).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
                 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar");
     }
 }

@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.settings;
 
 import com.dangdang.ddframe.job.lite.api.JobSettingsAPI;
 import com.dangdang.ddframe.job.lite.domain.JobSettings;
+import com.dangdang.ddframe.job.lite.fixture.LifecycleJsonConstants;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,26 +47,10 @@ public class JobSettingsAPIImplTest {
     }
     
     @Test
-    public void assertGetJobSettingsWithMonitorPort() {
-        String dataflowJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
-                + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-                + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
-                + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
-        when(regCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
+    public void assertGetJobSettings() {
+        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
         assertJobSettings(actual);
-        assertThat(actual.getMonitorPort(), is(-1));
-        verify(regCenter).get("/test_job/config");
-    }
-    
-    @Test
-    public void assertGetJobSettingsWithoutMonitorPort() {
-        String dataflowJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
-                + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-                + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
-                + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
-        when(regCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
-        assertJobSettings(jobSettingsAPI.getJobSettings("test_job"));
         verify(regCenter).get("/test_job/config");
     }
     
@@ -79,6 +64,7 @@ public class JobSettingsAPIImplTest {
         assertThat(jobSettings.getJobParameter(), is(""));
         assertThat(jobSettings.isMonitorExecution(), is(true));
         assertThat(jobSettings.getMaxTimeDiffSeconds(), is(-1));
+        assertThat(jobSettings.getMonitorPort(), is(8888));
         assertFalse(jobSettings.isFailover());
         assertTrue(jobSettings.isMisfire());
         assertTrue(jobSettings.isStreamingProcess());
@@ -86,13 +72,10 @@ public class JobSettingsAPIImplTest {
         assertThat(jobSettings.getDescription(), is(""));
     }
     
+    // TODO JobProperties未更新
     @Test
     public void assertUpdateJobSettings() {
-        String dataflowJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
-                + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-                + "\"jobProperties\":{},\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,"
-                + "\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
-        when(regCenter.get("/test_job/config")).thenReturn(dataflowJobJson);
+        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
         JobSettings jobSettings = new JobSettings();
         jobSettings.setJobName("test_job");
         jobSettings.setJobClass("com.dangdang.ddframe.job.lite.fixture.TestDataflowJob");

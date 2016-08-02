@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.lite.internal.config;
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import org.junit.Before;
@@ -48,9 +49,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertLoadDirectly() {
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"scriptCommandLine\":\"test.sh\"}");
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         LiteJobConfiguration actual = configService.load(false);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
@@ -59,9 +58,7 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertLoadFromCache() {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"scriptCommandLine\":\"test.sh\"}");
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         LiteJobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
@@ -71,9 +68,7 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertLoadFromCacheButNull() {
         when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(null);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"scriptCommandLine\":\"test.sh\"}");
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         LiteJobConfiguration actual = configService.load(true);
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
@@ -83,8 +78,7 @@ public final class ConfigurationServiceTest {
     @Test(expected = JobConfigurationException.class)
     public void assertPersistJobConfigurationForJobConflict() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn("{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\","
-                + "\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"scriptCommandLine\":\"test.sh\"}");
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson("com.dangdang.ddframe.job.api.type.script.api.ScriptJob"));
         try {
             configService.persist(JobConfigurationUtil.createSimpleLiteJobConfiguration());
         } finally {
@@ -103,8 +97,7 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertPersistExistedJobConfiguration() throws NoSuchFieldException {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn("{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\","
-                + "\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":4}");
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration(true);
         configService.persist(liteJobConfig);
         verify(jobNodeStorage).replaceJobNode("config", LiteJobConfigurationGsonFactory.toJson(liteJobConfig));
@@ -112,17 +105,13 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertIsMaxTimeDiffSecondsTolerableWithDefaultValue() throws JobExecutionEnvironmentException {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"-1\",\"scriptCommandLine\":\"test.sh\"}");
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson(-1));
         configService.checkMaxTimeDiffSecondsTolerable();
     }
     
     @Test
     public void assertIsMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"60\",\"scriptCommandLine\":\"test.sh\"}");
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         when(jobNodeStorage.getRegistryCenterTime()).thenReturn(System.currentTimeMillis());
         configService.checkMaxTimeDiffSecondsTolerable();
         verify(jobNodeStorage).getRegistryCenterTime();
@@ -130,9 +119,7 @@ public final class ConfigurationServiceTest {
     
     @Test(expected = JobExecutionEnvironmentException.class)
     public void assertIsNotMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
-        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(
-                "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
-                        + "\"shardingTotalCount\":3,\"maxTimeDiffSeconds\":\"60\",\"scriptCommandLine\":\"test.sh\"}");
+        when(jobNodeStorage.getJobNodeData(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson());
         when(jobNodeStorage.getRegistryCenterTime()).thenReturn(0L);
         try {
             configService.checkMaxTimeDiffSecondsTolerable();

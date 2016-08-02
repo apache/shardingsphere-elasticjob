@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
+import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -36,13 +37,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public final class ShardingListenerManagerTest {
-    
-    private String simpleJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
-            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"0\\u003da,1\\u003db\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,\"description\":\"desc\","
-            + "\"jobProperties\":{\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
-            + "\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\"},"
-            + "\"monitorExecution\":false,\"maxTimeDiffSeconds\":1000,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true}";
-    
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -81,7 +75,7 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathButCurrentShardingTotalCountIsZero() {
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, simpleJobJson.getBytes())), "/test_job/config");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
         verify(shardingService, times(0)).setReshardingFlag();
         verify(executionService, times(0)).setNeedFixExecutionInfoFlag();
     }
@@ -90,7 +84,7 @@ public final class ShardingListenerManagerTest {
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsEqualToNewShardingTotalCount() {
         shardingListenerManager.setCurrentShardingTotalCount(3);
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, simpleJobJson.getBytes())), "/test_job/config");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
         verify(shardingService, times(0)).setReshardingFlag();
         verify(executionService, times(0)).setNeedFixExecutionInfoFlag();
     }
@@ -99,7 +93,7 @@ public final class ShardingListenerManagerTest {
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsNotEqualToNewShardingTotalCount() throws NoSuchFieldException {
         shardingListenerManager.setCurrentShardingTotalCount(5);
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, simpleJobJson.getBytes())), "/test_job/config");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
         assertThat((Integer) ReflectionUtils.getFieldValue(shardingListenerManager, ShardingListenerManager.class.getDeclaredField("currentShardingTotalCount")), is(3));
         verify(shardingService).setReshardingFlag();
         verify(executionService).setNeedFixExecutionInfoFlag();

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.rest;
 
+import com.dangdang.ddframe.job.cloud.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.producer.TaskProducerSchedulerRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.eclipse.jetty.client.ContentExchange;
@@ -60,14 +61,9 @@ public final class RestfulApiTest {
     
     @Test
     public void assertRegister() throws Exception {
-        String jobConfigJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/30 * * * * ?\","
-                + "\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
-                + "\"jobProperties\":{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
-                + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"},\"cpuCount\":1.0,\"memoryMB\":128.0,\"dockerImageName\":\"dockerImage\","
-                + "\"appURL\":\"http://localhost/app.jar\"}";
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
-        assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", jobConfigJson), is(204));
-        verify(regCenter).persist("/config/test_job", jobConfigJson);
+        assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
+        verify(regCenter).persist("/config/test_job", CloudJsonConstants.getJobJson());
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
     }
     
