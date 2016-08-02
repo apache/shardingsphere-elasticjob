@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.util.json.GsonFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -69,7 +68,7 @@ public final class JobProperties {
      * @return 键集合
      */
     public String json() {
-        Map<String, String> jsonMap = new HashMap<>(JobPropertiesEnum.values().length, 1);
+        Map<String, String> jsonMap = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
         for (JobPropertiesEnum each : JobPropertiesEnum.values()) {
             jsonMap.put(each.getKey(), get(each));
         }

@@ -39,31 +39,28 @@ import static org.junit.Assert.assertTrue;
 public final class LiteJobConfigurationGsonFactoryTest {
     
     private String simpleJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
-            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"0\\u003da,1\\u003db\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,\"description\":\"desc\","
-            + "\"jobProperties\":{\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
-            + "\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\"},"
+            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":false,\"description\":\"\","
+            + "\"jobProperties\":{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
+            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"},"
             + "\"monitorExecution\":false,\"maxTimeDiffSeconds\":1000,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true}";
     
     private String dataflowJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":{\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
-            + "\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\"},\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,"
+            + "\"jobProperties\":{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
+            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"},\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,"
             + "\"concurrentDataProcessThreadCount\":10,\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\","
             + "\"disabled\":false,\"overwrite\":false}";
     
     private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":{\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
-            + "\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\"},\"scriptCommandLine\":\"test.sh\","
+            + "\"jobProperties\":{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
+            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"},\"scriptCommandLine\":\"test.sh\","
             + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";
     
     @Test
     public void assertToJsonForSimpleJob() {
-        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3)
-                .shardingItemParameters("0=a,1=b").jobParameter("param").failover(true).misfire(false).description("desc")
-                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName())
-                .jobProperties(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class.getCanonicalName())
-                .build(), TestSimpleJob.class.getCanonicalName()))
+        LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).misfire(false).build(), 
+                TestSimpleJob.class.getCanonicalName()))
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
     }
@@ -89,11 +86,11 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertThat(actual.getTypeConfig().getJobType(), is(JobType.SIMPLE));
         assertThat(actual.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(actual.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
-        assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=a,1=b"));
-        assertThat(actual.getTypeConfig().getCoreConfig().getJobParameter(), is("param"));
+        assertThat(actual.getTypeConfig().getCoreConfig().getShardingItemParameters(), is(""));
+        assertThat(actual.getTypeConfig().getCoreConfig().getJobParameter(), is(""));
         assertTrue(actual.getTypeConfig().getCoreConfig().isFailover());
         assertFalse(actual.getTypeConfig().getCoreConfig().isMisfire());
-        assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is("desc"));
+        assertThat(actual.getTypeConfig().getCoreConfig().getDescription(), is(""));
         assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
         assertThat(actual.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), 
                 is(DefaultExecutorServiceHandler.class.getCanonicalName()));

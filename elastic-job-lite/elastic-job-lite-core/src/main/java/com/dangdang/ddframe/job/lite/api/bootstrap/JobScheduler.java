@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.api.bootstrap.JobExecutorFactory;
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
@@ -75,7 +76,9 @@ public class JobScheduler {
         jobExecutor.init();
         JobDetail jobDetail = JobBuilder.newJob(LiteJob.class).withIdentity(jobExecutor.getLiteJobConfig().getJobName()).build();
         try {
-            jobDetail.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass()).newInstance());
+            if (!jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass().equals(ScriptJob.class.getCanonicalName())) {
+                jobDetail.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass()).newInstance());    
+            }
         } catch (final ReflectiveOperationException ex) {
             throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass());
         }
