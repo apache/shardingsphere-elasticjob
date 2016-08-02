@@ -13,5 +13,3 @@ weight=60
 ### [CSDN专访：深度解读分布式作业调度框架elastic-job](http://www.csdn.net/article/2015-11-23/2826304)
 
 ### [InfoQ文章：详解当当网的分布式作业框架elastic-job](http://www.infoq.com/cn/articles/dangdang-distributed-work-framework-elastic-job)
-
-### [快速上手](http://dangdangdotcom.github.io/elastic-job/post/third_parties_docs/quick_start/)（感谢第三方志愿者 泽伟@心探索科技 提供文档）

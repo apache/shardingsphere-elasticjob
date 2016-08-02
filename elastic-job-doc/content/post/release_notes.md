@@ -6,6 +6,12 @@ weight=1
 
 # Release Notes
 
+## 2.0.0-SNAPSHOT
+
+1. Elastic-Job-Cloud初始版本
+
+1. 重构原Elastic-Job至Elastic-Job-Lite
+
 ## 1.1.1
 
 ### 结构调整

@@ -22,13 +22,11 @@ weight=12
 
 2. 启动`Mesos Master`和`Mesos Agent`。
 
-3. 解压并启动`elastic-job-cloud-master-${version}.tar.gz`。`elastic-job-cloud-master-${version}.tar.gz`可通过源码`mvn install`编译获取。
+3. 解压并启动`elastic-job-cloud-master-${version}.tar.gz`。可通过源码`mvn install`编译获取。
 
-4. 配置`conf/job.properties`的作业`class`并使用`elastic-job-cloud-assembly`插件打包应用源码。更多打包插件信息请参考[使用指南](../other/cloud_assembly_plugin/)。
+4. 将打包之后的作业`tar.gz`文件放至网络可访问的位置，如：`ftp`或`http`。打包的`tar.gz`文件中`Main`方法需要调用`Elastic-Job-Lite`提供的`Bootstrap.execute`方法。
 
-5. 将打包之后的作业`tar.gz`文件放至网络可访问的位置。如：`ftp`或`http`。
-
-6. 使用curl命令注册待运行作业至`Elastic-Job-Cloud`。例：
+5. 使用curl命令注册待运行作业至`Elastic-Job-Cloud`。例：
 
 `curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"dockerImageName":"","appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"true":true}' http://elastic_job_cloud_masterhost:8899/job/register`
 

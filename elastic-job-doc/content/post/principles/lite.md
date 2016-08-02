@@ -32,24 +32,28 @@ weight=30
 
 ### config节点
 
-作业全局配置信息
+作业配置信息，以`JSON`格式存储
 
-| 子节点名                          | 临时节点 | 描述                                                                        |
-| -------------------------------- |:--------|:----------------------------------------------------------------------------|
-| jobClass                         | 否      | 作业实现类名称                                                                |
-| shardingTotalCount               | 否      | 作业分片总数                                                                  |
-| cron                             | 否      | 作业启动时间的`cron`表达式                                                     |
-| shardingItemParameters           | 否      | 分片序列号和个性化参数对照表                                                    |
-| jobParameter                     | 否      | 作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
-| monitorExecution                 | 否      | 监控作业执行时状态                                                             |
-| processCountIntervalSeconds      | 否      | 统计作业处理数据数量的间隔时间                                                   |
-| concurrentDataProcessThreadCount | 否      | 同时处理数据的并发线程数                                                        |
-| streaming-process                | 否      | 是否流式处理数据<br />如果流式处理数据，则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
-| maxTimeDiffSeconds               | 否      | 允许的本机与注册中心的时间误差秒数                                               |
-| failover                         | 否      | 是否开启失效转移                                                               |
-| misfire                          | 否      | 是否开启错过任务重新执行                                                        |
-| description                      | 否      | 作业描述信息                                                                   |
-| scriptCommandLine                | 否      | 脚本型作业作业执行命令行                                                        |
+| JSON属性名                        | 描述                                                                                                                    |
+| -------------------------------- |:------------------------------------------------------------------------------------------------------------------------|
+| jobName                          | 作业名称，为`Elastic-Job`唯一标识                                                                                          |
+| jobClass                         | 作业实现类名称                                                                                                            |
+| jobType                          | 作业类型，目前支持`SIMPLE`，`DATAFLOW`和`SCRIPT`三种类型                                                                    |
+| cron                             | 作业启动时间的`cron`表达式                                                                                                 |
+| shardingTotalCount               | 作业分片总数，修改会导致运行中作业重新分片                                                                                    |
+| shardingItemParameters           | 分片序列号和个性化参数对照表                                                                                                |
+| jobParameter                     | 作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等    |
+| failover                         | 是否开启失效转移，仅`monitorExecution`开启时才起作用                                                                         |
+| misfire                          | 是否开启错过任务重新执行                                                                                                    |
+| description                      | 作业描述信息                                                                                                              |
+| monitorExecution                 | 监控作业执行时状态                                                                                                         |
+| maxTimeDiffSeconds               | 允许的本机与注册中心的时间误差秒数                                                                                           |
+| monitorPort                      | 使用`dump`命令的端口，为-1则表示不开启端口                                                                                   |
+| dataflowType                     | `DATAFLW`类型作业的子类型，目前支持`THROUGHPUT`和`SEQUENCE`两种类型                                                          |
+| streamingProcess                 | 是否流式处理数据<br />如果流式处理数据，则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
+| concurrentDataProcessThreadCount | 同时处理数据的并发线程数，仅`DATAFLOW`的`THROUGHPUT`类型有效                                                                  |
+| scriptCommandLine                | `SCRIPT`型作业作业执行命令行                                                                                               |
+| jobProperties                    | 作业定制化属性，目前支持`job_exception_handler`和`executor_service_handler`，用于扩展异常处理和自定义作业处理线程池               |
 
 ### servers节点
 

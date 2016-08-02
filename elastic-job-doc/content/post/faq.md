@@ -10,7 +10,7 @@ weight=40
 
 回答：
 
-我们使用`lombok`实现极简代码。关于更多使用和安装细节，请参考[lombok官网](https://projectlombok.org/download.html)。
+`Elastic-Job`使用`lombok`实现极简代码。关于更多使用和安装细节，请参考[lombok官网](https://projectlombok.org/download.html)。
 
 ***
 
@@ -34,11 +34,11 @@ weight=40
 
 ***
 
-### 4. 怀疑`Elastic-Job`在分布式环境中有问题，但无法重现又不能在线上环境调试，应该怎么做?
+### 4. 怀疑`Elastic-Job-Lite`在分布式环境中有问题，但无法重现又不能在线上环境调试，应该怎么做?
 
 回答：
 
-分布式问题非常难于调试和重现，为此`Elastic-Job`提供了`dump`命令。
+分布式问题非常难于调试和重现，为此`Elastic-Job-Lite`提供了`dump`命令。
 
 如果您怀疑某些场景出现问题，可参照[dump文档](../user_guide/other/lite_dump/)将作业运行时信息发给我们、提交`issue`或发至`QQ`群讨论。我们已将`IP`等敏感信息过滤，`dump`出来的信息可在公网安全传输。
 
@@ -87,18 +87,19 @@ weight=40
 
 ***
 
-### 8. `Elastic-Job 1.1.0`版本`API`改动较大，升级时需要注意哪些问题?
+### 8. `Elastic-Job 2.0.0`版本`API`改动较大，升级时需要注意哪些问题?
 
 回答：
 
-基于扩展性提升，概念明晰和命名规范化的考虑，`elastic-job 1.1.0`版本决定抛弃原有包袱的束缚，重新定义了`JAVA API`，`Spring`命名空间并且删除了已废弃的`API`。
-`elastic-job 1.1.0`作为里程碑版本发布，除了`API`改动并未做功能上的修改，希望通过标准化配置的方式为未来的新`elastic-job`功能的开发打下良好的基础。
+基于扩展性提升，概念明晰和命名规范化的考虑，`elastic-job 2.100`版本决定抛弃原有包袱的束缚，重新定义了`JAVA API`，`Spring`命名空间并且删除了已废弃的`API`。
 
 **重新定义`JAVA API`**
 
-* 变更`JobConfiguration`类为接口，通过工厂方法配合构建者模式为每种作业类型分别提供了配置实现类。
+* 配置分为`Core`, `Type`和`Root`3个层级，使用类装饰者模式创建。
 
-* 取消`DataflowElasticJob`接口中`isStreamingProcess`的方法签名，归入`Dataflow`型作业配置，默认值为`false`非流式处理。
+* 作业从继承抽象类改为接口化，提供`SimpleJob`, `DataflowJob`和`ScriptJob`接口。
+
+* `DataflowJob`作业类型简化，去除批量和逐条处理分别，统一使用批量处理，`THROUGHPUT`和`SEQUENCE`作业不再提供单独接口，而是统一通过配置方式实现。
 
 **重新定义`Spring`命名空间**
 
@@ -107,6 +108,12 @@ weight=40
 * `Spring`命名空间属性由驼峰式修正为`Spring`命名空间标准命名规范(多单词以`-`分隔)。
 
 * 作业的`Spring`命名空间属性`regCenter`变更为`registry-center-ref`。
+
+**删除非核心功能**
+
+* 删除`offset`功能。
+
+* 删除n分钟内正确错误数量统计功能，未来由更加全面的作业事件追踪功能替换。
 
 **废弃过时`API`**
 
