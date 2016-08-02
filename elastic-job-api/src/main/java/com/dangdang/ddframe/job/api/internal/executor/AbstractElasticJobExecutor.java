@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.internal.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.internal.config.JobProperties;
@@ -39,7 +39,7 @@ public abstract class AbstractElasticJobExecutor {
     
     private final JobFacade jobFacade;
     
-    private final JobConfiguration jobConfig;
+    private final JobRootConfiguration jobRootConfig;
     
     private final ExecutorService executorService;
     
@@ -47,13 +47,13 @@ public abstract class AbstractElasticJobExecutor {
     
     protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
-        jobConfig = jobFacade.loadJobConfiguration(true);
+        jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         executorService = ((ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER)).createExecutorService();
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
     }
     
     private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {
-        String handlerClassName = jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
+        String handlerClassName = jobRootConfig.getTypeConfig().getCoreConfig().getJobProperties().get(jobPropertiesEnum);
         try {
             Class<?> handlerClass = Class.forName(handlerClassName);
             if (jobPropertiesEnum.getClassType().isAssignableFrom(handlerClass)) {

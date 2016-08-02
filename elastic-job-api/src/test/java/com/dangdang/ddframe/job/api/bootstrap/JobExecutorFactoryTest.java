@@ -46,25 +46,25 @@ public final class JobExecutorFactoryTest {
     
     @Test
     public void assertGetJobExecutorForScriptJob() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh"));
         assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), instanceOf(ScriptJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForSimpleJob() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(), jobFacade), instanceOf(SimpleJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForDataflowJob() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(DataflowJobConfiguration.DataflowType.SEQUENCE, false, 1));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(DataflowJobConfiguration.DataflowType.SEQUENCE, false, 1));
         assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(), jobFacade), instanceOf(DataflowJobExecutor.class));
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetJobExecutorWhenJobClassWhenUnsupportedJob() {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         JobExecutorFactory.getJobExecutor(new OtherJob(), jobFacade);
     }
 }

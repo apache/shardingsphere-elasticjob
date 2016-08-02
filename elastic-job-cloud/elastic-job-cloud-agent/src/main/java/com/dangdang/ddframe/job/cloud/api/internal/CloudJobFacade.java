@@ -39,7 +39,7 @@ public class CloudJobFacade implements JobFacade {
     private final CloudJobConfiguration jobConfig;
     
     @Override
-    public CloudJobConfiguration loadJobConfiguration(final boolean fromCache) {
+    public CloudJobConfiguration loadJobRootConfiguration(final boolean fromCache) {
         return jobConfig;
     }
     

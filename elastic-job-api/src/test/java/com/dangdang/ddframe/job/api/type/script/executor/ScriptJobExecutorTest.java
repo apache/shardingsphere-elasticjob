@@ -54,7 +54,7 @@ public class ScriptJobExecutorTest {
     
     @Test(expected = JobSystemException.class)
     public void assertExecuteWhenScriptCommandLineIsEmpty() throws IOException, NoSuchFieldException {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration(""));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration(""));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
         ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         scriptJobExecutor.execute();
@@ -64,7 +64,7 @@ public class ScriptJobExecutorTest {
     @SuppressWarnings("unchecked")
     @Test(expected = JobSystemException.class)
     public void assertExecuteWhenExecuteFailure() throws IOException, NoSuchFieldException {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file"));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
         ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         when(executor.execute(Matchers.<CommandLine>any())).thenThrow(IOException.class);
@@ -77,11 +77,11 @@ public class ScriptJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFileExists() throws IOException, NoSuchFieldException {
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestScriptJobConfiguration("exists_file param0 param1"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("exists_file param0 param1"));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
         ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         scriptJobExecutor.execute();
-        verify(jobFacade).loadJobConfiguration(true);
+        verify(jobFacade).loadJobRootConfiguration(true);
         verify(executor).execute(Matchers.<CommandLine>any());
     }
 }

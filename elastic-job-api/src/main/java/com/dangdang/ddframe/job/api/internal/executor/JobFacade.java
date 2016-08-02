@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.internal.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 
 import java.util.Collection;
@@ -36,7 +36,7 @@ public interface JobFacade {
      * @param fromCache 是否从缓存中读取
      * @return 作业配置
      */
-    JobConfiguration loadJobConfiguration(boolean fromCache);
+    JobRootConfiguration loadJobRootConfiguration(boolean fromCache);
     
     /**
      * 检查作业执行环境.

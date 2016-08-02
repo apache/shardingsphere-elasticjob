@@ -18,11 +18,11 @@
 package com.dangdang.ddframe.job.api.config;
 
 /**
- * 作业配置接口.
+ * 作业配置根接口.
  *
  * @author zhangliang
  */
-public interface JobConfiguration {
+public interface JobRootConfiguration {
     
     /**
      * 获取作业类型配置.

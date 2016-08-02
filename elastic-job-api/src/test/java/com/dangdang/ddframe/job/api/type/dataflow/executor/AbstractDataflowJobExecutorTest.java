@@ -70,7 +70,7 @@ public abstract class AbstractDataflowJobExecutorTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(dataflowType, streamingProcess, concurrentDataProcessThreadCount));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(dataflowType, streamingProcess, concurrentDataProcessThreadCount));
         shardingContext = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContext()).thenReturn(shardingContext);
         dataflowJobExecutor = new DataflowJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
@@ -80,7 +80,7 @@ public abstract class AbstractDataflowJobExecutorTest {
     @After
     public void tearDown() throws NoSuchFieldException {
         assertNotNull(ReflectionUtils.getFieldValue(dataflowJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("executorService")));
-        verify(jobFacade).loadJobConfiguration(true);
+        verify(jobFacade).loadJobRootConfiguration(true);
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
     }
     

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.config;
 
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
-public final class CloudJobConfiguration implements JobConfiguration {
+public final class CloudJobConfiguration implements JobRootConfiguration {
     
     private final JobTypeConfiguration typeConfig;
     

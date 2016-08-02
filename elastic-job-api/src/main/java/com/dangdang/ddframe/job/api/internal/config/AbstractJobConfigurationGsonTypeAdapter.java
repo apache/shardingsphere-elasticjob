@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.internal.config;
 
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.type.JobType;
@@ -41,7 +41,7 @@ import java.util.Map;
  * @author zhangliang
  */
 @Slf4j
-public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobConfiguration> extends TypeAdapter<T> {
+public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootConfiguration> extends TypeAdapter<T> {
     
     @Override
     public T read(final JsonReader in) throws IOException {

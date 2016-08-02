@@ -50,7 +50,7 @@ public final class SimpleJobExecutorTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(jobFacade.loadJobConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         simpleJobExecutor = new SimpleJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
     }
     

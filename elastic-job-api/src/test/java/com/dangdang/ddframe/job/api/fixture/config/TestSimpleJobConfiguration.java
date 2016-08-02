@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.fixture.config;
 
-import com.dangdang.ddframe.job.api.config.JobConfiguration;
+import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.fixture.handler.ThrowJobExceptionHandler;
@@ -26,7 +26,7 @@ import com.dangdang.ddframe.job.api.internal.config.JobProperties;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 
-public final class TestSimpleJobConfiguration implements JobConfiguration {
+public final class TestSimpleJobConfiguration implements JobRootConfiguration {
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
