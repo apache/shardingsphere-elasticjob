@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.producer;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -35,6 +36,11 @@ public final class TaskProducerJobContextTest {
     private String jobName = "test_1";
     
     private String jobName2 = "test_2";
+    
+    @After
+    public void tearDown() {
+        TaskProducerJobContext.getInstance().clear();
+    }
     
     @Test
     public void assertGetInstance() {
