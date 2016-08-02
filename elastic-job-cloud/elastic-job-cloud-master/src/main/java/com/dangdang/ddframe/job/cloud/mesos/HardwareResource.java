@@ -18,8 +18,11 @@
 package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.internal.config.JobProperties.JobPropertiesEnum;
+import com.dangdang.ddframe.job.api.internal.config.ShardingItemParameters;
+import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
@@ -73,7 +76,7 @@ public final class HardwareResource {
     
     /**
      * 根据需资源计算可以分多少片.
-     * 
+     *
      * @param expectedShardingCount 期望的分片总数
      * @param perCpuCount 每片需要使用的CPU数量
      * @param perMemoryMB 每片需要使用的内存兆字节数量
@@ -93,7 +96,7 @@ public final class HardwareResource {
     
     /**
      * 预留资源.
-     * 
+     *
      * @param toBeReservedCpuCount 需预留的CPU数量
      * @param toBeReservedMemoryMB 需预留的内存兆字节数量
      */
@@ -126,15 +129,17 @@ public final class HardwareResource {
     public Protos.TaskInfo createTaskInfo(final JobContext jobContext, final int shardingItem) {
         CloudJobConfiguration jobConfig = jobContext.getJobConfig();
         Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new TaskContext(jobConfig.getJobName(), shardingItem, jobContext.getType(), offer.getSlaveId().getValue()).getId()).build();
-        // TODO 完善param
-        Map<Integer, String> shardingItemParameters = new HashMap<>(1, 1);
-        shardingItemParameters.put(shardingItem, "");
+        
+        Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
+        Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
+        assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
         ShardingContext shardingContext = new ShardingContext(
-                jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), "", shardingItemParameters);
-        // TODO 上线前更改cache为true
+                jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);
+        // TODO 更改cache为elastic-job-cloud.properties配置
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(
-                String.format(RUN_COMMAND, jobConfig.getTypeConfig().getJobClass(), GsonFactory.getGson().toJson(shardingContext), CloudJobConfigurationGsonFactory.toJson(jobConfig))).build();
+                String.format(RUN_COMMAND, jobConfig.getTypeConfig().getJobClass(), GsonFactory.getGson().toJson(shardingContext),
+                        GsonFactory.getGson().toJson(buildJobConfigurationContext(jobConfig)))).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
                 .setTaskId(taskId)
@@ -143,6 +148,20 @@ public final class HardwareResource {
                 .addResources(buildResource("mem", jobConfig.getMemoryMB()))
                 .setCommand(command)
                 .build();
+    }
+    
+    private Map<String, String> buildJobConfigurationContext(final CloudJobConfiguration jobConfig) {
+        Map<String, String> result = new HashMap<>();
+        result.put("jobType", jobConfig.getTypeConfig().getJobType().name());
+        result.put("jobName", jobConfig.getJobName());
+        result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
+        result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+        if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
+            result.put("streamingProcess", ((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess() + "");
+        } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
+            result.put("scriptCommandLine", ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine());
+        }
+        return result;
     }
     
     private Protos.Resource.Builder buildResource(final String type, final double resourceValue) {

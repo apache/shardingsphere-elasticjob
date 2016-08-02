@@ -21,12 +21,12 @@ import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 /**
  * 命令行参数解析器.
@@ -41,7 +41,7 @@ public final class ArgumentsParser {
     
     private ShardingContext shardingContext;
     
-    private CloudJobConfiguration jobConfig;
+    private JobConfigurationContext jobConfig;
     
     /**
      * 解析.
@@ -63,7 +63,7 @@ public final class ArgumentsParser {
             throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", args[0], ex.getMessage());
         }
         result.shardingContext = GsonFactory.getGson().fromJson(args[1], ShardingContext.class);
-        result.jobConfig = CloudJobConfigurationGsonFactory.fromJson(args[2]);
+        result.jobConfig = new JobConfigurationContext(GsonFactory.getGson().fromJson(args[2], Map.class));
         return result;
     }
 }

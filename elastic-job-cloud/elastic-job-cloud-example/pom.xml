@@ -32,13 +32,17 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
-                <groupId>com.dangdang</groupId>
-                <artifactId>elastic-job-cloud-assembly</artifactId>
-                <version>1.1.1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/resources/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>

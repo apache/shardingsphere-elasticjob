@@ -13,7 +13,6 @@
     <modules>
         <module>elastic-job-cloud-master</module>
         <module>elastic-job-cloud-agent</module>
-        <module>elastic-job-cloud-assembly</module>
         <module>elastic-job-cloud-example</module>
     </modules>
 </project>
