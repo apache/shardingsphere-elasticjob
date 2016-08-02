@@ -38,7 +38,7 @@ public final class TestDataflowJobConfiguration implements JobRootConfiguration 
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
-        return new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10)
+        return new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * ?", 3)
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName()).build(), 
                 TestDataflowJob.class.getCanonicalName(), dataflowType, streamingProcess, concurrentDataProcessThreadCount);
     }

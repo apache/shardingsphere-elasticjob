@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.internal.config;
 
-import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
@@ -118,8 +118,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         in.endObject();
         JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
                 jobParameter, failover, misfire, description, jobProperties);
-        JobTypeConfiguration typeConfig = getJobConfiguration(coreConfig, jobType, jobClass, dataflowType, streamingProcess, concurrentDataProcessThreadCount, scriptCommandLine);
-        return getJobConfiguration(typeConfig, customizedValueMap);
+        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, dataflowType, streamingProcess, concurrentDataProcessThreadCount, scriptCommandLine);
+        return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
     
     private JobProperties getJobProperties(final JsonReader in) throws IOException {
@@ -152,8 +152,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 .build();
     }
     
-    private JobTypeConfiguration getJobConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final DataflowJobConfiguration.DataflowType dataflowType,
-                                                     final boolean streamingProcess, final int concurrentDataProcessThreadCount, final String scriptCommandLine) {
+    private JobTypeConfiguration getJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final DataflowJobConfiguration.DataflowType dataflowType,
+                                                         final boolean streamingProcess, final int concurrentDataProcessThreadCount, final String scriptCommandLine) {
         JobTypeConfiguration result;
         switch (jobType) {
             case SIMPLE:
@@ -171,7 +171,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         return result;
     }
     
-    protected abstract T getJobConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap);
+    protected abstract T getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap);
     
     @Override
     public void write(final JsonWriter out, final T value) throws IOException {

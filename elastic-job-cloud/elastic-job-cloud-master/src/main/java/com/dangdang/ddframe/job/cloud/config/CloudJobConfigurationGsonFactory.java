@@ -90,7 +90,7 @@ public final class CloudJobConfigurationGsonFactory {
         }
         
         @Override
-        protected CloudJobConfiguration getJobConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
+        protected CloudJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
             return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"),
                     (String) customizedValueMap.get("dockerImageName"), (String) customizedValueMap.get("appURL"));
         }

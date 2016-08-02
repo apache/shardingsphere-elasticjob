@@ -108,7 +108,7 @@ public final class LiteJobConfigurationGsonFactory {
         }
         
         @Override
-        protected LiteJobConfiguration getJobConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
+        protected LiteJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
             LiteJobConfiguration.Builder builder = LiteJobConfiguration.newBuilder(typeConfig);
             if (customizedValueMap.containsKey("monitorExecution")) {
                 builder.monitorExecution((boolean) customizedValueMap.get("monitorExecution"));

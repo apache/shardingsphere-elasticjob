@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ElasticJobAssert {
     
-    public static final String JOB_NAME = "unit_test_job";
+    public static final String JOB_NAME = "test_job";
     
     public static ShardingContext getShardingContext() {
         Map<Integer, String> map = new HashMap<>(2, 1);

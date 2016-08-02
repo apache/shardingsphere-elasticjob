@@ -15,9 +15,8 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.api.config;
 
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;

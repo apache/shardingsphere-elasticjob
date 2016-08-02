@@ -15,25 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.api.Internal;
 
-import com.dangdang.ddframe.job.api.Internal.AllInternalTests;
-import com.dangdang.ddframe.job.api.bootstrap.AllBootstrapTests;
-import com.dangdang.ddframe.job.api.config.AllConfigTests;
-import com.dangdang.ddframe.job.api.exception.AllExceptionTests;
-import com.dangdang.ddframe.job.api.type.AllTypeTests;
+import com.dangdang.ddframe.job.api.Internal.config.JobConfigurationGsonTypeAdapterTest;
+import com.dangdang.ddframe.job.api.Internal.config.JobPropertiesTest;
+import com.dangdang.ddframe.job.api.Internal.config.ShardingItemParametersTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        ShardingContextTest.class, 
-        AllConfigTests.class, 
-        AllBootstrapTests.class, 
-        AllTypeTests.class, 
-        AllExceptionTests.class, 
-        AllInternalTests.class
+        ShardingItemParametersTest.class,
+        JobPropertiesTest.class,
+        JobConfigurationGsonTypeAdapterTest.class
     })
-public final class AllJobApiTests {
+public final class AllInternalTests {
 }

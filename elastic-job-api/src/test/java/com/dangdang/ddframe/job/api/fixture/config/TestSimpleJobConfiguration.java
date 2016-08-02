@@ -30,7 +30,8 @@ public final class TestSimpleJobConfiguration implements JobRootConfiguration {
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
-        return new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * * ?", 10)
+        return new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(ElasticJobAssert.JOB_NAME, "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
+                .failover(true).misfire(false).description("desc")
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), ThrowJobExceptionHandler.class.getCanonicalName()).build(), TestSimpleJob.class.getCanonicalName()); 
     }
 }
