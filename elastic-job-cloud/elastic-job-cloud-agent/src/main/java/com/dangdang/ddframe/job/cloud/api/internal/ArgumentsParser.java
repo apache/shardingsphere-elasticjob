@@ -50,6 +50,10 @@ public final class ArgumentsParser {
      * @throws JobExecutionEnvironmentException 作业执行环境异常
      */
     public static ArgumentsParser parse(final String[] args) throws JobExecutionEnvironmentException {
+        int argumentsLength = 3;
+        if (argumentsLength != args.length) {
+            throw new JobExecutionEnvironmentException("Elastic-Job: Arguments parse failure, should have %s arguments.", argumentsLength);
+        }
         ArgumentsParser result = new ArgumentsParser();
         try {
             Class<?> elasticJobClass = Class.forName(args[0]);
