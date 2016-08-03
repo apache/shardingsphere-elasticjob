@@ -232,18 +232,4 @@ public final class ServerServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/shutdown");
         verify(jobNodeStorage).getJobNodeData("servers/mockedIP/status");
     }
-    
-    @Test
-    public void assertPersistProcessSuccessCount() {
-        serverService.persistProcessSuccessCount(100);
-        verify(jobNodeStorage).replaceJobNode("servers/mockedIP/processSuccessCount", 100);
-        verify(localHostService).getIp();
-    }
-    
-    @Test
-    public void assertPersistProcessFailureCount() {
-        serverService.persistProcessFailureCount(10);
-        verify(jobNodeStorage).replaceJobNode("servers/mockedIP/processFailureCount", 10);
-        verify(localHostService).getIp();
-    }
 }
