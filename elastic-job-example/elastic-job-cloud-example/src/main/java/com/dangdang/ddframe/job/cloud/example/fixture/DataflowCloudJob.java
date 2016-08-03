@@ -25,9 +25,15 @@ import java.util.List;
 
 public class DataflowCloudJob implements DataflowJob<String> {
     
+    private int count;
+    
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
         System.out.println("---fetch data:" + shardingContext);
+        count++;
+        if (count > 10) {
+            return Collections.emptyList();
+        }
         return Collections.singletonList("abc");
     }
     

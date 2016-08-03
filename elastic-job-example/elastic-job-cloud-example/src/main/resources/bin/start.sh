@@ -3,5 +3,5 @@ cd `dirname $0`
 cd ..
 DEPLOY_DIR=`pwd`
 LIB_DIR=$DEPLOY_DIR/lib/*
-CONTAINER_MAIN=com.dangdang.ddframe.job.cloud.example.Main
-java -classpath $LIB_DIR:. $CONTAINER_MAIN $1 $2 $3
+MAIN_CLASS=com.dangdang.ddframe.job.cloud.example.Main
+java -classpath $LIB_DIR:. $MAIN_CLASS $1 $2 $3
