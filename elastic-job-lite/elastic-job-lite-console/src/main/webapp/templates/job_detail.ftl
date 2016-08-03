@@ -15,12 +15,20 @@
                         <input type="text" id="jobClass" name="jobClass" class="form-control" disabled />
                     </div>
                 </div>
+                
                 <div class="form-group">
                     <label for="jobType" class="col-sm-2 control-label">作业类型</label>
-                    <div class="col-sm-9">
+                    <div class="col-sm-2">
                         <input type="text" id="jobType" name="jobType" class="form-control" disabled />
                     </div>
+                    <#if jobType == "DATAFLOW">
+                    <label for="dataflowType" class="col-sm-2 control-label">数据流作业类型</label>
+                    <div class="col-sm-2">
+                        <input type="text" id="dataflowType" name="dataflowType" class="form-control" disabled />
+                    </div>
+                    </#if>
                 </div>
+                
                 <div class="form-group">
                     <label for="shardingTotalCount" class="col-sm-2 control-label">作业分片总数</label>
                     <div class="col-sm-1">
@@ -37,6 +45,7 @@
                         <input type="text" id="cron" name="cron" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业启动时间的cron表达式" required />
                     </div>
                 </div>
+                
                 <#if jobType == "DATAFLOW">
                     <div class="form-group">
                         <label for="concurrentDataProcessThreadCount" class="col-sm-2 control-label">处理数据的并发线程数</label>
@@ -44,18 +53,13 @@
                             <input type="number" id="concurrentDataProcessThreadCount" name="concurrentDataProcessThreadCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="只对高吞吐量处理数据流类型作业起作用" />
                         </div>
                         
-                        <label for="processCountIntervalSeconds" class="col-sm-2 control-label">统计处理数据量的间隔秒数</label>
-                        <div class="col-sm-2">
-                            <input type="number" id="processCountIntervalSeconds" name="processCountIntervalSeconds" class="form-control" data-toggle="tooltip" data-placement="bottom" title="只对处理数据流类型作业起作用" />
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label for="streamingProcess" class="col-sm-2 control-label">是否流式处理数据</label>
                         <div class="col-sm-2">
                             <input type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 则处理数据完成后作业结束" />
                         </div>
                     </div>
                 </#if>
+                
                 <div class="form-group">
                     <label for="maxTimeDiffSeconds" class="col-sm-2 control-label">最大容忍的本机与注册中心的时间误差秒数</label>
                     <div class="col-sm-1">
@@ -100,11 +104,43 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="jobExceptionHandler" class="col-sm-2 control-label">定制异常处理类全路径</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="jobExceptionHandler" name="jobExceptionHandler" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`JobExceptionHandler`接口，定制异常处理流程，默认实现是记录日志但不抛出异常。" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="executorServiceHandler" class="col-sm-2 control-label">定制线程池全路径</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="executorServiceHandler" name="executorServiceHandler" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`ExecutorServiceHandler`接口，定制线程池。" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="monitorExecution" class="col-sm-2 control-label">监控作业执行时状态</label>
+                    <div class="col-sm-2">
+                        <input type="checkbox" id="monitorExecution" name="monitorExecution" data-toggle="tooltip" data-placement="bottom" title="每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率，因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。也无法实现作业失效转移。每次作业执行时间和间隔时间均较长短的情况，建议监控作业运行时状态，可保证数据不会重复选取。" />
+                    </div>
+                    
+                    <label for="failover" class="col-sm-2 control-label">支持自动失效转移</label>
+                    <div class="col-sm-2">
+                        <input type="checkbox" id="failover" name="failover" data-toggle="tooltip" data-placement="bottom" title="只有开启监控作业执行时状态的情况下才可以开启失效转移" />
+                    </div>
+                    
+                    <label for="failover" class="col-sm-2 control-label">支持misfire</label>
+                    <div class="col-sm-2">
+                        <input type="checkbox" id="misfire" name="misfire" data-toggle="tooltip" data-placement="bottom" title="是否开启任务错过重新执行" />
+                    </div>
+                </div>
+                
+                <div class="form-group">
                     <label for="description" class="col-sm-2 control-label">作业描述信息</label>
                     <div class="col-sm-9">
                         <textarea id="description" name="description" class="form-control"></textarea>
                     </div>
                 </div>
+                
                 <#if jobType == "SCRIPT">
                 <div class="form-group">
                     <label for="scriptCommandLine" class="col-sm-2 control-label">脚本作业全路径</label>
@@ -113,6 +149,7 @@
                     </div>
                 </div>
                 </#if>
+                
                 <button type="reset" class="btn btn-inverse">重置</button>
                 <button type="submit" class="btn btn-primary">更新</button>
             </form>

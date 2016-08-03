@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.settings;
 
+import com.dangdang.ddframe.job.api.internal.config.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
@@ -70,18 +71,20 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setMisfire(liteJobConfig.getTypeConfig().getCoreConfig().isMisfire());
         result.setJobShardingStrategyClass(liteJobConfig.getJobShardingStrategyClass());
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
+        result.setExecutorServiceHandler(liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+        result.setJobExceptionHandler(liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
     } 
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {
         result.setConcurrentDataProcessThreadCount(config.getConcurrentDataProcessThreadCount());
         result.setStreamingProcess(config.isStreamingProcess());
+        result.setDataflowType(config.getDataflowType().name());
     }
     
     private void buildScriptJobSettings(final JobSettings result, final ScriptJobConfiguration config) {
         result.setScriptCommandLine(config.getScriptCommandLine());
     }
     
-    // TODO JobProperties未更新
     @Override
     public void updateJobSettings(final JobSettings jobSettings) {
         JobNodePath jobNodePath = new JobNodePath(jobSettings.getJobName());
