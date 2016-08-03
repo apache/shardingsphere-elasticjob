@@ -33,12 +33,14 @@ function renderSettings() {
         $("#monitorExecution").attr("checked", data.monitorExecution);
         $("#failover").attr("checked", data.failover);
         $("#misfire").attr("checked", data.misfire);
-        $("#processCountIntervalSeconds").attr("value", data.processCountIntervalSeconds);
+        $("#dataflowType").attr("value", data.dataflowType);
         $("#concurrentDataProcessThreadCount").attr("value", data.concurrentDataProcessThreadCount);
         $("#streamingProcess").attr("checked", data.streamingProcess);
         $("#maxTimeDiffSeconds").attr("value", data.maxTimeDiffSeconds);
         $("#monitorPort").attr("value", data.monitorPort);
         $("#jobShardingStrategyClass").attr("value", data.jobShardingStrategyClass);
+        $("#executorServiceHandler").attr("value", data.executorServiceHandler);
+        $("#jobExceptionHandler").attr("value", data.jobExceptionHandler);
         $("#description").text(data.description);
         if (!data.monitorExecution) {
             $("#execution_info_tab").addClass("disabled");
@@ -56,8 +58,8 @@ function bindSubmitJobSettingsForm() {
         var shardingTotalCount = $("#shardingTotalCount").val();
         var jobParameter = $("#jobParameter").val();
         var cron = $("#cron").val();
+        var dataflowType = $("#dataflowType").val();
         var concurrentDataProcessThreadCount = $("#concurrentDataProcessThreadCount").val();
-        var processCountIntervalSeconds = $("#processCountIntervalSeconds").val();
         var streamingProcess = $("#streamingProcess").prop("checked");
         var maxTimeDiffSeconds = $("#maxTimeDiffSeconds").val();
         var monitorPort = $("#monitorPort").val();
@@ -67,8 +69,10 @@ function bindSubmitJobSettingsForm() {
         var shardingItemParameters = $("#shardingItemParameters").val();
         var jobShardingStrategyClass = $("#jobShardingStrategyClass").val();
         var scriptCommandLine = $("#scriptCommandLine").val();
+        var executorServiceHandler = $("#executorServiceHandler").val();
+        var jobExceptionHandler = $("#jobExceptionHandler").val();
         var description = $("#description").val();
-        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, processCountIntervalSeconds: processCountIntervalSeconds, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, description: description, scriptCommandLine: scriptCommandLine}, function(data) {
+        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, dataflowType: dataflowType, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, executorServiceHandler: executorServiceHandler, jobExceptionHandler: jobExceptionHandler, description: description, scriptCommandLine: scriptCommandLine}, function() {
             showSuccessDialog();
             if (monitorExecution) {
                 $("#execution_info_tab").removeClass("disabled");

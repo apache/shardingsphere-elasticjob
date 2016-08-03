@@ -37,6 +37,8 @@ public final class JobSettings implements Serializable {
     
     private String jobType;
     
+    private String dataflowType;
+    
     private String jobClass;
     
     private String cron;
@@ -64,6 +66,10 @@ public final class JobSettings implements Serializable {
     private String jobShardingStrategyClass;
     
     private String description;
+    
+    private String jobExceptionHandler;
+    
+    private String executorServiceHandler;
     
     private String scriptCommandLine;
 }
