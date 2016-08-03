@@ -41,6 +41,8 @@ public final class CloudJobConfiguration implements JobRootConfiguration {
     
     private final String appURL;
     
+    private final String bootstrapScript;
+    
     /**
      * 获取作业名称.
      *
