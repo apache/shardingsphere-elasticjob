@@ -157,6 +157,7 @@ public final class HardwareResource {
         result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
         result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
+            result.put("dataflowType", ((DataflowJobConfiguration) jobConfig.getTypeConfig()).getDataflowType().name());
             result.put("streamingProcess", ((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess() + "");
         } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
             result.put("scriptCommandLine", ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine());

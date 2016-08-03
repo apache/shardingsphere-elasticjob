@@ -48,8 +48,8 @@ class JobConfigurationContext implements JobRootConfiguration {
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobConfigurationMap.get("jobExceptionHandler"));
         
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            boolean isStreaming = Boolean.valueOf(jobConfigurationMap.get("streamingProcess"));
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, jobClass, DataflowType.SEQUENCE, isStreaming);
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, jobClass, 
+                    DataflowType.valueOf(jobConfigurationMap.get("dataflowType")), Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
         } else if (JobType.SIMPLE.name().equals(jobType)) {
             jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig, jobClass);
         } else if (JobType.SCRIPT.name().equals(jobType)) {
