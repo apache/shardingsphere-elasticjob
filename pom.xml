@@ -473,7 +473,7 @@
                         <excludes>
                             <exclude>com/dangdang/**/*Test.class</exclude>
                             <exclude>com/dangdang/**/Test*.class</exclude>
-                            <exclude>com/dangdang/ddframe/job/console/**/*.class</exclude>
+                            <exclude>com/dangdang/ddframe/job/lite/console/**/*.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
