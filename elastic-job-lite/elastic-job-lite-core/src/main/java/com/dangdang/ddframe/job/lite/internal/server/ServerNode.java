@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 
 /**
  * Elastic Job服务器节点名称的常量类.
@@ -45,10 +45,6 @@ public class ServerNode {
     static final String DISABLED_APPENDIX = "disabled";
     
     static final String DISABLED = ROOT + "/%s/" + DISABLED_APPENDIX;
-    
-    static final String PROCESS_SUCCESS_COUNT = ROOT + "/%s/processSuccessCount";
-    
-    static final String PROCESS_FAILURE_COUNT = ROOT + "/%s/processFailureCount";
     
     static final String PAUSED = ROOT + "/%s/paused";
     
@@ -78,14 +74,6 @@ public class ServerNode {
     
     static String getDisabledNode(final String ip) {
         return String.format(DISABLED, ip);
-    }
-    
-    static String getProcessSuccessCountNode(final String ip) {
-        return String.format(PROCESS_SUCCESS_COUNT, ip);
-    }
-    
-    static String getProcessFailureCountNode(final String ip) {
-        return String.format(PROCESS_FAILURE_COUNT, ip);
     }
     
     static String getPausedNode(final String ip) {

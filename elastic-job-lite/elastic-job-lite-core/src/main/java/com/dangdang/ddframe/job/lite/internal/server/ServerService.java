@@ -166,18 +166,4 @@ public class ServerService {
         String ip = localHostService.getIp();
         return isAvailableServer(ip) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(ServerNode.getStatusNode(ip)));
     }
-    
-    /**
-     * 持久化统计处理数据成功的数量的数据.
-     */
-    public void persistProcessSuccessCount(final int processSuccessCount) {
-        jobNodeStorage.replaceJobNode(ServerNode.getProcessSuccessCountNode(localHostService.getIp()), processSuccessCount);
-    }
-    
-    /**
-     * 持久化统计处理数据失败的数量的数据.
-     */
-    public void persistProcessFailureCount(final int processFailureCount) {
-        jobNodeStorage.replaceJobNode(ServerNode.getProcessFailureCountNode(localHostService.getIp()), processFailureCount);
-    }
 }

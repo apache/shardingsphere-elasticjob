@@ -52,16 +52,6 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertProcessSuccessCountNode() {
-        assertThat(ServerNode.getProcessSuccessCountNode("host0"), is("servers/host0/processSuccessCount"));
-    }
-    
-    @Test
-    public void assertProcessFailureCountNode() {
-        assertThat(ServerNode.getProcessFailureCountNode("host0"), is("servers/host0/processFailureCount"));
-    }
-    
-    @Test
     public void assertPausedNode() {
         assertThat(ServerNode.getPausedNode("host0"), is("servers/host0/paused"));
     }
