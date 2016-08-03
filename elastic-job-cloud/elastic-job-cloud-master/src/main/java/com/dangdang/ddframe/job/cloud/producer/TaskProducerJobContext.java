@@ -72,8 +72,4 @@ class TaskProducerJobContext {
     synchronized boolean contains(final JobKey jobKey) {
         return cronTasks.contains(jobKey);
     }
-    
-    synchronized void clear() {
-        cronTasks.clear();
-    }
 }

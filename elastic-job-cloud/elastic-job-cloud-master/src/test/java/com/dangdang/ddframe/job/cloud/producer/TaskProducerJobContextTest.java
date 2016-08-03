@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.producer;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -31,16 +30,11 @@ import static org.junit.Assert.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public final class TaskProducerJobContextTest {
     
-    private JobKey jobKey = JobKey.jobKey("0/30 * * * * ?");
+    private JobKey jobKey = JobKey.jobKey("0/45 * * * * ?");
     
     private String jobName = "test_1";
     
     private String jobName2 = "test_2";
-    
-    @After
-    public void tearDown() {
-        TaskProducerJobContext.getInstance().clear();
-    }
     
     @Test
     public void assertGetInstance() {

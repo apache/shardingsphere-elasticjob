@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.cloud.producer;
 
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,11 +46,6 @@ public final class TaskProducerJobTest {
     public void setUp() {
         taskProducerJob = new TaskProducerJob();
         taskProducerJob.setReadyService(readyService);
-    }
-    
-    @After
-    public void tearDown() {
-        TaskProducerJobContext.getInstance().clear();
     }
     
     @Test
