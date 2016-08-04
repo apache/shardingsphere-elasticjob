@@ -42,7 +42,7 @@ import java.util.Map;
 @EqualsAndHashCode(of = "offerId")
 public final class HardwareResource {
     
-    private static final String RUN_COMMAND = "sh %s %s '%s' '%s'";
+    private static final String RUN_COMMAND = "sh %s '%s' '%s'";
     
     private final Protos.Offer offer;
     
@@ -138,7 +138,7 @@ public final class HardwareResource {
         // TODO 更改cache为elastic-job-cloud.properties配置
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(
-                String.format(RUN_COMMAND, jobConfig.getBootstrapScript(), jobConfig.getTypeConfig().getJobClass(), GsonFactory.getGson().toJson(shardingContext),
+                String.format(RUN_COMMAND, jobConfig.getBootstrapScript(), GsonFactory.getGson().toJson(shardingContext),
                         GsonFactory.getGson().toJson(buildJobConfigurationContext(jobConfig)))).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
@@ -154,6 +154,7 @@ public final class HardwareResource {
         Map<String, String> result = new HashMap<>();
         result.put("jobType", jobConfig.getTypeConfig().getJobType().name());
         result.put("jobName", jobConfig.getJobName());
+        result.put("jobClass", jobConfig.getTypeConfig().getJobClass());
         result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
         result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {

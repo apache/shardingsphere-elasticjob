@@ -26,6 +26,8 @@ import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration.DataflowType;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import java.util.Map;
 
@@ -43,7 +45,11 @@ class JobConfigurationContext implements JobRootConfiguration {
         int ignoredShardingTotalCount = 1;
         String jobClass = jobConfigurationMap.get("jobClass");
         String jobType = jobConfigurationMap.get("jobType");
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobConfigurationMap.get("jobName"), ignoredCron, ignoredShardingTotalCount).build();
+        String jobName = jobConfigurationMap.get("jobName");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobType), "jobType can not be empty.");
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
+        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, ignoredCron, ignoredShardingTotalCount).build();
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), jobConfigurationMap.get("executorServiceHandler"));
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobConfigurationMap.get("jobExceptionHandler"));
         if (JobType.DATAFLOW.name().equals(jobType)) {
