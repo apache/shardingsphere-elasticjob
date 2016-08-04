@@ -44,13 +44,12 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 ## Elastic-job-Lite
 
-![Elastic-Job-Lite Architecture](http://dangdangdotcom.github.io/elastic-job/img/architecture/elastic_job_lite.png)
-
+![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_lite.png)
 ***
 
 ## Elastic-Job-Cloud
 
-![Elastic-Job-Cloud Architecture](http://dangdangdotcom.github.io/elastic-job/img/architecture/elastic_job_cloud.png)
+![Elastic-Job-Cloud Architecture](elastic-job-doc/content/img/architecture/elastic_job_cloud.png)
 
 # [Roadmap](ROADMAP.md)
 
