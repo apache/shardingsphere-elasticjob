@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>1.x 何为分布式作业？</title>
+    
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    
+    
+    <link href="http://localhost:1313/elastic-job/css/landing-page.css" rel="stylesheet">
+    
+    
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    
+    <style>
+    .navbar {
+    border-color: #e7e7e7;
+}
+
+.content-section-a,
+footer,
+.navbar {
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.navbar a:link,
+.navbar-default .navbar-nav>li>a {
+    color: #777;
+}
+
+.navbar a:hover,
+.navbar-default .navbar-nav>li>a:hover {
+    color: rgb(51, 51, 51);
+}
+
+.content-section-b {
+    background-color: white;
+    color: #333;
+}
+
+body {
+    color: rgb(51, 51, 51);
+}
+
+.header-container h1,
+.header-container h2,
+.header-container h3,
+.header-container h4 {
+    color: rgb(51, 51, 51);
+}
+
+  </style>
+    <link href="http://localhost:1313/elastic-job/css/prism.css" rel="stylesheet">
+    <link href="http://localhost:1313/elastic-job/css/table.css" rel="stylesheet">
+</head>
+<body>
+
+<style>
+    .container {
+        width: 95%;
+    }
+</style>
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="page-scroll navbar-brand" href="#intro">Elastic-Job</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom/elastic-job>Github</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=http://dangdangdotcom.github.io/elastic-job>Docs</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom>DangDang</a>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+    
+</nav>
+
+
+<section id="services">
+   <div class="content-section-a">
+
+      <div class="container">
+        <div class="clearfix"></div>
+        <div class="row">
+	
+              <div class="col-sm-8">
+		 
+
+<h1 id="何为分布式作业:2923f63596206c753f4fc3f7d0115ba2">何为分布式作业？</h1>
+
+<h2 id="分片概念:2923f63596206c753f4fc3f7d0115ba2">分片概念</h2>
+
+<p>任务的分布式执行，需要将一个任务拆分为n个独立的任务项，然后由分布式的服务器分别执行某一个或几个分片项。</p>
+
+<p>例如：有一个遍历数据库某张表的作业，现有<code>2</code>台服务器。为了快速的执行作业，那么每台服务器应执行作业的<code>50%</code>。
+为满足此需求，可将作业分成<code>2</code>片，每台服务器执行<code>1</code>片。作业遍历数据的逻辑应为：服务器<code>A</code>遍历<code>ID</code>以奇数结尾的数据；服务器<code>B</code>遍历<code>ID</code>以偶数结尾的数据。
+如果分成<code>10</code>片，则作业遍历数据的逻辑应为：每片分到的分片项应为<code>ID%10</code>，而服务器A被分配到分片项<code>0,1,2,3,4</code>；服务器B被分配到分片项<code>5,6,7,8,9</code>，直接的结果就是服务器<code>A</code>遍历<code>ID</code>以<code>0-4</code>结尾的数据；服务器<code>B</code>遍历<code>ID</code>以<code>5-9</code>结尾的数据。</p>
+
+<h2 id="分片项与业务处理解耦:2923f63596206c753f4fc3f7d0115ba2">分片项与业务处理解耦</h2>
+
+<p><code>Elastic-job</code>并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器，开发者需要自行处理分片项与真实数据的对应关系。</p>
+
+<h2 id="分布式作业的执行:2923f63596206c753f4fc3f7d0115ba2">分布式作业的执行</h2>
+
+<p><code>Elastic-job</code>并无作业调度中心节点，而是基于部署作业框架的程序在到达相应时间点时各自触发调度。</p>
+
+<p>注册中心仅用于作业注册和监控信息存储。而主作业节点仅用于处理分片和清理等功能。</p>
+
+<h2 id="个性化参数的适用场景:2923f63596206c753f4fc3f7d0115ba2">个性化参数的适用场景</h2>
+
+<p>个性化参数即<code>shardingItemParameters</code>，可以和分片项匹配对应关系，用于将分片项的数字转换为更加可读的业务代码。</p>
+
+<p>例如：按照地区水平拆分数据库，数据库<code>A</code>是北京的数据；数据库<code>B</code>是上海的数据；数据库<code>C</code>是广州的数据。
+如果仅按照分片项配置，开发者需要了解<code>0</code>表示北京；<code>1</code>表示上海；<code>2</code>表示广州。
+合理使用个性化参数可以让代码更可读，如果配置为<code>0=北京</code>,<code>1=上海</code>,<code>2=广州</code>，那么代码中直接使用北京，上海，广州的枚举值即可完成分片项和业务逻辑的对应关系。</p>
+
+<h2 id="作业高可用:2923f63596206c753f4fc3f7d0115ba2">作业高可用</h2>
+
+<p><code>Elastic-job</code>提供最安全的方式执行作业。将分片项设置为<code>1</code>，并使用多于<code>1</code>台的服务器执行作业，作业将会以<code>1</code>主<code>n</code>从的方式执行。</p>
+
+<p>一旦执行作业的服务器崩溃，等待执行的服务器将会在下次作业启动时替补执行。
+开启失效转移功能效果更好，可以保证在本次作业执行时崩溃，备机立即启动替补执行。</p>
+
+<h2 id="最大限度利用资源:2923f63596206c753f4fc3f7d0115ba2">最大限度利用资源</h2>
+
+<p><code>Elastic-job</code>也提供最灵活的方式，最大限度的提高执行作业的吞吐量。将分片项设置为大于服务器的数量，最好是大于服务器倍数的数量，作业将会合理的利用分布式资源，动态的分配分片项。</p>
+
+<p>例如：<code>3</code>台服务器，分成<code>10</code>片，则分片项分配结果为服务器<code>A=0,1,2</code>;服务器<code>B=3,4,5</code>;服务器<code>C=6,7,8,9</code>。
+如果服务器<code>C</code>崩溃，则分片项分配结果为服务器<code>A=0,1,2,3,4</code>;服务器<code>B=5,6,7,8,9</code>。在不丢失分片项的情况下，最大限度的利用现有资源提高吞吐量。</p>
+
+	</div>
+	<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+		 <nav id="TableOfContents">
+<ul>
+<li><a href="#何为分布式作业:2923f63596206c753f4fc3f7d0115ba2">何为分布式作业？</a>
+<ul>
+<li><a href="#分片概念:2923f63596206c753f4fc3f7d0115ba2">分片概念</a></li>
+<li><a href="#分片项与业务处理解耦:2923f63596206c753f4fc3f7d0115ba2">分片项与业务处理解耦</a></li>
+<li><a href="#分布式作业的执行:2923f63596206c753f4fc3f7d0115ba2">分布式作业的执行</a></li>
+<li><a href="#个性化参数的适用场景:2923f63596206c753f4fc3f7d0115ba2">个性化参数的适用场景</a></li>
+<li><a href="#作业高可用:2923f63596206c753f4fc3f7d0115ba2">作业高可用</a></li>
+<li><a href="#最大限度利用资源:2923f63596206c753f4fc3f7d0115ba2">最大限度利用资源</a></li>
+</ul></li>
+</ul>
+</nav>
+	</div>
+        </div>
+    </div>
+</div>
+</div>
+
+</section>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <p class="copyright text-muted small">Copyright &copy; 1.x 何为分布式作业？ All Rights Reserved</p>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="//cdn.bootcss.com/jquery/1.12.0/jquery.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="http://localhost:1313/elastic-job/js/prism.js"></script>
+
+
+
+<script data-no-instant>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+</html>
+

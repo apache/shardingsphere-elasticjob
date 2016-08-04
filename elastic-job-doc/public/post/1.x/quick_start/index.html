@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>1.x 快速上手</title>
+    
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    
+    
+    <link href="http://localhost:1313/elastic-job/css/landing-page.css" rel="stylesheet">
+    
+    
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    
+    <style>
+    .navbar {
+    border-color: #e7e7e7;
+}
+
+.content-section-a,
+footer,
+.navbar {
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.navbar a:link,
+.navbar-default .navbar-nav>li>a {
+    color: #777;
+}
+
+.navbar a:hover,
+.navbar-default .navbar-nav>li>a:hover {
+    color: rgb(51, 51, 51);
+}
+
+.content-section-b {
+    background-color: white;
+    color: #333;
+}
+
+body {
+    color: rgb(51, 51, 51);
+}
+
+.header-container h1,
+.header-container h2,
+.header-container h3,
+.header-container h4 {
+    color: rgb(51, 51, 51);
+}
+
+  </style>
+    <link href="http://localhost:1313/elastic-job/css/prism.css" rel="stylesheet">
+    <link href="http://localhost:1313/elastic-job/css/table.css" rel="stylesheet">
+</head>
+<body>
+
+<style>
+    .container {
+        width: 95%;
+    }
+</style>
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="page-scroll navbar-brand" href="#intro">Elastic-Job</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom/elastic-job>Github</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=http://dangdangdotcom.github.io/elastic-job>Docs</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom>DangDang</a>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+    
+</nav>
+
+
+<section id="services">
+   <div class="content-section-a">
+
+      <div class="container">
+        <div class="clearfix"></div>
+        <div class="row">
+	
+              <div class="col-sm-8">
+		 
+
+<h1 id="快速上手:1370e1c2bb52dcdda68d1c916daa26e4">快速上手</h1>
+
+<h2 id="下载源码和文档:1370e1c2bb52dcdda68d1c916daa26e4">下载源码和文档</h2>
+
+<p><a href="https://github.com/dangdangdotcom/elastic-job">https://github.com/dangdangdotcom/elastic-job</a></p>
+
+<p><img src="../../../img/1.x/quick_start_01.png" alt="quick_start_01" /></p>
+
+<p><img src="../../../img/1.x/quick_start_02.png" alt="quick_start_02" /></p>
+
+<p>选择 <code>tags\1.0.2</code> 作为源码</p>
+
+<p>其中，需要用<code>elastic-job-example</code>来做应用例子，自行安装<code>Zookeeper</code>来做注册中心。</p>
+
+<h2 id="安装lombok:1370e1c2bb52dcdda68d1c916daa26e4">安装lombok</h2>
+
+<p>开发代码省略了 set get log等，需要安装此包才不会报错。</p>
+
+<p><code>lombok</code>的官方网址：<a href="http://projectlombok.org/">http://projectlombok.org/</a></p>
+
+<p><strong>lombok安装</strong></p>
+
+<p>使用<code>lombok</code>是需要安装的，如果不安装，<code>IDE</code>则无法解析<code>lombok</code>注解。先在官网下载最新版本的<code>JAR</code>包，现在是<code>0.11.2</code>版本，我用的是<code>0.11.0</code>。第一次使用的时候我下载的是最新版本的，也就是我现在用的<code>0.11.0</code>，到现在已经更新了两个版本，更新的好快啊……</p>
+
+<p>可以用以下两种方式安装：</p>
+
+<ul>
+<li>双击下载下来的<code>JAR</code>包安装<code>lombok</code>。</li>
+<li><code>eclipse/myeclipse</code>手动安装<code>lombok</code>。
+
+<ol>
+<li>将<code>lombok.jar</code>复制到<code>myeclipse.ini/eclipse.ini</code>所在的文件夹目录下</li>
+<li>打开<code>eclipse.ini/myeclipse.ini</code>，在最后面插入以下两行并保存：</li>
+</ol></li>
+</ul>
+
+<pre><code>-Xbootclasspath/a:lombok.jar
+-javaagent:lombok.jar
+</code></pre>
+
+<p>最后重启<code>eclipse/myeclipse</code></p>
+
+<h2 id="zookeeper的安装和配置:1370e1c2bb52dcdda68d1c916daa26e4">Zookeeper的安装和配置</h2>
+
+<p>参考资料：<a href="http://blog.csdn.net/shatelang/article/details/7596007">http://blog.csdn.net/shatelang/article/details/7596007</a></p>
+
+<h3 id="快速配置:1370e1c2bb52dcdda68d1c916daa26e4">快速配置</h3>
+
+<ul>
+<li>下载解压到指定目录</li>
+<li>配置<code>bin</code>：<code>zkServer.cmd(zkServer.sh)</code>，默认不需要修改，默认读<code>zoo.cfg</code></li>
+<li>配置<code>conf</code>：<code>zoo.cfg</code>（注意<code>log dataDir</code>目录须先建）</li>
+</ul>
+
+<pre><code>tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=D:\\javawork\\zookeeper-3.4.6\\data
+dataLogDir=D:\\javawork\\zookeeper-3.4.6\\log
+clientPort=2181
+</code></pre>
+
+<ul>
+<li>启动：<code>zkServer.cmd(zkServer.sh)</code>，无报错。</li>
+<li>验证：<code>JPS</code>，存在<code>QuorumPeerMain</code>为已启动；验证端口<code>netstat -ano|findstr 2181</code></li>
+</ul>
+
+<p><img src="../../../img/1.x/quick_start_03.png" alt="quick_start_03" /></p>
+
+<ul>
+<li>客户端命令</li>
+</ul>
+
+<pre><code class="language-bash">echo ruok|nc 127.0.0.1 2181
+zkCli –server 127.0.0.1:2181
+zkCli.cmd –server 127.0.0.1:2181
+zkCli.cmd –server 127.0.0.1:2182
+zkCli.cmd –server 127.0.0.1:2183
+zkCli.cmd –server 127.0.0.1:2181 连接
+zkCli.cmd
+</code></pre>
+
+<h3 id="命令行工具的一些简单操作:1370e1c2bb52dcdda68d1c916daa26e4">命令行工具的一些简单操作</h3>
+
+<ol>
+<li><p>显示根目录下文件： <code>ls /</code> 使用<code>ls</code>命令来查看当前<code>ZooKeeper</code>中所包含的内容。</p></li>
+
+<li><p>显示根目录下文件： <code>ls2 /</code> 查看当前节点数据并能看到更新次数等数据。</p></li>
+
+<li><p>创建文件，并设置初始内容： <code>create /zk &quot;test&quot;</code> 创建一个新的<code>znode</code>节点<code>zk</code>以及与它关联的字符串。</p></li>
+
+<li><p>获取文件内容： <code>get /zk</code> 确认<code>znode</code>是否包含我们所创建的字符串。</p></li>
+
+<li><p>修改文件内容： <code>set /zk &quot;zkbak&quot;</code> 对<code>zk</code>所关联的字符串进行设置。</p></li>
+
+<li><p>删除文件： <code>delete /zk</code> 将刚才创建的<code>znode</code>删除。</p></li>
+
+<li><p>退出客户端： <code>quit</code></p></li>
+
+<li><p>帮助命令： <code>help</code></p></li>
+</ol>
+
+<h3 id="伪集群配置:1370e1c2bb52dcdda68d1c916daa26e4">伪集群配置</h3>
+
+<ul>
+<li><p><code>cmd</code>配置3个<code>zkServer1.cmd zkServer2.cmd zkServer3.cmd</code>，各自增加<code>set ZOOCFG=..\conf\zoo1.cfg</code>读不同配置文件</p></li>
+
+<li><p>配置<code>conf</code></p></li>
+</ul>
+
+<pre><code>tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=D:\\javawork\\zookeeper-3.4.6\\data\\1
+dataLogDir=D:\\javawork\\zookeeper-3.4.6\\log\\1
+clientPort=2181
+server.1=127.0.0.1:2887:3887
+server.2=127.0.0.1:2888:3888
+server.3=127.0.0.1:2889:3889
+</code></pre>
+
+<pre><code>tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=D:\\javawork\\zookeeper-3.4.6\\data\\2
+dataLogDir=D:\\javawork\\zookeeper-3.4.6\\log\\2
+clientPort=2182
+server.1=127.0.0.1:2887:3887
+server.2=127.0.0.1:2888:3888
+server.3=127.0.0.1:2889:3889
+</code></pre>
+
+<pre><code>tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=D:\\javawork\\zookeeper-3.4.6\\data\\3
+dataLogDir=D:\\javawork\\zookeeper-3.4.6\\log\\3
+clientPort=2183
+server.1=127.0.0.1:2887:3887
+server.2=127.0.0.1:2888:3888
+server.3=127.0.0.1:2889:3889
+</code></pre>
+
+<ul>
+<li><code>dataDir</code>目录 需要建<code>myid</code>文件，内容对应为服务器序列。</li>
+</ul>
+
+<p><img src="../../../img/1.x/quick_start_04.png" alt="quick_start_04" /></p>
+
+<ul>
+<li>启动3个服务，<code>zkServer1.cmd zkServer2.cmd zkServer3.cmd</code>，过程会有报错，等3个全启就不会报错了。</li>
+</ul>
+
+<p><img src="../../../img/1.x/quick_start_05.png" alt="quick_start_05" /></p>
+
+<h2 id="启动elastic-job-example:1370e1c2bb52dcdda68d1c916daa26e4">启动elastic-job-example</h2>
+
+<p>其中<code>reg.properties</code>为注册服务配置</p>
+
+<pre><code>serverLists=localhost:2181               #对应各自服务器的zookeeper ip端口
+namespace=elasticjob-dexotrip            #命名空间，用于注册的时候连接
+baseSleepTimeMilliseconds=1000
+maxSleepTimeMilliseconds=3000
+maxRetries=3
+</code></pre>
+
+<p><code>job.properties</code>为作业配置</p>
+
+<p>启动应用：<code>SpringJobMainWthNamespace</code>或者<code>SpringJobMainWthoutNamespace</code></p>
+
+<h2 id="启动elastic-job-console:1370e1c2bb52dcdda68d1c916daa26e4">启动elastic-job-console</h2>
+
+<p>访问<code>http://localhost:8080/elastic-job-console/</code>，用户名密码为<code>root/root</code></p>
+
+<p>注册连接信息，对应各自应用服务的配置</p>
+
+<p><img src="../../../img/1.x/quick_start_web_console_01.png" alt="quick_start_web_console_01" /></p>
+
+<p>连接上，自动把当前的相关服务和作业信息加载。可以在里面启停服务，启停作业，修改作业参数，查看服务，作业状态等。</p>
+
+<p><img src="../../../img/1.x/quick_start_web_console_02.png" alt="quick_start_web_console_02" /></p>
+
+<p><img src="../../../img/1.x/quick_start_web_console_03.png" alt="quick_start_web_console_03" /></p>
+
+<p><img src="../../../img/1.x/quick_start_web_console_04.png" alt="quick_start_web_console_04" /></p>
+
+<p><img src="../../../img/1.x/quick_start_web_console_05.png" alt="quick_start_web_console_05" /></p>
+
+<h2 id="3种作业类型的区别:1370e1c2bb52dcdda68d1c916daa26e4">3种作业类型的区别</h2>
+
+<p><img src="../../../img/1.x/quick_start_06.png" alt="quick_start_06" /></p>
+
+<h3 id="simple类型作业:1370e1c2bb52dcdda68d1c916daa26e4">Simple类型作业</h3>
+
+<p><code>Simple</code>类型作业意为简单实现，未经任何封装的类型。需要继承<code>AbstractSimpleElasticJob</code>，该类只提供了一个方法用于覆盖，此方法将被定时执行。用于执行普通的定时任务，与<code>Quartz</code>原生接口相似，只是增加了弹性扩缩容和分片等功能。</p>
+
+<h3 id="throughputdataflow类型作业:1370e1c2bb52dcdda68d1c916daa26e4">ThroughputDataFlow类型作业</h3>
+
+<p><code>ThroughputDataFlow</code>类型作业意为高吞吐的数据流作业。需要继承<code>AbstractThroughputDataFlowElasticJob</code>并可以指定返回值泛型，该类提供3个方法可覆盖，分别用于抓取数据，处理数据和指定是否流式处理数据。可以获取数据处理成功失败次数等辅助监控信息。如果流式处理数据，<code>fetchData</code>方法的返回值只有为<code>null</code>或长度为空时，作业才会停止执行，否则作业会一直运行下去；非流式处理数据则只会在每次作业执行过程中执行一次<code>fetchData</code>方法和<code>processData</code>方法，即完成本次作业。流式数据处理参照<code>TbSchedule</code>设计，适用于不间歇的数据处理。</p>
+
+<p>作业执行时会将<code>fetchData</code>的数据传递给<code>processData</code>处理，其中<code>processData</code>得到的数据是通过多线程（线程池大小可配）拆分的。如果采用流式作业处理方式，建议<code>processData</code>处理数据后更新其状态，避免<code>fetchData</code>再次抓取到，从而使得作业永远不会停止。<code>processData</code>的返回值用于表示数据是否处理成功，抛出异常或者返回<code>false</code>将会在统计信息中归入失败次数，返回<code>true</code>则归入成功次数。</p>
+
+<h3 id="sequencedataflow类型作业:1370e1c2bb52dcdda68d1c916daa26e4">SequenceDataFlow类型作业</h3>
+
+<p><code>SequenceDataFlow</code>类型作业和<code>ThroughputDataFlow</code>作业类型极为相似，所不同的是<code>ThroughputDataFlow</code>作业类型可以将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。如：从<code>2</code>个分片共获取到<code>100</code>条数据，第<code>1</code>个分片<code>40</code>条，第<code>2</code>个分片<code>60</code>条，配置为<code>2</code>个线程处理，则第<code>1</code>个线程处理前<code>50</code>条数据，第<code>2</code>个线程处理后<code>50</code>条数据，无视分片项；<code>SequenceDataFlow</code>类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。如：从<code>2</code>个分片共获取到<code>100</code>条数据，第<code>1</code>个分片<code>40</code>条，第<code>2</code>个分片<code>60</code>条，则系统自动分配<code>2</code>个线程处理，第<code>1</code>个线程处理第<code>1</code>个分片的<code>40</code>条数据，第<code>2</code>个线程处理第<code>2</code>个分片的<code>60</code>条数据。由于<code>ThroughputDataFlow</code>作业可以使用多于分片项的任意线程数处理，所以性能调优的可能会优于<code>SequenceDataFlow</code>作业。</p>
+
+<p>分数据处理，需要自己实现，可以根据分片的<code>ID</code>位数，对应数据的位数进行处理。</p>
+
+	</div>
+	<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+		 <nav id="TableOfContents">
+<ul>
+<li><a href="#快速上手:1370e1c2bb52dcdda68d1c916daa26e4">快速上手</a>
+<ul>
+<li><a href="#下载源码和文档:1370e1c2bb52dcdda68d1c916daa26e4">下载源码和文档</a></li>
+<li><a href="#安装lombok:1370e1c2bb52dcdda68d1c916daa26e4">安装lombok</a></li>
+<li><a href="#zookeeper的安装和配置:1370e1c2bb52dcdda68d1c916daa26e4">Zookeeper的安装和配置</a>
+<ul>
+<li><a href="#快速配置:1370e1c2bb52dcdda68d1c916daa26e4">快速配置</a></li>
+<li><a href="#命令行工具的一些简单操作:1370e1c2bb52dcdda68d1c916daa26e4">命令行工具的一些简单操作</a></li>
+<li><a href="#伪集群配置:1370e1c2bb52dcdda68d1c916daa26e4">伪集群配置</a></li>
+</ul></li>
+<li><a href="#启动elastic-job-example:1370e1c2bb52dcdda68d1c916daa26e4">启动elastic-job-example</a></li>
+<li><a href="#启动elastic-job-console:1370e1c2bb52dcdda68d1c916daa26e4">启动elastic-job-console</a></li>
+<li><a href="#3种作业类型的区别:1370e1c2bb52dcdda68d1c916daa26e4">3种作业类型的区别</a>
+<ul>
+<li><a href="#simple类型作业:1370e1c2bb52dcdda68d1c916daa26e4">Simple类型作业</a></li>
+<li><a href="#throughputdataflow类型作业:1370e1c2bb52dcdda68d1c916daa26e4">ThroughputDataFlow类型作业</a></li>
+<li><a href="#sequencedataflow类型作业:1370e1c2bb52dcdda68d1c916daa26e4">SequenceDataFlow类型作业</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+	</div>
+        </div>
+    </div>
+</div>
+</div>
+
+</section>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <p class="copyright text-muted small">Copyright &copy; 1.x 快速上手 All Rights Reserved</p>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="//cdn.bootcss.com/jquery/1.12.0/jquery.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="http://localhost:1313/elastic-job/js/prism.js"></script>
+
+
+
+<script data-no-instant>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+</html>
+

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Elastic-Job-Lite实现原理</title>
+    
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    
+    
+    <link href="http://localhost:1313/elastic-job/css/landing-page.css" rel="stylesheet">
+    
+    
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    
+    <style>
+    .navbar {
+    border-color: #e7e7e7;
+}
+
+.content-section-a,
+footer,
+.navbar {
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.navbar a:link,
+.navbar-default .navbar-nav>li>a {
+    color: #777;
+}
+
+.navbar a:hover,
+.navbar-default .navbar-nav>li>a:hover {
+    color: rgb(51, 51, 51);
+}
+
+.content-section-b {
+    background-color: white;
+    color: #333;
+}
+
+body {
+    color: rgb(51, 51, 51);
+}
+
+.header-container h1,
+.header-container h2,
+.header-container h3,
+.header-container h4 {
+    color: rgb(51, 51, 51);
+}
+
+  </style>
+    <link href="http://localhost:1313/elastic-job/css/prism.css" rel="stylesheet">
+    <link href="http://localhost:1313/elastic-job/css/table.css" rel="stylesheet">
+</head>
+<body>
+
+<style>
+    .container {
+        width: 95%;
+    }
+</style>
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="page-scroll navbar-brand" href="#intro">Elastic-Job</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom/elastic-job>Github</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=http://dangdangdotcom.github.io/elastic-job>Docs</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom>DangDang</a>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+    
+</nav>
+
+
+<section id="services">
+   <div class="content-section-a">
+
+      <div class="container">
+        <div class="clearfix"></div>
+        <div class="row">
+	
+              <div class="col-sm-8">
+		 
+
+<h1 id="elastic-job-lite实现原理:46a15dac21612a46efd5032abee0dea1">Elastic-Job-Lite实现原理</h1>
+
+<h2 id="弹性分布式实现:46a15dac21612a46efd5032abee0dea1">弹性分布式实现</h2>
+
+<ul>
+<li><p>第一台服务器上线触发主服务器选举。主服务器一旦下线，则重新触发选举，选举过程中阻塞，只有主服务器选举完成，才会执行其他任务。</p></li>
+
+<li><p>某作业服务器上线时会自动将服务器信息注册到注册中心，下线时会自动更新服务器状态。</p></li>
+
+<li><p>主节点选举，服务器上下线，分片总数变更均更新重新分片标记。</p></li>
+
+<li><p>定时任务触发时，如需重新分片，则通过主服务器分片，分片过程中阻塞，分片结束后才可执行任务。如分片过程中主服务器下线，则先选举主服务器，再分片。</p></li>
+
+<li><p>通过上一项说明可知，为了维持作业运行时的稳定性，运行过程中只会标记分片状态，不会重新分片。分片仅可能发生在下次任务触发前。</p></li>
+
+<li><p>每次分片都会按服务器<code>IP</code>排序，保证分片结果不会产生较大波动。</p></li>
+
+<li><p>实现失效转移功能，在某台服务器执行完毕后主动抓取未分配的分片，并且在某台服务器下线后主动寻找可用的服务器执行任务。</p></li>
+</ul>
+
+<h2 id="注册中心数据结构:46a15dac21612a46efd5032abee0dea1">注册中心数据结构</h2>
+
+<p>注册中心在定义的命名空间下，创建作业名称节点，用于区分不同作业，所以作业一旦创建则不能修改作业名称，如果修改名称将视为新的作业。作业名称节点下又包含4个数据子节点，分别是<code>config</code>, <code>servers</code>, <code>execution</code>和<code>leader</code>。</p>
+
+<h3 id="概览:46a15dac21612a46efd5032abee0dea1">概览</h3>
+
+<p><img src="../../../img/principles/reg_center.jpg" alt="注册中心数据结构" /></p>
+
+<h3 id="config节点:46a15dac21612a46efd5032abee0dea1">config节点</h3>
+
+<p>作业配置信息，以<code>JSON</code>格式存储</p>
+
+<table>
+<thead>
+<tr>
+<th>JSON属性名</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>jobName</td>
+<td align="left">作业名称，为<code>Elastic-Job</code>唯一标识</td>
+</tr>
+
+<tr>
+<td>jobClass</td>
+<td align="left">作业实现类名称</td>
+</tr>
+
+<tr>
+<td>jobType</td>
+<td align="left">作业类型，目前支持<code>SIMPLE</code>，<code>DATAFLOW</code>和<code>SCRIPT</code>三种类型</td>
+</tr>
+
+<tr>
+<td>cron</td>
+<td align="left">作业启动时间的<code>cron</code>表达式</td>
+</tr>
+
+<tr>
+<td>shardingTotalCount</td>
+<td align="left">作业分片总数，修改会导致运行中作业重新分片</td>
+</tr>
+
+<tr>
+<td>shardingItemParameters</td>
+<td align="left">分片序列号和个性化参数对照表</td>
+</tr>
+
+<tr>
+<td>jobParameter</td>
+<td align="left">作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等</td>
+</tr>
+
+<tr>
+<td>failover</td>
+<td align="left">是否开启失效转移，仅<code>monitorExecution</code>开启时才起作用</td>
+</tr>
+
+<tr>
+<td>misfire</td>
+<td align="left">是否开启错过任务重新执行</td>
+</tr>
+
+<tr>
+<td>description</td>
+<td align="left">作业描述信息</td>
+</tr>
+
+<tr>
+<td>monitorExecution</td>
+<td align="left">监控作业执行时状态</td>
+</tr>
+
+<tr>
+<td>maxTimeDiffSeconds</td>
+<td align="left">允许的本机与注册中心的时间误差秒数</td>
+</tr>
+
+<tr>
+<td>monitorPort</td>
+<td align="left">使用<code>dump</code>命令的端口，为-1则表示不开启端口</td>
+</tr>
+
+<tr>
+<td>dataflowType</td>
+<td align="left"><code>DATAFLW</code>类型作业的子类型，目前支持<code>THROUGHPUT</code>和<code>SEQUENCE</code>两种类型</td>
+</tr>
+
+<tr>
+<td>streamingProcess</td>
+<td align="left">是否流式处理数据<br />如果流式处理数据，则<code>fetchData</code>不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br /></td>
+</tr>
+
+<tr>
+<td>concurrentDataProcessThreadCount</td>
+<td align="left">同时处理数据的并发线程数，仅<code>DATAFLOW</code>的<code>THROUGHPUT</code>类型有效</td>
+</tr>
+
+<tr>
+<td>scriptCommandLine</td>
+<td align="left"><code>SCRIPT</code>型作业作业执行命令行</td>
+</tr>
+
+<tr>
+<td>jobProperties</td>
+<td align="left">作业定制化属性，目前支持<code>job_exception_handler</code>和<code>executor_service_handler</code>，用于扩展异常处理和自定义作业处理线程池</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="servers节点:46a15dac21612a46efd5032abee0dea1">servers节点</h3>
+
+<p>作业服务器信息，子节点是作业服务器的<code>IP</code>地址。<code>IP</code>地址节点的子节点存储详细信息。同一台作业服务器只能运行一个相同的作业实例，因为作业运行时是按照<code>IP</code>注册和管理的。</p>
+
+<table>
+<thead>
+<tr>
+<th>子节点名</th>
+<th align="left">临时节点</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>hostName</td>
+<td align="left">否</td>
+<td align="left">作业服务器名称</td>
+</tr>
+
+<tr>
+<td>status</td>
+<td align="left"><code>是</code></td>
+<td align="left">作业服务器状态，分为READY和RUNNING<br />用于表示服务器在等待执行作业还是正在执行作业<br />如果status节点不存在则表示作业服务器未上线</td>
+</tr>
+
+<tr>
+<td>disabled</td>
+<td align="left">否</td>
+<td align="left">作业服务器状态是否禁用<br />可用于部署作业时，先禁止启动，部署结束后统一启动</td>
+</tr>
+
+<tr>
+<td>sharding</td>
+<td align="left">否</td>
+<td align="left">该作业服务器分到的作业分片项<br />多个分片项用逗号分隔<br />如：<code>0, 1, 2</code>代表该服务器执行第<code>1, 2, 3</code>片分片</td>
+</tr>
+
+<tr>
+<td>paused</td>
+<td align="left">否</td>
+<td align="left">暂停作业的标记，暂停的作业不会终止调度器运行。作业程序再次启动时不会清理此标记</td>
+</tr>
+
+<tr>
+<td>shutdown</td>
+<td align="left">否</td>
+<td align="left">关闭作业的标记，关闭的作业将停止调度，并可通过控制台删除。只有作业程序再次启动时才会清理此标记</td>
+</tr>
+
+<tr>
+<td>trigger</td>
+<td align="left">否</td>
+<td align="left">立刻触发作业的标记，作业在不与上次运行中作业冲突的情况下将立刻启动，并在启动后自动清理此标记</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="execution节点:46a15dac21612a46efd5032abee0dea1">execution节点</h3>
+
+<p>执行时信息，子节点是分片项序号，从零开始，至分片总数减一。分片项序号的子节点存储详细信息。可通过配置<code>config\monitorExecution</code>为<code>false</code>关闭记录作业执行时信息。</p>
+
+<table>
+<thead>
+<tr>
+<th>子节点名</th>
+<th align="left">临时节点</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>running</td>
+<td align="left"><code>是</code></td>
+<td align="left">分片项正在运行的状态<br />如果没有此节点，并且没有<code>completed</code>节点，表示该分片未运行</td>
+</tr>
+
+<tr>
+<td>completed</td>
+<td align="left">否</td>
+<td align="left">分片项运行完成的状态<br />下次作业开始执行时会清理</td>
+</tr>
+
+<tr>
+<td>failover</td>
+<td align="left"><code>是</code></td>
+<td align="left">如果该分片项被失效转移分配给其他作业服务器，则此节点值记录执行此分片的作业服务器<code>IP</code></td>
+</tr>
+
+<tr>
+<td>lastBeginTime</td>
+<td align="left">否</td>
+<td align="left">该分片项最近一次的开始执行时间</td>
+</tr>
+
+<tr>
+<td>nextFireTime</td>
+<td align="left">否</td>
+<td align="left">该分片项下次作业触发时间</td>
+</tr>
+
+<tr>
+<td>lastCompleteTime</td>
+<td align="left">否</td>
+<td align="left">该分片项最近一次的结束执行时间</td>
+</tr>
+
+<tr>
+<td>misfire</td>
+<td align="left">否</td>
+<td align="left">是否开启错过任务重新执行</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="leader节点:46a15dac21612a46efd5032abee0dea1">leader节点</h3>
+
+<p>作业服务器主节点信息，分为<code>election</code>，<code>sharding</code>和<code>execution</code>三个子节点。分别用于主节点选举，分片和作业执行时处理。</p>
+
+<p>leader节点是内部使用的节点，如果对作业框架原理不感兴趣，可不关注此节点。</p>
+
+<table>
+<thead>
+<tr>
+<th>子节点名</th>
+<th align="left">临时节点</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>election\host</td>
+<td align="left"><code>是</code></td>
+<td align="left">主节点服务器<code>IP</code>地址<br />一旦该节点被删除将会触发重新选举<br />重新选举的过程中一切主节点相关的操作都将阻塞</td>
+</tr>
+
+<tr>
+<td>election\latch</td>
+<td align="left">否</td>
+<td align="left">主节点选举的分布式锁<br />为<code>curator</code>的分布式锁使用</td>
+</tr>
+
+<tr>
+<td>sharding\necessary</td>
+<td align="left">否</td>
+<td align="left">是否需要重新分片的标记<br />如果分片总数变化，或作业服务器节点上下线或启用/禁用，以及主节点选举，会触发设置重分片标记<br />作业在下次执行时使用主节点重新分片，且中间不会被打断<br />作业执行时不会触发分片</td>
+</tr>
+
+<tr>
+<td>sharding\processing</td>
+<td align="left"><code>是</code></td>
+<td align="left">主节点在分片时持有的节点<br />如果有此节点，所有的作业执行都将阻塞，直至分片结束<br />主节点分片结束或主节点崩溃会删除此临时节点</td>
+</tr>
+
+<tr>
+<td>execution\necessary</td>
+<td align="left">否</td>
+<td align="left">是否需要修正作业执行时分片项信息的标记<br />如果分片总数变化，会触发设置修正分片项信息标记<br />作业在下次执行时会增加或减少分片项数量</td>
+</tr>
+
+<tr>
+<td>execution\cleaning</td>
+<td align="left"><code>是</code></td>
+<td align="left">主节点在清理上次作业运行时状态时所持有的节点<br />每次开始新作业都需要清理上次运行完成的作业信息<br />如果有此节点，所有的作业执行都将阻塞，直至清理结束<br />主节点分片结束或主节点崩溃会删除此临时节点</td>
+</tr>
+
+<tr>
+<td>failover\items\分片项</td>
+<td align="left">否</td>
+<td align="left">一旦有作业崩溃，则会向此节点记录<br />当有空闲作业服务器时，会从此节点抓取需失效转移的作业项</td>
+</tr>
+
+<tr>
+<td>failover\items\latch</td>
+<td align="left">否</td>
+<td align="left">分配失效转移分片项时占用的分布式锁<br />为<code>curator</code>的分布式锁使用</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="流程图:46a15dac21612a46efd5032abee0dea1">流程图</h2>
+
+<h3 id="作业启动:46a15dac21612a46efd5032abee0dea1">作业启动</h3>
+
+<p><img src="../../../img/principles/job_start.jpg" alt="作业启动" /></p>
+
+<h3 id="作业执行:46a15dac21612a46efd5032abee0dea1">作业执行</h3>
+
+<p><img src="../../../img/principles/job_exec.jpg" alt="作业执行" /></p>
+
+	</div>
+	<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+		 <nav id="TableOfContents">
+<ul>
+<li><a href="#elastic-job-lite实现原理:46a15dac21612a46efd5032abee0dea1">Elastic-Job-Lite实现原理</a>
+<ul>
+<li><a href="#弹性分布式实现:46a15dac21612a46efd5032abee0dea1">弹性分布式实现</a></li>
+<li><a href="#注册中心数据结构:46a15dac21612a46efd5032abee0dea1">注册中心数据结构</a>
+<ul>
+<li><a href="#概览:46a15dac21612a46efd5032abee0dea1">概览</a></li>
+<li><a href="#config节点:46a15dac21612a46efd5032abee0dea1">config节点</a></li>
+<li><a href="#servers节点:46a15dac21612a46efd5032abee0dea1">servers节点</a></li>
+<li><a href="#execution节点:46a15dac21612a46efd5032abee0dea1">execution节点</a></li>
+<li><a href="#leader节点:46a15dac21612a46efd5032abee0dea1">leader节点</a></li>
+</ul></li>
+<li><a href="#流程图:46a15dac21612a46efd5032abee0dea1">流程图</a>
+<ul>
+<li><a href="#作业启动:46a15dac21612a46efd5032abee0dea1">作业启动</a></li>
+<li><a href="#作业执行:46a15dac21612a46efd5032abee0dea1">作业执行</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+	</div>
+        </div>
+    </div>
+</div>
+</div>
+
+</section>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <p class="copyright text-muted small">Copyright &copy; Elastic-Job-Lite实现原理 All Rights Reserved</p>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="//cdn.bootcss.com/jquery/1.12.0/jquery.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="http://localhost:1313/elastic-job/js/prism.js"></script>
+
+
+
+<script data-no-instant>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+</html>
+

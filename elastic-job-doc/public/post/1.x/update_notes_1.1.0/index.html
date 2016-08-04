@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>1.x elastic-job 1.1.0升级说明</title>
+    
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    
+    
+    <link href="http://localhost:1313/elastic-job/css/landing-page.css" rel="stylesheet">
+    
+    
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    
+    <style>
+    .navbar {
+    border-color: #e7e7e7;
+}
+
+.content-section-a,
+footer,
+.navbar {
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.navbar a:link,
+.navbar-default .navbar-nav>li>a {
+    color: #777;
+}
+
+.navbar a:hover,
+.navbar-default .navbar-nav>li>a:hover {
+    color: rgb(51, 51, 51);
+}
+
+.content-section-b {
+    background-color: white;
+    color: #333;
+}
+
+body {
+    color: rgb(51, 51, 51);
+}
+
+.header-container h1,
+.header-container h2,
+.header-container h3,
+.header-container h4 {
+    color: rgb(51, 51, 51);
+}
+
+  </style>
+    <link href="http://localhost:1313/elastic-job/css/prism.css" rel="stylesheet">
+    <link href="http://localhost:1313/elastic-job/css/table.css" rel="stylesheet">
+</head>
+<body>
+
+<style>
+    .container {
+        width: 95%;
+    }
+</style>
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="page-scroll navbar-brand" href="#intro">Elastic-Job</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom/elastic-job>Github</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=http://dangdangdotcom.github.io/elastic-job>Docs</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom>DangDang</a>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+    
+</nav>
+
+
+<section id="services">
+   <div class="content-section-a">
+
+      <div class="container">
+        <div class="clearfix"></div>
+        <div class="row">
+	
+              <div class="col-sm-8">
+		 
+
+<h1 id="elastic-job-1-1-0升级说明:abc46c17007b653a25bcc05425c64113">elastic-job 1.1.0升级说明</h1>
+
+<ul>
+<li><p>基于扩展性提升，概念明晰和命名规范化的考虑，<code>elastic-job 1.1.0</code>版本决定抛弃原有包袱的束缚，重新定义了<code>JAVA API</code>，<code>Spring</code>命名空间并且删除了已废弃的<code>API</code>。</p></li>
+
+<li><p><code>elastic-job 1.1.0</code>作为里程碑版本发布，除了<code>API</code>改动并未做功能上的修改，希望通过标准化配置的方式为未来的新<code>elastic-job</code>功能的开发打下良好的基础。</p></li>
+</ul>
+
+<h2 id="重新定义java-api:abc46c17007b653a25bcc05425c64113">重新定义JAVA API</h2>
+
+<ul>
+<li><p>变更<code>JobConfiguration</code>类为接口，通过工厂方法配合构建者模式为每种作业类型分别提供了配置实现类。</p></li>
+
+<li><p>取消<code>DataFlowElasticJob</code>接口中<code>isStreamingProcess</code>的方法签名，归入<code>DataFlow</code>型作业配置，默认值为<code>false</code>非流式处理。</p></li>
+</ul>
+
+<h2 id="重新定义spring命名空间:abc46c17007b653a25bcc05425c64113">重新定义Spring命名空间</h2>
+
+<ul>
+<li><p>删除<code>&lt;job:bean&gt;</code>，细化为<code>&lt;job:simple&gt;</code>, <code>&lt;job:dataflow&gt;</code>, <code>&lt;job:script&gt;</code>具体类型。</p></li>
+
+<li><p><code>Spring</code>命名空间属性由驼峰式修正为<code>Spring</code>命名空间标准命名规范(多单词以<code>-</code>分隔)。</p></li>
+
+<li><p>作业的<code>Spring</code>命名空间属性<code>regCenter</code>变更为<code>registry-center-ref</code>。</p></li>
+</ul>
+
+<h2 id="废弃过时api:abc46c17007b653a25bcc05425c64113">废弃过时API</h2>
+
+<ul>
+<li><p>删除废弃作业类，包括<code>AbstractOneOffElasticJob</code>，<code>AbstractPerpetualElasticJob</code>和<code>AbstractSequencePerpetualElasticJob</code>。</p></li>
+
+<li><p>删除废弃作业调度器类，包括<code>com.dangdang.ddframe.job.schedule.JobController</code>和<code>com.dangdang.ddframe.job.spring.schedule.SpringJobController</code>。</p></li>
+
+<li><p>不再支持非<code>Spring</code>命名空间通过<code>xml</code>方式配置<code>bean</code>，如有需要请使用<code>Spring Java Config</code>。</p></li>
+</ul>
+
+	</div>
+	<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+		 <nav id="TableOfContents">
+<ul>
+<li><a href="#elastic-job-1-1-0升级说明:abc46c17007b653a25bcc05425c64113">elastic-job 1.1.0升级说明</a>
+<ul>
+<li><a href="#重新定义java-api:abc46c17007b653a25bcc05425c64113">重新定义JAVA API</a></li>
+<li><a href="#重新定义spring命名空间:abc46c17007b653a25bcc05425c64113">重新定义Spring命名空间</a></li>
+<li><a href="#废弃过时api:abc46c17007b653a25bcc05425c64113">废弃过时API</a></li>
+</ul></li>
+</ul>
+</nav>
+	</div>
+        </div>
+    </div>
+</div>
+</div>
+
+</section>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <p class="copyright text-muted small">Copyright &copy; 1.x elastic-job 1.1.0升级说明 All Rights Reserved</p>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="//cdn.bootcss.com/jquery/1.12.0/jquery.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="http://localhost:1313/elastic-job/js/prism.js"></script>
+
+
+
+<script data-no-instant>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+</html>
+

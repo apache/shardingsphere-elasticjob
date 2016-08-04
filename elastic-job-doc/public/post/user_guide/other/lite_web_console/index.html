@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Elastic-Job-Lite运维平台</title>
+    
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    
+    
+    <link href="http://localhost:1313/elastic-job/css/landing-page.css" rel="stylesheet">
+    
+    
+    <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    
+    <style>
+    .navbar {
+    border-color: #e7e7e7;
+}
+
+.content-section-a,
+footer,
+.navbar {
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.navbar a:link,
+.navbar-default .navbar-nav>li>a {
+    color: #777;
+}
+
+.navbar a:hover,
+.navbar-default .navbar-nav>li>a:hover {
+    color: rgb(51, 51, 51);
+}
+
+.content-section-b {
+    background-color: white;
+    color: #333;
+}
+
+body {
+    color: rgb(51, 51, 51);
+}
+
+.header-container h1,
+.header-container h2,
+.header-container h3,
+.header-container h4 {
+    color: rgb(51, 51, 51);
+}
+
+  </style>
+    <link href="http://localhost:1313/elastic-job/css/prism.css" rel="stylesheet">
+    <link href="http://localhost:1313/elastic-job/css/table.css" rel="stylesheet">
+</head>
+<body>
+
+<style>
+    .container {
+        width: 95%;
+    }
+</style>
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="page-scroll navbar-brand" href="#intro">Elastic-Job</a>
+        </div>
+        
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom/elastic-job>Github</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=http://dangdangdotcom.github.io/elastic-job>Docs</a>
+                </li>
+                <li>
+                    <a class="page-scroll" href=https://github.com/dangdangdotcom>DangDang</a>
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+    
+</nav>
+
+
+<section id="services">
+   <div class="content-section-a">
+
+      <div class="container">
+        <div class="clearfix"></div>
+        <div class="row">
+	
+              <div class="col-sm-8">
+		 
+
+<h1 id="elastic-job-lite运维平台:439bd6471bc872a959df6d32498bc19c">Elastic-Job-Lite运维平台</h1>
+
+<p>以<code>war</code>包形式提供，可自行部署至<code>tomcat</code>或<code>jetty</code>等支持<code>servlet</code>的<code>web</code>容器中。可通过<code>mvn install</code>编译或<code>maven</code>中央仓库获取。</p>
+
+<h2 id="登录:439bd6471bc872a959df6d32498bc19c">登录</h2>
+
+<p>默认用户名和密码是<code>root/root</code>，可通过<code>conf\auth.properties</code>修改默认登录账户。</p>
+
+<h2 id="功能列表:439bd6471bc872a959df6d32498bc19c">功能列表</h2>
+
+<ul>
+<li><p>登录安全控制</p></li>
+
+<li><p>注册中心管理</p></li>
+
+<li><p>作业维度状态查看</p></li>
+
+<li><p>服务器维度状态查看</p></li>
+
+<li><p>快捷修改作业设置</p></li>
+
+<li><p>控制作业暂停，恢复运行，停止和删除</p></li>
+</ul>
+
+<h2 id="设计理念:439bd6471bc872a959df6d32498bc19c">设计理念</h2>
+
+<p>运维平台和<code>elastic-job-lite</code>并无直接关系，是通过读取作业注册中心数据展现作业状态，或更新注册中心数据修改全局配置。</p>
+
+<p>控制台只能控制作业本身是否运行，但不能控制作业进程的启动，因为控制台和作业本身服务器是完全分离的，控制台并不能控制作业服务器。</p>
+
+<h2 id="不支持项:439bd6471bc872a959df6d32498bc19c">不支持项</h2>
+
+<ul>
+<li>添加作业。
+作业在首次运行时将自动添加。<code>Elastic-Job-Lite</code>以<code>jar</code>方式启动，并无作业分发功能。如需完全通过运维平台发布作业，请使用<code>Elastic-Job-Cloud</code>。</li>
+</ul>
+
+<h2 id="主要界面:439bd6471bc872a959df6d32498bc19c">主要界面</h2>
+
+<ul>
+<li>总览页</li>
+</ul>
+
+<p><img src="../../../../img/console/lite_index.png" alt="总览页" /></p>
+
+<ul>
+<li>注册中心管理页</li>
+</ul>
+
+<p><img src="../../../../img/console/lite_reg_center.png" alt="注册中心管理页" /></p>
+
+<ul>
+<li>作业详细信息页</li>
+</ul>
+
+<p><img src="../../../../img/console/lite_job_details.png" alt="作业详细信息页" /></p>
+
+<ul>
+<li>服务器详细信息页</li>
+</ul>
+
+<p><img src="../../../../img/console/lite_server_details.png" alt="服务器详细信息页" /></p>
+
+	</div>
+	<div class="col-sm-3 col-sm-offset-1 doc-sidebar">
+		 <nav id="TableOfContents">
+<ul>
+<li><a href="#elastic-job-lite运维平台:439bd6471bc872a959df6d32498bc19c">Elastic-Job-Lite运维平台</a>
+<ul>
+<li><a href="#登录:439bd6471bc872a959df6d32498bc19c">登录</a></li>
+<li><a href="#功能列表:439bd6471bc872a959df6d32498bc19c">功能列表</a></li>
+<li><a href="#设计理念:439bd6471bc872a959df6d32498bc19c">设计理念</a></li>
+<li><a href="#不支持项:439bd6471bc872a959df6d32498bc19c">不支持项</a></li>
+<li><a href="#主要界面:439bd6471bc872a959df6d32498bc19c">主要界面</a></li>
+</ul></li>
+</ul>
+</nav>
+	</div>
+        </div>
+    </div>
+</div>
+</div>
+
+</section>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <p class="copyright text-muted small">Copyright &copy; Elastic-Job-Lite运维平台 All Rights Reserved</p>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="//cdn.bootcss.com/jquery/1.12.0/jquery.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<script src="http://localhost:1313/elastic-job/js/prism.js"></script>
+
+
+
+<script data-no-instant>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+</html>
+
