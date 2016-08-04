@@ -34,17 +34,17 @@ public class JobConfigurationContextTest {
     
     @Test
     public void assertSimpleJobConfigurationContext() throws JobExecutionEnvironmentException {
-        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SIMPLE)).getTypeConfig() instanceof SimpleJobConfiguration) ; 
+        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SIMPLE)).getTypeConfig() instanceof SimpleJobConfiguration); 
     }
     
     @Test
     public void assertDataflowJobConfigurationContext() throws JobExecutionEnvironmentException {
-        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.DATAFLOW)).getTypeConfig() instanceof DataflowJobConfiguration) ;
+        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.DATAFLOW)).getTypeConfig() instanceof DataflowJobConfiguration);
     }
     
     @Test
     public void assertScriptJobConfigurationContext() throws JobExecutionEnvironmentException {
-        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SCRIPT)).getTypeConfig() instanceof ScriptJobConfiguration) ;
+        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SCRIPT)).getTypeConfig() instanceof ScriptJobConfiguration);
     }
     
     private Map<String, String> buildJobConfigurationContextMap(final JobType jobType) {
@@ -53,8 +53,8 @@ public class JobConfigurationContextTest {
         result.put("jobClass", TestJob.class.getCanonicalName());
         result.put("jobType", jobType.name());
         if (jobType == JobType.DATAFLOW) {
-            result.put("dataflowType","SEQUENCE");
-            result.put("streamingProcess","true");
+            result.put("dataflowType", DataflowJobConfiguration.DataflowType.SEQUENCE.name());
+            result.put("streamingProcess", Boolean.TRUE.toString());
             result.put("concurrentDataProcessThreadCount", "8");
         } else if (jobType == JobType.SCRIPT) {
             result.put("scriptCommandLine", "echo test");

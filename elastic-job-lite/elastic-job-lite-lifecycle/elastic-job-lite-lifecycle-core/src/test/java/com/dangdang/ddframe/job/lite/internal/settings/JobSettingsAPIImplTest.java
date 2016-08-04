@@ -93,9 +93,10 @@ public class JobSettingsAPIImplTest {
         jobSettings.setExecutorServiceHandler("com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler");
         jobSettings.setJobExceptionHandler("com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler");
         jobSettingsAPI.updateJobSettings(jobSettings);
-        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"dataflowType\":\"THROUGHPUT\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"cron\":\"0/1 * * * * ?\","
-                + "\"shardingTotalCount\":10,\"monitorExecution\":true,\"concurrentDataProcessThreadCount\":10,\"streamingProcess\":true,"
-                + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true" +
-                ",\"jobExceptionHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\",\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"}");
+        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"dataflowType\":\"THROUGHPUT\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\","
+                + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"concurrentDataProcessThreadCount\":10,\"streamingProcess\":true,"
+                + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
+                + "\"jobExceptionHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
+                + "\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"}");
     }
 }
