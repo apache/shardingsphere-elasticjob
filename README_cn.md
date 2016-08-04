@@ -64,14 +64,14 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 <!-- 引入elastic-job核心模块 -->
 <dependency>
     <groupId>com.dangdang</groupId>
-    <artifactId>elastic-job-core</artifactId>
+    <artifactId>elastic-job-lite-core</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 
 <!-- 使用springframework自定义命名空间时引入 -->
 <dependency>
     <groupId>com.dangdang</groupId>
-    <artifactId>elastic-job-spring</artifactId>
+    <artifactId>elastic-job-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```

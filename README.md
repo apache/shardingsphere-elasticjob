@@ -58,17 +58,17 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 ## Add maven dependency
 
 ```xml
-<!-- import elastic-job core -->
+<!-- import elastic-job lite core -->
 <dependency>
     <groupId>com.dangdang</groupId>
-    <artifactId>elastic-job-core</artifactId>
+    <artifactId>elastic-job-lite-core</artifactId>
     <version>${lasted.release.version}</version>
 </dependency>
 
 <!-- import other module if need -->
 <dependency>
     <groupId>com.dangdang</groupId>
-    <artifactId>elastic-job-spring</artifactId>
+    <artifactId>elastic-job-lite-spring</artifactId>
     <version>${lasted.release.version}</version>
 </dependency>
 ```
