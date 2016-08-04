@@ -31,9 +31,9 @@ public class TaskProducerSchedulerRegistry {
     
     private static volatile TaskProducerSchedulerRegistry instance;
     
-    private TaskProducerScheduler schedulerInstance;
+    private final TaskProducerScheduler schedulerInstance;
     
-    private ConfigurationService configService;
+    private final ConfigurationService configService;
     
     private TaskProducerSchedulerRegistry(final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);

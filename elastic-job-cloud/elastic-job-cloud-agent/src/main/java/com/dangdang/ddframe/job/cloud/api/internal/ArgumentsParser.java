@@ -50,12 +50,13 @@ public final class ArgumentsParser {
      * @throws JobExecutionEnvironmentException 作业执行环境异常
      */
     public static ArgumentsParser parse(final String[] args) throws JobExecutionEnvironmentException {
-        int argumentsLength = 2;
+        int argumentsLength = 1;
         if (argumentsLength != args.length) {
             throw new JobExecutionEnvironmentException("Elastic-Job: Arguments parse failure, should have %s arguments.", argumentsLength);
         }
         ArgumentsParser result = new ArgumentsParser();
-        result.jobConfig = new JobConfigurationContext(GsonFactory.getGson().fromJson(args[1], Map.class));
+        CloudJobParameter cloudJobParameter = fromJson(args[0]);
+        result.jobConfig = new JobConfigurationContext(cloudJobParameter.getJobConfigContext());
         String jobClass = result.jobConfig.getTypeConfig().getJobClass();
         try {
             Class<?> elasticJobClass = Class.forName(jobClass);
@@ -68,7 +69,19 @@ public final class ArgumentsParser {
         } catch (final ReflectiveOperationException ex) {
             throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
         }
-        result.shardingContext = GsonFactory.getGson().fromJson(args[0], ShardingContext.class);
+        result.shardingContext = cloudJobParameter.getShardingContext();
         return result;
+    }
+    
+    private static CloudJobParameter fromJson(final String json) {
+        return GsonFactory.getGson().fromJson(json, CloudJobParameter.class);
+    }
+    
+    @Getter
+    private class CloudJobParameter {
+        
+        private ShardingContext shardingContext;
+        
+        private Map<String, String> jobConfigContext;
     }
 }

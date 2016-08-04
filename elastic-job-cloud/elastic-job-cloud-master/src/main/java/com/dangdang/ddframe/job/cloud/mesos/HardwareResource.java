@@ -32,6 +32,7 @@ import org.apache.mesos.Protos;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -42,7 +43,7 @@ import java.util.Map;
 @EqualsAndHashCode(of = "offerId")
 public final class HardwareResource {
     
-    private static final String RUN_COMMAND = "sh %s '%s' '%s'";
+    private static final String RUN_COMMAND = "sh %s '%s'";
     
     private final Protos.Offer offer;
     
@@ -138,8 +139,7 @@ public final class HardwareResource {
         // TODO 更改cache为elastic-job-cloud.properties配置
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(
-                String.format(RUN_COMMAND, jobConfig.getBootstrapScript(), GsonFactory.getGson().toJson(shardingContext),
-                        GsonFactory.getGson().toJson(buildJobConfigurationContext(jobConfig)))).build();
+                String.format(RUN_COMMAND, jobConfig.getBootstrapScript(), toCloudJobParameterJson(shardingContext, jobConfig))).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
                 .setTaskId(taskId)
@@ -150,8 +150,15 @@ public final class HardwareResource {
                 .build();
     }
     
+    private String toCloudJobParameterJson(final ShardingContext shardingContext, final CloudJobConfiguration jobConfig) {
+        Map<String, Object> cloudJobParameterMap = new LinkedHashMap<>(2, 1);
+        cloudJobParameterMap.put("shardingContext", shardingContext);
+        cloudJobParameterMap.put("jobConfigContext", buildJobConfigurationContext(jobConfig));
+        return GsonFactory.getGson().toJson(cloudJobParameterMap);
+    }
+    
     private Map<String, String> buildJobConfigurationContext(final CloudJobConfiguration jobConfig) {
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = new LinkedHashMap<>(6, 1);
         result.put("jobType", jobConfig.getTypeConfig().getJobType().name());
         result.put("jobName", jobConfig.getJobName());
         result.put("jobClass", jobConfig.getTypeConfig().getJobClass());

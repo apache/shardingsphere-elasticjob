@@ -108,10 +108,11 @@ public final class HardwareResourceTest {
     
     private void assertGetCommand(final TaskInfo actual) {
         assertThat(actual.getCommand().getUris(0).getValue(), is("http://localhost/app.jar"));
-        assertThat(actual.getCommand().getValue(), is("sh bin/start.sh '{\"jobName\":\"test_job\",\"shardingTotalCount\":10,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}}' " 
-                + "'{\"jobType\":\"SIMPLE\",\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"," 
-                + "\"jobExceptionHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\",\"jobName\":\"test_job\"," 
-                + "\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\"}'"));
+        assertThat(actual.getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\"," 
+                + "\"shardingTotalCount\":10,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}},\"jobConfigContext\":" 
+                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\"," 
+                + "\"jobExceptionHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\"," 
+                + "\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"}}'"));
     }
     
     @Test

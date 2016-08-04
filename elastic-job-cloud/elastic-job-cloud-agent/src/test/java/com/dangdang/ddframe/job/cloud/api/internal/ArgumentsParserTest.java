@@ -29,29 +29,31 @@ import static org.junit.Assert.assertThat;
 
 public final class ArgumentsParserTest {
     
-    private String shardingContextJson = "{\"jobName\":\"test_job\",\"shardingTotalCount\":1,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}}";
+    private final String shardingContextJson = "{\"jobName\":\"test_job\",\"shardingTotalCount\":1,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}}";
     
-    private String configContextJson = "{\"jobType\":\"SIMPLE\",\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
+    private final String configContextJson = "{\"jobType\":\"SIMPLE\",\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
             + "\"jobExceptionHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\",\"jobName\":\"test_job\",\"jobClass\":\"%s\"}";
+    
+    private final String cloudParameterJson = "{\"shardingContext\":" + shardingContextJson + ",\"jobConfigContext\":" + configContextJson + "}";
     
     @Test(expected = JobExecutionEnvironmentException.class)
     public void assertParseWhenArgumentsIsNotEnough() throws JobExecutionEnvironmentException {
-        ArgumentsParser.parse(new String[] {""});
+        ArgumentsParser.parse(new String[] {});
     }
     
     @Test(expected = JobExecutionEnvironmentException.class)
     public void assertParseWhenClassIsNotFound() throws JobExecutionEnvironmentException {
-        ArgumentsParser.parse(new String[] {"", "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"testClass\"}"});
+        ArgumentsParser.parse(new String[] {"{\"jobConfigContext\":{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"testClass\"}}"});
     }
     
     @Test(expected = JobExecutionEnvironmentException.class)
     public void assertParseWhenClassIsNotElasticJob() throws JobExecutionEnvironmentException {
-        ArgumentsParser.parse(new String[]{"", configContextJson});
+        ArgumentsParser.parse(new String[]{String.format(cloudParameterJson, "notElasticJobClass")});
     }
     
     @Test
     public void assertParse() throws JobExecutionEnvironmentException {
-        ArgumentsParser actual = ArgumentsParser.parse(new String[] {shardingContextJson, String.format(configContextJson, TestJob.class.getCanonicalName())});
+        ArgumentsParser actual = ArgumentsParser.parse(new String[] {String.format(cloudParameterJson, TestJob.class.getCanonicalName())});
         assertThat(actual.getElasticJob(), instanceOf(TestJob.class));
         assertNotNull(actual.getShardingContext());
         assertNotNull(actual.getJobConfig());
@@ -59,7 +61,7 @@ public final class ArgumentsParserTest {
     
     @Test
     public void assertParseScriptJob() throws JobExecutionEnvironmentException {
-        ArgumentsParser actual = ArgumentsParser.parse(new String[] {shardingContextJson, String.format(configContextJson, ScriptJob.class.getCanonicalName())});
+        ArgumentsParser actual = ArgumentsParser.parse(new String[] {String.format(cloudParameterJson, ScriptJob.class.getCanonicalName())});
         assertNull(actual.getElasticJob());
         assertNotNull(actual.getShardingContext());
         assertNotNull(actual.getJobConfig());

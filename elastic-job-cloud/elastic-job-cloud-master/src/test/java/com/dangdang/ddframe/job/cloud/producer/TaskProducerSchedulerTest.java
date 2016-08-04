@@ -51,11 +51,11 @@ public final class TaskProducerSchedulerTest {
     
     private TaskProducerScheduler taskProducerScheduler;
     
-    private CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+    private final CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
-    private JobDetail jobDetail = JobBuilder.newJob(TaskProducerJob.class).withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron()).build();
+    private final JobDetail jobDetail = JobBuilder.newJob(TaskProducerJob.class).withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron()).build();
     
-    private Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron())
+    private final Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron())
                         .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getTypeConfig().getCoreConfig().getCron())
                         .withMisfireHandlingInstructionDoNothing()).build();
     
