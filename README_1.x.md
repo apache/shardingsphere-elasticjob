@@ -6,7 +6,7 @@
 
   elastic-job和ddframe关系见下图
 
-  ![ddframe演进图](http://dangdangdotcom.github.io/elastic-job/img/ddframe.jpg)
+  ![ddframe演进图](elastic-job-doc/content/img/1.x/ddframe.jpg)
 
 # Release Notes
 * elastic-job&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
