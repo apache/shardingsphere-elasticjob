@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.api;
 
 import com.dangdang.ddframe.job.cloud.api.internal.ArgumentsParserTest;
 import com.dangdang.ddframe.job.cloud.api.internal.CloudJobFacadeTest;
+import com.dangdang.ddframe.job.cloud.api.internal.JobConfigurationContextTest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;
@@ -28,7 +29,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         ArgumentsParserTest.class, 
-        CloudJobFacadeTest.class
+        CloudJobFacadeTest.class,
+        JobConfigurationContextTest.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllCloudAPITests {
