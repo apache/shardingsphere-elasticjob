@@ -27,16 +27,16 @@ public final class FooSimpleElasticJob implements SimpleJob {
     @Getter
     private static volatile boolean completed;
     
-    @Setter
-    private static String springValue;
-    
     @Getter
     private static String jobValue;
     
+    @Setter
+    private String springValue;
+    
     @Override
     public void execute(final ShardingContext context) {
-        completed = true;
         jobValue = springValue;
+        completed = true;
     }
     
     public static void reset() {

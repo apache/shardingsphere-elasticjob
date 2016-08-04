@@ -63,7 +63,7 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     }
     
     private void assertSimpleElasticJobBean() {
-        while (!FooSimpleElasticJob.isCompleted() || null == FooSimpleElasticJob.getJobValue()) {
+        while (!FooSimpleElasticJob.isCompleted()) {
             sleep(100L);
         }
         assertTrue(FooSimpleElasticJob.isCompleted());
