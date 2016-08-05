@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <artifactId>elastic-job-cloud</artifactId>
     <name>${project.artifactId}</name>
-
+    
     <modules>
         <module>elastic-job-cloud-master</module>
         <module>elastic-job-cloud-agent</module>
