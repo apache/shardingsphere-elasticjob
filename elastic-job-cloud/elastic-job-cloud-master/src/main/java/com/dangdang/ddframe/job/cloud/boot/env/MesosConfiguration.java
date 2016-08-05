@@ -34,7 +34,7 @@ public final class MesosConfiguration {
      */
     public static final String FRAMEWORK_NAME = "Elastic-Job-Cloud";
     
-    private final String username;
+    private final String user;
     
     private final String url;
     

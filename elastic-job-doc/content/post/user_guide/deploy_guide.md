@@ -41,7 +41,7 @@ weight=12
 | 属性名称                          | 必填     | 默认值                      | 描述                                                      |
 | -------------------------------- |:--------|:----------------------------|:---------------------------------------------------------|
 | hostname                         | `是`    |                             | 服务器真实的`IP`或`hostname`，不能是`127.0.0.1`或`localhost` |
-| username                         | 否      |                             | `Mesos framework`使用的用户名称                            |
+| user                             | 否      |                             | `Mesos framework`使用的用户名称                            |
 | mesos_url                        | `是`    | `zk://127.0.0.1:2181/mesos` | `Mesos`所使用的`Zookeeper`地址                             |
 | zk_servers                       | `是`    | `127.0.0.1:2181`            | `Elastic-Job-Cloud`所使用的`Zookeeper`地址                 |
 | zk_namespace                     | 否      | `elastic-job-cloud`         | `Elastic-Job-Cloud`所使用的`Zookeeper`命名空间              |

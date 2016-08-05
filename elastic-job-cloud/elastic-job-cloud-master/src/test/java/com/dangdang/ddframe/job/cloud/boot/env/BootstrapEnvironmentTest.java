@@ -45,7 +45,7 @@ public final class BootstrapEnvironmentTest {
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
         MesosConfiguration mesosConfig = bootstrapEnvironment.getMesosConfiguration();
         assertThat(mesosConfig.getHostname(), is("127.0.0.1"));
-        assertThat(mesosConfig.getUsername(), is(""));
+        assertThat(mesosConfig.getUser(), is(""));
         assertThat(mesosConfig.getUrl(), is("zk://localhost:2181/mesos"));
     }
     

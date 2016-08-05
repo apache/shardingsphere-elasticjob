@@ -60,7 +60,7 @@ public final class BootstrapEnvironment {
      * @return Mesos配置对象
      */
     public MesosConfiguration getMesosConfiguration() {
-        return new MesosConfiguration(getValue(EnvironmentArgument.USERNAME), getValue(EnvironmentArgument.MESOS_URL), getValue(EnvironmentArgument.HOSTNAME));
+        return new MesosConfiguration(getValue(EnvironmentArgument.USER), getValue(EnvironmentArgument.MESOS_URL), getValue(EnvironmentArgument.HOSTNAME));
     }
     
     /**
@@ -103,7 +103,7 @@ public final class BootstrapEnvironment {
         
         MESOS_URL("mesos_url", "zk://localhost:2181/mesos", true),
         
-        USERNAME("username", "", false),
+        USER("user", "", false),
     
         ZOOKEEPER_SERVERS("zk_servers", "localhost:2181", true),
     
