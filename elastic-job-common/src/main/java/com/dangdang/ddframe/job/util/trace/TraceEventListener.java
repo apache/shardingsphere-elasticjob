@@ -15,21 +15,31 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util;
+package com.dangdang.ddframe.job.util.trace;
 
-import com.dangdang.ddframe.job.util.env.LocalHostServiceTest;
-import com.dangdang.ddframe.job.util.env.TimeServiceTest;
-import com.dangdang.ddframe.job.util.event.TraceEventBusTest;
-import com.dangdang.ddframe.job.util.json.GsonFactoryTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.google.common.eventbus.AllowConcurrentEvents;
+import com.google.common.eventbus.Subscribe;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        GsonFactoryTest.class, 
-        LocalHostServiceTest.class, 
-        TimeServiceTest.class, 
-        TraceEventBusTest.class
-    })
-public final class AllUtilTests {
+/**
+ * 运行痕迹事件监听器.
+ *
+ * @author zhangliang
+ */
+public interface TraceEventListener {
+    
+    /**
+     * 获取事件类型.
+     * 
+     * @return 事件类型
+     */
+    TraceEventType getType();
+    
+    /**
+     * 监听执行.
+     * 
+     * @param traceEvent 事件
+     */
+    @Subscribe
+    @AllowConcurrentEvents
+    void listen(TraceEvent traceEvent);
 }

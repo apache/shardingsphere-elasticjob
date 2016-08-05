@@ -15,21 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util;
+package com.dangdang.ddframe.job.util.event.fixture;
 
-import com.dangdang.ddframe.job.util.env.LocalHostServiceTest;
-import com.dangdang.ddframe.job.util.env.TimeServiceTest;
-import com.dangdang.ddframe.job.util.event.TraceEventBusTest;
-import com.dangdang.ddframe.job.util.json.GsonFactoryTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        GsonFactoryTest.class, 
-        LocalHostServiceTest.class, 
-        TimeServiceTest.class, 
-        TraceEventBusTest.class
-    })
-public final class AllUtilTests {
+public interface Caller {
+    
+    void call();
 }

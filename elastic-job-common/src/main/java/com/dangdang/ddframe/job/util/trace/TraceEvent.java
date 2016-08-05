@@ -15,21 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util;
+package com.dangdang.ddframe.job.util.trace;
 
-import com.dangdang.ddframe.job.util.env.LocalHostServiceTest;
-import com.dangdang.ddframe.job.util.env.TimeServiceTest;
-import com.dangdang.ddframe.job.util.event.TraceEventBusTest;
-import com.dangdang.ddframe.job.util.json.GsonFactoryTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        GsonFactoryTest.class, 
-        LocalHostServiceTest.class, 
-        TimeServiceTest.class, 
-        TraceEventBusTest.class
-    })
-public final class AllUtilTests {
+/**
+ * 运行痕迹事件.
+ *
+ * @author zhangliang
+ */
+public interface TraceEvent {
 }

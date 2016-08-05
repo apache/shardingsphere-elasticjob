@@ -15,21 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util;
+package com.dangdang.ddframe.job.util.event.fixture;
 
-import com.dangdang.ddframe.job.util.env.LocalHostServiceTest;
-import com.dangdang.ddframe.job.util.env.TimeServiceTest;
-import com.dangdang.ddframe.job.util.event.TraceEventBusTest;
-import com.dangdang.ddframe.job.util.json.GsonFactoryTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventListener;
+import com.dangdang.ddframe.job.util.trace.TraceEventType;
+import lombok.RequiredArgsConstructor;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        GsonFactoryTest.class, 
-        LocalHostServiceTest.class, 
-        TimeServiceTest.class, 
-        TraceEventBusTest.class
-    })
-public final class AllUtilTests {
+@RequiredArgsConstructor
+public final class TestTraceEvenListener implements TraceEventListener {
+    
+    private final Caller caller;
+    
+    @Override
+    public TraceEventType getType() {
+        return TraceEventType.LITE;
+    }
+    
+    @Override
+    public void listen(final TraceEvent traceEvent) {
+        caller.call();
+    }
 }
