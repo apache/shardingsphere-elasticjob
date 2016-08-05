@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.api.internal.config.AbstractJobConfigurationGsonTypeAdapter;
+import com.dangdang.ddframe.job.api.config.impl.AbstractJobConfigurationGsonTypeAdapter;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.google.gson.Gson;

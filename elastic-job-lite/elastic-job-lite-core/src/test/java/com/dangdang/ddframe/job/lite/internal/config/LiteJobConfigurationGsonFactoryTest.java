@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
-import com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler;
-import com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties;
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
@@ -38,24 +38,23 @@ import static org.junit.Assert.assertTrue;
 
 public final class LiteJobConfigurationGsonFactoryTest {
     
+    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler\","
+            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler\"}";
+    
     private String simpleJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":false,\"description\":\"\","
-            + "\"jobProperties\":{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
-            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"},"
-            + "\"monitorExecution\":false,\"maxTimeDiffSeconds\":1000,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true}";
+            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":false,\"maxTimeDiffSeconds\":1000,\"monitorPort\":8888,"
+            + "\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true}";
     
     private String dataflowJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
-            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"},\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,"
-            + "\"concurrentDataProcessThreadCount\":10,\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\","
-            + "\"disabled\":false,\"overwrite\":false}";
+            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10,"
+            + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";
     
     private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
-            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"},\"scriptCommandLine\":\"test.sh\","
-            + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";
+            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"scriptCommandLine\":\"test.sh\",\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,"
+            + "\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";
     
     @Test
     public void assertToJsonForSimpleJob() {

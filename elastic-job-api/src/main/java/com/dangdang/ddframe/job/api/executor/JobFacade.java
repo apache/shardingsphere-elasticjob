@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.internal.executor;
+package com.dangdang.ddframe.job.api.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;

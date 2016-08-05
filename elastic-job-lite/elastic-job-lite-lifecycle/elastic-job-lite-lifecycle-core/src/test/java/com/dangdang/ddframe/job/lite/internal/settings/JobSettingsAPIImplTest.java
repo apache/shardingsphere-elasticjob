@@ -70,8 +70,8 @@ public class JobSettingsAPIImplTest {
         assertTrue(jobSettings.isMisfire());
         assertTrue(jobSettings.isStreamingProcess());
         assertThat(jobSettings.getJobShardingStrategyClass(), is(""));
-        assertThat(jobSettings.getExecutorServiceHandler(), is("com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler"));
-        assertThat(jobSettings.getJobExceptionHandler(), is("com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler"));
+        assertThat(jobSettings.getExecutorServiceHandler(), is("DefaultExecutorServiceHandler"));
+        assertThat(jobSettings.getJobExceptionHandler(), is("DefaultJobExceptionHandler"));
         assertThat(jobSettings.getDescription(), is(""));
     }
     
@@ -90,13 +90,13 @@ public class JobSettingsAPIImplTest {
         jobSettings.setStreamingProcess(true);
         jobSettings.setFailover(false);
         jobSettings.setMisfire(true);
-        jobSettings.setExecutorServiceHandler("com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler");
-        jobSettings.setJobExceptionHandler("com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler");
+        jobSettings.setExecutorServiceHandler("DefaultExecutorServiceHandler");
+        jobSettings.setJobExceptionHandler("DefaultJobExceptionHandler");
         jobSettingsAPI.updateJobSettings(jobSettings);
         verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"dataflowType\":\"THROUGHPUT\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\","
                 + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"concurrentDataProcessThreadCount\":10,\"streamingProcess\":true,"
                 + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
-                + "\"jobExceptionHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
-                + "\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"}");
+                + "\"jobExceptionHandler\":\"DefaultJobExceptionHandler\","
+                + "\"executorServiceHandler\":\"DefaultExecutorServiceHandler\"}");
     }
 }

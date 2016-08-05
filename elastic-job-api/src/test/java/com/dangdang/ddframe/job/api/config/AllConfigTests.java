@@ -17,11 +17,19 @@
 
 package com.dangdang.ddframe.job.api.config;
 
+import com.dangdang.ddframe.job.api.config.impl.JobConfigurationGsonTypeAdapterTest;
+import com.dangdang.ddframe.job.api.config.impl.JobPropertiesTest;
+import com.dangdang.ddframe.job.api.config.impl.ShardingItemParametersTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses(JobCoreConfigurationTest.class)
+@SuiteClasses({
+        JobCoreConfigurationTest.class, 
+        ShardingItemParametersTest.class, 
+        JobPropertiesTest.class, 
+        JobConfigurationGsonTypeAdapterTest.class
+    })
 public final class AllConfigTests {
 }

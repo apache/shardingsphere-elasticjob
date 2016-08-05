@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.api;
 
-import com.dangdang.ddframe.job.api.bootstrap.JobExecutorFactory;
+import com.dangdang.ddframe.job.api.JobExecutorFactory;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.cloud.api.internal.ArgumentsParser;
 import com.dangdang.ddframe.job.cloud.api.internal.CloudJobFacade;

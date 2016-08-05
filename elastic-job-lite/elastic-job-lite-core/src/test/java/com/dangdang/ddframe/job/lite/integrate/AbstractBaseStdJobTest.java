@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;

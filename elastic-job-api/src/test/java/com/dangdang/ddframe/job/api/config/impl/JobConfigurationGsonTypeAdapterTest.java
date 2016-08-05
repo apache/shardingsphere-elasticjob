@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.Internal.config;
+package com.dangdang.ddframe.job.api.config.impl;
 
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.fixture.APIJsonConstants;
@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.api.fixture.handler.ThrowJobExceptionHandler;
-import com.dangdang.ddframe.job.api.internal.config.AbstractJobConfigurationGsonTypeAdapter;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

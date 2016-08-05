@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.spring.namespace.parser.common;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration.Builder;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties.JobPropertiesEnum;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

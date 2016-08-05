@@ -15,25 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.internal.executor;
-
-import com.google.common.util.concurrent.MoreExecutors;
+package com.dangdang.ddframe.job.api.executor.handler;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
- * 默认线程池服务处理器.
+ * 线程池服务处理器.
  * 
+ * <p>用于作业内部的线程池处理数据使用. 目前仅用于数据流类型.</p>
+ *
  * @author zhangliang
  */
-public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
+public interface ExecutorServiceHandler {
     
-    @Override
-    public ExecutorService createExecutorService() {
-        return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(
-                new ThreadPoolExecutor(0, Runtime.getRuntime().availableProcessors() * 2, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
-    }
+    /**
+     * 创建线程池服务对象.
+     * 
+     * @return 线程池服务对象
+     */
+    ExecutorService createExecutorService();
 }

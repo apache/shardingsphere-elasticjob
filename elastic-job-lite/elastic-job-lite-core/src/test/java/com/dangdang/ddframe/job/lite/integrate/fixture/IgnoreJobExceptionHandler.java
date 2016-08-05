@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.integrate.fixture;
 
-import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
+import com.dangdang.ddframe.job.api.executor.handler.JobExceptionHandler;
 
 public final class IgnoreJobExceptionHandler implements JobExceptionHandler {
     

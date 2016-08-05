@@ -23,8 +23,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudJsonConstants {
     
-    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\","
-            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"}";
+    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler\","
+            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler\"}";
     
     private static final String JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","

@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import lombok.RequiredArgsConstructor;

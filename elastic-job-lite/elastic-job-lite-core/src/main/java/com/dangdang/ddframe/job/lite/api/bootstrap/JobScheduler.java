@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.lite.api.bootstrap;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.bootstrap.JobExecutorFactory;
+import com.dangdang.ddframe.job.api.JobExecutorFactory;
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;

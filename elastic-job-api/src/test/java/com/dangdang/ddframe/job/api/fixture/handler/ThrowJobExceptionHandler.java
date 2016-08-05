@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.fixture.handler;
 
-import com.dangdang.ddframe.job.api.internal.executor.JobExceptionHandler;
+import com.dangdang.ddframe.job.api.executor.handler.JobExceptionHandler;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
 
 public final class ThrowJobExceptionHandler implements JobExceptionHandler {

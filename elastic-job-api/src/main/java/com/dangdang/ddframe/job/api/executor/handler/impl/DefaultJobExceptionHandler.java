@@ -15,19 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.internal.executor;
+package com.dangdang.ddframe.job.api.executor.handler.impl;
+
+import com.dangdang.ddframe.job.api.executor.handler.JobExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * 作业异常处理器.
+ * 默认作业异常处理器.
  *
  * @author zhangliang
  */
-public interface JobExceptionHandler {
+@Slf4j
+public final class DefaultJobExceptionHandler implements JobExceptionHandler {
     
-    /**
-     * 处理作业异常.
-     * 
-     * @param cause 异常原因
-     */
-    void handleException(Throwable cause);
+    @Override
+    public void handleException(final Throwable cause) {
+        log.error("Elastic job: exception occur in job processing...", cause);
+    }
 }

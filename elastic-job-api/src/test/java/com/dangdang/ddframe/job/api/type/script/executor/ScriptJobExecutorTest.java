@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.type.script.executor;
 
 import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import org.apache.commons.exec.CommandLine;

@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.fixture.handler.ThrowJobExceptionHandler;
 import com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 

@@ -32,8 +32,8 @@ public final class ArgumentsParserTest {
     
     private String shardingContextJson = "{\"jobName\":\"test_job\",\"shardingTotalCount\":1,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}}";
     
-    private String configContextJson = "{\"jobType\":\"SIMPLE\",\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\","
-            + "\"jobExceptionHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\",\"jobName\":\"test_job\"}";
+    private String configContextJson = "{\"jobType\":\"SIMPLE\",\"executorServiceHandler\":\"DefaultExecutorServiceHandler\","
+            + "\"jobExceptionHandler\":\"DefaultJobExceptionHandler\",\"jobName\":\"test_job\"}";
     
     @Test(expected = JobExecutionEnvironmentException.class)
     public void assertParseWhenArgumentsIsNotEnough() throws JobExecutionEnvironmentException {

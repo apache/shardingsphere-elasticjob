@@ -15,12 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.bootstrap;
+package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
 import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;

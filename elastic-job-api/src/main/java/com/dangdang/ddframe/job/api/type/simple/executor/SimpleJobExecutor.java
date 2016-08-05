@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.api.type.simple.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 
 /**

@@ -15,13 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.internal.executor;
+package com.dangdang.ddframe.job.api.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
+import com.dangdang.ddframe.job.api.executor.handler.ExecutorServiceHandler;
+import com.dangdang.ddframe.job.api.executor.handler.JobExceptionHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

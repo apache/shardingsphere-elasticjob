@@ -23,7 +23,7 @@ import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.job.JobCaller;
 import com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import org.junit.Before;
 import org.junit.Test;

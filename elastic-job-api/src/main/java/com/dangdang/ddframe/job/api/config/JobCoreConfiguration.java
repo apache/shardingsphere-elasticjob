@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.config;
 
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;

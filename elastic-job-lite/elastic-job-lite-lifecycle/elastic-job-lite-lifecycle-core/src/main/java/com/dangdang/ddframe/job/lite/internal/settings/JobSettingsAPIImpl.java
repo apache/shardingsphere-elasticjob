@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.settings;
 
-import com.dangdang.ddframe.job.api.internal.config.JobProperties.JobPropertiesEnum;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;

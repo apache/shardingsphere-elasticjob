@@ -15,23 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.internal.executor;
-
-import java.util.concurrent.ExecutorService;
+package com.dangdang.ddframe.job.api.executor.handler;
 
 /**
- * 线程池服务处理器.
- * 
- * <p>用于作业内部的线程池处理数据使用. 目前仅用于数据流类型.</p>
+ * 作业异常处理器.
  *
  * @author zhangliang
  */
-public interface ExecutorServiceHandler {
+public interface JobExceptionHandler {
     
     /**
-     * 创建线程池服务对象.
+     * 处理作业异常.
      * 
-     * @return 线程池服务对象
+     * @param cause 异常原因
      */
-    ExecutorService createExecutorService();
+    void handleException(Throwable cause);
 }

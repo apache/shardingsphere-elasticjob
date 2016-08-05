@@ -15,16 +15,16 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.bootstrap;
+package com.dangdang.ddframe.job.api;
 
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.job.OtherJob;
 import com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob;
 import com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
 import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;

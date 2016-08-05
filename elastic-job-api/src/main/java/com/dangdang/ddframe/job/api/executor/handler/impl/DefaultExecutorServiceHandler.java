@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,17 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.fixture.handler;
+package com.dangdang.ddframe.job.api.executor.handler.impl;
 
 import com.dangdang.ddframe.job.api.executor.handler.ExecutorServiceHandler;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-public class SimpleExecutorServiceHandler implements ExecutorServiceHandler {
+/**
+ * 默认线程池服务处理器.
+ * 
+ * @author zhangliang
+ */
+public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
     
     @Override
     public ExecutorService createExecutorService() {
-        return Executors.newFixedThreadPool(1);
+        return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(
+                new ThreadPoolExecutor(0, Runtime.getRuntime().availableProcessors() * 2, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
     }
 }

@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.cloud.mesos;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties.JobPropertiesEnum;
-import com.dangdang.ddframe.job.api.internal.config.ShardingItemParameters;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties.JobPropertiesEnum;
+import com.dangdang.ddframe.job.api.config.impl.ShardingItemParameters;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;

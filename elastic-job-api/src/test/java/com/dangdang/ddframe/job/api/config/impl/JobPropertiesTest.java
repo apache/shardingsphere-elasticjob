@@ -15,13 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.Internal.config;
+package com.dangdang.ddframe.job.api.config.impl;
 
 import com.dangdang.ddframe.job.api.fixture.APIJsonConstants;
 import com.dangdang.ddframe.job.api.fixture.handler.IgnoreJobExceptionHandler;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties;
-import com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler;
-import com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler;
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 

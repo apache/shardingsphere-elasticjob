@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import org.junit.Test;

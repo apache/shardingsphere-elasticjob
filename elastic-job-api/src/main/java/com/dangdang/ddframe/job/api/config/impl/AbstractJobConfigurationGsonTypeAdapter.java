@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.internal.config;
+package com.dangdang.ddframe.job.api.config.impl;
 
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;

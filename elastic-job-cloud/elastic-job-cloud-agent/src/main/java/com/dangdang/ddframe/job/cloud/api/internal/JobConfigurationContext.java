@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.cloud.api.internal;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.internal.config.JobProperties.JobPropertiesEnum;
+import com.dangdang.ddframe.job.api.config.impl.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration.DataflowType;

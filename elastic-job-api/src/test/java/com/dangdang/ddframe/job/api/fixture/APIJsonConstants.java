@@ -23,7 +23,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class APIJsonConstants {
     
-    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"%s\",\"executor_service_handler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"}";
+    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"%s\","
+            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler\"}";
     
     // CHECKSTYLE:OFF
     private static final String SIMPLE_JOB_JSON =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob\",\"jobType\":\"SIMPLE\","

@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.api.type.script.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.api.internal.executor.AbstractElasticJobExecutor;
-import com.dangdang.ddframe.job.api.internal.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Strings;
