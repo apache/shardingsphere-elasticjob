@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.TaskInfo;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 
@@ -87,13 +88,31 @@ public final class HardwareResourceTest {
     public void assertCreateTaskInfo() {
         HardwareResource hardwareResource = new HardwareResource(OfferBuilder.createOffer(10d, 1280d));
         Protos.TaskInfo actual = hardwareResource.createTaskInfo(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"), ExecutionType.READY), 0);
+        assertGetBasicTaskInfo(actual);
+        assertGetResources(actual);
+        assertGetCommand(actual);
+    }
+    
+    private void assertGetBasicTaskInfo(final TaskInfo actual) {
         assertThat(actual.getTaskId().getValue(), startsWith("test_job@-@0@-@READY@-@"));
         assertThat(actual.getName(), startsWith("test_job@-@0@-@READY@-@"));
         assertThat(actual.getSlaveId().getValue(), is("slave-offer_id_0"));
+    }
+    
+    private void assertGetResources(final TaskInfo actual) {
         assertThat(actual.getResources(0).getName(), is("cpus"));
         assertThat(actual.getResources(0).getScalar().getValue(), is(1d));
         assertThat(actual.getResources(1).getName(), is("mem"));
         assertThat(actual.getResources(1).getScalar().getValue(), is(128d));
+    }
+    
+    private void assertGetCommand(final TaskInfo actual) {
+        assertThat(actual.getCommand().getUris(0).getValue(), is("http://localhost/app.jar"));
+        assertThat(actual.getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\"," 
+                + "\"shardingTotalCount\":10,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}},\"jobConfigContext\":" 
+                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\"," 
+                + "\"jobExceptionHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultJobExceptionHandler\"," 
+                + "\"executorServiceHandler\":\"com.dangdang.ddframe.job.api.internal.executor.DefaultExecutorServiceHandler\"}}'"));
     }
     
     @Test

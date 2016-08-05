@@ -51,7 +51,7 @@ public final class TaskProducerSchedulerRegistryTest {
     
     private TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
     
-    private CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
+    private final CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {

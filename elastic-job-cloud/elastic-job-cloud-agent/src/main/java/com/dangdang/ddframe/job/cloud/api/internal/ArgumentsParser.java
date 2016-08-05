@@ -50,24 +50,38 @@ public final class ArgumentsParser {
      * @throws JobExecutionEnvironmentException 作业执行环境异常
      */
     public static ArgumentsParser parse(final String[] args) throws JobExecutionEnvironmentException {
-        int argumentsLength = 3;
+        int argumentsLength = 1;
         if (argumentsLength != args.length) {
             throw new JobExecutionEnvironmentException("Elastic-Job: Arguments parse failure, should have %s arguments.", argumentsLength);
         }
         ArgumentsParser result = new ArgumentsParser();
+        CloudJobParameter cloudJobParameter = fromJson(args[0]);
+        result.jobConfig = new JobConfigurationContext(cloudJobParameter.getJobConfigContext());
+        String jobClass = result.jobConfig.getTypeConfig().getJobClass();
         try {
-            Class<?> elasticJobClass = Class.forName(args[0]);
+            Class<?> elasticJobClass = Class.forName(jobClass);
             if (!ElasticJob.class.isAssignableFrom(elasticJobClass)) {
-                throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' must implements ElasticJob interface.", args[0]);
+                throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' must implements ElasticJob interface.", jobClass);
             }
             if (elasticJobClass != ScriptJob.class) {
                 result.elasticJob = (ElasticJob) elasticJobClass.newInstance();
             }
         } catch (final ReflectiveOperationException ex) {
-            throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", args[0], ex.getMessage());
+            throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
         }
-        result.shardingContext = GsonFactory.getGson().fromJson(args[1], ShardingContext.class);
-        result.jobConfig = new JobConfigurationContext(GsonFactory.getGson().fromJson(args[2], Map.class));
+        result.shardingContext = cloudJobParameter.getShardingContext();
         return result;
+    }
+    
+    private static CloudJobParameter fromJson(final String json) {
+        return GsonFactory.getGson().fromJson(json, CloudJobParameter.class);
+    }
+    
+    @Getter
+    private class CloudJobParameter {
+        
+        private ShardingContext shardingContext;
+        
+        private Map<String, String> jobConfigContext;
     }
 }

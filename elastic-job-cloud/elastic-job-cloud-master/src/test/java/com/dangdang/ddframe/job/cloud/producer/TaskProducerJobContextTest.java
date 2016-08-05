@@ -30,11 +30,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public final class TaskProducerJobContextTest {
     
-    private JobKey jobKey = JobKey.jobKey("0/45 * * * * ?");
+    private final JobKey jobKey = JobKey.jobKey("0/45 * * * * ?");
     
-    private String jobName = "test_1";
-    
-    private String jobName2 = "test_2";
+    private final String jobName = "test_1";
     
     @Test
     public void assertGetInstance() {
@@ -60,6 +58,7 @@ public final class TaskProducerJobContextTest {
     
     @Test
     public void assertPutMoreJobWithChangedCron() throws JobExecutionException {
+        String jobName2 = "test_2";
         TaskProducerJobContext.getInstance().put(jobKey, jobName);
         TaskProducerJobContext.getInstance().put(jobKey, jobName2);
         JobKey newJobKey = JobKey.jobKey("0/15 * * * * ?");
