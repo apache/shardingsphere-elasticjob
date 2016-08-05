@@ -32,7 +32,7 @@ public final class TaskProducerJobContextTest {
     
     private final JobKey jobKey = JobKey.jobKey("0/45 * * * * ?");
     
-    private final String jobName = "test_1";
+    private final String jobName = "test_job";
     
     @Test
     public void assertGetInstance() {
@@ -58,7 +58,7 @@ public final class TaskProducerJobContextTest {
     
     @Test
     public void assertPutMoreJobWithChangedCron() throws JobExecutionException {
-        String jobName2 = "test_2";
+        String jobName2 = "other_test_job";
         TaskProducerJobContext.getInstance().put(jobKey, jobName);
         TaskProducerJobContext.getInstance().put(jobKey, jobName2);
         JobKey newJobKey = JobKey.jobKey("0/15 * * * * ?");

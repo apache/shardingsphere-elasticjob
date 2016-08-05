@@ -38,8 +38,8 @@ import static org.junit.Assert.assertTrue;
 
 public final class LiteJobConfigurationGsonFactoryTest {
     
-    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler\","
-            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler\"}";
+    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
+            + "\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
     private String simpleJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":false,\"description\":\"\","

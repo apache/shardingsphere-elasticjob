@@ -17,14 +17,14 @@
 
 package com.dangdang.ddframe.job.api.fixture;
 
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class APIJsonConstants {
     
-    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"%s\","
-            + "\"executor_service_handler\":\"com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler\"}";
+    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"%s\",\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
     // CHECKSTYLE:OFF
     private static final String SIMPLE_JOB_JSON =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob\",\"jobType\":\"SIMPLE\","

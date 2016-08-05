@@ -17,14 +17,16 @@
 
 package com.dangdang.ddframe.job.lite.fixture;
 
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LifecycleJsonConstants {
     
-    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"DefaultJobExceptionHandler\","
-            + "\"executor_service_handler\":\"DefaultExecutorServiceHandler\"}";
+    private static final String JOB_PROPS_JSON = "{\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
+            + "\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
     private static final String SIMPLE_JOB_JSON =  "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,\"description\":\"%s\","

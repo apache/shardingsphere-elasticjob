@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.settings;
 
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
+import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
 import com.dangdang.ddframe.job.lite.api.JobSettingsAPI;
 import com.dangdang.ddframe.job.lite.domain.JobSettings;
 import com.dangdang.ddframe.job.lite.fixture.LifecycleJsonConstants;
@@ -70,8 +72,8 @@ public class JobSettingsAPIImplTest {
         assertTrue(jobSettings.isMisfire());
         assertTrue(jobSettings.isStreamingProcess());
         assertThat(jobSettings.getJobShardingStrategyClass(), is(""));
-        assertThat(jobSettings.getExecutorServiceHandler(), is("DefaultExecutorServiceHandler"));
-        assertThat(jobSettings.getJobExceptionHandler(), is("DefaultJobExceptionHandler"));
+        assertThat(jobSettings.getExecutorServiceHandler(), is(DefaultExecutorServiceHandler.class.getCanonicalName()));
+        assertThat(jobSettings.getJobExceptionHandler(), is(DefaultJobExceptionHandler.class.getCanonicalName()));
         assertThat(jobSettings.getDescription(), is(""));
     }
     
@@ -90,13 +92,13 @@ public class JobSettingsAPIImplTest {
         jobSettings.setStreamingProcess(true);
         jobSettings.setFailover(false);
         jobSettings.setMisfire(true);
-        jobSettings.setExecutorServiceHandler("DefaultExecutorServiceHandler");
-        jobSettings.setJobExceptionHandler("DefaultJobExceptionHandler");
+        jobSettings.setExecutorServiceHandler(DefaultExecutorServiceHandler.class.getCanonicalName());
+        jobSettings.setJobExceptionHandler(DefaultJobExceptionHandler.class.getCanonicalName());
         jobSettingsAPI.updateJobSettings(jobSettings);
         verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"dataflowType\":\"THROUGHPUT\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\","
                 + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"concurrentDataProcessThreadCount\":10,\"streamingProcess\":true,"
                 + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
-                + "\"jobExceptionHandler\":\"DefaultJobExceptionHandler\","
-                + "\"executorServiceHandler\":\"DefaultExecutorServiceHandler\"}");
+                + "\"jobExceptionHandler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
+                + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}");
     }
 }
