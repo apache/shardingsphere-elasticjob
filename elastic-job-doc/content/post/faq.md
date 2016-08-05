@@ -87,7 +87,15 @@ weight=40
 
 ***
 
-### 8. `Elastic-Job 2.0.0`版本`API`改动较大，升级时需要注意哪些问题?
+### 8. `Zookeeper`版本不是`3.4.6`会有什么问题?
+
+回答：
+
+根据测试，使用`3.3.6`版本的`Zookeeper`在使用`Curator 2.10.0`的`CuratorTransactionFinal`的`commit`时会导致死锁。
+
+***
+
+### 9. `Elastic-Job 2.0.0`版本`API`改动较大，升级时需要注意哪些问题?
 
 回答：
 
