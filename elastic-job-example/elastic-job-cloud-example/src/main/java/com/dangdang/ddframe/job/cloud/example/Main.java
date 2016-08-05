@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.example;
 
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.cloud.api.Bootstrap;
+import com.dangdang.ddframe.job.cloud.agent.Bootstrap;
 
 public class Main {
     

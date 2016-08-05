@@ -15,11 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.api;
+package com.dangdang.ddframe.job.cloud.agent;
 
-import com.dangdang.ddframe.job.cloud.api.internal.ArgumentsParserTest;
-import com.dangdang.ddframe.job.cloud.api.internal.CloudJobFacadeTest;
-import com.dangdang.ddframe.job.cloud.api.internal.JobConfigurationContextTest;
+import com.dangdang.ddframe.job.cloud.agent.internal.ArgumentsParserTest;
+import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacadeTest;
+import com.dangdang.ddframe.job.cloud.agent.internal.JobConfigurationContextTest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;

@@ -15,14 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.api.internal;
+package com.dangdang.ddframe.job.cloud.agent.internal;
 
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.cloud.api.fixture.TestJob;
+import com.dangdang.ddframe.job.cloud.agent.fixture.TestJob;
 import org.junit.Test;
 
 import java.util.HashMap;

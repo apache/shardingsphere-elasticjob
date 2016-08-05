@@ -15,13 +15,13 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.api.internal;
+package com.dangdang.ddframe.job.cloud.agent.internal;
 
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
-import com.dangdang.ddframe.job.cloud.api.fixture.TestJob;
+import com.dangdang.ddframe.job.cloud.agent.fixture.TestJob;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
