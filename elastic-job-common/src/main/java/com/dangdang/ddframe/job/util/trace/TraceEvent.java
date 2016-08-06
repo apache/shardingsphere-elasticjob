@@ -17,10 +17,59 @@
 
 package com.dangdang.ddframe.job.util.trace;
 
+import com.dangdang.ddframe.job.util.env.LocalHostService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Date;
+
 /**
  * 运行痕迹事件.
  *
- * @author zhangliang
+ * @author zhangli
  */
-public interface TraceEvent {
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Getter
+public class TraceEvent {
+    
+    private static LocalHostService localHostService = new LocalHostService();
+    
+    private final String jobName;
+    
+    private final Level level;
+    
+    private final String message;
+    
+    private Throwable cause;
+    
+    private final String hostname = localHostService.getHostName();
+    
+    private final Date timestamp = new Date();
+    
+    /**
+     * 获取stack trace字符串.
+     * @return stack trace字符串
+     */
+    public String getCause() {
+        if (null == cause) {
+            return "";
+        }
+        StringWriter result = new StringWriter();
+        try (PrintWriter writer = new PrintWriter(result)) {
+            cause.printStackTrace(writer);
+        }
+        return result.toString();
+    }
+    
+    /**
+     * 事件级别.
+     */
+    public enum Level {
+        
+        TRACE, DEBUG, INFO, WARN, ERROR
+    }
 }

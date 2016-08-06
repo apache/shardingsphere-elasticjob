@@ -22,8 +22,9 @@ import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventBus;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.Collection;
@@ -37,7 +38,6 @@ import java.util.concurrent.CountDownLatch;
  * 
  * @author zhangliang
  */
-@Slf4j
 public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     private final DataflowJob<Object> dataflowJob;
@@ -103,7 +103,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     private List<Object> fetchDataForThroughput(final ShardingContext shardingContext) {
         List<Object> result = dataflowJob.fetchData(shardingContext);
-        log.trace("Elastic job: fetch data size: {}.", result != null ? result.size() : 0);
+        TraceEventBus.getInstance().post(new TraceEvent(getJobName(), TraceEvent.Level.TRACE, String.format("Fetch data size: '%s'.", result != null ? result.size() : 0)));
         return result;
     }
     
@@ -151,7 +151,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
             });
         }
         latchAwait(latch);
-        log.trace("Elastic job: fetch data size: {}.", result.size());
+        TraceEventBus.getInstance().post(new TraceEvent(getJobName(), TraceEvent.Level.TRACE, String.format("Fetch data size: '%s'.", result.size())));
         return result;
     }
     
@@ -179,7 +179,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
             // CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             // CHECKSTYLE:ON
-            getJobExceptionHandler().handleException(cause);
+            getJobExceptionHandler().handleException(getJobName(), cause);
         }
     }
     

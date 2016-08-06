@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.util.trace;
 
+import com.dangdang.ddframe.job.util.trace.log.LogTraceEventListener;
 import com.google.common.eventbus.EventBus;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,7 +38,12 @@ public final class TraceEventBus {
     
     private final EventBus eventBus = new EventBus();
     
-    private final ConcurrentHashMap<TraceEventType, Object> listeners = new ConcurrentHashMap<>(TraceEventType.values().length, 1);
+    private final ConcurrentHashMap<String, TraceEventListener> listeners = new ConcurrentHashMap<>();
+    
+    // TODO 以后删除, listener做成配置化
+    static {
+        instance.register(new LogTraceEventListener());
+    }
     
     /**
      * 注册事件监听器.
@@ -45,7 +51,7 @@ public final class TraceEventBus {
      * @param listener 监听器
      */
     public void register(final TraceEventListener listener) {
-        if (null == listeners.putIfAbsent(listener.getType(), listener)) {
+        if (null == listeners.putIfAbsent(listener.getName(), listener)) {
             eventBus.register(listener);
         }
     }

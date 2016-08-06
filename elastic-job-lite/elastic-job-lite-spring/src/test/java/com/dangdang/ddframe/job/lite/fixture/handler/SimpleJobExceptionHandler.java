@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.api.executor.handler.JobExceptionHandler;
 public class SimpleJobExceptionHandler implements JobExceptionHandler {
     
     @Override
-    public void handleException(final Throwable cause) {
+    public void handleException(final String jobName, final Throwable cause) {
         throw new RuntimeException(cause);    
     }
 }

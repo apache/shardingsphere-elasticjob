@@ -19,9 +19,10 @@ package com.dangdang.ddframe.job.lite.internal.monitor;
 
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtils;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 
@@ -40,7 +41,6 @@ import java.util.List;
  * 
  * @author caohao
  */
-@Slf4j
 public class MonitorService {
     
     public static final String DUMP_COMMAND = "dump";
@@ -70,10 +70,10 @@ public class MonitorService {
             return;
         }
         try {
-            log.info("Elastic job: monitor service is running, the port is '{}'", port);
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.INFO, String.format("Monitor service is running, the port is: '%s'.", port)));
             openSocketForMonitor(port);
         } catch (final IOException ex) {
-            log.warn(ex.getMessage());
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.ERROR, "Monitor socket initialize failure.", ex));
         }
     }
     
@@ -87,14 +87,14 @@ public class MonitorService {
                     try {
                         process(serverSocket.accept());
                     } catch (final IOException ex) {
-                        log.warn(ex.getMessage());
+                        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.ERROR, "Monitor socket initialize failure.", ex));
                     }
                 }
             }
         }.start();
     }
     
-    private void process(final Socket socket) {
+    private void process(final Socket socket) throws IOException {
         try (
                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -105,8 +105,6 @@ public class MonitorService {
                 dumpDirectly("/" + jobName, result);
                 outputMessage(writer, Joiner.on("\n").join(SensitiveInfoUtils.filterSensitiveIps(result)) + "\n");
             }
-        } catch (final IOException ex) {
-            log.warn(ex.getMessage());
         }
     }
     
@@ -144,7 +142,7 @@ public class MonitorService {
             try {
                 serverSocket.close();
             } catch (final IOException ex) {
-                log.warn(ex.getMessage());
+                TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.ERROR, "Monitor socket close failure.", ex));
             }
         }
     }

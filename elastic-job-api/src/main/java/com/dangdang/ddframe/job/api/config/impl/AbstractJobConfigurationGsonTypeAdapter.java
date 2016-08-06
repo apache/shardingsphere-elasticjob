@@ -27,7 +27,6 @@ import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -40,7 +39,6 @@ import java.util.Map;
  *     
  * @author zhangliang
  */
-@Slf4j
 public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootConfiguration> extends TypeAdapter<T> {
     
     @Override

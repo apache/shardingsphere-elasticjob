@@ -32,9 +32,10 @@ import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallba
 import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.lite.internal.util.ItemUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 
 import java.util.Collections;
@@ -47,7 +48,6 @@ import java.util.Map.Entry;
  * 
  * @author zhangliang
  */
-@Slf4j
 public class ShardingService {
     
     private final String jobName;
@@ -106,26 +106,26 @@ public class ShardingService {
         if (liteJobConfig.isMonitorExecution()) {
             waitingOtherJobCompleted();
         }
-        log.debug("Elastic job: sharding begin.");
+        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Sharding begin."));
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
         JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
                 new ShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
-        log.debug("Elastic job: sharding completed.");
+        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Sharding completed."));
     }
     
     private void blockUntilShardingCompleted() {
         while (!leaderElectionService.isLeader() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
-            log.debug("Elastic job: sleep short time until sharding completed.");
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Sleep short time until sharding completed."));
             BlockUtils.waitingShortTime();
         }
     }
     
     private void waitingOtherJobCompleted() {
         while (executionService.hasRunningItems()) {
-            log.debug("Elastic job: sleep short time until other job completed.");
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Sleep short time until other job completed."));
             BlockUtils.waitingShortTime();
         }
     }

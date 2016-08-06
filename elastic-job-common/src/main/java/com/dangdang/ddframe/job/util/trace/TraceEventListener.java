@@ -28,11 +28,11 @@ import com.google.common.eventbus.Subscribe;
 public interface TraceEventListener {
     
     /**
-     * 获取事件类型.
+     * 获取监听器名称.
      * 
-     * @return 事件类型
+     * @return 监听器名称
      */
-    TraceEventType getType();
+    String getName();
     
     /**
      * 监听执行.

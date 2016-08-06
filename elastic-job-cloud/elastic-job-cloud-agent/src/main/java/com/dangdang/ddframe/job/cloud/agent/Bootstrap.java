@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.cloud.agent.internal.ArgumentsParser;
 import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacade;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 云作业启动器.
@@ -34,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Slf4j
 public final class Bootstrap {
     
     /**

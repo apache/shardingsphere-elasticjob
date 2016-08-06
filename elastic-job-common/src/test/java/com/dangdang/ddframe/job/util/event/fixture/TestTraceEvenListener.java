@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.util.event.fixture;
 
 import com.dangdang.ddframe.job.util.trace.TraceEvent;
 import com.dangdang.ddframe.job.util.trace.TraceEventListener;
-import com.dangdang.ddframe.job.util.trace.TraceEventType;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -28,8 +27,8 @@ public final class TestTraceEvenListener implements TraceEventListener {
     private final Caller caller;
     
     @Override
-    public TraceEventType getType() {
-        return TraceEventType.LITE;
+    public String getName() {
+        return "test";
     }
     
     @Override

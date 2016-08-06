@@ -24,9 +24,10 @@ import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.executor.handler.ExecutorServiceHandler;
 import com.dangdang.ddframe.job.api.executor.handler.JobExceptionHandler;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventBus;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ExecutorService;
 
@@ -36,12 +37,13 @@ import java.util.concurrent.ExecutorService;
  * @author zhangliang
  */
 @Getter(AccessLevel.PROTECTED)
-@Slf4j
 public abstract class AbstractElasticJobExecutor {
     
     private final JobFacade jobFacade;
     
     private final JobRootConfiguration jobRootConfig;
+    
+    private final String jobName;
     
     private final ExecutorService executorService;
     
@@ -50,6 +52,7 @@ public abstract class AbstractElasticJobExecutor {
     protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
+        jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
         executorService = ((ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER)).createExecutorService();
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
     }
@@ -68,7 +71,8 @@ public abstract class AbstractElasticJobExecutor {
     }
     
     private Object getDefaultHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum, final String handlerClassName) {
-        log.warn("Cannot instantiation class '{}', use default {} class.", handlerClassName, jobPropertiesEnum.getKey());
+        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.WARN,
+                String.format("Cannot instantiation class '%s', use default %s class.", handlerClassName, jobPropertiesEnum.getKey())));
         try {
             return Class.forName(jobPropertiesEnum.getDefaultValue()).newInstance();
         } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
@@ -80,16 +84,16 @@ public abstract class AbstractElasticJobExecutor {
      * 执行作业.
      */
     public final void execute() {
-        log.trace("Elastic job: job execute begin.");
+        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.TRACE, "Job execute begin."));
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
-            jobExceptionHandler.handleException(cause);
+            jobExceptionHandler.handleException(jobName, cause);
         }
         
         ShardingContext shardingContext = jobFacade.getShardingContext();
         if (jobFacade.misfireIfNecessary(shardingContext.getShardingItemParameters().keySet())) {
-            log.debug("Elastic job: previous job is still running, new job will start after previous job completed. Misfired job had recorded.");
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Previous job is still running, misfired job will start after previous job completed."));
             return;
         }
         jobFacade.cleanPreviousExecutionInfo();
@@ -98,15 +102,15 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobExceptionHandler.handleException(cause);
+            jobExceptionHandler.handleException(jobName, cause);
         }
         execute(shardingContext);
-        log.trace("Elastic job: execute normal completed, sharding context:{}.", shardingContext);
+        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.TRACE, String.format("Execute normal completed, sharding context:%s.", shardingContext)));
         while (jobFacade.isExecuteMisfired(shardingContext.getShardingItemParameters().keySet())) {
-            log.trace("Elastic job: execute misfired job, sharding context:{}.", shardingContext);
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.TRACE, String.format("Execute misfired job, sharding context:%s.", shardingContext)));
             jobFacade.clearMisfire(shardingContext.getShardingItemParameters().keySet());
             execute(shardingContext);
-            log.trace("Elastic job: misfired job completed, sharding context:{}.", shardingContext);
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.TRACE, String.format("Misfired job completed, sharding context:%s.", shardingContext)));
         }
         jobFacade.failoverIfNecessary();
         try {
@@ -114,14 +118,14 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
-            jobExceptionHandler.handleException(cause);
+            jobExceptionHandler.handleException(jobName, cause);
         }
-        log.trace("Elastic job: execute all completed.");
+        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.TRACE, "Execute all completed."));
     }
     
     private void execute(final ShardingContext shardingContext) {
         if (shardingContext.getShardingItemParameters().isEmpty()) {
-            log.trace("Elastic job: sharding item is empty, job execution context:{}.", shardingContext);
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.TRACE, String.format("Sharding item is empty, job execution context:%s.", shardingContext)));
             return;
         }
         jobFacade.registerJobBegin(shardingContext);
@@ -130,7 +134,7 @@ public abstract class AbstractElasticJobExecutor {
         //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
         //CHECKSTYLE:ON
-            jobExceptionHandler.handleException(cause);
+            jobExceptionHandler.handleException(jobName, cause);
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             jobFacade.registerJobCompleted(shardingContext);

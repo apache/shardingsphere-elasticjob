@@ -45,14 +45,14 @@ public final class TraceEventBusTest {
     
     @Test
     public void assertPostWithoutListenerRegistered() {
-        traceEventBus.post(new TraceEvent() { });
+        traceEventBus.post(new TraceEvent("test_job", TraceEvent.Level.INFO, "ok"));
         verify(caller, times(0)).call();
     }
     
     @Test
     public void assertPostWithListenerRegistered() {
         traceEventBus.register(new TestTraceEvenListener(caller));
-        traceEventBus.post(new TraceEvent() { });
+        traceEventBus.post(new TraceEvent("test_job", TraceEvent.Level.INFO, "ok"));
         verify(caller).call();
     }
     
@@ -60,7 +60,7 @@ public final class TraceEventBusTest {
     public void assertPostWithListenerRegisteredTwice() {
         traceEventBus.register(new TestTraceEvenListener(caller));
         traceEventBus.register(new TestTraceEvenListener(caller));
-        traceEventBus.post(new TraceEvent() { });
+        traceEventBus.post(new TraceEvent("test_job", TraceEvent.Level.INFO, "ok"));
         verify(caller).call();
     }
 }

@@ -21,9 +21,10 @@ import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
@@ -33,8 +34,9 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * 
  * @author zhangliang
  */
-@Slf4j
 public class ElectionListenerManager extends AbstractListenerManager {
+    
+    private final String jobName;
     
     private final LeaderElectionService leaderElectionService;
     
@@ -46,6 +48,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
+        this.jobName = jobName;
         leaderElectionService = new LeaderElectionService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         electionNode = new ElectionNode(jobName);
@@ -63,9 +66,9 @@ public class ElectionListenerManager extends AbstractListenerManager {
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             EventHelper eventHelper = new EventHelper(path, event);
             if (eventHelper.isLeaderCrashedOrServerOn() && !leaderElectionService.hasLeader() && !serverService.getAvailableServers().isEmpty()) {
-                log.debug("Elastic job: leader crashed, elect a new leader now.");
+                TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Leader crashed, elect a new leader now."));
                 leaderElectionService.leaderElection();
-                log.debug("Elastic job: leader election completed.");
+                TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Leader election completed."));
                 return;
             }
             if (eventHelper.isServerOff() && leaderElectionService.isLeader()) {

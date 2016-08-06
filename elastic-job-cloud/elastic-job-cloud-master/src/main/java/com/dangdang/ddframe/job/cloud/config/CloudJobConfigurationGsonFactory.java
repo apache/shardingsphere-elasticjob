@@ -17,15 +17,14 @@
 
 package com.dangdang.ddframe.job.cloud.config;
 
-import com.dangdang.ddframe.job.api.config.impl.AbstractJobConfigurationGsonTypeAdapter;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.config.impl.AbstractJobConfigurationGsonTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Map;
@@ -36,7 +35,6 @@ import java.util.Map;
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Slf4j
 public final class CloudJobConfigurationGsonFactory {
     
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonTypeAdapter()).create();

@@ -17,12 +17,16 @@
 
 package com.dangdang.ddframe.job.util.trace;
 
-/**
- * 运行痕迹事件类型.
- *
- * @author zhangliang
- */
-public enum TraceEventType {
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+public final class TraceEventTest {
     
-    LITE, CLOUD
+    @Test
+    public void assertPostWitException() {
+        assertThat(new TraceEvent("test_job", TraceEvent.Level.INFO, "ok", new RuntimeException(new IllegalArgumentException("illegal argument"))).getCause(), 
+                startsWith("java.lang.RuntimeException: java.lang.IllegalArgumentException: illegal argument"));
+    }
 }

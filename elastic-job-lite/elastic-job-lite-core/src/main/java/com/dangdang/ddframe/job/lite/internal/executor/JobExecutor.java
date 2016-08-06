@@ -22,9 +22,10 @@ import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJ
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,6 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-@Slf4j
 @Getter
 public class JobExecutor {
     
@@ -65,7 +65,7 @@ public class JobExecutor {
      * 初始化作业.
      */
     public void init() {
-        log.debug("Elastic job: job controller init, job name is: {}.", liteJobConfig.getJobName());
+        TraceEventBus.getInstance().post(new TraceEvent(liteJobConfig.getJobName(), TraceEvent.Level.DEBUG, "Job controller init."));
         schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + liteJobConfig.getJobName());
         schedulerFacade.registerStartUpInfo(liteJobConfig);

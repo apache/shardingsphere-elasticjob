@@ -23,7 +23,7 @@ import com.dangdang.ddframe.job.api.exception.JobSystemException;
 public final class ThrowJobExceptionHandler implements JobExceptionHandler {
     
     @Override
-    public void handleException(final Throwable cause) {
+    public void handleException(final String jobName, final Throwable cause) {
         throw new JobSystemException(cause);
     }
 }

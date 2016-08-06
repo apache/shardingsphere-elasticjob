@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.api.config.impl.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 基本作业配置命名空间对象.
@@ -34,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Setter
 @RequiredArgsConstructor
-@Slf4j
 public abstract class AbstractJobConfigurationDto {
     
     private final String jobName;

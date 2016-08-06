@@ -24,8 +24,9 @@ import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +38,6 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-@Slf4j
 public class FailoverService {
     
     private final String jobName;
@@ -149,7 +149,7 @@ public class FailoverService {
                 return;
             }
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
-            log.debug("Elastic job: failover job begin, crashed item:{}.", crashedItem);
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, String.format("Failover job begin, crashed item:%s", crashedItem)));
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();

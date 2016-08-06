@@ -22,25 +22,28 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.job.util.trace.TraceEvent;
+import com.dangdang.ddframe.job.util.trace.TraceEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 选举主节点的服务.
  * 
  * @author zhangliang
  */
-@Slf4j
 public class LeaderElectionService {
     
     private final LocalHostService localHostService = new LocalHostService();
+    
+    private final String jobName;
     
     private final ServerService serverService;
     
     private final JobNodeStorage jobNodeStorage;
     
     public LeaderElectionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
     }
@@ -71,7 +74,7 @@ public class LeaderElectionService {
     public Boolean isLeader() {
         String localHostIp = localHostService.getIp();
         while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
-            log.info("Elastic job: leader node is electing, waiting for 100 ms at server '{}'", localHostIp);
+            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.INFO, "Leader node is electing, waiting for 100 ms"));
             BlockUtils.waitingShortTime();
         }
         return localHostIp.equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST));
