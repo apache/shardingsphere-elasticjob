@@ -15,9 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.trace;
+package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.util.trace.log.LogTraceEventListener;
+import com.dangdang.ddframe.job.event.log.LogJobEventListener;
 import com.google.common.eventbus.EventBus;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,18 +31,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TraceEventBus {
+public final class JobEventBus {
     
     @Getter
-    private static TraceEventBus instance = new TraceEventBus();
+    private static JobEventBus instance = new JobEventBus();
     
     private final EventBus eventBus = new EventBus();
     
-    private final ConcurrentHashMap<String, TraceEventListener> listeners = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
     
     // TODO 以后删除, listener做成配置化
     static {
-        instance.register(new LogTraceEventListener());
+        instance.register(new LogJobEventListener());
     }
     
     /**
@@ -50,7 +50,7 @@ public final class TraceEventBus {
      *
      * @param listener 监听器
      */
-    public void register(final TraceEventListener listener) {
+    public void register(final JobEventListener listener) {
         if (null == listeners.putIfAbsent(listener.getName(), listener)) {
             eventBus.register(listener);
         }
@@ -59,11 +59,11 @@ public final class TraceEventBus {
     /**
      * 发布事件.
      *
-     * @param traceEvent 事件
+     * @param event 事件
      */
-    public void post(final TraceEvent traceEvent) {
+    public void post(final Object event) {
         if (!listeners.isEmpty()) {
-            eventBus.post(traceEvent);
+            eventBus.post(event);
         }
     }
     

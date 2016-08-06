@@ -15,12 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.event;
+package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.util.event.fixture.Caller;
-import com.dangdang.ddframe.job.util.event.fixture.TestTraceEvenListener;
-import com.dangdang.ddframe.job.util.trace.TraceEvent;
-import com.dangdang.ddframe.job.util.trace.TraceEventBus;
+import com.dangdang.ddframe.job.event.fixture.Caller;
+import com.dangdang.ddframe.job.event.fixture.TestJobEvenListener;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,12 +29,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class TraceEventBusTest {
+public final class JobEventBusTest {
     
     @Mock
     private Caller caller;
     
-    private TraceEventBus traceEventBus = TraceEventBus.getInstance();
+    private JobEventBus traceEventBus = JobEventBus.getInstance();
     
     @After
     public void tearDown() {
@@ -45,22 +43,22 @@ public final class TraceEventBusTest {
     
     @Test
     public void assertPostWithoutListenerRegistered() {
-        traceEventBus.post(new TraceEvent("test_job", TraceEvent.Level.INFO, "ok"));
+        traceEventBus.post(new JobTraceEvent("test_job", JobTraceEvent.Level.INFO, "ok"));
         verify(caller, times(0)).call();
     }
     
     @Test
     public void assertPostWithListenerRegistered() {
-        traceEventBus.register(new TestTraceEvenListener(caller));
-        traceEventBus.post(new TraceEvent("test_job", TraceEvent.Level.INFO, "ok"));
+        traceEventBus.register(new TestJobEvenListener(caller));
+        traceEventBus.post(new JobTraceEvent("test_job", JobTraceEvent.Level.INFO, "ok"));
         verify(caller).call();
     }
     
     @Test
     public void assertPostWithListenerRegisteredTwice() {
-        traceEventBus.register(new TestTraceEvenListener(caller));
-        traceEventBus.register(new TestTraceEvenListener(caller));
-        traceEventBus.post(new TraceEvent("test_job", TraceEvent.Level.INFO, "ok"));
+        traceEventBus.register(new TestJobEvenListener(caller));
+        traceEventBus.register(new TestJobEvenListener(caller));
+        traceEventBus.post(new JobTraceEvent("test_job", JobTraceEvent.Level.INFO, "ok"));
         verify(caller).call();
     }
 }

@@ -22,8 +22,8 @@ import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJ
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
-import com.dangdang.ddframe.job.util.trace.TraceEvent;
-import com.dangdang.ddframe.job.util.trace.TraceEventBus;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.Getter;
 
@@ -65,7 +65,7 @@ public class JobExecutor {
      * 初始化作业.
      */
     public void init() {
-        TraceEventBus.getInstance().post(new TraceEvent(liteJobConfig.getJobName(), TraceEvent.Level.DEBUG, "Job controller init."));
+        JobEventBus.getInstance().post(new JobTraceEvent(liteJobConfig.getJobName(), JobTraceEvent.Level.DEBUG, "Job controller init."));
         schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + liteJobConfig.getJobName());
         schedulerFacade.registerStartUpInfo(liteJobConfig);

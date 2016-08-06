@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.lite.internal.monitor;
 
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtils;
-import com.dangdang.ddframe.job.util.trace.TraceEvent;
-import com.dangdang.ddframe.job.util.trace.TraceEventBus;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -70,10 +70,10 @@ public class MonitorService {
             return;
         }
         try {
-            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.INFO, String.format("Monitor service is running, the port is: '%s'.", port)));
+            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.INFO, String.format("Monitor service is running, the port is: '%s'.", port)));
             openSocketForMonitor(port);
         } catch (final IOException ex) {
-            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.ERROR, "Monitor socket initialize failure.", ex));
+            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.ERROR, "Monitor socket initialize failure.", ex));
         }
     }
     
@@ -87,7 +87,7 @@ public class MonitorService {
                     try {
                         process(serverSocket.accept());
                     } catch (final IOException ex) {
-                        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.ERROR, "Monitor socket initialize failure.", ex));
+                        JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.ERROR, "Monitor socket initialize failure.", ex));
                     }
                 }
             }
@@ -142,7 +142,7 @@ public class MonitorService {
             try {
                 serverSocket.close();
             } catch (final IOException ex) {
-                TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.ERROR, "Monitor socket close failure.", ex));
+                JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.ERROR, "Monitor socket close failure.", ex));
             }
         }
     }

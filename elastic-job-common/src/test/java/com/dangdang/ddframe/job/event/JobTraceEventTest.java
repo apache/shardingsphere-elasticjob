@@ -15,24 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.event.fixture;
+package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.util.trace.TraceEvent;
-import com.dangdang.ddframe.job.util.trace.TraceEventListener;
-import lombok.RequiredArgsConstructor;
+import org.junit.Test;
 
-@RequiredArgsConstructor
-public final class TestTraceEvenListener implements TraceEventListener {
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+public final class JobTraceEventTest {
     
-    private final Caller caller;
-    
-    @Override
-    public String getName() {
-        return "test";
-    }
-    
-    @Override
-    public void listen(final TraceEvent traceEvent) {
-        caller.call();
+    @Test
+    public void assertGetFailureCause() {
+        assertThat(new JobTraceEvent("test_job", JobTraceEvent.Level.INFO, "ok", new RuntimeException(new IllegalArgumentException("illegal argument"))).getFailureCause(), 
+                startsWith("java.lang.RuntimeException: java.lang.IllegalArgumentException: illegal argument"));
     }
 }

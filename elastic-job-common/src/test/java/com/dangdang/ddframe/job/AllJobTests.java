@@ -17,11 +17,15 @@
 
 package com.dangdang.ddframe.job;
 
+import com.dangdang.ddframe.job.event.AllEventTests;
 import com.dangdang.ddframe.job.util.AllUtilTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(AllUtilTests.class)
+@Suite.SuiteClasses({
+        AllUtilTests.class,
+        AllEventTests.class
+    })
 public final class AllJobTests {
 }

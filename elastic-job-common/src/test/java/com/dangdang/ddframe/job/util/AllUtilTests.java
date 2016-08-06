@@ -19,9 +19,7 @@ package com.dangdang.ddframe.job.util;
 
 import com.dangdang.ddframe.job.util.env.LocalHostServiceTest;
 import com.dangdang.ddframe.job.util.env.TimeServiceTest;
-import com.dangdang.ddframe.job.util.event.TraceEventBusTest;
 import com.dangdang.ddframe.job.util.json.GsonFactoryTest;
-import com.dangdang.ddframe.job.util.trace.TraceEventTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -29,9 +27,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         GsonFactoryTest.class, 
         LocalHostServiceTest.class, 
-        TimeServiceTest.class,
-        TraceEventTest.class, 
-        TraceEventBusTest.class
+        TimeServiceTest.class
     })
 public final class AllUtilTests {
 }

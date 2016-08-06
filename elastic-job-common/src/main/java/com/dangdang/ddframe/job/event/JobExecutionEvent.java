@@ -15,61 +15,82 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.trace;
+package com.dangdang.ddframe.job.event;
 
 import com.dangdang.ddframe.job.util.env.LocalHostService;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Date;
 
 /**
- * 运行痕迹事件.
+ * 作业执行事件.
  *
  * @author zhangli
  */
 @RequiredArgsConstructor
-@AllArgsConstructor
 @Getter
-public class TraceEvent {
+public class JobExecutionEvent {
     
     private static LocalHostService localHostService = new LocalHostService();
     
-    private final String jobName;
-    
-    private final Level level;
-    
-    private final String message;
-    
-    private Throwable cause;
-    
     private final String hostname = localHostService.getHostName();
     
-    private final Date timestamp = new Date();
+    private final String jobName;
+    
+    private final ExecutionSource source;
+    
+    private final Collection<Integer> shardingItems;
+    
+    private final Date startTime = new Date();
+    
+    private Date completeTime;
+    
+    private boolean success;
+    
+    private Throwable failureCause;
     
     /**
-     * 获取stack trace字符串.
-     * @return stack trace字符串
+     * 作业执行成功.
      */
-    public String getCause() {
-        if (null == cause) {
+    public void executionSuccess() {
+        completeTime = new Date();
+        success = true;
+    }
+    
+    /**
+     * 作业执行失败.
+     * 
+     * @param failureCause 失败原因
+     */
+    public void executionFailure(final Throwable failureCause) {
+        completeTime = new Date();
+        this.failureCause = failureCause;
+    }
+    
+    /**
+     * 获取失败原因.
+     * @return 失败原因
+     */
+    public String getFailureCause() {
+        if (null == failureCause) {
             return "";
         }
         StringWriter result = new StringWriter();
         try (PrintWriter writer = new PrintWriter(result)) {
-            cause.printStackTrace(writer);
+            failureCause.printStackTrace(writer);
         }
         return result.toString();
     }
     
     /**
-     * 事件级别.
+     * 执行来源.
      */
-    public enum Level {
+    public enum ExecutionSource {
         
-        TRACE, DEBUG, INFO, WARN, ERROR
+        NORMAL_TRIGGER, MISFIRE, FAILOVER
     }
 }

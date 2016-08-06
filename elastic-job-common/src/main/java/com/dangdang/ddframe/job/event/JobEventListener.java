@@ -15,17 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.trace;
+package com.dangdang.ddframe.job.event;
 
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 
 /**
- * 运行痕迹事件监听器.
+ * 作业事件监听器.
  *
  * @author zhangliang
  */
-public interface TraceEventListener {
+public interface JobEventListener {
     
     /**
      * 获取监听器名称.
@@ -35,11 +35,20 @@ public interface TraceEventListener {
     String getName();
     
     /**
-     * 监听执行.
+     * 运行痕迹事件监听执行.
      * 
-     * @param traceEvent 事件
+     * @param traceEvent 运行痕迹事件
      */
     @Subscribe
     @AllowConcurrentEvents
-    void listen(TraceEvent traceEvent);
+    void listen(JobTraceEvent traceEvent);
+    
+    /**
+     * 作业执行事件监听执行.
+     *
+     * @param jobExecutionEvent 作业执行事件
+     */
+    @Subscribe
+    @AllowConcurrentEvents
+    void listen(JobExecutionEvent jobExecutionEvent);
 }

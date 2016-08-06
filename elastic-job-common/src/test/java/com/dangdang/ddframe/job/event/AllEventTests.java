@@ -15,9 +15,16 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.event.fixture;
+package com.dangdang.ddframe.job.event;
 
-public interface Caller {
-    
-    void call();
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        JobTraceEventTest.class, 
+        JobExecutionEventTest.class, 
+        JobEventBusTest.class
+    })
+public final class AllEventTests {
 }

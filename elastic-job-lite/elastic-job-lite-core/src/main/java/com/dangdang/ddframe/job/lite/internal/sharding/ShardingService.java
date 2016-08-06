@@ -32,8 +32,8 @@ import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallba
 import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.lite.internal.util.ItemUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
-import com.dangdang.ddframe.job.util.trace.TraceEvent;
-import com.dangdang.ddframe.job.util.trace.TraceEventBus;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
@@ -106,26 +106,26 @@ public class ShardingService {
         if (liteJobConfig.isMonitorExecution()) {
             waitingOtherJobCompleted();
         }
-        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Sharding begin."));
+        JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.DEBUG, "Sharding begin."));
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
         JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
                 new ShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
-        TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Sharding completed."));
+        JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.DEBUG, "Sharding completed."));
     }
     
     private void blockUntilShardingCompleted() {
         while (!leaderElectionService.isLeader() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
-            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Sleep short time until sharding completed."));
+            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.DEBUG, "Sleep short time until sharding completed."));
             BlockUtils.waitingShortTime();
         }
     }
     
     private void waitingOtherJobCompleted() {
         while (executionService.hasRunningItems()) {
-            TraceEventBus.getInstance().post(new TraceEvent(jobName, TraceEvent.Level.DEBUG, "Sleep short time until other job completed."));
+            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.DEBUG, "Sleep short time until other job completed."));
             BlockUtils.waitingShortTime();
         }
     }

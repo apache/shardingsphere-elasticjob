@@ -15,18 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.trace;
+package com.dangdang.ddframe.job.event.fixture;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-public final class TraceEventTest {
+public interface Caller {
     
-    @Test
-    public void assertPostWitException() {
-        assertThat(new TraceEvent("test_job", TraceEvent.Level.INFO, "ok", new RuntimeException(new IllegalArgumentException("illegal argument"))).getCause(), 
-                startsWith("java.lang.RuntimeException: java.lang.IllegalArgumentException: illegal argument"));
-    }
+    void call();
 }
