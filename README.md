@@ -76,10 +76,10 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 ## Job development
 
 ```java
-public class MyElasticJob extends AbstractSimpleElasticJob {
+public class MyElasticJob implements SimpleJob {
 
     @Override
-    public void process(JobExecutionMultipleShardingContext context) {
+    public void process(ShardingContext context) {
         // do something by sharding items
     }
 }

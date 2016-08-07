@@ -78,10 +78,10 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 ## 作业开发
 
 ```java
-public class MyElasticJob extends AbstractSimpleElasticJob {
+public class MyElasticJob implements SimpleJob {
     
     @Override
-    public void process(JobExecutionMultipleShardingContext context) {
+    public void process(ShardingContext context) {
         // do something by sharding items
     }
 }
