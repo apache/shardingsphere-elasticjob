@@ -18,16 +18,10 @@
 package com.dangdang.ddframe.job.example.job.listener;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
-
-import javax.annotation.Resource;
 
 public class SimpleDistributeListener extends AbstractDistributeOnceElasticJobListener {
 
-    @Resource
-    private FooRepository fooRepository;
-    
     private final long startedTimeoutMilliseconds;
     
     private final long completedTimeoutMilliseconds;
@@ -40,8 +34,7 @@ public class SimpleDistributeListener extends AbstractDistributeOnceElasticJobLi
     
     @Override
     public void doBeforeJobExecutedAtLastStarted(final ShardingContext shardingContext) {
-        System.out.println("doBeforeJobExecutedAtLastStarted:");
-        fooRepository.clear();
+        System.out.println("doBeforeJobExecutedAtLastStarted:" + shardingContext);
     }
     
     @Override

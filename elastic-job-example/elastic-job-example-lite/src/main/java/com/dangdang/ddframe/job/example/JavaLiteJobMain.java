@@ -55,7 +55,8 @@ public final class JavaLiteJobMain {
         regCenter.init();
         
         final SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(
-                JobCoreConfiguration.newBuilder("javaSimpleJob", "0/30 * * * * ?", 10).build(), JavaSimpleJob.class.getCanonicalName());
+                JobCoreConfiguration.newBuilder("javaSimpleJob", "0/30 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
+                JavaSimpleJob.class.getCanonicalName());
         
         final DataflowJobConfiguration throughputJobConfig = new DataflowJobConfiguration(
                 JobCoreConfiguration.newBuilder("javaThroughputDataflowElasticJob", "0/5 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
@@ -65,7 +66,8 @@ public final class JavaLiteJobMain {
                 JobCoreConfiguration.newBuilder("javaSequenceDataflowElasticJob", "0/5 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
                 JavaDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, true);
         
-        final ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 10).build(), 
+        final ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 10)
+                .shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
                 buildScriptCommandLine());
                 
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
