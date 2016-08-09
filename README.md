@@ -77,10 +77,23 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 ```java
 public class MyElasticJob implements SimpleJob {
-
+    
     @Override
     public void process(ShardingContext context) {
-        // do something by sharding items
+        for (int shardingItem : context.getShardingItemParameters().keySet()) {
+            switch (shardingItem) {
+                case 0: 
+                    // do something by sharding items 0
+                    break;
+                case 1: 
+                    // do something by sharding items 1
+                    break;
+                case 2: 
+                    // do something by sharding items 2
+                    break;
+                // case n: ...
+            }
+        }
     }
 }
 ```

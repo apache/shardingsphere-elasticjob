@@ -24,8 +24,21 @@ weight=11
 public class MyElasticJob implements SimpleJob {
     
     @Override
-    public void execute(ShardingContext shardingContext) {
-        // do something by sharding items
+    public void process(ShardingContext context) {
+        for (int shardingItem : context.getShardingItemParameters().keySet()) {
+            switch (shardingItem) {
+                case 0: 
+                    // do something by sharding items 0
+                    break;
+                case 1: 
+                    // do something by sharding items 1
+                    break;
+                case 2: 
+                    // do something by sharding items 2
+                    break;
+                // case n: ...
+            }
+        }
     }
 }
 ```
@@ -37,8 +50,25 @@ public class MyElasticJob implements SimpleJob {
 public class MyElasticJob extends AbstractIndividualThroughputDataflowElasticJob<Foo> {
     
     @Override
-    public List<T> fetchData(ShardingContext shardingContext) {
-        List<Foo> result = // get data from database by sharding items
+    public List<T> fetchData(ShardingContext context) {
+        List<Foo> result = new LinkedList<>();
+        for (int shardingItem : context.getShardingItemParameters().keySet()) {
+            switch (shardingItem) {
+                case 0: 
+                    List<Foo> data = // get data from database by sharding items 0
+                    result.addAll(data);
+                    break;
+                case 1: 
+                    List<Foo> data = // get data from database by sharding items 1
+                    result.addAll(data);
+                    break;
+                case 2: 
+                    List<Foo> data = // get data from database by sharding items 2
+                    result.addAll(data);
+                    break;
+                // case n: ...
+            }
+        }
         return result;
     }
     
