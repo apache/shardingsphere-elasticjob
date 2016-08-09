@@ -139,7 +139,6 @@ public abstract class AbstractElasticJobExecutor {
         } catch (final Throwable cause) {
         //CHECKSTYLE:ON
             jobExecutionEvent.executionFailure(cause);
-            JobEventBus.getInstance().post(jobExecutionEvent);
             jobExceptionHandler.handleException(jobName, cause);
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
