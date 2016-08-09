@@ -21,14 +21,18 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.example.fixture.entity.Foo;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class SpringDataflowJob implements DataflowJob<Foo> {
     
-    private FooRepository fooRepository = new FooRepository();
+    @Resource
+    private FooRepository fooRepository;
     
     @Override
     public List<Foo> fetchData(final ShardingContext shardingContext) {

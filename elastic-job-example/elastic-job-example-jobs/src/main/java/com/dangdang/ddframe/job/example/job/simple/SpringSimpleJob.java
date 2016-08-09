@@ -20,12 +20,16 @@ package com.dangdang.ddframe.job.example.job.simple;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
+@Component
 public class SpringSimpleJob implements SimpleJob {
     
-    private FooRepository fooRepository = new FooRepository();
+    @Resource
+    private FooRepository fooRepository;
     
     @Override
     public void execute(final ShardingContext shardingContext) {
