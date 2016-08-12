@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
@@ -74,7 +75,7 @@ public class LeaderElectionService {
     public Boolean isLeader() {
         String localHostIp = localHostService.getIp();
         while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.INFO, "Leader node is electing, waiting for 100 ms"));
+            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.INFO, "Leader node is electing, waiting for 100 ms"));
             BlockUtils.waitingShortTime();
         }
         return localHostIp.equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST));

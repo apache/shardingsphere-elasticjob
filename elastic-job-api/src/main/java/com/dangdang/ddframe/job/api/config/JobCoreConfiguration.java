@@ -18,6 +18,8 @@
 package com.dangdang.ddframe.job.api.config;
 
 import com.dangdang.ddframe.job.api.config.impl.JobProperties;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
@@ -52,6 +54,8 @@ public final class JobCoreConfiguration {
     
     private final JobProperties jobProperties;
     
+    private final JobEventConfiguration[] jobEventConfigs;
+    
     /**
      * 创建简单作业配置构建器.
      *
@@ -84,6 +88,8 @@ public final class JobCoreConfiguration {
         private String description = "";
         
         private final JobProperties jobProperties = new JobProperties();
+    
+        private JobEventConfiguration[] jobEventConfigs;
         
         /**
          * 设置分片序列号和个性化参数对照表.
@@ -178,6 +184,18 @@ public final class JobCoreConfiguration {
             jobProperties.put(key, value);
             return this;
         }
+            
+        /**
+         * 设置作业事件配置.
+         *
+         * @param jobEventConfigs 作业事件配置
+         *
+         * @return 作业配置构建器
+         */
+        public Builder jobEventConfiguration(final JobEventConfiguration... jobEventConfigs) {
+            this.jobEventConfigs = jobEventConfigs;
+            return this;
+        }
         
         /**
          * 构建作业配置对象.
@@ -188,7 +206,10 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
+            if (jobEventConfigs == null) {
+                jobEventConfigs = new JobEventConfiguration[]{new JobLogEventConfiguration()};
+            }
+            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties, jobEventConfigs);
         }
     }
 }

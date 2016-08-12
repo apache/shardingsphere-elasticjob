@@ -15,22 +15,31 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.executor.handler.impl;
+package com.dangdang.ddframe.job.event.rdb;
 
-import com.dangdang.ddframe.job.api.executor.handler.JobExceptionHandler;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * 默认作业异常处理器.
+ * 作业数据库事件配置.
  *
- * @author zhangliang
+ * @author caohao
  */
-public final class DefaultJobExceptionHandler implements JobExceptionHandler {
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Getter
+public final class JobRdbEventConfiguration implements JobEventConfiguration {
     
-    @Override
-    public void handleException(final String jobName, final Throwable cause) {
-        JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "exception occur in job processing", cause));
-    }
+    private final String driverClassName;
+    
+    private final String url;
+    
+    private final String username;
+    
+    private final String password;
+    
+    private LogLevel logLevel = LogLevel.INFO;
 }

@@ -17,17 +17,10 @@
 
 package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-public final class JobTraceEventTest {
-    
-    @Test
-    public void assertGetFailureCause() {
-        assertThat(new JobTraceEvent("test_job", LogLevel.INFO, "ok", new RuntimeException(new IllegalArgumentException("illegal argument"))).getFailureCause(), 
-                startsWith("java.lang.RuntimeException: java.lang.IllegalArgumentException: illegal argument"));
-    }
+/**
+ * 作业事件配置标识接口.
+ *
+ * @author caohao
+ */
+public interface JobEventConfiguration {
 }

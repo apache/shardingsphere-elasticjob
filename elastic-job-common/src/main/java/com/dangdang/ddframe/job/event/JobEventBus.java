@@ -17,10 +17,12 @@
 
 package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.event.log.LogJobEventListener;
+import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobLogEventListener;
+import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobRdbEventListener;
 import com.google.common.eventbus.EventBus;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,16 +35,31 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobEventBus {
     
-    @Getter
-    private static JobEventBus instance = new JobEventBus();
+    private static volatile JobEventBus instance;
     
     private final EventBus eventBus = new EventBus();
     
     private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
     
-    // TODO 以后删除, listener做成配置化
-    static {
-        instance.register(new LogJobEventListener());
+    public static JobEventBus getInstance() {
+        if (null == instance) {
+            synchronized (JobEventBus.class) {
+                if (null == instance) {
+                    instance = new JobEventBus();
+                }
+            }
+        }
+        return instance;
+    }
+    
+    public void register(final JobEventConfiguration[] jobEventConfigs) {
+        for (JobEventConfiguration jobEventConfig : jobEventConfigs) {
+            if (jobEventConfig instanceof JobRdbEventConfiguration) {
+                instance.register(new JobRdbEventListener((JobRdbEventConfiguration) jobEventConfig));
+            } else if (jobEventConfig instanceof JobLogEventConfiguration) {
+                instance.register(new JobLogEventListener((JobLogEventConfiguration) jobEventConfig));
+            }
+        }
     }
     
     /**

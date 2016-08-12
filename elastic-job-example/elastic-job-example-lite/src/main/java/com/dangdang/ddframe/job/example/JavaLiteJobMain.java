@@ -21,6 +21,8 @@ import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
 import com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob;
 import com.dangdang.ddframe.job.example.job.listener.SimpleDistributeListener;
 import com.dangdang.ddframe.job.example.job.listener.SimpleListener;
@@ -54,6 +56,8 @@ public final class JavaLiteJobMain {
         zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         regCenter.init();
         
+        final JobEventConfiguration jobLogEventConfig = new JobLogEventConfiguration();
+        
         final SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(
                 JobCoreConfiguration.newBuilder("javaSimpleJob", "0/30 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
                 JavaSimpleJob.class.getCanonicalName());
@@ -67,7 +71,7 @@ public final class JavaLiteJobMain {
                 JavaDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, true);
         
         final ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 10)
-                .shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
+                .shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").jobEventConfiguration(jobLogEventConfig).build(), 
                 buildScriptCommandLine());
                 
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();

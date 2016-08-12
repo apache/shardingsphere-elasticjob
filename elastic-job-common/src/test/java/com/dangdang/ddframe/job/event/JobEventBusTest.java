@@ -17,13 +17,20 @@
 
 package com.dangdang.ddframe.job.event;
 
+import com.dangdang.ddframe.job.event.JobExecutionEvent.ExecutionSource;
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.fixture.Caller;
 import com.dangdang.ddframe.job.event.fixture.TestJobEvenListener;
+import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Arrays;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,31 +41,43 @@ public final class JobEventBusTest {
     @Mock
     private Caller caller;
     
-    private JobEventBus traceEventBus = JobEventBus.getInstance();
+    private JobEventConfiguration logEventConfig = new JobLogEventConfiguration();
+    
+    private JobEventConfiguration rdbEventConfig = new JobRdbEventConfiguration(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_bus", "sa", "", LogLevel.INFO);
+    
+    private JobEventBus jobEventBus = JobEventBus.getInstance();
+    
+    @Before
+    public void setUp() {
+        jobEventBus.register(new JobEventConfiguration[]{logEventConfig, rdbEventConfig});
+    }
     
     @After
     public void tearDown() {
-        traceEventBus.clearListeners();
+        jobEventBus.clearListeners();
     }
     
     @Test
     public void assertPostWithoutListenerRegistered() {
-        traceEventBus.post(new JobTraceEvent("test_job", JobTraceEvent.Level.INFO, "ok"));
+        jobEventBus.post(new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
+        jobEventBus.post(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
         verify(caller, times(0)).call();
     }
     
     @Test
     public void assertPostWithListenerRegistered() {
-        traceEventBus.register(new TestJobEvenListener(caller));
-        traceEventBus.post(new JobTraceEvent("test_job", JobTraceEvent.Level.INFO, "ok"));
-        verify(caller).call();
+        jobEventBus.register(new TestJobEvenListener(caller));
+        jobEventBus.post(new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
+        jobEventBus.post(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        verify(caller, times(2)).call();
     }
     
     @Test
     public void assertPostWithListenerRegisteredTwice() {
-        traceEventBus.register(new TestJobEvenListener(caller));
-        traceEventBus.register(new TestJobEvenListener(caller));
-        traceEventBus.post(new JobTraceEvent("test_job", JobTraceEvent.Level.INFO, "ok"));
-        verify(caller).call();
+        jobEventBus.register(new TestJobEvenListener(caller));
+        jobEventBus.register(new TestJobEvenListener(caller));
+        jobEventBus.post(new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
+        jobEventBus.post(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        verify(caller, times(2)).call();
     }
 }

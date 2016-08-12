@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * 作业执行事件.
@@ -36,6 +37,8 @@ import java.util.Date;
 public class JobExecutionEvent {
     
     private static LocalHostService localHostService = new LocalHostService();
+    
+    private final String id = UUID.randomUUID().toString();
     
     private final String hostname = localHostService.getHostName();
     
@@ -90,7 +93,6 @@ public class JobExecutionEvent {
      * 执行来源.
      */
     public enum ExecutionSource {
-        
         NORMAL_TRIGGER, MISFIRE, FAILOVER
     }
 }

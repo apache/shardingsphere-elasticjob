@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.event.log;
 import com.dangdang.ddframe.job.event.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobEventListener;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
@@ -29,10 +30,13 @@ import java.text.SimpleDateFormat;
  *
  * @author zhangliang
  */
+@RequiredArgsConstructor
 @Slf4j
-public final class LogJobEventListener implements JobEventListener {
+public final class JobLogEventListener implements JobEventListener {
     
     private static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss.SSSS";
+    
+    private final JobLogEventConfiguration jobLogConfig;
     
     @Override
     public String getName() {
@@ -42,22 +46,22 @@ public final class LogJobEventListener implements JobEventListener {
     @Override
     public void listen(final JobTraceEvent traceEvent) {
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
-        String msg = "Elastic-Job tracing => jobName: '{}', hostname: '{}', message: '{}', failureCause: '{}', timestamp: '{}'";
-        switch (traceEvent.getLevel()) {
+        String msg = "Elastic-Job tracing => jobName: '{}', hostname: '{}', message: '{}', failureCause: '{}', creationTime: '{}'";
+        switch (traceEvent.getLogLevel()) {
             case TRACE:
-                log.trace(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getTimestamp()));
+                log.trace(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
                 break;
             case DEBUG:
-                log.debug(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getTimestamp()));
+                log.debug(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
                 break;
             case INFO:
-                log.info(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getTimestamp()));
+                log.info(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
                 break;
             case WARN:
-                log.info(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getTimestamp()));
+                log.info(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
                 break;
             case ERROR:
-                log.error(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getTimestamp()));
+                log.error(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
                 break;
             default:
                 break;

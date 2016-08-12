@@ -40,7 +40,9 @@
         <mesos.version>0.28.1</mesos.version>
         <jersey.version>1.19</jersey.version>
         <jetty-all-server.version>8.1.19.v20160209</jetty-all-server.version>
-        
+        <commons-dbcp.version>1.4</commons-dbcp.version>
+        <mysql-connector-java.version>5.1.30</mysql-connector-java.version>
+        <h2.version>1.4.184</h2.version>
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
         <mockito.version>1.10.19</mockito.version>
@@ -228,7 +230,22 @@
                 <artifactId>jetty-all-server</artifactId>
                 <version>${jetty-all-server.version}</version>
             </dependency>
-            
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>${commons-dbcp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>

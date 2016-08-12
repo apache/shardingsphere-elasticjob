@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
@@ -149,7 +150,7 @@ public class FailoverService {
                 return;
             }
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.DEBUG, String.format("Failover job begin, crashed item:%s", crashedItem)));
+            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.DEBUG, String.format("Failover job begin, crashed item:%s", crashedItem)));
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             // TODO 不应使用triggerJob, 而是使用executor统一调度

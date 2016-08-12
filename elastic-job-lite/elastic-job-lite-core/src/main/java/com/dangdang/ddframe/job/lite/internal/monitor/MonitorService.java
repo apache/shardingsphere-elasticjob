@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.monitor;
 
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtils;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
@@ -70,10 +71,10 @@ public class MonitorService {
             return;
         }
         try {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.INFO, String.format("Monitor service is running, the port is: '%s'.", port)));
+            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.INFO, String.format("Monitor service is running, the port is: '%s'.", port)));
             openSocketForMonitor(port);
         } catch (final IOException ex) {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.ERROR, "Monitor socket initialize failure.", ex));
+            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket initialize failure.", ex));
         }
     }
     
@@ -87,7 +88,7 @@ public class MonitorService {
                     try {
                         process(serverSocket.accept());
                     } catch (final IOException ex) {
-                        JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.ERROR, "Monitor socket initialize failure.", ex));
+                        JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket initialize failure.", ex));
                     }
                 }
             }
@@ -142,7 +143,7 @@ public class MonitorService {
             try {
                 serverSocket.close();
             } catch (final IOException ex) {
-                JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.ERROR, "Monitor socket close failure.", ex));
+                JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket close failure.", ex));
             }
         }
     }

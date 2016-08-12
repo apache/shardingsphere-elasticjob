@@ -40,7 +40,7 @@ public class JobTraceEvent {
     
     private final String jobName;
     
-    private final Level level;
+    private final LogLevel logLevel;
     
     private final String message;
     
@@ -48,7 +48,7 @@ public class JobTraceEvent {
     
     private final String hostname = localHostService.getHostName();
     
-    private final Date timestamp = new Date();
+    private final Date creationTime = new Date();
     
     /**
      * 获取失败原因.
@@ -68,8 +68,7 @@ public class JobTraceEvent {
     /**
      * 事件级别.
      */
-    public enum Level {
-        
+    public enum LogLevel {
         TRACE, DEBUG, INFO, WARN, ERROR
     }
 }

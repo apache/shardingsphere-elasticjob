@@ -27,6 +27,7 @@ import com.dangdang.ddframe.job.api.executor.handler.JobExceptionHandler;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -34,7 +35,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * 弹性化分布式作业执行器.
- * 
+ *
  * @author zhangliang
  */
 @Getter(AccessLevel.PROTECTED)
@@ -49,6 +50,8 @@ public abstract class AbstractElasticJobExecutor {
     private final ExecutorService executorService;
     
     private final JobExceptionHandler jobExceptionHandler;
+    
+    private final JobEventBus jobEventBus = JobEventBus.getInstance();
     
     protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
@@ -72,7 +75,7 @@ public abstract class AbstractElasticJobExecutor {
     }
     
     private Object getDefaultHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum, final String handlerClassName) {
-        JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.WARN,
+        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.WARN,
                 String.format("Cannot instantiation class '%s', use default %s class.", handlerClassName, jobPropertiesEnum.getKey())));
         try {
             return Class.forName(jobPropertiesEnum.getDefaultValue()).newInstance();
@@ -85,7 +88,7 @@ public abstract class AbstractElasticJobExecutor {
      * 执行作业.
      */
     public final void execute() {
-        JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.TRACE, "Job execute begin."));
+        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.TRACE, "Job execute begin."));
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {
@@ -94,7 +97,7 @@ public abstract class AbstractElasticJobExecutor {
         
         ShardingContext shardingContext = jobFacade.getShardingContext();
         if (jobFacade.misfireIfNecessary(shardingContext.getShardingItemParameters().keySet())) {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.DEBUG, "Previous job is still running, misfired job will start after previous job completed."));
+            jobEventBus.post(new JobTraceEvent(jobName, LogLevel.DEBUG, "Previous job is still running, misfired job will start after previous job completed."));
             return;
         }
         jobFacade.cleanPreviousExecutionInfo();
@@ -106,12 +109,12 @@ public abstract class AbstractElasticJobExecutor {
             jobExceptionHandler.handleException(jobName, cause);
         }
         execute(shardingContext, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER);
-        JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.TRACE, String.format("Execute normal completed, sharding context:%s.", shardingContext)));
+        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Execute normal completed, sharding context:%s.", shardingContext)));
         while (jobFacade.isExecuteMisfired(shardingContext.getShardingItemParameters().keySet())) {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.TRACE, String.format("Execute misfired job, sharding context:%s.", shardingContext)));
+            jobEventBus.post(new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Execute misfired job, sharding context:%s.", shardingContext)));
             jobFacade.clearMisfire(shardingContext.getShardingItemParameters().keySet());
             execute(shardingContext, JobExecutionEvent.ExecutionSource.MISFIRE);
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.TRACE, String.format("Misfired job completed, sharding context:%s.", shardingContext)));
+            jobEventBus.post(new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Misfired job completed, sharding context:%s.", shardingContext)));
         }
         jobFacade.failoverIfNecessary();
         try {
@@ -121,29 +124,29 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:ON
             jobExceptionHandler.handleException(jobName, cause);
         }
-        JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.TRACE, "Execute all completed."));
+        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.TRACE, "Execute all completed."));
     }
     
     private void execute(final ShardingContext shardingContext, final JobExecutionEvent.ExecutionSource executionSource) {
         if (shardingContext.getShardingItemParameters().isEmpty()) {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, JobTraceEvent.Level.TRACE, String.format("Sharding item is empty, job execution context:%s.", shardingContext)));
+            jobEventBus.post(new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Sharding item is empty, job execution context:%s.", shardingContext)));
             return;
         }
         jobFacade.registerJobBegin(shardingContext);
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, shardingContext.getShardingItemParameters().keySet());
         try {
-            JobEventBus.getInstance().post(jobExecutionEvent);
+            jobEventBus.post(jobExecutionEvent);
             process(shardingContext);
             jobExecutionEvent.executionSuccess();
-        //CHECKSTYLE:OFF
+            //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
-        //CHECKSTYLE:ON
+            //CHECKSTYLE:ON
             jobExecutionEvent.executionFailure(cause);
             jobExceptionHandler.handleException(jobName, cause);
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             jobFacade.registerJobCompleted(shardingContext);
-            JobEventBus.getInstance().post(jobExecutionEvent);
+            jobEventBus.post(jobExecutionEvent);
         }
     }
     

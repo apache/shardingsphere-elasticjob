@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.executor;
 
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
@@ -65,7 +66,7 @@ public class JobExecutor {
      * 初始化作业.
      */
     public void init() {
-        JobEventBus.getInstance().post(new JobTraceEvent(liteJobConfig.getJobName(), JobTraceEvent.Level.DEBUG, "Job controller init."));
+        JobEventBus.getInstance().post(new JobTraceEvent(liteJobConfig.getJobName(), LogLevel.DEBUG, "Job controller init."));
         schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + liteJobConfig.getJobName());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
