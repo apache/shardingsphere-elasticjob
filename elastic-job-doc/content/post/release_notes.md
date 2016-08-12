@@ -8,9 +8,13 @@ weight=1
 
 ## 2.0.0-SNAPSHOT
 
-1. Elastic-Job-Cloud初始版本
+### 新功能
 
+1. Elastic-Job-Cloud初始版本
 1. 重构原Elastic-Job至Elastic-Job-Lite
+
+### 缺陷修正
+1. [ISSUE #123](https://github.com/dangdangdotcom/elastic-job/issues/123) 单机跑定时任务，zk断开后重连，没有触发leader选举 
 
 ## 1.1.1
 

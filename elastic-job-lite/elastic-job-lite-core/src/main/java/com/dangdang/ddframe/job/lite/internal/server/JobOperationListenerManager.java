@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
@@ -43,8 +42,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
-    private final LeaderElectionService leaderElectionService;
-    
     private final ServerService serverService;
     
     private final ShardingService shardingService;
@@ -56,7 +53,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         this.liteJobConfig = liteJobConfig;
         String jobName = liteJobConfig.getJobName();
         serverNode = new ServerNode(jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
