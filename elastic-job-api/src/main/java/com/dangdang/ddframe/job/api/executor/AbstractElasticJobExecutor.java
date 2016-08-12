@@ -59,6 +59,7 @@ public abstract class AbstractElasticJobExecutor {
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
         executorService = ((ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER)).createExecutorService();
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
+        jobEventBus.register(jobRootConfig.getTypeConfig().getCoreConfig().getJobEventConfigs());
     }
     
     private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {

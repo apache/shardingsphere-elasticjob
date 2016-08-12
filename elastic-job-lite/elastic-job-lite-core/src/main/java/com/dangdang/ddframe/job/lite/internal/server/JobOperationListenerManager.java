@@ -78,9 +78,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
             if (ConnectionState.LOST == newState) {
                 jobScheduleController.pauseJob();
             } else if (ConnectionState.RECONNECTED == newState) {
-                if (!leaderElectionService.hasLeader()) {
-                    leaderElectionService.leaderElection();
-                }
                 serverService.persistServerOnline(liteJobConfig);
                 executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
                 if (!serverService.isJobPausedManually()) {
