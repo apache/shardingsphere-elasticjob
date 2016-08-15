@@ -69,6 +69,23 @@ public class ReadyService {
     }
     
     /**
+     * 以作业名称为唯一依据放入待执行队列.
+     *
+     * @param jobName 作业名称
+     */
+    public void addUnique(final String jobName) {
+        if (!regCenter.isExisted(ReadyNode.ROOT)) {
+            return;
+        }
+        for (String each : regCenter.getChildrenKeys(ReadyNode.ROOT)) {
+            if (UniqueJob.from(each).getJobName().equals(jobName)) {
+                return;
+            }
+        }
+        regCenter.persist(ReadyNode.getReadyJobNodePath(new UniqueJob(jobName).getUniqueName()), "");
+    }
+    
+    /**
      * 从待执行队列中获取所有有资格执行的作业上下文.
      *
      * @param ineligibleJobContexts 无资格执行的作业上下文
