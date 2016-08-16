@@ -72,7 +72,31 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAdd() {
+        when(regCenter.isExisted("/state/ready")).thenReturn(false);
         readyService.add("test_job");
+        verify(regCenter).persist((String) any(), eq(""));
+    }
+    
+    @Test
+    public void assertAddUniqueWithoutRootNode() {
+        when(regCenter.isExisted("/state/ready")).thenReturn(false);
+        readyService.addUnique("test_job");
+        verify(regCenter, times(0)).persist((String) any(), eq(""));
+    }
+    
+    @Test
+    public void assertAddUniqueWithSameJobName() {
+        when(regCenter.isExisted("/state/ready")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("other_job@-@111", "test_job@-@111"));
+        readyService.addUnique("test_job");
+        verify(regCenter, times(0)).persist((String) any(), eq(""));
+    }
+    
+    @Test
+    public void assertAddUniqueWithoutSameJobName() {
+        when(regCenter.isExisted("/state/ready")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("other_job@-@111", "other_job@-@222"));
+        readyService.addUnique("test_job");
         verify(regCenter).persist((String) any(), eq(""));
     }
     

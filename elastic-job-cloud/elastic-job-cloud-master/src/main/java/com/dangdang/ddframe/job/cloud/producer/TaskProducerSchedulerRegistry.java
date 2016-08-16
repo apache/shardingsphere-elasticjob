@@ -19,8 +19,14 @@ package com.dangdang.ddframe.job.cloud.producer;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
+import java.util.Collection;
 
 /**
  * 发布任务作业调度注册表.
@@ -35,9 +41,12 @@ public class TaskProducerSchedulerRegistry {
     
     private final ConfigurationService configService;
     
+    private final ReadyService readyService;
+    
     private TaskProducerSchedulerRegistry(final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         schedulerInstance = new TaskProducerScheduler(regCenter);
+        readyService = new ReadyService(regCenter);
     }
     
     /**
@@ -61,7 +70,21 @@ public class TaskProducerSchedulerRegistry {
      * 启动作业调度器.
      */
     public void startup() {
-        schedulerInstance.startup(configService.loadAll());
+        Collection<CloudJobConfiguration> configs = configService.loadAll();
+        schedulerInstance.startup(filterJobConfiguration(configs, JobExecutionType.TRANSIENT));
+        for (CloudJobConfiguration each : filterJobConfiguration(configs, JobExecutionType.DAEMON)) {
+            readyService.addUnique(each.getJobName());
+        }
+    }
+    
+    private Collection<CloudJobConfiguration> filterJobConfiguration(final Collection<CloudJobConfiguration> configs, final JobExecutionType jobExecutionType) {
+        return Collections2.filter(configs, new Predicate<CloudJobConfiguration>() {
+            
+            @Override
+            public boolean apply(final CloudJobConfiguration input) {
+                return jobExecutionType == input.getJobExecutionType();
+            }
+        });
     }
     
     /**
@@ -70,7 +93,11 @@ public class TaskProducerSchedulerRegistry {
      * @param jobConfig 作业配置
      */
     public void register(final CloudJobConfiguration jobConfig) {
-        schedulerInstance.register(jobConfig);
+        if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
+            schedulerInstance.register(jobConfig);
+        } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
+            readyService.addUnique(jobConfig.getJobName()); 
+        }
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
         if (!jobConfigFromZk.isPresent()) {
             configService.add(jobConfig);

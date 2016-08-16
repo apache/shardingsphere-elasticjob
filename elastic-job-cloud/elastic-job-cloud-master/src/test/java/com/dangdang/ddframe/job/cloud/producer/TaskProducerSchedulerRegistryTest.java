@@ -66,6 +66,7 @@ public final class TaskProducerSchedulerRegistryTest {
     
     @Test
     public void assertStartup() {
+        // TODO 增加DAEMON类型测试
         when(configService.loadAll()).thenReturn(Collections.singletonList(jobConfig));
         taskProducerSchedulerRegistry.startup();
         verify(configService).loadAll();
