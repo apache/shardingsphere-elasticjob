@@ -30,19 +30,23 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public final class JobRdbEventListenerTest {
     
     @Mock
     private Caller caller;
     
-    private JobEventConfiguration rdbEventConfig = new JobRdbEventConfiguration(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_bus", "sa", "");
+    private JobEventConfiguration rdbEventConfig = new JobRdbEventConfiguration(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_bus", "sa", "", LogLevel.DEBUG);
     
     private JobEventBus jobEventBus = JobEventBus.getInstance();
     
     @Before
     public void setUp() {
-        jobEventBus.register(new JobEventConfiguration[]{rdbEventConfig});
+        Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>();
+        jobEventConfigs.put("rdb", rdbEventConfig);
+        jobEventBus.register(jobEventConfigs);
     }
     
     @After

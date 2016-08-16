@@ -114,7 +114,24 @@ public final class HardwareResourceTest {
                 + "\"shardingTotalCount\":10,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}},\"jobConfigContext\":" 
                 + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\"," 
                 + "\"jobExceptionHandler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\"," 
-                + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}}'"));
+                + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\",\"logEvent\":\"true\"}}'"));
+    }
+    
+    @Test
+    public void assertCreateTaskInfoWithEventConfig() {
+        HardwareResource hardwareResource = new HardwareResource(OfferBuilder.createOffer(10d, 1280d));
+        Protos.TaskInfo actual = hardwareResource.createTaskInfo(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfigurationWithEventConfiugration("test_job"), ExecutionType.READY), 0);
+        assertGetCommandWithEventConfig(actual);
+    }
+    
+    private void assertGetCommandWithEventConfig(final TaskInfo actual) {
+        assertThat(actual.getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\","
+                + "\"shardingTotalCount\":3,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}},\"jobConfigContext\":"
+                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\","
+                + "\"jobExceptionHandler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
+                + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","
+                + "\"driverClassName\":\"org.h2.Driver\",\"url\":\"jdbc:h2:mem:job_event_storage\","
+                + "\"username\":\"sa\",\"password\":\"\",\"logLevel\":\"INFO\",\"logEvent\":\"true\"}}'"));
     }
     
     @Test

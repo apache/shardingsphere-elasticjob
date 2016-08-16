@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public final class JobLogEventListenerTest {
     
@@ -37,7 +39,9 @@ public final class JobLogEventListenerTest {
     
     @Before
     public void setUp() {
-        jobEventBus.register(new JobEventConfiguration[]{logEventConfig});
+        Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>();
+        jobEventConfigs.put("log", logEventConfig);
+        jobEventBus.register(jobEventConfigs);
     }
     
     @After

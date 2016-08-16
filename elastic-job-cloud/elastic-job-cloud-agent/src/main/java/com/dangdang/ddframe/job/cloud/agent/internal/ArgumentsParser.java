@@ -52,7 +52,7 @@ public final class ArgumentsParser {
     public static ArgumentsParser parse(final String[] args) throws JobExecutionEnvironmentException {
         int argumentsLength = 1;
         if (argumentsLength != args.length) {
-            throw new JobExecutionEnvironmentException("Elastic-Job: Arguments parse failure, should have %s arguments.", argumentsLength);
+            throw new JobExecutionEnvironmentException("Elastic-Job: Arguments parse failure, should have %s argument.", argumentsLength);
         }
         ArgumentsParser result = new ArgumentsParser();
         CloudJobParameter cloudJobParameter = fromJson(args[0]);

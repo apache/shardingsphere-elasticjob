@@ -20,12 +20,16 @@ package com.dangdang.ddframe.job.api.config;
 import com.dangdang.ddframe.job.api.config.impl.JobProperties;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 作业核心配置.
@@ -54,7 +58,7 @@ public final class JobCoreConfiguration {
     
     private final JobProperties jobProperties;
     
-    private final JobEventConfiguration[] jobEventConfigs;
+    private final Map<String, JobEventConfiguration> jobEventConfigs;
     
     /**
      * 创建简单作业配置构建器.
@@ -89,7 +93,7 @@ public final class JobCoreConfiguration {
         
         private final JobProperties jobProperties = new JobProperties();
     
-        private JobEventConfiguration[] jobEventConfigs;
+        private final Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>(2, 1);
         
         /**
          * 设置分片序列号和个性化参数对照表.
@@ -193,7 +197,17 @@ public final class JobCoreConfiguration {
          * @return 作业配置构建器
          */
         public Builder jobEventConfiguration(final JobEventConfiguration... jobEventConfigs) {
-            this.jobEventConfigs = jobEventConfigs;
+            if (null == jobEventConfigs || 0 == jobEventConfigs.length) {
+                addJobLogEventConfiguration();
+            } else {
+                for (JobEventConfiguration each : jobEventConfigs) {
+                    if (each instanceof JobLogEventConfiguration) {
+                        this.jobEventConfigs.put("log", each);
+                    } else if (each instanceof JobRdbEventConfiguration) {
+                        this.jobEventConfigs.put("rdb", each);
+                    }
+                }
+            }
             return this;
         }
         
@@ -206,10 +220,14 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            if (jobEventConfigs == null) {
-                jobEventConfigs = new JobEventConfiguration[]{new JobLogEventConfiguration()};
+            if (0 == jobEventConfigs.size()) {
+                addJobLogEventConfiguration();
             }
             return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties, jobEventConfigs);
+        }
+        
+        private void addJobLogEventConfiguration() {
+            this.jobEventConfigs.put("log", new JobLogEventConfiguration());
         }
     }
 }

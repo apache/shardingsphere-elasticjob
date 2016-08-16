@@ -23,6 +23,8 @@ import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.cloud.agent.fixture.TestJob;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -47,8 +49,35 @@ public class JobConfigurationContextTest {
         assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SCRIPT)).getTypeConfig() instanceof ScriptJobConfiguration);
     }
     
+    @Test
+    public void assertSimpleJobConfigurationContextWithLogEvent() throws JobExecutionEnvironmentException {
+        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SIMPLE)).getTypeConfig().getCoreConfig().getJobEventConfigs().containsKey("log"));
+    }
+    
+    @Test
+    public void assertSimpleJobConfigurationContextWithLogAndRdbEvent() throws JobExecutionEnvironmentException {
+        Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
+        context.put("driverClassName", "org.h2.driver");
+        context.put("url", "jdbc:h2:mem:job_event_storage");
+        context.put("username", "sa");
+        context.put("password", "");
+        context.put("logLevel", LogLevel.INFO.name());
+        context.put("logEvent", "");
+        Map<String, JobEventConfiguration> jobEventConfigs = new JobConfigurationContext(context).getTypeConfig().getCoreConfig().getJobEventConfigs();
+        assertTrue(jobEventConfigs.containsKey("rdb"));
+        assertTrue(jobEventConfigs.containsKey("log"));
+    }
+    
+    @Test
+    public void assertSimpleJobConfigurationContextWithRdbEvenWhichMissingParameters() throws JobExecutionEnvironmentException {
+        Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
+        context.put("driverClassName", "org.h2.driver");
+        Map<String, JobEventConfiguration> jobEventConfigs = new JobConfigurationContext(context).getTypeConfig().getCoreConfig().getJobEventConfigs();
+        assertTrue(!jobEventConfigs.containsKey("rdb"));
+    }
+    
     private Map<String, String> buildJobConfigurationContextMap(final JobType jobType) {
-        Map<String, String> result = new HashMap<>(6, 1);
+        Map<String, String> result = new HashMap<>();
         result.put("jobName", "configuration_map_job");
         result.put("jobClass", TestJob.class.getCanonicalName());
         result.put("jobType", jobType.name());

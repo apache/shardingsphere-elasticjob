@@ -26,9 +26,16 @@ import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration.DataflowType;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +43,7 @@ import java.util.Map;
  *
  * @author caohao
  */
-class JobConfigurationContext implements JobRootConfiguration {
+public class JobConfigurationContext implements JobRootConfiguration {
     
     private JobTypeConfiguration jobTypeConfig;
     
@@ -49,10 +56,10 @@ class JobConfigurationContext implements JobRootConfiguration {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobType), "jobType can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, ignoredCron, ignoredShardingTotalCount).jobEventConfiguration().build();
+        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, ignoredCron, ignoredShardingTotalCount)
+                .jobEventConfiguration(buildJobEventConfiguration(jobConfigurationMap)).build();
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), jobConfigurationMap.get("executorServiceHandler"));
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobConfigurationMap.get("jobExceptionHandler"));
-        
         if (JobType.DATAFLOW.name().equals(jobType)) {
             jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, jobClass, 
                     DataflowType.valueOf(jobConfigurationMap.get("dataflowType")), Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
@@ -61,6 +68,21 @@ class JobConfigurationContext implements JobRootConfiguration {
         } else if (JobType.SCRIPT.name().equals(jobType)) {
             jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, jobConfigurationMap.get("scriptCommandLine"));
         }
+    }
+    
+    private JobEventConfiguration[] buildJobEventConfiguration(final Map<String, String> jobConfigurationMap) {
+        List<JobEventConfiguration> result = new ArrayList<>();
+        if (jobConfigurationMap.containsKey("driverClassName") && jobConfigurationMap.containsKey("url")
+                && jobConfigurationMap.containsKey("username") && jobConfigurationMap.containsKey("password") && jobConfigurationMap.containsKey("logLevel")) {
+            result.add(new JobRdbEventConfiguration(jobConfigurationMap.get("driverClassName"), jobConfigurationMap.get("url"),
+                    jobConfigurationMap.get("username"), jobConfigurationMap.get("password"), LogLevel.valueOf(jobConfigurationMap.get("logLevel").toUpperCase())));
+        } else {
+            result.add(new JobLogEventConfiguration());
+        }
+        if (jobConfigurationMap.containsKey("logEvent") && result.get(0) instanceof JobRdbEventConfiguration) {
+            result.add(new JobLogEventConfiguration());
+        }
+        return Iterables.toArray(result, JobEventConfiguration.class);
     }
     
     @Override

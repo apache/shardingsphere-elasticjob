@@ -171,7 +171,7 @@ final class JobRdbEventStorage {
                 + "`failure_cause` TEXT NULL, "
                 + "`is_success` BIT NOT NULL, "
                 + "`start_time` TIMESTAMP NOT NULL, "
-                + "`complete_time` TIMESTAMP, "
+                + "`complete_time` TIMESTAMP NULL, "
                 + "PRIMARY KEY (`id`));";
         try (
                 Connection conn = dataSource.getConnection();

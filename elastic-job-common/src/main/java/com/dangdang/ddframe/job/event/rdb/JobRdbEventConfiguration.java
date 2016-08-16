@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
  *
  * @author caohao
  */
-@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
 public final class JobRdbEventConfiguration implements JobEventConfiguration {
@@ -41,5 +39,5 @@ public final class JobRdbEventConfiguration implements JobEventConfiguration {
     
     private final String password;
     
-    private LogLevel logLevel = LogLevel.INFO;
+    private final LogLevel logLevel;
 }

@@ -25,6 +25,9 @@ import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Preconditions;
 import lombok.EqualsAndHashCode;
@@ -169,6 +172,26 @@ public final class HardwareResource {
             result.put("streamingProcess", ((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess() + "");
         } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
             result.put("scriptCommandLine", ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine());
+        }
+        result.putAll(buildJobEventConfiguration(jobConfig));
+        return result;
+    }
+    
+    private Map<String, String> buildJobEventConfiguration(final CloudJobConfiguration jobConfig) {
+        Map<String, String> result = new LinkedHashMap<>(6, 1);
+        Map<String, JobEventConfiguration> configurations = jobConfig.getTypeConfig().getCoreConfig().getJobEventConfigs();
+        for (JobEventConfiguration each : configurations.values()) {
+            if (each instanceof JobRdbEventConfiguration) {
+                JobRdbEventConfiguration rdbEventConfig = (JobRdbEventConfiguration) each;
+                result.put("driverClassName", rdbEventConfig.getDriverClassName());
+                result.put("url", rdbEventConfig.getUrl());
+                result.put("username", rdbEventConfig.getUsername());
+                result.put("password", rdbEventConfig.getPassword());
+                result.put("logLevel", rdbEventConfig.getLogLevel().name());
+            }
+            if (each instanceof JobLogEventConfiguration) {
+                result.put("logEvent", "true");
+            }
         }
         return result;
     }

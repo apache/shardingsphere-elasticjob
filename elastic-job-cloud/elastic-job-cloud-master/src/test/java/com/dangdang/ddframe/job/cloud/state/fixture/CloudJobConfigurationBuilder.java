@@ -20,6 +20,9 @@ package com.dangdang.ddframe.job.cloud.state.fixture;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -35,6 +38,15 @@ public final class CloudJobConfigurationBuilder {
     public static CloudJobConfiguration createOtherCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
+                1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", "bin/start.sh");
+    }
+    
+    public static CloudJobConfiguration createCloudJobConfigurationWithEventConfiugration(final String jobName) {
+        JobRdbEventConfiguration rdbEventConfig = new JobRdbEventConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
+        JobLogEventConfiguration logEventConfig = new JobLogEventConfiguration();
+        return new CloudJobConfiguration(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false)
+                .jobEventConfiguration(rdbEventConfig, logEventConfig).build(), TestSimpleJob.class.getCanonicalName()),
                 1.0d, 128.0d, "dockerImage", "http://localhost/app.jar", "bin/start.sh");
     }
 }

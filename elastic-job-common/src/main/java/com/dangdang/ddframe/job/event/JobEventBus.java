@@ -25,6 +25,7 @@ import com.google.common.eventbus.EventBus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -52,8 +53,8 @@ public final class JobEventBus {
         return instance;
     }
     
-    public void register(final JobEventConfiguration[] jobEventConfigs) {
-        for (JobEventConfiguration jobEventConfig : jobEventConfigs) {
+    public void register(final Map<String, JobEventConfiguration> jobEventConfigs) {
+        for (JobEventConfiguration jobEventConfig : jobEventConfigs.values()) {
             if (jobEventConfig instanceof JobRdbEventConfiguration) {
                 instance.register(new JobRdbEventListener((JobRdbEventConfiguration) jobEventConfig));
             } else if (jobEventConfig instanceof JobLogEventConfiguration) {

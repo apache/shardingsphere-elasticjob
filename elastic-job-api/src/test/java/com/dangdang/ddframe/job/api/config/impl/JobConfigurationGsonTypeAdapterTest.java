@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestJobRootConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;
+import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobWithEventConfiguration;
 import com.dangdang.ddframe.job.api.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.api.fixture.handler.ThrowJobExceptionHandler;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
@@ -58,6 +59,12 @@ public final class JobConfigurationGsonTypeAdapterTest {
     public void assertToScriptJobJson() {
         assertThat(GSON.toJson(new TestJobRootConfiguration(new TestScriptJobConfiguration("test.sh").getTypeConfig())),
                 is(APIJsonConstants.getScriptJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
+    }
+    
+    @Test
+    public void assertToSimpleJobWithEventJson() {
+        assertThat(GSON.toJson(new TestJobRootConfiguration(new TestSimpleJobWithEventConfiguration().getTypeConfig())),
+                is(APIJsonConstants.getSimpleJobWithLogEventJson(ThrowJobExceptionHandler.class.getCanonicalName())));
     }
     
     @Test

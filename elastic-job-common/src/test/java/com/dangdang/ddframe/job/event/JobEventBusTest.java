@@ -23,14 +23,16 @@ import com.dangdang.ddframe.job.event.fixture.Caller;
 import com.dangdang.ddframe.job.event.fixture.TestJobEvenListener;
 import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,7 +51,10 @@ public final class JobEventBusTest {
     
     @Before
     public void setUp() {
-        jobEventBus.register(new JobEventConfiguration[]{logEventConfig, rdbEventConfig});
+        Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>(2, 1);
+        jobEventConfigs.put("log", logEventConfig);
+        jobEventConfigs.put("rdb", rdbEventConfig);
+        jobEventBus.register(jobEventConfigs);
     }
     
     @After
