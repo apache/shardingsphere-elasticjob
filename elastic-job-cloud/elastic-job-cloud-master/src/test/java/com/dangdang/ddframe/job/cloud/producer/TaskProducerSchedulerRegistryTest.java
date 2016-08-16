@@ -19,17 +19,21 @@ package com.dangdang.ddframe.job.cloud.producer;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -47,6 +51,9 @@ public final class TaskProducerSchedulerRegistryTest {
     private ConfigurationService configService;
     
     @Mock
+    private ReadyService readyService;
+    
+    @Mock
     private TaskProducerScheduler taskProducerScheduler;
     
     private TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
@@ -56,7 +63,9 @@ public final class TaskProducerSchedulerRegistryTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(regCenter);
+        ReflectionUtils.setFieldValue(taskProducerSchedulerRegistry, "schedulerInstance", taskProducerScheduler);
         ReflectionUtils.setFieldValue(taskProducerSchedulerRegistry, "configService", configService);
+        ReflectionUtils.setFieldValue(taskProducerSchedulerRegistry, "readyService", readyService);
     }
     
     @Test
@@ -66,10 +75,11 @@ public final class TaskProducerSchedulerRegistryTest {
     
     @Test
     public void assertStartup() {
-        // TODO 增加DAEMON类型测试
-        when(configService.loadAll()).thenReturn(Collections.singletonList(jobConfig));
+        when(configService.loadAll()).thenReturn(Arrays.asList(jobConfig, CloudJobConfigurationBuilder.createCloudJobConfiguration("other_job", JobExecutionType.DAEMON)));
         taskProducerSchedulerRegistry.startup();
         verify(configService).loadAll();
+        verify(taskProducerScheduler).startup(Matchers.<Collection<CloudJobConfiguration>>any());
+        verify(readyService).addUnique("other_job");
     }
     
     @Test

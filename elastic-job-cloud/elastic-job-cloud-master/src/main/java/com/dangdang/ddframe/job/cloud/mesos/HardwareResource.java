@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.api.config.impl.ShardingItemParameters;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
@@ -133,7 +134,6 @@ public final class HardwareResource {
     public Protos.TaskInfo createTaskInfo(final JobContext jobContext, final int shardingItem) {
         CloudJobConfiguration jobConfig = jobContext.getJobConfig();
         Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new TaskContext(jobConfig.getJobName(), shardingItem, jobContext.getType(), offer.getSlaveId().getValue()).getId()).build();
-        
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
@@ -143,13 +143,14 @@ public final class HardwareResource {
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(
                 String.format(RUN_COMMAND, jobConfig.getBootstrapScript(), toCloudJobParameterJson(shardingContext, jobConfig))).build();
+        Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
                 .setTaskId(taskId)
                 .setSlaveId(offer.getSlaveId())
                 .addResources(buildResource("cpus", jobConfig.getCpuCount()))
                 .addResources(buildResource("mem", jobConfig.getMemoryMB()))
-                .setCommand(command)
+                .setExecutor(executorInfo)
                 .build();
     }
     
@@ -161,10 +162,11 @@ public final class HardwareResource {
     }
     
     private Map<String, String> buildJobConfigurationContext(final CloudJobConfiguration jobConfig) {
-        Map<String, String> result = new LinkedHashMap<>(6, 1);
+        Map<String, String> result = new LinkedHashMap<>(16, 1);
         result.put("jobType", jobConfig.getTypeConfig().getJobType().name());
         result.put("jobName", jobConfig.getJobName());
         result.put("jobClass", jobConfig.getTypeConfig().getJobClass());
+        result.put("cron", JobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getTypeConfig().getCoreConfig().getCron().replaceAll("\\s+", "&nbsp;") : "");
         result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
         result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {

@@ -43,8 +43,7 @@ public final class CloudJobConfiguration implements JobRootConfiguration {
     
     private final String bootstrapScript;
     
-    // TODO 去掉初始值,改为可配置
-    private final JobExecutionType jobExecutionType = JobExecutionType.TRANSIENT;
+    private final JobExecutionType jobExecutionType;
     
     /**
      * 获取作业名称.

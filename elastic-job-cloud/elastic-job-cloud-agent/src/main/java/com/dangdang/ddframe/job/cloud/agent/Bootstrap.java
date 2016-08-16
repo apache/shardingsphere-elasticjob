@@ -17,12 +17,15 @@
 
 package com.dangdang.ddframe.job.cloud.agent;
 
-import com.dangdang.ddframe.job.api.JobExecutorFactory;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.cloud.agent.executor.DaemonTaskExecutor;
+import com.dangdang.ddframe.job.cloud.agent.executor.TransientTaskExecutor;
 import com.dangdang.ddframe.job.cloud.agent.internal.ArgumentsParser;
-import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacade;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.mesos.Executor;
+import org.apache.mesos.MesosExecutorDriver;
+import org.apache.mesos.Protos;
 
 /**
  * 云作业启动器.
@@ -43,6 +46,13 @@ public final class Bootstrap {
      */
     public static void execute(final String[] args) throws JobExecutionEnvironmentException {
         ArgumentsParser parser = ArgumentsParser.parse(args);
-        JobExecutorFactory.getJobExecutor(parser.getElasticJob(), new CloudJobFacade(parser.getShardingContext(), parser.getJobConfig())).execute();
+        Executor executor;
+        if (parser.getJobConfig().isTransient()) {
+            executor = new TransientTaskExecutor(parser.getElasticJob(), parser.getShardingContext(), parser.getJobConfig());
+        } else {
+            executor = new DaemonTaskExecutor(parser.getElasticJob(), parser.getShardingContext(), parser.getJobConfig());
+        }
+        MesosExecutorDriver driver = new MesosExecutorDriver(executor);
+        System.exit(Protos.Status.DRIVER_STOPPED == driver.run() ? 0 : -1);
     }
 }

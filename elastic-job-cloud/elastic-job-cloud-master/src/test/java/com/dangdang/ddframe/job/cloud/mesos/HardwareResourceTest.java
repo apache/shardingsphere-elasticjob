@@ -109,10 +109,10 @@ public final class HardwareResourceTest {
     }
     
     private void assertGetCommand(final TaskInfo actual) {
-        assertThat(actual.getCommand().getUris(0).getValue(), is("http://localhost/app.jar"));
-        assertThat(actual.getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\"," 
+        assertThat(actual.getExecutor().getCommand().getUris(0).getValue(), is("http://localhost/app.jar"));
+        assertThat(actual.getExecutor().getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\"," 
                 + "\"shardingTotalCount\":10,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}},\"jobConfigContext\":" 
-                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\"," 
+                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"cron\":\"\"," 
                 + "\"jobExceptionHandler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\"," 
                 + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\",\"logEvent\":\"true\"}}'"));
     }
@@ -120,14 +120,14 @@ public final class HardwareResourceTest {
     @Test
     public void assertCreateTaskInfoWithEventConfig() {
         HardwareResource hardwareResource = new HardwareResource(OfferBuilder.createOffer(10d, 1280d));
-        Protos.TaskInfo actual = hardwareResource.createTaskInfo(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfigurationWithEventConfiugration("test_job"), ExecutionType.READY), 0);
+        Protos.TaskInfo actual = hardwareResource.createTaskInfo(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfigurationWithEventConfiguration("test_job"), ExecutionType.READY), 0);
         assertGetCommandWithEventConfig(actual);
     }
     
     private void assertGetCommandWithEventConfig(final TaskInfo actual) {
-        assertThat(actual.getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\","
+        assertThat(actual.getExecutor().getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\","
                 + "\"shardingTotalCount\":3,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}},\"jobConfigContext\":"
-                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\","
+                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"cron\":\"\","
                 + "\"jobExceptionHandler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
                 + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","
                 + "\"driverClassName\":\"org.h2.Driver\",\"url\":\"jdbc:h2:mem:job_event_storage\","

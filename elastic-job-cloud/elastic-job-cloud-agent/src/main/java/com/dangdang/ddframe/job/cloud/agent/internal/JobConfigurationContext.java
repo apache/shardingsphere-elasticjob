@@ -45,19 +45,20 @@ import java.util.Map;
  */
 public class JobConfigurationContext implements JobRootConfiguration {
     
+    private static final String IGNORE_CRON = "ignoredCron";
+    
     private JobTypeConfiguration jobTypeConfig;
     
     JobConfigurationContext(final Map<String, String> jobConfigurationMap) {
-        String ignoredCron = "ignoredCron";
         int ignoredShardingTotalCount = 1;
         String jobClass = jobConfigurationMap.get("jobClass");
         String jobType = jobConfigurationMap.get("jobType");
         String jobName = jobConfigurationMap.get("jobName");
+        String cron = Strings.isNullOrEmpty(jobConfigurationMap.get("cron")) ? IGNORE_CRON : jobConfigurationMap.get("cron").replaceAll("&nbsp;", " ");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobType), "jobType can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, ignoredCron, ignoredShardingTotalCount)
-                .jobEventConfiguration(buildJobEventConfiguration(jobConfigurationMap)).build();
+        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount).jobEventConfiguration(buildJobEventConfiguration(jobConfigurationMap)).build();
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), jobConfigurationMap.get("executorServiceHandler"));
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobConfigurationMap.get("jobExceptionHandler"));
         if (JobType.DATAFLOW.name().equals(jobType)) {
@@ -83,6 +84,15 @@ public class JobConfigurationContext implements JobRootConfiguration {
             result.add(new JobLogEventConfiguration());
         }
         return Iterables.toArray(result, JobEventConfiguration.class);
+    }
+    
+    /**
+     * 判断是否为瞬时作业.
+     * 
+     * @return 是否为瞬时作业
+     */
+    public boolean isTransient() {
+        return IGNORE_CRON.equals(jobTypeConfig.getCoreConfig().getCron());
     }
     
     @Override

@@ -99,7 +99,7 @@ public final class BootstrapEnvironment {
     @Getter
     enum EnvironmentArgument {
         
-        HOSTNAME("hostname", "", true),
+        HOSTNAME("hostname", "127.0.0.1", true),
         
         MESOS_URL("mesos_url", "zk://localhost:2181/mesos", true),
         

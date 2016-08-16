@@ -84,6 +84,9 @@ public final class CloudJobConfigurationGsonFactory {
                 case "bootstrapScript":
                     customizedValueMap.put("bootstrapScript", in.nextString());
                     break;
+                case "jobExecutionType":
+                    customizedValueMap.put("jobExecutionType", in.nextString());
+                    break;
                 default:
                     in.skipValue();
                     break;
@@ -92,8 +95,8 @@ public final class CloudJobConfigurationGsonFactory {
         
         @Override
         protected CloudJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
-            return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"),
-                    (String) customizedValueMap.get("dockerImageName"), (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"));
+            return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), (String) customizedValueMap.get("dockerImageName"), 
+                    (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
         }
         
         @Override
@@ -103,6 +106,7 @@ public final class CloudJobConfigurationGsonFactory {
             out.name("dockerImageName").value(value.getDockerImageName());
             out.name("appURL").value(value.getAppURL());
             out.name("bootstrapScript").value(value.getBootstrapScript());
+            out.name("jobExecutionType").value(value.getJobExecutionType().name());
         }
     }
 }
