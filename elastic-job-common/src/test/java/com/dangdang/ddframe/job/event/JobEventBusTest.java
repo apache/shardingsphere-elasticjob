@@ -60,6 +60,7 @@ public final class JobEventBusTest {
     @After
     public void tearDown() {
         jobEventBus.clearListeners();
+        TestJobEvenListener.reset();
     }
     
     @Test
@@ -70,19 +71,25 @@ public final class JobEventBusTest {
     }
     
     @Test
-    public void assertPostWithListenerRegistered() {
+    public void assertPostWithListenerRegistered() throws InterruptedException {
         jobEventBus.register(new TestJobEvenListener(caller));
         jobEventBus.post(new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
         jobEventBus.post(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        while (!TestJobEvenListener.isExecutionEventCalled() || !TestJobEvenListener.isTraceEventCalled()) {
+            Thread.sleep(100L);
+        }
         verify(caller, times(2)).call();
     }
     
     @Test
-    public void assertPostWithListenerRegisteredTwice() {
+    public void assertPostWithListenerRegisteredTwice() throws InterruptedException {
         jobEventBus.register(new TestJobEvenListener(caller));
         jobEventBus.register(new TestJobEvenListener(caller));
         jobEventBus.post(new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
         jobEventBus.post(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        while (!TestJobEvenListener.isExecutionEventCalled() || !TestJobEvenListener.isTraceEventCalled()) {
+            Thread.sleep(100L);
+        }
         verify(caller, times(2)).call();
     }
 }

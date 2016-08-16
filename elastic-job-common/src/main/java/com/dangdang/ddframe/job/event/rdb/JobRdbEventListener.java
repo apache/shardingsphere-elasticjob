@@ -21,6 +21,8 @@ import com.dangdang.ddframe.job.event.JobEventListener;
 import com.dangdang.ddframe.job.event.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
 
+import java.sql.SQLException;
+
 /**
  * 运行痕迹事件数据库监听器.
  *
@@ -30,7 +32,7 @@ public final class JobRdbEventListener implements JobEventListener {
     
     private final JobRdbEventStorage repository;
     
-    public JobRdbEventListener(final JobRdbEventConfiguration config) {
+    public JobRdbEventListener(final JobRdbEventConfiguration config) throws SQLException {
         repository = new JobRdbEventStorage(config.getDriverClassName(), config.getUrl(), config.getUsername(), config.getPassword(), config.getLogLevel());
     }
     

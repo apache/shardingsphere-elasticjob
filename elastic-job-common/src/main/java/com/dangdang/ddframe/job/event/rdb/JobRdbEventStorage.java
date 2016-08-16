@@ -42,7 +42,7 @@ final class JobRdbEventStorage {
     
     private final LogLevel logLevel;
     
-    JobRdbEventStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) {
+    JobRdbEventStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) throws SQLException {
         this.logLevel = logLevel;
         // TODO 细化pool配置
         dataSource = new BasicDataSource();
@@ -50,13 +50,8 @@ final class JobRdbEventStorage {
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
-        try {
-            createJobExecutionTable();
-            createJobTraceTable();
-        } catch (final SQLException ex) {
-            // TODO common和api包合并后梳理异常 
-            throw new RuntimeException(ex.getCause());
-        }
+        createJobExecutionTable();
+        createJobTraceTable();
     }
     
     boolean addJobTraceEvent(final JobTraceEvent traceEvent) {
@@ -75,8 +70,8 @@ final class JobRdbEventStorage {
                 preparedStatement.execute();
                 result = true;
             } catch (final SQLException ex) {
-                // TODO common和api包合并后梳理异常
-                throw new RuntimeException(ex.getCause());
+                // TODO 记录失败直接输出日志,未来可考虑配置化
+                log.error(ex.getMessage());
             }
         }
         return result;
@@ -100,8 +95,8 @@ final class JobRdbEventStorage {
                 preparedStatement.execute();
                 result = true;
             } catch (final SQLException ex) {
-                // TODO common和api包合并后梳理异常
-                throw new RuntimeException(ex.getCause());
+                // TODO 记录失败直接输出日志,未来可考虑配置化
+                log.error(ex.getMessage());
             }
         } else {
             if (jobExecutionEvent.isSuccess()) {
@@ -115,8 +110,8 @@ final class JobRdbEventStorage {
                     preparedStatement.execute();
                     result = true;
                 } catch (final SQLException ex) {
-                    // TODO common和api包合并后梳理异常
-                    throw new RuntimeException(ex.getCause());
+                    // TODO 记录失败直接输出日志,未来可考虑配置化
+                    log.error(ex.getMessage());
                 }
             } else {
                 String sql = "UPDATE `job_execution_log` SET `is_success` = ?, `failure_cause` = ? WHERE id = ?";
@@ -129,8 +124,8 @@ final class JobRdbEventStorage {
                     preparedStatement.execute();
                     result = true;
                 } catch (final SQLException ex) {
-                    // TODO common和api包合并后梳理异常
-                    throw new RuntimeException(ex.getCause());
+                    // TODO 记录失败直接输出日志,未来可考虑配置化
+                    log.error(ex.getMessage());
                 }
             }
         }

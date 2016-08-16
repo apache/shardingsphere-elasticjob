@@ -21,12 +21,19 @@ import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
 import com.dangdang.ddframe.job.event.log.JobLogEventListener;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventListener;
+import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
+import com.google.common.util.concurrent.MoreExecutors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 运行痕迹事件总线.
@@ -34,11 +41,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public final class JobEventBus {
     
     private static volatile JobEventBus instance;
     
-    private final EventBus eventBus = new EventBus();
+    private final EventBus eventBus = new AsyncEventBus(MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(
+            new ThreadPoolExecutor(0, Runtime.getRuntime().availableProcessors() * 2, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>()))));
     
     private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
     
@@ -56,7 +65,12 @@ public final class JobEventBus {
     public void register(final Map<String, JobEventConfiguration> jobEventConfigs) {
         for (JobEventConfiguration jobEventConfig : jobEventConfigs.values()) {
             if (jobEventConfig instanceof JobRdbEventConfiguration) {
-                instance.register(new JobRdbEventListener((JobRdbEventConfiguration) jobEventConfig));
+                try {
+                    instance.register(new JobRdbEventListener((JobRdbEventConfiguration) jobEventConfig));
+                } catch (final SQLException ex) {
+                    log.error(ex.getMessage());
+                }
+    
             } else if (jobEventConfig instanceof JobLogEventConfiguration) {
                 instance.register(new JobLogEventListener((JobLogEventConfiguration) jobEventConfig));
             }
