@@ -17,12 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.agent.executor;
 
-/**
- * 常驻作业任务执行器.
- *
- * @author zhangliang
- */
-
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacade;
@@ -32,6 +26,11 @@ import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
 
+/**
+ * 常驻作业任务执行器.
+ *
+ * @author zhangliang
+ */
 @RequiredArgsConstructor
 public final class DaemonTaskExecutor implements Executor {
     
@@ -55,15 +54,15 @@ public final class DaemonTaskExecutor implements Executor {
     
     @Override
     public void launchTask(final ExecutorDriver executorDriver, final Protos.TaskInfo taskInfo) {
+        executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
         try {
-            new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContext, jobConfig)).init();
+            new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContext, jobConfig), executorDriver, taskInfo.getTaskId()).init();
         // CHECKSTYLE:OFF
         } catch (final Throwable ex) {
         // CHECKSTYLE:ON
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).build());
             throw ex;
         }
-        executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
     }
     
     @Override

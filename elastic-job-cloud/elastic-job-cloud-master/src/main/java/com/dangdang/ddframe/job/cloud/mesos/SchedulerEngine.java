@@ -154,6 +154,10 @@ public final class SchedulerEngine implements Scheduler {
         TaskContext taskContext = TaskContext.from(taskId);
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
         switch (taskStatus.getState()) {
+            case TASK_RUNNING:
+                // TODO 根据Running的message更新esjob本身状态
+                log.info("task status is: {}, message is: {}, source is: {}", taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
+                break;
             case TASK_FINISHED:
             case TASK_KILLED:
                 facadeService.removeRunning(taskContext.getMetaInfo());

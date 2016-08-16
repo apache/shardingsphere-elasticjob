@@ -25,6 +25,8 @@ import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.google.common.base.Joiner;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.apache.mesos.ExecutorDriver;
+import org.apache.mesos.Protos;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
@@ -52,6 +54,10 @@ public final class DaemonTaskScheduler {
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
     
+    private static final String EXECUTOR_DRIVER_DATA_MAP_KEY = "executorDriver";
+    
+    private static final String TASK_ID_DATA_MAP_KEY = "taskId";
+    
     private static final String SCHEDULER_INSTANCE_NAME_SUFFIX = "Scheduler";
     
     private static final String CRON_TRIGGER_IDENTITY_SUFFIX = "Trigger";
@@ -62,6 +68,10 @@ public final class DaemonTaskScheduler {
     
     private final JobFacade jobFacade;
     
+    private final ExecutorDriver executorDriver;
+    
+    private final Protos.TaskID taskId;
+    
     /**
      * 初始化作业.
      */
@@ -69,6 +79,8 @@ public final class DaemonTaskScheduler {
         JobDetail jobDetail = JobBuilder.newJob(DaemonJob.class).withIdentity(jobRootConfig.getTypeConfig().getCoreConfig().getJobName()).build();
         jobDetail.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJob);
         jobDetail.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
+        jobDetail.getJobDataMap().put(EXECUTOR_DRIVER_DATA_MAP_KEY, executorDriver);
+        jobDetail.getJobDataMap().put(TASK_ID_DATA_MAP_KEY, taskId);
         try {
             scheduleJob(initializeScheduler(jobDetail.getKey().toString()), jobDetail, Joiner.on("_").join(jobRootConfig.getTypeConfig().getCoreConfig().getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX), 
                     jobRootConfig.getTypeConfig().getCoreConfig().getCron());
@@ -122,9 +134,17 @@ public final class DaemonTaskScheduler {
         @Setter
         private JobFacade jobFacade;
         
+        @Setter
+        private ExecutorDriver executorDriver;
+    
+        @Setter
+        private Protos.TaskID taskId;
+        
         @Override
         public void execute(final JobExecutionContext context) throws JobExecutionException {
+            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("JobBegin").build());
             JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("JobComplete").build());
         }
     }
 }

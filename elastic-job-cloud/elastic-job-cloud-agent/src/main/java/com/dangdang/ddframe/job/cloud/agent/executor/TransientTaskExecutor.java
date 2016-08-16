@@ -17,12 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.agent.executor;
 
-/**
- * 瞬时作业任务执行器.
- *
- * @author zhangliang
- */
-
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutorFactory;
 import com.dangdang.ddframe.job.api.ShardingContext;
@@ -33,6 +27,11 @@ import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
 
+/**
+ * 瞬时作业任务执行器.
+ *
+ * @author zhangliang
+ */
 @RequiredArgsConstructor
 public final class TransientTaskExecutor implements Executor {
     
