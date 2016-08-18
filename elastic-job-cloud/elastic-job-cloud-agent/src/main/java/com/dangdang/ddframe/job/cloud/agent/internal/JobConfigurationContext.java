@@ -49,12 +49,12 @@ public class JobConfigurationContext implements JobRootConfiguration {
     
     private JobTypeConfiguration jobTypeConfig;
     
-    JobConfigurationContext(final Map<String, String> jobConfigurationMap) {
+    public JobConfigurationContext(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
         String jobClass = jobConfigurationMap.get("jobClass");
         String jobType = jobConfigurationMap.get("jobType");
         String jobName = jobConfigurationMap.get("jobName");
-        String cron = Strings.isNullOrEmpty(jobConfigurationMap.get("cron")) ? IGNORE_CRON : jobConfigurationMap.get("cron").replaceAll("&nbsp;", " ");
+        String cron = Strings.isNullOrEmpty(jobConfigurationMap.get("cron")) ? IGNORE_CRON : jobConfigurationMap.get("cron");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobType), "jobType can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");

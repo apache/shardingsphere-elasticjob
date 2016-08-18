@@ -29,10 +29,10 @@ import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
-import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Preconditions;
 import com.google.protobuf.ByteString;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Protos;
 
 import java.math.BigDecimal;
@@ -149,15 +149,15 @@ public final class HardwareResource {
                 .addResources(buildResource("cpus", jobConfig.getCpuCount()))
                 .addResources(buildResource("mem", jobConfig.getMemoryMB()))
                 .setExecutor(executorInfo)
-                .setData(ByteString.copyFrom(toCloudJobParameterJson(shardingContext, jobConfig).getBytes()))
+                .setData(ByteString.copyFrom(serialize(shardingContext, jobConfig)))
                 .build();
     }
     
-    private String toCloudJobParameterJson(final ShardingContext shardingContext, final CloudJobConfiguration jobConfig) {
-        Map<String, Object> cloudJobParameterMap = new LinkedHashMap<>(2, 1);
-        cloudJobParameterMap.put("shardingContext", shardingContext);
-        cloudJobParameterMap.put("jobConfigContext", buildJobConfigurationContext(jobConfig));
-        return GsonFactory.getGson().toJson(cloudJobParameterMap);
+    private byte[] serialize(final ShardingContext shardingContext, final CloudJobConfiguration jobConfig) {
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>(2, 1);
+        result.put("shardingContext", shardingContext);
+        result.put("jobConfigContext", buildJobConfigurationContext(jobConfig));
+        return SerializationUtils.serialize(result);
     }
     
     private Map<String, String> buildJobConfigurationContext(final CloudJobConfiguration jobConfig) {
@@ -165,7 +165,7 @@ public final class HardwareResource {
         result.put("jobType", jobConfig.getTypeConfig().getJobType().name());
         result.put("jobName", jobConfig.getJobName());
         result.put("jobClass", jobConfig.getTypeConfig().getJobClass());
-        result.put("cron", JobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getTypeConfig().getCoreConfig().getCron().replaceAll("\\s+", "&nbsp;") : "");
+        result.put("cron", JobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getTypeConfig().getCoreConfig().getCron() : "");
         result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
         result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {

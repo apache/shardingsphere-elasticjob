@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Getter
 @ToString
-public final class ShardingContext {
+public final class ShardingContext implements Serializable {
+    
+    private static final long serialVersionUID = -4585977349142082152L;
     
     /**
      * 作业名称.

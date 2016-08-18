@@ -17,13 +17,19 @@
 
 package com.dangdang.ddframe.job.cloud.agent.executor;
 
+import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutorFactory;
-import com.dangdang.ddframe.job.cloud.agent.internal.ArgumentsParser;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacade;
 import com.dangdang.ddframe.job.cloud.agent.internal.JobConfigurationContext;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
+
+import java.util.Map;
 
 /**
  * 常驻作业任务执行器.
@@ -46,21 +52,40 @@ public final class TaskExecutor implements Executor {
     
     @Override
     public void launchTask(final ExecutorDriver executorDriver, final Protos.TaskInfo taskInfo) {
-        ArgumentsParser parser = ArgumentsParser.parse(new String(taskInfo.getData().toByteArray()));
         executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
-        JobConfigurationContext jobConfig = parser.getJobConfig();
+        Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
+        ShardingContext shardingContext = (ShardingContext) data.get("shardingContext");
+        @SuppressWarnings("unchecked")
+        JobConfigurationContext jobConfig = new JobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
         try {
+            ElasticJob elasticJob = getElasticJobInstance(jobConfig);
             if (jobConfig.isTransient()) {
-                JobExecutorFactory.getJobExecutor(parser.getElasticJob(), new CloudJobFacade(parser.getShardingContext(), jobConfig)).execute();
+                JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContext, jobConfig)).execute();
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
             } else {
-                new DaemonTaskScheduler(parser.getElasticJob(), jobConfig, new CloudJobFacade(parser.getShardingContext(), jobConfig), executorDriver, taskInfo.getTaskId()).init();
+                new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContext, jobConfig), executorDriver, taskInfo.getTaskId()).init();
             }
             // CHECKSTYLE:OFF
         } catch (final Throwable ex) {
             // CHECKSTYLE:ON
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).build());
             throw ex;
+        }
+    }
+    
+    private ElasticJob getElasticJobInstance(final JobConfigurationContext jobConfig) {
+        String jobClass = jobConfig.getTypeConfig().getJobClass();
+        try {
+            Class<?> elasticJobClass = Class.forName(jobClass);
+            if (!ElasticJob.class.isAssignableFrom(elasticJobClass)) {
+                throw new JobSystemException("Elastic-Job: Class '%s' must implements ElasticJob interface.", jobClass);
+            }
+            if (elasticJobClass != ScriptJob.class) {
+                return (ElasticJob) elasticJobClass.newInstance();
+            }
+            return null;
+        } catch (final ReflectiveOperationException ex) {
+            throw new JobSystemException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
         }
     }
     

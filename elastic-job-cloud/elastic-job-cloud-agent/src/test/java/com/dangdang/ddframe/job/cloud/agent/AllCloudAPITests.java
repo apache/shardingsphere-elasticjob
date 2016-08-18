@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.agent;
 
-import com.dangdang.ddframe.job.cloud.agent.internal.ArgumentsParserTest;
 import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacadeTest;
 import com.dangdang.ddframe.job.cloud.agent.internal.JobConfigurationContextTest;
 import lombok.AccessLevel;
@@ -28,7 +27,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        ArgumentsParserTest.class, 
         CloudJobFacadeTest.class,
         JobConfigurationContextTest.class
     })
