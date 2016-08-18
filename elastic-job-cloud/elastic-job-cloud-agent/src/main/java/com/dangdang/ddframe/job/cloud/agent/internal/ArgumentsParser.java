@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.agent.internal;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import lombok.AccessLevel;
@@ -47,27 +47,22 @@ public final class ArgumentsParser {
      * 解析.
      * @param args 命令行参数
      * @return 解析对象
-     * @throws JobExecutionEnvironmentException 作业执行环境异常
      */
-    public static ArgumentsParser parse(final String[] args) throws JobExecutionEnvironmentException {
-        int argumentsLength = 1;
-        if (argumentsLength != args.length) {
-            throw new JobExecutionEnvironmentException("Elastic-Job: Arguments parse failure, should have %s argument.", argumentsLength);
-        }
+    public static ArgumentsParser parse(final String args) {
         ArgumentsParser result = new ArgumentsParser();
-        CloudJobParameter cloudJobParameter = fromJson(args[0]);
+        CloudJobParameter cloudJobParameter = fromJson(args);
         result.jobConfig = new JobConfigurationContext(cloudJobParameter.getJobConfigContext());
         String jobClass = result.jobConfig.getTypeConfig().getJobClass();
         try {
             Class<?> elasticJobClass = Class.forName(jobClass);
             if (!ElasticJob.class.isAssignableFrom(elasticJobClass)) {
-                throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' must implements ElasticJob interface.", jobClass);
+                throw new JobSystemException("Elastic-Job: Class '%s' must implements ElasticJob interface.", jobClass);
             }
             if (elasticJobClass != ScriptJob.class) {
                 result.elasticJob = (ElasticJob) elasticJobClass.newInstance();
             }
         } catch (final ReflectiveOperationException ex) {
-            throw new JobExecutionEnvironmentException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
+            throw new JobSystemException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
         }
         result.shardingContext = cloudJobParameter.getShardingContext();
         return result;

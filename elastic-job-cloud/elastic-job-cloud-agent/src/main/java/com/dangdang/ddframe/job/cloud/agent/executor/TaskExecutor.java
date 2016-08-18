@@ -17,11 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.agent.executor;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.JobExecutorFactory;
+import com.dangdang.ddframe.job.cloud.agent.internal.ArgumentsParser;
 import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacade;
 import com.dangdang.ddframe.job.cloud.agent.internal.JobConfigurationContext;
-import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
@@ -31,14 +30,7 @@ import org.apache.mesos.Protos;
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor
-public final class DaemonTaskExecutor implements Executor {
-    
-    private final ElasticJob elasticJob;
-    
-    private final ShardingContext shardingContext;
-    
-    private final JobConfigurationContext jobConfig;
+public final class TaskExecutor implements Executor {
     
     @Override
     public void registered(final ExecutorDriver executorDriver, final Protos.ExecutorInfo executorInfo, final Protos.FrameworkInfo frameworkInfo, final Protos.SlaveInfo slaveInfo) {
@@ -54,12 +46,19 @@ public final class DaemonTaskExecutor implements Executor {
     
     @Override
     public void launchTask(final ExecutorDriver executorDriver, final Protos.TaskInfo taskInfo) {
+        ArgumentsParser parser = ArgumentsParser.parse(new String(taskInfo.getData().toByteArray()));
         executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
+        JobConfigurationContext jobConfig = parser.getJobConfig();
         try {
-            new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContext, jobConfig), executorDriver, taskInfo.getTaskId()).init();
-        // CHECKSTYLE:OFF
+            if (jobConfig.isTransient()) {
+                JobExecutorFactory.getJobExecutor(parser.getElasticJob(), new CloudJobFacade(parser.getShardingContext(), jobConfig)).execute();
+                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
+            } else {
+                new DaemonTaskScheduler(parser.getElasticJob(), jobConfig, new CloudJobFacade(parser.getShardingContext(), jobConfig), executorDriver, taskInfo.getTaskId()).init();
+            }
+            // CHECKSTYLE:OFF
         } catch (final Throwable ex) {
-        // CHECKSTYLE:ON
+            // CHECKSTYLE:ON
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).build());
             throw ex;
         }

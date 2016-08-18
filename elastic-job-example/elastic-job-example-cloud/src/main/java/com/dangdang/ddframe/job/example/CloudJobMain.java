@@ -17,14 +17,13 @@
 
 package com.dangdang.ddframe.job.example;
 
-import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.cloud.agent.Bootstrap;
 
 public class CloudJobMain {
     
     // CHECKSTYLE:OFF
-    public static void main(final String[] args) throws JobExecutionEnvironmentException {
+    public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        Bootstrap.execute(args);
+        Bootstrap.execute();
     }
 }

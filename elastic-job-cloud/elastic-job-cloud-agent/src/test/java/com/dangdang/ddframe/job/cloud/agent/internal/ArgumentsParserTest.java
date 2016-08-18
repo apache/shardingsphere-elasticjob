@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.agent.internal;
 
-import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
@@ -38,32 +38,27 @@ public final class ArgumentsParserTest {
     
     private final String cloudParameterJson = "{\"shardingContext\":" + shardingContextJson + ",\"jobConfigContext\":" + configContextJson + "}";
     
-    @Test(expected = JobExecutionEnvironmentException.class)
-    public void assertParseWhenArgumentsIsNotEnough() throws JobExecutionEnvironmentException {
-        ArgumentsParser.parse(new String[] {});
+    @Test(expected = JobSystemException.class)
+    public void assertParseWhenClassIsNotFound() {
+        ArgumentsParser.parse("{\"jobConfigContext\":{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"testClass\"}}");
     }
     
-    @Test(expected = JobExecutionEnvironmentException.class)
-    public void assertParseWhenClassIsNotFound() throws JobExecutionEnvironmentException {
-        ArgumentsParser.parse(new String[] {"{\"jobConfigContext\":{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"testClass\"}}"});
-    }
-    
-    @Test(expected = JobExecutionEnvironmentException.class)
-    public void assertParseWhenClassIsNotElasticJob() throws JobExecutionEnvironmentException {
-        ArgumentsParser.parse(new String[]{String.format(cloudParameterJson, "notElasticJobClass")});
+    @Test(expected = JobSystemException.class)
+    public void assertParseWhenClassIsNotElasticJob() {
+        ArgumentsParser.parse(String.format(cloudParameterJson, "notElasticJobClass"));
     }
     
     @Test
-    public void assertParse() throws JobExecutionEnvironmentException {
-        ArgumentsParser actual = ArgumentsParser.parse(new String[] {String.format(cloudParameterJson, TestJob.class.getCanonicalName())});
+    public void assertParse() {
+        ArgumentsParser actual = ArgumentsParser.parse(String.format(cloudParameterJson, TestJob.class.getCanonicalName()));
         assertThat(actual.getElasticJob(), instanceOf(TestJob.class));
         assertNotNull(actual.getShardingContext());
         assertNotNull(actual.getJobConfig());
     }
     
     @Test
-    public void assertParseScriptJob() throws JobExecutionEnvironmentException {
-        ArgumentsParser actual = ArgumentsParser.parse(new String[] {String.format(cloudParameterJson, ScriptJob.class.getCanonicalName())});
+    public void assertParseScriptJob() {
+        ArgumentsParser actual = ArgumentsParser.parse(String.format(cloudParameterJson, ScriptJob.class.getCanonicalName()));
         assertNull(actual.getElasticJob());
         assertNotNull(actual.getShardingContext());
         assertNotNull(actual.getJobConfig());

@@ -31,6 +31,7 @@ import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Preconditions;
+import com.google.protobuf.ByteString;
 import lombok.EqualsAndHashCode;
 import org.apache.mesos.Protos;
 
@@ -46,8 +47,6 @@ import java.util.Map;
  */
 @EqualsAndHashCode(of = "offerId")
 public final class HardwareResource {
-    
-    private static final String RUN_COMMAND = "sh %s '%s'";
     
     private final Protos.Offer offer;
     
@@ -141,8 +140,7 @@ public final class HardwareResource {
                 jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);
         // TODO 更改cache为elastic-job-cloud.properties配置
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
-        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(
-                String.format(RUN_COMMAND, jobConfig.getBootstrapScript(), toCloudJobParameterJson(shardingContext, jobConfig))).build();
+        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(jobConfig.getBootstrapScript()).build();
         Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
@@ -151,6 +149,7 @@ public final class HardwareResource {
                 .addResources(buildResource("cpus", jobConfig.getCpuCount()))
                 .addResources(buildResource("mem", jobConfig.getMemoryMB()))
                 .setExecutor(executorInfo)
+                .setData(ByteString.copyFrom(toCloudJobParameterJson(shardingContext, jobConfig).getBytes()))
                 .build();
     }
     

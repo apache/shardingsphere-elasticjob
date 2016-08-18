@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
-import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
 import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.mesos.fixture.OfferBuilder;
@@ -110,11 +108,7 @@ public final class HardwareResourceTest {
     
     private void assertGetCommand(final TaskInfo actual) {
         assertThat(actual.getExecutor().getCommand().getUris(0).getValue(), is("http://localhost/app.jar"));
-        assertThat(actual.getExecutor().getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\"," 
-                + "\"shardingTotalCount\":10,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}},\"jobConfigContext\":" 
-                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"cron\":\"\"," 
-                + "\"jobExceptionHandler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\"," 
-                + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\",\"logEvent\":\"true\"}}'"));
+        assertThat(actual.getExecutor().getCommand().getValue(), is("bin/start.sh"));
     }
     
     @Test
@@ -125,13 +119,7 @@ public final class HardwareResourceTest {
     }
     
     private void assertGetCommandWithEventConfig(final TaskInfo actual) {
-        assertThat(actual.getExecutor().getCommand().getValue(), is("sh bin/start.sh '{\"shardingContext\":{\"jobName\":\"test_job\","
-                + "\"shardingTotalCount\":3,\"jobParameter\":\"\",\"shardingItemParameters\":{\"0\":\"\"}},\"jobConfigContext\":"
-                + "{\"jobType\":\"SIMPLE\",\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"cron\":\"\","
-                + "\"jobExceptionHandler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
-                + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","
-                + "\"driverClassName\":\"org.h2.Driver\",\"url\":\"jdbc:h2:mem:job_event_storage\","
-                + "\"username\":\"sa\",\"password\":\"\",\"logLevel\":\"INFO\",\"logEvent\":\"true\"}}'"));
+        assertThat(actual.getExecutor().getCommand().getValue(), is("bin/start.sh"));
     }
     
     @Test
