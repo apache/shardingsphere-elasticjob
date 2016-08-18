@@ -79,7 +79,7 @@ public final class TaskProducerSchedulerRegistryTest {
         taskProducerSchedulerRegistry.startup();
         verify(configService).loadAll();
         verify(taskProducerScheduler).startup(Matchers.<Collection<CloudJobConfiguration>>any());
-        verify(readyService).addUnique("other_job");
+        verify(readyService).addDaemon("other_job");
     }
     
     @Test

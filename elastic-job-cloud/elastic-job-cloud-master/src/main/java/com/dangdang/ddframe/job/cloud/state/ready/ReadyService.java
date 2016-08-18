@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.state.ready;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.state.UniqueJob;
@@ -60,20 +61,28 @@ public class ReadyService {
     }
     
     /**
-     * 将作业放入待执行队列.
+     * 将瞬时作业放入待执行队列.
      * 
      * @param jobName 作业名称
      */
-    public void add(final String jobName) {
+    public void addTransient(final String jobName) {
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        if (!cloudJobConfig.isPresent() || JobExecutionType.TRANSIENT != cloudJobConfig.get().getJobExecutionType()) {
+            return;
+        }
         regCenter.persist(ReadyNode.getReadyJobNodePath(new UniqueJob(jobName).getUniqueName()), "");
     }
     
     /**
-     * 以作业名称为唯一依据放入待执行队列.
+     * 将常驻作业放入待执行队列.
      *
      * @param jobName 作业名称
      */
-    public void addUnique(final String jobName) {
+    public void addDaemon(final String jobName) {
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        if (!cloudJobConfig.isPresent() || JobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType()) {
+            return;
+        }
         if (!regCenter.isExisted(ReadyNode.ROOT)) {
             return;
         }
@@ -115,8 +124,13 @@ public class ReadyService {
                 regCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 continue;
             }
-            if (runningService.isJobRunning(jobName) && jobConfig.get().getTypeConfig().getCoreConfig().isMisfire()) {
-                misfiredService.add(jobName);
+            if (runningService.isJobRunning(jobName)) {
+                if (jobConfig.get().getTypeConfig().getCoreConfig().isMisfire()) {
+                    misfiredService.add(jobName);
+                }
+                if (JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
+                    result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
+                }
                 continue;
             }
             result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));

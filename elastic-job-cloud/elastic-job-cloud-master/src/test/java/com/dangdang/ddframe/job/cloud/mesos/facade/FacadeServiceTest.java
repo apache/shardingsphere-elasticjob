@@ -32,6 +32,7 @@ import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -172,6 +173,24 @@ public final class FacadeServiceTest {
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(failoverService).add(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(runningService).remove(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+    }
+    
+    @Test
+    public void assertLoad() {
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        assertThat(facadeService.load("test_job"), is(Optional.<CloudJobConfiguration>absent()));
+    }
+    
+    @Test
+    public void assertAddDaemonJobToReadyQueue() {
+        facadeService.addDaemonJobToReadyQueue("test_job");
+        verify(readyService).addDaemon("test_job");
+    }
+    
+    @Test
+    public void assertGetRunningTasks() {
+        when(runningService.getRunningTasks("test_job")).thenReturn(Collections.<TaskContext>emptyList());
+        assertThat(facadeService.getRunningTasks("test_job"), Is.<Collection<TaskContext>>is(Collections.<TaskContext>emptyList()));
     }
     
     @Test

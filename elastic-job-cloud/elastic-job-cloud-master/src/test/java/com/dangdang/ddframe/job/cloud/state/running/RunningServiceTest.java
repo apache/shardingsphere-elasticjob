@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.state.running;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.state.fixture.TaskNode;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,9 +28,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -116,6 +119,22 @@ public final class RunningServiceTest {
         when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Collections.singletonList(TaskNode.builder().build().getTaskNodePath()));
         assertTrue(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().uuid("1").build().getTaskNodePath())));
         assertFalse(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().shardingItem(1).build().getTaskNodePath())));
+    }
+    
+    @Test
+    public void assertGetRunningTasksWithoutRootNode() {
+        when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);
+        assertThat(runningService.getRunningTasks("test_job"), Is.<Collection<TaskContext>>is(Collections.<TaskContext>emptyList()));
+    }
+    
+    @Test
+    public void assertGetRunningTasks() {
+        when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Arrays.asList("test_job@-@0", "test_job@-@1"));
+        when(regCenter.get("/state/running/test_job/test_job@-@0")).thenReturn("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID");
+        when(regCenter.get("/state/running/test_job/test_job@-@1")).thenReturn("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID");
+        assertThat(runningService.getRunningTasks("test_job"), 
+                Is.<Collection<TaskContext>>is(Arrays.asList(TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID"))));
     }
     
     @Test

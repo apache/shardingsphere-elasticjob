@@ -23,7 +23,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         ConfigurationNodeTest.class,
-        ConfigurationServiceTest.class
+        ConfigurationServiceTest.class,
+        CloudJobConfigurationListenerTest.class
     })
 public final class AllConfigTests {
 }

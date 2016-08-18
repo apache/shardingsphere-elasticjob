@@ -40,7 +40,7 @@ public final class TaskProducerJob implements Job {
         List<String> jobNames = TaskProducerJobContext.getInstance().get(context.getJobDetail().getKey());
         if (jobNames != null) {
             for (String each : jobNames) {
-                readyService.add(each);
+                readyService.addTransient(each);
             }
         }
     }

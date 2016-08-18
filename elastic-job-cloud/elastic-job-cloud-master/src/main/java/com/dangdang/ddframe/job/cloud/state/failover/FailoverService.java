@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.state.failover;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
@@ -61,6 +62,10 @@ public class FailoverService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
+        Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getMetaInfo().getJobName());
+        if (!jobConfig.isPresent() || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
+            return;
+        }
         String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo().toString());
         if (!regCenter.isExisted(failoverTaskNodePath) && !runningService.isTaskRunning(taskContext.getMetaInfo())) {
             regCenter.persist(failoverTaskNodePath, taskContext.getId());

@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.fixture;
 
 import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -31,13 +32,17 @@ public final class CloudJsonConstants {
     private static final String JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"jobEventConfigs\":{\"log\":{}}" + ",\"cpuCount\":1.0,\"memoryMB\":128.0,\"dockerImageName\":\"dockerImage\"," 
-            + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"TRANSIENT\"}";
+            + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"%s\"}";
     
     public static String getJobJson() {
-        return String.format(JOB_JSON, "test_job");
+        return String.format(JOB_JSON, "test_job", "TRANSIENT");
     }
     
     public static String getJobJson(final String jobName) {
-        return String.format(JOB_JSON, jobName);
+        return String.format(JOB_JSON, jobName, "TRANSIENT");
+    }
+    
+    public static String getJobJson(final JobExecutionType jobExecutionType) {
+        return String.format(JOB_JSON, "test_job", jobExecutionType.name());
     }
 }

@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.state.failover;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
@@ -67,8 +68,25 @@ public final class FailoverServiceTest {
     }
     
     @Test
+    public void assertAddWhenJobIsNotPresent() {
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(regCenter, times(0)).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
+    }
+    
+    @Test
+    public void assertAddWhenIsDaemonJob() {
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(regCenter, times(0)).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
+    }
+    
+    @Test
     public void assertAddWhenExisted() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(regCenter.isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(regCenter).isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath());
@@ -78,6 +96,7 @@ public final class FailoverServiceTest {
     @Test
     public void assertAddWhenNotExistedAndTaskIsRunning() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(regCenter.isExisted("/state/failover/test_job/"  + taskNode.getTaskNodePath())).thenReturn(false);
         when(runningService.isTaskRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()))).thenReturn(true);
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
@@ -89,6 +108,7 @@ public final class FailoverServiceTest {
     @Test
     public void assertAddWhenNotExistedAndTaskIsNotRunning() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(regCenter.isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(false);
         when(runningService.isTaskRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()))).thenReturn(false);
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));

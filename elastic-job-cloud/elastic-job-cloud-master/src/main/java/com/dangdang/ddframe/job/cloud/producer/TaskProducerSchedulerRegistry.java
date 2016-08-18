@@ -73,7 +73,7 @@ public class TaskProducerSchedulerRegistry {
         Collection<CloudJobConfiguration> configs = configService.loadAll();
         schedulerInstance.startup(filterJobConfiguration(configs, JobExecutionType.TRANSIENT));
         for (CloudJobConfiguration each : filterJobConfiguration(configs, JobExecutionType.DAEMON)) {
-            readyService.addUnique(each.getJobName());
+            readyService.addDaemon(each.getJobName());
         }
     }
     
@@ -96,7 +96,7 @@ public class TaskProducerSchedulerRegistry {
         if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
             schedulerInstance.register(jobConfig);
         } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
-            readyService.addUnique(jobConfig.getJobName()); 
+            readyService.addDaemon(jobConfig.getJobName()); 
         }
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
         if (!jobConfigFromZk.isPresent()) {

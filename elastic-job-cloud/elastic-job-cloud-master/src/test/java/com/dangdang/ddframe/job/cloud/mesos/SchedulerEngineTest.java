@@ -109,6 +109,7 @@ public final class SchedulerEngineTest {
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_KILLED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(facadeService).addDaemonJobToReadyQueue("test_job");
     }
     
     @Test
@@ -118,6 +119,7 @@ public final class SchedulerEngineTest {
                 .setState(Protos.TaskState.TASK_FAILED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(facadeService).addDaemonJobToReadyQueue("test_job");
     }
     
     @Test
@@ -127,6 +129,7 @@ public final class SchedulerEngineTest {
                 .setState(Protos.TaskState.TASK_ERROR).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(facadeService).addDaemonJobToReadyQueue("test_job");
     }
     
     @Test
@@ -136,6 +139,7 @@ public final class SchedulerEngineTest {
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_LOST).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(facadeService).addDaemonJobToReadyQueue("test_job");
     }
     
     @Test

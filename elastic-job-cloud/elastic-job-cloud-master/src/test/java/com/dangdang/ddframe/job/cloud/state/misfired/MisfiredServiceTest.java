@@ -17,10 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.state.misfired;
 
-import com.dangdang.ddframe.job.cloud.context.ExecutionType;
-import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.context.ExecutionType;
+import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.state.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -64,7 +65,22 @@ public final class MisfiredServiceTest {
     }
     
     @Test
+    public void assertAddWhenJobIsNotPresent() {
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        misfiredService.add("test_job");
+        verify(regCenter, times(0)).persist("/state/misfired/test_job", "");
+    }
+    
+    @Test
+    public void assertAddWhenIsDaemonJob() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        misfiredService.add("test_job");
+        verify(regCenter, times(0)).persist("/state/misfired/test_job", "");
+    }
+    
+    @Test
     public void assertAddWhenExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(regCenter.isExisted("/state/misfired/test_job")).thenReturn(true);
         misfiredService.add("test_job");
         verify(regCenter).isExisted("/state/misfired/test_job");
@@ -73,6 +89,7 @@ public final class MisfiredServiceTest {
     
     @Test
     public void assertAddWhenNotExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(regCenter.isExisted("/state/misfired/test_job")).thenReturn(false);
         misfiredService.add("test_job");
         verify(regCenter).isExisted("/state/misfired/test_job");

@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.state.misfired;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.state.running.RunningService;
@@ -57,6 +58,10 @@ public class MisfiredService {
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
+        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+        if (!jobConfig.isPresent() || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
+            return;
+        }
         if (!regCenter.isExisted(MisfiredNode.getMisfiredJobNodePath(jobName))) {
             regCenter.persist(MisfiredNode.getMisfiredJobNodePath(jobName), "");
         }

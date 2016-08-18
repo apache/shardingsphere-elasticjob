@@ -19,7 +19,12 @@ package com.dangdang.ddframe.job.cloud.state.running;
 
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * 任务运行时服务.
@@ -82,6 +87,25 @@ public class RunningService {
             }
         }
         return false;
+    }
+    
+    /**
+     * 获取运行中的任务集合.
+     *
+     * @param jobName 作业名称
+     * @return 运行中的任务集合
+     */
+    public Collection<TaskContext> getRunningTasks(final String jobName) {
+        if (!regCenter.isExisted(RunningNode.getRunningJobNodePath(jobName))) {
+            return Collections.emptyList();
+        }
+        return Lists.transform(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(jobName)), new Function<String, TaskContext>() {
+            
+            @Override
+            public TaskContext apply(final String input) {
+                return TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(input)));
+            }
+        });
     }
     
     /**

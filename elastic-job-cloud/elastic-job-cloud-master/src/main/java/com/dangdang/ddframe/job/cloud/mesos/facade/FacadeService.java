@@ -159,6 +159,35 @@ public class FacadeService {
     }
     
     /**
+     * 根据作业名称获取云作业配置.
+     *
+     * @param jobName 作业名称
+     * @return 云作业配置
+     */
+    public Optional<CloudJobConfiguration> load(final String jobName) {
+        return configService.load(jobName);
+    }
+    
+    /**
+     * 将常驻作业放入待执行队列.
+     *
+     * @param jobName 作业名称
+     */
+    public void addDaemonJobToReadyQueue(final String jobName) {
+        readyService.addDaemon(jobName);
+    }
+    
+    /**
+     * 获取运行中的任务集合.
+     *
+     * @param jobName 作业名称
+     * @return 运行中的任务集合
+     */
+    public Collection<TaskContext> getRunningTasks(final String jobName) {
+        return runningService.getRunningTasks(jobName);
+    }
+    
+    /**
      * 框架停止.
      */
     public void stop() {

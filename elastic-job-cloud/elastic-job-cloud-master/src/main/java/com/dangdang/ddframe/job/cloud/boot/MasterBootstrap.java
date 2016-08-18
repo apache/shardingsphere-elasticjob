@@ -19,10 +19,12 @@ package com.dangdang.ddframe.job.cloud.boot;
 
 import com.dangdang.ddframe.job.cloud.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.boot.env.MesosConfiguration;
+import com.dangdang.ddframe.job.cloud.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.mesos.SchedulerEngine;
 import com.dangdang.ddframe.job.cloud.rest.RestfulServer;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 
@@ -48,6 +50,7 @@ public final class MasterBootstrap {
         regCenter = getRegistryCenter();
         schedulerDriver = getSchedulerDriver();
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort(), regCenter);
+        initListener();
     }
     
     private CoordinatorRegistryCenter getRegistryCenter() {
@@ -61,6 +64,11 @@ public final class MasterBootstrap {
         Protos.FrameworkInfo frameworkInfo = 
                 Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();
         return new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosConfig.getUrl());
+    }
+    
+    private void initListener() {
+        regCenter.addCacheData("/");
+        ((TreeCache) regCenter.getRawCache("/")).getListenable().addListener(new CloudJobConfigurationListener(regCenter, schedulerDriver));
     }
     
     /**

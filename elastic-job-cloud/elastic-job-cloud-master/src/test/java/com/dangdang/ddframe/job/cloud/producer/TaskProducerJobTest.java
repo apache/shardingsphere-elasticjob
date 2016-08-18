@@ -53,7 +53,7 @@ public final class TaskProducerJobTest {
         when(jobExecutionContext.getJobDetail()).thenReturn(JobBuilder.newJob(TaskProducerJob.class).withIdentity("0/30 * * * * ?").build());
         TaskProducerJobContext.getInstance().put(JobKey.jobKey("0/30 * * * * ?"), "test_job");
         taskProducerJob.execute(jobExecutionContext);
-        verify(readyService).add("test_job");
+        verify(readyService).addTransient("test_job");
         TaskProducerJobContext.getInstance().remove("test_job");
     }
 }

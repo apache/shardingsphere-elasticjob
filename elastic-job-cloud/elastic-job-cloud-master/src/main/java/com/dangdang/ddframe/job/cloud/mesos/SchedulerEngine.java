@@ -66,7 +66,7 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
         log.trace("call resourceOffers: {}", offers);
-        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(getHardwareResource(offers));
+        ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(getHardwareResource(offers), facadeService);
         Collection<JobContext> eligibleJobContexts = facadeService.getEligibleJobContext();
         List<Protos.TaskInfo> taskInfoList = resourceAllocateStrategy.allocate(eligibleJobContexts);
         log.trace("call resourceOffers, assignedTaskContext is {}", taskInfoList);
@@ -155,20 +155,23 @@ public final class SchedulerEngine implements Scheduler {
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
-                // TODO 根据Running的message更新esjob本身状态
+                // TODO 根据Running的message更新elastic-job本身状态
                 log.info("task status is: {}, message is: {}, source is: {}", taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 break;
             case TASK_FINISHED:
-            case TASK_KILLED:
                 facadeService.removeRunning(taskContext.getMetaInfo());
                 break;
+            case TASK_KILLED:
+                facadeService.removeRunning(taskContext.getMetaInfo());
+                facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
+                break;
             case TASK_LOST:
-            // TODO TASK_FAILED和TASK_ERROR是否要做失效转移
             case TASK_FAILED:
             case TASK_ERROR:
                 log.warn("task status is: {}, message is: {}, source is: {}", taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext.getMetaInfo());
                 facadeService.recordFailoverTask(taskContext);
+                facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 break;
             default:
                 break;
