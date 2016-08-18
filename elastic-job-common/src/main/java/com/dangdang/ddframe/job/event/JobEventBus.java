@@ -17,39 +17,26 @@
 
 package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobLogEventListener;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventListener;
-import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
-import com.google.common.util.concurrent.MoreExecutors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
-import java.sql.SQLException;
-import java.util.Map;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 运行痕迹事件总线.
  * 
  * @author zhangliang
+ * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Slf4j
 public final class JobEventBus {
     
     private static volatile JobEventBus instance;
     
-    private final EventBus eventBus = new AsyncEventBus(MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(
-            new ThreadPoolExecutor(0, Runtime.getRuntime().availableProcessors() * 2, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>()))));
-    
-    private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, JobEventBusInstance> itemMap = new ConcurrentHashMap<>();
     
     public static JobEventBus getInstance() {
         if (null == instance) {
@@ -62,50 +49,71 @@ public final class JobEventBus {
         return instance;
     }
     
-    public void register(final Map<String, JobEventConfiguration> jobEventConfigs) {
-        for (JobEventConfiguration jobEventConfig : jobEventConfigs.values()) {
-            if (jobEventConfig instanceof JobRdbEventConfiguration) {
-                try {
-                    instance.register(new JobRdbEventListener((JobRdbEventConfiguration) jobEventConfig));
-                } catch (final SQLException ex) {
-                    log.error(ex.getMessage());
-                }
-    
-            } else if (jobEventConfig instanceof JobLogEventConfiguration) {
-                instance.register(new JobLogEventListener((JobLogEventConfiguration) jobEventConfig));
-            }
-        }
-    }
-    
     /**
      * 注册事件监听器.
      *
-     * @param listener 监听器
+     * @param jobName 作业名
+     * @param jobEventConfigs 作业事件配置
      */
-    public void register(final JobEventListener listener) {
-        if (null == listeners.putIfAbsent(listener.getName(), listener)) {
-            eventBus.register(listener);
-        }
+    public synchronized void register(final String jobName, final Collection<JobEventConfiguration> jobEventConfigs) {
+        itemMap.putIfAbsent(jobName, new JobEventBusInstance());
+        itemMap.get(jobName).register(jobEventConfigs);
     }
     
     /**
      * 发布事件.
      *
+     * @param jobName 作业名
      * @param event 事件
      */
-    public void post(final Object event) {
-        if (!listeners.isEmpty()) {
-            eventBus.post(event);
+    public synchronized void post(final String jobName, final Object event) {
+        if (itemMap.containsKey(jobName)) {
+            itemMap.get(jobName).post(event);
         }
     }
     
     /**
      * 清除监听器.
+     * 
+     * @param jobName 作业名
      */
-    public synchronized void clearListeners() {
-        for (Object each : listeners.values()) {
-            eventBus.unregister(each);
+    public synchronized void clearListeners(final String jobName) {
+        if (itemMap.containsKey(jobName)) {
+            itemMap.get(jobName).clearListeners();
         }
-        listeners.clear();
+    }
+    
+    @RequiredArgsConstructor
+    private class JobEventBusInstance {
+        
+        private final EventBus eventBus = new EventBus();
+        
+        private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
+        
+        void register(final Collection<JobEventConfiguration> jobEventConfigs) {
+            for (JobEventConfiguration each : jobEventConfigs) {
+                register(each.createJobEventListener());
+            }
+        }
+        
+        private void register(final JobEventListener listener) {
+            if (null != listener && null == listeners.putIfAbsent(listener.getName(), listener)) {
+                eventBus.register(listener);
+            }
+        }
+        
+        void post(final Object event) {
+            if (!listeners.isEmpty()) {
+                eventBus.post(event);
+            }
+        }
+        
+        void clearListeners() {
+            for (Object each : listeners.values()) {
+                eventBus.unregister(each);
+            }
+            listeners.clear();
+        }
     }
 }
+

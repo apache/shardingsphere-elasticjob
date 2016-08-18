@@ -37,38 +37,40 @@ public final class JobLogEventListenerTest {
     
     private JobEventBus jobEventBus = JobEventBus.getInstance();
     
+    private final String jobName = "test_log_event_listener_job";
+    
     @Before
     public void setUp() {
         Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>();
         jobEventConfigs.put("log", logEventConfig);
-        jobEventBus.register(jobEventConfigs);
+        jobEventBus.register(jobName, jobEventConfigs.values());
     }
     
     @After
     public void tearDown() {
-        jobEventBus.clearListeners();
+        jobEventBus.clearListeners(jobName);
     }
     
     @Test
     public void assertPostWithJobTraceEvent() {
         for (LogLevel each : LogLevel.values()) {
-            jobEventBus.post(new JobTraceEvent("test_job", each, "ok"));
+            jobEventBus.post(jobName, new JobTraceEvent(jobName, each, "ok"));
         }
     }
     
     @Test
     public void assertPostWithJobExecutionEventWhenExecutionSuccess() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1));
-        jobEventBus.post(jobExecutionEvent);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1));
+        jobEventBus.post(jobName, jobExecutionEvent);
         jobExecutionEvent.executionSuccess();
-        jobEventBus.post(jobExecutionEvent);
+        jobEventBus.post(jobName, jobExecutionEvent);
     }
     
     @Test
     public void assertPostWithJobTraceEventWhenExecutionFailure() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1));
-        jobEventBus.post(jobExecutionEvent);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1));
+        jobEventBus.post(jobName, jobExecutionEvent);
         jobExecutionEvent.executionFailure(new Exception("Failure"));
-        jobEventBus.post(jobExecutionEvent);
+        jobEventBus.post(jobName, jobExecutionEvent);
     }
 }

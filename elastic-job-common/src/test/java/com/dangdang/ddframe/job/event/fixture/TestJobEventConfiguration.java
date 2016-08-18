@@ -15,19 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.event;
+package com.dangdang.ddframe.job.event.fixture;
 
-/**
- * 作业事件配置标识接口.
- *
- * @author caohao
- */
-public interface JobEventConfiguration {
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.JobEventListener;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class TestJobEventConfiguration implements JobEventConfiguration {
     
-    /**
-     * 创建作业事件监听器.
-     *
-     * @return 作业事件监听器
-     */
-    JobEventListener createJobEventListener();
+    private final Caller caller;
+    
+    @Override
+    public JobEventListener createJobEventListener() {
+        return new TestJobEventListener(caller, this);
+    }
 }

@@ -31,6 +31,6 @@ public final class DefaultJobExceptionHandler implements JobExceptionHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
-        JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "exception occur in job processing", cause));
+        JobEventBus.getInstance().post(jobName, new JobTraceEvent(jobName, LogLevel.ERROR, "exception occur in job processing", cause));
     }
 }

@@ -20,11 +20,9 @@ package com.dangdang.ddframe.job.event;
 import com.dangdang.ddframe.job.event.JobExecutionEvent.ExecutionSource;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.fixture.Caller;
-import com.dangdang.ddframe.job.event.fixture.TestJobEvenListener;
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
+import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -43,39 +41,29 @@ public final class JobEventBusTest {
     @Mock
     private Caller caller;
     
-    private JobEventConfiguration logEventConfig = new JobLogEventConfiguration();
+    private final JobEventBus jobEventBus = JobEventBus.getInstance();
     
-    private JobEventConfiguration rdbEventConfig = new JobRdbEventConfiguration(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_bus", "sa", "", LogLevel.INFO);
-    
-    private JobEventBus jobEventBus = JobEventBus.getInstance();
-    
-    @Before
-    public void setUp() {
-        Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>(2, 1);
-        jobEventConfigs.put("log", logEventConfig);
-        jobEventConfigs.put("rdb", rdbEventConfig);
-        jobEventBus.register(jobEventConfigs);
-    }
+    private final String jobName = "test_event_bus_job";
     
     @After
     public void tearDown() {
-        jobEventBus.clearListeners();
-        TestJobEvenListener.reset();
+        jobEventBus.clearListeners(jobName);
+        TestJobEventListener.reset();
     }
     
     @Test
     public void assertPostWithoutListenerRegistered() {
-        jobEventBus.post(new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
+        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
         verify(caller, times(0)).call();
     }
     
     @Test
     public void assertPostWithListenerRegistered() throws InterruptedException {
-        jobEventBus.register(new TestJobEvenListener(caller));
-        jobEventBus.post(new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
-        while (!TestJobEvenListener.isExecutionEventCalled() || !TestJobEvenListener.isTraceEventCalled()) {
+        registerEventConfigs();
+        jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
+        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
             Thread.sleep(100L);
         }
         verify(caller, times(2)).call();
@@ -83,13 +71,20 @@ public final class JobEventBusTest {
     
     @Test
     public void assertPostWithListenerRegisteredTwice() throws InterruptedException {
-        jobEventBus.register(new TestJobEvenListener(caller));
-        jobEventBus.register(new TestJobEvenListener(caller));
-        jobEventBus.post(new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
-        while (!TestJobEvenListener.isExecutionEventCalled() || !TestJobEvenListener.isTraceEventCalled()) {
+        registerEventConfigs();
+        registerEventConfigs();
+        jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
+        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
             Thread.sleep(100L);
         }
         verify(caller, times(2)).call();
+    }
+    
+    private void registerEventConfigs() {
+        Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>(1, 1);
+        TestJobEventConfiguration jobEventConfiguration = new TestJobEventConfiguration(caller);
+        jobEventConfigs.put("test", jobEventConfiguration);
+        jobEventBus.register(jobName, jobEventConfigs.values());
     }
 }

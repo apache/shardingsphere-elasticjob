@@ -66,7 +66,7 @@ public class JobExecutor {
      * 初始化作业.
      */
     public void init() {
-        JobEventBus.getInstance().post(new JobTraceEvent(liteJobConfig.getJobName(), LogLevel.DEBUG, "Job controller init."));
+        JobEventBus.getInstance().post(liteJobConfig.getJobName(), new JobTraceEvent(liteJobConfig.getJobName(), LogLevel.DEBUG, "Job controller init."));
         schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + liteJobConfig.getJobName());
         schedulerFacade.registerStartUpInfo(liteJobConfig);

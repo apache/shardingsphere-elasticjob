@@ -150,7 +150,7 @@ public class FailoverService {
                 return;
             }
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.DEBUG, String.format("Failover job begin, crashed item:%s", crashedItem)));
+            JobEventBus.getInstance().post(jobName, new JobTraceEvent(jobName, LogLevel.DEBUG, String.format("Failover job begin, crashed item:%s", crashedItem)));
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             // TODO 不应使用triggerJob, 而是使用executor统一调度

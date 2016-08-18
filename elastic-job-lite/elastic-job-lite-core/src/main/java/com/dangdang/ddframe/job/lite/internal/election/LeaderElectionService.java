@@ -75,7 +75,7 @@ public class LeaderElectionService {
     public Boolean isLeader() {
         String localHostIp = localHostService.getIp();
         while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.INFO, "Leader node is electing, waiting for 100 ms"));
+            JobEventBus.getInstance().post(jobName, new JobTraceEvent(jobName, LogLevel.INFO, "Leader node is electing, waiting for 100 ms"));
             BlockUtils.waitingShortTime();
             leaderElection();
         }

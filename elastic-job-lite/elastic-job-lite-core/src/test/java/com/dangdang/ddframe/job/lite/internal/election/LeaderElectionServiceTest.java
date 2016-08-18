@@ -56,6 +56,7 @@ public final class LeaderElectionServiceTest {
         ReflectionUtils.setFieldValue(leaderElectionService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(leaderElectionService, "localHostService", localHostService);
         ReflectionUtils.setFieldValue(leaderElectionService, "serverService", serverService);
+        ReflectionUtils.setFieldValue(leaderElectionService, "jobName", "test_job");
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
     }

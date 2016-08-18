@@ -18,9 +18,13 @@
 package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.JobEventListener;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import java.sql.SQLException;
 
 /**
  * 作业数据库事件配置.
@@ -29,6 +33,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @Getter
+@Slf4j
 public final class JobRdbEventConfiguration implements JobEventConfiguration {
     
     private final String driverClassName;
@@ -40,4 +45,14 @@ public final class JobRdbEventConfiguration implements JobEventConfiguration {
     private final String password;
     
     private final LogLevel logLevel;
+    
+    @Override
+    public JobEventListener createJobEventListener() {
+        try {
+            return new JobRdbEventListener(this);
+        } catch (final SQLException ex) {
+            log.error("Elastic job: sql error is:", ex);
+        }
+        return null;
+    }
 }

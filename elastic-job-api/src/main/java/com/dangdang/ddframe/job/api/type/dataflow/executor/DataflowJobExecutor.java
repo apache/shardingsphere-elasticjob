@@ -22,8 +22,8 @@ import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -104,7 +104,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     private List<Object> fetchDataForThroughput(final ShardingContext shardingContext) {
         List<Object> result = dataflowJob.fetchData(shardingContext);
-        JobEventBus.getInstance().post(new JobTraceEvent(getJobName(), LogLevel.TRACE, String.format("Fetch data size: '%s'.", result != null ? result.size() : 0)));
+        JobEventBus.getInstance().post(getJobName(), new JobTraceEvent(getJobName(), LogLevel.TRACE, String.format("Fetch data size: '%s'.", result != null ? result.size() : 0)));
         return result;
     }
     
@@ -152,7 +152,7 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
             });
         }
         latchAwait(latch);
-        JobEventBus.getInstance().post(new JobTraceEvent(getJobName(), LogLevel.TRACE, String.format("Fetch data size: '%s'.", result.size())));
+        JobEventBus.getInstance().post(getJobName(), new JobTraceEvent(getJobName(), LogLevel.TRACE, String.format("Fetch data size: '%s'.", result.size())));
         return result;
     }
     

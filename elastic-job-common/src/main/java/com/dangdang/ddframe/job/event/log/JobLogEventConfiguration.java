@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.event.log;
 
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.JobEventListener;
 
 /**
  * 作业日志事件配置.
@@ -25,4 +26,9 @@ import com.dangdang.ddframe.job.event.JobEventConfiguration;
  * @author caohao
  */
 public final class JobLogEventConfiguration implements JobEventConfiguration {
+    
+    @Override
+    public JobEventListener createJobEventListener() {
+        return new JobLogEventListener(this);
+    }
 }

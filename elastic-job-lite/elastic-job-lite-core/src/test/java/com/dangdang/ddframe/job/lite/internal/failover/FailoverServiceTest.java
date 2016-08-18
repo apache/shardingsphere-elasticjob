@@ -67,6 +67,7 @@ public final class FailoverServiceTest {
         ReflectionUtils.setFieldValue(failoverService, "localHostService", localHostService);
         ReflectionUtils.setFieldValue(failoverService, "serverService", serverService);
         ReflectionUtils.setFieldValue(failoverService, "shardingService", shardingService);
+        ReflectionUtils.setFieldValue(failoverService, "jobName", "test_job");
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
     }
