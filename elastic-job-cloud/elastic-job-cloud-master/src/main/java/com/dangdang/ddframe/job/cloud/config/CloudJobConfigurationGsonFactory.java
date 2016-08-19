@@ -87,6 +87,12 @@ public final class CloudJobConfigurationGsonFactory {
                 case "jobExecutionType":
                     customizedValueMap.put("jobExecutionType", in.nextString());
                     break;
+                case "beanName":
+                    customizedValueMap.put("beanName", in.nextString());
+                    break;
+                case "applicationContext":
+                    customizedValueMap.put("applicationContext", in.nextString());
+                    break;
                 default:
                     in.skipValue();
                     break;
@@ -95,8 +101,16 @@ public final class CloudJobConfigurationGsonFactory {
         
         @Override
         protected CloudJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
-            return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), (String) customizedValueMap.get("dockerImageName"), 
-                    (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
+            if (customizedValueMap.containsKey("beanName") && customizedValueMap.containsKey("applicationContext")) {
+                return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), 
+                        (String) customizedValueMap.get("dockerImageName"), (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
+                        JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), customizedValueMap.get("beanName").toString(), 
+                        customizedValueMap.get("applicationContext").toString());    
+            } else {
+                return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), 
+                        (String) customizedValueMap.get("dockerImageName"), (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
+                        JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
+            }
         }
         
         @Override
@@ -107,6 +121,8 @@ public final class CloudJobConfigurationGsonFactory {
             out.name("appURL").value(value.getAppURL());
             out.name("bootstrapScript").value(value.getBootstrapScript());
             out.name("jobExecutionType").value(value.getJobExecutionType().name());
+            out.name("beanName").value(value.getBeanName());
+            out.name("applicationContext").value(value.getApplicationContext());
         }
     }
 }

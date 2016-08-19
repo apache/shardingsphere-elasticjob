@@ -52,15 +52,6 @@ public class ScriptJobExecutorTest {
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, ElasticJobAssert.getShardingContext());
     }
     
-    @Test(expected = JobSystemException.class)
-    public void assertExecuteWhenScriptCommandLineIsEmpty() throws IOException, NoSuchFieldException {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration(""));
-        scriptJobExecutor = new ScriptJobExecutor(jobFacade);
-        ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
-        scriptJobExecutor.execute();
-        verify(executor, times(0)).execute(Matchers.<CommandLine>any());
-    }
-    
     @SuppressWarnings("unchecked")
     @Test(expected = JobSystemException.class)
     public void assertExecuteWhenExecuteFailure() throws IOException, NoSuchFieldException {

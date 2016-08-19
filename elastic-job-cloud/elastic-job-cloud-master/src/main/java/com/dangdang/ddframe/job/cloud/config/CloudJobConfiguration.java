@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.config;
 
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,7 @@ import lombok.RequiredArgsConstructor;
  * @author zhangliang
  */
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 public final class CloudJobConfiguration implements JobRootConfiguration {
     
@@ -44,6 +46,10 @@ public final class CloudJobConfiguration implements JobRootConfiguration {
     private final String bootstrapScript;
     
     private final JobExecutionType jobExecutionType;
+    
+    private String beanName;
+    
+    private String applicationContext; 
     
     /**
      * 获取作业名称.

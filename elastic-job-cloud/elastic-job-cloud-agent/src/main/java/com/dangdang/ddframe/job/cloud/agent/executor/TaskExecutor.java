@@ -24,10 +24,12 @@ import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacade;
 import com.dangdang.ddframe.job.cloud.agent.internal.JobConfigurationContext;
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Map;
 
@@ -74,6 +76,18 @@ public final class TaskExecutor implements Executor {
     }
     
     private ElasticJob getElasticJobInstance(final JobConfigurationContext jobConfig) {
+        if (!Strings.isNullOrEmpty(jobConfig.getBeanName()) && !Strings.isNullOrEmpty(jobConfig.getApplicationContext())) {
+            return getElasticJobBean(jobConfig);
+        } else {
+            return getElasticJobClass(jobConfig);
+        }
+    }
+    
+    private ElasticJob getElasticJobBean(final JobConfigurationContext jobConfig) {
+        return (ElasticJob) new ClassPathXmlApplicationContext(jobConfig.getApplicationContext()).getBean(jobConfig.getBeanName());
+    }
+    
+    private ElasticJob getElasticJobClass(final JobConfigurationContext jobConfig) {
         String jobClass = jobConfig.getTypeConfig().getJobClass();
         try {
             Class<?> elasticJobClass = Class.forName(jobClass);

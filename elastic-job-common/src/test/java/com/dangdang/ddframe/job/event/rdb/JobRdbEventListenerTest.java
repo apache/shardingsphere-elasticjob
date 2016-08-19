@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.JobExecutionEvent.ExecutionSource;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.fixture.Caller;
@@ -29,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -61,21 +58,5 @@ public final class JobRdbEventListenerTest {
         for (LogLevel each : LogLevel.values()) {
             jobEventBus.post(jobName, new JobTraceEvent(jobName, each, "ok"));
         }
-    }
-    
-    @Test
-    public void assertPostWithJobExecutionEventWhenExecutionSuccess() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1));
-        jobEventBus.post(jobName, jobExecutionEvent);
-        jobExecutionEvent.executionSuccess();
-        jobEventBus.post(jobName, jobExecutionEvent);
-    }
-    
-    @Test
-    public void assertPostWithJobTraceEventWhenExecutionFailure() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1));
-        jobEventBus.post(jobName, jobExecutionEvent);
-        jobExecutionEvent.executionFailure(new Exception("Failure"));
-        jobEventBus.post(jobName, jobExecutionEvent);
     }
 }

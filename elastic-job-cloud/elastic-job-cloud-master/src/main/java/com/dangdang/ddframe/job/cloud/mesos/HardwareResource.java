@@ -173,6 +173,8 @@ public final class HardwareResource {
         } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
             result.put("scriptCommandLine", ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine());
         }
+        result.put("beanName", jobConfig.getBeanName());
+        result.put("applicationContext", jobConfig.getApplicationContext());
         result.putAll(buildJobEventConfiguration(jobConfig));
         return result;
     }

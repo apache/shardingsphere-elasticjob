@@ -32,6 +32,7 @@ import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,12 @@ public class JobConfigurationContext implements JobRootConfiguration {
     private static final String IGNORE_CRON = "ignoredCron";
     
     private JobTypeConfiguration jobTypeConfig;
+    
+    @Getter
+    private String beanName;
+    
+    @Getter
+    private String applicationContext;
     
     public JobConfigurationContext(final Map<String, String> jobConfigurationMap) {
         int ignoredShardingTotalCount = 1;
@@ -67,6 +74,8 @@ public class JobConfigurationContext implements JobRootConfiguration {
         } else if (JobType.SCRIPT.name().equals(jobType)) {
             jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, jobConfigurationMap.get("scriptCommandLine"));
         }
+        beanName = jobConfigurationMap.get("beanName");
+        applicationContext = jobConfigurationMap.get("applicationContext");
     }
     
     private JobEventConfiguration[] buildJobEventConfiguration(final Map<String, String> jobConfigurationMap) {
