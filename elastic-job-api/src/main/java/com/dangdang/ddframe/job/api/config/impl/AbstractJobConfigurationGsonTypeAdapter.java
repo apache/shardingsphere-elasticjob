@@ -64,9 +64,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         JobEventConfiguration[] jobEventConfigs = null;
         JobType jobType = null;
         String jobClass = "";
-        DataflowJobConfiguration.DataflowType dataflowType = null;
         boolean streamingProcess = false;
-        int concurrentDataProcessThreadCount = 0;
         String scriptCommandLine = "";
         Map<String, Object> customizedValueMap = new HashMap<>(32, 1);
         in.beginObject();
@@ -109,14 +107,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 case "jobClass":
                     jobClass = in.nextString();
                     break;
-                case "dataflowType":
-                    dataflowType = DataflowJobConfiguration.DataflowType.valueOf(in.nextString());
-                    break;
                 case "streamingProcess":
                     streamingProcess = in.nextBoolean();
-                    break;
-                case "concurrentDataProcessThreadCount":
-                    concurrentDataProcessThreadCount = in.nextInt();
                     break;
                 case "scriptCommandLine":
                     scriptCommandLine = in.nextString();
@@ -129,7 +121,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         in.endObject();
         JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
                 jobParameter, failover, misfire, description, jobProperties, jobEventConfigs);
-        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, dataflowType, streamingProcess, concurrentDataProcessThreadCount, scriptCommandLine);
+        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, streamingProcess, scriptCommandLine);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
     
@@ -216,15 +208,15 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 .build();
     }
     
-    private JobTypeConfiguration getJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final DataflowJobConfiguration.DataflowType dataflowType,
-                                                         final boolean streamingProcess, final int concurrentDataProcessThreadCount, final String scriptCommandLine) {
+    private JobTypeConfiguration getJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, 
+                                                         final boolean streamingProcess, final String scriptCommandLine) {
         JobTypeConfiguration result;
         switch (jobType) {
             case SIMPLE:
                 result = new SimpleJobConfiguration(coreConfig, jobClass);
                 break;
             case DATAFLOW:
-                result = new DataflowJobConfiguration(coreConfig, jobClass, dataflowType, streamingProcess, concurrentDataProcessThreadCount);
+                result = new DataflowJobConfiguration(coreConfig, jobClass, streamingProcess);
                 break;
             case SCRIPT:
                 result = new ScriptJobConfiguration(coreConfig, scriptCommandLine);
@@ -254,9 +246,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         out.name("jobEventConfigs").jsonValue(GsonFactory.getGson().toJson(value.getTypeConfig().getCoreConfig().getJobEventConfigs()));
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
             DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getTypeConfig();
-            out.name("dataflowType").value(dataflowJobConfig.getDataflowType().name());
             out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());
-            out.name("concurrentDataProcessThreadCount").value(dataflowJobConfig.getConcurrentDataProcessThreadCount());
         } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
             out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());

@@ -28,9 +28,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DataflowJobBeanDefinitionParserTag {
     
-    public static final String DATAFLOW_TYPE_ATTRIBUTE = "dataflow-type";
-    
-    public static final String CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE = "concurrent-data-process-thread-count";
-    
     public static final String STREAMING_PROCESS_ATTRIBUTE = "streaming-process";
 }

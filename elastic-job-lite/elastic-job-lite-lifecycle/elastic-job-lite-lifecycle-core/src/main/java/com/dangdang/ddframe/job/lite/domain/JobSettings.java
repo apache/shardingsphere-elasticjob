@@ -37,8 +37,6 @@ public final class JobSettings implements Serializable {
     
     private String jobType;
     
-    private String dataflowType;
-    
     private String jobClass;
     
     private String cron;
@@ -50,8 +48,6 @@ public final class JobSettings implements Serializable {
     private String jobParameter;
     
     private boolean monitorExecution;
-    
-    private int concurrentDataProcessThreadCount;
     
     private boolean streamingProcess;
     

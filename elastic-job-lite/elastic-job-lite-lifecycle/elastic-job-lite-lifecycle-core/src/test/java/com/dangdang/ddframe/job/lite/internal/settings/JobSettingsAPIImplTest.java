@@ -59,7 +59,6 @@ public class JobSettingsAPIImplTest {
     private void assertJobSettings(final JobSettings jobSettings) {
         assertThat(jobSettings.getJobName(), is("test_job"));
         assertThat(jobSettings.getJobType(), is("DATAFLOW"));
-        assertThat(jobSettings.getDataflowType(), is("SEQUENCE"));
         assertThat(jobSettings.getJobClass(), is("com.dangdang.ddframe.job.lite.fixture.TestDataflowJob"));
         assertThat(jobSettings.getShardingTotalCount(), is(3));
         assertThat(jobSettings.getCron(), is("0/1 * * * * ?"));
@@ -83,9 +82,7 @@ public class JobSettingsAPIImplTest {
         JobSettings jobSettings = new JobSettings();
         jobSettings.setJobName("test_job");
         jobSettings.setJobClass("com.dangdang.ddframe.job.lite.fixture.TestDataflowJob");
-        jobSettings.setDataflowType("THROUGHPUT");
         jobSettings.setShardingTotalCount(10);
-        jobSettings.setConcurrentDataProcessThreadCount(10);
         jobSettings.setMaxTimeDiffSeconds(-1);
         jobSettings.setMonitorExecution(true);
         jobSettings.setCron("0/1 * * * * ?");
@@ -95,8 +92,8 @@ public class JobSettingsAPIImplTest {
         jobSettings.setExecutorServiceHandler(DefaultExecutorServiceHandler.class.getCanonicalName());
         jobSettings.setJobExceptionHandler(DefaultJobExceptionHandler.class.getCanonicalName());
         jobSettingsAPI.updateJobSettings(jobSettings);
-        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"dataflowType\":\"THROUGHPUT\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\","
-                + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"concurrentDataProcessThreadCount\":10,\"streamingProcess\":true,"
+        verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\","
+                + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"streamingProcess\":true,"
                 + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
                 + "\"jobExceptionHandler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\","
                 + "\"executorServiceHandler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}");

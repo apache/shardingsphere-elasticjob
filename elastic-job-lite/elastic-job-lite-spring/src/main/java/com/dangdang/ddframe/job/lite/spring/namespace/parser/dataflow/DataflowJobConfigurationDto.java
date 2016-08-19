@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
@@ -33,25 +33,16 @@ final class DataflowJobConfigurationDto extends AbstractJobConfigurationDto {
     
     private final Class<? extends DataflowJob> jobClass;
     
-    private final DataflowJobConfiguration.DataflowType dataflowType;
-    
     private final Boolean streamingProcess;
     
-    private final Integer concurrentDataProcessThreadCount;
-    
-    DataflowJobConfigurationDto(final String jobName, final String cron, final int shardingTotalCount, final Class<? extends DataflowJob> jobClass, 
-                                       final DataflowJobConfiguration.DataflowType dataflowType, final Boolean streamingProcess, final Integer concurrentDataProcessThreadCount) {
+    DataflowJobConfigurationDto(final String jobName, final String cron, final int shardingTotalCount, final Class<? extends DataflowJob> jobClass, final Boolean streamingProcess) {
         super(jobName, cron, shardingTotalCount);
         this.jobClass = jobClass;
-        this.dataflowType = dataflowType;
         this.streamingProcess = streamingProcess;
-        this.concurrentDataProcessThreadCount = concurrentDataProcessThreadCount;
     }
     
     @Override
     protected JobTypeConfiguration toJobConfiguration(final JobCoreConfiguration jobCoreConfig) {
-        return null == concurrentDataProcessThreadCount
-                ? new DataflowJobConfiguration(jobCoreConfig, jobClass.getCanonicalName(), dataflowType, null == streamingProcess ? false : streamingProcess)
-                : new DataflowJobConfiguration(jobCoreConfig, jobClass.getCanonicalName(), dataflowType, null == streamingProcess ? false : streamingProcess, concurrentDataProcessThreadCount);
+        return new DataflowJobConfiguration(jobCoreConfig, jobClass.getCanonicalName(), null == streamingProcess ? false : streamingProcess);
     }
 }

@@ -67,7 +67,7 @@ public class SchedulerFacadeTest {
     @Mock
     private ListenerManager listenerManager;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createDataflowLiteJobConfiguration(DataflowJobConfiguration.DataflowType.THROUGHPUT);
+    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createDataflowLiteJobConfiguration();
     
     private SchedulerFacade schedulerFacade;
     
@@ -76,7 +76,7 @@ public class SchedulerFacadeTest {
         MockitoAnnotations.initMocks(this);
         schedulerFacade = new SchedulerFacade(null, liteJobConfig, Collections.<ElasticJobListener>emptyList());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, false)).build());
+                TestDataflowJob.class.getCanonicalName(), false)).build());
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
@@ -95,7 +95,7 @@ public class SchedulerFacadeTest {
     @Test
     public void assertRegisterStartUpInfo() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, false)).build());
+                TestDataflowJob.class.getCanonicalName(), false)).build());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
         verify(listenerManager).startAllListeners();
         verify(leaderElectionService).leaderForceElection();

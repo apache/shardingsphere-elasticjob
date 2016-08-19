@@ -64,7 +64,7 @@ public final class JavaLiteJobMain {
         
         final DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(
                 JobCoreConfiguration.newBuilder("javaSequenceDataflowElasticJob", "0/5 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
-                JavaDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, true);
+                JavaDataflowJob.class.getCanonicalName(), true);
         
         final ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 10)
                 .shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").jobEventConfiguration(jobLogEventConfig).build(), 
@@ -88,8 +88,8 @@ public final class JavaLiteJobMain {
     private static void changeFilePermissions(final Path path) {
         try {
             Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rwxr-xr-x"));
-        } catch (final IOException e) {
-            e.printStackTrace();
+        } catch (final IOException ex) {
+            ex.printStackTrace();
         }
     }
 }

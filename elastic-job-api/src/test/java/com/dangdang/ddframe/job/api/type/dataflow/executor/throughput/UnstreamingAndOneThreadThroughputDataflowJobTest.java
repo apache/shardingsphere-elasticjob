@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.executor.throughput;
 
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.AbstractDataflowJobExecutorTest;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.when;
 public final class UnstreamingAndOneThreadThroughputDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
     public UnstreamingAndOneThreadThroughputDataflowJobTest() {
-        super(DataflowJobConfiguration.DataflowType.THROUGHPUT, false, 1);
+        super(false);
     }
     
     @Test

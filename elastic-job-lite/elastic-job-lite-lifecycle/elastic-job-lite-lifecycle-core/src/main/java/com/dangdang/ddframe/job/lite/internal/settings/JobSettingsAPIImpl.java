@@ -76,9 +76,7 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
     } 
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {
-        result.setConcurrentDataProcessThreadCount(config.getConcurrentDataProcessThreadCount());
         result.setStreamingProcess(config.isStreamingProcess());
-        result.setDataflowType(config.getDataflowType().name());
     }
     
     private void buildScriptJobSettings(final JobSettings result, final ScriptJobConfiguration config) {

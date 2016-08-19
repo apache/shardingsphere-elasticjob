@@ -17,14 +17,13 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.executor;
 
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
-import com.dangdang.ddframe.job.api.fixture.job.JobCaller;
-import com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob;
-import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
+import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.fixture.job.JobCaller;
+import com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -49,11 +48,7 @@ import static org.mockito.Mockito.when;
 @Getter(AccessLevel.PROTECTED)
 public abstract class AbstractDataflowJobExecutorTest {
     
-    private final DataflowJobConfiguration.DataflowType dataflowType;
-    
     private final boolean streamingProcess;
-    
-    private final int concurrentDataProcessThreadCount;
     
     @Mock
     private JobCaller jobCaller;
@@ -70,7 +65,7 @@ public abstract class AbstractDataflowJobExecutorTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(dataflowType, streamingProcess, concurrentDataProcessThreadCount));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(streamingProcess));
         shardingContexts = ElasticJobAssert.getShardingContext();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         dataflowJobExecutor = new DataflowJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
@@ -83,7 +78,6 @@ public abstract class AbstractDataflowJobExecutorTest {
         verify(jobFacade).loadJobRootConfiguration(true);
         ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContexts);
     }
-    
     
     @Test
     public final void assertExecuteWhenFetchDataIsNullAndEmpty() {

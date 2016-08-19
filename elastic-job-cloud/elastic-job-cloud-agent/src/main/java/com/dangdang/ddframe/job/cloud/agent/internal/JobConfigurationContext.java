@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.impl.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.api.type.JobType;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration.DataflowType;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
@@ -62,8 +61,7 @@ public class JobConfigurationContext implements JobRootConfiguration {
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), jobConfigurationMap.get("executorServiceHandler"));
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobConfigurationMap.get("jobExceptionHandler"));
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, jobClass, 
-                    DataflowType.valueOf(jobConfigurationMap.get("dataflowType")), Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, jobClass, Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
         } else if (JobType.SIMPLE.name().equals(jobType)) {
             jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig, jobClass);
         } else if (JobType.SCRIPT.name().equals(jobType)) {

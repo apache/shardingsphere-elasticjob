@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.lite.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.impl.JobProperties;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
@@ -43,7 +43,6 @@ import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.hamcrest.CoreMatchers;
@@ -88,9 +87,9 @@ public abstract class AbstractBaseStdJobTest {
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
     
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
+    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final boolean disabled) {
         this.disabled = disabled;
-        liteJobConfig = initJobConfig(elasticJobClass, dataflowType);
+        liteJobConfig = initJobConfig(elasticJobClass);
         jobScheduler = new JobScheduler(regCenter, liteJobConfig, new ElasticJobListener() {
             
             @Override
@@ -116,15 +115,15 @@ public abstract class AbstractBaseStdJobTest {
         leaderElectionService = new LeaderElectionService(regCenter, jobName);
     }
     
-    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
+    protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
         this.monitorPort = monitorPort;
-        liteJobConfig = initJobConfig(elasticJobClass, dataflowType);
+        liteJobConfig = initJobConfig(elasticJobClass);
         jobScheduler = new JobScheduler(regCenter, liteJobConfig);
         disabled = false;
         leaderElectionService = new LeaderElectionService(regCenter, jobName);
     }
     
-    private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
+    private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
         String cron = "0/1 * * * * ?";
         int totalShardingCount = 3;
         String shardingParameters = "0=A,1=B,2=C";
@@ -132,7 +131,7 @@ public abstract class AbstractBaseStdJobTest {
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName()).build();
         JobTypeConfiguration jobTypeConfig;
         if (DataflowJob.class.isAssignableFrom(elasticJobClass)) {
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, elasticJobClass.getCanonicalName(), dataflowType.get(), false);
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, elasticJobClass.getCanonicalName(), false);
         } else if (ScriptJob.class.isAssignableFrom(elasticJobClass)) {
             jobTypeConfig = new ScriptJobConfiguration(jobCoreConfig, AbstractBaseStdJobTest.class.getResource("/script/test.sh").getPath());
         } else {

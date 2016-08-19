@@ -21,12 +21,6 @@
                     <div class="col-sm-2">
                         <input type="text" id="jobType" name="jobType" class="form-control" disabled />
                     </div>
-                    <#if jobType == "DATAFLOW">
-                    <label for="dataflowType" class="col-sm-2 control-label">数据流作业类型</label>
-                    <div class="col-sm-2">
-                        <input type="text" id="dataflowType" name="dataflowType" class="form-control" disabled />
-                    </div>
-                    </#if>
                 </div>
                 
                 <div class="form-group">
@@ -48,11 +42,6 @@
                 
                 <#if jobType == "DATAFLOW">
                     <div class="form-group">
-                        <label for="concurrentDataProcessThreadCount" class="col-sm-2 control-label">处理数据的并发线程数</label>
-                        <div class="col-sm-1">
-                            <input type="number" id="concurrentDataProcessThreadCount" name="concurrentDataProcessThreadCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="只对高吞吐量处理数据流类型作业起作用" />
-                        </div>
-                        
                         <label for="streamingProcess" class="col-sm-2 control-label">是否流式处理数据</label>
                         <div class="col-sm-2">
                             <input type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 则处理数据完成后作业结束" />

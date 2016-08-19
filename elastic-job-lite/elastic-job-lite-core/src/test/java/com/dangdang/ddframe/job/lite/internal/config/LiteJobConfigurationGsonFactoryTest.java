@@ -50,7 +50,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     
     private String dataflowJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":" + JOB_PROPS_JSON + "," + JOB_EVENT_JSON + ",\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10,"
+            + "\"jobProperties\":" + JOB_PROPS_JSON + "," + JOB_EVENT_JSON + ",\"streamingProcess\":true,"
             + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";
     
     private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
@@ -69,7 +69,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     @Test
     public void assertToJsonForDataflowJob() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
-                TestDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.SEQUENCE, true, 10)).build();
+                TestDataflowJob.class.getCanonicalName(), true)).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     
@@ -126,9 +126,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertThat(actual.getJobShardingStrategyClass(), is(""));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
-        assertThat(((DataflowJobConfiguration) actual.getTypeConfig()).getDataflowType(), is(DataflowJobConfiguration.DataflowType.SEQUENCE));
         assertTrue(((DataflowJobConfiguration) actual.getTypeConfig()).isStreamingProcess());
-        assertThat(((DataflowJobConfiguration) actual.getTypeConfig()).getConcurrentDataProcessThreadCount(), is(10));
     }
     
     @Test

@@ -17,19 +17,16 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.simple;
 
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
-import com.google.common.base.Optional;
+import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
+import com.dangdang.ddframe.job.lite.integrate.fixture.simple.FooSimpleElasticJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
-import com.dangdang.ddframe.job.lite.integrate.fixture.simple.FooSimpleElasticJob;
-
 public final class DisabledJobTest extends AbstractBaseStdJobTest {
     
     public DisabledJobTest() {
-        super(FooSimpleElasticJob.class, true, Optional.<DataflowJobConfiguration.DataflowType>absent());
+        super(FooSimpleElasticJob.class, true);
     }
     
     @Before

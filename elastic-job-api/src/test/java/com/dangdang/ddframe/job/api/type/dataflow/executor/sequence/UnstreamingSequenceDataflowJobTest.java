@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.api.type.dataflow.executor.sequence;
 
 import com.dangdang.ddframe.job.api.type.dataflow.executor.AbstractDataflowJobExecutorTest;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -30,7 +29,7 @@ import static org.mockito.Mockito.when;
 public final class UnstreamingSequenceDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
     public UnstreamingSequenceDataflowJobTest() {
-        super(DataflowJobConfiguration.DataflowType.SEQUENCE, false, 10);
+        super(false);
     }
     
     @Test

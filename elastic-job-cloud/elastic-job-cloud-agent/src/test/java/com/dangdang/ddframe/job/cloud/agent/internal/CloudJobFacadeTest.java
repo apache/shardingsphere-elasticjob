@@ -18,12 +18,11 @@
 package com.dangdang.ddframe.job.cloud.agent.internal;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.type.JobType;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -59,7 +58,6 @@ public class CloudJobFacadeTest {
         result.put("jobName", "test_job");
         result.put("jobClass", ElasticJob.class.getCanonicalName());
         result.put("jobType", jobType.name());
-        result.put("dataflowType", DataflowJobConfiguration.DataflowType.SEQUENCE.name());
         result.put("streamingProcess", Boolean.toString(streamingProcess));
         return result;
     }

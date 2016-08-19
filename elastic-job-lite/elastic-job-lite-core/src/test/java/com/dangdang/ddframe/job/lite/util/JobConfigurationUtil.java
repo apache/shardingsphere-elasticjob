@@ -52,8 +52,8 @@ public final class JobConfigurationUtil {
                 .disabled(disabled).overwrite(overwrite).build();
     }
     
-    public static LiteJobConfiguration createDataflowLiteJobConfiguration(final DataflowJobConfiguration.DataflowType dataflowType) {
-        return LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
-                DataflowJob.class.getCanonicalName(), dataflowType, false)).build();
+    public static LiteJobConfiguration createDataflowLiteJobConfiguration() {
+        return LiteJobConfiguration.newBuilder(
+                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), DataflowJob.class.getCanonicalName(), false)).build();
     }
 }

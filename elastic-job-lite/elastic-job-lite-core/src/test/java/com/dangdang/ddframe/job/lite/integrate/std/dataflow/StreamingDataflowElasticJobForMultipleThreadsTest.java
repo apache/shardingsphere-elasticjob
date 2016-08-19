@@ -17,13 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow;
 
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
-import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 public final class StreamingDataflowElasticJobForMultipleThreadsTest extends AbstractBaseStdJobAutoInitTest {
     
     public StreamingDataflowElasticJobForMultipleThreadsTest() {
-        super(StreamingDataflowElasticJob.class, Optional.of(DataflowJobConfiguration.DataflowType.THROUGHPUT));
+        super(StreamingDataflowElasticJob.class);
     }
     
     @Before

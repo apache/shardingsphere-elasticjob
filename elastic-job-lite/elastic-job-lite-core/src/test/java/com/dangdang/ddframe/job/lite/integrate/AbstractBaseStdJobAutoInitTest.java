@@ -18,16 +18,14 @@
 package com.dangdang.ddframe.job.lite.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;
 
 public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobTest {
     
-    protected AbstractBaseStdJobAutoInitTest(final Class<? extends ElasticJob> elasticJobClass, final Optional<DataflowJobConfiguration.DataflowType> dataflowType) {
-        super(elasticJobClass, false, dataflowType);
+    protected AbstractBaseStdJobAutoInitTest(final Class<? extends ElasticJob> elasticJobClass) {
+        super(elasticJobClass, false);
     }
     
     protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {

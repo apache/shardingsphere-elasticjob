@@ -17,11 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.simple;
 
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.simple.FooSimpleElasticJob;
-import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
     public SimpleElasticJobTest() {
-        super(FooSimpleElasticJob.class, Optional.<DataflowJobConfiguration.DataflowType>absent());
+        super(FooSimpleElasticJob.class);
     }
     
     @Before

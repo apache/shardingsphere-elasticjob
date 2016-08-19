@@ -34,7 +34,7 @@ public final class APIJsonConstants {
     
     private static final String DATAFLOW_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob\",\"jobType\":\"DATAFLOW\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":%s,\"jobEventConfigs\":%s,\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
+            + "\"jobProperties\":%s,\"jobEventConfigs\":%s,\"streamingProcess\":true}";
     
     private static final String SCRIPT_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","

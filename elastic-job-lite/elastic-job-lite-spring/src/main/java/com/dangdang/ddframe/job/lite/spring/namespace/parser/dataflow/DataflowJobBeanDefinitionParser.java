@@ -39,8 +39,6 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
     @Override
     protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
         factory.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
-        factory.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.DATAFLOW_TYPE_ATTRIBUTE));
         factory.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
-        factory.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.CONCURRENT_DATA_PROCESS_THREAD_COUNT_ATTRIBUTE));
     }
 }

@@ -17,10 +17,9 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.api;
 
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.type.JobType;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +29,6 @@ import lombok.RequiredArgsConstructor;
  * @author caohao
  * @author zhangliang
  */
-@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
 public final class DataflowJobConfiguration implements JobTypeConfiguration {
@@ -41,20 +39,5 @@ public final class DataflowJobConfiguration implements JobTypeConfiguration {
     
     private final String jobClass;
     
-    private final DataflowType dataflowType;
-    
     private final boolean streamingProcess;
-    
-    private int concurrentDataProcessThreadCount = Runtime.getRuntime().availableProcessors() * 2;
-    
-    /**
-     * 数据流作业支持的处理类型.
-     *
-     * @author zhangliang
-     */
-    public enum DataflowType {
-        
-        THROUGHPUT, 
-        SEQUENCE
-    }
 }

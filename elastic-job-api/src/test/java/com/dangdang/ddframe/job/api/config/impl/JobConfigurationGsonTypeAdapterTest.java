@@ -26,7 +26,6 @@ import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobWithEventConfiguration;
 import com.dangdang.ddframe.job.api.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.api.fixture.handler.ThrowJobExceptionHandler;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -51,7 +50,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
     
     @Test
     public void assertToDataflowJobJson() {
-        assertThat(GSON.toJson(new TestJobRootConfiguration(new TestDataflowJobConfiguration(DataflowJobConfiguration.DataflowType.SEQUENCE, true, 10).getTypeConfig())),
+        assertThat(GSON.toJson(new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig())),
                 is(APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName())));
     }
     
@@ -79,7 +78,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
     public void assertFromDataflowJobJson() {
         TestJobRootConfiguration actual = GSON.fromJson(
                 APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
-        TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestDataflowJobConfiguration(DataflowJobConfiguration.DataflowType.SEQUENCE, true, 10).getTypeConfig());
+        TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig());
         assertThat(GSON.toJson(actual), is(GSON.toJson(expected)));
     }
     

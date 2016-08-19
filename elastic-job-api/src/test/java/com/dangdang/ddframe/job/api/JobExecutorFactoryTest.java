@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.job.OtherJob;
 import com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob;
 import com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.executor.DataflowJobExecutor;
 import com.dangdang.ddframe.job.api.type.script.executor.ScriptJobExecutor;
 import com.dangdang.ddframe.job.api.type.simple.executor.SimpleJobExecutor;
@@ -58,7 +57,7 @@ public final class JobExecutorFactoryTest {
     
     @Test
     public void assertGetJobExecutorForDataflowJob() {
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(DataflowJobConfiguration.DataflowType.SEQUENCE, false, 1));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
         assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(), jobFacade), instanceOf(DataflowJobExecutor.class));
     }
     

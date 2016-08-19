@@ -23,28 +23,16 @@ import com.dangdang.ddframe.job.lite.fixture.DataflowElasticJob;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public final class DataflowJobConfigurationDtoTest {
     
     @Test
-    public void assertToLiteJobConfigurationForAllProperties() {
+    public void assertToLiteJobConfiguration() {
         LiteJobConfiguration actual = new DataflowJobConfigurationDto(
-                "dataflowJob", "0/1 * * * * ?", 10, DataflowElasticJob.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, true, 10).toLiteJobConfiguration();
+                "dataflowJob", "0/1 * * * * ?", 10, DataflowElasticJob.class, true).toLiteJobConfiguration();
         assertThat(actual.getJobName(), is("dataflowJob"));
-        assertThat(((DataflowJobConfiguration) actual.getTypeConfig()).getDataflowType(), is(DataflowJobConfiguration.DataflowType.THROUGHPUT));
         assertTrue(((DataflowJobConfiguration) actual.getTypeConfig()).isStreamingProcess());
-        assertThat(((DataflowJobConfiguration) actual.getTypeConfig()).getConcurrentDataProcessThreadCount(), is(10));
-    }
-    
-    @Test
-    public void assertToLiteJobConfigurationWhenStreamingProcessAndConcurrentDataProcessThreadCountIsAllNull() {
-        LiteJobConfiguration actual = new DataflowJobConfigurationDto(
-                "dataflowJob", "0/1 * * * * ?", 10, DataflowElasticJob.class, DataflowJobConfiguration.DataflowType.THROUGHPUT, null, null).toLiteJobConfiguration();
-        assertThat(actual.getJobName(), is("dataflowJob"));
-        assertFalse(((DataflowJobConfiguration) actual.getTypeConfig()).isStreamingProcess());
-        assertThat(((DataflowJobConfiguration) actual.getTypeConfig()).getConcurrentDataProcessThreadCount(), is(Runtime.getRuntime().availableProcessors() * 2));
     }
 }

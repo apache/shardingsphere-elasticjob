@@ -82,7 +82,6 @@ public class JobConfigurationContextTest {
         result.put("jobClass", TestJob.class.getCanonicalName());
         result.put("jobType", jobType.name());
         if (jobType == JobType.DATAFLOW) {
-            result.put("dataflowType", DataflowJobConfiguration.DataflowType.SEQUENCE.name());
             result.put("streamingProcess", Boolean.TRUE.toString());
             result.put("concurrentDataProcessThreadCount", "8");
         } else if (jobType == JobType.SCRIPT) {
