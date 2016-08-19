@@ -82,6 +82,6 @@ public class ScriptJobExecutorTest {
         ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         scriptJobExecutor.execute();
         verify(jobFacade).loadJobRootConfiguration(true);
-        verify(executor).execute(Matchers.<CommandLine>any());
+        verify(executor, times(2)).execute(Matchers.<CommandLine>any());
     }
 }

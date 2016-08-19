@@ -15,22 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput;
+package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import lombok.Getter;
 
 import java.util.Collections;
 import java.util.List;
 
-public class StreamingThroughputDataflowElasticJobForExecuteFailure implements DataflowJob<String> {
+public class StreamingDataflowElasticJobForExecuteThrowsException implements DataflowJob<String> {
     
     @Getter
     private static volatile boolean completed;
     
     @Override
-    public List<String> fetchData(final ShardingContext context) {
+    public List<String> fetchData(final ShardingContext shardingContext) {
         if (completed) {
             return null;
         }
@@ -38,8 +39,9 @@ public class StreamingThroughputDataflowElasticJobForExecuteFailure implements D
     }
     
     @Override
-    public void processData(final ShardingContext context, final List<String> data) {
+    public void processData(final ShardingContext shardingContext, final List<String> data) {
         completed = true;
+        throw new JobSystemException("I want an error.");
     }
     
     public static void reset() {

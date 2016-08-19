@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -64,12 +64,12 @@ public class ExecutionService {
     /**
      * 注册作业启动信息.
      * 
-     * @param shardingContext 分片上下文
+     * @param shardingContexts 分片上下文
      */
-    public void registerJobBegin(final ShardingContext shardingContext) {
-        if (!shardingContext.getShardingItemParameters().isEmpty() && configService.load(true).isMonitorExecution()) {
+    public void registerJobBegin(final ShardingContexts shardingContexts) {
+        if (!shardingContexts.getShardingItemParameters().isEmpty() && configService.load(true).isMonitorExecution()) {
             serverService.updateServerStatus(ServerStatus.RUNNING);
-            for (int each : shardingContext.getShardingItemParameters().keySet()) {
+            for (int each : shardingContexts.getShardingItemParameters().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
                 jobNodeStorage.replaceJobNode(ExecutionNode.getLastBeginTimeNode(each), System.currentTimeMillis());
                 JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
@@ -126,14 +126,14 @@ public class ExecutionService {
     /**
      * 注册作业完成信息.
      * 
-     * @param shardingContext 分片上下文
+     * @param shardingContexts 分片上下文
      */
-    public void registerJobCompleted(final ShardingContext shardingContext) {
+    public void registerJobCompleted(final ShardingContexts shardingContexts) {
         if (!configService.load(true).isMonitorExecution()) {
             return;
         }
         serverService.updateServerStatus(ServerStatus.READY);
-        for (int each : shardingContext.getShardingItemParameters().keySet()) {
+        for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));
             jobNodeStorage.replaceJobNode(ExecutionNode.getLastCompleteTimeNode(each), System.currentTimeMillis());

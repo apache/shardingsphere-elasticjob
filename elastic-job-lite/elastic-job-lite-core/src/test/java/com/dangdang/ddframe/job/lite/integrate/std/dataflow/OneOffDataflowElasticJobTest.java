@@ -15,13 +15,13 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
+package com.dangdang.ddframe.job.lite.integrate.std.dataflow;
 
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
-import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataflowElasticJobForExecuteFailure;
+import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.OneOffDataflowElasticJob;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.google.common.base.Optional;
 import org.junit.After;
@@ -30,26 +30,27 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class StreamingThroughputDataflowElasticJobForExecuteFailureTest extends AbstractBaseStdJobAutoInitTest {
+public final class OneOffDataflowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
-    public StreamingThroughputDataflowElasticJobForExecuteFailureTest() {
-        super(StreamingThroughputDataflowElasticJobForExecuteFailure.class, Optional.of(DataflowJobConfiguration.DataflowType.THROUGHPUT));
+    public OneOffDataflowElasticJobTest() {
+        super(OneOffDataflowElasticJob.class, Optional.of(DataflowJobConfiguration.DataflowType.THROUGHPUT));
     }
     
     @Before
     @After
     public void reset() {
-        StreamingThroughputDataflowElasticJobForExecuteFailure.reset();
+        OneOffDataflowElasticJob.reset();
     }
     
     @Override
     protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
-        JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig(), "streamingProcess", true);
+        JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig().getCoreConfig(), "misfire", false);
+        JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig(), "streamingProcess", false);
     }
     
     @Test
     public void assertJobInit() {
-        while (!StreamingThroughputDataflowElasticJobForExecuteFailure.isCompleted()) {
+        while (!OneOffDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));

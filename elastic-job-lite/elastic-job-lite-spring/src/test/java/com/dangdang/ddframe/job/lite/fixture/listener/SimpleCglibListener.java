@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.fixture.listener;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -26,12 +26,12 @@ import static org.junit.Assert.assertThat;
 public class SimpleCglibListener implements ElasticJobListener {
     
     @Override
-    public void beforeJobExecuted(final ShardingContext shardingContext) {
-        assertThat(shardingContext.getJobName(), is("simpleElasticJob_namespace_listener_cglib"));
+    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
+        assertThat(shardingContexts.getJobName(), is("simpleElasticJob_namespace_listener_cglib"));
     }
     
     @Override
-    public void afterJobExecuted(final ShardingContext shardingContext) {
-        assertThat(shardingContext.getJobName(), is("simpleElasticJob_namespace_listener_cglib"));
+    public void afterJobExecuted(final ShardingContexts shardingContexts) {
+        assertThat(shardingContexts.getJobName(), is("simpleElasticJob_namespace_listener_cglib"));
     }
 }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.type;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import lombok.AccessLevel;
@@ -34,32 +34,32 @@ public class ElasticJobAssert {
     
     public static final String JOB_NAME = "test_job";
     
-    public static ShardingContext getShardingContext() {
+    public static ShardingContexts getShardingContext() {
         Map<Integer, String> map = new HashMap<>(2, 1);
         map.put(0, "A");
         map.put(1, "B");
-        return new ShardingContext(JOB_NAME, 10, "", map);
+        return new ShardingContexts(JOB_NAME, 10, "", map);
     }
     
-    public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContext shardingContext) {
-        when(jobFacade.getShardingContext()).thenReturn(shardingContext);
-        when(jobFacade.misfireIfNecessary(shardingContext.getShardingItemParameters().keySet())).thenReturn(false);
-        when(jobFacade.isExecuteMisfired(shardingContext.getShardingItemParameters().keySet())).thenReturn(false);
+    public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
+        when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
+        when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
+        when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
     }
     
-    public static void verifyForIsNotMisfire(final JobFacade jobFacade, final ShardingContext shardingContext) {
+    public static void verifyForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
         try {
             verify(jobFacade).checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException ex) {
             throw new RuntimeException(ex);
         }
-        verify(jobFacade).getShardingContext();
-        verify(jobFacade).misfireIfNecessary(shardingContext.getShardingItemParameters().keySet());
+        verify(jobFacade).getShardingContexts();
+        verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade).cleanPreviousExecutionInfo();
-        verify(jobFacade).beforeJobExecuted(shardingContext);
-        verify(jobFacade).registerJobBegin(shardingContext);
-        verify(jobFacade).registerJobCompleted(shardingContext);
-        verify(jobFacade).isExecuteMisfired(shardingContext.getShardingItemParameters().keySet());
-        verify(jobFacade).afterJobExecuted(shardingContext);
+        verify(jobFacade).beforeJobExecuted(shardingContexts);
+        verify(jobFacade).registerJobBegin(shardingContexts);
+        verify(jobFacade).registerJobCompleted(shardingContexts);
+        verify(jobFacade).isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet());
+        verify(jobFacade).afterJobExecuted(shardingContexts);
     }
 }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api.listener.fixture;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 
 public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
@@ -30,12 +30,12 @@ public final class TestDistributeOnceElasticJobListener extends AbstractDistribu
     }
     
     @Override
-    public void doBeforeJobExecutedAtLastStarted(final ShardingContext shardingContext) {
+    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
         caller.before();
     }
     
     @Override
-    public void doAfterJobExecutedAtLastCompleted(final ShardingContext shardingContext) {
+    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
         caller.after();
     }
 }

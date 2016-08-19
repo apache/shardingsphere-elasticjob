@@ -18,9 +18,12 @@
 package com.dangdang.ddframe.job.api.type.simple.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
+
+import java.util.Map;
 
 /**
  * 简单作业执行器.
@@ -37,7 +40,10 @@ public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
     }
     
     @Override
-    protected void process(final ShardingContext shardingContext) {
-        simpleJob.execute(shardingContext);
+    protected void process(final ShardingContexts shardingContexts) {
+        // TODO 多线程可配置化
+        for (Map.Entry<Integer, String> entry : shardingContexts.getShardingItemParameters().entrySet()) {
+            simpleJob.execute(new ShardingContext(shardingContexts.getJobName(), shardingContexts.getShardingTotalCount(), shardingContexts.getJobParameter(), entry.getKey(), entry.getValue()));
+        }
     }
 }

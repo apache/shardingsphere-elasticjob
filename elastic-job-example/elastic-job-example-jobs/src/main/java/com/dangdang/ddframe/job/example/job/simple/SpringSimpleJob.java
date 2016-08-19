@@ -34,6 +34,6 @@ public class SpringSimpleJob implements SimpleJob {
     @Override
     public void execute(final ShardingContext shardingContext) {
         System.out.println(new Date() + ":------simple job-------:" + shardingContext);
-        fooRepository.findActive(shardingContext.getShardingItemParameters().keySet());
+        fooRepository.findActive(shardingContext.getShardingItem());
     }
 }

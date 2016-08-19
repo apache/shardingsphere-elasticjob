@@ -23,6 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 public final class JobSpringNamespaceWithListenerAndJdkDynamicProxyTest extends AbstractJobSpringIntegrateTest {
     
     public JobSpringNamespaceWithListenerAndJdkDynamicProxyTest() {
-        super("simpleElasticJob_namespace_listener_jdk_proxy", "throughputDataflowElasticJob_namespace_listener_jdk_proxy");
+        super("simpleElasticJob_namespace_listener_jdk_proxy", "dataflowElasticJob_namespace_listener_jdk_proxy");
     }
 }

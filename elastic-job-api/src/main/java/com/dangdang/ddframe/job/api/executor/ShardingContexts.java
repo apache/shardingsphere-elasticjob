@@ -15,21 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.api.executor;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+
+import java.io.Serializable;
+import java.util.Map;
 
 /**
- * 分片上下文.
+ * 分片上下文集合.
  * 
  * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter
-@ToString
-public final class ShardingContext {
+public final class ShardingContexts implements Serializable {
+    
+    private static final long serialVersionUID = -4585977349142082152L;
     
     /**
      * 作业名称.
@@ -48,12 +51,7 @@ public final class ShardingContext {
     private final String jobParameter;
     
     /**
-     * 分配于本作业实例的分片项.
+     * 分配于本作业实例的分片项和参数的Map.
      */
-    private final int shardingItem;
-    
-    /**
-     * 分配于本作业实例的分片参数.
-     */
-    private final String shardingParameter;
+    private final Map<Integer, String> shardingItemParameters;
 }

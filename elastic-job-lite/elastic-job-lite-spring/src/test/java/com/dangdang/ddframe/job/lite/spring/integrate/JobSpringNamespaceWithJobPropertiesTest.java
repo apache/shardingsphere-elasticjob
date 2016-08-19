@@ -23,6 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 public class JobSpringNamespaceWithJobPropertiesTest extends AbstractJobSpringIntegrateTest {
     
     public JobSpringNamespaceWithJobPropertiesTest() {
-        super("simpleElasticJob_namespace_job_properties", "throughputDataflowElasticJob_namespace_job_properties");
+        super("simpleElasticJob_namespace_job_properties", "dataflowElasticJob_namespace_job_properties");
     }
 }

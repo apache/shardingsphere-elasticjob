@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.api;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.ShardingContext;
 
 import java.util.List;
 

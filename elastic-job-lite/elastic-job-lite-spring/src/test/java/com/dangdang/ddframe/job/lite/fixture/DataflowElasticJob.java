@@ -24,13 +24,13 @@ import lombok.Getter;
 import java.util.Collections;
 import java.util.List;
 
-public final class ThroughputDataflowElasticJob implements DataflowJob<String> {
+public final class DataflowElasticJob implements DataflowJob<String> {
     
     @Getter
     private static volatile boolean completed;
     
     @Override
-    public List<String> fetchData(final ShardingContext context) {
+    public List<String> fetchData(final ShardingContext shardingContext) {
         if (completed) {
             return Collections.emptyList();
         }
@@ -38,7 +38,7 @@ public final class ThroughputDataflowElasticJob implements DataflowJob<String> {
     }
     
     @Override
-    public void processData(final ShardingContext context, final List<String> data) {
+    public void processData(final ShardingContext shardingContext, final List<String> data) {
         completed = true;
     }
     

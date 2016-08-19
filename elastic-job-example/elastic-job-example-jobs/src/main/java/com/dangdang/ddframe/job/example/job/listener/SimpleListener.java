@@ -17,18 +17,18 @@
 
 package com.dangdang.ddframe.job.example.job.listener;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 
 public class SimpleListener implements ElasticJobListener {
     
     @Override
-    public void beforeJobExecuted(final ShardingContext shardingContext) {
-        System.out.println("beforeJobExecuted:" + shardingContext.getJobName());
+    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
+        System.out.println("beforeJobExecuted:" + shardingContexts.getJobName());
     }
     
     @Override
-    public void afterJobExecuted(final ShardingContext shardingContext) {
-        System.out.println("afterJobExecuted:" + shardingContext.getJobName());
+    public void afterJobExecuted(final ShardingContexts shardingContexts) {
+        System.out.println("afterJobExecuted:" + shardingContexts.getJobName());
     }
 }

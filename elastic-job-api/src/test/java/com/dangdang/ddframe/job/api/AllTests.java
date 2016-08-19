@@ -26,7 +26,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        ShardingContextTest.class,
         JobExecutorFactoryTest.class, 
         AllConfigTests.class,
         AllTypeTests.class, 

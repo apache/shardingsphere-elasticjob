@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.fixture.listener;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.fixture.service.FooService;
 
@@ -42,13 +42,13 @@ public class SimpleOnceListener extends AbstractDistributeOnceElasticJobListener
     }
     
     @Override
-    public void doBeforeJobExecutedAtLastStarted(final ShardingContext shardingContext) {
+    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
         assertThat(startedTimeoutMilliseconds, is(10000L));
         assertThat(fooService.foo(), is("this is fooService."));
     }
     
     @Override
-    public void doAfterJobExecutedAtLastCompleted(final ShardingContext shardingContext) {
+    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
         assertThat(completedTimeoutMilliseconds, is(20000L));
     }
 }

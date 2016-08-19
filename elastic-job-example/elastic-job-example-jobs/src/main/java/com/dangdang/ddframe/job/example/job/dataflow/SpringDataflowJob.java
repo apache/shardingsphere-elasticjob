@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -37,13 +36,13 @@ public class SpringDataflowJob implements DataflowJob<Foo> {
     @Override
     public List<Foo> fetchData(final ShardingContext shardingContext) {
         System.out.println(new Date() + ":------dataflow job fetch data-------:" + shardingContext);
-        return fooRepository.findActive(Collections.singletonList(shardingContext.getShardingItemParameters().keySet().iterator().next()));
+        return fooRepository.findActive(shardingContext.getShardingItem());
     }
     
     @Override
     public void processData(final ShardingContext shardingContext, final List<Foo> data) {
         for (Foo each : data) {
-            System.out.println(new Date() + ":------dataflow job fetch data-------:" + shardingContext);
+            System.out.println(new Date() + ":------dataflow job process data-------:" + shardingContext);
             fooRepository.setInactive(each.getId());
         }
     }

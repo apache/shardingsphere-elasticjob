@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.example.fixture.entity.Foo.FooStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,15 +41,7 @@ public class FooRepository {
         }
     }
     
-    public List<Foo> findActive(final Collection<Integer> shardingItems) {
-        List<Foo> result = new ArrayList<>(shardingItems.size() * 10);
-        for (int each : shardingItems) {
-            result.addAll(findActive(each));
-        }
-        return result;
-    }
-    
-    private List<Foo> findActive(final int shardingItem) {
+    public List<Foo> findActive(final int shardingItem) {
         List<Foo> result = new ArrayList<>(10);
         for (int i = 0; i < 10; i++) {
             Foo foo = map.get((shardingItem * 10 + i) % 100L);
@@ -63,9 +54,5 @@ public class FooRepository {
     
     public void setInactive(final long id) {
         map.get(id).setStatus(FooStatus.INACTIVE);
-    }
-    
-    public void clear() {
-        System.out.println("clear");
     }
 }

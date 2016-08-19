@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.api.executor;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.config.impl.JobProperties;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
@@ -96,30 +95,30 @@ public abstract class AbstractElasticJobExecutor {
             jobExceptionHandler.handleException(jobName, cause);
         }
         
-        ShardingContext shardingContext = jobFacade.getShardingContext();
-        if (jobFacade.misfireIfNecessary(shardingContext.getShardingItemParameters().keySet())) {
+        ShardingContexts shardingContexts = jobFacade.getShardingContexts();
+        if (jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())) {
             jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.DEBUG, "Previous job is still running, misfired job will start after previous job completed."));
             return;
         }
         jobFacade.cleanPreviousExecutionInfo();
         try {
-            jobFacade.beforeJobExecuted(shardingContext);
+            jobFacade.beforeJobExecuted(shardingContexts);
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
             jobExceptionHandler.handleException(jobName, cause);
         }
-        execute(shardingContext, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER);
-        jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Execute normal completed, sharding context:%s.", shardingContext)));
-        while (jobFacade.isExecuteMisfired(shardingContext.getShardingItemParameters().keySet())) {
-            jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Execute misfired job, sharding context:%s.", shardingContext)));
-            jobFacade.clearMisfire(shardingContext.getShardingItemParameters().keySet());
-            execute(shardingContext, JobExecutionEvent.ExecutionSource.MISFIRE);
-            jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Misfired job completed, sharding context:%s.", shardingContext)));
+        execute(shardingContexts, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER);
+        jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Execute normal completed, sharding context:%s.", shardingContexts)));
+        while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
+            jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Execute misfired job, sharding context:%s.", shardingContexts)));
+            jobFacade.clearMisfire(shardingContexts.getShardingItemParameters().keySet());
+            execute(shardingContexts, JobExecutionEvent.ExecutionSource.MISFIRE);
+            jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Misfired job completed, sharding context:%s.", shardingContexts)));
         }
         jobFacade.failoverIfNecessary();
         try {
-            jobFacade.afterJobExecuted(shardingContext);
+            jobFacade.afterJobExecuted(shardingContexts);
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             //CHECKSTYLE:ON
@@ -128,16 +127,16 @@ public abstract class AbstractElasticJobExecutor {
         jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, "Execute all completed."));
     }
     
-    private void execute(final ShardingContext shardingContext, final JobExecutionEvent.ExecutionSource executionSource) {
-        if (shardingContext.getShardingItemParameters().isEmpty()) {
-            jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Sharding item is empty, job execution context:%s.", shardingContext)));
+    private void execute(final ShardingContexts shardingContexts, final JobExecutionEvent.ExecutionSource executionSource) {
+        if (shardingContexts.getShardingItemParameters().isEmpty()) {
+            jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Sharding item is empty, job execution context:%s.", shardingContexts)));
             return;
         }
-        jobFacade.registerJobBegin(shardingContext);
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, shardingContext.getShardingItemParameters().keySet());
+        jobFacade.registerJobBegin(shardingContexts);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, shardingContexts.getShardingItemParameters().keySet());
         try {
             jobEventBus.post(jobName, jobExecutionEvent);
-            process(shardingContext);
+            process(shardingContexts);
             jobExecutionEvent.executionSuccess();
             //CHECKSTYLE:OFF
         } catch (final Throwable cause) {
@@ -146,10 +145,10 @@ public abstract class AbstractElasticJobExecutor {
             jobExceptionHandler.handleException(jobName, cause);
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
-            jobFacade.registerJobCompleted(shardingContext);
+            jobFacade.registerJobCompleted(shardingContexts);
             jobEventBus.post(jobName, jobExecutionEvent);
         }
     }
     
-    protected abstract void process(final ShardingContext shardingContext);
+    protected abstract void process(final ShardingContexts shardingContexts);
 }

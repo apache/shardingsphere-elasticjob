@@ -15,13 +15,13 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
+package com.dangdang.ddframe.job.lite.integrate.std.dataflow;
 
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
-import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataflowElasticJob;
+import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.google.common.base.Optional;
 import org.junit.After;
@@ -30,30 +30,29 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 
-public final class StreamingThroughputDataflowElasticJobForPausedTest extends AbstractBaseStdJobAutoInitTest {
+public final class StreamingDataflowElasticJobForNotMonitorTest extends AbstractBaseStdJobAutoInitTest {
     
-    public StreamingThroughputDataflowElasticJobForPausedTest() {
-        super(StreamingThroughputDataflowElasticJob.class, Optional.of(DataflowJobConfiguration.DataflowType.THROUGHPUT));
+    public StreamingDataflowElasticJobForNotMonitorTest() {
+        super(StreamingDataflowElasticJob.class, Optional.of(DataflowJobConfiguration.DataflowType.THROUGHPUT));
     }
     
     @Before
     @After
     public void reset() {
-        StreamingThroughputDataflowElasticJob.reset();
+        StreamingDataflowElasticJob.reset();
     }
     
     @Override
     protected void setLiteJobConfig(final LiteJobConfiguration liteJobConfig) {
+        JobConfigurationUtil.setFieldValue(liteJobConfig, "monitorExecution", false);
         JobConfigurationUtil.setFieldValue(liteJobConfig.getTypeConfig(), "streamingProcess", true);
     }
     
     @Test
-    public void assertClearPausedJobStatusWhenRestartingJob() {
-        while (!StreamingThroughputDataflowElasticJob.isCompleted()) {
+    public void assertJobInit() {
+        while (!StreamingDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        getRegCenter().persist("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/paused", "");
-        initJob();
-        assertFalse(getRegCenter().isExisted("/" + getJobName() + "/servers/" + getLocalHostService().getIp() + "/paused"));
+        assertFalse(getRegCenter().isExisted("/" + getJobName() + "/execution"));
     }
 }

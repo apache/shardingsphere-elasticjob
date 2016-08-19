@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.type.dataflow.executor;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.fixture.job.JobCaller;
 import com.dangdang.ddframe.job.api.fixture.job.TestDataflowJob;
 import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
@@ -61,7 +61,7 @@ public abstract class AbstractDataflowJobExecutorTest {
     @Mock
     private JobFacade jobFacade;
     
-    private ShardingContext shardingContext;
+    private ShardingContexts shardingContexts;
     
     private DataflowJobExecutor dataflowJobExecutor;
     
@@ -71,17 +71,17 @@ public abstract class AbstractDataflowJobExecutorTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(dataflowType, streamingProcess, concurrentDataProcessThreadCount));
-        shardingContext = ElasticJobAssert.getShardingContext();
-        when(jobFacade.getShardingContext()).thenReturn(shardingContext);
+        shardingContexts = ElasticJobAssert.getShardingContext();
+        when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         dataflowJobExecutor = new DataflowJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
-        ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContext);
+        ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContexts);
     }
     
     @After
     public void tearDown() throws NoSuchFieldException {
         assertNotNull(ReflectionUtils.getFieldValue(dataflowJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("executorService")));
         verify(jobFacade).loadJobRootConfiguration(true);
-        ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContext);
+        ElasticJobAssert.verifyForIsNotMisfire(jobFacade, shardingContexts);
     }
     
     

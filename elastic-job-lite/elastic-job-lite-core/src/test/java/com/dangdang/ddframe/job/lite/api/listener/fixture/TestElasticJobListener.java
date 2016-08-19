@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api.listener.fixture;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import lombok.RequiredArgsConstructor;
 
@@ -27,12 +27,12 @@ public final class TestElasticJobListener implements ElasticJobListener {
     private final ElasticJobListenerCaller caller;
     
     @Override
-    public void beforeJobExecuted(final ShardingContext shardingContext) {
+    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
         caller.before();
     }
     
     @Override
-    public void afterJobExecuted(final ShardingContext shardingContext) {
+    public void afterJobExecuted(final ShardingContexts shardingContexts) {
         caller.after();
     }
 }

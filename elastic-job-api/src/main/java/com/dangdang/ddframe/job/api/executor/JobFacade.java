@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.api.executor;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 
@@ -53,23 +52,23 @@ public interface JobFacade {
     /**
      * 注册作业启动信息.
      *
-     * @param shardingContext 分片上下文
+     * @param shardingContexts 分片上下文
      */
-    void registerJobBegin(ShardingContext shardingContext);
+    void registerJobBegin(ShardingContexts shardingContexts);
     
     /**
      * 注册作业完成信息.
      *
-     * @param shardingContext 分片上下文
+     * @param shardingContexts 分片上下文
      */
-    void registerJobCompleted(ShardingContext shardingContext);
+    void registerJobCompleted(ShardingContexts shardingContexts);
     
     /**
      * 获取当前作业服务器的分片上下文.
      *
      * @return 分片上下文
      */
-    ShardingContext getShardingContext();
+    ShardingContexts getShardingContexts();
     
     /**
      * 设置任务被错过执行的标记.
@@ -118,14 +117,14 @@ public interface JobFacade {
     /**
      * 作业执行前的执行的方法.
      *
-     * @param shardingContext 分片上下文
+     * @param shardingContexts 分片上下文
      */
-    void beforeJobExecuted(ShardingContext shardingContext);
+    void beforeJobExecuted(ShardingContexts shardingContexts);
     
     /**
      * 作业执行后的执行的方法.
      *
-     * @param shardingContext 分片上下文
+     * @param shardingContexts 分片上下文
      */
-    void afterJobExecuted(ShardingContext shardingContext);
+    void afterJobExecuted(ShardingContexts shardingContexts);
 }

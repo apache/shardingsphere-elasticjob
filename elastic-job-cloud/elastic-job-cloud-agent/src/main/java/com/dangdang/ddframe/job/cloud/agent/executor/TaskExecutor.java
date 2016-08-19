@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.agent.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutorFactory;
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
 import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacade;
@@ -54,16 +54,16 @@ public final class TaskExecutor implements Executor {
     public void launchTask(final ExecutorDriver executorDriver, final Protos.TaskInfo taskInfo) {
         executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
         Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
-        ShardingContext shardingContext = (ShardingContext) data.get("shardingContext");
+        ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
         @SuppressWarnings("unchecked")
         JobConfigurationContext jobConfig = new JobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
         try {
             ElasticJob elasticJob = getElasticJobInstance(jobConfig);
             if (jobConfig.isTransient()) {
-                JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContext, jobConfig)).execute();
+                JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContexts, jobConfig)).execute();
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
             } else {
-                new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContext, jobConfig), executorDriver, taskInfo.getTaskId()).init();
+                new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContexts, jobConfig), executorDriver, taskInfo.getTaskId()).init();
             }
             // CHECKSTYLE:OFF
         } catch (final Throwable ex) {

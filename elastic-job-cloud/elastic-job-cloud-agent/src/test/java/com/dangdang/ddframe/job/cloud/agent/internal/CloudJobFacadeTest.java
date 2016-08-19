@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.agent.internal;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
@@ -36,22 +36,22 @@ import static org.junit.Assert.assertTrue;
 
 public class CloudJobFacadeTest {
     
-    private final ShardingContext shardingContext;
+    private final ShardingContexts shardingContexts;
     
     private final JobConfigurationContext jobConfig; 
     
     private final JobFacade jobFacade;
     
     public CloudJobFacadeTest() {
-        shardingContext = getShardingContext();
+        shardingContexts = getShardingContexts();
         jobConfig = new JobConfigurationContext(getJobConfigurationMap(JobType.SIMPLE, false));
-        jobFacade = new CloudJobFacade(shardingContext, jobConfig);
+        jobFacade = new CloudJobFacade(shardingContexts, jobConfig);
     }
     
-    private ShardingContext getShardingContext() {
+    private ShardingContexts getShardingContexts() {
         Map<Integer, String> shardingItemParameters = new HashMap<>(1, 1);
         shardingItemParameters.put(0, "A");
-        return new ShardingContext("test_job", 3, "", shardingItemParameters);
+        return new ShardingContexts("test_job", 3, "", shardingItemParameters);
     }
     
     private Map<String, String> getJobConfigurationMap(final JobType jobType, final boolean streamingProcess) {
@@ -91,7 +91,7 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertGetShardingContext() {
-        assertThat(jobFacade.getShardingContext(), is(shardingContext));
+        assertThat(jobFacade.getShardingContexts(), is(shardingContexts));
     }
     
     @Test
@@ -116,12 +116,12 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertIsEligibleForJobRunningWhenIsDataflowJobAndIsNotStreamingProcess() {
-        assertFalse(new CloudJobFacade(shardingContext, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, false))).isEligibleForJobRunning());
+        assertFalse(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, false))).isEligibleForJobRunning());
     }
     
     @Test
     public void assertIsEligibleForJobRunningWhenIsDataflowJobAndIsStreamingProcess() {
-        assertTrue(new CloudJobFacade(shardingContext, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, true))).isEligibleForJobRunning());
+        assertTrue(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, true))).isEligibleForJobRunning());
     }
     
     @Test

@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.api.type.script.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
@@ -29,6 +30,7 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * 脚本作业执行器.
@@ -46,18 +48,22 @@ public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
     }
     
     @Override
-    protected void process(final ShardingContext shardingContext) {
+    protected void process(final ShardingContexts shardingContexts) {
         String scriptCommandLine = ((ScriptJobConfiguration) getJobRootConfig().getTypeConfig()).getScriptCommandLine();
         if (Strings.isNullOrEmpty(scriptCommandLine)) {
-            getJobExceptionHandler().handleException(getJobName(), new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", shardingContext.getJobName()));
+            getJobExceptionHandler().handleException(getJobName(), new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", shardingContexts.getJobName()));
             return;
         }
-        CommandLine commandLine = CommandLine.parse(scriptCommandLine);
-        commandLine.addArgument(GsonFactory.getGson().toJson(shardingContext), false);
-        try {
-            executor.execute(commandLine);
-        } catch (final IOException ex) {
-            getJobExceptionHandler().handleException(getJobName(), ex);
+        // TODO 多线程可配置化
+        for (Map.Entry<Integer, String> entry : shardingContexts.getShardingItemParameters().entrySet()) {
+            CommandLine commandLine = CommandLine.parse(scriptCommandLine);
+            commandLine.addArgument(GsonFactory.getGson().toJson(
+                    new ShardingContext(shardingContexts.getJobName(), shardingContexts.getShardingTotalCount(), shardingContexts.getJobParameter(), entry.getKey(), entry.getValue())), false);
+            try {
+                executor.execute(commandLine);
+            } catch (final IOException ex) {
+                getJobExceptionHandler().handleException(getJobName(), ex);
+            }
         }
     }
 }

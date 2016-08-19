@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.config.impl.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.api.config.impl.ShardingItemParameters;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
@@ -136,7 +136,7 @@ public final class HardwareResource {
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
-        ShardingContext shardingContext = new ShardingContext(
+        ShardingContexts shardingContexts = new ShardingContexts(
                 jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);
         // TODO 更改cache为elastic-job-cloud.properties配置
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
@@ -149,13 +149,13 @@ public final class HardwareResource {
                 .addResources(buildResource("cpus", jobConfig.getCpuCount()))
                 .addResources(buildResource("mem", jobConfig.getMemoryMB()))
                 .setExecutor(executorInfo)
-                .setData(ByteString.copyFrom(serialize(shardingContext, jobConfig)))
+                .setData(ByteString.copyFrom(serialize(shardingContexts, jobConfig)))
                 .build();
     }
     
-    private byte[] serialize(final ShardingContext shardingContext, final CloudJobConfiguration jobConfig) {
+    private byte[] serialize(final ShardingContexts shardingContexts, final CloudJobConfiguration jobConfig) {
         LinkedHashMap<String, Object> result = new LinkedHashMap<>(2, 1);
-        result.put("shardingContext", shardingContext);
+        result.put("shardingContext", shardingContexts);
         result.put("jobConfigContext", buildJobConfigurationContext(jobConfig));
         return SerializationUtils.serialize(result);
     }
@@ -170,7 +170,7 @@ public final class HardwareResource {
         result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
             result.put("dataflowType", ((DataflowJobConfiguration) jobConfig.getTypeConfig()).getDataflowType().name());
-            result.put("streamingProcess", ((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess() + "");
+            result.put("streamingProcess", Boolean.toString(((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess()));
         } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
             result.put("scriptCommandLine", ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine());
         }

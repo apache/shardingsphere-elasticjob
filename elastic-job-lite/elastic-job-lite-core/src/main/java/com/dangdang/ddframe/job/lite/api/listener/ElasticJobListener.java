@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api.listener;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 
 /**
  * 弹性化分布式作业监听器接口.
@@ -29,14 +29,14 @@ public interface ElasticJobListener {
     /**
      * 作业执行前的执行的方法.
      * 
-     * @param shardingContext 分片上下文
+     * @param shardingContexts 分片上下文
      */
-    void beforeJobExecuted(final ShardingContext shardingContext);
+    void beforeJobExecuted(final ShardingContexts shardingContexts);
     
     /**
      * 作业执行后的执行的方法.
      *
-     * @param shardingContext 分片上下文
+     * @param shardingContexts 分片上下文
      */
-    void afterJobExecuted(final ShardingContext shardingContext);
+    void afterJobExecuted(final ShardingContexts shardingContexts);
 }

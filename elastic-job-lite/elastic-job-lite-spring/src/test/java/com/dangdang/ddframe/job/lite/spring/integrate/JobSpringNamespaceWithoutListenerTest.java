@@ -23,6 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 public final class JobSpringNamespaceWithoutListenerTest extends AbstractJobSpringIntegrateTest {
     
     public JobSpringNamespaceWithoutListenerTest() {
-        super("simpleElasticJob_namespace", "throughputDataflowElasticJob_namespace");
+        super("simpleElasticJob_namespace", "dataflowElasticJob_namespace");
     }
 }

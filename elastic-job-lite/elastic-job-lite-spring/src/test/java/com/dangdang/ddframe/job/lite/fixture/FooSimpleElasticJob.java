@@ -34,7 +34,7 @@ public final class FooSimpleElasticJob implements SimpleJob {
     private String springValue;
     
     @Override
-    public void execute(final ShardingContext context) {
+    public void execute(final ShardingContext shardingContext) {
         jobValue = springValue;
         completed = true;
     }

@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import lombok.RequiredArgsConstructor;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -35,14 +34,7 @@ public final class TestDataflowJob implements DataflowJob<Object> {
     
     @Override
     public List<Object> fetchData(final ShardingContext shardingContext) {
-        List<Object> result = new LinkedList<>();
-        for (int each : shardingContext.getShardingItemParameters().keySet()) {
-            List<Object> data = jobCaller.fetchData(each);
-            if (null != data) {
-                result.addAll(data);
-            }
-        }
-        return result;
+        return jobCaller.fetchData(shardingContext.getShardingItem());
     }
     
     @Override

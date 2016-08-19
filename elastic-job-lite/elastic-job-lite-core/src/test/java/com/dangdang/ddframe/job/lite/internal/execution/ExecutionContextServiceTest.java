@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
@@ -69,7 +69,7 @@ public final class ExecutionContextServiceTest {
     public void assertGetShardingContextWhenNotAssignShardingItem() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
                 TestDataflowJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.THROUGHPUT, true)).monitorExecution(false).build());
-        ShardingContext expected = new ShardingContext("test_job", 3, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts expected = new ShardingContexts("test_job", 3, "", Collections.<Integer, String>emptyMap());
         assertThat(executionContextService.getJobShardingContext(Collections.<Integer>emptyList()), new ReflectionEquals(expected));
         verify(configService).load(false);
     }
@@ -81,7 +81,7 @@ public final class ExecutionContextServiceTest {
         Map<Integer, String> map = new HashMap<>(3);
         map.put(0, "A");
         map.put(1, "B");
-        ShardingContext expected = new ShardingContext("test_job", 3, "", map);
+        ShardingContexts expected = new ShardingContexts("test_job", 3, "", map);
         assertShardingContext(executionContextService.getJobShardingContext(Arrays.asList(0, 1)), expected);
         verify(configService).load(false);
     }
@@ -94,14 +94,14 @@ public final class ExecutionContextServiceTest {
         when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
-        ShardingContext expected = new ShardingContext("test_job", 3, "", map);
+        ShardingContexts expected = new ShardingContexts("test_job", 3, "", map);
         assertShardingContext(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1)), expected);
         verify(configService).load(false);
         verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
         verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
     }
     
-    private void assertShardingContext(final ShardingContext actual, final ShardingContext expected) {
+    private void assertShardingContext(final ShardingContexts actual, final ShardingContexts expected) {
         assertThat(actual.getJobName(), is(expected.getJobName()));
         assertThat(actual.getShardingTotalCount(), is(expected.getShardingTotalCount()));
         assertThat(actual.getJobParameter(), is(expected.getJobParameter()));

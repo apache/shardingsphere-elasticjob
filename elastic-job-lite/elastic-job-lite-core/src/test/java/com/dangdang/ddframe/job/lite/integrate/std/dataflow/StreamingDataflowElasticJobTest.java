@@ -15,13 +15,13 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.integrate.std.dataflow.throughput;
+package com.dangdang.ddframe.job.lite.integrate.std.dataflow;
 
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
-import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.throughput.StreamingThroughputDataflowElasticJob;
+import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
 import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
 import com.google.common.base.Optional;
 import org.junit.After;
@@ -30,16 +30,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class StreamingThroughputDataflowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
+public final class StreamingDataflowElasticJobTest extends AbstractBaseStdJobAutoInitTest {
     
-    public StreamingThroughputDataflowElasticJobTest() {
-        super(StreamingThroughputDataflowElasticJob.class, Optional.of(DataflowJobConfiguration.DataflowType.THROUGHPUT));
+    public StreamingDataflowElasticJobTest() {
+        super(StreamingDataflowElasticJob.class, Optional.of(DataflowJobConfiguration.DataflowType.THROUGHPUT));
     }
     
     @Before
     @After
     public void reset() {
-        StreamingThroughputDataflowElasticJob.reset();
+        StreamingDataflowElasticJob.reset();
     }
     
     @Override
@@ -49,7 +49,7 @@ public final class StreamingThroughputDataflowElasticJobTest extends AbstractBas
     
     @Test
     public void assertJobInit() {
-        while (!StreamingThroughputDataflowElasticJob.isCompleted()) {
+        while (!StreamingDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
         assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));

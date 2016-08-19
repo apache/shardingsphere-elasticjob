@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.config.impl.ShardingItemParameters;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
@@ -52,15 +52,15 @@ public class ExecutionContextService {
      * @param shardingItems 分片项
      * @return 分片上下文
      */
-    public ShardingContext getJobShardingContext(final List<Integer> shardingItems) {
+    public ShardingContexts getJobShardingContext(final List<Integer> shardingItems) {
         LiteJobConfiguration liteJobConfig = configService.load(false);
         removeRunningIfMonitorExecution(liteJobConfig.isMonitorExecution(), shardingItems);
         if (shardingItems.isEmpty()) {
-            return new ShardingContext(liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
+            return new ShardingContexts(liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
                     liteJobConfig.getTypeConfig().getCoreConfig().getJobParameter(), Collections.<Integer, String>emptyMap());
         }
         Map<Integer, String> shardingItemParameterMap = new ShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
-        return new ShardingContext(liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
+        return new ShardingContexts(liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
                 liteJobConfig.getTypeConfig().getCoreConfig().getJobParameter(), getAssignedShardingItemParameterMap(shardingItems, shardingItemParameterMap));
     }
     

@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.spring.integrate;
 
 import com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob;
-import com.dangdang.ddframe.job.lite.fixture.ThroughputDataflowElasticJob;
+import com.dangdang.ddframe.job.lite.fixture.DataflowElasticJob;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.test.AbstractZookeeperJUnit4SpringContextTests;
@@ -47,7 +47,7 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     @After
     public void reset() {
         FooSimpleElasticJob.reset();
-        ThroughputDataflowElasticJob.reset();
+        DataflowElasticJob.reset();
     }
     
     @After
@@ -72,10 +72,10 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
     }
     
     private void assertThroughputDataflowElasticJobBean() {
-        while (!ThroughputDataflowElasticJob.isCompleted()) {
+        while (!DataflowElasticJob.isCompleted()) {
             sleep(100L);
         }
-        assertTrue(ThroughputDataflowElasticJob.isCompleted());
+        assertTrue(DataflowElasticJob.isCompleted());
         assertTrue(regCenter.isExisted("/" + throughputDataflowJobName + "/execution"));
     }
     

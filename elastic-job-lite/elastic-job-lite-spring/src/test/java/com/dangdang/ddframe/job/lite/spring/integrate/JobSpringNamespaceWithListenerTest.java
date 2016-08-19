@@ -23,6 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 public class JobSpringNamespaceWithListenerTest extends AbstractJobSpringIntegrateTest {
     
     public JobSpringNamespaceWithListenerTest() {
-        super("simpleElasticJob_namespace_listener", "throughputDataflowElasticJob_namespace_listener");
+        super("simpleElasticJob_namespace_listener", "dataflowElasticJob_namespace_listener");
     }
 }

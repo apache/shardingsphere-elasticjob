@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.agent.internal;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
@@ -34,7 +34,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CloudJobFacade implements JobFacade {
     
-    private final ShardingContext shardingContext;
+    private final ShardingContexts shardingContexts;
     
     private final JobConfigurationContext jobConfig;
     
@@ -52,16 +52,15 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void registerJobBegin(final ShardingContext shardingContext) {
+    public void registerJobBegin(final ShardingContexts shardingContexts) {
     }
     
     @Override
-    public void registerJobCompleted(final ShardingContext shardingContext) {
+    public void registerJobCompleted(final ShardingContexts shardingContexts) {
     }
     
-    @Override
-    public ShardingContext getShardingContext() {
-        return shardingContext;
+    public ShardingContexts getShardingContexts() {
+        return shardingContexts;
     }
     
     @Override
@@ -93,10 +92,10 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void beforeJobExecuted(final ShardingContext shardingContext) {
+    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
     }
     
     @Override
-    public void afterJobExecuted(final ShardingContext shardingContext) {
+    public void afterJobExecuted(final ShardingContexts shardingContexts) {
     }
 }

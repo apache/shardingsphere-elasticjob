@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.simple.api;
 
-import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.ShardingContext;
 
 /**
  * 简单分布式作业接口.

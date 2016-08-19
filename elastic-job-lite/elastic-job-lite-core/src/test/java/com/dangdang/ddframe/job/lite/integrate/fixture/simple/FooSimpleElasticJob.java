@@ -27,7 +27,7 @@ public final class FooSimpleElasticJob implements SimpleJob {
     private static volatile boolean completed;
     
     @Override
-    public void execute(final ShardingContext context) {
+    public void execute(final ShardingContext shardingContext) {
         completed = true;
     }
     
