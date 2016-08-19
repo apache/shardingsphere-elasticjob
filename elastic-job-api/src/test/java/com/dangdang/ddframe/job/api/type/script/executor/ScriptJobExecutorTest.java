@@ -17,10 +17,9 @@
 
 package com.dangdang.ddframe.job.api.type.script.executor;
 
-import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
+import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.Executor;
 import org.junit.Before;
@@ -53,7 +52,7 @@ public class ScriptJobExecutorTest {
     }
     
     @SuppressWarnings("unchecked")
-    @Test(expected = JobSystemException.class)
+    @Test
     public void assertExecuteWhenExecuteFailure() throws IOException, NoSuchFieldException {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file"));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
@@ -62,7 +61,7 @@ public class ScriptJobExecutorTest {
         try {
             scriptJobExecutor.execute();
         } finally {
-            verify(executor).execute(Matchers.<CommandLine>any());
+            verify(executor, times(2)).execute(Matchers.<CommandLine>any());
         }
     }
     

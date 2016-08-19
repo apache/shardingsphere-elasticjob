@@ -18,12 +18,15 @@
 package com.dangdang.ddframe.job.api.type.simple.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
 
-import java.util.Map;
+import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 简单作业执行器.
@@ -41,9 +44,41 @@ public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
     
     @Override
     protected void process(final ShardingContexts shardingContexts) {
-        // TODO 多线程可配置化
-        for (Map.Entry<Integer, String> entry : shardingContexts.getShardingItemParameters().entrySet()) {
-            simpleJob.execute(new ShardingContext(shardingContexts.getJobName(), shardingContexts.getShardingTotalCount(), shardingContexts.getJobParameter(), entry.getKey(), entry.getValue()));
+        Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
+        if (1 == items.size()) {
+            process(new ShardingContext(shardingContexts, shardingContexts.getShardingItemParameters().keySet().iterator().next()));
+            return;
+        }
+        final CountDownLatch latch = new CountDownLatch(items.size());
+        for (final int each : items) {
+            getExecutorService().submit(new Runnable() {
+            
+                @Override
+                public void run() {
+                    try {
+                        process(new ShardingContext(shardingContexts, each));
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
+        }
+        try {
+            latch.await();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+    
+    private void process(final ShardingContext shardingContext) {
+        try {
+            simpleJob.execute(shardingContext);
+            JobEventBus.getInstance().post(getJobName(), 
+                    new JobTraceEvent(getJobName(), JobTraceEvent.LogLevel.TRACE, String.format("Execute simple job item is: '%s'.", shardingContext.getShardingItem())));
+            // CHECKSTYLE:OFF
+        } catch (final Throwable ex) {
+            // CHECKSTYLE:ON
+            getJobExceptionHandler().handleException(getJobName(), ex);
         }
     }
 }

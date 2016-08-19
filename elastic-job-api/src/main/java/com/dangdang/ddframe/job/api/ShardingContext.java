@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api;
 
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -26,7 +26,6 @@ import lombok.ToString;
  * 
  * @author zhangliang
  */
-@RequiredArgsConstructor
 @Getter
 @ToString
 public final class ShardingContext {
@@ -56,4 +55,12 @@ public final class ShardingContext {
      * 分配于本作业实例的分片参数.
      */
     private final String shardingParameter;
+    
+    public ShardingContext(final ShardingContexts shardingContexts, final int shardingItem) {
+        jobName = shardingContexts.getJobName();
+        shardingTotalCount = shardingContexts.getShardingTotalCount();
+        jobParameter = shardingContexts.getJobParameter();
+        this.shardingItem = shardingItem;
+        shardingParameter = shardingContexts.getShardingItemParameters().get(shardingItem);
+    }
 }

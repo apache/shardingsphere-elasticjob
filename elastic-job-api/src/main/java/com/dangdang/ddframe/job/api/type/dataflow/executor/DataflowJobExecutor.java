@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.api.type.dataflow.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventBus;
@@ -28,6 +28,7 @@ import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,31 +78,57 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
     
     private Map<Integer, List<Object>> fetchData(final ShardingContexts shardingContexts) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
-        final Map<Integer, List<Object>> result = new ConcurrentHashMap<>(items.size(), 1);
-        final CountDownLatch latch = new CountDownLatch(items.size());
-        for (final int each : items) {
-            getExecutorService().submit(new Runnable() {
-                
-                @Override
-                public void run() {
-                    try {
-                        List<Object> data = dataflowJob.fetchData(new ShardingContext(shardingContexts.getJobName(), 
-                                shardingContexts.getShardingTotalCount(), shardingContexts.getJobParameter(), each, shardingContexts.getShardingItemParameters().get(each)));
-                        if (null != data && !data.isEmpty()) {
-                            result.put(each, data);
+        final Map<Integer, List<Object>> result;
+        if (1 == items.size()) {
+            result = fetchData(new ShardingContext(shardingContexts, shardingContexts.getShardingItemParameters().keySet().iterator().next()));
+        } else {
+            result = new ConcurrentHashMap<>(items.size(), 1);
+            final CountDownLatch latch = new CountDownLatch(items.size());
+            for (final int each : items) {
+                getExecutorService().submit(new Runnable() {
+                    
+                    @Override
+                    public void run() {
+                        try {
+                            result.putAll(fetchData(new ShardingContext(shardingContexts, each)));
+                        } finally {
+                            latch.countDown();
                         }
-                    } finally {
-                        latch.countDown();
                     }
-                }
-            });
+                });
+            }
+            try {
+                latch.await();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
         }
-        latchAwait(latch);
         JobEventBus.getInstance().post(getJobName(), new JobTraceEvent(getJobName(), LogLevel.TRACE, String.format("Fetch data size: '%s'.", result.size())));
         return result;
     }
     
+    private Map<Integer, List<Object>> fetchData(final ShardingContext shardingContext) {
+        Map<Integer, List<Object>> result = new HashMap<>(1, 1);
+        try {
+            List<Object> data = dataflowJob.fetchData(shardingContext);
+            if (null != data && !data.isEmpty()) {
+                result.put(shardingContext.getShardingItem(), data);
+            }
+            // CHECKSTYLE:OFF
+        } catch (final Throwable cause) {
+            // CHECKSTYLE:ON
+            getJobExceptionHandler().handleException(getJobName(), cause);
+        }
+        return result;
+    }
+    
     private void processData(final ShardingContexts shardingContexts, final Map<Integer, List<Object>> data) {
+        Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
+        if (1 == items.size()) {
+            int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
+            processData(new ShardingContext(shardingContexts, item), data.get(item));
+            return;
+        }
         final CountDownLatch latch = new CountDownLatch(data.size());
         for (final Map.Entry<Integer, List<Object>> each : data.entrySet()) {
             getExecutorService().submit(new Runnable() {
@@ -109,26 +136,28 @@ public final class DataflowJobExecutor extends AbstractElasticJobExecutor {
                 @Override
                 public void run() {
                     try {
-                        dataflowJob.processData(new ShardingContext(shardingContexts.getJobName(), shardingContexts.getShardingTotalCount(), shardingContexts.getJobParameter(),
-                                        each.getKey(), shardingContexts.getShardingItemParameters().get(each.getKey())), each.getValue());
-                    // CHECKSTYLE:OFF
-                    } catch (final Throwable cause) {
-                    // CHECKSTYLE:ON
-                        getJobExceptionHandler().handleException(getJobName(), cause);
+                        processData(new ShardingContext(shardingContexts, each.getKey()), each.getValue());
                     } finally {
                         latch.countDown();
                     }
                 }
             });
         }
-        latchAwait(latch);
-    }
-    
-    private void latchAwait(final CountDownLatch latch) {
+        JobEventBus.getInstance().post(getJobName(), new JobTraceEvent(getJobName(), LogLevel.TRACE, String.format("Process data size: '%s'.", data.size())));
         try {
             latch.await();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
+        }
+    }
+    
+    private void processData(final ShardingContext shardingContext, final List<Object> data) {
+        try {
+            dataflowJob.processData(shardingContext, data);
+            // CHECKSTYLE:OFF
+        } catch (final Throwable cause) {
+            // CHECKSTYLE:ON
+            getJobExceptionHandler().handleException(getJobName(), cause);
         }
     }
 }

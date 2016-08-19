@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.api.type.simple.executor;
 
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.api.executor.JobFacade;
+import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.job.JobCaller;
 import com.dangdang.ddframe.job.api.fixture.job.TestSimpleJob;
-import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.ElasticJobAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,7 +88,7 @@ public final class SimpleJobExecutorTest {
         verify(jobCaller, times(0)).execute();
     }
     
-    @Test(expected = JobSystemException.class)
+    @Test
     public void assertExecuteWhenRunOnceAndThrowException() throws JobExecutionEnvironmentException {
         ShardingContexts shardingContexts = ElasticJobAssert.getShardingContext();
         ElasticJobAssert.prepareForIsNotMisfire(jobFacade, shardingContexts);
@@ -100,7 +100,7 @@ public final class SimpleJobExecutorTest {
             verify(jobFacade).getShardingContexts();
             verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
             verify(jobFacade).registerJobBegin(shardingContexts);
-            verify(jobCaller).execute();
+            verify(jobCaller, times(2)).execute();
             verify(jobFacade).registerJobCompleted(shardingContexts);
         }
     }
