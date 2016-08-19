@@ -14,4 +14,4 @@ if [ ${hostname} = "" ] || [ ${hostname} = "127.0.0.1" ] || [ ${hostname} = "loc
 fi
 export LIBPROCESS_IP=${hostname}
 
-java -classpath ${CONF_DIR}/*:${LIB_DIR}:. ${CONTAINER_MAIN} ${JAVA_OPTS}
+java ${JAVA_OPTS} -classpath ${CONF_DIR}/*:${LIB_DIR}:. ${CONTAINER_MAIN}
