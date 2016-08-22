@@ -57,7 +57,7 @@ final class JobRdbEventStorage {
     boolean addJobTraceEvent(final JobTraceEvent traceEvent) {
         boolean result = false;
         if (needTrace(traceEvent.getLogLevel())) {
-            String sql = "INSERT INTO `job_trace_log` (`id`, `job_name`, `hostname`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO `JOB_TRACE_LOG` (`id`, `job_name`, `hostname`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
                     PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -80,7 +80,7 @@ final class JobRdbEventStorage {
     boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         if (null == jobExecutionEvent.getCompleteTime()) {
-            String sql = "INSERT INTO `job_execution_log` (`id`, `job_name`, `hostname`, `sharding_items`, `execution_source`, `is_success`, `start_time`) "
+            String sql = "INSERT INTO `JOB_EXECUTION_LOG` (`id`, `job_name`, `hostname`, `sharding_items`, `execution_source`, `is_success`, `start_time`) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
@@ -100,7 +100,7 @@ final class JobRdbEventStorage {
             }
         } else {
             if (jobExecutionEvent.isSuccess()) {
-                String sql = "UPDATE `job_execution_log` SET `is_success` = ?, `complete_time` = ? WHERE id = ?";
+                String sql = "UPDATE `JOB_EXECUTION_LOG` SET `is_success` = ?, `complete_time` = ? WHERE id = ?";
                 try (
                         Connection conn = dataSource.getConnection();
                         PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -114,7 +114,7 @@ final class JobRdbEventStorage {
                     log.error(ex.getMessage());
                 }
             } else {
-                String sql = "UPDATE `job_execution_log` SET `is_success` = ?, `failure_cause` = ? WHERE id = ?";
+                String sql = "UPDATE `JOB_EXECUTION_LOG` SET `is_success` = ?, `failure_cause` = ? WHERE id = ?";
                 try (
                         Connection conn = dataSource.getConnection();
                         PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -141,7 +141,7 @@ final class JobRdbEventStorage {
     }
     
     private void createJobTraceTable() throws SQLException {
-        String dbSchema = "CREATE TABLE IF NOT EXISTS `job_trace_log` ("
+        String dbSchema = "CREATE TABLE IF NOT EXISTS `JOB_TRACE_LOG` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`hostname` VARCHAR(100) NOT NULL, "
@@ -157,7 +157,7 @@ final class JobRdbEventStorage {
     }
     
     private void createJobExecutionTable() throws SQLException {
-        String dbSchema = "CREATE TABLE IF NOT EXISTS `job_execution_log` ("
+        String dbSchema = "CREATE TABLE IF NOT EXISTS `JOB_EXECUTION_LOG` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`hostname` VARCHAR(50) NOT NULL, "

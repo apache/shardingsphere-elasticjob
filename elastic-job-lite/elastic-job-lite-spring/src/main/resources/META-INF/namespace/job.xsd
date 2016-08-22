@@ -15,11 +15,35 @@
         </xsd:complexType>
     </xsd:element>
     
+    <xsd:element name="event-log" />
+    
+    <xsd:element name="event-rdb">
+        <xsd:complexType>
+            <xsd:attribute name="driver" type="xsd:string" use="required" />
+            <xsd:attribute name="url" type="xsd:string" use="required" />
+            <xsd:attribute name="username" type="xsd:string" use="required" />
+            <xsd:attribute name="password" type="xsd:string" use="required" />
+            <xsd:attribute name="log-level" type="log-level" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:simpleType name="log-level">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="TRACE" />
+            <xsd:enumeration value="DEBUG" />
+            <xsd:enumeration value="INFO" />
+            <xsd:enumeration value="WARN" />
+            <xsd:enumeration value="ERROR" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
     <xsd:complexType name="base">
         <xsd:complexContent>
             <xsd:extension base="beans:identifiedType">
                 <xsd:sequence>
                     <xsd:element ref="listener" minOccurs="0" maxOccurs="unbounded" />
+                    <xsd:element ref="event-log" minOccurs="0" maxOccurs="1" />
+                    <xsd:element ref="event-rdb" minOccurs="0" maxOccurs="1" />
                 </xsd:sequence>
                 <xsd:attribute name="class" type="xsd:string" />
                 <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />

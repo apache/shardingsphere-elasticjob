@@ -17,18 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.spring.integrate;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.springframework.test.context.ContextConfiguration;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-    JobSpringNamespaceWithoutListenerTest.class,
-    JobSpringNamespaceWithEventTest.class,
-    JobSpringNamespaceWithJobPropertiesTest.class,
-    JobSpringNamespaceWithListenerTest.class,
-    JobSpringNamespaceWithListenerAndJdkDynamicProxyTest.class,
-    JobSpringNamespaceWithListenerAndCglibTest.class
-    })
-public class AllSpringIntegrateTests {
+@ContextConfiguration(locations = "classpath:META-INF/job/withEventLog.xml")
+public class JobSpringNamespaceWithEventTest extends AbstractJobSpringIntegrateTest {
+    
+    public JobSpringNamespaceWithEventTest() {
+        super("simpleElasticJob_event", "dataflowElasticJob_event");
+    }
 }

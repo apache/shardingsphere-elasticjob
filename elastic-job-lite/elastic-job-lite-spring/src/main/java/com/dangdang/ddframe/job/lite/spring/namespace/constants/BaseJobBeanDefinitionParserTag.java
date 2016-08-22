@@ -60,11 +60,25 @@ public final class BaseJobBeanDefinitionParserTag {
     
     public static final String LISTENER_TAG = "listener";
     
-    public static final String STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "started-timeout-milliseconds";
+    public static final String LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "started-timeout-milliseconds";
     
-    public static final String COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "completed-timeout-milliseconds";
+    public static final String LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "completed-timeout-milliseconds";
     
     public static final String EXECUTOR_SERVICE_HANDLER = "executor-service-handler";
     
     public static final String JOB_EXCEPTION_HANDLER = "job-exception-handler";
+    
+    public static final String EVENT_LOG_TAG = "event-log";
+    
+    public static final String EVENT_RDB_TAG = "event-rdb";
+    
+    public static final String EVENT_RDB_DRIVER_ATTRIBUTE = "driver";
+    
+    public static final String EVENT_RDB_URL_ATTRIBUTE = "url";
+    
+    public static final String EVENT_RDB_USERNAME_ATTRIBUTE = "username";
+    
+    public static final String EVENT_RDB_PASSWORD_ATTRIBUTE = "password";
+    
+    public static final String EVENT_RDB_LOG_LEVEL_ATTRIBUTE = "log-level";
 }
