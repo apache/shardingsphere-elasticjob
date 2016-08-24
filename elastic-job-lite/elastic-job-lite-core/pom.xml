@@ -11,7 +11,7 @@
     <dependencies>
         <dependency>
             <groupId>com.dangdang</groupId>
-            <artifactId>elastic-job-api</artifactId>
+            <artifactId>elastic-job-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         

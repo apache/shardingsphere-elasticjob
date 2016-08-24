@@ -22,7 +22,7 @@ weight=12
 
 2. 启动`Mesos Master`和`Mesos Agent`。
 
-3. 解压并启动`elastic-job-cloud-master-${version}.tar.gz`。可通过源码`mvn install`编译获取。
+3. 解压并启动`elastic-job-cloud-scheduler-${version}.tar.gz`。可通过源码`mvn install`编译获取。
 
 4. 将打包之后的作业`tar.gz`文件放至网络可访问的位置，如：`ftp`或`http`。打包的`tar.gz`文件中`Main`方法需要调用`Elastic-Job-Lite`提供的`Bootstrap.execute`方法。
 
@@ -32,7 +32,7 @@ weight=12
 
 ## 附录：Elastic-Job-Cloud-Master启动指南
 
-1. 启动：解压缩`elastic-job-cloud-master-${version}.tar.gz`并执行`bin\start.sh`脚本。
+1. 启动：解压缩`elastic-job-cloud-scheduler-${version}.tar.gz`并执行`bin\start.sh`脚本。
 
 2. 停止：不提供停止脚本，可直接使用`kill`杀进程。
 
