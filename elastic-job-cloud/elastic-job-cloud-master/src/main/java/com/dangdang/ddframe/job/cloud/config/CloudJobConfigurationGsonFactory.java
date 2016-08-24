@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.config;
 
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.impl.AbstractJobConfigurationGsonTypeAdapter;
+import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -101,11 +102,16 @@ public final class CloudJobConfigurationGsonFactory {
         
         @Override
         protected CloudJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
+            Preconditions.checkNotNull(customizedValueMap.get("cpuCount"), "cpuCount cannot be null.");
+            Preconditions.checkNotNull(customizedValueMap.get("memoryMB"), "memoryMB cannot be null.");
+            Preconditions.checkNotNull(customizedValueMap.get("appURL"), "appURL cannot be null.");
+            Preconditions.checkNotNull(customizedValueMap.get("bootstrapScript"), "bootstrapScript cannot be null.");
+            Preconditions.checkNotNull(customizedValueMap.get("jobExecutionType"), "jobExecutionType cannot be null.");
             if (customizedValueMap.containsKey("beanName") && customizedValueMap.containsKey("applicationContext")) {
                 return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), 
                         (String) customizedValueMap.get("dockerImageName"), (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
                         JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), customizedValueMap.get("beanName").toString(), 
-                        customizedValueMap.get("applicationContext").toString());    
+                        customizedValueMap.get("applicationContext").toString());
             } else {
                 return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), 
                         (String) customizedValueMap.get("dockerImageName"), (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 

@@ -21,6 +21,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * RESTFul API的异常处理器.
@@ -32,6 +34,10 @@ public final class RestfulExceptionMapper implements ExceptionMapper<Throwable> 
     
     @Override
     public Response toResponse(final Throwable cause) {
-        return Response.ok(cause.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        StringWriter result = new StringWriter();
+        try (PrintWriter writer = new PrintWriter(result)) {
+            cause.printStackTrace(writer);
+        }
+        return Response.ok(result.toString(), MediaType.TEXT_PLAIN).status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }
