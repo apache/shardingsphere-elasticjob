@@ -31,5 +31,5 @@ import org.junit.runners.Suite.SuiteClasses;
         AllTypeTests.class, 
         AllExceptionTests.class
     })
-public final class AllTests {
+public final class AllAPITests {
 }

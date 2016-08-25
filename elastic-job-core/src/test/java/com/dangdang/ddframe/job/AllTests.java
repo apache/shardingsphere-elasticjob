@@ -17,11 +17,19 @@
 
 package com.dangdang.ddframe.job;
 
-import com.dangdang.ddframe.job.util.AllUtilTests;
+import com.dangdang.ddframe.job.api.AllAPITests;
+import com.dangdang.ddframe.job.event.AllEventTests;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(AllUtilTests.class)
-public final class AllJobTests {
+@SuiteClasses({
+        AllAPITests.class,
+        AllEventTests.class
+    })
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AllTests {
 }
