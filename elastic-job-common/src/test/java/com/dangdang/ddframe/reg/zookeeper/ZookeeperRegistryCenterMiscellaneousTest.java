@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
+import com.dangdang.ddframe.reg.zookeeper.fixture.TestNestedServer;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.junit.AfterClass;
@@ -28,15 +28,15 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public final class ZookeeperRegistryCenterMiscellaneousTest extends AbstractNestedZookeeperBaseTest {
+public final class ZookeeperRegistryCenterMiscellaneousTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterMiscellaneousTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, TEST_TEMP_DIRECTORY);
+        TestNestedServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();
         zkRegCenter.addCacheData("/test");

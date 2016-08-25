@@ -28,7 +28,7 @@ import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
-import com.dangdang.ddframe.job.util.json.GsonFactory;
+import com.dangdang.ddframe.json.GsonFactory;
 import com.google.common.collect.Iterables;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.env.LocalHostService;
 
 /**
  * Elastic Job服务器节点名称的常量类.

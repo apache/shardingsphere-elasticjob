@@ -15,21 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.env;
+package com.dangdang.ddframe.env;
+
+import java.io.IOException;
 
 /**
- * 获取时间的服务.
+ * 网络主机异常.
  * 
  * @author zhangliang
  */
-public class TimeService {
+public class HostException extends RuntimeException {
     
-    /**
-     * 获取当前时间的毫秒数.
-     * 
-     * @return 当前时间的毫秒数
-     */
-    public long getCurrentMillis() {
-        return System.currentTimeMillis();
+    private static final long serialVersionUID = 3589264847881174997L;
+    
+    public HostException(final IOException cause) {
+        super(cause);
     }
 }

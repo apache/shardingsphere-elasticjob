@@ -15,29 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.json;
+package com.dangdang.ddframe;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.dangdang.ddframe.env.AllEnvTests;
+import com.dangdang.ddframe.json.GsonFactoryTest;
+import com.dangdang.ddframe.reg.AllRegTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * Gson构建器.
- *
- * @author caohao
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class GsonFactory {
-    
-    private static final Gson GSON = new GsonBuilder().create();
-    
-    /**
-     * 获取Gson实例.
-     * 
-     * @return Gson实例
-     */
-    public static Gson getGson() {
-        return GSON;
-    }
+@RunWith(Suite.class)
+@SuiteClasses({
+        AllRegTests.class,
+        AllEnvTests.class, 
+        GsonFactoryTest.class
+    })
+public final class AllCommonTests {
 }

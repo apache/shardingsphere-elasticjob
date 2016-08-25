@@ -15,24 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.reg.exception;
+package com.dangdang.ddframe.json;
 
 import org.junit.Test;
 
-import java.io.IOException;
-
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public final class LocalPropertiesFileNotFoundExceptionTest {
+public final class GsonFactoryTest {
     
     @Test
-    public void assertGetMessage() {
-        assertThat(new LocalPropertiesFileNotFoundException("/invalid/invalid_file.properties").getMessage(), is("CAN NOT found local properties files: [/invalid/invalid_file.properties]."));
-    }
-    
-    @Test
-    public void assertGetMessageForCause() {
-        assertThat(new LocalPropertiesFileNotFoundException(new IOException("io exception")).getMessage(), is("java.io.IOException: io exception"));
+    public void assertGetGson() {
+        assertThat(GsonFactory.getGson(), is(GsonFactory.getGson()));
     }
 }

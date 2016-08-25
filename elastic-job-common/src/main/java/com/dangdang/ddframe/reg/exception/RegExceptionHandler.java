@@ -25,7 +25,7 @@ import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
 
 /**
- * 抛出RegException的异常处理类.
+ * 注册中心异常处理类.
  * 
  * @author zhangliang
  */
@@ -34,9 +34,11 @@ import org.apache.zookeeper.KeeperException.NodeExistsException;
 public final class RegExceptionHandler {
     
     /**
-     * 处理掉中断和连接失效异常并继续抛出RegException.
+     * 处理异常.
      * 
-     * @param cause 待处理的异常.
+     * <p>处理掉中断和连接失效异常并继续抛注册中心.</p>
+     * 
+     * @param cause 待处理异常.
      */
     public static void handleException(final Exception cause) {
         if (isIgnoredException(cause) || isIgnoredException(cause.getCause())) {

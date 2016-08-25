@@ -15,18 +15,29 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.env;
+package com.dangdang.ddframe.json;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * 网络异常.
- * 
- * @author zhangliang
+ * Gson构建器.
+ *
+ * @author caohao
  */
-public class HostException extends RuntimeException {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class GsonFactory {
     
-    private static final long serialVersionUID = 3589264847881174997L;
+    private static final Gson GSON = new GsonBuilder().create();
     
-    public HostException(final Throwable cause) {
-        super(cause);
+    /**
+     * 获取Gson实例.
+     * 
+     * @return Gson实例
+     */
+    public static Gson getGson() {
+        return GSON;
     }
 }

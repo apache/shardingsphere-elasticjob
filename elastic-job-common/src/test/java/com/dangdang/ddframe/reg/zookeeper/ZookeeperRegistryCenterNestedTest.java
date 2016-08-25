@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,17 +24,18 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public final class ZookeeperRegistryCenterNestedTest extends AbstractNestedZookeeperBaseTest {
+public final class ZookeeperRegistryCenterNestedTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterNestedTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:3181", ZookeeperRegistryCenterNestedTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, TEST_TEMP_DIRECTORY);
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
+        zkConfig.setNestedPort(3181);
+        zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         zkRegCenter.init();
     }
     
@@ -45,10 +45,7 @@ public final class ZookeeperRegistryCenterNestedTest extends AbstractNestedZooke
     }
     
     @Test
-    public void assertInitWhenUse() {
-        zkRegCenter.persist("/test", "test_update");
-        zkRegCenter.persist("/persist/new", "new_value");
-        assertThat(zkRegCenter.get("/test"), is("test_update"));
-        assertThat(zkRegCenter.get("/persist/new"), is("new_value"));
+    public void assertInit() {
+        assertThat(zkRegCenter.get("/test"), is("test"));
     }
 }

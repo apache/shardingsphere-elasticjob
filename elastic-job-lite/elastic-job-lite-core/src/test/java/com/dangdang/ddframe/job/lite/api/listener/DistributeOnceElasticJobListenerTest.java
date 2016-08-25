@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.api.exception.JobSystemException;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
-import com.dangdang.ddframe.job.util.env.TimeService;
+import com.dangdang.ddframe.env.TimeService;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;

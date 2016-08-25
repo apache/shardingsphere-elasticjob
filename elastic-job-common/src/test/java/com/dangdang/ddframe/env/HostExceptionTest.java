@@ -15,15 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.reg;
+package com.dangdang.ddframe.env;
 
-import com.google.common.base.Joiner;
+import org.hamcrest.core.Is;
+import org.junit.Test;
 
-public abstract class AbstractNestedZookeeperBaseTest {
+import java.io.IOException;
+
+import static org.junit.Assert.assertThat;
+
+public final class HostExceptionTest {
     
-    public static final int PORT = 3181;
-    
-    public static final String TEST_TEMP_DIRECTORY = String.format("target/test_zk_data/%s/", System.nanoTime());
-    
-    public static final String ZK_CONNECTION_STRING = Joiner.on(":").join("localhost", PORT);
+    @Test
+    public void assertGetCause() {
+        IOException cause = new IOException();
+        assertThat(new HostException(cause).getCause(), Is.<Throwable>is(cause));
+    }
 }

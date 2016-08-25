@@ -15,13 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job;
+package com.dangdang.ddframe.env;
 
-import com.dangdang.ddframe.job.util.AllUtilTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(AllUtilTests.class)
-public final class AllJobTests {
+@SuiteClasses({
+        TimeServiceTest.class, 
+        LocalHostServiceTest.class, 
+        HostExceptionTest.class
+    })
+public final class AllEnvTests {
 }

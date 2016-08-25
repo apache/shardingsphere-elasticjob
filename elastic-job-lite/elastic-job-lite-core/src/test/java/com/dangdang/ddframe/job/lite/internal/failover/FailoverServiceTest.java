@@ -23,7 +23,7 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.env.LocalHostService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;

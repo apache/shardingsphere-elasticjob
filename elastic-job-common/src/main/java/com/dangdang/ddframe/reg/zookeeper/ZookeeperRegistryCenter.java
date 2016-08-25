@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.reg.zookeeper;
 
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
+import com.dangdang.ddframe.reg.exception.RegException;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -133,11 +133,11 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         Properties result = new Properties();
         try (InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(zkConfig.getLocalPropertiesPath())) {
             if (null == input) {
-                throw new LocalPropertiesFileNotFoundException(zkConfig.getLocalPropertiesPath());
+                throw new RegException("Can not found local properties files: '%s'.", zkConfig.getLocalPropertiesPath());
             }
             result.load(input);
         } catch (final IOException ex) {
-            throw new LocalPropertiesFileNotFoundException(ex);
+            throw new RegException(ex);
         }
         return result;
     }
@@ -276,9 +276,9 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     public String persistSequential(final String key, final String value) {
         try {
             return client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(key, value.getBytes(Charset.forName("UTF-8")));
-            //CHECKSTYLE:OFF
+        //CHECKSTYLE:OFF
         } catch (final Exception ex) {
-            //CHECKSTYLE:ON
+        //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
         return null;

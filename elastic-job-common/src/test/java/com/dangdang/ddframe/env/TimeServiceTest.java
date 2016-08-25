@@ -15,23 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.env;
+package com.dangdang.ddframe.env;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 
-public final class LocalHostServiceTest {
+
+public class TimeServiceTest {
     
-    private final LocalHostService localHostService = new LocalHostService();
-    
-    @Test
-    public void assertGetIp() {
-        assertNotNull(localHostService.getIp());
-    }
+    private TimeService timeService = new TimeService();
     
     @Test
-    public void assertGetHostName() {
-        assertNotNull(localHostService.getHostName());
+    public void assertGetCurrentMillis() throws Exception {
+        assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
     }
 }

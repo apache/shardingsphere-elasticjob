@@ -17,9 +17,8 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
-import com.dangdang.ddframe.reg.exception.LocalPropertiesFileNotFoundException;
 import com.dangdang.ddframe.reg.exception.RegException;
+import com.dangdang.ddframe.reg.zookeeper.fixture.TestNestedServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,13 +28,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
-public final class ZookeeperRegistryCenterForLocalPropertiesTest extends AbstractNestedZookeeperBaseTest {
+public final class ZookeeperRegistryCenterForLocalPropertiesTest {
     
     private ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void init() {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, TEST_TEMP_DIRECTORY);
+        TestNestedServer.start();
     }
     
     @Before
@@ -54,13 +53,13 @@ public final class ZookeeperRegistryCenterForLocalPropertiesTest extends Abstrac
         assertFalse(zkRegCenter.isExisted("/notExisted"));
     }
     
-    @Test(expected = LocalPropertiesFileNotFoundException.class)
+    @Test(expected = RegException.class)
     public void assertInitWhenLocalPropertiesCannotFind() {
         zkRegCenter.getZkConfig().setLocalPropertiesPath("conf/reg/notExisted.properties");
         try {
             zkRegCenter.init();
         } catch (final RegException ex) {
-            throw (LocalPropertiesFileNotFoundException) ex.getCause();
+            throw (RegException) ex.getCause();
         }
     }
     
@@ -86,11 +85,11 @@ public final class ZookeeperRegistryCenterForLocalPropertiesTest extends Abstrac
     }
     
     private ZookeeperRegistryCenter createZookeeperRegistryCenter() {
-        return new ZookeeperRegistryCenter(new ZookeeperConfiguration(ZK_CONNECTION_STRING, getCurrentRunningMethodName()));
+        return new ZookeeperRegistryCenter(new ZookeeperConfiguration(TestNestedServer.getConnectionString(), getCurrentRunningMethodName()));
     }
     
     private void createInitData() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, getCurrentRunningMethodName());
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), getCurrentRunningMethodName());
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();

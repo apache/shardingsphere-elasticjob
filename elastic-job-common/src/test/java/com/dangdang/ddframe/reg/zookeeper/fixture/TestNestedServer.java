@@ -15,29 +15,27 @@
  * </p>
  */
 
-package com.dangdang.ddframe;
+package com.dangdang.ddframe.reg.zookeeper.fixture;
 
-import com.dangdang.ddframe.job.AllJobTests;
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
-import com.dangdang.ddframe.reg.AllRegTests;
 import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServers;
+import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.junit.AfterClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        AllRegTests.class,
-        AllJobTests.class
-    })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AllTests {
+public final class TestNestedServer {
     
-    @AfterClass
-    public static void clear() {
-        NestedZookeeperServers.getInstance().closeServer(AbstractNestedZookeeperBaseTest.PORT);
+    private static final int PORT = 3181;
+    
+    public static String getConnectionString() {
+        return Joiner.on(":").join("localhost", PORT);
+    }
+    
+    public static void start() {
+        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, String.format("target/test_zk_data/%s/", System.nanoTime()));
+    }
+    
+    public static void close() {
+        NestedZookeeperServers.getInstance().closeServer(TestNestedServer.PORT);
     }
 }

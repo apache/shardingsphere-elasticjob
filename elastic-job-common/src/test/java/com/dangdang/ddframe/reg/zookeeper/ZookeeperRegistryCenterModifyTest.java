@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
+import com.dangdang.ddframe.reg.zookeeper.fixture.TestNestedServer;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;
@@ -34,15 +34,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class ZookeeperRegistryCenterModifyTest extends AbstractNestedZookeeperBaseTest {
+public final class ZookeeperRegistryCenterModifyTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterModifyTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), ZookeeperRegistryCenterModifyTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, TEST_TEMP_DIRECTORY);
+        TestNestedServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter.init();
@@ -75,7 +75,7 @@ public final class ZookeeperRegistryCenterModifyTest extends AbstractNestedZooke
         assertThat(zkRegCenter.get("/persist"), is("persist_value"));
         assertThat(zkRegCenter.get("/ephemeral"), is("ephemeral_value"));
         zkRegCenter.close();
-        CuratorFramework client = CuratorFrameworkFactory.newClient(ZK_CONNECTION_STRING, new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(TestNestedServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         assertThat(client.getData().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/persist"), is("persist_value".getBytes()));
@@ -88,7 +88,7 @@ public final class ZookeeperRegistryCenterModifyTest extends AbstractNestedZooke
     public void assertPersistSequential() throws Exception {
         assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
         assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
-        CuratorFramework client = CuratorFrameworkFactory.newClient(ZK_CONNECTION_STRING, new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(TestNestedServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/sequential");
@@ -103,7 +103,7 @@ public final class ZookeeperRegistryCenterModifyTest extends AbstractNestedZooke
     public void assertPersistEphemeralSequential() throws Exception {
         zkRegCenter.persistEphemeralSequential("/sequential/test_ephemeral_sequential");
         zkRegCenter.persistEphemeralSequential("/sequential/test_ephemeral_sequential");
-        CuratorFramework client = CuratorFrameworkFactory.newClient(ZK_CONNECTION_STRING, new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(TestNestedServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/sequential");

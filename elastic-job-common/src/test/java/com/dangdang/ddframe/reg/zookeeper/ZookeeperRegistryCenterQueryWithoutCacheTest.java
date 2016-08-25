@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
+import com.dangdang.ddframe.reg.zookeeper.fixture.TestNestedServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,15 +30,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class ZookeeperRegistryCenterQueryWithoutCacheTest extends AbstractNestedZookeeperBaseTest {
+public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, TEST_TEMP_DIRECTORY);
+        TestNestedServer.start();
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();

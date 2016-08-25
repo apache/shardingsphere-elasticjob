@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import com.dangdang.ddframe.reg.AbstractNestedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.exception.RegException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public final class ZookeeperRegistryCenterInitFailureTest extends AbstractNestedZookeeperBaseTest {
+public final class ZookeeperRegistryCenterInitFailureTest {
     
     @Test(expected = RegException.class)
     @Ignore

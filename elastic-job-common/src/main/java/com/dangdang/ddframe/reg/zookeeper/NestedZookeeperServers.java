@@ -87,9 +87,9 @@ public final class NestedZookeeperServers {
         if (null == nestedServer) {
             return;
         }
+        nestedServers.remove(port);
         try {
             nestedServer.close();
-            nestedServers.remove(port);
         } catch (final IOException ex) {
             RegExceptionHandler.handleException(ex);
         }

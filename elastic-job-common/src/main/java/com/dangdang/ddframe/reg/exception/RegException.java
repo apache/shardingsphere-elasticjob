@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.reg.exception;
 
 /**
- * 注册中心模块抛出的异常基类.
+ * 注册中心异常.
  * 
  * @author zhangliang
  */

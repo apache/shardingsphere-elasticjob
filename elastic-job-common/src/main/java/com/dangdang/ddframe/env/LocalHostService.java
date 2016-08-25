@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.env;
+package com.dangdang.ddframe.env;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -90,16 +90,10 @@ public class LocalHostService {
      * @return 本机Host名称
      */
     public String getHostName() {
-        return getLocalHost().getHostName();
-    }
-    
-    private static InetAddress getLocalHost() {
-        InetAddress result;
         try {
-            result = InetAddress.getLocalHost();
+            return InetAddress.getLocalHost().getHostName();
         } catch (final UnknownHostException ex) {
             throw new HostException(ex);
         }
-        return result;
     }
 }

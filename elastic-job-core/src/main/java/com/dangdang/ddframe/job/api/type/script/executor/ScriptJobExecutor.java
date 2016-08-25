@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.util.json.GsonFactory;
+import com.dangdang.ddframe.json.GsonFactory;
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;

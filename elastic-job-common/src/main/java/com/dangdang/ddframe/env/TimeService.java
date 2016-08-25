@@ -15,17 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.json;
+package com.dangdang.ddframe.env;
 
-import org.junit.Test;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-public final class GsonFactoryTest {
+/**
+ * 获取时间的服务.
+ * 
+ * @author zhangliang
+ */
+public class TimeService {
     
-    @Test
-    public void assertGetGson() {
-        assertThat(GsonFactory.getGson(), is(GsonFactory.getGson()));
+    /**
+     * 获取当前时间的毫秒数.
+     * 
+     * @return 当前时间的毫秒数
+     */
+    public long getCurrentMillis() {
+        return System.currentTimeMillis();
     }
 }
