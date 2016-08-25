@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.event.log;
 
+import com.dangdang.ddframe.job.event.JobEventListener;
 import com.dangdang.ddframe.job.event.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobEventListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,8 +35,6 @@ import java.text.SimpleDateFormat;
 public final class JobLogEventListener implements JobEventListener {
     
     private static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss.SSSS";
-    
-    private final JobLogEventConfiguration jobLogConfig;
     
     @Override
     public String getName() {

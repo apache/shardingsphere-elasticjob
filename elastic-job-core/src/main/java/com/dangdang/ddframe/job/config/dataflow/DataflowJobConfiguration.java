@@ -15,23 +15,29 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.executor.handler;
+package com.dangdang.ddframe.job.config.dataflow;
 
-import java.util.concurrent.ExecutorService;
+import com.dangdang.ddframe.job.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.api.JobType;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * 线程池服务处理器.
+ * 数据流作业配置信息.
  * 
- * <p>用于作业内部的线程池处理数据使用. 目前仅用于数据流类型.</p>
- *
+ * @author caohao
  * @author zhangliang
  */
-public interface ExecutorServiceHandler {
+@RequiredArgsConstructor
+@Getter
+public final class DataflowJobConfiguration implements JobTypeConfiguration {
     
-    /**
-     * 创建线程池服务对象.
-     * 
-     * @return 线程池服务对象
-     */
-    ExecutorService createExecutorService();
+    private final JobCoreConfiguration coreConfig;
+    
+    private final JobType jobType = JobType.DATAFLOW;
+    
+    private final String jobClass;
+    
+    private final boolean streamingProcess;
 }

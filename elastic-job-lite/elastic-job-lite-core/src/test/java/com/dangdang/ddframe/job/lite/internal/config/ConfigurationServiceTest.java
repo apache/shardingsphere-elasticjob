@@ -78,7 +78,7 @@ public final class ConfigurationServiceTest {
     @Test(expected = JobConfigurationException.class)
     public void assertPersistJobConfigurationForJobConflict() {
         when(jobNodeStorage.isJobNodeExisted(ConfigurationNode.ROOT)).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson("com.dangdang.ddframe.job.api.type.script.api.ScriptJob"));
+        when(jobNodeStorage.getJobNodeDataDirectly(ConfigurationNode.ROOT)).thenReturn(LiteJsonConstants.getJobJson("com.dangdang.ddframe.job.api.script.api.ScriptJob"));
         try {
             configService.persist(JobConfigurationUtil.createSimpleLiteJobConfiguration());
         } finally {

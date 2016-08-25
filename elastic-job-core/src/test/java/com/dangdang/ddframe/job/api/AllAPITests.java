@@ -17,17 +17,11 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.api.config.AllConfigTests;
-import com.dangdang.ddframe.job.api.type.AllTypeTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({
-        JobExecutorFactoryTest.class, 
-        AllConfigTests.class,
-        AllTypeTests.class
-    })
+@SuiteClasses(ShardingContextTest.class)
 public final class AllAPITests {
 }

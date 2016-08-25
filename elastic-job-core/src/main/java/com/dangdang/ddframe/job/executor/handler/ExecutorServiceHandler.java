@@ -15,22 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.simple.api;
+package com.dangdang.ddframe.job.executor.handler;
 
-import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.ShardingContext;
+import java.util.concurrent.ExecutorService;
 
 /**
- * 简单分布式作业接口.
+ * 线程池服务处理器.
  * 
+ * <p>用于作业内部的线程池处理数据使用. 目前仅用于数据流类型.</p>
+ *
  * @author zhangliang
  */
-public interface SimpleJob extends ElasticJob {
+public interface ExecutorServiceHandler {
     
     /**
-     * 执行作业.
-     *
-     * @param shardingContext 分片上下文
+     * 创建线程池服务对象.
+     * 
+     * @return 线程池服务对象
      */
-    void execute(ShardingContext shardingContext);
+    ExecutorService createExecutorService();
 }

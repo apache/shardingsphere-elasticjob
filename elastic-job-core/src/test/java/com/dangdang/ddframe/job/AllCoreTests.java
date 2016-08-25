@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job;
 
-import com.dangdang.ddframe.job.api.AllApiTests;
+import com.dangdang.ddframe.job.api.AllAPITests;
 import com.dangdang.ddframe.job.config.AllConfigTests;
 import com.dangdang.ddframe.job.event.AllEventTests;
 import com.dangdang.ddframe.job.exception.AllExceptionTests;
@@ -31,7 +31,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        AllApiTests.class, 
+        AllAPITests.class, 
         AllConfigTests.class, 
         AllExecutorTests.class, 
         AllEventTests.class, 

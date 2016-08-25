@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.config;
 
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.config.impl.AbstractJobConfigurationGsonTypeAdapter;
+import com.dangdang.ddframe.job.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.util.AbstractJobConfigurationGsonTypeAdapter;
 import com.dangdang.ddframe.json.GsonFactory;
 import com.google.common.base.Preconditions;
 import com.google.gson.stream.JsonReader;

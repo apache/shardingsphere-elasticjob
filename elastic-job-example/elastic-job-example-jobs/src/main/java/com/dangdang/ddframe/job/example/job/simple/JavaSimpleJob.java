@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.example.job.simple;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
+import com.dangdang.ddframe.job.api.simple.SimpleJob;
 
 import java.util.Date;
 
@@ -26,6 +26,6 @@ public class JavaSimpleJob implements SimpleJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {
-        System.out.println(new Date() + ":------simple job-------:" + shardingContext);
+        System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s", Thread.currentThread().getId(), new Date(), shardingContext, "simple job"));
     }
 }

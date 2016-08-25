@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.config;
 
-import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.config.JobRootConfiguration;
+import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

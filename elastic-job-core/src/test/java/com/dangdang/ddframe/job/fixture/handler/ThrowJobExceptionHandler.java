@@ -15,20 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.event.log;
+package com.dangdang.ddframe.job.fixture.handler;
 
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.JobEventListener;
+import com.dangdang.ddframe.job.executor.handler.JobExceptionHandler;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 
-/**
- * 作业日志事件配置.
- *
- * @author caohao
- */
-public final class JobLogEventConfiguration implements JobEventConfiguration {
+public final class ThrowJobExceptionHandler implements JobExceptionHandler {
     
     @Override
-    public JobEventListener createJobEventListener() {
-        return new JobLogEventListener();
+    public void handleException(final String jobName, final Throwable cause) {
+        throw new JobSystemException(cause);
     }
 }

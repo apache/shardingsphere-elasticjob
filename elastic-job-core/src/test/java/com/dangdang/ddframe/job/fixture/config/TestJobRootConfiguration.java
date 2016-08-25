@@ -15,29 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type.dataflow.api;
+package com.dangdang.ddframe.job.fixture.config;
 
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.type.JobType;
-import lombok.Getter;
+import com.dangdang.ddframe.job.config.JobRootConfiguration;
+import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 数据流作业配置信息.
- * 
- * @author caohao
- * @author zhangliang
- */
 @RequiredArgsConstructor
-@Getter
-public final class DataflowJobConfiguration implements JobTypeConfiguration {
+public final class TestJobRootConfiguration implements JobRootConfiguration {
     
-    private final JobCoreConfiguration coreConfig;
+    private final JobTypeConfiguration typeConfig;
     
-    private final JobType jobType = JobType.DATAFLOW;
-    
-    private final String jobClass;
-    
-    private final boolean streamingProcess;
+    @Override
+    public JobTypeConfiguration getTypeConfig() {
+        return typeConfig;
+    }
 }

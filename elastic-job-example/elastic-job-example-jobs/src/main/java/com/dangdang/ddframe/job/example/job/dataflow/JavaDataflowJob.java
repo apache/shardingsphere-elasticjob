@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.example.job.dataflow;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +31,7 @@ public class JavaDataflowJob implements DataflowJob<String> {
     
     @Override
     public List<String> fetchData(final ShardingContext shardingContext) {
-        System.out.println(new Date() + ":------dataflow job fetch data-------:" + shardingContext);
+        System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s", Thread.currentThread().getId(), new Date(), shardingContext, "dataflow job fetch data"));
         count++;
         if (count > 10) {
             return Collections.emptyList();
@@ -41,6 +41,7 @@ public class JavaDataflowJob implements DataflowJob<String> {
     
     @Override
     public void processData(final ShardingContext shardingContext, final List<String> data) {
-        System.out.println(new Date() + ":------dataflow job process data-------:" + shardingContext + ", data is:" + data);
+        System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s, Data: %s", 
+                Thread.currentThread().getId(), new Date(), shardingContext, "dataflow job process data", data));
     }
 }

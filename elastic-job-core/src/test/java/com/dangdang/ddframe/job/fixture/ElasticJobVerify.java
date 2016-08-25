@@ -15,31 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.type;
+package com.dangdang.ddframe.job.fixture;
 
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.api.executor.JobFacade;
+import com.dangdang.ddframe.job.executor.JobFacade;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ElasticJobAssert {
-    
-    public static final String JOB_NAME = "test_job";
-    
-    public static ShardingContexts getShardingContext() {
-        Map<Integer, String> map = new HashMap<>(2, 1);
-        map.put(0, "A");
-        map.put(1, "B");
-        return new ShardingContexts(JOB_NAME, 10, "", map);
-    }
+public class ElasticJobVerify {
     
     public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
