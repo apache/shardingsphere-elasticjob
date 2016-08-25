@@ -19,9 +19,8 @@ package com.dangdang.ddframe.job.cloud.config;
 
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.impl.AbstractJobConfigurationGsonTypeAdapter;
+import com.dangdang.ddframe.json.GsonFactory;
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import lombok.AccessLevel;
@@ -38,7 +37,9 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudJobConfigurationGsonFactory {
     
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonTypeAdapter()).create();
+    static  {
+        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonTypeAdapter());
+    }
     
     /**
      * 将作业配置转换为JSON字符串.
@@ -47,7 +48,7 @@ public final class CloudJobConfigurationGsonFactory {
      * @return 作业配置JSON字符串
      */
     public static String toJson(final CloudJobConfiguration cloudJobConfig) {
-        return GSON.toJson(cloudJobConfig);
+        return GsonFactory.getGson().toJson(cloudJobConfig);
     }
     
     /**
@@ -57,7 +58,7 @@ public final class CloudJobConfigurationGsonFactory {
      * @return 作业配置对象
      */
     public static CloudJobConfiguration fromJson(final String cloudJobConfigJson) {
-        return GSON.fromJson(cloudJobConfigJson, CloudJobConfiguration.class);
+        return GsonFactory.getGson().fromJson(cloudJobConfigJson, CloudJobConfiguration.class);
     }
     
     /**

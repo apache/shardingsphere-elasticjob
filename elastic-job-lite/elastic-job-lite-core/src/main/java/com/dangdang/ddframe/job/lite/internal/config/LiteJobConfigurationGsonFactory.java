@@ -20,8 +20,7 @@ package com.dangdang.ddframe.job.lite.internal.config;
 import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.api.config.impl.AbstractJobConfigurationGsonTypeAdapter;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.dangdang.ddframe.json.GsonFactory;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import lombok.AccessLevel;
@@ -38,7 +37,9 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LiteJobConfigurationGsonFactory {
     
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(LiteJobConfiguration.class, new LiteJobConfigurationGsonTypeAdapter()).create();
+    static {
+        GsonFactory.registerTypeAdapter(LiteJobConfiguration.class, new LiteJobConfigurationGsonTypeAdapter());
+    }
     
     /**
      * 将作业配置转换为JSON字符串.
@@ -47,7 +48,7 @@ public final class LiteJobConfigurationGsonFactory {
      * @return 作业配置JSON字符串
      */
     public static String toJson(final LiteJobConfiguration liteJobConfig) {
-        return GSON.toJson(liteJobConfig);
+        return GsonFactory.getGson().toJson(liteJobConfig);
     }
     
     /**
@@ -58,7 +59,7 @@ public final class LiteJobConfigurationGsonFactory {
      */
     // TODO API模块jobSettings使用,未来需调整并删除
     public static String toJsonForObject(final Object liteJobConfig) {
-        return GSON.toJson(liteJobConfig);
+        return GsonFactory.getGson().toJson(liteJobConfig);
     }
     
     /**
@@ -68,7 +69,7 @@ public final class LiteJobConfigurationGsonFactory {
      * @return 作业配置对象
      */
     public static LiteJobConfiguration fromJson(final String liteJobConfigJson) {
-        return GSON.fromJson(liteJobConfigJson, LiteJobConfiguration.class);
+        return GsonFactory.getGson().fromJson(liteJobConfigJson, LiteJobConfiguration.class);
     }
     
     /**
