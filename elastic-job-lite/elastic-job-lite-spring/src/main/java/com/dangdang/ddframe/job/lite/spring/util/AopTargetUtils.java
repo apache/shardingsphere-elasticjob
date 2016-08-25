@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.aop.support.AopUtils;
 
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

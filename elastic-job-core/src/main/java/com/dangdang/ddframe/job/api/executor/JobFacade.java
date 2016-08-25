@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.executor;
 
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
-import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 
 import java.util.Collection;
 

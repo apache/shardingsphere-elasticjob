@@ -15,22 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.exception;
+package com.dangdang.ddframe.job.exception;
 
-/**
- * 作业配置异常.
- * 
- * @author zhangliang
- */
-public class JobConfigurationException extends RuntimeException {
+import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class JobConfigurationExceptionTest {
     
-    private static final long serialVersionUID = 3244988974343209468L;
-    
-    public JobConfigurationException(final String errorMessage, final Object... args) {
-        super(String.format(errorMessage, args));
+    @Test
+    public void assertGetMessage() {
+        assertThat(new JobConfigurationException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
     }
     
-    public JobConfigurationException(final Throwable cause) {
-        super(cause);
+    @Test
+    public void assertGetCause() {
+        assertThat(new JobConfigurationException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
     }
 }

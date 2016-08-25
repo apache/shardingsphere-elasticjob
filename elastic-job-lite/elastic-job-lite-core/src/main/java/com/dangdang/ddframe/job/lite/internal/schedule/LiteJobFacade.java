@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.internal.schedule;
 import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;

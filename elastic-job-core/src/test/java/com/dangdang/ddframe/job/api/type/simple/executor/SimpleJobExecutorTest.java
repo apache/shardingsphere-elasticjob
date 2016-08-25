@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.api.type.simple.executor;
 
-import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.fixture.config.TestSimpleJobConfiguration;

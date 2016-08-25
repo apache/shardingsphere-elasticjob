@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.api.fixture.config.TestScriptJobConfiguration;

@@ -15,21 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job;
+package com.dangdang.ddframe.job.exception;
 
-import com.dangdang.ddframe.job.api.AllAPITests;
-import com.dangdang.ddframe.job.event.AllEventTests;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        AllAPITests.class,
-        AllEventTests.class
+        JobConfigurationExceptionTest.class, 
+        JobExecutionEnvironmentExceptionTest.class, 
+        JobSystemExceptionTest.class
     })
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AllTests {
+public final class AllExceptionTests {
 }

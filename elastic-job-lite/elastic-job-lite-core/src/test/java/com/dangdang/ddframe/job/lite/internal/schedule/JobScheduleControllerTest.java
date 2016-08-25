@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import org.junit.Before;

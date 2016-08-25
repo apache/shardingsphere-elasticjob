@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.api;
 
 import com.dangdang.ddframe.job.api.config.AllConfigTests;
-import com.dangdang.ddframe.job.api.exception.AllExceptionTests;
 import com.dangdang.ddframe.job.api.type.AllTypeTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -28,8 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
         JobExecutorFactoryTest.class, 
         AllConfigTests.class,
-        AllTypeTests.class, 
-        AllExceptionTests.class
+        AllTypeTests.class
     })
 public final class AllAPITests {
 }

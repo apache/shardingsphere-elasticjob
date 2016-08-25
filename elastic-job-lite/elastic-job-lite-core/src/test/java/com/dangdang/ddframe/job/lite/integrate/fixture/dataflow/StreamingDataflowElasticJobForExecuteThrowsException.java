@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.integrate.fixture.dataflow;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
 import lombok.Getter;
 

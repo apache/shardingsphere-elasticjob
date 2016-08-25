@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.exception;
+package com.dangdang.ddframe.job.exception;
 
 import org.junit.Test;
 

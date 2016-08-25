@@ -15,17 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.exception;
+package com.dangdang.ddframe.job.exception;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class,
-        JobExecutionEnvironmentExceptionTest.class,
-        JobSystemExceptionTest.class
-    })
-public final class AllExceptionTests {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class JobExecutionEnvironmentExceptionTest {
+    
+    @Test
+    public void assertGetMessage() {
+        assertThat(new JobExecutionEnvironmentException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
+    }
 }

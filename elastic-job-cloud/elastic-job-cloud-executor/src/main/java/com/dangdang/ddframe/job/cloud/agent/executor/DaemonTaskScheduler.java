@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.cloud.agent.executor;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobExecutorFactory;
 import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.google.common.base.Joiner;
 import lombok.RequiredArgsConstructor;

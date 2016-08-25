@@ -15,23 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.exception;
+package com.dangdang.ddframe.job.exception;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-public final class JobConfigurationExceptionTest {
+/**
+ * 作业执行环境异常.
+ * 
+ * @author zhangliang
+ */
+public class JobExecutionEnvironmentException extends Exception {
     
-    @Test
-    public void assertGetMessage() {
-        assertThat(new JobConfigurationException("message is: '%s'", "test").getMessage(), is("message is: 'test'"));
-    }
+    private static final long serialVersionUID = -6670738108926897433L;
     
-    @Test
-    public void assertGetCause() {
-        assertThat(new JobConfigurationException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
+    public JobExecutionEnvironmentException(final String errorMessage, final Object... args) {
+        super(String.format(errorMessage, args));
     }
 }

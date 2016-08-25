@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.producer;
 
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.state.ready.ReadyService;
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;

@@ -15,22 +15,22 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.exception;
+package com.dangdang.ddframe.job.exception;
 
 /**
- * 作业系统异常.
+ * 作业配置异常.
  * 
  * @author zhangliang
  */
-public class JobSystemException extends RuntimeException {
+public class JobConfigurationException extends RuntimeException {
     
-    private static final long serialVersionUID = 5018901344199973515L;
+    private static final long serialVersionUID = 3244988974343209468L;
     
-    public JobSystemException(final String errorMessage, final Object... args) {
+    public JobConfigurationException(final String errorMessage, final Object... args) {
         super(String.format(errorMessage, args));
     }
     
-    public JobSystemException(final Throwable cause) {
+    public JobConfigurationException(final Throwable cause) {
         super(cause);
     }
 }

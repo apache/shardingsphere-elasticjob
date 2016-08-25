@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.api.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.storage;
 
-import com.dangdang.ddframe.job.api.exception.JobSystemException;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
 import org.apache.curator.framework.CuratorFramework;

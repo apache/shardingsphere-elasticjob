@@ -15,18 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api.exception;
+package com.dangdang.ddframe.job;
 
-/**
- * 作业执行环境异常.
- * 
- * @author zhangliang
- */
-public class JobExecutionEnvironmentException extends Exception {
-    
-    private static final long serialVersionUID = -6670738108926897433L;
-    
-    public JobExecutionEnvironmentException(final String errorMessage, final Object... args) {
-        super(String.format(errorMessage, args));
-    }
+import com.dangdang.ddframe.job.api.AllAPITests;
+import com.dangdang.ddframe.job.event.AllEventTests;
+import com.dangdang.ddframe.job.exception.AllExceptionTests;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({
+        AllAPITests.class, 
+        AllEventTests.class, 
+        AllExceptionTests.class
+    })
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AllCoreTests {
 }

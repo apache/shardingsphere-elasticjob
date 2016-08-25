@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api.config.impl;
 
-import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import org.junit.Test;
 
 import java.util.Collections;

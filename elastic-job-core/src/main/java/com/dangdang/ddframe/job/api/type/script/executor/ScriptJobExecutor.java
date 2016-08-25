@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.api.type.script.executor;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.api.executor.JobFacade;
 import com.dangdang.ddframe.job.api.executor.ShardingContexts;
