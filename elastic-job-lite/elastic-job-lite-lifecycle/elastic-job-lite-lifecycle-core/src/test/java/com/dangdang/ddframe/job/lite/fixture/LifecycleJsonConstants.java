@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.fixture;
 
-import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
-import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
+import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
+import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

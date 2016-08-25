@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.script;
 
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.api.script.ScriptJob;
+import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;

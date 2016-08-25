@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.agent.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
+import com.dangdang.ddframe.job.api.simple.SimpleJob;
 
 public final class TestJob implements SimpleJob {
     

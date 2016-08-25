@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.agent.internal;
 
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
-import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.api.executor.JobFacade;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.executor.JobFacade;
+import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;

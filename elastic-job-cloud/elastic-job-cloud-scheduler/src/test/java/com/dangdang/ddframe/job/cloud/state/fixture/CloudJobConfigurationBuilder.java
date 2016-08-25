@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.state.fixture;
 
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;

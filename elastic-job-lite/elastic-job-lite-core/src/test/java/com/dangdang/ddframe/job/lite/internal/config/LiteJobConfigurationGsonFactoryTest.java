@@ -17,15 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.api.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.api.config.impl.JobProperties;
-import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultExecutorServiceHandler;
-import com.dangdang.ddframe.job.api.executor.handler.impl.DefaultJobExceptionHandler;
-import com.dangdang.ddframe.job.api.type.JobType;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.executor.handler.JobProperties;
+import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
+import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
+import com.dangdang.ddframe.job.api.JobType;
+import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.api.script.ScriptJob;
+import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
+import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
@@ -53,7 +53,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
             + "\"jobProperties\":" + JOB_PROPS_JSON + "," + JOB_EVENT_JSON + ",\"streamingProcess\":true,"
             + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";
     
-    private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.type.script.api.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
+    private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.script.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + "," + JOB_EVENT_JSON + ",\"scriptCommandLine\":\"test.sh\",\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,"
             + "\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";

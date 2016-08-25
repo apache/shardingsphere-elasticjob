@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.fixture.listener;
 
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 
 import static org.hamcrest.CoreMatchers.is;

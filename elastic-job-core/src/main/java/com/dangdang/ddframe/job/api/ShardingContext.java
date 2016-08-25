@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.api;
 
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import lombok.Getter;
 import lombok.ToString;
 

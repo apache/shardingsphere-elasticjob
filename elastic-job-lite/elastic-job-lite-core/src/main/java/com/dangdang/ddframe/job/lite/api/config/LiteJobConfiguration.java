@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.api.config;
 
-import com.dangdang.ddframe.job.api.config.JobRootConfiguration;
-import com.dangdang.ddframe.job.api.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.config.JobRootConfiguration;
+import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

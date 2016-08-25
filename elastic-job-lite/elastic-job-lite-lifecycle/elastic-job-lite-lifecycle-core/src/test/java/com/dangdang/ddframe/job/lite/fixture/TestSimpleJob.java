@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.simple.api.SimpleJob;
+import com.dangdang.ddframe.job.api.simple.SimpleJob;
 
 public class TestSimpleJob implements SimpleJob {
     

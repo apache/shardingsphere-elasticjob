@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.example.job.dataflow;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.type.dataflow.api.DataflowJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.example.fixture.entity.Foo;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
 import org.springframework.stereotype.Component;
@@ -35,14 +35,15 @@ public class SpringDataflowJob implements DataflowJob<Foo> {
     
     @Override
     public List<Foo> fetchData(final ShardingContext shardingContext) {
-        System.out.println(new Date() + ":------dataflow job fetch data-------:" + shardingContext);
+        System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s", Thread.currentThread().getId(), new Date(), shardingContext, "dataflow job fetch data"));
         return fooRepository.findActive(shardingContext.getShardingItem());
     }
     
     @Override
     public void processData(final ShardingContext shardingContext, final List<Foo> data) {
+        System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s, Data: %s",
+                Thread.currentThread().getId(), new Date(), shardingContext, "dataflow job process data", data));
         for (Foo each : data) {
-            System.out.println(new Date() + ":------dataflow job process data-------:" + shardingContext);
             fooRepository.setInactive(each.getId());
         }
     }

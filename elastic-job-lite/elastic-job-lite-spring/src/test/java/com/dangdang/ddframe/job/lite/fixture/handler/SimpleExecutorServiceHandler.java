@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.fixture.handler;
 
-import com.dangdang.ddframe.job.api.executor.handler.ExecutorServiceHandler;
+import com.dangdang.ddframe.job.executor.handler.ExecutorServiceHandler;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

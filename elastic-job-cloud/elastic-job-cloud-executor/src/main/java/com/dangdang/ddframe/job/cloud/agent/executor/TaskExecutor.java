@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.cloud.agent.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.JobExecutorFactory;
-import com.dangdang.ddframe.job.api.executor.ShardingContexts;
+import com.dangdang.ddframe.job.executor.JobExecutorFactory;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.job.api.type.script.api.ScriptJob;
+import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.cloud.agent.internal.CloudJobFacade;
 import com.dangdang.ddframe.job.cloud.agent.internal.JobConfigurationContext;
 import com.google.common.base.Strings;
