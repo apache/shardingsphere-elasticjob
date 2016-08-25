@@ -208,8 +208,8 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 .build();
     }
     
-    private JobTypeConfiguration getJobTypeConfiguration(final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, 
-                                                         final boolean streamingProcess, final String scriptCommandLine) {
+    private JobTypeConfiguration getJobTypeConfiguration(
+            final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final boolean streamingProcess, final String scriptCommandLine) {
         JobTypeConfiguration result;
         switch (jobType) {
             case SIMPLE:
