@@ -17,20 +17,22 @@
 
 package com.dangdang.ddframe.job.executor;
 
+import com.dangdang.ddframe.job.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.executor.type.DataflowJobExecutor;
+import com.dangdang.ddframe.job.executor.type.ScriptJobExecutor;
+import com.dangdang.ddframe.job.executor.type.SimpleJobExecutor;
 import com.dangdang.ddframe.job.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.fixture.config.TestSimpleJobConfiguration;
 import com.dangdang.ddframe.job.fixture.job.OtherJob;
 import com.dangdang.ddframe.job.fixture.job.TestDataflowJob;
 import com.dangdang.ddframe.job.fixture.job.TestSimpleJob;
-import com.dangdang.ddframe.job.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.executor.type.DataflowJobExecutor;
-import com.dangdang.ddframe.job.executor.type.ScriptJobExecutor;
-import com.dangdang.ddframe.job.executor.type.SimpleJobExecutor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
@@ -44,24 +46,28 @@ public final class JobExecutorFactoryTest {
     
     @Test
     public void assertGetJobExecutorForScriptJob() {
+        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("script_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh"));
         assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), instanceOf(ScriptJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForSimpleJob() {
+        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("simple_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade), instanceOf(SimpleJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForDataflowJob() {
+        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("dataflow_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
         assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade), instanceOf(DataflowJobExecutor.class));
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetJobExecutorWhenJobClassWhenUnsupportedJob() {
+        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("unsupported_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         JobExecutorFactory.getJobExecutor(new OtherJob(), jobFacade);
     }

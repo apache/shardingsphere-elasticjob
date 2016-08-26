@@ -39,6 +39,7 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     @BeforeClass
     public static void setUp() {
         TestNestedServer.start();
+        zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();

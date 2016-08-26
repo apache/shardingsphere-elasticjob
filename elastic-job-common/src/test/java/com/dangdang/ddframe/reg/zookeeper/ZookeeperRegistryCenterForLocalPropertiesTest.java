@@ -85,12 +85,15 @@ public final class ZookeeperRegistryCenterForLocalPropertiesTest {
     }
     
     private ZookeeperRegistryCenter createZookeeperRegistryCenter() {
-        return new ZookeeperRegistryCenter(new ZookeeperConfiguration(TestNestedServer.getConnectionString(), getCurrentRunningMethodName()));
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), getCurrentRunningMethodName());
+        zkConfig.setConnectionTimeoutMilliseconds(30000);
+        return new ZookeeperRegistryCenter(zkConfig);
     }
     
     private void createInitData() {
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), getCurrentRunningMethodName());
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
+        zkConfig.setConnectionTimeoutMilliseconds(30000);
         ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();
         zkRegCenter.close();

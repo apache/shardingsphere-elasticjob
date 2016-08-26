@@ -44,6 +44,7 @@ public final class ZookeeperRegistryCenterModifyTest {
     public static void setUp() {
         TestNestedServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
+        zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter.init();
     }

@@ -37,6 +37,7 @@ public final class ZookeeperRegistryCenterMiscellaneousTest {
     @BeforeClass
     public static void setUp() {
         TestNestedServer.start();
+        zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();
         zkRegCenter.addCacheData("/test");
