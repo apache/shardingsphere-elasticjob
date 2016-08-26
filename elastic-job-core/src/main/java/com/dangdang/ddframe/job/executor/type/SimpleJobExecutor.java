@@ -63,11 +63,7 @@ public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
                 }
             });
         }
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        latchAwait(latch);
     }
     
     private void process(final ShardingContext shardingContext) {

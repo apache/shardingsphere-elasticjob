@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.executor.type.SimpleJobExecutor;
 import com.dangdang.ddframe.job.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.fixture.config.TestSimpleJobConfiguration;
+import com.dangdang.ddframe.job.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.fixture.job.OtherJob;
 import com.dangdang.ddframe.job.fixture.job.TestDataflowJob;
 import com.dangdang.ddframe.job.fixture.job.TestSimpleJob;
@@ -50,7 +51,7 @@ public final class JobExecutorFactoryTest {
     @Test
     public void assertGetJobExecutorForScriptJob() {
         when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("script_test_job", 10, "", Collections.<Integer, String>emptyMap()));
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh", IgnoreJobExceptionHandler.class));
         assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), instanceOf(ScriptJobExecutor.class));
     }
     

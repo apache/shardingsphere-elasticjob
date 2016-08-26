@@ -17,11 +17,14 @@
 
 package com.dangdang.ddframe.job.executor.type;
 
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.fixture.ElasticJobVerify;
 import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.config.TestScriptJobConfiguration;
+import com.dangdang.ddframe.job.fixture.handler.IgnoreJobExceptionHandler;
+import com.dangdang.ddframe.job.fixture.handler.ThrowJobExceptionHandler;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.Executor;
 import org.junit.Test;
@@ -48,18 +51,36 @@ public final class ScriptJobExecutorTest {
     
     private ScriptJobExecutor scriptJobExecutor;
     
-    @SuppressWarnings("unchecked")
     @Test
-    public void assertExecuteWhenExecuteFailure() throws IOException, NoSuchFieldException {
+    public void assertExecuteWhenCommandLineIsEmpty() throws IOException {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, ShardingContextsBuilder.getMultipleShardingContexts());
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("", IgnoreJobExceptionHandler.class));
+        scriptJobExecutor = new ScriptJobExecutor(jobFacade);
+        scriptJobExecutor.execute();
+        verify(executor, times(0)).execute(Matchers.<CommandLine>any());
+    }
+    
+    @Test(expected = JobSystemException.class)
+    public void assertExecuteWhenExecuteFailureForSingleShardingItems() throws IOException, NoSuchFieldException {
+        assertExecuteWhenExecuteFailure(ShardingContextsBuilder.getSingleShardingContexts());
+    }
+    
+    @Test
+    public void assertExecuteWhenExecuteFailureForMultipleShardingItems() throws IOException, NoSuchFieldException {
+        assertExecuteWhenExecuteFailure(ShardingContextsBuilder.getMultipleShardingContexts());
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void assertExecuteWhenExecuteFailure(final ShardingContexts shardingContexts) throws IOException, NoSuchFieldException {
+        ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file", ThrowJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
         ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         when(executor.execute(Matchers.<CommandLine>any())).thenThrow(IOException.class);
         try {
             scriptJobExecutor.execute();
         } finally {
-            verify(executor, times(2)).execute(Matchers.<CommandLine>any());
+            verify(executor, times(shardingContexts.getShardingTotalCount())).execute(Matchers.<CommandLine>any());
         }
     }
     
@@ -75,7 +96,7 @@ public final class ScriptJobExecutorTest {
     
     private void assertExecuteSuccess(final ShardingContexts shardingContexts) throws IOException, NoSuchFieldException {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("exists_file param0 param1"));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("exists_file param0 param1", IgnoreJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
         ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         scriptJobExecutor.execute();

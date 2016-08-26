@@ -30,6 +30,7 @@ import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -146,6 +147,14 @@ public abstract class AbstractElasticJobExecutor {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             jobFacade.registerJobCompleted(shardingContexts);
             jobEventBus.post(jobName, jobExecutionEvent);
+        }
+    }
+    
+    protected void latchAwait(final CountDownLatch latch) {
+        try {
+            latch.await();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
     

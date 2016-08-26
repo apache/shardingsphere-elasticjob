@@ -76,11 +76,7 @@ public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
                 }
             });
         }
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
+        latchAwait(latch);
     }
     
     private void executeScript(final ShardingContext shardingContext, final String scriptCommandLine) {
