@@ -27,13 +27,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("unchecked")
 public final class StreamingDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
     public StreamingDataflowJobTest() {
         super(true);
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmpty() {
         when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1), Collections.emptyList());
@@ -46,7 +46,6 @@ public final class StreamingDataflowJobTest extends AbstractDataflowJobExecutorT
         verify(getJobCaller()).processData(2);
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndProcessFailureWithException() {
         when(getJobCaller().fetchData(0)).thenReturn(Collections.<Object>singletonList(1), Collections.emptyList());
@@ -61,7 +60,6 @@ public final class StreamingDataflowJobTest extends AbstractDataflowJobExecutorT
         verify(getJobCaller(), times(0)).processData(3);
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsEligibleForJobRunning() {
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(true);
@@ -77,7 +75,6 @@ public final class StreamingDataflowJobTest extends AbstractDataflowJobExecutorT
         verify(getJobCaller()).processData(4);
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsNotEligibleForJobRunning() {
         when(getJobFacade().isEligibleForJobRunning()).thenReturn(false);

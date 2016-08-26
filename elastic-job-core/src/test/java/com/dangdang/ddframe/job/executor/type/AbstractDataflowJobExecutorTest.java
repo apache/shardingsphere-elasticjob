@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.executor.type;
 
-import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.fixture.ElasticJobVerify;
@@ -33,13 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,13 +56,11 @@ public abstract class AbstractDataflowJobExecutorTest {
     
     private DataflowJobExecutor dataflowJobExecutor;
     
-    private ExecutorService executorService = Executors.newCachedThreadPool();
-    
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(streamingProcess));
-        shardingContexts = ShardingContextsBuilder.getShardingContexts();
+        shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         dataflowJobExecutor = new DataflowJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
@@ -75,18 +68,17 @@ public abstract class AbstractDataflowJobExecutorTest {
     
     @After
     public void tearDown() throws NoSuchFieldException {
-        assertNotNull(ReflectionUtils.getFieldValue(dataflowJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("executorService")));
         verify(jobFacade).loadJobRootConfiguration(true);
         ElasticJobVerify.verifyForIsNotMisfire(jobFacade, shardingContexts);
     }
     
     @Test
     public final void assertExecuteWhenFetchDataIsNullAndEmpty() {
-        when(getJobCaller().fetchData(0)).thenReturn(null);
-        when(getJobCaller().fetchData(1)).thenReturn(Collections.emptyList());
+        when(jobCaller.fetchData(0)).thenReturn(null);
+        when(jobCaller.fetchData(1)).thenReturn(Collections.emptyList());
         getDataflowJobExecutor().execute();
-        verify(getJobCaller()).fetchData(0);
-        verify(getJobCaller()).fetchData(1);
-        verify(getJobCaller(), times(0)).processData(any());
+        verify(jobCaller).fetchData(0);
+        verify(jobCaller).fetchData(1);
+        verify(jobCaller, times(0)).processData(any());
     }
 }

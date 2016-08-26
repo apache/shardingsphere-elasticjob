@@ -21,17 +21,41 @@ import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.handler.ThrowJobExceptionHandler;
 import com.dangdang.ddframe.job.fixture.job.TestSimpleJob;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public final class TestSimpleJobConfiguration implements JobRootConfiguration {
+    
+    private String jobExceptionHandlerClassName;
+    
+    private String executorServiceHandlerClassName;
+    
+    private JobEventConfiguration[] jobEventConfigs;
+    
+    public TestSimpleJobConfiguration(final String jobExceptionHandlerClassName, final String executorServiceHandlerClassName, final JobEventConfiguration... jobEventConfigs) {
+        this.jobExceptionHandlerClassName = jobExceptionHandlerClassName;
+        this.executorServiceHandlerClassName = executorServiceHandlerClassName;
+        this.jobEventConfigs = jobEventConfigs;
+    }
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
-        return new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3).shardingItemParameters("0=A,1=B,2=C").jobParameter("param")
-                .failover(true).misfire(false).description("desc")
-                .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), ThrowJobExceptionHandler.class.getCanonicalName()).build(), TestSimpleJob.class.getCanonicalName()); 
+        JobCoreConfiguration.Builder builder = JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3)
+                .shardingItemParameters("0=A,1=B,2=C").jobParameter("param").failover(true).misfire(false).description("desc");
+        if (null == jobExceptionHandlerClassName) {
+            builder.jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), ThrowJobExceptionHandler.class.getCanonicalName());
+        } else {
+            builder.jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobExceptionHandlerClassName);
+        }
+        if (null != executorServiceHandlerClassName) {
+            builder.jobProperties(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), executorServiceHandlerClassName);
+        }
+        builder.jobEventConfiguration(jobEventConfigs);
+        return new SimpleJobConfiguration(builder.build(), TestSimpleJob.class.getCanonicalName());
     }
 }

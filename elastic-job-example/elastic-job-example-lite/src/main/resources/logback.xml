@@ -17,7 +17,7 @@
         <level value="INFO" />
         <appender-ref ref="STDOUT" />
     </root>
-
+    
     <logger name="org.apache.zookeeper" level="WARN"/>
     <logger name="org.apache.curator" level="WARN"/>
 </configuration>

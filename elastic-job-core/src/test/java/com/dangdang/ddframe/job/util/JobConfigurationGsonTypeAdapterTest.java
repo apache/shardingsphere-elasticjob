@@ -18,12 +18,15 @@
 package com.dangdang.ddframe.job.util;
 
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.fixture.APIJsonConstants;
 import com.dangdang.ddframe.job.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.fixture.config.TestJobRootConfiguration;
 import com.dangdang.ddframe.job.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.fixture.config.TestSimpleJobConfiguration;
-import com.dangdang.ddframe.job.fixture.config.TestSimpleJobWithEventConfiguration;
 import com.dangdang.ddframe.job.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.fixture.handler.ThrowJobExceptionHandler;
 import com.dangdang.ddframe.json.GsonFactory;
@@ -65,7 +68,9 @@ public final class JobConfigurationGsonTypeAdapterTest {
     
     @Test
     public void assertToSimpleJobWithEventJson() {
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestSimpleJobWithEventConfiguration().getTypeConfig())),
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(
+                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName(), 
+                        new JobEventLogConfiguration(), new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", JobTraceEvent.LogLevel.INFO)).getTypeConfig())), 
                 is(APIJsonConstants.getSimpleJobWithLogEventJson(ThrowJobExceptionHandler.class.getCanonicalName())));
     }
     
