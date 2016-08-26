@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.executor;
 
 import com.dangdang.ddframe.job.executor.handler.JobPropertiesTest;
+import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandlerTest;
 import com.dangdang.ddframe.job.executor.type.DataflowJobExecutorTest;
 import com.dangdang.ddframe.job.executor.type.ScriptJobExecutorTest;
 import com.dangdang.ddframe.job.executor.type.SimpleJobExecutorTest;
@@ -28,7 +29,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         JobExecutorFactoryTest.class, 
-        JobPropertiesTest.class, 
+        JobPropertiesTest.class,
+        DefaultJobExceptionHandlerTest.class, 
         SimpleJobExecutorTest.class, 
         DataflowJobExecutorTest.class, 
         ScriptJobExecutorTest.class
