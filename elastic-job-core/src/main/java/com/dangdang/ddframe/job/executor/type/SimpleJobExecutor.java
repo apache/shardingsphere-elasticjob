@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.executor.type;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
-import com.dangdang.ddframe.job.executor.JobFacade;
-import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
+import com.dangdang.ddframe.job.executor.JobFacade;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
@@ -52,7 +52,7 @@ public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
             getExecutorService().submit(new Runnable() {
-            
+                
                 @Override
                 public void run() {
                     try {

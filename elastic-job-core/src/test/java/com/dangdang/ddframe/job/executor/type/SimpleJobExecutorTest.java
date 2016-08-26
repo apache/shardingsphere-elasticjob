@@ -19,8 +19,11 @@ package com.dangdang.ddframe.job.executor.type;
 
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
+import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
+import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
 import com.dangdang.ddframe.job.fixture.ElasticJobVerify;
 import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.config.TestSimpleJobConfiguration;
@@ -28,16 +31,21 @@ import com.dangdang.ddframe.job.fixture.job.JobCaller;
 import com.dangdang.ddframe.job.fixture.job.TestSimpleJob;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public final class SimpleJobExecutorTest {
     
     @Mock
@@ -50,9 +58,18 @@ public final class SimpleJobExecutorTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        MockitoAnnotations.initMocks(this);
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         simpleJobExecutor = new SimpleJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
+    }
+    
+    @Test
+    public void assertNewExecutorWithDefaultHandlers() throws NoSuchFieldException {
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration("ErrorHandler", Object.class.getName()));
+        SimpleJobExecutor simpleJobExecutor = new SimpleJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
+        assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("executorService")), 
+                instanceOf(new DefaultExecutorServiceHandler().createExecutorService().getClass()));
+        assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("jobExceptionHandler")),
+                instanceOf(DefaultJobExceptionHandler.class));
     }
     
     @Test(expected = JobSystemException.class)
@@ -89,9 +106,17 @@ public final class SimpleJobExecutorTest {
         verify(jobCaller, times(0)).execute();
     }
     
+    @Test(expected = JobSystemException.class)
+    public void assertExecuteWhenRunOnceAndThrowExceptionForSingleShardingItem() throws JobExecutionEnvironmentException {
+        assertExecuteWhenRunOnceAndThrowException(ShardingContextsBuilder.getSingleShardingContexts());
+    }
+    
     @Test
-    public void assertExecuteWhenRunOnceAndThrowException() throws JobExecutionEnvironmentException {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getShardingContexts();
+    public void assertExecuteWhenRunOnceAndThrowExceptionForMultipleShardingItems() throws JobExecutionEnvironmentException {
+        assertExecuteWhenRunOnceAndThrowException(ShardingContextsBuilder.getMultipleShardingContexts());
+    }
+    
+    private void assertExecuteWhenRunOnceAndThrowException(final ShardingContexts shardingContexts) throws JobExecutionEnvironmentException {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         doThrow(RuntimeException.class).when(jobCaller).execute();
         try {
@@ -101,23 +126,31 @@ public final class SimpleJobExecutorTest {
             verify(jobFacade).getShardingContexts();
             verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
             verify(jobFacade).registerJobBegin(shardingContexts);
-            verify(jobCaller, times(2)).execute();
+            verify(jobCaller, times(shardingContexts.getShardingTotalCount())).execute();
             verify(jobFacade).registerJobCompleted(shardingContexts);
         }
     }
     
     @Test
-    public void assertExecuteWhenRunOnceSuccess() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getShardingContexts();
+    public void assertExecuteWhenRunOnceSuccessForSingleShardingItems() {
+        assertExecuteWhenRunOnceSuccess(ShardingContextsBuilder.getSingleShardingContexts());
+    }
+    
+    @Test
+    public void assertExecuteWhenRunOnceSuccessForMultipleShardingItems() {
+        assertExecuteWhenRunOnceSuccess(ShardingContextsBuilder.getMultipleShardingContexts());
+    }
+    
+    private void assertExecuteWhenRunOnceSuccess(final ShardingContexts shardingContexts) {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         simpleJobExecutor.execute();
         ElasticJobVerify.verifyForIsNotMisfire(jobFacade, shardingContexts);
-        verify(jobCaller, times(2)).execute();
+        verify(jobCaller, times(shardingContexts.getShardingTotalCount())).execute();
     }
     
     @Test
     public void assertExecuteWhenRunOnceWithMisfireIsEmpty() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getShardingContexts();
+        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         simpleJobExecutor.execute();
@@ -127,7 +160,7 @@ public final class SimpleJobExecutorTest {
     
     @Test
     public void assertExecuteWhenRunOnceWithMisfireIsNotEmptyButIsNotEligibleForJobRunning() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getShardingContexts();
+        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         when(jobFacade.isEligibleForJobRunning()).thenReturn(false);
@@ -139,7 +172,7 @@ public final class SimpleJobExecutorTest {
     
     @Test
     public void assertExecuteWhenRunOnceWithMisfire() throws JobExecutionEnvironmentException {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getShardingContexts();
+        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true, false);
@@ -155,7 +188,7 @@ public final class SimpleJobExecutorTest {
     
     @Test(expected = JobSystemException.class)
     public void assertBeforeJobExecutedFailure() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getShardingContexts();
+        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         doThrow(RuntimeException.class).when(jobFacade).beforeJobExecuted(shardingContexts);
@@ -168,7 +201,7 @@ public final class SimpleJobExecutorTest {
     
     @Test(expected = JobSystemException.class)
     public void assertAfterJobExecutedFailure() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getShardingContexts();
+        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);

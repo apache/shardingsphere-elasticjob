@@ -28,7 +28,7 @@ public final class ShardingContextTest {
     
     @Test
     public void assertNew() {
-        ShardingContexts shardingContexts = ShardingContextsBuilder.getShardingContexts();
+        ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         ShardingContext actual = new ShardingContext(shardingContexts, 1);
         assertThat(actual.getJobName(), is(shardingContexts.getJobName()));
         assertThat(actual.getShardingTotalCount(), is(shardingContexts.getShardingTotalCount()));
@@ -39,7 +39,7 @@ public final class ShardingContextTest {
     
     @Test
     public void assertToString() {
-        assertThat(new ShardingContext(ShardingContextsBuilder.getShardingContexts(), 1).toString(), 
-                is("ShardingContext(jobName=test_job, shardingTotalCount=10, jobParameter=, shardingItem=1, shardingParameter=B)"));
+        assertThat(new ShardingContext(ShardingContextsBuilder.getMultipleShardingContexts(), 1).toString(), 
+                is("ShardingContext(jobName=test_job, shardingTotalCount=2, jobParameter=, shardingItem=1, shardingParameter=B)"));
     }
 }

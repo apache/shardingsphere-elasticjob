@@ -94,7 +94,6 @@ public abstract class AbstractElasticJobExecutor {
         } catch (final JobExecutionEnvironmentException cause) {
             jobExceptionHandler.handleException(jobName, cause);
         }
-        
         ShardingContexts shardingContexts = jobFacade.getShardingContexts();
         if (jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())) {
             jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.DEBUG, "Previous job is still running, misfired job will start after previous job completed."));
