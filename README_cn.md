@@ -14,7 +14,7 @@ Elastic-Job是一个分布式调度解决方案，由两个相互独立的子项
 Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形式提供分布式任务的协调服务。
 Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。
 
-Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者仅需一次开发，然后可根据需要以Lite或Cloud的方式部署。
+Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者仅需一次开发，即可根据需要以Lite或Cloud的方式部署。
 
 # 功能列表
 
@@ -82,19 +82,17 @@ public class MyElasticJob implements SimpleJob {
     
     @Override
     public void process(ShardingContext context) {
-        for (int shardingItem : context.getShardingItemParameters().keySet()) {
-            switch (shardingItem) {
-                case 0: 
-                    // do something by sharding items 0
-                    break;
-                case 1: 
-                    // do something by sharding items 1
-                    break;
-                case 2: 
-                    // do something by sharding items 2
-                    break;
-                // case n: ...
-            }
+        switch (context.getShardingItem()) {
+            case 0: 
+                // do something by sharding items 0
+                break;
+            case 1: 
+                // do something by sharding items 1
+                break;
+            case 2: 
+                // do something by sharding items 2
+                break;
+            // case n: ...
         }
     }
 }

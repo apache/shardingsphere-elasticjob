@@ -14,7 +14,7 @@ weight=11
 `Elastic-Job-Lite`和`Elastic-Job-Cloud`提供统一作业接口，开发者仅需对业务作业进行一次开发，之后可根据不同的配置以及部署至不同的`Lite`或`Cloud`环境。
 
 `Elastic-Job`提供`Simple`、`Dataflow`和`Script` `3`种作业类型。
-方法参数`shardingContext`包含作业配置、片和运行时信息。可通过`getShardingTotalCount()`, `getShardingItems()`等方法分别获取分片总数，运行在本作业服务器的分片序列号集合等。
+方法参数`shardingContext`包含作业配置、片和运行时信息。可通过`getShardingTotalCount()`, `getShardingItem()`等方法分别获取分片总数，运行在本作业服务器的分片序列号等。
 
 #### 1. Simple类型作业
 
@@ -25,55 +25,52 @@ public class MyElasticJob implements SimpleJob {
     
     @Override
     public void process(ShardingContext context) {
-        for (int shardingItem : context.getShardingItemParameters().keySet()) {
-            switch (shardingItem) {
-                case 0: 
-                    // do something by sharding items 0
-                    break;
-                case 1: 
-                    // do something by sharding items 1
-                    break;
-                case 2: 
-                    // do something by sharding items 2
-                    break;
-                // case n: ...
-            }
+        switch (context.getShardingItem()) {
+            case 0: 
+                // do something by sharding items 0
+                break;
+            case 1: 
+                // do something by sharding items 1
+                break;
+            case 2: 
+                // do something by sharding items 2
+                break;
+            // case n: ...
         }
     }
 }
 ```
 
 #### 2. Dataflow类型作业
+
 `Dataflow`类型用于处理数据流，需实现`DataflowJob`接口。该接口提供`2`个方法可供覆盖，分别用于抓取(`fetchData`)和处理(`processData`)数据。
 
 ```java
-public class MyElasticJob extends AbstractIndividualThroughputDataflowElasticJob<Foo> {
+public class MyElasticJob implements DataflowElasticJob<Foo> {
     
     @Override
-    public List<T> fetchData(ShardingContext context) {
+    public List<Foo> fetchData(ShardingContext context) {
         List<Foo> result = new LinkedList<>();
-        for (int shardingItem : context.getShardingItemParameters().keySet()) {
-            switch (shardingItem) {
-                case 0: 
-                    List<Foo> data = // get data from database by sharding items 0
-                    result.addAll(data);
-                    break;
-                case 1: 
-                    List<Foo> data = // get data from database by sharding items 1
-                    result.addAll(data);
-                    break;
-                case 2: 
-                    List<Foo> data = // get data from database by sharding items 2
-                    result.addAll(data);
-                    break;
-                // case n: ...
-            }
+        switch (context.getShardingItem()) {
+            case 0: 
+                List<Foo> data = // get data from database by sharding items 0
+                result.addAll(data);
+                break;
+            case 1: 
+                List<Foo> data = // get data from database by sharding items 1
+                result.addAll(data);
+                break;
+            case 2: 
+                List<Foo> data = // get data from database by sharding items 2
+                result.addAll(data);
+                break;
+            // case n: ...
         }
         return result;
     }
     
     @Override
-    public void processData(ShardingContext shardingContext, List<T> data) {
+    public void processData(ShardingContext shardingContext, List<Foo> data) {
         // process data
         // ...
     }
@@ -82,22 +79,9 @@ public class MyElasticJob extends AbstractIndividualThroughputDataflowElasticJob
 
 ***
 
-**处理方式**
-
-`Dataflow`作业提供`2`种作业类型，分别是`THROUGHPUT`和`SEQUENCE`。
-
-`THROUGHPUT`意为高吞吐的数据流作业，可将获取到的数据多线程处理，但不会保证多线程处理数据的顺序。
-`SEQUENCE`为每一分片项分配一个线程，可保证同一分片下数据处理的正确性。
-
-如：
-`THROUGHPUT`类型从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，配置为`2`个线程处理，则第`1`个线程处理前`50`条数据，第`2`个线程处理后`50`条数据，无视分片项；
-`SEQUENCE`类型作业则根据当前服务器所分配的分片项数量进行多线程处理，每个分片项使用同一线程处理，防止了同一分片的数据被多线程处理，从而导致的顺序问题。
-如：从`2`个分片共获取到`100`条数据，第`1`个分片`40`条，第`2`个分片`60`条，则系统自动分配两个线程处理，第`1`个线程处理第`1`个分片的`40`条数据，第`2`个线程处理第`2`个分片的`60`条数据。
-由于`THROUGHPUT`作业可以使用多于分片项的任意线程数处理，所以性能可能会优于`SEQUENCE`作业。
-
 **流式处理**
 
-可通过`JobConfiguration`配置是否流式处理。
+可通过`DataflowJobConfiguration`配置是否流式处理。
 
 流式处理数据只有`fetchData`方法的返回值为`null`或集合长度为空时，作业才停止抓取，否则作业将一直运行下去；
 非流式处理数据则只会在每次作业执行过程中执行一次`fetchData`方法和`processData`方法，随即完成本次作业。
@@ -116,18 +100,17 @@ echo sharding execution context is $*
 
 作业运行时输出
 
-`sharding execution context is {"shardingItems":[0,1,2,3,4,5,6,7,8,9],"shardingItemParameters":{},"offsets":{},"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","monitorExecution":true}`
+`sharding execution context is {"shardingItem":[0,1,2,3,4,5,6,7,8,9],"shardingItemParameters":{},"offsets":{},"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","monitorExecution":true}`
 
 ## 作业配置
 
 `Elastic-Job`配置分为`3`个层级，分别是`Core`, `Type`和`Root`。每个层级使用相似于装饰者模式的方式装配。
 
-`Core`类型对应`JobCoreConfiguration`，用于提供作业核心配置信息，如：作业名称、分片总数、`CRON`表达式等。
+`Core`对应`JobCoreConfiguration`，用于提供作业核心配置信息，如：作业名称、分片总数、`CRON`表达式等。
 
-`Type`类型对应`JobTypeConfiguration`，有`3`个子类分别对应`SIMPLE`, `DATAFLOW`和`SCRIPT`类型作业，提供`3`种作业需要的不同配置，如：`DATAFLOW`类型的作业处理方式、是否流式处理或`SCRIPT`类型的命令行等。
+`Type`对应`JobTypeConfiguration`，有`3`个子类分别对应`SIMPLE`, `DATAFLOW`和`SCRIPT`类型作业，提供`3`种作业需要的不同配置，如：`DATAFLOW`类型是否流式处理或`SCRIPT`类型的命令行等。
 
-`Root`类型对应`JobRootConfiguration`，有`2`个子类分别对应`Lite`和`Cloud`部署类型，提供不同部署类型所需的配置，如：`Lite`类型的是否需要覆盖或`Cloud`占用`CPU`或`Memory`数量等。
-
+`Root`对应`JobRootConfiguration`，有`2`个子类分别对应`Lite`和`Cloud`部署类型，提供不同部署类型所需的配置，如：`Lite`类型的是否需要覆盖或`Cloud`占用`CPU`或`Memory`数量等。
 
 ### 使用Java代码配置
 
@@ -136,9 +119,9 @@ echo sharding execution context is $*
 ```java
     
     // 定义作业核心配置配置
-    JobCoreConfiguration simpleCoreConfig = JobCoreConfiguration.newBuilder("demoSimpleJob", "0/30 * * * * ?", 10).build();
+    JobCoreConfiguration simpleCoreConfig = JobCoreConfiguration.newBuilder("demoSimpleJob", "0/15 * * * * ?", 10).build();
     
-    // 定义SIMPLE类型
+    // 定义SIMPLE类型配置
     SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, SimpleDemoJob.class.getCanonicalName());
     
     
@@ -146,11 +129,11 @@ echo sharding execution context is $*
     JobCoreConfiguration dataflowCoreConfig = JobCoreConfiguration.newBuilder("demoDataflowJob", "0/30 * * * * ?", 10).build();
         
     // 定义DATAFLOW类型配置
-    DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName(), DataflowJobConfiguration.DataflowType.THROUGHPUT, true);
+    DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName(), true);
     
     
     // 定义作业核心配置配置
-    JobCoreConfiguration scriptCoreConfig = JobCoreConfiguration.newBuilder("demoScriptJob", "0/30 * * * * ?", 10).build();
+    JobCoreConfiguration scriptCoreConfig = JobCoreConfiguration.newBuilder("demoScriptJob", "0/45 * * * * ?", 10).build();
     
     // 定义SCRIPT类型配置
     ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(scriptCoreConfig, "test.sh");
@@ -165,13 +148,13 @@ echo sharding execution context is $*
 #### 3. Cloud作业配置
 
 ```java
-    // dockerImageName暂时保留, 还未实现
+    // dockerImageName为预留配置, 暂未实现
     JobRootConfiguration jobConfig = new CloudJobConfiguration.newBuilder(simpleJobConfig, cpuCount, memoryMB, dockerImageName, appURL);
 ```
 
 ### Spring命名空间配置
 
-与`Spring`容器配合使用作业，可将作业`Bean`配置为`Spring Bean`，并在作业中通过依赖注入使用`Spring`容器管理的数据源等对象。可用`placeholder`占位符从属性文件中取值。目前仅提供`Lite`的`Spring`命名空间。
+与`Spring`容器配合使用作业，可将作业`Bean`配置为`Spring Bean`，并在作业中通过依赖注入使用`Spring`容器管理的数据源等对象。可用`placeholder`占位符从属性文件中取值。`Lite`可考虑使用`Spring`命名空间方式简化配置，`Cloud`直接使用Spring标准配置文件即可。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -193,7 +176,7 @@ echo sharding execution context is $*
     <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
     
     <!-- 配置数据流作业-->
-    <job:dataflow id="throughputDataflow" class="xxx.MyThroughputDataflowElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" process-count-interval-seconds="10" concurrent-data-process-thread-count="10" />
+    <job:dataflow id="throughputDataflow" class="xxx.MyThroughputDataflowElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
     
     <!-- 配置脚本作业-->
     <job:script id="scriptElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" script-command-line="/your/file/path/demo.sh" />
@@ -234,7 +217,6 @@ job:dataflow命名空间拥有job:simple命名空间的全部属性，以下仅�
 
 | 属性名                              | 类型  |是否必填 |缺省值| 描述                                                                                                                         |
 | ---------------------------------- |:------|:-------|:--------|:------------------------------------------------------------------------------------------------------------------------|
-|concurrent-data-process-thread-count|int    |否      |CPU核数*2 | 同时处理数据的并发线程数<br />不能小于1<br />仅`ThroughputDataflow`作业有效                                                   |
 |streaming-process                   |boolean|否      |false    | 是否流式处理数据<br />如果流式处理数据, 则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
 
 #### job:script命名空间属性详细说明，基本属性参照job:simple命名空间属性详细说明
@@ -270,15 +252,15 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 |digest                          |String |否     |无验证| 连接`Zookeeper`的权限令牌<br />缺省为不需要权限验证                                                     |
 |nested-port                     |int    |否     |-1   | 内嵌`Zookeeper`的端口号<br />-1表示不开启内嵌`Zookeeper`                                               |
 |nested-data-dir                 |String |否     |     | 内嵌`Zookeeper`的数据存储路径<br />为空表示不开启内嵌`Zookeeper`                                        |
-```
 
 ## 作业启动
 
 ### 1. Lite的Java启动方式
 
 ```java
-
 public class JobDemo {
+    
+    //init jobRootConfig
     
     public static void main(final String[] args) {
         new JobDemo().init();
@@ -302,7 +284,6 @@ public class JobDemo {
 需定义`Main`方法并调用`Bootstrap.execute(args)`，例子如下：
 
 ```java
-
 public class JobDemo {
     
     public static void main(final String[] args) {
@@ -334,18 +315,16 @@ public class JobDemo {
 * 定义监听器
 
 ```java
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.listener.ElasticJobListener;
 
 public class MyElasticJobListener implements ElasticJobListener {
     
     @Override
-    public void beforeJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
         // do something ...
     }
     
     @Override
-    public void afterJobExecuted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void afterJobExecuted(final ShardingContexts shardingContexts) {
         // do something ...
     }
 }
@@ -356,8 +335,10 @@ public class MyElasticJobListener implements ElasticJobListener {
 ```java
 public class JobMain {
     
+    //init jobRootConfig
+    
     public static void main(final String[] args) {
-        new JobScheduler(regCenter, jobConfig, new MyElasticJobListener()).init();    
+        new JobScheduler(regCenter, jobRootConfig, new MyElasticJobListener()).init();    
     }
 }
 ```
@@ -370,8 +351,6 @@ public class JobMain {
 * 定义监听器
 
 ```java
-import com.dangdang.ddframe.job.api.JobExecutionMultipleShardingContext;
-import com.dangdang.ddframe.job.api.listener.AbstractDistributeOnceElasticJobListener;
 
 public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
@@ -380,12 +359,12 @@ public final class TestDistributeOnceElasticJobListener extends AbstractDistribu
     }
     
     @Override
-    public void doBeforeJobExecutedAtLastStarted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
         // do something ...
     }
     
     @Override
-    public void doAfterJobExecutedAtLastCompleted(final JobExecutionMultipleShardingContext shardingContext) {
+    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
         // do something ...
     }
 }
@@ -395,11 +374,13 @@ public final class TestDistributeOnceElasticJobListener extends AbstractDistribu
 
 ```java
 public class JobMain {
-
+    
+    //init jobRootConfig
+    
     public static void main(final String[] args) {
         long startTimeoutMills = 5000L;
         long completeTimeoutMills = 10000L;    
-        new JobScheduler(regCenter, jobConfig, new MyDistributeOnceElasticJobListener(startTimeoutMills, completeTimeoutMills)).init();
+        new JobScheduler(regCenter, jobRootConfig, new MyDistributeOnceElasticJobListener(startTimeoutMills, completeTimeoutMills)).init();
     }
 }
 ```

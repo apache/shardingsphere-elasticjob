@@ -142,6 +142,7 @@ public abstract class AbstractBaseStdJobTest {
     
     @BeforeClass
     public static void init() {
+        zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkConfig.setNestedPort(PORT);
         zkConfig.setNestedDataDir(TEST_TEMP_DIRECTORY);
         regCenter.init();

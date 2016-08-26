@@ -12,7 +12,7 @@ weight=24
 
 **全路径：**
 
-`com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategy`
+`com.dangdang.ddframe.job.lite.api.strategy.AverageAllocationJobShardingStrategy`
 
 **策略说明：**
 
@@ -31,7 +31,7 @@ weight=24
 
 **全路径：**
 
-`com.dangdang.ddframe.job.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategy`
+`com.dangdang.ddframe.job.lite.api.strategy.OdevitySortByNameJobShardingStrategy`
 
 **策略说明：**
 
@@ -53,7 +53,7 @@ weight=24
 
 **全路径：**
 
-`com.dangdang.ddframe.job.plugin.sharding.strategy.RotateServerByNameJobShardingStrategy`
+`com.dangdang.ddframe.job.lite.api.strategy.RotateServerByNameJobShardingStrategy`
 
 **策略说明：**
 
@@ -63,7 +63,7 @@ weight=24
 
 实现`JobShardingStrategy`接口并实现`sharding`方法，接口方法参数为作业服务器`IP`列表和分片策略选项，分片策略选项包括作业名称，分片总数以及分片序列号和个性化参数对照表，可以根据需求定制化自己的分片策略。
 
-欢迎将分片策略以插件的形式贡献至`com.dangdang.ddframe.job.plugin.sharding.strategy`包。
+欢迎将分片策略以插件的形式贡献至`com.dangdang.ddframe.job.lite.api.strategy`包。
 
 ## 配置分片策略
 

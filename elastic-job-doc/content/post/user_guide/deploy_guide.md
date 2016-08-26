@@ -26,9 +26,11 @@ weight=12
 
 4. 将打包之后的作业`tar.gz`文件放至网络可访问的位置，如：`ftp`或`http`。打包的`tar.gz`文件中`Main`方法需要调用`Elastic-Job-Lite`提供的`Bootstrap.execute`方法。
 
-5. 使用curl命令注册待运行作业至`Elastic-Job-Cloud`。例：
+5. 使用curl命令注册待运行作业至`Elastic-Job-Cloud`。
 
-`curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"dockerImageName":"","appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"true":true}' http://elastic_job_cloud_masterhost:8899/job/register`
+`curl -l -H "Content-type: application/json" -X POST -d 
+'{"jobName":"foo_job","jobClass":"yourJobClass","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"misfire":true} 
+http://elastic_job_cloud_masterhost:8899/job/register`
 
 ## 附录：Elastic-Job-Cloud-Master启动指南
 
