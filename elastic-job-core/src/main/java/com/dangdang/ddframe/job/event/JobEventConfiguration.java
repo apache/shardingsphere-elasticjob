@@ -22,12 +22,12 @@ package com.dangdang.ddframe.job.event;
  *
  * @author caohao
  */
-public interface JobEventConfiguration {
+public interface JobEventConfiguration extends JobEventIdentity {
     
     /**
      * 创建作业事件监听器.
-     *
-     * @return 作业事件监听器
+     * 
+     * @return 作业事件监听器.
      */
     JobEventListener createJobEventListener();
 }

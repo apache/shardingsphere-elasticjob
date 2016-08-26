@@ -15,20 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.event.log;
+package com.dangdang.ddframe.job.event.rdb;
 
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.JobEventListener;
+import com.dangdang.ddframe.job.event.JobEventIdentity;
 
 /**
- * 作业日志事件配置.
+ * 关系型数据库作业事件标识.
  *
- * @author caohao
+ * @author zhangliang
  */
-public final class JobLogEventConfiguration extends JobLogEventIdentity implements JobEventConfiguration {
+public class JobRdbEventIdentity implements JobEventIdentity {
     
     @Override
-    public JobEventListener createJobEventListener() {
-        return new JobLogEventListener();
+    public String getIdentity() {
+        return "rdb";
     }
 }

@@ -15,13 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.api;
+package com.dangdang.ddframe.job.event.fixture;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import com.dangdang.ddframe.job.event.JobEventIdentity;
 
-@RunWith(Suite.class)
-@SuiteClasses(ShardingContextTest.class)
-public final class AllAPITests {
+public class TestJobEventIdentity implements JobEventIdentity {
+    
+    @Override
+    public String getIdentity() {
+        return "test";
+    }
 }

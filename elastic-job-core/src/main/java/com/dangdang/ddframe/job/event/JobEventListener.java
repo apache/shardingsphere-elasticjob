@@ -25,14 +25,7 @@ import com.google.common.eventbus.Subscribe;
  *
  * @author zhangliang
  */
-public interface JobEventListener {
-    
-    /**
-     * 获取监听器名称.
-     * 
-     * @return 监听器名称
-     */
-    String getName();
+public interface JobEventListener extends JobEventIdentity {
     
     /**
      * 运行痕迹事件监听执行.

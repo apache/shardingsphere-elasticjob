@@ -97,7 +97,7 @@ public final class JobEventBus {
         }
         
         private void register(final JobEventListener listener) {
-            if (null != listener && null == listeners.putIfAbsent(listener.getName(), listener)) {
+            if (null != listener && null == listeners.putIfAbsent(listener.getIdentity(), listener)) {
                 eventBus.register(listener);
             }
         }

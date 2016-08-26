@@ -32,14 +32,9 @@ import java.text.SimpleDateFormat;
  */
 @RequiredArgsConstructor
 @Slf4j
-public final class JobLogEventListener implements JobEventListener {
+public final class JobLogEventListener extends JobLogEventIdentity implements JobEventListener {
     
     private static final String DATE_PATTERN = "yyyy-MM-dd hh:mm:ss.SSSS";
-    
-    @Override
-    public String getName() {
-        return "log";
-    }
     
     @Override
     public void listen(final JobTraceEvent traceEvent) {

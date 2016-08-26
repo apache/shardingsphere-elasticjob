@@ -22,12 +22,12 @@ import com.dangdang.ddframe.job.event.JobEventListener;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class TestJobEventConfiguration implements JobEventConfiguration {
+public class TestJobEventConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
     
     private final Caller caller;
     
     @Override
     public JobEventListener createJobEventListener() {
-        return new TestJobEventListener(caller, this);
+        return new TestJobEventListener(caller);
     }
 }
