@@ -34,7 +34,7 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 @Getter
 @Slf4j
-public final class JobRdbEventConfiguration extends JobRdbEventIdentity implements JobEventConfiguration {
+public final class JobEventRdbConfiguration extends JobEventRdbIdentity implements JobEventConfiguration {
     
     private final String driverClassName;
     
@@ -49,9 +49,9 @@ public final class JobRdbEventConfiguration extends JobRdbEventIdentity implemen
     @Override
     public JobEventListener createJobEventListener() {
         try {
-            return new JobRdbEventListener(this);
+            return new JobEventRdbListener(this);
         } catch (final SQLException ex) {
-            log.error("Elastic job: create JobRdbEventListener failure, error is: ", ex);
+            log.error("Elastic job: create JobEventRdbListener failure, error is: ", ex);
         }
         return null;
     }

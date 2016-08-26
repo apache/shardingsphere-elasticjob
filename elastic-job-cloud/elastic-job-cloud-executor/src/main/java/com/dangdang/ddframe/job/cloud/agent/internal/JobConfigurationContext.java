@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.agent.internal;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
@@ -27,8 +28,7 @@ import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
@@ -82,13 +82,13 @@ public class JobConfigurationContext implements JobRootConfiguration {
         List<JobEventConfiguration> result = new ArrayList<>();
         if (jobConfigurationMap.containsKey("driverClassName") && jobConfigurationMap.containsKey("url")
                 && jobConfigurationMap.containsKey("username") && jobConfigurationMap.containsKey("password") && jobConfigurationMap.containsKey("logLevel")) {
-            result.add(new JobRdbEventConfiguration(jobConfigurationMap.get("driverClassName"), jobConfigurationMap.get("url"),
+            result.add(new JobEventRdbConfiguration(jobConfigurationMap.get("driverClassName"), jobConfigurationMap.get("url"),
                     jobConfigurationMap.get("username"), jobConfigurationMap.get("password"), LogLevel.valueOf(jobConfigurationMap.get("logLevel").toUpperCase())));
         } else {
-            result.add(new JobLogEventConfiguration());
+            result.add(new JobEventLogConfiguration());
         }
-        if (jobConfigurationMap.containsKey("logEvent") && result.get(0) instanceof JobRdbEventConfiguration) {
-            result.add(new JobLogEventConfiguration());
+        if (jobConfigurationMap.containsKey("logEvent") && result.get(0) instanceof JobEventRdbConfiguration) {
+            result.add(new JobEventLogConfiguration());
         }
         return Iterables.toArray(result, JobEventConfiguration.class);
     }

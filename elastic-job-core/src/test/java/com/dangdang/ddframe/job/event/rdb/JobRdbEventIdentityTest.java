@@ -26,6 +26,6 @@ public final class JobRdbEventIdentityTest {
     
     @Test
     public void assertGetIdentity() {
-        assertThat(new JobRdbEventIdentity().getIdentity(), is("rdb"));
+        assertThat(new JobEventRdbIdentity().getIdentity(), is("rdb"));
     }
 }

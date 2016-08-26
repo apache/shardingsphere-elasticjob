@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.config;
 
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -215,7 +215,7 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
             if (jobEventConfigs.isEmpty()) {
-                JobLogEventConfiguration jobLogEventConfig = new JobLogEventConfiguration();
+                JobEventLogConfiguration jobLogEventConfig = new JobEventLogConfiguration();
                 jobEventConfigs.put(jobLogEventConfig.getIdentity(), jobLogEventConfig);
             }
             return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties, jobEventConfigs);

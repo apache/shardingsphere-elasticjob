@@ -17,17 +17,18 @@
 
 package com.dangdang.ddframe.job.event.log;
 
-import com.dangdang.ddframe.job.event.JobEventIdentity;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.JobEventListener;
 
 /**
- * 日志作业事件标识.
+ * 作业日志事件配置.
  *
- * @author zhangliang
+ * @author caohao
  */
-public class JobLogEventIdentity implements JobEventIdentity {
+public final class JobEventLogConfiguration extends JobEventLogIdentity implements JobEventConfiguration {
     
     @Override
-    public String getIdentity() {
-        return "log";
+    public JobEventListener createJobEventListener() {
+        return new JobEventLogListener();
     }
 }

@@ -30,7 +30,7 @@ import java.util.Map;
 
 public final class JobLogEventListenerTest {
     
-    private JobEventConfiguration logEventConfig = new JobLogEventConfiguration();
+    private JobEventConfiguration logEventConfig = new JobEventLogConfiguration();
     
     private JobEventBus jobEventBus = JobEventBus.getInstance();
     

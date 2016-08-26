@@ -26,8 +26,8 @@ import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.dangdang.ddframe.json.GsonFactory;
 import com.google.common.collect.Iterables;
@@ -153,7 +153,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
             switch (name) {
                 case "log":
                     in.beginObject();
-                    result.add(new JobLogEventConfiguration());
+                    result.add(new JobEventLogConfiguration());
                     in.endObject();
                     break;
                 case "rdb":
@@ -185,7 +185,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                         }
                     }
                     in.endObject();
-                    result.add(new JobRdbEventConfiguration(driverClassName, url, username, password, LogLevel.valueOf(logLevel.toUpperCase())));
+                    result.add(new JobEventRdbConfiguration(driverClassName, url, username, password, LogLevel.valueOf(logLevel.toUpperCase())));
                     break;
                 default:
                     break;

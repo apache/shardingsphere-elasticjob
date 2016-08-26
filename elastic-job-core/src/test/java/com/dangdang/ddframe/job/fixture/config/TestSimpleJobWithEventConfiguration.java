@@ -22,8 +22,8 @@ import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.handler.ThrowJobExceptionHandler;
@@ -40,7 +40,7 @@ public final class TestSimpleJobWithEventConfiguration implements JobRootConfigu
                 .failover(true).misfire(false).description("desc")
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), 
                         ThrowJobExceptionHandler.class.getCanonicalName())
-                .jobEventConfiguration(new JobLogEventConfiguration(), new JobRdbEventConfiguration("org.h2.Driver", 
+                .jobEventConfiguration(new JobEventLogConfiguration(), new JobEventRdbConfiguration("org.h2.Driver", 
                         "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO)).build(), TestSimpleJob.class.getCanonicalName());
     }
 }

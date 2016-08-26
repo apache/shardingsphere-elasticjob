@@ -22,8 +22,8 @@ import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -49,8 +49,8 @@ public final class CloudJobConfigurationBuilder {
     }
     
     public static CloudJobConfiguration createCloudJobConfigurationWithEventConfiguration(final String jobName) {
-        JobRdbEventConfiguration rdbEventConfig = new JobRdbEventConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
-        JobLogEventConfiguration logEventConfig = new JobLogEventConfiguration();
+        JobEventRdbConfiguration rdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
+        JobEventLogConfiguration logEventConfig = new JobEventLogConfiguration();
         return new CloudJobConfiguration(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false)
                 .jobEventConfiguration(rdbEventConfig, logEventConfig).build(), TestSimpleJob.class.getCanonicalName()),

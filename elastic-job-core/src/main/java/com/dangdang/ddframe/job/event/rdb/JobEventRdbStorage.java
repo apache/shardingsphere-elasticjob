@@ -36,13 +36,13 @@ import java.util.UUID;
  * @author caohao
  */
 @Slf4j
-final class JobRdbEventStorage { 
+final class JobEventRdbStorage { 
     
     private final BasicDataSource dataSource;
     
     private final LogLevel logLevel;
     
-    JobRdbEventStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) throws SQLException {
+    JobEventRdbStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) throws SQLException {
         this.logLevel = logLevel;
         // TODO 细化pool配置
         dataSource = new BasicDataSource();

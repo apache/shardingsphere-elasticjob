@@ -26,6 +26,6 @@ public final class JobLogEventIdentityTest {
     
     @Test
     public void assertGetIdentity() {
-        assertThat(new JobLogEventIdentity().getIdentity(), is("log"));
+        assertThat(new JobEventLogIdentity().getIdentity(), is("log"));
     }
 }

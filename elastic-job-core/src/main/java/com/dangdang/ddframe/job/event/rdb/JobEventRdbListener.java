@@ -28,12 +28,12 @@ import java.sql.SQLException;
  *
  * @author caohao
  */
-public final class JobRdbEventListener extends JobRdbEventIdentity implements JobEventListener {
+public final class JobEventRdbListener extends JobEventRdbIdentity implements JobEventListener {
     
-    private final JobRdbEventStorage repository;
+    private final JobEventRdbStorage repository;
     
-    public JobRdbEventListener(final JobRdbEventConfiguration config) throws SQLException {
-        repository = new JobRdbEventStorage(config.getDriverClassName(), config.getUrl(), config.getUsername(), config.getPassword(), config.getLogLevel());
+    public JobEventRdbListener(final JobEventRdbConfiguration config) throws SQLException {
+        repository = new JobEventRdbStorage(config.getDriverClassName(), config.getUrl(), config.getUsername(), config.getPassword(), config.getLogLevel());
     }
     
     @Override

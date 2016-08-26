@@ -36,11 +36,11 @@ import static org.junit.Assert.assertThat;
 
 public class JobRdbEventStorageTest {
     
-    private JobRdbEventStorage storage;
+    private JobEventRdbStorage storage;
     
     @Before
     public void setup() throws SQLException {
-        storage = new JobRdbEventStorage(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
+        storage = new JobEventRdbStorage(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
     }
     
     @Test
@@ -55,7 +55,7 @@ public class JobRdbEventStorageTest {
     
     @Test
     public void assertAddTraceLogWithLogLevel() throws SQLException {
-        JobRdbEventStorage rdbStorage = new JobRdbEventStorage(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
+        JobEventRdbStorage rdbStorage = new JobEventRdbStorage(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
         assertFalse(rdbStorage.addJobTraceEvent(new JobTraceEvent("test_job", LogLevel.DEBUG, "message")));
     }
     

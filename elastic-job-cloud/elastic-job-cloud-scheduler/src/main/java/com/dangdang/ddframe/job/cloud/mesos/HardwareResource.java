@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.mesos;
 
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.util.ShardingItemParameters;
@@ -27,8 +28,7 @@ import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.context.JobContext;
 import com.dangdang.ddframe.job.cloud.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.protobuf.ByteString;
 import lombok.EqualsAndHashCode;
@@ -183,15 +183,15 @@ public final class HardwareResource {
         Map<String, String> result = new LinkedHashMap<>(6, 1);
         Map<String, JobEventConfiguration> configurations = jobConfig.getTypeConfig().getCoreConfig().getJobEventConfigs();
         for (JobEventConfiguration each : configurations.values()) {
-            if (each instanceof JobRdbEventConfiguration) {
-                JobRdbEventConfiguration rdbEventConfig = (JobRdbEventConfiguration) each;
+            if (each instanceof JobEventRdbConfiguration) {
+                JobEventRdbConfiguration rdbEventConfig = (JobEventRdbConfiguration) each;
                 result.put("driverClassName", rdbEventConfig.getDriverClassName());
                 result.put("url", rdbEventConfig.getUrl());
                 result.put("username", rdbEventConfig.getUsername());
                 result.put("password", rdbEventConfig.getPassword());
                 result.put("logLevel", rdbEventConfig.getLogLevel().name());
             }
-            if (each instanceof JobLogEventConfiguration) {
+            if (each instanceof JobEventLogConfiguration) {
                 result.put("logEvent", "true");
             }
         }

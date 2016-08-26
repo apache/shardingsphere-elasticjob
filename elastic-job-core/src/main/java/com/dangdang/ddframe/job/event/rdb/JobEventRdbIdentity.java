@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.event.JobEventIdentity;
  *
  * @author zhangliang
  */
-public class JobRdbEventIdentity implements JobEventIdentity {
+public class JobEventRdbIdentity implements JobEventIdentity {
     
     @Override
     public String getIdentity() {

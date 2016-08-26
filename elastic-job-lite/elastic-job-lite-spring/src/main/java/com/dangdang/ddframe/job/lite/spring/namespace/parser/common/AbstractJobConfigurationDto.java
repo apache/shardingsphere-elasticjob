@@ -22,8 +22,8 @@ import com.dangdang.ddframe.job.config.JobCoreConfiguration.Builder;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -110,10 +110,10 @@ public abstract class AbstractJobConfigurationDto {
     
     private void buildEventConfiguration(final Builder jobCoreConfigBuilder) {
         if (null != logEvent) {
-            jobCoreConfigBuilder.jobEventConfiguration(new JobLogEventConfiguration());    
+            jobCoreConfigBuilder.jobEventConfiguration(new JobEventLogConfiguration());    
         }
         if (null != driverClassName && null != url && null !=  username && null != password && null != logLevel) {
-            jobCoreConfigBuilder.jobEventConfiguration(new JobRdbEventConfiguration(driverClassName, url, username, password, LogLevel.valueOf(logLevel)));
+            jobCoreConfigBuilder.jobEventConfiguration(new JobEventRdbConfiguration(driverClassName, url, username, password, LogLevel.valueOf(logLevel)));
         }
     }
     

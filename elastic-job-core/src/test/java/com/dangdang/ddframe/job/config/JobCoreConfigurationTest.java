@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.config;
 
-import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
 import com.dangdang.ddframe.job.fixture.handler.IgnoreJobExceptionHandler;
@@ -35,7 +35,7 @@ public final class JobCoreConfigurationTest {
     public void assertBuildAllProperties() {
         JobCoreConfiguration actual = JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3)
                 .shardingItemParameters("0=a,1=b,2=c").jobParameter("param").failover(true).misfire(false).description("desc")
-                .jobProperties("job_exception_handler", IgnoreJobExceptionHandler.class.getName()).jobEventConfiguration(new JobLogEventConfiguration()).build();
+                .jobProperties("job_exception_handler", IgnoreJobExceptionHandler.class.getName()).jobEventConfiguration(new JobEventLogConfiguration()).build();
         assertRequiredProperties(actual);
         assertThat(actual.getShardingItemParameters(), is("0=a,1=b,2=c"));
         assertThat(actual.getJobParameter(), is("param"));
@@ -43,7 +43,7 @@ public final class JobCoreConfigurationTest {
         assertFalse(actual.isMisfire());
         assertThat(actual.getDescription(), is("desc"));
         assertThat(actual.getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(IgnoreJobExceptionHandler.class.getName()));
-        assertThat(actual.getJobEventConfigs().get("log"), instanceOf(JobLogEventConfiguration.class));
+        assertThat(actual.getJobEventConfigs().get("log"), instanceOf(JobEventLogConfiguration.class));
     }
     
     @Test
@@ -75,7 +75,7 @@ public final class JobCoreConfigurationTest {
         assertTrue(actual.isMisfire());
         assertThat(actual.getDescription(), is(""));
         assertThat(actual.getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getName()));
-        assertThat(actual.getJobEventConfigs().get("log"), instanceOf(JobLogEventConfiguration.class));
+        assertThat(actual.getJobEventConfigs().get("log"), instanceOf(JobEventLogConfiguration.class));
     }
     
     @Test(expected = IllegalArgumentException.class)
