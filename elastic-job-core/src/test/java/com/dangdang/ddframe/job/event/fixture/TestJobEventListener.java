@@ -32,17 +32,17 @@ public final class TestJobEventListener extends TestJobEventIdentity implements 
     @Getter
     private static volatile boolean executionEventCalled;
     
-    private final Caller caller;
+    private final JobEventCaller jobEventCaller;
     
     @Override
     public void listen(final JobTraceEvent traceEvent) {
-        caller.call();
+        jobEventCaller.call();
         traceEventCalled = true;
     }
     
     @Override
     public void listen(final JobExecutionEvent jobExecutionEvent) {
-        caller.call();
+        jobEventCaller.call();
         executionEventCalled = true;
     }
     

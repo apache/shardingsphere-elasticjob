@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.event.fixture;
 
-public interface Caller {
+public interface JobEventCaller {
     
     void call();
 }

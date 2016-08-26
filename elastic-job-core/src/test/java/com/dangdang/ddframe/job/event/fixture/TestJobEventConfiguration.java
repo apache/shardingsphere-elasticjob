@@ -24,10 +24,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TestJobEventConfiguration extends TestJobEventIdentity implements JobEventConfiguration {
     
-    private final Caller caller;
+    private final JobEventCaller jobEventCaller;
     
     @Override
     public JobEventListener createJobEventListener() {
-        return new TestJobEventListener(caller);
+        return new TestJobEventListener(jobEventCaller);
     }
 }

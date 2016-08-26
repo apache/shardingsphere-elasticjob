@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.event;
 
 import com.dangdang.ddframe.job.event.JobExecutionEvent.ExecutionSource;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.fixture.Caller;
+import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
 import org.junit.After;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 public final class JobEventBusTest {
     
     @Mock
-    private Caller caller;
+    private JobEventCaller jobEventCaller;
     
     private final JobEventBus jobEventBus = JobEventBus.getInstance();
     
@@ -55,7 +55,7 @@ public final class JobEventBusTest {
     public void assertPostWithoutListenerRegistered() {
         jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
         jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
-        verify(caller, times(0)).call();
+        verify(jobEventCaller, times(0)).call();
     }
     
     @Test
@@ -66,7 +66,7 @@ public final class JobEventBusTest {
         while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
             Thread.sleep(100L);
         }
-        verify(caller, times(2)).call();
+        verify(jobEventCaller, times(2)).call();
     }
     
     @Test
@@ -78,12 +78,12 @@ public final class JobEventBusTest {
         while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
             Thread.sleep(100L);
         }
-        verify(caller, times(2)).call();
+        verify(jobEventCaller, times(2)).call();
     }
     
     private void registerEventConfigs() {
         Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>(1, 1);
-        TestJobEventConfiguration jobEventConfiguration = new TestJobEventConfiguration(caller);
+        TestJobEventConfiguration jobEventConfiguration = new TestJobEventConfiguration(jobEventCaller);
         jobEventConfigs.put("test", jobEventConfiguration);
         jobEventBus.register(jobName, jobEventConfigs.values());
     }

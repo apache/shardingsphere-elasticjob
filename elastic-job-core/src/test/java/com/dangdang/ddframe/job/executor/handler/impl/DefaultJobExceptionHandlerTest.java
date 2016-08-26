@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.executor.handler.impl;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.fixture.Caller;
+import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
 import org.junit.After;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 public final class DefaultJobExceptionHandlerTest {
     
     @Mock
-    private Caller caller;
+    private JobEventCaller caller;
     
     @Before
     public void setUp() {

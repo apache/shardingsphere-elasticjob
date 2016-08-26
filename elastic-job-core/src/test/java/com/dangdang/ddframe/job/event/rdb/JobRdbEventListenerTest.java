@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.fixture.Caller;
+import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import java.util.Map;
 public final class JobRdbEventListenerTest {
     
     @Mock
-    private Caller caller;
+    private JobEventCaller jobEventCaller;
     
     private JobEventConfiguration rdbEventConfig = new JobEventRdbConfiguration(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_bus", "sa", "", LogLevel.DEBUG);
     
