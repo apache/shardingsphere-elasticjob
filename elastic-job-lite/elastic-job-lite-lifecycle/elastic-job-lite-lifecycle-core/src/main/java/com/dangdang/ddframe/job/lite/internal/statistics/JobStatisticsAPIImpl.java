@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.api.JobStatisticsAPI;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.domain.ServerInfo;

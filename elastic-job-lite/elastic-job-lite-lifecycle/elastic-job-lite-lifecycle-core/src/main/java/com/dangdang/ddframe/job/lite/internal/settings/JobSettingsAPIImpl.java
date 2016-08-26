@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobSettingsAPI;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.domain.JobSettings;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;

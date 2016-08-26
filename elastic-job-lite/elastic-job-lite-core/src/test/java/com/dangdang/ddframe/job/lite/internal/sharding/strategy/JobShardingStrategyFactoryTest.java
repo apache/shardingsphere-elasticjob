@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.sharding.strategy;
 
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.fixture.InvalidJobShardingStrategy;
-import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
+import com.dangdang.ddframe.job.lite.api.strategy.AverageAllocationJobShardingStrategy;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

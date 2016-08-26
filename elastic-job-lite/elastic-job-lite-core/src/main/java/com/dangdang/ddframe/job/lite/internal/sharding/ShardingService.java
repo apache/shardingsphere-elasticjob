@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.util.ShardingItemParameters;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;

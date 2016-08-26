@@ -15,39 +15,40 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.plugin.sharding.strategy;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+package com.dangdang.ddframe.job.lite.api.strategy;
 
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
- * 根据作业名的哈希值奇偶数决定IP升降序算法的分片策略.
+ * 根据作业名的哈希值对服务器列表进行轮转的分片策略.
  * 
- * <p>
- * 作业名的哈希值为奇数则IP升序.
- * 作业名的哈希值为偶数则IP降序.
- * 用于不同的作业平均分配负载至不同的服务器.
- * 如: 
- * 1. 如果有3台服务器, 分成2片, 作业名称的哈希值为奇数, 则每台服务器分到的分片是: 1=[0], 2=[1], 3=[].
- * 2. 如果有3台服务器, 分成2片, 作业名称的哈希值为偶数, 则每台服务器分到的分片是: 3=[0], 2=[1], 1=[].
- * </p>
- * 
- * @author zhangliang
+ * @author weishubin
  */
-public final class OdevitySortByNameJobShardingStrategy implements JobShardingStrategy {
+public class RotateServerByNameJobShardingStrategy implements JobShardingStrategy {
     
     private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
     public Map<String, List<Integer>> sharding(final List<String> serversList, final JobShardingStrategyOption option) {
-        long jobNameHash = option.getJobName().hashCode();
-        if (0 == jobNameHash % 2) {
-            Collections.reverse(serversList);
+        return averageAllocationJobShardingStrategy.sharding(rotateServerList(serversList, option.getJobName()), option);
+    }
+    
+    private List<String> rotateServerList(final List<String> serversList, final String jobName) {
+        int serverSize = serversList.size();
+        int offset = Math.abs(jobName.hashCode()) % serverSize;
+        if (0 == offset) {
+            return serversList;
         }
-        return averageAllocationJobShardingStrategy.sharding(serversList, option);
+        List<String> result = new ArrayList<>(serverSize);
+        for (int i = 0; i < serverSize; i++) {
+            int index = (i + offset) % serverSize;
+            result.add(serversList.get(index));
+        }
+        return result;
     }
 }

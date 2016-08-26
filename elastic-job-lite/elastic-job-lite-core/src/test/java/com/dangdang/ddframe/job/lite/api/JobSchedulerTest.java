@@ -19,8 +19,7 @@ package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.bootstrap.JobScheduler;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
@@ -28,7 +27,7 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
+import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;

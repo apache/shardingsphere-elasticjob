@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.plugin.sharding.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -17,16 +17,16 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfigurationTest;
 import com.dangdang.ddframe.job.lite.api.listener.DistributeOnceElasticJobListenerTest;
+import com.dangdang.ddframe.job.lite.api.strategy.AllStrategyTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        LiteJobConfigurationTest.class, 
         JobSchedulerTest.class,
+        AllStrategyTests.class,
         DistributeOnceElasticJobListenerTest.class
     })
 public final class AllApiTests {

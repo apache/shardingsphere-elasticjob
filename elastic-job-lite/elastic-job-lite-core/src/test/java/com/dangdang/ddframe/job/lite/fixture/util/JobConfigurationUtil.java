@@ -15,13 +15,13 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.util;
+package com.dangdang.ddframe.job.lite.fixture.util;
 
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

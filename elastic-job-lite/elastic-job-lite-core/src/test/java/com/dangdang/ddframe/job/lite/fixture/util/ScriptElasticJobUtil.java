@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.util;
+package com.dangdang.ddframe.job.lite.fixture.util;
 
 import com.google.common.collect.Sets;
 import lombok.AccessLevel;

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.simple;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob;
 import org.junit.Test;
 

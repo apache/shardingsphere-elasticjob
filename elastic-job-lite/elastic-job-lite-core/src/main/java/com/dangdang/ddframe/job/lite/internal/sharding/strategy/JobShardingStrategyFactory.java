@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.sharding.strategy;
 
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.AverageAllocationJobShardingStrategy;
+import com.dangdang.ddframe.job.lite.api.strategy.AverageAllocationJobShardingStrategy;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
