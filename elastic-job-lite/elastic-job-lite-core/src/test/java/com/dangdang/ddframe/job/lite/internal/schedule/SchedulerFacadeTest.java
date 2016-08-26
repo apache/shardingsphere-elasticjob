@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
@@ -29,7 +29,7 @@ import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
+import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

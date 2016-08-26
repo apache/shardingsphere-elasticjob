@@ -15,22 +15,13 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite;
+package com.dangdang.ddframe.job.lite.config;
 
-import com.dangdang.ddframe.job.lite.api.AllApiTests;
-import com.dangdang.ddframe.job.lite.config.AllConfigTests;
-import com.dangdang.ddframe.job.lite.integrate.AllIntegrateTests;
-import com.dangdang.ddframe.job.lite.internal.AllInternalTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({
-        AllApiTests.class, 
-        AllConfigTests.class,
-        AllInternalTests.class, 
-        AllIntegrateTests.class
-    })
-public final class AllJobTests {
+@SuiteClasses(LiteJobConfigurationTest.class)
+public final class AllConfigTests {
 }

@@ -19,11 +19,11 @@ package com.dangdang.ddframe.job.lite.integrate.std.script;
 
 import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
-import com.dangdang.ddframe.job.lite.util.ScriptElasticJobUtil;
+import com.dangdang.ddframe.job.lite.fixture.util.ScriptElasticJobUtil;
 import org.junit.Test;
 
 import java.io.IOException;

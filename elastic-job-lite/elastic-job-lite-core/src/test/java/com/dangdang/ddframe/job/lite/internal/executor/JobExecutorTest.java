@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal.executor;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
+import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;

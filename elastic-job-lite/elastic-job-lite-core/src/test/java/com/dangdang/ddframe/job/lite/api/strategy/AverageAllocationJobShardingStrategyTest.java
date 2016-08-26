@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.plugin.sharding.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy;
 
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;

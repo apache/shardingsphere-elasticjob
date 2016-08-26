@@ -19,10 +19,10 @@ package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
+import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

@@ -15,11 +15,8 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.plugin;
+package com.dangdang.ddframe.job.lite.api.strategy;
 
-import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.AverageAllocationJobShardingStrategyTest;
-import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.OdevitySortByNameJobShardingStrategyTest;
-import com.dangdang.ddframe.job.lite.plugin.sharding.strategy.RotateServerByNameJobShardingStrategyTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -30,5 +27,5 @@ import org.junit.runners.Suite.SuiteClasses;
         OdevitySortByNameJobShardingStrategyTest.class, 
         RotateServerByNameJobShardingStrategyTest.class
     })
-public final class AllPluginTests {
+public final class AllStrategyTests {
 }

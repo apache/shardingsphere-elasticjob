@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.spring.schedule;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.lite.api.bootstrap.JobScheduler;
+import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.quartz.Job;

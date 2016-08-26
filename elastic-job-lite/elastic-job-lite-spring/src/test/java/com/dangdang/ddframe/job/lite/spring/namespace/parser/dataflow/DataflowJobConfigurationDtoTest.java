@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.DataflowElasticJob;
 import org.junit.Test;
 

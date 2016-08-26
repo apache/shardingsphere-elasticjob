@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.log.JobLogEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 

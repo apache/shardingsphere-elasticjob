@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.script;
 
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;

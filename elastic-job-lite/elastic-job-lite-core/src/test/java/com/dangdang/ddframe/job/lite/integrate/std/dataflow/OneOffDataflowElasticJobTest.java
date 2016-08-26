@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow;
 
-import com.dangdang.ddframe.job.lite.api.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.OneOffDataflowElasticJob;
-import com.dangdang.ddframe.job.lite.util.JobConfigurationUtil;
+import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
