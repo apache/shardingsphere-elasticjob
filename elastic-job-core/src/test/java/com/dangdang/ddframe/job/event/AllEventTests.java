@@ -17,7 +17,9 @@
 
 package com.dangdang.ddframe.job.event;
 
+import com.dangdang.ddframe.job.event.log.JobLogEventIdentityTest;
 import com.dangdang.ddframe.job.event.log.JobLogEventListenerTest;
+import com.dangdang.ddframe.job.event.rdb.JobRdbEventIdentityTest;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventListenerTest;
 import com.dangdang.ddframe.job.event.rdb.JobRdbEventStorageTest;
 import org.junit.runner.RunWith;
@@ -27,10 +29,12 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         JobTraceEventTest.class, 
         JobExecutionEventTest.class, 
-        JobEventBusTest.class,
-        JobLogEventListenerTest.class,
-        JobRdbEventStorageTest.class,
-        JobRdbEventListenerTest.class
+        JobEventBusTest.class, 
+        JobLogEventIdentityTest.class, 
+        JobLogEventListenerTest.class, 
+        JobRdbEventIdentityTest.class, 
+        JobRdbEventListenerTest.class, 
+        JobRdbEventStorageTest.class
     })
 public final class AllEventTests {
 }
