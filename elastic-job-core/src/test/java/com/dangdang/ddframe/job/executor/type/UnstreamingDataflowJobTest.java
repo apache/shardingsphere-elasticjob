@@ -25,9 +25,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public final class UnstreamingSequenceDataflowJobTest extends AbstractDataflowJobExecutorTest {
+public final class UnstreamingDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
-    public UnstreamingSequenceDataflowJobTest() {
+    public UnstreamingDataflowJobTest() {
         super(false);
     }
     

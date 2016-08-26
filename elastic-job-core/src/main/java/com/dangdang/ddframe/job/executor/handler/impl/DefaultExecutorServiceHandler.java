@@ -32,13 +32,9 @@ import java.util.concurrent.TimeUnit;
  */
 public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
     
-    private static int threadSize = Runtime.getRuntime().availableProcessors() * 2;
-    
-    private static ExecutorService executorService = MoreExecutors.listeningDecorator(
-            MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(threadSize, threadSize, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
-    
     @Override
     public ExecutorService createExecutorService() {
-        return executorService;
+        int threadSize = Runtime.getRuntime().availableProcessors() * 2;
+        return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(threadSize, threadSize, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
     }
 }

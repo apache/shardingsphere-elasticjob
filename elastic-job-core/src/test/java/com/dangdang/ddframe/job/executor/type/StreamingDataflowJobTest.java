@@ -27,9 +27,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public final class StreamingSequenceDataflowJobTest extends AbstractDataflowJobExecutorTest {
+public final class StreamingDataflowJobTest extends AbstractDataflowJobExecutorTest {
     
-    public StreamingSequenceDataflowJobTest() {
+    public StreamingDataflowJobTest() {
         super(true);
     }
     

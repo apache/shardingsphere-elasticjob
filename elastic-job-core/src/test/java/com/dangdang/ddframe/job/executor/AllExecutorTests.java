@@ -20,8 +20,8 @@ package com.dangdang.ddframe.job.executor;
 import com.dangdang.ddframe.job.executor.handler.JobPropertiesTest;
 import com.dangdang.ddframe.job.executor.type.ScriptJobExecutorTest;
 import com.dangdang.ddframe.job.executor.type.SimpleJobExecutorTest;
-import com.dangdang.ddframe.job.executor.type.StreamingSequenceDataflowJobTest;
-import com.dangdang.ddframe.job.executor.type.UnstreamingSequenceDataflowJobTest;
+import com.dangdang.ddframe.job.executor.type.StreamingDataflowJobTest;
+import com.dangdang.ddframe.job.executor.type.UnstreamingDataflowJobTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -31,8 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
         JobExecutorFactoryTest.class, 
         JobPropertiesTest.class, 
         SimpleJobExecutorTest.class, 
-        StreamingSequenceDataflowJobTest.class, 
-        UnstreamingSequenceDataflowJobTest.class,
+        StreamingDataflowJobTest.class, 
+        UnstreamingDataflowJobTest.class,
         ScriptJobExecutorTest.class
     })
 public final class AllExecutorTests {

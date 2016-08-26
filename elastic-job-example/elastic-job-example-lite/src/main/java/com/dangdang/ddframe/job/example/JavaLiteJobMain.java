@@ -63,7 +63,7 @@ public final class JavaLiteJobMain {
                 JavaSimpleJob.class.getCanonicalName());
         
         final DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(
-                JobCoreConfiguration.newBuilder("javaSequenceDataflowElasticJob", "0/5 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
+                JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
                 JavaDataflowJob.class.getCanonicalName(), true);
         
         final ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 10)

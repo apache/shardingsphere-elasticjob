@@ -18,14 +18,16 @@
 package com.dangdang.ddframe.job.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
+import com.dangdang.ddframe.job.api.simple.SimpleJob;
+import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.executor.type.DataflowJobExecutor;
 import com.dangdang.ddframe.job.executor.type.ScriptJobExecutor;
-import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.dangdang.ddframe.job.executor.type.SimpleJobExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 作业执行器工厂.
@@ -35,6 +37,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobExecutorFactory {
     
+    private static volatile ConcurrentHashMap<String, AbstractElasticJobExecutor> executors = new ConcurrentHashMap<>(128, 1);
+    
     /**
      * 获取作业执行器.
      *
@@ -42,8 +46,16 @@ public final class JobExecutorFactory {
      * @param jobFacade 作业内部服务门面服务
      * @return 作业执行器
      */
-    @SuppressWarnings("unchecked")
     public static AbstractElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
+        String jobName = jobFacade.getShardingContexts().getJobName();
+        if (!executors.containsKey(jobName)) {
+            executors.putIfAbsent(jobName, getExecutor(elasticJob, jobFacade));
+        }
+        return executors.get(jobName);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private static AbstractElasticJobExecutor getExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
         if (null == elasticJob) {
             return new ScriptJobExecutor(jobFacade);
         }
