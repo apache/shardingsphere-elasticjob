@@ -72,8 +72,8 @@ weight=40
 但注册中心与作业部署机无从属关系，注册中心并不能控制将单点的作业分发至其他作业机，也无法将远程服务器未启动的作业启动。`elastic-job-lite`并不会包含`ssh`免密管理等功能。
 
 `elastic-job-cloud`为`mesos`框架，由`mesos`负责作业启动和分发。
-但需要将作业使用`elastic-job-cloud-assembly`打包，并调用`elastic-job-cloud`提供的`REST API`写入注册中心。
-打包插件自动化属于部署系统的范畴`elastic-job-cloud`并未涉及。
+但需要将作业打包上传，并调用`elastic-job-cloud`提供的`REST API`写入注册中心。
+打包上传属于部署系统的范畴`elastic-job-cloud`并未涉及。
 
 综上所述，`elastic-job`已做了基本动态添加功能，但无法做到真正意义的完全自动化添加。
 

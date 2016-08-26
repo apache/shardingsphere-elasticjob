@@ -20,4 +20,4 @@ weight=10
 
 ## Mesos(仅Elastic-Job-Cloud需要)
 
-请使用`Mesos 0.28.0`及其以上版本。[详情参见](https://http://mesos.apache.org/gettingstarted/)
+请使用`Mesos 0.28.0`及其以上版本。[详情参见](http://mesos.apache.org/gettingstarted/)

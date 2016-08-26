@@ -80,19 +80,17 @@ public class MyElasticJob implements SimpleJob {
     
     @Override
     public void process(ShardingContext context) {
-        for (int shardingItem : context.getShardingItemParameters().keySet()) {
-            switch (shardingItem) {
-                case 0: 
-                    // do something by sharding items 0
-                    break;
-                case 1: 
-                    // do something by sharding items 1
-                    break;
-                case 2: 
-                    // do something by sharding items 2
-                    break;
-                // case n: ...
-            }
+        switch (context.getShardingItem()) {
+            case 0: 
+                // do something by sharding items 0
+                break;
+            case 1: 
+                // do something by sharding items 1
+                break;
+            case 2: 
+                // do something by sharding items 2
+                break;
+            // case n: ...
         }
     }
 }
