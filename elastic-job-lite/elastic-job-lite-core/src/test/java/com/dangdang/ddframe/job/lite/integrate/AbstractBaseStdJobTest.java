@@ -17,20 +17,21 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
+import com.dangdang.ddframe.env.LocalHostService;
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
+import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.executor.handler.JobProperties;
-import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.fixture.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
@@ -38,19 +39,23 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
-import com.dangdang.ddframe.env.LocalHostService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.curator.test.TestingServer;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -61,11 +66,9 @@ public abstract class AbstractBaseStdJobTest {
     
     private static final int PORT = 3181;
     
-    private static final String TEST_TEMP_DIRECTORY = String.format("target/test_zk_data/%s/", System.nanoTime());
+    private static volatile TestingServer nestedServer;
     
-    private static final String ZK_CONNECTION_STRING = Joiner.on(":").join("localhost", PORT);
-    
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZK_CONNECTION_STRING, "zkRegTestCenter");
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(Joiner.on(":").join("localhost", PORT), "zkRegTestCenter");
     
     @Getter(value = AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
@@ -142,10 +145,34 @@ public abstract class AbstractBaseStdJobTest {
     
     @BeforeClass
     public static void init() {
+        startNestedTestingServer();
         zkConfig.setConnectionTimeoutMilliseconds(30000);
-        zkConfig.setNestedPort(PORT);
-        zkConfig.setNestedDataDir(TEST_TEMP_DIRECTORY);
         regCenter.init();
+    }
+    
+    private static void startNestedTestingServer() {
+        if (null != nestedServer) {
+            return;
+        }
+        try {
+            nestedServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
+            // CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            // CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        } finally {
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                
+                @Override
+                public void run() {
+                    try {
+                        nestedServer.close();
+                    } catch (final IOException ex) {
+                        RegExceptionHandler.handleException(ex);
+                    }
+                }
+            });
+        }
     }
     
     @Before

@@ -28,21 +28,21 @@ public final class JobAPIFactoryTest extends AbstractNestedZookeeperBaseTest {
     
     @Test
     public void assertCreateJobSettingsAPI() {
-        assertThat(JobAPIFactory.createJobSettingsAPI(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()), instanceOf(JobSettingsAPI.class));
+        assertThat(JobAPIFactory.createJobSettingsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(JobSettingsAPI.class));
     }
     
     @Test
     public void assertCreateJobOperateAPI() {
-        assertThat(JobAPIFactory.createJobOperateAPI(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()), instanceOf(JobOperateAPI.class));
+        assertThat(JobAPIFactory.createJobOperateAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(JobOperateAPI.class));
     }
     
     @Test
     public void assertCreateJobStatisticsAPI() {
-        assertThat(JobAPIFactory.createJobStatisticsAPI(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()), instanceOf(JobStatisticsAPI.class));
+        assertThat(JobAPIFactory.createJobStatisticsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(JobStatisticsAPI.class));
     }
     
     @Test
     public void assertCreateServerStatisticsAPI() {
-        assertThat(JobAPIFactory.createServerStatisticsAPI(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()), instanceOf(ServerStatisticsAPI.class));
+        assertThat(JobAPIFactory.createServerStatisticsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(ServerStatisticsAPI.class));
     }
 }

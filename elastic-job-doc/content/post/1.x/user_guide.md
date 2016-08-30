@@ -294,8 +294,6 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 |session-timeout-milliseconds    |int    |否     |60000| 会话超时时间<br />单位：毫秒                                                                          |
 |connection-timeout-milliseconds |int    |否     |15000| 连接超时时间<br />单位：毫秒                                                                          |
 |digest                          |String |否     |无验证| 连接`Zookeeper`的权限令牌<br />缺省为不需要权限验证                                                     |
-|nested-port                     |int    |否     |-1   | 内嵌`Zookeeper`的端口号<br />-1表示不开启内嵌`Zookeeper`                                               |
-|nested-data-dir                 |String |否     |     | 内嵌`Zookeeper`的数据存储路径<br />为空表示不开启内嵌`Zookeeper`                                        |
 
 ### 不使用Spring配置
 

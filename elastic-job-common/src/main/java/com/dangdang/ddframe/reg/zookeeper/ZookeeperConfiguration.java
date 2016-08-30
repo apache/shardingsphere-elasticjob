@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.reg.zookeeper;
 
 import com.dangdang.ddframe.reg.base.AbstractRegistryCenterConfiguration;
-import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -82,18 +81,6 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
     private String digest;
     
     /**
-     * 内嵌Zookeeper的端口号.
-     * -1表示不开启内嵌Zookeeper.
-     */
-    private int nestedPort = -1;
-    
-    /**
-     * 内嵌Zookeeper的数据存储路径.
-     * 为空表示不开启内嵌Zookeeper.
-     */
-    private String nestedDataDir;
-    
-    /**
      * 包含了必需属性的构造器.
      *
      * @param serverLists 连接Zookeeper服务器的列表
@@ -119,14 +106,5 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
         this.baseSleepTimeMilliseconds = baseSleepTimeMilliseconds;
         this.maxSleepTimeMilliseconds = maxSleepTimeMilliseconds;
         this.maxRetries = maxRetries;
-    }
-    
-    /**
-     * 判断是否需要开启内嵌Zookeeper.
-     * 
-     * @return 是否需要开启内嵌Zookeeper
-     */
-    public boolean isUseNestedZookeeper() {
-        return -1 != nestedPort && !Strings.isNullOrEmpty(nestedDataDir);
     }
 }

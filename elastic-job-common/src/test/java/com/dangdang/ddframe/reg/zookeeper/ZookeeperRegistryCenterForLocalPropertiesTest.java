@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.reg.zookeeper;
 
 import com.dangdang.ddframe.reg.exception.RegException;
-import com.dangdang.ddframe.reg.zookeeper.fixture.TestNestedServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -30,11 +29,11 @@ import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterForLocalPropertiesTest {
     
-    private ZookeeperRegistryCenter zkRegCenter;
+    private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void init() {
-        TestNestedServer.start();
+        NestedTestingServer.start();
     }
     
     @Before
@@ -85,13 +84,13 @@ public final class ZookeeperRegistryCenterForLocalPropertiesTest {
     }
     
     private ZookeeperRegistryCenter createZookeeperRegistryCenter() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), getCurrentRunningMethodName());
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), getCurrentRunningMethodName());
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         return new ZookeeperRegistryCenter(zkConfig);
     }
     
     private void createInitData() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), getCurrentRunningMethodName());
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), getCurrentRunningMethodName());
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(zkConfig);

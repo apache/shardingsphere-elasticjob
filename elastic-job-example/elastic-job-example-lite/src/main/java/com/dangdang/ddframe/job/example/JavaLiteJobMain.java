@@ -48,12 +48,11 @@ public final class JavaLiteJobMain {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
+        NestedZookeeperServer.start(4181);
         new JavaLiteJobMain().init();
     }
     
     private void init() {
-        zkConfig.setNestedPort(4181);
-        zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         regCenter.init();
         
         final JobEventConfiguration jobLogEventConfig = new JobEventLogConfiguration();

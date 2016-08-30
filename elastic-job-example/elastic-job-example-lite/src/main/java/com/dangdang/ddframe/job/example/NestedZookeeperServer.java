@@ -15,33 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite;
+package com.dangdang.ddframe.job.example;
 
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import com.google.common.base.Joiner;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
-import org.junit.BeforeClass;
 
 import java.io.File;
 import java.io.IOException;
 
-public abstract class AbstractNestedZookeeperBaseTest {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class NestedZookeeperServer {
     
-    private static final int PORT = 3181;
+    private static TestingServer nestedServer;
     
-    private static volatile TestingServer nestedServer;
-    
-    @BeforeClass
-    public static void setUp() {
-        startNestedTestingServer();
-    }
-    
-    private static void startNestedTestingServer() {
-        if (null != nestedServer) {
-            return;
-        }
+    public static void start(final int port) {
         try {
-            nestedServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
+            nestedServer = new TestingServer(port, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
@@ -59,9 +50,5 @@ public abstract class AbstractNestedZookeeperBaseTest {
                 }
             });
         }
-    }
-    
-    public static String getConnectionString() {
-        return Joiner.on(":").join("localhost", PORT);
     }
 }

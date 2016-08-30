@@ -123,6 +123,8 @@ weight=40
 
 * 删除n分钟内正确错误数量统计功能，未来由更加全面的作业事件追踪功能替换。
 
+* 删除内嵌的`Zookeeper`注册中心，改为在`example`启动时开启内嵌注册中心，而非在`Elastic-Job`的核心代码中开启。
+
 **废弃过时`API`**
 
 * 删除废弃作业类，包括`AbstractOneOffElasticJob`，`AbstractPerpetualElasticJob`和`AbstractSequencePerpetualElasticJob`。

@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import com.dangdang.ddframe.reg.zookeeper.fixture.TestNestedServer;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.junit.AfterClass;
@@ -30,13 +29,13 @@ import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterMiscellaneousTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        TestNestedServer.start();
+        NestedTestingServer.start();
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();

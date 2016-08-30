@@ -17,19 +17,45 @@
 
 package com.dangdang.ddframe.test;
 
+import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+import org.apache.curator.test.TestingServer;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
-import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServers;
+import java.io.File;
+import java.io.IOException;
 
 public final class NestedZookeeperTestExecutionListener extends AbstractTestExecutionListener {
     
-    private static final int PORT = 3181;
-    
-    private final String testTempDirectory = String.format("target/test_zk_data/%s/", System.nanoTime());
+    private static volatile TestingServer nestedServer;
     
     @Override
     public void beforeTestClass(final TestContext testContext) throws Exception {
-        NestedZookeeperServers.getInstance().startServerIfNotStarted(PORT, testTempDirectory);
+        startNestedTestingServer();
+    }
+    
+    private static void startNestedTestingServer() {
+        if (null != nestedServer) {
+            return;
+        }
+        try {
+            nestedServer = new TestingServer(3181, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
+            // CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            // CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        } finally {
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                
+                @Override
+                public void run() {
+                    try {
+                        nestedServer.close();
+                    } catch (final IOException ex) {
+                        RegExceptionHandler.handleException(ex);
+                    }
+                }
+            });
+        }
     }
 }

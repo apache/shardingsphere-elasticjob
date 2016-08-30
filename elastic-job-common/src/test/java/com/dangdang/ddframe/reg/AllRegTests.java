@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.reg;
 
 import com.dangdang.ddframe.reg.exception.RegExceptionHandlerTest;
-import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServersTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfigurationTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterForAuthTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterForLocalPropertiesTest;
@@ -28,10 +27,8 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterModifyTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterNestedTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterQueryWithCacheTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterQueryWithoutCacheTest;
-import com.dangdang.ddframe.reg.zookeeper.fixture.TestNestedServer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -39,7 +36,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         ZookeeperConfigurationTest.class, 
-        NestedZookeeperServersTest.class, 
         ZookeeperRegistryCenterForLocalPropertiesTest.class, 
         ZookeeperRegistryCenterForAuthTest.class, 
         ZookeeperRegistryCenterQueryWithCacheTest.class, 
@@ -52,9 +48,4 @@ import org.junit.runners.Suite.SuiteClasses;
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllRegTests {
-    
-    @AfterClass
-    public static void clear() {
-        TestNestedServer.close();
-    }
 }

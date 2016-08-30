@@ -20,9 +20,7 @@ package com.dangdang.ddframe.reg.zookeeper;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public final class ZookeeperConfigurationTest {
     
@@ -44,34 +42,5 @@ public final class ZookeeperConfigurationTest {
         assertThat(zkConfig.getBaseSleepTimeMilliseconds(), is(2000));
         assertThat(zkConfig.getMaxSleepTimeMilliseconds(), is(6000));
         assertThat(zkConfig.getMaxRetries(), is(6));
-    }
-    
-    @Test
-    public void assertIsNotUseNestedZookeeperWhenPortIsNegative() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration();
-        assertFalse(zkConfig.isUseNestedZookeeper());
-    }
-    
-    @Test
-    public void assertIsNotUseNestedZookeeperWhenDataDirIsNull() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration();
-        zkConfig.setNestedPort(3181);
-        assertFalse(zkConfig.isUseNestedZookeeper());
-    }
-    
-    @Test
-    public void assertIsNotUseNestedZookeeperWhenDataDirIsEmpty() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration();
-        zkConfig.setNestedPort(3181);
-        zkConfig.setNestedDataDir("");
-        assertFalse(zkConfig.isUseNestedZookeeper());
-    }
-    
-    @Test
-    public void assertIsUseNestedZookeeper() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration();
-        zkConfig.setNestedPort(3181);
-        zkConfig.setNestedDataDir("target");
-        assertTrue(zkConfig.isUseNestedZookeeper());
     }
 }

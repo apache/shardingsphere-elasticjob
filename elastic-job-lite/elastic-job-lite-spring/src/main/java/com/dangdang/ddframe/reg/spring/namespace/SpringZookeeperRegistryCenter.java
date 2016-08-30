@@ -17,13 +17,12 @@
 
 package com.dangdang.ddframe.reg.spring.namespace;
 
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-
 import com.dangdang.ddframe.reg.spring.placeholder.PlaceholderResolved;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.google.common.base.Strings;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 /**
  * 使用Spring启动基于Zookeeper的注册中心.
@@ -58,14 +57,6 @@ public final class SpringZookeeperRegistryCenter extends ZookeeperRegistryCenter
         String digest = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getDigest());
         if (!Strings.isNullOrEmpty(digest)) {
             getZkConfig().setDigest(digest);
-        }
-        String nestedPort = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getNestedPort());
-        if (!Strings.isNullOrEmpty(nestedPort)) {
-            getZkConfig().setNestedPort(Integer.parseInt(nestedPort));
-        }
-        String nestedDataDir = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getNestedDataDir());
-        if (!Strings.isNullOrEmpty(nestedDataDir)) {
-            getZkConfig().setNestedDataDir(nestedDataDir);
         }
         String localPropertiesPath = placeholderResolved.getResolvePlaceholderText(springZookeeperConfigurationDto.getLocalPropertiesPath());
         if (!Strings.isNullOrEmpty(localPropertiesPath)) {

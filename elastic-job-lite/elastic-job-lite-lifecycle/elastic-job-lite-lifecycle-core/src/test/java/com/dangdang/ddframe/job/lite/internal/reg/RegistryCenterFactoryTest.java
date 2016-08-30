@@ -34,22 +34,22 @@ public final class RegistryCenterFactoryTest extends AbstractNestedZookeeperBase
     
     @Test
     public void assertCreateCoordinatorRegistryCenterWithoutDigest() throws ReflectiveOperationException {
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(ZK_CONNECTION_STRING, "namespace", Optional.<String>absent()));
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", Optional.<String>absent()));
         assertThat(zkConfig.getNamespace(), is("namespace"));
         assertNull(zkConfig.getDigest());
     }
     
     @Test
     public void assertCreateCoordinatorRegistryCenterWithDigest() throws ReflectiveOperationException {
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(ZK_CONNECTION_STRING, "namespace", Optional.of("digest")));
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "namespace", Optional.of("digest")));
         assertThat(zkConfig.getNamespace(), is("namespace"));
         assertThat(zkConfig.getDigest(), is("digest"));
     }
     
     @Test
     public void assertCreateCoordinatorRegistryCenterFromCache() throws ReflectiveOperationException {
-        RegistryCenterFactory.createCoordinatorRegistryCenter(ZK_CONNECTION_STRING, "otherNamespace", Optional.<String>absent());
-        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(ZK_CONNECTION_STRING, "otherNamespace", Optional.<String>absent()));
+        RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", Optional.<String>absent());
+        ZookeeperConfiguration zkConfig = getZookeeperConfiguration(RegistryCenterFactory.createCoordinatorRegistryCenter(getConnectionString(), "otherNamespace", Optional.<String>absent()));
         assertThat(zkConfig.getNamespace(), is("otherNamespace"));
         assertNull(zkConfig.getDigest());
     }

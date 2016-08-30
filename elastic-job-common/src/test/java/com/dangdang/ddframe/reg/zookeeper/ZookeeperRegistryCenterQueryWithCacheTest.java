@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.reg.zookeeper;
 
-import com.dangdang.ddframe.reg.zookeeper.fixture.TestNestedServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,13 +27,13 @@ import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterQueryWithCacheTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(TestNestedServer.getConnectionString(), ZookeeperRegistryCenterQueryWithCacheTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), ZookeeperRegistryCenterQueryWithCacheTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        TestNestedServer.start();
+        NestedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");

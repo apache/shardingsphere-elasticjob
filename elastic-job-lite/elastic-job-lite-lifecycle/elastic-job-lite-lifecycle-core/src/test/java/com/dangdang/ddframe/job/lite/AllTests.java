@@ -27,10 +27,8 @@ import com.dangdang.ddframe.job.lite.internal.reg.RegistryCenterFactoryTest;
 import com.dangdang.ddframe.job.lite.internal.settings.JobSettingsAPIImplTest;
 import com.dangdang.ddframe.job.lite.internal.statistics.JobStatisticsAPIImplTest;
 import com.dangdang.ddframe.job.lite.internal.statistics.ServerStatisticsAPIImplTest;
-import com.dangdang.ddframe.reg.zookeeper.NestedZookeeperServers;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -51,9 +49,4 @@ import org.junit.runners.Suite.SuiteClasses;
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllTests {
-    
-    @AfterClass
-    public static void clear() {
-        NestedZookeeperServers.getInstance().closeServer(AbstractNestedZookeeperBaseTest.PORT);
-    }
 }

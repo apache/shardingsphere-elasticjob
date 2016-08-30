@@ -35,8 +35,6 @@ public final class ZookeeperRegistryCenterNestedTest {
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkConfig.setConnectionTimeoutMilliseconds(30000);
-        zkConfig.setNestedPort(3181);
-        zkConfig.setNestedDataDir(String.format("target/test_zk_data/%s/", System.nanoTime()));
         zkRegCenter.init();
     }
     
