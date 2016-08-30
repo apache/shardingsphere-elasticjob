@@ -45,7 +45,8 @@ public final class APIJsonConstants {
     }
     
     public static String getSimpleJobJson(final String jobExceptionHandler) {
-        return String.format(SIMPLE_JOB_JSON, getJobPropertiesJson(jobExceptionHandler), "{\"log\":{}}");
+        return String.format(SIMPLE_JOB_JSON, getJobPropertiesJson(jobExceptionHandler), "{\"log\":{},"
+                + "\"rdb\":{\"driverClassName\":\"org.h2.Driver\",\"url\":\"jdbc:h2:mem:job_event_storage\",\"username\":\"sa\",\"password\":\"\",\"logLevel\":\"INFO\"}}");
     }
     
     public static String getDataflowJobJson(final String jobExceptionHandler) {
@@ -54,10 +55,5 @@ public final class APIJsonConstants {
     
     public static String getScriptJobJson(final String jobExceptionHandler) {
         return String.format(SCRIPT_JOB_JSON, getJobPropertiesJson(jobExceptionHandler), "{\"log\":{}}");
-    }
-    
-    public static String getSimpleJobWithLogEventJson(final String jobExceptionHandler) {
-        return String.format(SIMPLE_JOB_JSON, getJobPropertiesJson(jobExceptionHandler), "{\"log\":{},"
-                + "\"rdb\":{\"driverClassName\":\"org.h2.Driver\",\"url\":\"jdbc:h2:mem:job_event_storage\",\"username\":\"sa\",\"password\":\"\",\"logLevel\":\"INFO\"}}");
     }
 }

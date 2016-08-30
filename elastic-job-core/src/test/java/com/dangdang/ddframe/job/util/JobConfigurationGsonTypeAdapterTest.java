@@ -50,7 +50,10 @@ public final class JobConfigurationGsonTypeAdapterTest {
     
     @Test
     public void assertToSimpleJobJson() {
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestSimpleJobConfiguration().getTypeConfig())), 
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(
+                        new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName(),
+                                new JobEventLogConfiguration(), new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", 
+                                JobTraceEvent.LogLevel.INFO)).getTypeConfig())),
                 is(APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName())));
     }
     
@@ -67,18 +70,13 @@ public final class JobConfigurationGsonTypeAdapterTest {
     }
     
     @Test
-    public void assertToSimpleJobWithEventJson() {
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(
-                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName(), 
-                        new JobEventLogConfiguration(), new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", JobTraceEvent.LogLevel.INFO)).getTypeConfig())), 
-                is(APIJsonConstants.getSimpleJobWithLogEventJson(ThrowJobExceptionHandler.class.getCanonicalName())));
-    }
-    
-    @Test
     public void assertFromSimpleJobJson() {
         TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
                 APIJsonConstants.getSimpleJobJson(ThrowJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
-        TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestSimpleJobConfiguration().getTypeConfig());
+        TestJobRootConfiguration expected = new TestJobRootConfiguration(
+                new TestSimpleJobConfiguration(ThrowJobExceptionHandler.class.getCanonicalName(), DefaultExecutorServiceHandler.class.getCanonicalName(),
+                        new JobEventLogConfiguration(), new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "",
+                        JobTraceEvent.LogLevel.INFO)).getTypeConfig());
         assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     
