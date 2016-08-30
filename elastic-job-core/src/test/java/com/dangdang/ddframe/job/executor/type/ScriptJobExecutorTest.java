@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.executor.type;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.fixture.ElasticJobVerify;
 import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.fixture.handler.IgnoreJobExceptionHandler;

@@ -34,7 +34,7 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 
-public class JobRdbEventStorageTest {
+public class JobEventRdbStorageTest {
     
     private JobEventRdbStorage storage;
     

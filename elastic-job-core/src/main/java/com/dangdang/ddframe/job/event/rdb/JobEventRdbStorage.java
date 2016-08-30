@@ -36,7 +36,7 @@ import java.util.UUID;
  * @author caohao
  */
 @Slf4j
-final class JobEventRdbStorage { 
+class JobEventRdbStorage { 
     
     private final BasicDataSource dataSource;
     

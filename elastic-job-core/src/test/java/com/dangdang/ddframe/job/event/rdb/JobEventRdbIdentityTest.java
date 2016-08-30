@@ -15,17 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.event.log;
+package com.dangdang.ddframe.job.event.rdb;
 
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public final class JobLogEventIdentityTest {
+public final class JobEventRdbIdentityTest {
     
     @Test
     public void assertGetIdentity() {
-        assertThat(new JobEventLogIdentity().getIdentity(), is("log"));
+        assertThat(new JobEventRdbIdentity().getIdentity(), is("rdb"));
     }
 }

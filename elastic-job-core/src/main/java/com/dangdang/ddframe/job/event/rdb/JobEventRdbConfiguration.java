@@ -34,7 +34,7 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 @Getter
 @Slf4j
-public final class JobEventRdbConfiguration extends JobEventRdbIdentity implements JobEventConfiguration {
+public class JobEventRdbConfiguration extends JobEventRdbIdentity implements JobEventConfiguration {
     
     private final String driverClassName;
     

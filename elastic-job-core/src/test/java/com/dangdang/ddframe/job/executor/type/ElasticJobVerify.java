@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.fixture;
+package com.dangdang.ddframe.job.executor.type;
 
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ElasticJobVerify {
+final class ElasticJobVerify {
     
     public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);

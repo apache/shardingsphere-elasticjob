@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.executor.type;
 
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.fixture.ElasticJobVerify;
 import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.config.TestDataflowJobConfiguration;
 import com.dangdang.ddframe.job.fixture.job.JobCaller;

@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
-import com.dangdang.ddframe.job.fixture.ElasticJobVerify;
 import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.config.TestSimpleJobConfiguration;
 import com.dangdang.ddframe.job.fixture.job.JobCaller;

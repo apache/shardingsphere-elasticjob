@@ -17,11 +17,13 @@
 
 package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.event.log.JobLogEventIdentityTest;
-import com.dangdang.ddframe.job.event.log.JobLogEventListenerTest;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventIdentityTest;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventListenerTest;
-import com.dangdang.ddframe.job.event.rdb.JobRdbEventStorageTest;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfigurationTest;
+import com.dangdang.ddframe.job.event.log.JobEventLogIdentityTest;
+import com.dangdang.ddframe.job.event.log.JobEventLogListenerTest;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfigurationTest;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbIdentityTest;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbListenerTest;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbStorageTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -30,11 +32,13 @@ import org.junit.runners.Suite;
         JobTraceEventTest.class, 
         JobExecutionEventTest.class, 
         JobEventBusTest.class, 
-        JobLogEventIdentityTest.class, 
-        JobLogEventListenerTest.class, 
-        JobRdbEventIdentityTest.class, 
-        JobRdbEventListenerTest.class, 
-        JobRdbEventStorageTest.class
+        JobEventLogIdentityTest.class,
+        JobEventLogConfigurationTest.class, 
+        JobEventLogListenerTest.class, 
+        JobEventRdbIdentityTest.class,
+        JobEventRdbConfigurationTest.class, 
+        JobEventRdbListenerTest.class, 
+        JobEventRdbStorageTest.class
     })
 public final class AllEventTests {
 }
