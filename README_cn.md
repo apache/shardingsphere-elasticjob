@@ -129,7 +129,7 @@ public class MyElasticJob implements SimpleJob {
 
 ### a. [环境需求](http://dangdangdotcom.github.io/elastic-job/post/user_guide/env_required/)
 
-### c. [开发指南](http://dangdangdotcom.github.io/elastic-job/post/user_guide/dev_guide/)
+### b. [开发指南](http://dangdangdotcom.github.io/elastic-job/post/user_guide/dev_guide/)
 
 ### c. [作业部署](http://dangdangdotcom.github.io/elastic-job/post/user_guide/deploy_guide/)
 
