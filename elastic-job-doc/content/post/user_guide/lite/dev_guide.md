@@ -131,7 +131,6 @@ echo sharding execution context is $*
     // 定义DATAFLOW类型配置
     DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName(), true);
     
-    
     // 定义作业核心配置配置
     JobCoreConfiguration scriptCoreConfig = JobCoreConfiguration.newBuilder("demoScriptJob", "0/45 * * * * ?", 10).build();
     
@@ -243,6 +242,7 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 #### job:event-rdb命名空间属性详细说明
 
 `job:event-rdb`必须配置为`job:bean`的子元素，表示以数据库的形式记录作业事件
+
 | 属性名                          | 类型  |是否必填|缺省值         | 描述                                                                                      |
 | ------------------------------ |:------|:------|:-------------|:-----------------------------------------------------------------------------------------|
 |driver                          |String |`是`   |              | 数据库驱动类名                                                                             |
@@ -250,7 +250,6 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 |username                        |String |`是`   |              | 数据库用户名                                                                               |
 |password                        |String |`是`   |              | 数据库用户名                                                                               |
 |log-level                       |Enum   |`是`   |              | 日志级别，可配置为`TRACE`,`DEBUG`,`INFO`,`WARN`,`ERROR`。<br />默认为`INFO`                  |
-
 
 #### reg:bean命名空间属性详细说明
 
@@ -301,6 +300,26 @@ public class JobDemo {
 ### 定制化作业处理线程池
 
 `elastic-job`在配置中提供了`JobProperties`，可扩展`ExecutorServiceHandler`接口，并设置`executor_service_handler`定制线程池。
+
+### 事件溯源
+`elastic-job`在配置中提供了`JobEventConfiguration`，目前支持数据库和日志文件两种方式配置，默认为日志文件方式。
+
+```java
+    // 定义日志文件事件溯源配置
+    JobEventConfiguration jobLogEventConfig = new JobEventLogConfiguration();
+    
+    // 定义数据库日志文件事件溯源配置
+    JobEventConfiguration jobRdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_bus", "sa", "", LogLevel.INFO);
+    
+    // 定义SIMPLE作业类型，使用日志文件方式
+    SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, SimpleDemoJob.class.getCanonicalName()).jobEventConfiguration(jobLogEventConfig);
+    
+    // 定义DATAFLOW作业类型，使用数据库方式
+    DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName()).jobEventConfiguration(jobRdbEventConfig);
+    
+    // 定义SCRIPT类型配置，使用数据库方式
+    ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(scriptCoreConfig, "test.sh").jobEventConfiguration(jobLogEventConfig, jobRdbEventConfig);
+```
 
 ### 任务监听
 可通过配置多个任务监听器，在任务执行前和执行后执行监听的方法。监听器分为每台作业节点均执行和分布式场景中仅单一节点执行`2`种。
