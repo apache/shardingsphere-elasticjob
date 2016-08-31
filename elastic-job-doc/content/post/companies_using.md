@@ -14,6 +14,8 @@ weight=50
 
 ## [PINTEC（积木盒子母公司）](http://www.pintec.com/)
 
+## [畅移（上海）信息科技有限公司](http://www.vchangyi.com)
+
 ## [当当](http://www.dangdang.com/)
 
 ## [记健康](http://www.jjklife.com/)

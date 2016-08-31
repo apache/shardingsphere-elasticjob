@@ -41,16 +41,16 @@ weight=22
 
 * 总览页
 
-![总览页](../../../../img/console/lite_index.png)
+![总览页](../../../../../img/console/lite_index.png)
 
 * 注册中心管理页
 
-![注册中心管理页](../../../../img/console/lite_reg_center.png)
+![注册中心管理页](../../../../../img/console/lite_reg_center.png)
 
 * 作业详细信息页
 
-![作业详细信息页](../../../../img/console/lite_job_details.png)
+![作业详细信息页](../../../../../img/console/lite_job_details.png)
 
 * 服务器详细信息页
 
-![服务器详细信息页](../../../../img/console/lite_server_details.png)
+![服务器详细信息页](../../../../../img/console/lite_server_details.png)

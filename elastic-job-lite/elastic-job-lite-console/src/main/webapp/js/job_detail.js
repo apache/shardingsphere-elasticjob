@@ -1,13 +1,13 @@
 $(function() {
     renderSettings();
     bindSubmitJobSettingsForm();
-    $('[href="#settings"]').click(function(event) {
+    $('[href="#settings"]').click(function() {
         renderSettings();
     });
-    $('[href="#servers"]').click(function(event) {
+    $('[href="#servers"]').click(function() {
         renderServers();
     });
-    $('[href="#execution_info"]').click(function(event) {
+    $('[href="#execution_info"]').click(function() {
         renderExecution();
     });
     bindTriggerButtons();
@@ -33,8 +33,6 @@ function renderSettings() {
         $("#monitorExecution").attr("checked", data.monitorExecution);
         $("#failover").attr("checked", data.failover);
         $("#misfire").attr("checked", data.misfire);
-        $("#dataflowType").attr("value", data.dataflowType);
-        $("#concurrentDataProcessThreadCount").attr("value", data.concurrentDataProcessThreadCount);
         $("#streamingProcess").attr("checked", data.streamingProcess);
         $("#maxTimeDiffSeconds").attr("value", data.maxTimeDiffSeconds);
         $("#monitorPort").attr("value", data.monitorPort);
@@ -58,8 +56,6 @@ function bindSubmitJobSettingsForm() {
         var shardingTotalCount = $("#shardingTotalCount").val();
         var jobParameter = $("#jobParameter").val();
         var cron = $("#cron").val();
-        var dataflowType = $("#dataflowType").val();
-        var concurrentDataProcessThreadCount = $("#concurrentDataProcessThreadCount").val();
         var streamingProcess = $("#streamingProcess").prop("checked");
         var maxTimeDiffSeconds = $("#maxTimeDiffSeconds").val();
         var monitorPort = $("#monitorPort").val();
@@ -72,7 +68,7 @@ function bindSubmitJobSettingsForm() {
         var executorServiceHandler = $("#executorServiceHandler").val();
         var jobExceptionHandler = $("#jobExceptionHandler").val();
         var description = $("#description").val();
-        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, dataflowType: dataflowType, concurrentDataProcessThreadCount: concurrentDataProcessThreadCount, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, executorServiceHandler: executorServiceHandler, jobExceptionHandler: jobExceptionHandler, description: description, scriptCommandLine: scriptCommandLine}, function() {
+        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, executorServiceHandler: executorServiceHandler, jobExceptionHandler: jobExceptionHandler, description: description, scriptCommandLine: scriptCommandLine}, function() {
             showSuccessDialog();
             if (monitorExecution) {
                 $("#execution_info_tab").removeClass("disabled");
@@ -88,7 +84,7 @@ function renderServers() {
         $("#servers tbody").empty();
         for (var i = 0;i < data.length;i++) {
             var status = data[i].status;
-            var baseTd = "<td>" + data[i].ip + "</td><td>" + data[i].hostName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td>";
+            var baseTd = "<td>" + data[i].ip + "</td><td>" + data[i].hostName + "</td><td>" + status + "</td><td>" + data[i].sharding + "</td>";
             var operationTd = "";
             var triggerButton = "<button operation='trigger' class='btn btn-success' ip='" + data[i].ip + "'>触发</button>";
             var resumeButton = "<button operation='resume' class='btn btn-success' ip='" + data[i].ip + "'>恢复</button>";
@@ -133,7 +129,7 @@ function renderServers() {
 function bindTriggerButtons() {
     $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/trigger", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+        $.post("job/trigger", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -141,9 +137,9 @@ function bindTriggerButtons() {
 }
 
 function bindTriggerAllButtons() {
-    $(document).on("click", "#trigger-all-jobs-btn", function(event) {
+    $(document).on("click", "#trigger-all-jobs-btn", function() {
         var jobName = $("#job-name").text();
-        $.post("job/triggerAll/name", {jobName : jobName}, function (data) {
+        $.post("job/triggerAll/name", {jobName : jobName}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -153,7 +149,7 @@ function bindTriggerAllButtons() {
 function bindPauseButtons() {
     $(document).on("click", "button[operation='pause'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/pause", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+        $.post("job/pause", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -161,9 +157,9 @@ function bindPauseButtons() {
 }
 
 function bindPauseAllButtons() {
-    $(document).on("click", "#pause-all-jobs-btn", function(event) {
+    $(document).on("click", "#pause-all-jobs-btn", function() {
         var jobName = $("#job-name").text();
-        $.post("job/pauseAll/name", {jobName : jobName}, function (data) {
+        $.post("job/pauseAll/name", {jobName : jobName}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -173,7 +169,7 @@ function bindPauseAllButtons() {
 function bindResumeButtons() {
     $(document).on("click", "button[operation='resume']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/resume", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+        $.post("job/resume", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -181,9 +177,9 @@ function bindResumeButtons() {
 }
 
 function bindResumeAllButton() {
-    $(document).on("click", "#resume-all-jobs-btn", function(event) {
+    $(document).on("click", "#resume-all-jobs-btn", function() {
         var jobName = $("#job-name").text();
-        $.post("job/resumeAll/name", {jobName : jobName}, function (data) {
+        $.post("job/resumeAll/name", {jobName : jobName}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -216,7 +212,7 @@ function renderExecution() {
 function bindShutdownButtons() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/shutdown", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+        $.post("job/shutdown", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -226,7 +222,7 @@ function bindShutdownButtons() {
 function bindRemoveButtons() {
     $(document).on("click", "button[operation='remove']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/remove", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+        $.post("job/remove", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -236,7 +232,7 @@ function bindRemoveButtons() {
 function bindDisableButtons() {
     $(document).on("click", "button[operation='disable']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/disable", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+        $.post("job/disable", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function () {
             renderServers();
             showSuccessDialog();
         });
@@ -246,7 +242,7 @@ function bindDisableButtons() {
 function bindEnableButtons() {
     $(document).on("click", "button[operation='enable']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/enable", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+        $.post("job/enable", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function () {
             renderServers();
             showSuccessDialog();
         });

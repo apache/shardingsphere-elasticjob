@@ -62,7 +62,7 @@ public class JobMain {
 echo "dump" | nc <任意一台作业服务器IP> 9888
 ```
 
-![dump命令](../../../../img/dump/dump.jpg)
+![dump命令](../../../../../img/dump/dump.jpg)
 
 导出至文件
 

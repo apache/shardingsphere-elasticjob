@@ -41,7 +41,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 
 public final class JavaLiteJobMain {
     
-    private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:4181", "elastic-job-example-lite-java");
+    private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:2181", "elastic-job-example-lite-java");
     
     private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
     

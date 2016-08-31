@@ -87,10 +87,6 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.get("/test_job/servers/ip1/hostName")).thenReturn("host1");
         when(regCenter.get("/test_job/servers/ip2/hostName")).thenReturn("host2");
-        when(regCenter.get("/test_job/servers/ip1/processSuccessCount")).thenReturn("101");
-        when(regCenter.get("/test_job/servers/ip2/processSuccessCount")).thenReturn("102");
-        when(regCenter.get("/test_job/servers/ip1/processFailureCount")).thenReturn("11");
-        when(regCenter.get("/test_job/servers/ip2/processFailureCount")).thenReturn("12");
         when(regCenter.get("/test_job/servers/ip1/sharding")).thenReturn("0,1");
         when(regCenter.get("/test_job/servers/ip2/sharding")).thenReturn("2,3");
         when(regCenter.get("/test_job/servers/ip1/status")).thenReturn("RUNNING");
@@ -103,13 +99,9 @@ public final class JobStatisticsAPIImplTest {
             assertThat(each.getHostName(), is("host" + i));
             switch (i) {
                 case 1:
-                    assertThat(each.getProcessSuccessCount(), is(101));
-                    assertThat(each.getProcessFailureCount(), is(11));
                     assertThat(each.getStatus(), is(ServerInfo.ServerStatus.RUNNING));
                     break;
                 case 2:
-                    assertThat(each.getProcessSuccessCount(), is(102));
-                    assertThat(each.getProcessFailureCount(), is(12));
                     assertThat(each.getStatus(), is(ServerInfo.ServerStatus.READY));
                     break;
                 default:

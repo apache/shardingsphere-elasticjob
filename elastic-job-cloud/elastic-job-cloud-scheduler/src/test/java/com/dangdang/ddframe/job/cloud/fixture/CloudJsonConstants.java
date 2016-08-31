@@ -31,7 +31,7 @@ public final class CloudJsonConstants {
     
     private static final String JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.state.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"jobEventConfigs\":{\"log\":{}}" + ",\"cpuCount\":1.0,\"memoryMB\":128.0,\"dockerImageName\":\"dockerImage\"," 
+            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"jobEventConfigs\":{\"log\":{}}" + ",\"cpuCount\":1.0,\"memoryMB\":128.0," 
             + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"%s\"}";
     
     public static String getJobJson() {

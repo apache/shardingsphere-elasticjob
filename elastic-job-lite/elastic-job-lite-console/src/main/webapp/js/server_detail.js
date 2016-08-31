@@ -14,9 +14,8 @@ function renderJobs() {
     $.get("server/jobs", {ip : $("#server-ip").text()}, function (data) {
         $("#jobs tbody").empty();
         for (var i = 0;i < data.length;i++) {
-            var ip = data[i].ip;
             var status = data[i].status;
-            var baseTd = "<td>" + data[i].jobName + "</td><td>" + status + "</td><td>" + data[i].processSuccessCount + "</td><td>" + data[i].processFailureCount + "</td><td>" + data[i].sharding + "</td>";
+            var baseTd = "<td>" + data[i].jobName + "</td><td>" + status + "</td><td>" + data[i].sharding + "</td>";
             var operationTd = "";
             var triggerButton = "<button operation='trigger' class='btn btn-success' job-name='" + data[i].jobName + "'>触发</button>";
             var resumeButton = "<button operation='resume' class='btn btn-success' job-name='" + data[i].jobName + "'>恢复</button>";
@@ -77,7 +76,7 @@ function bindPauseButtons() {
 
 function bindResumeButtons() {
     $(document).on("click", "button[operation='resume']", function(event) {
-        $.post("job/resume", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
+        $.post("job/resume", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function () {
             renderJobs();
             showSuccessDialog();
         });
@@ -85,8 +84,8 @@ function bindResumeButtons() {
 }
 
 function bindTriggerAllButton() {
-    $(document).on("click", "#trigger-all-jobs-btn", function(event) {
-        $.post("job/triggerAll/ip", {ip : $("#server-ip").text()}, function (data) {
+    $(document).on("click", "#trigger-all-jobs-btn", function() {
+        $.post("job/triggerAll/ip", {ip : $("#server-ip").text()}, function () {
             renderJobs();
             showSuccessDialog();
         });
@@ -94,8 +93,8 @@ function bindTriggerAllButton() {
 }
 
 function bindPauseAllButton() {
-    $(document).on("click", "#pause-all-jobs-btn", function(event) {
-        $.post("job/pauseAll/ip", {ip : $("#server-ip").text()}, function (data) {
+    $(document).on("click", "#pause-all-jobs-btn", function() {
+        $.post("job/pauseAll/ip", {ip : $("#server-ip").text()}, function () {
             renderJobs();
             showSuccessDialog();
         });
@@ -103,8 +102,8 @@ function bindPauseAllButton() {
 }
 
 function bindResumeAllButton() {
-    $(document).on("click", "#resume-all-jobs-btn", function(event) {
-        $.post("job/resumeAll/ip", {ip : $("#server-ip").text()}, function (data) {
+    $(document).on("click", "#resume-all-jobs-btn", function() {
+        $.post("job/resumeAll/ip", {ip : $("#server-ip").text()}, function () {
             renderJobs();
             showSuccessDialog();
         });

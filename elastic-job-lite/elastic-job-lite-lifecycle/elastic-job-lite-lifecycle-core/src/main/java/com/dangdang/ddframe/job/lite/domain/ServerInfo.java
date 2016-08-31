@@ -42,10 +42,6 @@ public final class ServerInfo implements Serializable {
     
     private ServerStatus status;
     
-    private int processSuccessCount;
-    
-    private int processFailureCount;
-    
     private String sharding;
     
     /**

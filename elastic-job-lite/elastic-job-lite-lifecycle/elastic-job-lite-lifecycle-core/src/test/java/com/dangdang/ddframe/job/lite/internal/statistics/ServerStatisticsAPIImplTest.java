@@ -94,10 +94,6 @@ public final class ServerStatisticsAPIImplTest {
         when(regCenter.isExisted("/test_job3/servers/localhost")).thenReturn(false);
         when(regCenter.get("/test_job1/servers/localhost/hostName")).thenReturn("localhost");
         when(regCenter.get("/test_job2/servers/localhost/hostName")).thenReturn("localhost");
-        when(regCenter.get("/test_job1/servers/localhost/processSuccessCount")).thenReturn("100");
-        when(regCenter.get("/test_job2/servers/localhost/processSuccessCount")).thenReturn(null);
-        when(regCenter.get("/test_job1/servers/localhost/processFailureCount")).thenReturn("10");
-        when(regCenter.get("/test_job2/servers/localhost/processFailureCount")).thenReturn(null);
         when(regCenter.get("/test_job1/servers/localhost/sharding")).thenReturn("0,1");
         when(regCenter.get("/test_job2/servers/localhost/sharding")).thenReturn("2");
         when(regCenter.get("/test_job1/servers/localhost/status")).thenReturn("RUNNING");
@@ -117,13 +113,9 @@ public final class ServerStatisticsAPIImplTest {
             assertThat(each.getStatus(), is(ServerInfo.ServerStatus.RUNNING));
             switch (i) {
                 case 1:
-                    assertThat(each.getProcessSuccessCount(), is(100));
-                    assertThat(each.getProcessFailureCount(), is(10));
                     assertThat(each.getSharding(), is("0,1"));
                     break;
                 case 2:
-                    assertThat(each.getProcessSuccessCount(), is(0));
-                    assertThat(each.getProcessFailureCount(), is(0));
                     assertThat(each.getSharding(), is("2"));
                     break;
                 default:

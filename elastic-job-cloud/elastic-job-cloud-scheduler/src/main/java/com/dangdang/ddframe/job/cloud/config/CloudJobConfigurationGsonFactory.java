@@ -77,9 +77,6 @@ public final class CloudJobConfigurationGsonFactory {
                 case "memoryMB":
                     customizedValueMap.put("memoryMB", in.nextDouble());
                     break;
-                case "dockerImageName":
-                    customizedValueMap.put("dockerImageName", in.nextString());
-                    break;
                 case "appURL":
                     customizedValueMap.put("appURL", in.nextString());
                     break;
@@ -110,12 +107,12 @@ public final class CloudJobConfigurationGsonFactory {
             Preconditions.checkNotNull(customizedValueMap.get("jobExecutionType"), "jobExecutionType cannot be null.");
             if (customizedValueMap.containsKey("beanName") && customizedValueMap.containsKey("applicationContext")) {
                 return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), 
-                        (String) customizedValueMap.get("dockerImageName"), (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
+                        (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
                         JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), customizedValueMap.get("beanName").toString(), 
                         customizedValueMap.get("applicationContext").toString());
             } else {
                 return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), 
-                        (String) customizedValueMap.get("dockerImageName"), (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
+                        (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
                         JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
             }
         }
@@ -124,7 +121,6 @@ public final class CloudJobConfigurationGsonFactory {
         protected void writeCustomized(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
             out.name("cpuCount").value(value.getCpuCount());
             out.name("memoryMB").value(value.getMemoryMB());
-            out.name("dockerImageName").value(value.getDockerImageName());
             out.name("appURL").value(value.getAppURL());
             out.name("bootstrapScript").value(value.getBootstrapScript());
             out.name("jobExecutionType").value(value.getJobExecutionType().name());

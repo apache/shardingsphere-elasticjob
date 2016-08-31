@@ -18,6 +18,6 @@ weight=10
 
 请使用`Maven 3.0.4`及其以上版本。[详情参见](http://maven.apache.org/install.html)
 
-## Mesos(仅Elastic-Job-Cloud需要)
+## Mesos
 
 请使用`Mesos 0.28.0`及其以上版本。[详情参见](http://mesos.apache.org/gettingstarted/)

@@ -36,7 +36,7 @@ public final class LifecycleJsonConstants {
     private static final String DATAFLOW_JOB_JSON =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\",\"disabled\":false,"
-            + "\"overwrite\":false,\"dataflowType\":\"SEQUENCE\",\"streamingProcess\":true,\"concurrentDataProcessThreadCount\":10}";
+            + "\"overwrite\":false,\"streamingProcess\":true}";
     
     public static String getSimpleJobJson(final String jobName, final String desc) {
         return String.format(SIMPLE_JOB_JSON, jobName, desc);

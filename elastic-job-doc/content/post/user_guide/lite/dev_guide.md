@@ -145,16 +145,9 @@ echo sharding execution context is $*
     JobRootConfiguration jobConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
 ```
 
-#### 3. Cloud作业配置
-
-```java
-    // dockerImageName为预留配置, 暂未实现
-    JobRootConfiguration jobConfig = new CloudJobConfiguration.newBuilder(simpleJobConfig, cpuCount, memoryMB, dockerImageName, appURL);
-```
-
 ### Spring命名空间配置
 
-与`Spring`容器配合使用作业，可将作业`Bean`配置为`Spring Bean`，并在作业中通过依赖注入使用`Spring`容器管理的数据源等对象。可用`placeholder`占位符从属性文件中取值。`Lite`可考虑使用`Spring`命名空间方式简化配置，`Cloud`直接使用Spring标准配置文件即可。
+与`Spring`容器配合使用作业，可将作业`Bean`配置为`Spring Bean`，并在作业中通过依赖注入使用`Spring`容器管理的数据源等对象。可用`placeholder`占位符从属性文件中取值。`Lite`可考虑使用`Spring`命名空间方式简化配置。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -173,7 +166,7 @@ echo sharding execution context is $*
     <reg:zookeeper id="regCenter" server-lists=" yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     
     <!-- 配置简单作业-->
-    <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
+    <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
     
     <!-- 配置数据流作业-->
     <job:dataflow id="throughputDataflow" class="xxx.MyThroughputDataflowElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
@@ -185,6 +178,12 @@ echo sharding execution context is $*
     <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
         <job:listener class="xx.MySimpleJobListener"/>
         <job:listener class="xx.MyOnceSimpleJobListener" started-timeout-milliseconds="1000" completed-timeout-milliseconds="2000" />
+    </job:simple>
+    
+    <!-- 配置带数据库和日志作业事件监听的简单作业-->
+    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
+        <job:event-log />
+        <job:event-rdb driver="org.h2.Driver" url="jdbc:h2:mem:job_event_bus" username="sa" password=""  log-level="INFO" />
     </job:simple>
 </beans>
 ```
@@ -237,6 +236,22 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 |started-timeout-milliseconds    |long   |`否`   |Long.MAX_VALUE| AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行前的执行方法的超时时间<br />单位：毫秒|
 |completed-timeout-milliseconds  |long   |`否`   |Long.MAX_VALUE| AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行后的执行方法的超时时间<br />单位：毫秒|
 
+#### job:event-log命名空间详细说明
+
+`job:event-log`必须配置为`job:bean`的子元素，表示以日志文件的形式记录作业事件
+
+#### job:event-rdb命名空间属性详细说明
+
+`job:event-rdb`必须配置为`job:bean`的子元素，表示以数据库的形式记录作业事件
+| 属性名                          | 类型  |是否必填|缺省值         | 描述                                                                                      |
+| ------------------------------ |:------|:------|:-------------|:-----------------------------------------------------------------------------------------|
+|driver                          |String |`是`   |              | 数据库驱动类名                                                                             |
+|url                             |String |`是`   |              | 数据库URL地址                                                                              |
+|username                        |String |`是`   |              | 数据库用户名                                                                               |
+|password                        |String |`是`   |              | 数据库用户名                                                                               |
+|log-level                       |Enum   |`是`   |              | 日志级别，可配置为`TRACE`,`DEBUG`,`INFO`,`WARN`,`ERROR`。<br />默认为`INFO`                  |
+
+
 #### reg:bean命名空间属性详细说明
 
 | 属性名                          |类型   |是否必填|缺省值|描述                                                                                                |
@@ -276,21 +291,6 @@ public class JobDemo {
 ### 2. Lite的Spring启动方式
 
 参见`Spring`命名空间
-
-### 3. Cloud启动方式
-
-需定义`Main`方法并调用`Bootstrap.execute(args)`，例子如下：
-
-```java
-public class JobDemo {
-    
-    public static void main(final String[] args) {
-        Bootstrap.execute(args);
-    }
-}
-```
-
-之后将作业和用于执行`Java Main`方法的`Shell`脚本打包为`gz.tar`格式，然后使用`Cloud`提供的`REST API`将其部署至`Elastic-Job-Cloud`系统。
 
 ## 其他功能
 

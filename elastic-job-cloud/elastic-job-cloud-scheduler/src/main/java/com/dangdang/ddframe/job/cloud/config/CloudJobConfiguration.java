@@ -39,8 +39,6 @@ public final class CloudJobConfiguration implements JobRootConfiguration {
     
     private final double memoryMB;
     
-    private final String dockerImageName;
-    
     private final String appURL;
     
     private final String bootstrapScript;

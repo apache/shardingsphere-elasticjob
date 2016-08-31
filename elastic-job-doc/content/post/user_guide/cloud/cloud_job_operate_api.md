@@ -28,7 +28,6 @@ url：`job/register`
 |cpuCount                            |double |`是`    |       | 单片作业所需要的CPU数量                                                       |
 |memoryMB                            |double |`是`    |       | 单片作业所需要的内存MB                                                        |
 |appURL                              |String |`是`    |       | 应用所在路径。必须是可以通过网络访问到的路径                                     |
-|dockerImageName                     |String |否      |       | `Docker`镜像名称。目前为预留值                                                |
 |failover                            |boolean|否      |`false`| 是否开启失效转移                                                             |
 |misfire                             |boolean|否      |`false`| 是否开启错过任务重新执行                                                      |
 |beanName                            |String |否      |       | `Spring`方式配置`bean`名称                                                  |
@@ -37,7 +36,7 @@ url：`job/register`
 
 * `Java`方式
 
-`curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"dockerImageName":"","appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/job/register`
+`curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/job/register`
 
 * `Spring`方式
 

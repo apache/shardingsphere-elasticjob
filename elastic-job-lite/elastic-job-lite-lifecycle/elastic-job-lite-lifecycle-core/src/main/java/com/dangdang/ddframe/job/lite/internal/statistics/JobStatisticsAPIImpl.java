@@ -106,10 +106,6 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         result.setJobName(jobName);
         result.setIp(serverIp);
         result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp, "hostName")));
-        String processSuccessCount = regCenter.get(jobNodePath.getServerNodePath(serverIp, "processSuccessCount"));
-        result.setProcessSuccessCount(null == processSuccessCount ? 0 : Integer.parseInt(processSuccessCount));
-        String processFailureCount = regCenter.get(jobNodePath.getServerNodePath(serverIp, "processFailureCount"));
-        result.setProcessFailureCount(null == processFailureCount ? 0 : Integer.parseInt(processFailureCount));
         result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
         result.setStatus(getServerStatus(jobName, serverIp));
         return result;
