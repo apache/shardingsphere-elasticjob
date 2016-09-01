@@ -147,13 +147,13 @@ public class MyElasticJob implements SimpleJob {
     public void process(ShardingContext context) {
         switch (context.getShardingItem()) {
             case 0: 
-                // do something by sharding items 0
+                // do something by sharding item 0
                 break;
             case 1: 
-                // do something by sharding items 1
+                // do something by sharding item 1
                 break;
             case 2: 
-                // do something by sharding items 2
+                // do something by sharding item 2
                 break;
             // case n: ...
         }
