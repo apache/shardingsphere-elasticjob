@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import lombok.RequiredArgsConstructor;

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config;
 
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;

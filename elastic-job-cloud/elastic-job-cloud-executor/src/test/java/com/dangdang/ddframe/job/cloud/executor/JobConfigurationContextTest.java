@@ -30,7 +30,10 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.assertFalse;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 public class JobConfigurationContextTest {
     
@@ -74,6 +77,23 @@ public class JobConfigurationContextTest {
         context.put("driverClassName", "org.h2.driver");
         Map<String, JobEventConfiguration> jobEventConfigs = new JobConfigurationContext(context).getTypeConfig().getCoreConfig().getJobEventConfigs();
         assertTrue(!jobEventConfigs.containsKey("rdb"));
+    }
+    
+    @Test
+    public void assertSpringSimpleJobConfigurationContext() throws JobExecutionEnvironmentException {
+        Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
+        context.put("beanName", "springSimpleJobName");
+        context.put("applicationContext", "applicationContext.xml");
+        assertThat(new JobConfigurationContext(context).getBeanName(), is("springSimpleJobName"));
+        assertThat(new JobConfigurationContext(context).getApplicationContext(), is("applicationContext.xml"));
+    }
+    
+    @Test
+    public void assertSimpleJobConfigurationContextWithExecutionType() throws JobExecutionEnvironmentException {
+        Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
+        assertTrue(new JobConfigurationContext(context).isTransient());
+        context.put("cron", "0/1 * * * * ?");
+        assertFalse(new JobConfigurationContext(context).isTransient());
     }
     
     private Map<String, String> buildJobConfigurationContextMap(final JobType jobType) {

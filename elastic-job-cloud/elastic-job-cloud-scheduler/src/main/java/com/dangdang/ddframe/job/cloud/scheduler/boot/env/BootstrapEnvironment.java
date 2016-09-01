@@ -36,7 +36,7 @@ import java.util.Properties;
 @Slf4j
 public final class BootstrapEnvironment {
     
-    private static final String PROPERTIES_PATH = "conf/elastic-job-cloud.properties";
+    private static final String PROPERTIES_PATH = "conf/elastic-job-cloud-scheduler.properties";
     
     private final Properties properties;
     
@@ -49,7 +49,7 @@ public final class BootstrapEnvironment {
         try (FileInputStream fileInputStream = new FileInputStream(PROPERTIES_PATH)) {
             result.load(fileInputStream);
         } catch (final IOException ex) {
-            log.warn("Cannot found conf/elastic-job-cloud.properties, use default value now.");
+            log.warn("Cannot found conf/elastic-job-cloud-scheduler.properties, use default value now.");
         }
         return result;
     }

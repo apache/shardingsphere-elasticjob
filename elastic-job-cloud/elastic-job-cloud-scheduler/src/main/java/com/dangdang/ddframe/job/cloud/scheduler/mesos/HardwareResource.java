@@ -23,8 +23,8 @@ import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum
 import com.dangdang.ddframe.job.util.ShardingItemParameters;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
@@ -138,7 +138,7 @@ public final class HardwareResource {
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
         ShardingContexts shardingContexts = new ShardingContexts(
                 jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);
-        // TODO 更改cache为elastic-job-cloud.properties配置
+        // TODO 更改cache为elastic-job-cloud-scheduler.properties配置
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(jobConfig.getBootstrapScript()).build();
         Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();

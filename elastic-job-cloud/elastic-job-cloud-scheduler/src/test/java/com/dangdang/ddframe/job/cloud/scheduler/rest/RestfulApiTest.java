@@ -68,6 +68,11 @@ public final class RestfulApiTest {
     }
     
     @Test
+    public void assertRegisterWithBadRequest() throws Exception {
+        assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", "\"{\"jobName\":\"wrong_job\"}"), is(500));
+    }
+    
+    @Test
     public void assertDeregister() throws Exception {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job"), is(204));

@@ -17,11 +17,15 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 状态根节点路径.
  *
  * @author zhangliang
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StateNode {
     
     /**

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config;
 
 /**
  * 作业执行类型.

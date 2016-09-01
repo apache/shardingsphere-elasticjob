@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
@@ -89,6 +89,13 @@ public final class TaskProducerSchedulerRegistryTest {
         verify(configService).add(jobConfig);
         when(configService.load("test_job")).thenReturn(Optional.of(jobConfig));
         taskProducerSchedulerRegistry.deregister("test_job");
+    
+        CloudJobConfiguration daemonJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_daemon_job", JobExecutionType.DAEMON);
+        when(configService.load("test_daemon_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        taskProducerSchedulerRegistry.register(daemonJobConfig);
+        verify(configService).add(daemonJobConfig);
+        when(configService.load("test_daemon_job")).thenReturn(Optional.of(daemonJobConfig));
+        taskProducerSchedulerRegistry.deregister("test_daemon_job");
     }
     
     @SuppressWarnings("unchecked")
@@ -126,7 +133,7 @@ public final class TaskProducerSchedulerRegistryTest {
     
     @Test
     public void assertShutdown() {
-        taskProducerScheduler.shutdown();
+        taskProducerSchedulerRegistry.shutdown();
         verify(taskProducerScheduler).shutdown();
     }
 }

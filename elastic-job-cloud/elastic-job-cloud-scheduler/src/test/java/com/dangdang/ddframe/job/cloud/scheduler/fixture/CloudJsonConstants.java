@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.fixture;
 
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
-import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +34,12 @@ public final class CloudJsonConstants {
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"jobEventConfigs\":{\"log\":{}}" + ",\"cpuCount\":1.0,\"memoryMB\":128.0," 
             + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"%s\"}";
     
+    private static final String SPRING_JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.scheduler.state.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
+            + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
+            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"jobEventConfigs\":{\"log\":{}}" + ",\"cpuCount\":1.0,\"memoryMB\":128.0,"
+            + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"%s\",\"beanName\":\"springSimpleJob\","
+            + "\"applicationContext\":\"applicationContext.xml\"}";
+    
     public static String getJobJson() {
         return String.format(JOB_JSON, "test_job", "TRANSIENT");
     }
@@ -44,5 +50,9 @@ public final class CloudJsonConstants {
     
     public static String getJobJson(final JobExecutionType jobExecutionType) {
         return String.format(JOB_JSON, "test_job", jobExecutionType.name());
+    }
+    
+    public static String getSpringJobJson() {
+        return String.format(SPRING_JOB_JSON, "test_spring_job", "TRANSIENT");
     }
 }

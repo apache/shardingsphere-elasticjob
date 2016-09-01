@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 public final class BootstrapEnvironmentTest {
@@ -55,11 +55,14 @@ public final class BootstrapEnvironmentTest {
     }
     
     @Test
-    public void assertGetZookeeperConfiguration() {
+    public void assertGetZookeeperConfiguration() throws NoSuchFieldException {
+        Properties properties = new Properties();
+        properties.setProperty(EnvironmentArgument.ZOOKEEPER_DIGEST.getKey(), "test");
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
         ZookeeperConfiguration zkConfig = bootstrapEnvironment.getZookeeperConfiguration();
         assertThat(zkConfig.getServerLists(), is("localhost:2181"));
         assertThat(zkConfig.getNamespace(), is("elastic-job-cloud"));
-        assertNull(zkConfig.getDigest());
+        assertThat(zkConfig.getDigest(), is("test"));
     }
     
     @Test

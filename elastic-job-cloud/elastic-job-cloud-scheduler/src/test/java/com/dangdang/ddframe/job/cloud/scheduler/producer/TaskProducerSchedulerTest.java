@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.state.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.collect.Lists;

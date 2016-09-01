@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos.facade;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
@@ -137,15 +137,17 @@ public final class FacadeServiceTest {
     @Test
     public void assertAddRunning() {
         String taskNodeValue = TaskNode.builder().build().getTaskNodeValue();
-        facadeService.addRunning(TaskContext.from(taskNodeValue));
-        verify(runningService).add(TaskContext.from(taskNodeValue));
+        TaskContext taskContext = TaskContext.from(taskNodeValue);
+        facadeService.addRunning(taskContext);
+        verify(runningService).add(taskContext);
     }
     
     @Test
     public void assertRemoveRunning() {
         String taskNodePath = TaskNode.builder().build().getTaskNodePath();
-        facadeService.removeRunning(TaskContext.MetaInfo.from(taskNodePath));
-        verify(runningService).remove(TaskContext.MetaInfo.from(taskNodePath));
+        TaskContext.MetaInfo metaInfo = TaskContext.MetaInfo.from(taskNodePath);
+        facadeService.removeRunning(metaInfo);
+        verify(runningService).remove(metaInfo);
     }
     
     @Test
@@ -170,8 +172,9 @@ public final class FacadeServiceTest {
     public void assertRecordFailoverTaskWhenIsFailoverEnabled() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
-        facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(failoverService).add(TaskContext.from(taskNode.getTaskNodeValue()));
+        TaskContext taskContext = TaskContext.from(taskNode.getTaskNodeValue());
+        facadeService.recordFailoverTask(taskContext);
+        verify(failoverService).add(taskContext);
         verify(runningService).remove(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
     }
     

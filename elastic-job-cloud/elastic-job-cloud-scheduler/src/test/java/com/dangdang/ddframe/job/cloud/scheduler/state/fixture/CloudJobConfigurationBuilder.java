@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.cloud.scheduler.state.fixture;
 
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
@@ -56,4 +56,11 @@ public final class CloudJobConfigurationBuilder {
                 .jobEventConfiguration(rdbEventConfig, logEventConfig).build(), TestSimpleJob.class.getCanonicalName()),
                 1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
     }
+    
+    public static CloudJobConfiguration createCloudSpringJobConfiguration(final String jobName) {
+        return new CloudJobConfiguration(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 10).failover(true).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
+                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT, "springSimpleJob", "applicationContext.xml");
+    }
+    
 }

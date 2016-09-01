@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;

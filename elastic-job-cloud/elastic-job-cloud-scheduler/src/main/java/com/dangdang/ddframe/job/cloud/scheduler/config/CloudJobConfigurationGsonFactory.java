@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.util.AbstractJobConfigurationGsonTypeAdapter;
 import com.dangdang.ddframe.json.GsonFactory;

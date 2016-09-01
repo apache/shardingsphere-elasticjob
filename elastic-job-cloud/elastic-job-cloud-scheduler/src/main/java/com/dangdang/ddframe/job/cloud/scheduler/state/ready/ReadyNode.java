@@ -18,12 +18,15 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
 import com.dangdang.ddframe.job.cloud.scheduler.state.StateNode;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * 待运行作业队列节点路径.
  *
  * @author zhangliang
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class ReadyNode {
     
     static final String ROOT = StateNode.ROOT + "/ready";

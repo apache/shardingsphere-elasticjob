@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.state.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
@@ -62,6 +61,13 @@ public final class ConfigurationServiceTest {
     }
     
     @Test
+    public void assertAddSpringJob() {
+        CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudSpringJobConfiguration("test_spring_job");
+        configService.add(jobConfig);
+        verify(regCenter).persist("/config/test_spring_job", CloudJsonConstants.getSpringJobJson());
+    }
+    
+    @Test
     public void assertLoadAllWithoutRootNode() {
         when(regCenter.isExisted("/config")).thenReturn(false);
         assertTrue(configService.loadAll().isEmpty());
@@ -99,6 +105,16 @@ public final class ConfigurationServiceTest {
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
         assertTrue(actual.isPresent());
         assertThat(actual.get().getJobName(), is("test_job"));
+    }
+    
+    @Test
+    public void assertLoadWithSpringConfig() {
+        when(regCenter.isExisted("/config/test_spring_job")).thenReturn(true);
+        when(regCenter.get("/config/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
+        Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
+        assertTrue(actual.isPresent());
+        assertThat(actual.get().getBeanName(), is("springSimpleJob"));
+        assertThat(actual.get().getApplicationContext(), is("applicationContext.xml"));
     }
     
     @Test

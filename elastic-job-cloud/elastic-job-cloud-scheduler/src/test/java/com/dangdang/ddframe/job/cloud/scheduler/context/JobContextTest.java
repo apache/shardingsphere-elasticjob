@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.context;
 
-import com.dangdang.ddframe.job.cloud.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.state.fixture.CloudJobConfigurationBuilder;
 import org.junit.Test;
 

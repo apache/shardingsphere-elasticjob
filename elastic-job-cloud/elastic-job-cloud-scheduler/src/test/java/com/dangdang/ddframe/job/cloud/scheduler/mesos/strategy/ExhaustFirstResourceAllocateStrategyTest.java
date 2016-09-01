@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos.strategy;
 
-import com.dangdang.ddframe.job.cloud.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
