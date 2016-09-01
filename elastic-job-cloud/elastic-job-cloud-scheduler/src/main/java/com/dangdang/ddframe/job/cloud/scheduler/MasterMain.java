@@ -15,15 +15,22 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import org.apache.mesos.Protos;
 
-public class CloudJobMain {
+import com.dangdang.ddframe.job.cloud.scheduler.boot.MasterBootstrap;
+
+/**
+ * 启动入口.
+ */
+public final class MasterMain {
     
     // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON
-        JobBootstrap.execute();
+        MasterBootstrap bootstrap = new MasterBootstrap();
+        Protos.Status status = bootstrap.runAsDaemon();
+        System.exit(bootstrap.stop(status) ? 0 : -1);
     }
 }

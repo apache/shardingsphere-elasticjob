@@ -15,15 +15,28 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public class CloudJobMain {
+/**
+ * Mesos配置项.
+ *
+ * @author zhangliang
+ */
+@RequiredArgsConstructor
+@Getter
+public final class MesosConfiguration {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+    /**
+     * 框架名称.
+     */
+    public static final String FRAMEWORK_NAME = "Elastic-Job-Cloud";
+    
+    private final String user;
+    
+    private final String url;
+    
+    private final String hostname;
 }

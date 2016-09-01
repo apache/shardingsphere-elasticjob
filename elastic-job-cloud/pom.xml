@@ -11,7 +11,7 @@
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>elastic-job-cloud-scheduler</module>
         <module>elastic-job-cloud-executor</module>
+        <module>elastic-job-cloud-scheduler</module>
     </modules>
 </project>

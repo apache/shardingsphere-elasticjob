@@ -15,15 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class CloudJobMain {
-    
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.facade.FacadeServiceTest;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.strategy.ExhaustFirstResourceAllocateStrategyTest;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        HardwareResourceTest.class, 
+        FacadeServiceTest.class, 
+        ExhaustFirstResourceAllocateStrategyTest.class, 
+        SchedulerEngineTest.class
+    })
+public final class AllMesosTests {
 }

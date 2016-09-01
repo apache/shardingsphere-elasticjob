@@ -137,7 +137,7 @@ class JobEventRdbStorage {
     }
     
     private String getFailureCause(final String failureCause) {
-        return !Strings.isNullOrEmpty(failureCause) && failureCause.length() > 65535 ? failureCause.substring(0, 65534) : ""; 
+        return !Strings.isNullOrEmpty(failureCause) && failureCause.length() > 65535 ? failureCause.substring(0, 65534) : failureCause; 
     }
     
     private void createJobTraceTable() throws SQLException {

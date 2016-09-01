@@ -15,15 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.executor;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class CloudJobMain {
-    
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+@RunWith(Suite.class)
+@SuiteClasses({
+        CloudJobFacadeTest.class,
+        JobConfigurationContextTest.class
+    })
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AllCloudAPITests {
 }

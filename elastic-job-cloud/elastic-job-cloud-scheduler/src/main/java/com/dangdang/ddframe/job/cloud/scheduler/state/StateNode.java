@@ -15,15 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.state;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
-
-public class CloudJobMain {
+/**
+ * 状态根节点路径.
+ *
+ * @author zhangliang
+ */
+public final class StateNode {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+    /**
+     * 状态根节点.
+     */
+    public static final String ROOT = "/state";
 }

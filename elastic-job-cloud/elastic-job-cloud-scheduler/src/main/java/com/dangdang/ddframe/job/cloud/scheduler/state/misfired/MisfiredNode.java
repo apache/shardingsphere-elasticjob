@@ -15,15 +15,22 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.state.misfired;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import com.dangdang.ddframe.job.cloud.scheduler.state.StateNode;
 
-public class CloudJobMain {
+/**
+ * 错过执行的作业队列节点路径.
+ *
+ * @author zhangliang
+ */
+final class MisfiredNode {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
+    static final String ROOT = StateNode.ROOT + "/misfired";
+    
+    private static final String MISFIRED_JOB = ROOT + "/%s";
+    
+    static String getMisfiredJobNodePath(final String jobName) {
+        return String.format(MISFIRED_JOB, jobName);
     }
 }

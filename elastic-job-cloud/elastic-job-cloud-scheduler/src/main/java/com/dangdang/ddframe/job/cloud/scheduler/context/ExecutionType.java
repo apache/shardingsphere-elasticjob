@@ -15,15 +15,27 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.context;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
-
-public class CloudJobMain {
+/**
+ * 执行类型.
+ *
+ * @author zhangliang
+ */
+public enum ExecutionType {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+    /**
+     * 准备执行的任务.
+     */
+    READY,
+    
+    /**
+     * 错过执行的任务.
+     */
+    MISFIRED,
+    
+    /**
+     * 失效转移的任务.
+     */
+    FAILOVER
 }

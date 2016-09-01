@@ -15,15 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.rest;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
-
-public class CloudJobMain {
+/**
+ * REST API异常.
+ *
+ * @author zhangliang
+ */
+public final class RestfulException extends RuntimeException {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
+    private static final long serialVersionUID = -7594937349408972960L;
+    
+    public RestfulException(final Throwable cause) {
+        super(cause);
     }
 }

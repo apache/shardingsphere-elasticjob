@@ -15,15 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public class CloudJobMain {
+/**
+ * Restful服务器配置项.
+ *
+ * @author zhangliang
+ */
+@RequiredArgsConstructor
+@Getter
+public final class RestfulServerConfiguration {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+    private final int port;
 }

@@ -15,15 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.state.misfired;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import org.junit.Test;
 
-public class CloudJobMain {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class MisfiredNodeTest {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
+    @Test
+    public void assertGetMisfiredJobNodePath() {
+        assertThat(MisfiredNode.getMisfiredJobNodePath("test_job"), is("/state/misfired/test_job"));
     }
 }

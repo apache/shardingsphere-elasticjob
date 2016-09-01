@@ -15,15 +15,16 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.config;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class CloudJobMain {
-    
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        ConfigurationNodeTest.class,
+        ConfigurationServiceTest.class,
+        CloudJobConfigurationListenerTest.class
+    })
+public final class AllConfigTests {
 }

@@ -15,15 +15,27 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.mesos.strategy;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import org.apache.mesos.Protos;
 
-public class CloudJobMain {
+import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
+
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * 资源分配策略接口.
+ *
+ * @author zhangliang
+ */
+public interface ResourceAllocateStrategy {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+    /**
+     * 分配资源.
+     * 
+     * @param jobContexts 作业运行时上下文集合
+     * @return 分配的任务列表
+     */
+    List<Protos.TaskInfo> allocate(Collection<JobContext> jobContexts);
 }

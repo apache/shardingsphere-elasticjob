@@ -15,15 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.state.fixture;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.simple.SimpleJob;
 
-public class CloudJobMain {
+public final class TestSimpleJob implements SimpleJob {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
+    @Override
+    public void execute(final ShardingContext shardingContext) {
     }
 }

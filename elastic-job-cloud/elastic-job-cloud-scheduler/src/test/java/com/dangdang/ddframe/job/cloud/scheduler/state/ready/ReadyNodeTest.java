@@ -15,15 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import org.junit.Test;
 
-public class CloudJobMain {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class ReadyNodeTest {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
+    @Test
+    public void assertGetReadyJobNodePath() {
+        assertThat(ReadyNode.getReadyJobNodePath("test_job0000000001"), is("/state/ready/test_job0000000001"));
     }
 }

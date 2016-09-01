@@ -15,15 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class CloudJobMain {
-    
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        TaskProducerJobTest.class,
+        TaskProducerJobContextTest.class,
+        TaskProducerSchedulerTest.class,
+        TaskProducerSchedulerRegistryTest.class
+    })
+public final class AllProducerTests {
 }

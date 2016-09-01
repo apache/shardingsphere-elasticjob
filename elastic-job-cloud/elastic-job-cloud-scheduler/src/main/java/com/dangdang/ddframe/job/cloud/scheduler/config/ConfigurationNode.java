@@ -15,15 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.config;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
-
-public class CloudJobMain {
+/**
+ * 作业配置节点路径.
+ *
+ * @author zhangliang
+ */
+final class ConfigurationNode {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
+    static final String ROOT =  "/config";
+    
+    private static final String JOB_CONFIG =  ROOT + "/%s";
+    
+    static String getRootNodePath(final String jobName) {
+        return String.format(JOB_CONFIG, jobName);
     }
 }

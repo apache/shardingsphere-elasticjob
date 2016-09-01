@@ -15,15 +15,22 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
-import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
+import com.dangdang.ddframe.job.cloud.scheduler.state.StateNode;
 
-public class CloudJobMain {
+/**
+ * 待运行作业队列节点路径.
+ *
+ * @author zhangliang
+ */
+final class ReadyNode {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-    // CHECKSTYLE:ON
-        JobBootstrap.execute();
+    static final String ROOT = StateNode.ROOT + "/ready";
+    
+    private static final String READY_JOB = ROOT + "/%s";
+    
+    static String getReadyJobNodePath(final String jobName) {
+        return String.format(READY_JOB, jobName);
     }
 }
