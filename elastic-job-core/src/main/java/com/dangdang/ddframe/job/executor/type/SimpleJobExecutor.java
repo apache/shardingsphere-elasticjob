@@ -19,14 +19,8 @@ package com.dangdang.ddframe.job.executor.type;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.executor.JobFacade;
-import com.dangdang.ddframe.job.executor.ShardingContexts;
-
-import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * 简单作业执行器.
@@ -43,38 +37,7 @@ public final class SimpleJobExecutor extends AbstractElasticJobExecutor {
     }
     
     @Override
-    protected void process(final ShardingContexts shardingContexts) {
-        Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
-        if (1 == items.size()) {
-            process(new ShardingContext(shardingContexts, shardingContexts.getShardingItemParameters().keySet().iterator().next()));
-            return;
-        }
-        final CountDownLatch latch = new CountDownLatch(items.size());
-        for (final int each : items) {
-            getExecutorService().submit(new Runnable() {
-                
-                @Override
-                public void run() {
-                    try {
-                        process(new ShardingContext(shardingContexts, each));
-                    } finally {
-                        latch.countDown();
-                    }
-                }
-            });
-        }
-        latchAwait(latch);
-    }
-    
-    private void process(final ShardingContext shardingContext) {
-        try {
-            simpleJob.execute(shardingContext);
-            JobEventBus.getInstance().post(getJobName(), 
-                    new JobTraceEvent(getJobName(), JobTraceEvent.LogLevel.TRACE, String.format("Execute simple job item is: '%s'.", shardingContext.getShardingItem())));
-            // CHECKSTYLE:OFF
-        } catch (final Throwable ex) {
-            // CHECKSTYLE:ON
-            getJobExceptionHandler().handleException(getJobName(), ex);
-        }
+    protected void process(final ShardingContext shardingContext) {
+        simpleJob.execute(shardingContext);
     }
 }

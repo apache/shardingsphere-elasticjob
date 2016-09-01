@@ -51,19 +51,19 @@ public final class JobEventLogListenerTest {
     
     @Test
     public void assertPostJobExecutionEventWhenStart() {
-        JobEventBus.getInstance().post(JOB_NAME, new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, Collections.<Integer>emptyList()));
+        JobEventBus.getInstance().post(JOB_NAME, new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
     }
     
     @Test
     public void assertPostJobExecutionEventWhenCompleteWithSuccess() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, Collections.<Integer>emptyList());
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobExecutionEvent.executionSuccess();
         JobEventBus.getInstance().post(JOB_NAME, jobExecutionEvent);
     }
     
     @Test
     public void assertPostJobExecutionEventWhenCompleteWithFailure() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, Collections.<Integer>emptyList());
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobExecutionEvent.executionFailure(new RuntimeException("test"));
         JobEventBus.getInstance().post(JOB_NAME, jobExecutionEvent);
     }

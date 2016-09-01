@@ -20,15 +20,14 @@ package com.dangdang.ddframe.job.event;
 import com.dangdang.ddframe.job.event.JobExecutionEvent.ExecutionSource;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
-import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
+import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -54,7 +53,7 @@ public final class JobEventBusTest {
     @Test
     public void assertPostWithoutListenerRegistered() {
         jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0));
         verify(jobEventCaller, times(0)).call();
     }
     
@@ -62,7 +61,7 @@ public final class JobEventBusTest {
     public void assertPostWithListenerRegistered() throws InterruptedException {
         registerEventConfigs();
         jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
             Thread.sleep(100L);
         }
@@ -74,7 +73,7 @@ public final class JobEventBusTest {
         registerEventConfigs();
         registerEventConfigs();
         jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, Arrays.asList(0, 1)));
+        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
             Thread.sleep(100L);
         }

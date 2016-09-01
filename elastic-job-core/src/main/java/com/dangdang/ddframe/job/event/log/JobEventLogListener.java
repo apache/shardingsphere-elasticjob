@@ -65,19 +65,19 @@ public final class JobEventLogListener extends JobEventLogIdentity implements Jo
     public void listen(final JobExecutionEvent jobExecutionEvent) {
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
         if (null == jobExecutionEvent.getCompleteTime()) {
-            String msg = "Elastic-Job execution start => jobName: '{}', hostname: '{}', shardingItems: '{}', executionSource: '{}', startTime: '{}'";
-            log.info(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItems(), jobExecutionEvent.getSource(),
+            String msg = "Elastic-Job execution start => jobName: '{}', hostname: '{}', shardingItem: '{}', executionSource: '{}', startTime: '{}'";
+            log.info(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItem(), jobExecutionEvent.getSource(),
                     format.format(jobExecutionEvent.getStartTime()));
             return;
         }
         if (jobExecutionEvent.isSuccess()) {
-            String msg = "Elastic-Job execution success => jobName: '{}', hostname: '{}', shardingItems: '{}', executionSource: '{}', startTime: '{}', completeTime: '{}'";
-            log.info(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItems(), jobExecutionEvent.getSource(),
+            String msg = "Elastic-Job execution success => jobName: '{}', hostname: '{}', shardingItem: '{}', executionSource: '{}', startTime: '{}', completeTime: '{}'";
+            log.info(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItem(), jobExecutionEvent.getSource(),
                     format.format(jobExecutionEvent.getStartTime()), format.format(jobExecutionEvent.getCompleteTime()));
             return;
         }
-        String msg = "Elastic-Job execution failure => jobName: '{}', hostname: '{}', shardingItems: '{}', executionSource: '{}', startTime: '{}', completeTime: '{}', failureCause: '{}'";
-        log.error(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItems(), jobExecutionEvent.getSource(),
+        String msg = "Elastic-Job execution failure => jobName: '{}', hostname: '{}', shardingItem: '{}', executionSource: '{}', startTime: '{}', completeTime: '{}', failureCause: '{}'";
+        log.error(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItem(), jobExecutionEvent.getSource(),
                 format.format(jobExecutionEvent.getStartTime()), format.format(jobExecutionEvent.getCompleteTime()), jobExecutionEvent.getFailureCause());
     }
 }

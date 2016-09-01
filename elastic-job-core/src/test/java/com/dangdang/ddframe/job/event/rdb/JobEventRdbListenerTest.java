@@ -69,7 +69,7 @@ public final class JobEventRdbListenerTest {
     
     @Test
     public void assertPostJobExecutionEvent() {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, Collections.<Integer>emptyList());
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobEventBus.getInstance().post(JOB_NAME, jobExecutionEvent);
         verify(repository).addJobExecutionEvent(jobExecutionEvent);
     }

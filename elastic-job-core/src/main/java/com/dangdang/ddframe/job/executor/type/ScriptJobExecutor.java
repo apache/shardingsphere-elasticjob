@@ -18,13 +18,10 @@
 package com.dangdang.ddframe.job.executor.type;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.executor.JobFacade;
-import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.json.GsonFactory;
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
@@ -32,8 +29,6 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.Executor;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * 脚本作业执行器.
@@ -51,32 +46,12 @@ public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
     }
     
     @Override
-    protected void process(final ShardingContexts shardingContexts) {
+    protected void process(final ShardingContext shardingContext) {
         final String scriptCommandLine = ((ScriptJobConfiguration) getJobRootConfig().getTypeConfig()).getScriptCommandLine();
         if (Strings.isNullOrEmpty(scriptCommandLine)) {
-            getJobExceptionHandler().handleException(getJobName(), new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", shardingContexts.getJobName()));
-            return;
+            throw new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", shardingContext.getJobName());
         }
-        Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
-        if (1 == items.size()) {
-            executeScript(new ShardingContext(shardingContexts, shardingContexts.getShardingItemParameters().keySet().iterator().next()), scriptCommandLine);
-            return;
-        }
-        final CountDownLatch latch = new CountDownLatch(items.size());
-        for (final int each : items) {
-            getExecutorService().submit(new Runnable() {
-                
-                @Override
-                public void run() {
-                    try {
-                        executeScript(new ShardingContext(shardingContexts, each), scriptCommandLine);
-                    } finally {
-                        latch.countDown();
-                    }
-                }
-            });
-        }
-        latchAwait(latch);
+        executeScript(shardingContext, scriptCommandLine);
     }
     
     private void executeScript(final ShardingContext shardingContext, final String scriptCommandLine) {
@@ -84,9 +59,8 @@ public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
         commandLine.addArgument(GsonFactory.getGson().toJson(shardingContext), false);
         try {
             executor.execute(commandLine);
-            JobEventBus.getInstance().post(getJobName(), new JobTraceEvent(getJobName(), JobTraceEvent.LogLevel.TRACE, String.format("Execute script: '%s'.", commandLine)));
         } catch (final IOException ex) {
-            getJobExceptionHandler().handleException(getJobName(), ex);
+            throw new JobConfigurationException("Execute script failure.", ex);
         }
     }
 }

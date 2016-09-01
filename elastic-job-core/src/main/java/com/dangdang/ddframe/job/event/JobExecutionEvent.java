@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
@@ -46,7 +45,7 @@ public class JobExecutionEvent {
     
     private final ExecutionSource source;
     
-    private final Collection<Integer> shardingItems;
+    private final int shardingItem;
     
     private final Date startTime = new Date();
     

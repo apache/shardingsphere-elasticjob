@@ -127,7 +127,7 @@ public final class DataflowJobExecutorTest {
         doThrow(new IllegalStateException()).when(jobCaller).processData(2);
         dataflowJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
-        verify(jobCaller, times(2)).fetchData(1);
+        verify(jobCaller, times(1)).fetchData(1);
         verify(jobCaller).processData(1);
         verify(jobCaller).processData(2);
         verify(jobCaller, times(0)).processData(3);
@@ -143,7 +143,7 @@ public final class DataflowJobExecutorTest {
         doThrow(new IllegalStateException()).when(jobCaller).processData(4);
         dataflowJobExecutor.execute();
         verify(jobCaller, times(2)).fetchData(0);
-        verify(jobCaller, times(2)).fetchData(1);
+        verify(jobCaller, times(1)).fetchData(1);
         verify(jobCaller).processData(1);
         verify(jobCaller).processData(2);
         verify(jobCaller).processData(3);

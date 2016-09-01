@@ -80,7 +80,7 @@ class JobEventRdbStorage {
     boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         if (null == jobExecutionEvent.getCompleteTime()) {
-            String sql = "INSERT INTO `JOB_EXECUTION_LOG` (`id`, `job_name`, `hostname`, `sharding_items`, `execution_source`, `is_success`, `start_time`) "
+            String sql = "INSERT INTO `JOB_EXECUTION_LOG` (`id`, `job_name`, `hostname`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
@@ -88,7 +88,7 @@ class JobEventRdbStorage {
                 preparedStatement.setString(1, jobExecutionEvent.getId());
                 preparedStatement.setString(2, jobExecutionEvent.getJobName());
                 preparedStatement.setString(3, jobExecutionEvent.getHostname());
-                preparedStatement.setString(4, jobExecutionEvent.getShardingItems().toString());
+                preparedStatement.setInt(4, jobExecutionEvent.getShardingItem());
                 preparedStatement.setString(5, jobExecutionEvent.getSource().toString());
                 preparedStatement.setBoolean(6, jobExecutionEvent.isSuccess());
                 preparedStatement.setTimestamp(7, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
@@ -144,7 +144,7 @@ class JobEventRdbStorage {
         String dbSchema = "CREATE TABLE IF NOT EXISTS `JOB_TRACE_LOG` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
-                + "`hostname` VARCHAR(100) NOT NULL, "
+                + "`hostname` VARCHAR(255) NOT NULL, "
                 + "`message` VARCHAR(2000) NOT NULL, "
                 + "`failure_cause` TEXT NULL, "
                 + "`creation_time` TIMESTAMP NOT NULL, "
@@ -160,8 +160,8 @@ class JobEventRdbStorage {
         String dbSchema = "CREATE TABLE IF NOT EXISTS `JOB_EXECUTION_LOG` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
-                + "`hostname` VARCHAR(50) NOT NULL, "
-                + "`sharding_items` VARCHAR(500) NOT NULL, "
+                + "`hostname` VARCHAR(255) NOT NULL, "
+                + "`sharding_item` INT NOT NULL, "
                 + "`execution_source` VARCHAR(20) NOT NULL, "
                 + "`failure_cause` TEXT NULL, "
                 + "`is_success` BIT NOT NULL, "

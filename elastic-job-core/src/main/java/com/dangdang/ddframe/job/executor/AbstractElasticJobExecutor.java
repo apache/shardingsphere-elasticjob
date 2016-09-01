@@ -17,19 +17,21 @@
 
 package com.dangdang.ddframe.job.executor;
 
+import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
-import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.job.executor.handler.ExecutorServiceHandler;
-import com.dangdang.ddframe.job.executor.handler.JobExceptionHandler;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
+import com.dangdang.ddframe.job.exception.JobSystemException;
+import com.dangdang.ddframe.job.executor.handler.ExecutorServiceHandler;
+import com.dangdang.ddframe.job.executor.handler.JobExceptionHandler;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -124,33 +126,43 @@ public abstract class AbstractElasticJobExecutor {
             //CHECKSTYLE:ON
             jobExceptionHandler.handleException(jobName, cause);
         }
-        jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, "Execute all completed."));
+        jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, "Job execute completed."));
     }
     
     private void execute(final ShardingContexts shardingContexts, final JobExecutionEvent.ExecutionSource executionSource) {
         if (shardingContexts.getShardingItemParameters().isEmpty()) {
-            jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Sharding item is empty, job execution context:%s.", shardingContexts)));
+            jobEventBus.post(jobName, new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Sharding item is empty, job execution context: '%s'.", shardingContexts)));
             return;
         }
         jobFacade.registerJobBegin(shardingContexts);
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, shardingContexts.getShardingItemParameters().keySet());
         try {
-            jobEventBus.post(jobName, jobExecutionEvent);
-            process(shardingContexts);
-            jobExecutionEvent.executionSuccess();
-            //CHECKSTYLE:OFF
-        } catch (final Throwable cause) {
-            //CHECKSTYLE:ON
-            jobExecutionEvent.executionFailure(cause);
-            jobExceptionHandler.handleException(jobName, cause);
+            process(shardingContexts, executionSource);
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             jobFacade.registerJobCompleted(shardingContexts);
-            jobEventBus.post(jobName, jobExecutionEvent);
         }
     }
     
-    protected void latchAwait(final CountDownLatch latch) {
+    private void process(final ShardingContexts shardingContexts, final JobExecutionEvent.ExecutionSource executionSource) {
+        Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
+        if (1 == items.size()) {
+            process(shardingContexts, shardingContexts.getShardingItemParameters().keySet().iterator().next(), executionSource);
+            return;
+        }
+        final CountDownLatch latch = new CountDownLatch(items.size());
+        for (final int each : items) {
+            getExecutorService().submit(new Runnable() {
+                
+                @Override
+                public void run() {
+                    try {
+                        process(shardingContexts, each, executionSource);
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
+        }
         try {
             latch.await();
         } catch (final InterruptedException ex) {
@@ -158,5 +170,23 @@ public abstract class AbstractElasticJobExecutor {
         }
     }
     
-    protected abstract void process(final ShardingContexts shardingContexts);
+    private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent.ExecutionSource executionSource) {
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, item);
+        jobEventBus.post(jobName, jobExecutionEvent);
+        jobEventBus.post(jobName, new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executing, item is: '%s'.", item)));
+        try {
+            process(new ShardingContext(shardingContexts, item));
+            jobExecutionEvent.executionSuccess();
+            jobEventBus.post(jobName, new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executed, item is: '%s'.", item)));
+            // CHECKSTYLE:OFF
+        } catch (final Throwable ex) {
+            // CHECKSTYLE:ON
+            jobExecutionEvent.executionFailure(ex);
+            jobExceptionHandler.handleException(jobName, ex);
+        } finally {
+            jobEventBus.post(jobName, jobExecutionEvent);
+        }
+    }
+    
+    protected abstract void process(ShardingContext shardingContext);
 }
