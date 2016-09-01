@@ -42,7 +42,7 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 # Architecture
 
-## Elastic-job-Lite
+## Elastic-Job-Lite
 
 ![Elastic-Job-Lite Architecture](img/architecture/elastic_job_lite.png)
 

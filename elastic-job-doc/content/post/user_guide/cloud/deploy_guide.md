@@ -1,42 +1,79 @@
 
 +++
 date = "2016-01-27T16:14:21+08:00"
-title = "部署指南"
-weight=12
+title = "Elastic-Job-Cloud部署指南"
+weight=53
 +++
 
-# 部署指南
+# Elastic-Job-Cloud部署指南
 
-## Elastic-Job-Cloud
+## 部署步骤
 
-1. 启动`Elastic-Job-Cloud`和`Mesos`指定注册中心的`Zookeeper`。
+1. 启动`Zookeeper`, `Mesos Master/Agent`以及`Elastic-Job-Cloud-Scheduler`。
 
-2. 启动`Mesos Master`和`Mesos Agent`。
+2. 将打包之后的作业`tar.gz`文件放至网络可访问的位置，如：`ftp`或`http`。打包的`tar.gz`文件中`Main`方法需要调用`Elastic-Job-Cloud`提供的`JobBootstrap.execute`方法。
 
-3. 解压并启动`elastic-job-cloud-scheduler-${version}.tar.gz`。可通过源码`mvn install`编译获取。
+3. 使用`curl`命令调用`RESTful API`注册作业。
 
-4. 将打包之后的作业`tar.gz`文件放至网络可访问的位置，如：`ftp`或`http`。打包的`tar.gz`文件中`Main`方法需要调用`Elastic-Job-Lite`提供的`Bootstrap.execute`方法。
+## RESTful API
 
-5. 使用curl命令注册待运行作业至`Elastic-Job-Cloud`。
+`Elastic-Job-Cloud`提供作业注册/注销`Restful API`。可通过`curl`操作。
 
-`curl -l -H "Content-type: application/json" -X POST -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"misfire":true} 
-http://elastic_job_cloud_masterhost:8899/job/register`
+### 注册作业
 
-## 附录：Elastic-Job-Cloud-Master启动指南
+url：`job/register`
 
-1. 启动：解压缩`elastic-job-cloud-scheduler-${version}.tar.gz`并执行`bin\start.sh`脚本。
+方法：`POST`
 
-2. 停止：不提供停止脚本，可直接使用`kill`杀进程。
+参数类型：`application/json`
 
-3. 配置：修改`conf\elastic-job-cloud.properties`文件。配置项说明如下：
+参数列表：
 
-| 属性名称                          | 必填     | 默认值                      | 描述                                                      |
-| -------------------------------- |:--------|:----------------------------|:---------------------------------------------------------|
-| hostname                         | `是`    |                             | 服务器真实的`IP`或`hostname`，不能是`127.0.0.1`或`localhost` |
-| user                             | 否      |                             | `Mesos framework`使用的用户名称                            |
-| mesos_url                        | `是`    | `zk://127.0.0.1:2181/mesos` | `Mesos`所使用的`Zookeeper`地址                             |
-| zk_servers                       | `是`    | `127.0.0.1:2181`            | `Elastic-Job-Cloud`所使用的`Zookeeper`地址                 |
-| zk_namespace                     | 否      | `elastic-job-cloud`         | `Elastic-Job-Cloud`所使用的`Zookeeper`命名空间              |
-| zk_digest                        | 否      |                             | `Elastic-Job-Cloud`所使用的`Zookeeper`登录凭证              |
-| http_port                        | `是`    | `8899`                      | 作业操作的`Restful API`所使用的端口号                        |
+| 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
+| -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
+|jobName                             |String |`是`    |       | 作业名称。为`Elastic-Job-Cloud`的作业唯一标识                                        |
+|jobClass                            |String |`是`    |       | 作业实现类                                                                         |
+|jobExecutionType                    |Enum   |`是`    |       | 作业执行类型。`TRANSIENT`为瞬时作业，`DAEMON`为常驻作业                                |
+|cron                                |String |`是`    |       | `cron`表达式，用于配置作业触发时间                                                    |
+|shardingTotalCount                  |int    |`是`    |       | 作业分片总数                                                                        |
+|cpuCount                            |double |`是`    |       | 单片作业所需要的`CPU`数量                                                            |
+|memoryMB                            |double |`是`    |       | 单片作业所需要的内存`MB`                                                             |
+|appURL                              |String |`是`    |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
+|failover                            |boolean|否      |`false`| 是否开启失效转移                                                                    |
+|misfire                             |boolean|否      |`false`| 是否开启错过任务重新执行                                                             |
+|beanName                            |String |否      |       | `Spring`容器中配置的`bean`名称                                                      |
+|applicationContext                  |String |否      |       | `Spring`方式配置`Spring`配置文件相对路径以及名称，如：`META-INF\applicationContext.xml`|
+|jobEventConfigs                     |String |否      |       | 作业事件配置，目前可配置`log`和`rdb`监听器，如:`{"log":{},{"rdb":{"driverClassName":"com.mysql.jdbc.Driver", "url":"jdbc:mysql://your_host:3306/elastic_job_log", "username":"root", "password":"", logLevel:"WARN"}}`|
+
+注册的作业可用`Java`和`Spring`两种启动方式，作业启动在[开发指南](../dev_guide/)中有说明，这里只举例说明两种方式如何注册。
+
+**Java启动方式作业注册**
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"jobName":"foo_job","jobClass":"yourJobClass","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true}' 
+http://elastic_job_cloud_host:8899/job/register
+```
+
+**Spring启动方式作业注册**
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"jobName":"foo_job","jobClass":"yourJobClass","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobExecutionType":"TRANSIENT",
+"cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"misfire":true}' 
+http://elastic_job_cloud_masterhost:8899/job/register
+```
+
+### 注销作业
+
+url：`job/unregister`
+
+方法：`DELETE`
+
+参数类型：`application/text`
+
+参数：作业名称
+
+```shell
+curl -l -H "Content-type: application/text" -X DELETE -d 'foo_job' http://elastic_job_cloud_host:8899/job/unregister
+```

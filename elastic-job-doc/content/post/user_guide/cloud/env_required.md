@@ -1,7 +1,7 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
-title = "环境需求"
-weight=10
+title = "Elastic-Job-Cloud环境需求"
+weight=51
 +++
 
 # 环境需求

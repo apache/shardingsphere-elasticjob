@@ -1,10 +1,10 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
-title = "环境需求"
-weight=10
+title = "Elastic-Job-Lite环境需求"
+weight=11
 +++
 
-# 环境需求
+# Elastic-Job-Lite环境需求
 
 ## Java
 

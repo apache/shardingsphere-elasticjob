@@ -1,9 +1,25 @@
 # Roadmap
 
+## Common
+- [x] Unify Job Config API
+    - [x] Core Config
+    - [x] Type Config
+    - [x] Root Config
+- [x] Job Types
+    - [x] Simple
+    - [x] Dataflow
+    - [x] Script
+    - [ ] Http
+- [x] Event Trace
+    - [x] Event Publisher
+    - [x] Log Event Listener
+    - [x] Database Event Listener
+    - [ ] Other Event Listener
+
 ## Elastic-Job-Lite
 - [x] Distributed Features
     - [x] High Availability
-    - [x] LeaderShip Election
+    - [x] Leadership Election
     - [x] Elastic scale in/out
     - [x] Failover
     - [x] Misfire
@@ -11,7 +27,8 @@
 - [x] Registry Center
     - [x] Zookeeper
     - [ ] Health Detection
-- [x] Lifecycle Operation
+    - [ ] Other Registry Center Supported
+- [x] Lifecycle Management
     - [x] Add/Remove
     - [x] Pause/Resume
     - [x] Disable/Enable
@@ -20,54 +37,47 @@
 - [x] Job Dependency
     - [x] Listener
     - [ ] Workflow
-- [x] Job Types
-    - [x] Simple
-    - [x] Data Flow
-    - [x] Script
-    - [ ] Http
+    - [ ] DAG
 - [x] Spring Integrate
+    - [x] Namespace
+    - [x] Bean Injection
 - [x] Web Console
 
 ## Elastic-Job-Cloud
-- [x] Job Distributed Features
-    - [X] High Availability
+- [x] Transient Job
+    - [x] High Availability
     - [x] Elastic scale in/out
     - [x] Failover
     - [x] Misfire
     - [x] Idempotency
-- [x] Mesos Framework Distributed Features
-    - [ ] High Availability
-    - [ ] LeaderShip Election
-- [x] Registry Center
-    - [x] Zookeeper
+- [x] Daemon Job
+    - [x] High Availability
+    - [x] Elastic scale in/out
+    - [ ] Failover
+    - [ ] Misfire
+    - [x] Idempotency
+- [ ] Mesos Scheduler
+    - [ ] Leadership Election
+- [ ] Mesos Executor
+    - [ ] Progress Reporting
+    - [ ] Multiple Tasks
     - [ ] Health Detection
-- [x] Lifecycle Operation
+    - [ ] Log Redirect
+- [x] Lifecycle Management
     - [x] Add/Remove
     - [ ] Pause/Resume
     - [ ] Disable/Enable
-    - [x] Shutdown
+    - [ ] Shutdown
     - [x] Restful API
 - [ ] Job Dependency
     - [ ] Listener
     - [ ] Workflow
-- [x] Job Types
-    - [x] Simple
-    - [ ] Data Flow
-    - [ ] Script
-    - [ ] Http
+    - [ ] DAG
 - [x] Job Distribution
     - [x] Mesos Based Distribution
     - [ ] Docker Based Distribution
 - [x] Resource Management
     - [x] Resources Allocate
-    - [x] Transient Job
-    - [ ] Daemon Job
     - [ ] Cross Data Center
-- [ ] Spring Integrate
+- [x] Spring Integrate
 - [ ] Web Console
-
-## Common
-- [ ] Unify Job API
-- [ ] Monitor
-    - [ ] Events Database
-    - [ ] ELK Integrate

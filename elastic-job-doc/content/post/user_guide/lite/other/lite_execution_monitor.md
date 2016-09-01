@@ -1,7 +1,7 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "Elastic-Job-Lite作业运行状态监控"
-weight=23
+weight=22
 +++
 
 # Elastic-Job-Lite作业运行状态监控

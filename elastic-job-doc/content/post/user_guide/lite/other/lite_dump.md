@@ -1,7 +1,7 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "Elastic-Job-Lite dump作业运行信息"
-weight=25
+weight=24
 +++
 
 # Elastic-Job-Lite dump作业运行信息

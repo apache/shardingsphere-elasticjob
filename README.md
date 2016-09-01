@@ -14,7 +14,7 @@
 Elastic-Job is a distributed scheduled job solution. Elastic-Job is composited from 2 independent sub projects: Elastic-Job-Lite and Elastic-Job-Cloud.
 
 Elastic-Job-Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs.
-Elastic-Job-Cloud is a Mesos framework which use Mesos + Docker to manage and isolate resources and processes.
+Elastic-Job-Cloud is a Mesos framework which use Mesos + Docker(todo) to manage and isolate resources and processes.
 
 Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need code one time, then decide to deploy Lite or Cloud as you want.
 
@@ -43,7 +43,7 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 # Architecture
 
-## Elastic-job-Lite
+## Elastic-ob-Lite
 
 ![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_lite.png)
 ***

@@ -1,7 +1,7 @@
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "Elastic-Job-Lite作业分片策略"
-weight=24
+weight=23
 +++
 
 # Elastic-Job-Lite作业分片策略

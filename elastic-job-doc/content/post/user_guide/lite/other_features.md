@@ -1,11 +1,11 @@
 
 +++
 date = "2016-01-27T16:14:21+08:00"
-title = "其他功能"
-weight=13
+title = "Elastic-Job-Lite其他功能"
+weight=14
 +++
 
-# 其他功能
+# Elastic-Job-Lite其他功能
 
 ## [作业操作API](../other/lite_job_operate_api/)
 

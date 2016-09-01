@@ -1,11 +1,11 @@
 
 +++
 date = "2016-01-27T16:14:21+08:00"
-title = "部署指南"
-weight=12
+title = "Elastic-Job-Lite部署指南"
+weight=13
 +++
 
-# 部署指南
+# Elastic-Job-Lite部署指南
 
 ## Elastic-Job-Lite
 

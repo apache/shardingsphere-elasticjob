@@ -12,7 +12,7 @@
 Elastic-Job是一个分布式调度解决方案，由两个相互独立的子项目Elastic-Job-Lite和Elastic-Job-Cloud组成。
 
 Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形式提供分布式任务的协调服务。
-Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。
+Elastic-Job-Cloud使用Mesos + Docker(TBD)的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。
 
 Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者仅需一次开发，即可根据需要以Lite或Cloud的方式部署。
 
@@ -30,7 +30,7 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ### 2. 分片项与业务处理解耦
 
-`Elastic-job`并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器，开发者需要自行处理分片项与真实数据的对应关系。
+`Elastic-ob`并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器，开发者需要自行处理分片项与真实数据的对应关系。
 
 ### 3. 个性化参数的适用场景
 
@@ -44,19 +44,19 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ### 1. 分布式调度
 
-`Elastic-job-Lite`并无作业调度中心节点，而是基于部署作业框架的程序在到达相应时间点时各自触发调度。
+`Elastic-Job-Lite`并无作业调度中心节点，而是基于部署作业框架的程序在到达相应时间点时各自触发调度。
 
 注册中心仅用于作业注册和监控信息存储。而主作业节点仅用于处理分片和清理等功能。
 
 ### 2. 作业高可用
 
-`Elastic-job-Lite`提供最安全的方式执行作业。将分片总数设置为`1`，并使用多于`1`台的服务器执行作业，作业将会以`1`主`n`从的方式执行。
+`Elastic-Job-Lite`提供最安全的方式执行作业。将分片总数设置为`1`，并使用多于`1`台的服务器执行作业，作业将会以`1`主`n`从的方式执行。
 
 一旦执行作业的服务器崩溃，等待执行的服务器将会在下次作业启动时替补执行。开启失效转移功能效果更好，可以保证在本次作业执行时崩溃，备机立即启动替补执行。
 
 ### 3. 最大限度利用资源
 
-`Elastic-job-Lite`也提供最灵活的方式，最大限度的提高执行作业的吞吐量。将分片项设置为大于服务器的数量，最好是大于服务器倍数的数量，作业将会合理的利用分布式资源，动态的分配分片项。
+`Elastic-Job-Lite`也提供最灵活的方式，最大限度的提高执行作业的吞吐量。将分片项设置为大于服务器的数量，最好是大于服务器倍数的数量，作业将会合理的利用分布式资源，动态的分配分片项。
 
 例如：`3`台服务器，分成`10`片，则分片项分配结果为服务器`A=0,1,2`;服务器`B=3,4,5`;服务器`C=6,7,8,9`。
 如果服务器`C`崩溃，则分片项分配结果为服务器`A=0,1,2,3,4`;服务器`B=5,6,7,8,9`。在不丢失分片项的情况下，最大限度的利用现有资源提高吞吐量。
@@ -65,15 +65,15 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ### 1. 分布式调度
 
-`Elastic-job-Cloud`采用`Mesos Framework`分片和协调作业调度。采用中心化调度实现难度小于`Elastic-job-Lite`的无中心化调度，无需再考虑多线程并发的情况。
+`Elastic-Job-Cloud`采用`Mesos Framework`分片和协调作业调度。采用中心化调度实现难度小于`Elastic-Job-Lite`的无中心化调度，无需再考虑多线程并发的情况。
 
 ### 2. 作业高可用
 
-`Elastic-job-Cloud`由`Mesos Framework`负责作业高可用和分片。作业丢失会由`Mesos Framework`自动在另外的`Agent`上重新启动作业分片实例。
+`Elastic-Job-Cloud`由`Mesos Framework`负责作业高可用和分片。作业丢失会由`Mesos Framework`自动在另外的`Agent`上重新启动作业分片实例。
 
 ### 3. 弹性资源利用
 
-`Elastic-job-Cloud`分为`2`种作业运行模式：瞬时作业 和 常驻作业。
+`Elastic-Job-Cloud`分为`2`种作业运行模式：瞬时作业 和 常驻作业。
 
 瞬时作业会在每一次作业执行完毕后立刻释放资源，保证利用现有资源错峰执行。资源分配和容器启动均占用一定时长，且作业执行时资源不一定充足，因此作业执行会有延迟。瞬时作业适用于间隔时间长，资源消耗多且对执行时间无严格要求的作业。
 
@@ -99,7 +99,6 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 * 弹性资源分配
 * 应用自动分发
 * 基于Docker的进程隔离(TBD)
-* Maven部署插件
 
 ***
 
@@ -107,7 +106,7 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 # Architecture
 
-## Elastic-job-Lite
+## Elastic-Job-Lite
 
 ![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_lite.png)
 
@@ -192,7 +191,7 @@ public class MyElasticJob implements SimpleJob {
 
 ## 2. Elastic-Job-Cloud
    * [使用指南](http://dangdangdotcom.github.io/elastic-job/post/user_guide/cloud/cloud_index)
-   * 实现原理
+   * 实现原理(TBD)
 
 ## 3. [FAQ](http://dangdangdotcom.github.io/elastic-job/post/faq/)
 

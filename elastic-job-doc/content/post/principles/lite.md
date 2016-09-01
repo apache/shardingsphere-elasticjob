@@ -1,7 +1,7 @@
 +++
 date = "2016-01-28T16:14:21+08:00"
 title = "Elastic-Job-Lite实现原理"
-weight=30
+weight=80
 +++
 
 # Elastic-Job-Lite实现原理
@@ -53,7 +53,7 @@ weight=30
 | streamingProcess                 | 是否流式处理数据<br />如果流式处理数据，则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
 | jobShardingStrategyClass         | 作业分片策略类的全路径                                                                                                     |
 | scriptCommandLine                | `SCRIPT`型作业作业执行命令行                                                                                               |
-| jobEventConfigs                  | 作业执行事件追踪,可配置log,`rdb`两种方式,`rdb`方式需配置`driverClassName`,`url`,'username`,`password`,`logLevel`              |
+| jobEventConfigs                  | 作业执行事件追踪,可配置`log,rdb`两种方式,`rdb`方式需配置`driverClassName`,`url`,`username`,`password`,`logLevel`              |
 | jobProperties                    | 作业定制化属性，目前支持`job_exception_handler`和`executor_service_handler`，用于扩展异常处理和自定义作业处理线程池               |
 
 ### servers节点

@@ -1,8 +1,8 @@
 
 +++
 date = "2016-08-27T16:14:21+08:00"
-title = "Elastic-Job-Cloud使用指南"
-weight=9
+title = "Elastic-Job-Lite使用指南"
+weight=10
 +++
 
 # Elastic-Job-Lite使用指南
