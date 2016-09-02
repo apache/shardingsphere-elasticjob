@@ -58,9 +58,6 @@ public final class RestfulServer {
         result.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", Boolean.TRUE.toString());
         result.setInitParameter("resteasy.scan.providers", Boolean.TRUE.toString());
         result.setInitParameter("resteasy.use.builtin.providers", Boolean.FALSE.toString());
-    
-    
-        
         return result;
     }
     
