@@ -40,11 +40,12 @@ import java.util.concurrent.ExecutorService;
  *
  * @author zhangliang
  */
-@Getter(AccessLevel.PROTECTED)
 public abstract class AbstractElasticJobExecutor {
     
+    @Getter(AccessLevel.PROTECTED)
     private final JobFacade jobFacade;
     
+    @Getter(AccessLevel.PROTECTED)
     private final JobRootConfiguration jobRootConfig;
     
     private final String jobName;
@@ -151,7 +152,7 @@ public abstract class AbstractElasticJobExecutor {
         }
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
-            getExecutorService().submit(new Runnable() {
+            executorService.submit(new Runnable() {
                 
                 @Override
                 public void run() {

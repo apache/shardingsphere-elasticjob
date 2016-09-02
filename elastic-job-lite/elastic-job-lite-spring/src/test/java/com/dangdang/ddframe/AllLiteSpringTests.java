@@ -28,5 +28,5 @@ import org.junit.runners.Suite.SuiteClasses;
         AllSpringRegTests.class, 
         AllSpringJobTests.class
     })
-public class AllTests {
+public class AllLiteSpringTests {
 }

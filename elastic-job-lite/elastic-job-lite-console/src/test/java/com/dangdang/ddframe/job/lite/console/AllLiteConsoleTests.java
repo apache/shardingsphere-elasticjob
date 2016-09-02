@@ -25,5 +25,5 @@ import com.dangdang.ddframe.job.lite.console.util.HomeFolderTest;
 
 @RunWith(Suite.class)
 @SuiteClasses(HomeFolderTest.class)
-public class AllJobConsoleTests {
+public class AllLiteConsoleTests {
 }

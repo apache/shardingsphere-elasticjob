@@ -32,5 +32,5 @@ import org.junit.runners.Suite.SuiteClasses;
         AllInternalTests.class, 
         AllIntegrateTests.class
     })
-public final class AllJobTests {
+public final class AllLiteCoreTests {
 }

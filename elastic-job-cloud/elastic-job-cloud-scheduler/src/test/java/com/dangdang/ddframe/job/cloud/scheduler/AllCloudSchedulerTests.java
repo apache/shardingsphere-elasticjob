@@ -38,5 +38,5 @@ import com.dangdang.ddframe.job.cloud.scheduler.state.AllStateTests;
         AllRestfulTests.class, 
         AllMesosTests.class
     })
-public final class AllTests {
+public final class AllCloudSchedulerTests {
 }

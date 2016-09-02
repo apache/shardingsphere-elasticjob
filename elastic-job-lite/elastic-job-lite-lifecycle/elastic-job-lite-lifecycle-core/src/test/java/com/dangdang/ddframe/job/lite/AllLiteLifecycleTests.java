@@ -48,5 +48,5 @@ import org.junit.runners.Suite.SuiteClasses;
         ServerStatisticsAPIImplTest.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AllTests {
+public final class AllLiteLifecycleTests {
 }
