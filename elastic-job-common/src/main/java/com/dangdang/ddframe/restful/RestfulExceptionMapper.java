@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.rest;
+package com.dangdang.ddframe.restful;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

@@ -15,10 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.rest;
+package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.TaskProducerSchedulerRegistry;
+import com.dangdang.ddframe.json.GsonFactory;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Preconditions;
 
@@ -34,13 +36,13 @@ import javax.ws.rs.core.MediaType;
  * @author zhangliang
  */
 @Path("/job")
-public final class RestfulApi {
+public final class CloudJobRestfulApi {
     
     private static CoordinatorRegistryCenter regCenter;
     
     private final TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
     
-    public RestfulApi() {
+    public CloudJobRestfulApi() {
         Preconditions.checkNotNull(regCenter);
         taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(regCenter);
     }
@@ -51,7 +53,8 @@ public final class RestfulApi {
      * @param regCenter 注册中心
      */
     public static void init(final CoordinatorRegistryCenter regCenter) {
-        RestfulApi.regCenter = regCenter;
+        CloudJobRestfulApi.regCenter = regCenter;
+        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
     }
     
     /**

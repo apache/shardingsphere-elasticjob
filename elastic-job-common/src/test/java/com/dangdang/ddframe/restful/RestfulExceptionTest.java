@@ -15,22 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe;
+package com.dangdang.ddframe.restful;
 
-import com.dangdang.ddframe.env.AllEnvTests;
-import com.dangdang.ddframe.json.AllJsonTests;
-import com.dangdang.ddframe.reg.AllRegTests;
-import com.dangdang.ddframe.restful.AllRestfulTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        AllRegTests.class, 
-        AllEnvTests.class,
-        AllJsonTests.class, 
-        AllRestfulTests.class
-    })
-public final class AllCommonTests {
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
+
+public final class RestfulExceptionTest {
+    
+    @Test
+    public void assertRestfulException() {
+        assertThat(new RestfulException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
+    }
 }

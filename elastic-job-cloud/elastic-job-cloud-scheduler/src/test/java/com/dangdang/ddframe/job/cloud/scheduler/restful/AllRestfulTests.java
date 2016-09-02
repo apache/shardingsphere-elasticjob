@@ -15,17 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.rest;
+package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
-import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
-
-public final class RestfulExceptionTest {
-    
-    @Test
-    public void assertRestfulException() {
-        assertThat(new RestfulException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses(CloudJobRestfulApiTest.class)
+public final class AllRestfulTests {
 }

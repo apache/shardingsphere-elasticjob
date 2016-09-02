@@ -15,10 +15,8 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.rest;
+package com.dangdang.ddframe.restful;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.json.GsonFactory;
 
 import javax.ws.rs.Consumes;
@@ -48,10 +46,6 @@ import java.lang.reflect.Type;
 public final class GsonJsonProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
     
     private static final String UTF_8 = "UTF-8";
-    
-    public GsonJsonProvider() {
-        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
-    }
     
     @Override
     public Object readFrom(final Class<Object> type, final Type genericType, final Annotation[] annotations,

@@ -15,9 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.rest;
+package com.dangdang.ddframe.restful;
 
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Joiner;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import org.eclipse.jetty.server.Server;
@@ -29,35 +29,38 @@ import org.eclipse.jetty.servlet.ServletHolder;
  *
  * @author zhangliang
  */
-public class RestfulServer {
+public final class RestfulServer {
     
     private final Server server;
     
-    public RestfulServer(final int port, final CoordinatorRegistryCenter regCenter) {
-        RestfulApi.init(regCenter);
+    public RestfulServer(final int port) {
         server = new Server(port);
     }
     
     /**
      * 启动内嵌的restful服务器.
      * 
+     * @param packages RESTful实现类所在包
      * @throws Exception 启动服务器异常
      */
-    public void start() throws Exception {
+    public void start(final String packages) throws Exception {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
-        context.addServlet(getServletHolder(), "/*");
+        context.addServlet(getServletHolder(packages), "/*");
         server.start();
     }
     
-    public ServletHolder getServletHolder() {
+    private ServletHolder getServletHolder(final String packages) {
         ServletHolder result = new ServletHolder(ServletContainer.class);
         result.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", PackagesResourceConfig.class.getName());
-        result.setInitParameter("com.sun.jersey.config.property.packages", RestfulApi.class.getPackage().getName());
+        result.setInitParameter("com.sun.jersey.config.property.packages", Joiner.on(",").join(RestfulServer.class.getPackage().getName(), packages));
         result.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", Boolean.TRUE.toString());
         result.setInitParameter("resteasy.scan.providers", Boolean.TRUE.toString());
         result.setInitParameter("resteasy.use.builtin.providers", Boolean.FALSE.toString());
+    
+    
+        
         return result;
     }
     

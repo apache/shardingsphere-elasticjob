@@ -21,9 +21,10 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
-import com.dangdang.ddframe.job.cloud.scheduler.rest.RestfulServer;
+import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
+import com.dangdang.ddframe.restful.RestfulServer;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
@@ -49,7 +50,8 @@ public final class MasterBootstrap {
         env = new BootstrapEnvironment();
         regCenter = getRegistryCenter();
         schedulerDriver = getSchedulerDriver();
-        restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort(), regCenter);
+        restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
+        CloudJobRestfulApi.init(regCenter);
         initListener();
     }
     
@@ -78,7 +80,7 @@ public final class MasterBootstrap {
      * @throws Exception 运行时异常
      */
     public Protos.Status runAsDaemon() throws Exception {
-        restfulServer.start();
+        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName());
         return schedulerDriver.run();
     }
     

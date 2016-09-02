@@ -15,18 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.rest;
+package com.dangdang.ddframe.json;
 
-/**
- * REST API异常.
- *
- * @author zhangliang
- */
-public final class RestfulException extends RuntimeException {
-    
-    private static final long serialVersionUID = -7594937349408972960L;
-    
-    public RestfulException(final Throwable cause) {
-        super(cause);
-    }
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses(GsonFactoryTest.class)
+public final class AllJsonTests {
 }

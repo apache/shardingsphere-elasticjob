@@ -15,22 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe;
+package com.dangdang.ddframe.restful;
 
-import com.dangdang.ddframe.env.AllEnvTests;
-import com.dangdang.ddframe.json.AllJsonTests;
-import com.dangdang.ddframe.reg.AllRegTests;
-import com.dangdang.ddframe.restful.AllRestfulTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-        AllRegTests.class, 
-        AllEnvTests.class,
-        AllJsonTests.class, 
-        AllRestfulTests.class
-    })
-public final class AllCommonTests {
+/**
+ * REST API异常.
+ *
+ * @author zhangliang
+ */
+public final class RestfulException extends RuntimeException {
+    
+    private static final long serialVersionUID = -7594937349408972960L;
+    
+    public RestfulException(final Throwable cause) {
+        super(cause);
+    }
 }

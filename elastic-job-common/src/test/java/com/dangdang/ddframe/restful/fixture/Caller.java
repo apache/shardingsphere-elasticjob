@@ -15,15 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.rest;
+package com.dangdang.ddframe.restful.fixture;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        RestfulApiTest.class, 
-        RestfulExceptionTest.class
-    })
-public final class AllRestTests {
+public interface Caller {
+    
+    void call(String value);
+    
+    void call(int value);
 }

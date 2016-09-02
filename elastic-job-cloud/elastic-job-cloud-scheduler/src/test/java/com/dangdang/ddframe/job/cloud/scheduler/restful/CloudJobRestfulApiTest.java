@@ -15,11 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.rest;
+package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.TaskProducerSchedulerRegistry;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.restful.RestfulServer;
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.io.ByteArrayBuffer;
@@ -39,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class RestfulApiTest {
+public final class CloudJobRestfulApiTest {
     
     private static RestfulServer server;
     
@@ -49,8 +50,9 @@ public final class RestfulApiTest {
     public static void setUp() throws Exception {
         ReflectionUtils.setFieldValue(TaskProducerSchedulerRegistry.getInstance(regCenter), "instance", null);
         regCenter = mock(CoordinatorRegistryCenter.class);
-        server = new RestfulServer(19000, regCenter);
-        server.start();
+        server = new RestfulServer(19000);
+        CloudJobRestfulApi.init(regCenter);
+        server.start(CloudJobRestfulApi.class.getPackage().getName());
     }
     
     @AfterClass
