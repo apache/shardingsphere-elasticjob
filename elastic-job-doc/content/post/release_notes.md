@@ -15,6 +15,7 @@ weight=1
 
 ### 缺陷修正
 1. [ISSUE #123](https://github.com/dangdangdotcom/elastic-job/issues/123) 单机跑定时任务，zk断开后重连，没有触发leader选举 
+1. [ISSUE #127](https://github.com/dangdangdotcom/elastic-job/issues/127) Spring方式配置作业id无法使用占位符
 
 ## 1.1.1
 

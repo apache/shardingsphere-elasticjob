@@ -10,8 +10,13 @@
     <xsd:element name="listener">
         <xsd:complexType>
             <xsd:attribute name="class" type="xsd:string" use="required" />
-            <xsd:attribute name="started-timeout-milliseconds" type="xsd:string" />
-            <xsd:attribute name="completed-timeout-milliseconds" type="xsd:string" />
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="distributed-listener">
+        <xsd:complexType>
+            <xsd:attribute name="class" type="xsd:string" use="required" />
+            <xsd:attribute name="started-timeout-milliseconds" type="xsd:string" use="required" />
+            <xsd:attribute name="completed-timeout-milliseconds" type="xsd:string" use="required" />
         </xsd:complexType>
     </xsd:element>
     
@@ -41,7 +46,8 @@
         <xsd:complexContent>
             <xsd:extension base="beans:identifiedType">
                 <xsd:sequence>
-                    <xsd:element ref="listener" minOccurs="0" maxOccurs="unbounded" />
+                    <xsd:element ref="listener" minOccurs="0" maxOccurs="1" />
+                    <xsd:element ref="distributed-listener" minOccurs="0" maxOccurs="1" />
                     <xsd:element ref="event-log" minOccurs="0" maxOccurs="1" />
                     <xsd:element ref="event-rdb" minOccurs="0" maxOccurs="1" />
                 </xsd:sequence>

@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.common;
 
-import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.spring.schedule.SpringJobScheduler;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -35,6 +34,9 @@ import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBe
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.CRON_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DESCRIPTION_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISABLED_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_TAG;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_LOG_TAG;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_RDB_DRIVER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_RDB_LOG_LEVEL_ATTRIBUTE;
@@ -47,8 +49,6 @@ import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBe
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_PARAMETER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_SHARDING_STRATEGY_CLASS_ATTRIBUTE;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.LISTENER_TAG;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.MAX_TIME_DIFF_SECONDS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.MISFIRE_ATTRIBUTE;
@@ -72,14 +72,15 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
         factory.setInitMethodName("init");
         factory.addConstructorArgReference(element.getAttribute(REGISTRY_CENTER_REF_ATTRIBUTE));
-        factory.addConstructorArgReference(createJobConfiguration(element, parserContext));
+        factory.addConstructorArgValue(createJobConfiguration(element));
         factory.addConstructorArgValue(createJobListeners(element));
         return factory.getBeanDefinition();
     }
     
-    private String createJobConfiguration(final Element element, final ParserContext parserContext) {
+    private BeanDefinition createJobConfiguration(final Element element) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(getJobConfigurationDTO());
-        factory.addConstructorArgValue(element.getAttribute(ID_ATTRIBUTE));
+        String jobName = element.getAttribute(ID_ATTRIBUTE);
+        factory.addConstructorArgValue(jobName);
         factory.addConstructorArgValue(element.getAttribute(CRON_ATTRIBUTE));
         factory.addConstructorArgValue(element.getAttribute(SHARDING_TOTAL_COUNT_ATTRIBUTE));
         addPropertyValueIfNotEmpty(SHARDING_ITEM_PARAMETERS_ATTRIBUTE, "shardingItemParameters", element, factory);
@@ -97,9 +98,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         addPropertyValueIfNotEmpty(JOB_EXCEPTION_HANDLER, "jobExceptionHandler", element, factory);
         setEventConfigs(element, factory);
         setPropertiesValue(element, factory);
-        String result = element.getAttribute(ID_ATTRIBUTE) + "Conf";
-        parserContext.getRegistry().registerBeanDefinition(result, factory.getBeanDefinition());
-        return result;
+        return factory.getBeanDefinition();
     }
     
     protected abstract Class<? extends AbstractJobConfigurationDto> getJobConfigurationDTO();
@@ -107,21 +106,19 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     protected abstract void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory);
     
     private List<BeanDefinition> createJobListeners(final Element element) {
-        List<Element> listenerElements = DomUtils.getChildElementsByTagName(element, LISTENER_TAG);
-        List<BeanDefinition> result = new ManagedList<>(listenerElements.size());
-        for (Element each : listenerElements) {
-            String className = each.getAttribute(CLASS_ATTRIBUTE);
-            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(className);
+        Element listenerElement = DomUtils.getChildElementByTagName(element, LISTENER_TAG);
+        Element distributedListenerElement = DomUtils.getChildElementByTagName(element, DISTRIBUTED_LISTENER_TAG);
+        List<BeanDefinition> result = new ManagedList<>(2);
+        if (null != listenerElement) {
+            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(listenerElement.getAttribute(CLASS_ATTRIBUTE));
             factory.setScope(BeanDefinition.SCOPE_PROTOTYPE);
-            try {
-                Class listenerClass = Class.forName(className);
-                if (AbstractDistributeOnceElasticJobListener.class.isAssignableFrom(listenerClass)) {
-                    factory.addConstructorArgValue(each.getAttribute(LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
-                    factory.addConstructorArgValue(each.getAttribute(LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
-                }
-            } catch (final ClassNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
+            result.add(factory.getBeanDefinition());
+        }
+        if (null != distributedListenerElement) {
+            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(distributedListenerElement.getAttribute(CLASS_ATTRIBUTE));
+            factory.setScope(BeanDefinition.SCOPE_PROTOTYPE);
+            factory.addConstructorArgValue(distributedListenerElement.getAttribute(DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
+            factory.addConstructorArgValue(distributedListenerElement.getAttribute(DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE));
             result.add(factory.getBeanDefinition());
         }
         return result;

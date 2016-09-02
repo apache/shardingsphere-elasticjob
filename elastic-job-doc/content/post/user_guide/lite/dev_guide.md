@@ -164,7 +164,7 @@ echo sharding execution context is $*
     <!-- 配置带监听的简单作业-->
     <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
         <job:listener class="xx.MySimpleJobListener"/>
-        <job:listener class="xx.MyOnceSimpleJobListener" started-timeout-milliseconds="1000" completed-timeout-milliseconds="2000" />
+        <job:distributed-listener class="xx.MyOnceSimpleJobListener" started-timeout-milliseconds="1000" completed-timeout-milliseconds="2000" />
     </job:simple>
     
     <!-- 配置带数据库和日志作业事件监听的简单作业-->
@@ -215,13 +215,21 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 
 #### job:listener命名空间属性详细说明
 
-`job:listener`必须配置为`job:bean`的子元素
+`job:listener`必须配置为`job:bean`的子元素，并且在子元素中只允许出现一次
 
 | 属性名                          | 类型  |是否必填|缺省值         | 描述                                                                                             |
 | ------------------------------ |:------|:------|:-------------|:------------------------------------------------------------------------------------------------|
 |class                           |String |`是`   |              | 前置后置任务监听实现类，需实现`ElasticJobListener`接口                                               |
-|started-timeout-milliseconds    |long   |`否`   |Long.MAX_VALUE| AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行前的执行方法的超时时间<br />单位：毫秒|
-|completed-timeout-milliseconds  |long   |`否`   |Long.MAX_VALUE| AbstractDistributeOnceElasticJobListener型监听器，最后一个作业执行后的执行方法的超时时间<br />单位：毫秒|
+
+#### job:distributed-listener命名空间属性详细说明
+
+`job:distributed-listener`必须配置为`job:bean`的子元素，并且在子元素中只允许出现一次
+
+| 属性名                          | 类型  |是否必填|缺省值         | 描述                                                                                             |
+| ------------------------------ |:------|:------|:-------------|:------------------------------------------------------------------------------------------------|
+|class                           |String |`是`   |              | 前置后置任务分布式监听实现类，需继承`AbstractDistributeOnceElasticJobListener`类                      |
+|started-timeout-milliseconds    |long   |`否`   |Long.MAX_VALUE| 最后一个作业执行前的执行方法的超时时间<br />单位：毫秒|
+|completed-timeout-milliseconds  |long   |`否`   |Long.MAX_VALUE| 最后一个作业执行后的执行方法的超时时间<br />单位：毫秒|
 
 #### job:event-log命名空间详细说明
 

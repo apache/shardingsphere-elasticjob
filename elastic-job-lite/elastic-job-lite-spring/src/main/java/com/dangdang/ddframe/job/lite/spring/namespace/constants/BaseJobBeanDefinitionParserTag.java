@@ -60,9 +60,11 @@ public final class BaseJobBeanDefinitionParserTag {
     
     public static final String LISTENER_TAG = "listener";
     
-    public static final String LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "started-timeout-milliseconds";
+    public static final String DISTRIBUTED_LISTENER_TAG = "distributed-listener";
     
-    public static final String LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "completed-timeout-milliseconds";
+    public static final String DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "started-timeout-milliseconds";
+    
+    public static final String DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE = "completed-timeout-milliseconds";
     
     public static final String EXECUTOR_SERVICE_HANDLER = "executor-service-handler";
     
