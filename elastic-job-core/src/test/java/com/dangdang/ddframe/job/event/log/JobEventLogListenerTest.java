@@ -45,26 +45,26 @@ public final class JobEventLogListenerTest {
     @Test
     public void assertPostJobTraceEvent() {
         for (LogLevel each : LogLevel.values()) {
-            JobEventBus.getInstance().post(JOB_NAME, new JobTraceEvent(JOB_NAME, each, "ok"));
+            JobEventBus.getInstance().post(new JobTraceEvent(JOB_NAME, each, "ok"));
         }
     }
     
     @Test
     public void assertPostJobExecutionEventWhenStart() {
-        JobEventBus.getInstance().post(JOB_NAME, new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        JobEventBus.getInstance().post(new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
     }
     
     @Test
     public void assertPostJobExecutionEventWhenCompleteWithSuccess() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobExecutionEvent.executionSuccess();
-        JobEventBus.getInstance().post(JOB_NAME, jobExecutionEvent);
+        JobEventBus.getInstance().post(jobExecutionEvent);
     }
     
     @Test
     public void assertPostJobExecutionEventWhenCompleteWithFailure() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobExecutionEvent.executionFailure(new RuntimeException("test"));
-        JobEventBus.getInstance().post(JOB_NAME, jobExecutionEvent);
+        JobEventBus.getInstance().post(jobExecutionEvent);
     }
 }

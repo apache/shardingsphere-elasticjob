@@ -52,16 +52,16 @@ public final class JobEventBusTest {
     
     @Test
     public void assertPostWithoutListenerRegistered() {
-        jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.INFO, "ok"));
+        jobEventBus.post(new JobExecutionEvent(jobName, ExecutionSource.NORMAL_TRIGGER, 0));
         verify(jobEventCaller, times(0)).call();
     }
     
     @Test
     public void assertPostWithListenerRegistered() throws InterruptedException {
         registerEventConfigs();
-        jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.INFO, "ok"));
+        jobEventBus.post(new JobExecutionEvent(jobName, ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
             Thread.sleep(100L);
         }
@@ -72,8 +72,8 @@ public final class JobEventBusTest {
     public void assertPostWithListenerRegisteredTwice() throws InterruptedException {
         registerEventConfigs();
         registerEventConfigs();
-        jobEventBus.post(jobName, new JobTraceEvent("test_job", LogLevel.INFO, "ok"));
-        jobEventBus.post(jobName, new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.INFO, "ok"));
+        jobEventBus.post(new JobExecutionEvent(jobName, ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
             Thread.sleep(100L);
         }

@@ -29,11 +29,11 @@ import java.util.UUID;
 /**
  * 作业执行事件.
  *
- * @author zhangli
+ * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter
-public class JobExecutionEvent {
+public class JobExecutionEvent implements JobEvent {
     
     private static LocalHostService localHostService = new LocalHostService();
     

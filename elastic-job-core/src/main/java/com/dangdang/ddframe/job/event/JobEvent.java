@@ -15,22 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.executor.handler.impl;
-
-import com.dangdang.ddframe.job.executor.handler.JobExceptionHandler;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+package com.dangdang.ddframe.job.event;
 
 /**
- * 默认作业异常处理器.
+ * 作业事件接口.
  *
  * @author zhangliang
  */
-public final class DefaultJobExceptionHandler implements JobExceptionHandler {
+public interface JobEvent {
     
-    @Override
-    public void handleException(final String jobName, final Throwable cause) {
-        JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "exception occur in job processing", cause));
-    }
+    /**
+     * 获取作业名称.
+     * 
+     * @return 作业名称
+     */
+    String getJobName();
 }

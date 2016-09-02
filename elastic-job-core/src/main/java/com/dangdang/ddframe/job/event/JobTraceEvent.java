@@ -29,12 +29,12 @@ import java.util.Date;
 /**
  * 作业运行痕迹事件.
  *
- * @author zhangli
+ * @author zhangliang
  */
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
-public class JobTraceEvent {
+public class JobTraceEvent implements JobEvent {
     
     private static LocalHostService localHostService = new LocalHostService();
     

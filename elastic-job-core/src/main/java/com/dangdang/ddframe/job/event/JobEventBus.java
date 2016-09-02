@@ -63,12 +63,12 @@ public final class JobEventBus {
     /**
      * 发布事件.
      *
-     * @param jobName 作业名
-     * @param event 事件
+     * @param jobEvent 作业事件
      */
-    public synchronized void post(final String jobName, final Object event) {
+    public synchronized void post(final JobEvent jobEvent) {
+        String jobName = jobEvent.getJobName();
         if (itemMap.containsKey(jobName)) {
-            itemMap.get(jobName).post(event);
+            itemMap.get(jobName).post(jobEvent);
         }
     }
     

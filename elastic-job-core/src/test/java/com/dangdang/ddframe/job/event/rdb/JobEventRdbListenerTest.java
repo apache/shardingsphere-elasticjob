@@ -63,14 +63,14 @@ public final class JobEventRdbListenerTest {
     @Test
     public void assertPostJobTraceEvent() {
         JobTraceEvent jobTraceEvent = new JobTraceEvent(JOB_NAME, LogLevel.INFO, "ok");
-        JobEventBus.getInstance().post(JOB_NAME, jobTraceEvent);
+        JobEventBus.getInstance().post(jobTraceEvent);
         verify(repository).addJobTraceEvent(jobTraceEvent);
     }
     
     @Test
     public void assertPostJobExecutionEvent() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        JobEventBus.getInstance().post(JOB_NAME, jobExecutionEvent);
+        JobEventBus.getInstance().post(jobExecutionEvent);
         verify(repository).addJobExecutionEvent(jobExecutionEvent);
     }
 }

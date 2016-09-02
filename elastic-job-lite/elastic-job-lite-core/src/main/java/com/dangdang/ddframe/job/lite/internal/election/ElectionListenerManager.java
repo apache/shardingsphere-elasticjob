@@ -67,9 +67,9 @@ public class ElectionListenerManager extends AbstractListenerManager {
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             EventHelper eventHelper = new EventHelper(path, event);
             if (eventHelper.isLeaderCrashedOrServerOn() && !leaderElectionService.hasLeader() && !serverService.getAvailableServers().isEmpty()) {
-                JobEventBus.getInstance().post(jobName, new JobTraceEvent(jobName, LogLevel.DEBUG, "Leader crashed, elect a new leader now."));
+                JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.DEBUG, "Leader crashed, elect a new leader now."));
                 leaderElectionService.leaderElection();
-                JobEventBus.getInstance().post(jobName, new JobTraceEvent(jobName, LogLevel.DEBUG, "Leader election completed."));
+                JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.DEBUG, "Leader election completed."));
                 return;
             }
             if (eventHelper.isServerOff() && leaderElectionService.isLeader()) {
