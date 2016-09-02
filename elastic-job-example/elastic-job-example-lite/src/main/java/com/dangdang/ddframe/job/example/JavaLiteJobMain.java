@@ -48,7 +48,7 @@ public final class JavaLiteJobMain {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        NestedZookeeperServer.start(4181);
+        EmbedZookeeperServer.start(4181);
         new JavaLiteJobMain().init();
     }
     

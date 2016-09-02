@@ -31,13 +31,13 @@ import static org.junit.Assert.assertTrue;
 
 public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedTestingServer.start();
+        EmbedTestingServer.start();
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);

@@ -66,7 +66,7 @@ public abstract class AbstractBaseStdJobTest {
     
     private static final int PORT = 3181;
     
-    private static volatile TestingServer nestedServer;
+    private static volatile TestingServer testingServer;
     
     private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(Joiner.on(":").join("localhost", PORT), "zkRegTestCenter");
     
@@ -145,17 +145,17 @@ public abstract class AbstractBaseStdJobTest {
     
     @BeforeClass
     public static void init() {
-        startNestedTestingServer();
+        startEmbedTestingServer();
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         regCenter.init();
     }
     
-    private static void startNestedTestingServer() {
-        if (null != nestedServer) {
+    private static void startEmbedTestingServer() {
+        if (null != testingServer) {
             return;
         }
         try {
-            nestedServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
+            testingServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
@@ -166,7 +166,7 @@ public abstract class AbstractBaseStdJobTest {
                 @Override
                 public void run() {
                     try {
-                        nestedServer.close();
+                        testingServer.close();
                     } catch (final IOException ex) {
                         RegExceptionHandler.handleException(ex);
                     }

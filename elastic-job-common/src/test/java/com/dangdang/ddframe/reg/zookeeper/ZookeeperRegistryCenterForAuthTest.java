@@ -30,13 +30,13 @@ import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterForAuthTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), ZookeeperRegistryCenterForAuthTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterForAuthTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedTestingServer.start();
+        EmbedTestingServer.start();
         zkConfig.setDigest("digest:password");
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkConfig.setSessionTimeoutMilliseconds(5000);
@@ -54,7 +54,7 @@ public final class ZookeeperRegistryCenterForAuthTest {
         zkRegCenter.init();
         zkRegCenter.close();
         CuratorFramework client = CuratorFrameworkFactory.builder()
-            .connectString(NestedTestingServer.getConnectionString())
+            .connectString(EmbedTestingServer.getConnectionString())
             .retryPolicy(new RetryOneTime(2000))
             .authorization("digest", "digest:password".getBytes()).build();
         client.start();
@@ -66,7 +66,7 @@ public final class ZookeeperRegistryCenterForAuthTest {
     public void assertInitWithDigestFailure() throws Exception {
         zkRegCenter.init();
         zkRegCenter.close();
-        CuratorFramework client = CuratorFrameworkFactory.newClient(NestedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         client.getData().forPath("/" + ZookeeperRegistryCenterForAuthTest.class.getName() + "/test/deep/nested");

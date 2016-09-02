@@ -24,7 +24,7 @@ public final class SpringLiteJobMain {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
     // CHECKSTYLE:ON
-        NestedZookeeperServer.start(5181);
+        EmbedZookeeperServer.start(5181);
         new ClassPathXmlApplicationContext("classpath:META-INF/applicationContext.xml");
     }
 }

@@ -33,7 +33,7 @@ public final class ZookeeperRegistryCenterForLocalPropertiesTest {
     
     @BeforeClass
     public static void init() {
-        NestedTestingServer.start();
+        EmbedTestingServer.start();
     }
     
     @Before
@@ -84,13 +84,13 @@ public final class ZookeeperRegistryCenterForLocalPropertiesTest {
     }
     
     private ZookeeperRegistryCenter createZookeeperRegistryCenter() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), getCurrentRunningMethodName());
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), getCurrentRunningMethodName());
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         return new ZookeeperRegistryCenter(zkConfig);
     }
     
     private void createInitData() {
-        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), getCurrentRunningMethodName());
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), getCurrentRunningMethodName());
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(zkConfig);

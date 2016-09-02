@@ -35,13 +35,13 @@ import static org.junit.Assert.assertTrue;
 
 public final class ZookeeperRegistryCenterModifyTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), ZookeeperRegistryCenterModifyTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterModifyTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedTestingServer.start();
+        EmbedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
@@ -75,7 +75,7 @@ public final class ZookeeperRegistryCenterModifyTest {
         assertThat(zkRegCenter.get("/persist"), is("persist_value"));
         assertThat(zkRegCenter.get("/ephemeral"), is("ephemeral_value"));
         zkRegCenter.close();
-        CuratorFramework client = CuratorFrameworkFactory.newClient(NestedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         assertThat(client.getData().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/persist"), is("persist_value".getBytes()));
@@ -88,7 +88,7 @@ public final class ZookeeperRegistryCenterModifyTest {
     public void assertPersistSequential() throws Exception {
         assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
         assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
-        CuratorFramework client = CuratorFrameworkFactory.newClient(NestedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/sequential");
@@ -103,7 +103,7 @@ public final class ZookeeperRegistryCenterModifyTest {
     public void assertPersistEphemeralSequential() throws Exception {
         zkRegCenter.persistEphemeralSequential("/sequential/test_ephemeral_sequential");
         zkRegCenter.persistEphemeralSequential("/sequential/test_ephemeral_sequential");
-        CuratorFramework client = CuratorFrameworkFactory.newClient(NestedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
         List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/sequential");

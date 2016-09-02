@@ -29,13 +29,13 @@ import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterMiscellaneousTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(NestedTestingServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
-        NestedTestingServer.start();
+        EmbedTestingServer.start();
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkRegCenter.init();

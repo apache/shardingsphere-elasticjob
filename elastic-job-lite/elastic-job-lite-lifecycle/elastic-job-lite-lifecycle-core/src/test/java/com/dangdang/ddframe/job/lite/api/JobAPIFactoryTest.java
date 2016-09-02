@@ -17,14 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.api;
 
-import com.dangdang.ddframe.job.lite.AbstractNestedZookeeperBaseTest;
+import com.dangdang.ddframe.job.lite.AbstractEmbedZookeeperBaseTest;
 import com.google.common.base.Optional;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-public final class JobAPIFactoryTest extends AbstractNestedZookeeperBaseTest {
+public final class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
     
     @Test
     public void assertCreateJobSettingsAPI() {

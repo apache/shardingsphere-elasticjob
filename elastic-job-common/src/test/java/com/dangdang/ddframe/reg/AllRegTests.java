@@ -24,7 +24,6 @@ import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterForLocalPropert
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterInitFailureTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterMiscellaneousTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterModifyTest;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterNestedTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterQueryWithCacheTest;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenterQueryWithoutCacheTest;
 import lombok.AccessLevel;
@@ -42,7 +41,6 @@ import org.junit.runners.Suite.SuiteClasses;
         ZookeeperRegistryCenterQueryWithoutCacheTest.class, 
         ZookeeperRegistryCenterModifyTest.class, 
         ZookeeperRegistryCenterMiscellaneousTest.class, 
-        ZookeeperRegistryCenterNestedTest.class, 
         RegExceptionHandlerTest.class, 
         ZookeeperRegistryCenterInitFailureTest.class
     })

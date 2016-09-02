@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.reg;
 
-import com.dangdang.ddframe.job.lite.AbstractNestedZookeeperBaseTest;
+import com.dangdang.ddframe.job.lite.AbstractEmbedZookeeperBaseTest;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
@@ -30,7 +30,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-public final class RegistryCenterFactoryTest extends AbstractNestedZookeeperBaseTest {
+public final class RegistryCenterFactoryTest extends AbstractEmbedZookeeperBaseTest {
     
     @Test
     public void assertCreateCoordinatorRegistryCenterWithoutDigest() throws ReflectiveOperationException {

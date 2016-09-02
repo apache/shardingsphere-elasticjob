@@ -15,33 +15,31 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite;
+package com.dangdang.ddframe.test;
 
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import com.google.common.base.Joiner;
 import org.apache.curator.test.TestingServer;
-import org.junit.BeforeClass;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 import java.io.File;
 import java.io.IOException;
 
-public abstract class AbstractNestedZookeeperBaseTest {
+public final class EmbedZookeeperTestExecutionListener extends AbstractTestExecutionListener {
     
-    private static final int PORT = 3181;
+    private static volatile TestingServer testingServer;
     
-    private static volatile TestingServer nestedServer;
-    
-    @BeforeClass
-    public static void setUp() {
-        startNestedTestingServer();
+    @Override
+    public void beforeTestClass(final TestContext testContext) throws Exception {
+        startEmbedTestingServer();
     }
     
-    private static void startNestedTestingServer() {
-        if (null != nestedServer) {
+    private static void startEmbedTestingServer() {
+        if (null != testingServer) {
             return;
         }
         try {
-            nestedServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
+            testingServer = new TestingServer(3181, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
             // CHECKSTYLE:ON
@@ -52,16 +50,12 @@ public abstract class AbstractNestedZookeeperBaseTest {
                 @Override
                 public void run() {
                     try {
-                        nestedServer.close();
+                        testingServer.close();
                     } catch (final IOException ex) {
                         RegExceptionHandler.handleException(ex);
                     }
                 }
             });
         }
-    }
-    
-    public static String getConnectionString() {
-        return Joiner.on(":").join("localhost", PORT);
     }
 }

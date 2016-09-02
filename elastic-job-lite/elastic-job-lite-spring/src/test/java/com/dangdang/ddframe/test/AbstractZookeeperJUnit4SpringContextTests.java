@@ -20,6 +20,6 @@ package com.dangdang.ddframe.test;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-@TestExecutionListeners(NestedZookeeperTestExecutionListener.class)
+@TestExecutionListeners(EmbedZookeeperTestExecutionListener.class)
 public abstract class AbstractZookeeperJUnit4SpringContextTests extends AbstractJUnit4SpringContextTests {
 }
