@@ -147,17 +147,20 @@ public abstract class AbstractElasticJobExecutor {
     private void process(final ShardingContexts shardingContexts, final JobExecutionEvent.ExecutionSource executionSource) {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
         if (1 == items.size()) {
-            process(shardingContexts, shardingContexts.getShardingItemParameters().keySet().iterator().next(), executionSource);
+            int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
+            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, item);
+            process(shardingContexts, item, jobExecutionEvent);
             return;
         }
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
+            final JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, each);
             executorService.submit(new Runnable() {
                 
                 @Override
                 public void run() {
                     try {
-                        process(shardingContexts, each, executionSource);
+                        process(shardingContexts, each, jobExecutionEvent);
                     } finally {
                         latch.countDown();
                     }
@@ -171,23 +174,20 @@ public abstract class AbstractElasticJobExecutor {
         }
     }
     
-    private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent.ExecutionSource executionSource) {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, item);
-        synchronized (jobExecutionEvent) {
+    private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent jobExecutionEvent) {
+        jobEventBus.post(jobExecutionEvent);
+        jobEventBus.post(new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executing, item is: '%s'.", item)));
+        try {
+            process(new ShardingContext(shardingContexts, item));
+            jobExecutionEvent.executionSuccess();
+            jobEventBus.post(new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executed, item is: '%s'.", item)));
+            // CHECKSTYLE:OFF
+        } catch (final Throwable ex) {
+            // CHECKSTYLE:ON
+            jobExecutionEvent.executionFailure(ex);
+            jobExceptionHandler.handleException(jobName, ex);
+        } finally {
             jobEventBus.post(jobExecutionEvent);
-            jobEventBus.post(new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executing, item is: '%s'.", item)));
-            try {
-                process(new ShardingContext(shardingContexts, item));
-                jobExecutionEvent.executionSuccess();
-                jobEventBus.post(new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executed, item is: '%s'.", item)));
-                // CHECKSTYLE:OFF
-            } catch (final Throwable ex) {
-                // CHECKSTYLE:ON
-                jobExecutionEvent.executionFailure(ex);
-                jobExceptionHandler.handleException(jobName, ex);
-            } finally {
-                jobEventBus.post(jobExecutionEvent);
-            }
         }
     }
     
