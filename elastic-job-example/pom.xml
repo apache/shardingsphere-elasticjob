@@ -1,24 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>elastic-job</artifactId>
-        <groupId>com.dangdang</groupId>
-        <version>2.0.0-SNAPSHOT</version>
-    </parent>
-    <packaging>pom</packaging>
     <artifactId>elastic-job-example</artifactId>
+    <groupId>com.dangdang</groupId>
     <name>${project.artifactId}</name>
+    <packaging>pom</packaging>
+    <version>2.0.0-SNAPSHOT</version>
     
     <modules>
         <module>elastic-job-example-jobs</module>
         <module>elastic-job-example-cloud</module>
         <module>elastic-job-example-lite</module>
     </modules>
-    
+
     <properties>
         <java.version>1.7</java.version>
+        <elastic-job.version>2.0.0-SNAPSHOT</elastic-job.version>
+        <springframework.version>4.1.1.RELEASE</springframework.version>
+        <slf4j.version>1.7.7</slf4j.version>
+        <logback.version>1.1.2</logback.version>
+        <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <artifactId>elastic-job-core</artifactId>
+                <groupId>com.dangdang</groupId>
+                <version>${elastic-job.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>elastic-job-lite-core</artifactId>
+                <groupId>com.dangdang</groupId>
+                <version>${elastic-job.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>elastic-job-lite-spring</artifactId>
+                <groupId>com.dangdang</groupId>
+                <version>${elastic-job.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>elastic-job-cloud-executor</artifactId>
+                <groupId>com.dangdang</groupId>
+                <version>${elastic-job.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     
     <build>
         <pluginManagement>

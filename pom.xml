@@ -9,10 +9,10 @@
     <description>Elastic-Job - distributed scheduled job solution</description>
     
     <modules>
+        <module>elastic-job-common</module>
         <module>elastic-job-core</module>
         <module>elastic-job-lite</module>
         <module>elastic-job-cloud</module>
-        <module>elastic-job-common</module>
     </modules>
     
     <properties>
@@ -24,7 +24,6 @@
         <lombok.version>1.16.4</lombok.version>
         <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
-        <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <quartz.version>2.2.1</quartz.version>
         <curator.version>2.10.0</curator.version>
         <springframework.version>4.1.1.RELEASE</springframework.version>
@@ -55,6 +54,7 @@
         <maven-surefire-report-plugin.version>2.18.1</maven-surefire-report-plugin.version>
         <maven-site-plugin.version>3.4</maven-site-plugin.version>
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
+        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <maven-enforcer-plugin.version>1.4</maven-enforcer-plugin.version>
         <maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
@@ -68,12 +68,7 @@
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        <!-- assembly dependencies -->
-        <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
-        <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
-        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
-        <maven-plugin-api.version>3.3.9</maven-plugin-api.version>
-
+        
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
     
@@ -93,11 +88,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>${commons-beanutils.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -287,21 +277,6 @@
                 <artifactId>aspectjweaver</artifactId>
                 <version>${aspectj.version}</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven.plugin-tools</groupId>
-                <artifactId>maven-plugin-annotations</artifactId>
-                <version>${maven-plugin-annotations.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven-assembly-plugin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.maven</groupId>
-                <artifactId>maven-plugin-api</artifactId>
-                <version>${maven-plugin-api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
