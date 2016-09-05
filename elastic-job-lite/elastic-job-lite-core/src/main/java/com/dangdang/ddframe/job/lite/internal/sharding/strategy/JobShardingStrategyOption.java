@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding.strategy;
 
-import java.util.Map;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
 
 /**
  * 作业分片策略选项.

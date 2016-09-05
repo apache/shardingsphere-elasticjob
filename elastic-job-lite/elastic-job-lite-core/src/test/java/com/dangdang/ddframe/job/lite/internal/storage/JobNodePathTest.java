@@ -45,4 +45,14 @@ public final class JobNodePathTest {
     public void assertGetServerNodePathForServerIpAndNameNode() {
         assertThat(jobNodePath.getServerNodePath("ip0", "node"), is("/test_job/servers/ip0/node"));
     }
+    
+    @Test
+    public void assertGetExecutionNodePath() {
+        assertThat(jobNodePath.getExecutionNodePath(), is("/test_job/execution"));
+    }
+    
+    @Test
+    public void assertGetExecutionNodePathWihItemAndNode() {
+        assertThat(jobNodePath.getExecutionNodePath("0", "running"), is("/test_job/execution/0/running"));
+    }
 }
