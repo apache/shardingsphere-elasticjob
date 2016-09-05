@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
-import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.JobStatisticsAPIImpl;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +69,7 @@ public final class JobStatisticsAPIImplTest {
             assertThat(each.getJobName(), is("test_job_" + i));
             assertThat(each.getDescription(), is("desc" + i));
             assertThat(each.getCron(), is("0/1 * * * * ?"));
+            assertThat(each.getJobType(), is("SIMPLE"));
             switch (i) {
                 case 1:
                     assertThat(each.getStatus(), is(JobBriefInfo.JobStatus.DISABLED));
