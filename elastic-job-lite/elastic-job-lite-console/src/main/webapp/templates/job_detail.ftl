@@ -40,15 +40,6 @@
                     </div>
                 </div>
                 
-                <#if jobType == "DATAFLOW">
-                    <div class="form-group">
-                        <label for="streamingProcess" class="col-sm-2 control-label">是否流式处理数据</label>
-                        <div class="col-sm-2">
-                            <input type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 则处理数据完成后作业结束" />
-                        </div>
-                    </div>
-                </#if>
-                
                 <div class="form-group">
                     <label for="maxTimeDiffSeconds" class="col-sm-2 control-label">最大容忍的本机与注册中心的时间误差秒数</label>
                     <div class="col-sm-1">
@@ -56,22 +47,28 @@
                     </div>
                     
                     <label for="monitorPort" class="col-sm-2 control-label">监听作业端口</label>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <input type="number" id="monitorPort" name="monitorPort" class="form-control" data-toggle="tooltip" data-placement="bottom" title="抓取作业注册信息监听服务端口。配置为-1表示不启用监听服务。" />
                     </div>
+
+                    <#if jobType == "DATAFLOW">
+                        <label for="streamingProcess" class="col-sm-2 control-label">是否流式处理数据</label>
+                        <div class="col-sm-2">
+                            <input type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 则处理数据完成后作业结束" />
+                        </div>
+                    </#if>
                 </div>
-                
                 <div class="form-group">
                     <label for="monitorExecution" class="col-sm-2 control-label">监控作业执行时状态</label>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <input type="checkbox" id="monitorExecution" name="monitorExecution" data-toggle="tooltip" data-placement="bottom" title="每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率，因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。也无法实现作业失效转移。每次作业执行时间和间隔时间均较长短的情况，建议监控作业运行时状态，可保证数据不会重复选取。" />
                     </div>
-                    
+
                     <label for="failover" class="col-sm-2 control-label">支持自动失效转移</label>
                     <div class="col-sm-2">
                         <input type="checkbox" id="failover" name="failover" data-toggle="tooltip" data-placement="bottom" title="只有开启监控作业执行时状态的情况下才可以开启失效转移" />
                     </div>
-                    
+
                     <label for="failover" class="col-sm-2 control-label">支持misfire</label>
                     <div class="col-sm-2">
                         <input type="checkbox" id="misfire" name="misfire" data-toggle="tooltip" data-placement="bottom" title="是否开启任务错过重新执行" />
@@ -103,23 +100,6 @@
                     <label for="executorServiceHandler" class="col-sm-2 control-label">定制线程池全路径</label>
                     <div class="col-sm-9">
                         <input type="text" id="executorServiceHandler" name="executorServiceHandler" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`ExecutorServiceHandler`接口，定制线程池。" />
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="monitorExecution" class="col-sm-2 control-label">监控作业执行时状态</label>
-                    <div class="col-sm-2">
-                        <input type="checkbox" id="monitorExecution" name="monitorExecution" data-toggle="tooltip" data-placement="bottom" title="每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率，因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。也无法实现作业失效转移。每次作业执行时间和间隔时间均较长短的情况，建议监控作业运行时状态，可保证数据不会重复选取。" />
-                    </div>
-                    
-                    <label for="failover" class="col-sm-2 control-label">支持自动失效转移</label>
-                    <div class="col-sm-2">
-                        <input type="checkbox" id="failover" name="failover" data-toggle="tooltip" data-placement="bottom" title="只有开启监控作业执行时状态的情况下才可以开启失效转移" />
-                    </div>
-                    
-                    <label for="failover" class="col-sm-2 control-label">支持misfire</label>
-                    <div class="col-sm-2">
-                        <input type="checkbox" id="misfire" name="misfire" data-toggle="tooltip" data-placement="bottom" title="是否开启任务错过重新执行" />
                     </div>
                 </div>
                 
