@@ -12,7 +12,7 @@
     <dependencies>
         <dependency>
             <groupId>com.dangdang</groupId>
-            <artifactId>elastic-job-lite-lifecycle-core</artifactId>
+            <artifactId>elastic-job-lite-lifecycle</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         

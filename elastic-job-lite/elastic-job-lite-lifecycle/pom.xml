@@ -7,18 +7,22 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>elastic-job-lite-lifecycle</artifactId>
-    <packaging>pom</packaging>
     <name>${project.artifactId}</name>
-    
-    <modules>
-        <module>elastic-job-lite-lifecycle-core</module>
-    </modules>
     
     <dependencies>
         <dependency>
             <groupId>com.dangdang</groupId>
             <artifactId>elastic-job-lite-core</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
     </dependencies>
 </project>
