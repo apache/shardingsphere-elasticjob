@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
-import com.dangdang.ddframe.job.lite.lifecycle.internal.settings.JobSettingsAPIImpl;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,31 +49,44 @@ public class JobSettingsAPIImplTest {
     }
     
     @Test
-    public void assertGetJobSettings() {
+    public void assertGetDataflowJobSettings() {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getDataflowJobJson());
         JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
-        assertJobSettings(actual);
+        assertJobSettings(actual, "DATAFLOW", "com.dangdang.ddframe.job.lite.fixture.TestDataflowJob");
         verify(regCenter).get("/test_job/config");
     }
     
-    private void assertJobSettings(final JobSettings jobSettings) {
+    @Test
+    public void assertGetScriptJobSettings() {
+        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getScriptJobJson());
+        JobSettings actual = jobSettingsAPI.getJobSettings("test_job");
+        assertJobSettings(actual, "SCRIPT", "com.dangdang.ddframe.job.api.script.ScriptJob");
+        verify(regCenter).get("/test_job/config");
+    }
+    
+    private void assertJobSettings(final JobSettings jobSettings, final String jobType, final String className) {
         assertThat(jobSettings.getJobName(), is("test_job"));
-        assertThat(jobSettings.getJobType(), is("DATAFLOW"));
-        assertThat(jobSettings.getJobClass(), is("com.dangdang.ddframe.job.lite.fixture.TestDataflowJob"));
+        assertThat(jobSettings.getJobType(), is(jobType));
+        assertThat(jobSettings.getJobClass(), is(className));
         assertThat(jobSettings.getShardingTotalCount(), is(3));
         assertThat(jobSettings.getCron(), is("0/1 * * * * ?"));
         assertThat(jobSettings.getShardingItemParameters(), is(""));
-        assertThat(jobSettings.getJobParameter(), is(""));
+        assertThat(jobSettings.getJobParameter(), is("param"));
         assertThat(jobSettings.isMonitorExecution(), is(true));
         assertThat(jobSettings.getMaxTimeDiffSeconds(), is(-1));
         assertThat(jobSettings.getMonitorPort(), is(8888));
         assertFalse(jobSettings.isFailover());
         assertTrue(jobSettings.isMisfire());
-        assertTrue(jobSettings.isStreamingProcess());
         assertThat(jobSettings.getJobShardingStrategyClass(), is(""));
         assertThat(jobSettings.getExecutorServiceHandler(), is(DefaultExecutorServiceHandler.class.getCanonicalName()));
         assertThat(jobSettings.getJobExceptionHandler(), is(DefaultJobExceptionHandler.class.getCanonicalName()));
         assertThat(jobSettings.getDescription(), is(""));
+        if ("DATAFLOW".equals(jobType)) {
+            assertTrue(jobSettings.isStreamingProcess());
+        }
+        if ("SCRIPT".equals(jobType)) {
+            assertThat(jobSettings.getScriptCommandLine(), is("test.sh"));
+        }
     }
     
     @Test

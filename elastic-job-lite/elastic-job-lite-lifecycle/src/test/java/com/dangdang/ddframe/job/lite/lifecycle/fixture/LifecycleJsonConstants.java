@@ -34,9 +34,14 @@ public final class LifecycleJsonConstants {
             + "\"disabled\":true,\"overwrite\":true}";
     
     private static final String DATAFLOW_JOB_JSON =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\","
-            + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
+            + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\",\"disabled\":false,"
             + "\"overwrite\":false,\"streamingProcess\":true}";
+    
+    private static final String SCRIPT_JOB_JSON =  "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.api.script.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
+            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":false,\"misfire\":true,\"description\":\"\","
+            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":8888,\"jobShardingStrategyClass\":\"\","
+            + "\"disabled\":false,\"overwrite\":false,\"scriptCommandLine\":\"test.sh\"}";
     
     public static String getSimpleJobJson(final String jobName, final String desc) {
         return String.format(SIMPLE_JOB_JSON, jobName, desc);
@@ -44,5 +49,9 @@ public final class LifecycleJsonConstants {
     
     public static String getDataflowJobJson() {
         return DATAFLOW_JOB_JSON;
+    }
+    
+    public static String getScriptJobJson() {
+        return SCRIPT_JOB_JSON;
     }
 }
