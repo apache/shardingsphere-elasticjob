@@ -15,9 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.api.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -39,8 +39,7 @@ public final class OdevitySortByNameJobShardingStrategyTest {
         expected.put("host0", Collections.singletonList(0));
         expected.put("host1", Collections.singletonList(1));
         expected.put("host2", Collections.<Integer>emptyList());
-        assertThat(
-                odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("1", 2, Collections.<Integer, String>emptyMap())), is(expected));
+        assertThat(odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("1", 2)), is(expected));
     }
     
     @Test
@@ -49,7 +48,6 @@ public final class OdevitySortByNameJobShardingStrategyTest {
         expected.put("host2", Collections.singletonList(0));
         expected.put("host1", Collections.singletonList(1));
         expected.put("host0", Collections.<Integer>emptyList());
-        assertThat(
-                odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("0", 2, Collections.<Integer, String>emptyMap())), is(expected));
+        assertThat(odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("0", 2)), is(expected));
     }
 }

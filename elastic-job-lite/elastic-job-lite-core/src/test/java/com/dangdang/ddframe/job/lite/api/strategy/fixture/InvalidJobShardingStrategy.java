@@ -15,24 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.sharding.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy.fixture;
+
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * 作业分片策略.
- * 
- * @author zhangliang
- */
-public interface JobShardingStrategy {
+public class InvalidJobShardingStrategy implements JobShardingStrategy {
     
-    /**
-     * 进行作业分片.
-     * 
-     * @param serversList 所有参与分片的服务器列表
-     * @param option 作业分片策略选项
-     * @return 分配分片的服务器IP和分片集合的映射
-     */
-    Map<String, List<Integer>> sharding(List<String> serversList, JobShardingStrategyOption option);
+    public InvalidJobShardingStrategy(final String input) {
+    }
+    
+    @Override
+    public Map<String, List<Integer>> sharding(final List<String> serversList, final JobShardingStrategyOption option) {
+        return null;
+    }
 }

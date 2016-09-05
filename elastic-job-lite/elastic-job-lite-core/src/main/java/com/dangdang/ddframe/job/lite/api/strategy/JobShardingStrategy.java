@@ -15,34 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.sharding.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
+import java.util.List;
 import java.util.Map;
 
 /**
- * 作业分片策略选项.
+ * 作业分片策略.
  * 
  * @author zhangliang
  */
-@Getter
-@RequiredArgsConstructor
-public final class JobShardingStrategyOption {
+public interface JobShardingStrategy {
     
     /**
-     * 作业名称.
+     * 进行作业分片.
+     * 
+     * @param serversList 所有参与分片的服务器列表
+     * @param option 作业分片策略选项
+     * @return 分配分片的服务器IP和分片集合的映射
      */
-    private final String jobName;
-    
-    /**
-     * 作业分片总数.
-     */
-    private final int shardingTotalCount;
-    
-    /**
-     * 分片序列号和个性化参数对照表.
-     */
-    private final Map<Integer, String> shardingItemParameters;
+    Map<String, List<Integer>> sharding(List<String> serversList, JobShardingStrategyOption option);
 }

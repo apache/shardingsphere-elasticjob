@@ -15,10 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.api.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -83,6 +83,6 @@ public final class AverageAllocationJobShardingStrategyTest {
     }
     
     private JobShardingStrategyOption getJobShardingStrategyOption(final int shardingTotalCount) {
-        return new JobShardingStrategyOption("test_job", shardingTotalCount, Collections.<Integer, String>emptyMap());
+        return new JobShardingStrategyOption("test_job", shardingTotalCount);
     }
 }

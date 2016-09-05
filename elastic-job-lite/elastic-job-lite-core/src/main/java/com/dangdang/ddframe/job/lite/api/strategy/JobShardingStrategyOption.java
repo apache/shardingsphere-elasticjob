@@ -15,21 +15,27 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.sharding.strategy.fixture;
+package com.dangdang.ddframe.job.lite.api.strategy;
 
-import java.util.List;
-import java.util.Map;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
-
-public class InvalidJobShardingStrategy implements JobShardingStrategy {
+/**
+ * 作业分片策略选项.
+ * 
+ * @author zhangliang
+ */
+@Getter
+@RequiredArgsConstructor
+public final class JobShardingStrategyOption {
     
-    public InvalidJobShardingStrategy(final String input) {
-    }
+    /**
+     * 作业名称.
+     */
+    private final String jobName;
     
-    @Override
-    public Map<String, List<Integer>> sharding(final List<String> serversList, final JobShardingStrategyOption option) {
-        return null;
-    }
+    /**
+     * 作业分片总数.
+     */
+    private final int shardingTotalCount;
 }

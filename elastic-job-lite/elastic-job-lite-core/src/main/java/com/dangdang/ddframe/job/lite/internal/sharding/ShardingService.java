@@ -17,24 +17,23 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import com.dangdang.ddframe.job.util.ShardingItemParameters;
+import com.dangdang.ddframe.env.LocalHostService;
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyFactory;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyFactory;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
 import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.job.lite.internal.util.ItemUtils;
-import com.dangdang.ddframe.env.LocalHostService;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
@@ -111,8 +110,7 @@ public class ShardingService {
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
-        JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
-                new ShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap());
+        JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
         JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.DEBUG, "Sharding completed."));
     }

@@ -15,14 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.api.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy.impl;
+
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
 
 /**
  * 根据作业名的哈希值奇偶数决定IP升降序算法的分片策略.

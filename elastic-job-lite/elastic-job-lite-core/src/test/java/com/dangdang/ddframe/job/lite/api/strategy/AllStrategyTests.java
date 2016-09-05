@@ -17,12 +17,16 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy;
 
+import com.dangdang.ddframe.job.lite.api.strategy.impl.AverageAllocationJobShardingStrategyTest;
+import com.dangdang.ddframe.job.lite.api.strategy.impl.OdevitySortByNameJobShardingStrategyTest;
+import com.dangdang.ddframe.job.lite.api.strategy.impl.RotateServerByNameJobShardingStrategyTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+        JobShardingStrategyFactoryTest.class, 
         AverageAllocationJobShardingStrategyTest.class, 
         OdevitySortByNameJobShardingStrategyTest.class, 
         RotateServerByNameJobShardingStrategyTest.class

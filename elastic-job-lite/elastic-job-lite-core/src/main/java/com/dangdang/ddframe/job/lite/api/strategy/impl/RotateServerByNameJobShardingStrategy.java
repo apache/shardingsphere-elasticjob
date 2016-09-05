@@ -15,10 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.api.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,7 @@ weight=23
 
 **全路径：**
 
-`com.dangdang.ddframe.job.lite.api.strategy.AverageAllocationJobShardingStrategy`
+`com.dangdang.ddframe.job.lite.api.strategy.impl.AverageAllocationJobShardingStrategy`
 
 **策略说明：**
 
@@ -31,7 +31,7 @@ weight=23
 
 **全路径：**
 
-`com.dangdang.ddframe.job.lite.api.strategy.OdevitySortByNameJobShardingStrategy`
+`com.dangdang.ddframe.job.lite.api.strategy.impl.OdevitySortByNameJobShardingStrategy`
 
 **策略说明：**
 
@@ -53,7 +53,7 @@ weight=23
 
 **全路径：**
 
-`com.dangdang.ddframe.job.lite.api.strategy.RotateServerByNameJobShardingStrategy`
+`com.dangdang.ddframe.job.lite.api.strategy.impl.RotateServerByNameJobShardingStrategy`
 
 **策略说明：**
 

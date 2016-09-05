@@ -49,7 +49,6 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNodeTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingServiceTest;
-import com.dangdang.ddframe.job.lite.internal.sharding.strategy.JobShardingStrategyFactoryTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorageTest;
 import com.dangdang.ddframe.job.lite.internal.util.ItemUtilsTest;
@@ -84,7 +83,6 @@ import org.junit.runners.Suite.SuiteClasses;
     FailoverServiceTest.class, 
     FailoverNodeTest.class, 
     FailoverListenerManagerTest.class, 
-    JobShardingStrategyFactoryTest.class, 
     JobRegistryTest.class,
     JobScheduleControllerTest.class, 
     JobTriggerListenerTest.class, 

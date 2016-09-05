@@ -15,10 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.sharding.strategy;
+package com.dangdang.ddframe.job.lite.api.strategy;
 
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.lite.api.strategy.AverageAllocationJobShardingStrategy;
+import com.dangdang.ddframe.job.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
