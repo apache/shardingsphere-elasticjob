@@ -33,12 +33,14 @@ url：`job/register`
 | -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
 |jobName                             |String |`是`    |       | 作业名称。为`Elastic-Job-Cloud`的作业唯一标识                                        |
 |jobClass                            |String |`是`    |       | 作业实现类                                                                         |
+|jobType                             |Enum   |`是`    |       | 作业类型。`SIMPLE`，`DATAFLOW`，`SCRIPT`                                            |
 |jobExecutionType                    |Enum   |`是`    |       | 作业执行类型。`TRANSIENT`为瞬时作业，`DAEMON`为常驻作业                                |
 |cron                                |String |`是`    |       | `cron`表达式，用于配置作业触发时间                                                    |
 |shardingTotalCount                  |int    |`是`    |       | 作业分片总数                                                                        |
 |cpuCount                            |double |`是`    |       | 单片作业所需要的`CPU`数量                                                            |
 |memoryMB                            |double |`是`    |       | 单片作业所需要的内存`MB`                                                             |
 |appURL                              |String |`是`    |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
+|bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`。                                                      |
 |failover                            |boolean|否      |`false`| 是否开启失效转移                                                                    |
 |misfire                             |boolean|否      |`false`| 是否开启错过任务重新执行                                                             |
 |beanName                            |String |否      |       | `Spring`容器中配置的`bean`名称                                                      |
@@ -51,7 +53,7 @@ url：`job/register`
 
 ```shell
 curl -l -H "Content-type: application/json" -X POST -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true}' 
+'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
 http://elastic_job_cloud_host:8899/job/register
 ```
 
@@ -59,8 +61,8 @@ http://elastic_job_cloud_host:8899/job/register
 
 ```shell
 curl -l -H "Content-type: application/json" -X POST -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobExecutionType":"TRANSIENT",
-"cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"misfire":true}' 
+'{"jobName":"foo_job","jobClass":"yourJobClass","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobType":"SIMPLE","jobExecutionType":"TRANSIENT",
+"cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
 http://elastic_job_cloud_masterhost:8899/job/register
 ```
 
