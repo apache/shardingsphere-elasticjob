@@ -27,7 +27,7 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class SimpleAspect {
     
-    @Pointcut("execution(* com.dangdang.ddframe.job.fixture..*(..))")
+    @Pointcut("execution(* com.dangdang.ddframe.job.lite.fixture..*(..))")
     public void aspect() {
     }
     

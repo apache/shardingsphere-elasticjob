@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import lombok.Getter;
 import lombok.Setter;
 
-public final class FooSimpleElasticJob implements SimpleJob {
+public class FooSimpleElasticJob implements SimpleJob {
     
     @Getter
     private static volatile boolean completed;

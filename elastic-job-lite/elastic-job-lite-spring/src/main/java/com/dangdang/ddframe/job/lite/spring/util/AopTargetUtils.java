@@ -17,15 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.spring.util;
 
-import java.lang.reflect.Field;
-
+import com.dangdang.ddframe.job.exception.JobSystemException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.aop.support.AopUtils;
 
-import com.dangdang.ddframe.job.exception.JobSystemException;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.lang.reflect.Field;
 
 /**
  * 基于Spring AOP获取目标对象.

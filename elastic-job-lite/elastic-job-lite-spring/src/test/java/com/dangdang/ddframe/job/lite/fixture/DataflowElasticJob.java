@@ -24,7 +24,7 @@ import lombok.Getter;
 import java.util.Collections;
 import java.util.List;
 
-public final class DataflowElasticJob implements DataflowJob<String> {
+public class DataflowElasticJob implements DataflowJob<String> {
     
     @Getter
     private static volatile boolean completed;
