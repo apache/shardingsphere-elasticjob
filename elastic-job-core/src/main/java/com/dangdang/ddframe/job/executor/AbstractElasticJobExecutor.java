@@ -173,19 +173,21 @@ public abstract class AbstractElasticJobExecutor {
     
     private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent.ExecutionSource executionSource) {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(jobName, executionSource, item);
-        jobEventBus.post(jobExecutionEvent);
-        jobEventBus.post(new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executing, item is: '%s'.", item)));
-        try {
-            process(new ShardingContext(shardingContexts, item));
-            jobExecutionEvent.executionSuccess();
-            jobEventBus.post(new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executed, item is: '%s'.", item)));
-            // CHECKSTYLE:OFF
-        } catch (final Throwable ex) {
-            // CHECKSTYLE:ON
-            jobExecutionEvent.executionFailure(ex);
-            jobExceptionHandler.handleException(jobName, ex);
-        } finally {
+        synchronized (jobExecutionEvent) {
             jobEventBus.post(jobExecutionEvent);
+            jobEventBus.post(new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executing, item is: '%s'.", item)));
+            try {
+                process(new ShardingContext(shardingContexts, item));
+                jobExecutionEvent.executionSuccess();
+                jobEventBus.post(new JobTraceEvent(jobName, JobTraceEvent.LogLevel.TRACE, String.format("Job executed, item is: '%s'.", item)));
+                // CHECKSTYLE:OFF
+            } catch (final Throwable ex) {
+                // CHECKSTYLE:ON
+                jobExecutionEvent.executionFailure(ex);
+                jobExceptionHandler.handleException(jobName, ex);
+            } finally {
+                jobEventBus.post(jobExecutionEvent);
+            }
         }
     }
     

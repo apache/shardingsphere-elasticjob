@@ -49,7 +49,7 @@ public class JobExecutionEvent implements JobEvent {
     
     private final Date startTime = new Date();
     
-    private volatile Date completeTime;
+    private Date completeTime;
     
     private boolean success;
     
