@@ -26,7 +26,6 @@ import com.dangdang.ddframe.json.GsonFactory;
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.Executor;
 
 import java.io.IOException;
 
@@ -38,11 +37,8 @@ import java.io.IOException;
  */
 public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
     
-    private final Executor executor;
-    
     public ScriptJobExecutor(final JobFacade jobFacade) {
         super(jobFacade);
-        executor = new DefaultExecutor();
     }
     
     @Override
@@ -58,7 +54,7 @@ public final class ScriptJobExecutor extends AbstractElasticJobExecutor {
         CommandLine commandLine = CommandLine.parse(scriptCommandLine);
         commandLine.addArgument(GsonFactory.getGson().toJson(shardingContext), false);
         try {
-            executor.execute(commandLine);
+            new DefaultExecutor().execute(commandLine);
         } catch (final IOException ex) {
             throw new JobConfigurationException("Execute script failure.", ex);
         }

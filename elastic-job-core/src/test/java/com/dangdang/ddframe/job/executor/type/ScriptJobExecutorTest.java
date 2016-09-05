@@ -24,18 +24,13 @@ import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.config.TestScriptJobConfiguration;
 import com.dangdang.ddframe.job.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.fixture.handler.ThrowJobExceptionHandler;
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.Executor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.io.IOException;
 
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,9 +40,6 @@ public final class ScriptJobExecutorTest {
     @Mock
     private JobFacade jobFacade;
     
-    @Mock
-    private Executor executor;
-    
     private ScriptJobExecutor scriptJobExecutor;
     
     @Test
@@ -56,7 +48,6 @@ public final class ScriptJobExecutorTest {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("", IgnoreJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
         scriptJobExecutor.execute();
-        verify(executor, times(0)).execute(Matchers.<CommandLine>any());
     }
     
     @Test(expected = JobSystemException.class)
@@ -74,13 +65,7 @@ public final class ScriptJobExecutorTest {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file", ThrowJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
-        ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
-        when(executor.execute(Matchers.<CommandLine>any())).thenThrow(IOException.class);
-        try {
-            scriptJobExecutor.execute();
-        } finally {
-            verify(executor, times(shardingContexts.getShardingTotalCount())).execute(Matchers.<CommandLine>any());
-        }
+        scriptJobExecutor.execute();
     }
     
     @Test
@@ -97,9 +82,7 @@ public final class ScriptJobExecutorTest {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("exists_file param0 param1", IgnoreJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);
-        ReflectionUtils.setFieldValue(scriptJobExecutor, "executor", executor);
         scriptJobExecutor.execute();
         verify(jobFacade).loadJobRootConfiguration(true);
-        verify(executor, times(shardingContexts.getShardingTotalCount())).execute(Matchers.<CommandLine>any());
     }
 }
