@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.lite.console.controller;
 
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
-import com.dangdang.ddframe.job.lite.domain.ExecutionInfo;
-import com.dangdang.ddframe.job.lite.domain.JobBriefInfo;
-import com.dangdang.ddframe.job.lite.domain.JobSettings;
-import com.dangdang.ddframe.job.lite.domain.ServerInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;

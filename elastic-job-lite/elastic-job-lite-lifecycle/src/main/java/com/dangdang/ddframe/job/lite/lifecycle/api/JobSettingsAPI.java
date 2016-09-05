@@ -15,20 +15,30 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.service;
+package com.dangdang.ddframe.job.lite.lifecycle.api;
 
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
 
-public interface JobAPIService {
+/**
+ * 作业配置的API.
+ *
+ * @author zhangliang
+ */
+public interface JobSettingsAPI {
     
-    JobSettingsAPI getJobSettingsAPI();
+    /**
+     * 获取作业设置.
+     *
+     * @param jobName 作业名称
+     * @return 作业设置对象
+     */
+    JobSettings getJobSettings(String jobName);
     
-    JobStatisticsAPI getJobStatisticsAPI();
+    /**
+     * 更新作业设置.
+     *
+     * @param jobSettings 作业设置对象
+     */
+    void updateJobSettings(JobSettings jobSettings);
     
-    ServerStatisticsAPI getServerStatisticsAPI();
-    
-    JobOperateAPI getJobOperatorAPI();
 }

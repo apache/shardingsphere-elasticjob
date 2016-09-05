@@ -15,20 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.service;
+package com.dangdang.ddframe.job.lite.lifecycle.internal.operate;
 
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
-
-public interface JobAPIService {
+/**
+ * 作业操作的回调接口.
+ *
+ * @author zhangliang
+ */
+public interface JobOperateCallback {
     
-    JobSettingsAPI getJobSettingsAPI();
-    
-    JobStatisticsAPI getJobStatisticsAPI();
-    
-    ServerStatisticsAPI getServerStatisticsAPI();
-    
-    JobOperateAPI getJobOperatorAPI();
+    /**
+     * 操作作业.
+     * 
+     * @param jobName 作业名称
+     * @param serverIp 服务器地址
+     * @return 操作是否成功
+     */
+    boolean doOperate(String jobName, String serverIp);
 }

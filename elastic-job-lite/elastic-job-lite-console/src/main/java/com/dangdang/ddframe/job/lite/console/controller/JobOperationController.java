@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.console.controller;
 
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
-import com.dangdang.ddframe.job.lite.domain.ServerInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 import com.google.common.base.Optional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

@@ -15,20 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.service;
+package com.dangdang.ddframe.job.lite.lifecycle.fixture;
 
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 
-public interface JobAPIService {
+import java.util.List;
+
+public class TestDataflowJob implements DataflowJob {
     
-    JobSettingsAPI getJobSettingsAPI();
+    @Override
+    public List fetchData(final ShardingContext shardingContext) {
+        return null;
+    }
     
-    JobStatisticsAPI getJobStatisticsAPI();
-    
-    ServerStatisticsAPI getServerStatisticsAPI();
-    
-    JobOperateAPI getJobOperatorAPI();
+    @Override
+    public void processData(final ShardingContext shardingContext, final List data) {
+    }
 }

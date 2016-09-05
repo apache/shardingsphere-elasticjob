@@ -15,20 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.service;
+package com.dangdang.ddframe.job.lite.lifecycle.fixture;
 
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.simple.SimpleJob;
 
-public interface JobAPIService {
+public class TestSimpleJob implements SimpleJob {
     
-    JobSettingsAPI getJobSettingsAPI();
-    
-    JobStatisticsAPI getJobStatisticsAPI();
-    
-    ServerStatisticsAPI getServerStatisticsAPI();
-    
-    JobOperateAPI getJobOperatorAPI();
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+    }
 }
