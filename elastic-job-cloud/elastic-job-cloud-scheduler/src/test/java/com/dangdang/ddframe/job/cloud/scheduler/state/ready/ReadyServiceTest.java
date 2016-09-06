@@ -116,7 +116,7 @@ public final class ReadyServiceTest {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
         when(regCenter.isExisted("/state/ready")).thenReturn(false);
         readyService.addDaemon("test_job");
-        verify(regCenter, times(0)).persist((String) any(), eq(""));
+        verify(regCenter).persist((String) any(), eq(""));
     }
     
     @Test

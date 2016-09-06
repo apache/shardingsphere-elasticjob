@@ -83,9 +83,6 @@ public class ReadyService {
         if (!cloudJobConfig.isPresent() || JobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType()) {
             return;
         }
-        if (!regCenter.isExisted(ReadyNode.ROOT)) {
-            return;
-        }
         for (String each : regCenter.getChildrenKeys(ReadyNode.ROOT)) {
             if (UniqueJob.from(each).getJobName().equals(jobName)) {
                 return;
