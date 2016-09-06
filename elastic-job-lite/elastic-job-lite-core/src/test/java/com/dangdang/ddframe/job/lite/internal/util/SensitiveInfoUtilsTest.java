@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.util;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -29,31 +29,14 @@ public final class SensitiveInfoUtilsTest {
     
     @Test
     public void assertFilterContentWithoutIp() {
-        List<String> content = new ArrayList<>();
-        content.add("/simpleElasticDemoJob/servers");
-        content.add("/simpleElasticDemoJob/leader");
-        assertThat(SensitiveInfoUtils.filterSensitiveIps(content), is(content));
+        List<String> actual = Arrays.asList("/simpleElasticDemoJob/servers", "/simpleElasticDemoJob/leader");
+        assertThat(SensitiveInfoUtils.filterSensitiveIps(actual), is(actual));
     }
     
     @Test
     public void assertFilterContentWithSensitiveIp() {
-        List<String> content = new ArrayList<>(2);
-        content.add("/simpleElasticDemoJob/servers/127.0.0.1");
-        content.add("/simpleElasticDemoJob/servers/192.168.0.1/hostName | 192.168.0.1");
-        List<String> expected = new ArrayList<>(2);
-        expected.add("/simpleElasticDemoJob/servers/ip1");
-        expected.add("/simpleElasticDemoJob/servers/ip2/hostName | ip2");
-        assertThat(SensitiveInfoUtils.filterSensitiveIps(content), is(expected));
-    }
-    
-    @Test
-    public void assertFilterContentWithSensitiveIp2() {
-        List<String> content = new ArrayList<>(2);
-        content.add("/simpleElasticDemoJob/servers/127.0.0.1");
-        content.add("/simpleElasticDemoJob/servers/192.168.0.1/desc | 127.0.0.1");
-        List<String> expected = new ArrayList<>(2);
-        expected.add("/simpleElasticDemoJob/servers/ip1");
-        expected.add("/simpleElasticDemoJob/servers/ip2/desc | ip1");
-        assertThat(SensitiveInfoUtils.filterSensitiveIps(content), is(expected));
+        List<String> actual = Arrays.asList("/simpleElasticDemoJob/servers/127.0.0.1", "/simpleElasticDemoJob/servers/192.168.0.1/hostName | 192.168.0.1");
+        List<String> expected = Arrays.asList("/simpleElasticDemoJob/servers/ip1", "/simpleElasticDemoJob/servers/ip2/hostName | ip2");
+        assertThat(SensitiveInfoUtils.filterSensitiveIps(actual), is(expected));
     }
 }

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.util;
+package com.dangdang.ddframe.job.util;
 
 import org.junit.Test;
 
@@ -25,35 +25,35 @@ import java.util.Collections;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public final class ItemUtilsTest {
+public final class ShardingItemsTest {
     
     @Test
     public void assertTtoItemListWhenNull() {
-        assertThat(ItemUtils.toItemList(null), is(Collections.EMPTY_LIST));
+        assertThat(ShardingItems.toItemList(null), is(Collections.EMPTY_LIST));
     }
     
     @Test
     public void assertToItemListWhenEmpty() {
-        assertThat(ItemUtils.toItemList(""), is(Collections.EMPTY_LIST));
+        assertThat(ShardingItems.toItemList(""), is(Collections.EMPTY_LIST));
     }
     
     @Test
     public void assertToItemList() {
-        assertThat(ItemUtils.toItemList("0,1,2"), is(Arrays.asList(0, 1, 2)));
+        assertThat(ShardingItems.toItemList("0,1,2"), is(Arrays.asList(0, 1, 2)));
     }
     
     @Test
     public void assertToItemListForDuplicated() {
-        assertThat(ItemUtils.toItemList("0,1,2,2"), is(Arrays.asList(0, 1, 2)));
+        assertThat(ShardingItems.toItemList("0,1,2,2"), is(Arrays.asList(0, 1, 2)));
     }
     
     @Test
     public void assertToItemsStringWhenEmpty() {
-        assertThat(ItemUtils.toItemsString(Collections.<Integer>emptyList()), is(""));
+        assertThat(ShardingItems.toItemsString(Collections.<Integer>emptyList()), is(""));
     }
     
     @Test
     public void assertToItemsString() {
-        assertThat(ItemUtils.toItemsString(Arrays.asList(0, 1, 2)), is("0,1,2"));
+        assertThat(ShardingItems.toItemsString(Arrays.asList(0, 1, 2)), is("0,1,2"));
     }
 }

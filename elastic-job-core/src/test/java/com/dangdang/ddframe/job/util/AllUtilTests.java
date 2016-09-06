@@ -25,7 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        JobConfigurationGsonTypeAdapterTest.class, 
+        JobConfigurationGsonTypeAdapterTest.class,
+        ShardingItemsTest.class, 
         ShardingItemParametersTest.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -51,7 +51,6 @@ import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNodeTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingServiceTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorageTest;
-import com.dangdang.ddframe.job.lite.internal.util.ItemUtilsTest;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -61,7 +60,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     JobNodePathTest.class, 
     JobNodeStorageTest.class, 
-    ItemUtilsTest.class,
     SensitiveInfoUtilsTest.class,
     ConfigurationServiceTest.class, 
     ConfigurationNodeTest.class, 
