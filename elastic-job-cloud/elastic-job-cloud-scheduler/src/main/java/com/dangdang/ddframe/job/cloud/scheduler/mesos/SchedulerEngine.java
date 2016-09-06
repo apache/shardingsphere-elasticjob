@@ -155,8 +155,11 @@ public final class SchedulerEngine implements Scheduler {
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
-                // TODO 根据Running的message更新elastic-job本身状态
-                log.info("task status is: {}, message is: {}, source is: {}", taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
+                if ("BEGIN".equals(taskStatus.getMessage())) {
+                    facadeService.updateDaemonStatus(taskContext, false);
+                } else if ("COMPLETE".equals(taskStatus.getMessage())) {
+                    facadeService.updateDaemonStatus(taskContext, true);
+                }
                 break;
             case TASK_FINISHED:
                 facadeService.removeRunning(taskContext.getMetaInfo());

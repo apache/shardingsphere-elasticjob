@@ -66,6 +66,36 @@ public final class RunningServiceTest {
     }
     
     @Test
+    public void assertUpdateDaemonStatusWithoutRunningNode() {
+        TaskNode taskNode = TaskNode.builder().build();
+        when(regCenter.isExisted("/state/running/test_job/" + taskNode.getTaskNodePath())).thenReturn(false);
+        runningService.updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), true);
+        verify(regCenter).isExisted("/state/running/test_job/" + taskNode.getTaskNodePath());
+        verify(regCenter, times(0)).persist("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle", "");
+        verify(regCenter, times(0)).remove("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle");
+    }
+    
+    @Test
+    public void assertUpdateDaemonStatusWithRunningNodeAndIdle() {
+        TaskNode taskNode = TaskNode.builder().build();
+        when(regCenter.isExisted("/state/running/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
+        runningService.updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), true);
+        verify(regCenter).isExisted("/state/running/test_job/" + taskNode.getTaskNodePath());
+        verify(regCenter).persist("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle", "");
+        verify(regCenter, times(0)).remove("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle");
+    }
+    
+    @Test
+    public void assertUpdateDaemonStatusWithRunningNodeAndNotIdle() {
+        TaskNode taskNode = TaskNode.builder().build();
+        when(regCenter.isExisted("/state/running/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
+        runningService.updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), false);
+        verify(regCenter).isExisted("/state/running/test_job/" + taskNode.getTaskNodePath());
+        verify(regCenter, times(0)).persist("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle", "");
+        verify(regCenter).remove("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle");
+    }
+    
+    @Test
     public void assertRemoveWithoutRootNode() {
         String nodePath = TaskNode.builder().build().getTaskNodePath();
         when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);

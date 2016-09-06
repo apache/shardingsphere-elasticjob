@@ -30,4 +30,10 @@ public final class RunningNodeTest {
         String nodePath = TaskNode.builder().build().getTaskNodePath();
         assertThat(RunningNode.getRunningTaskNodePath(nodePath), is("/state/running/test_job/" + nodePath));
     }
+    
+    @Test
+    public void assertGetRunningTaskIdleNodePath() {
+        String nodePath = TaskNode.builder().build().getTaskNodePath();
+        assertThat(RunningNode.getRunningTaskIdleNodePath(nodePath), is("/state/running/test_job/" + nodePath + "/idle"));
+    }
 }

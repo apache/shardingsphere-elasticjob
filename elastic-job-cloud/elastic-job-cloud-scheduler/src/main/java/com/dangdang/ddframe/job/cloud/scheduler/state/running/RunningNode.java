@@ -36,11 +36,17 @@ final class RunningNode {
     
     private static final String RUNNING_TASK = RUNNING_JOB + "/%s";
     
+    private static final String RUNNING_TASK_IDLE = RUNNING_TASK + "/idle";
+    
     static String getRunningJobNodePath(final String jobName) {
         return String.format(RUNNING_JOB, jobName);
     }
     
     static String getRunningTaskNodePath(final String taskMetaInfo) {
         return String.format(RUNNING_TASK, TaskContext.MetaInfo.from(taskMetaInfo).getJobName(), taskMetaInfo);
+    }
+    
+    static String getRunningTaskIdleNodePath(final String taskMetaInfo) {
+        return String.format(RUNNING_TASK_IDLE, TaskContext.MetaInfo.from(taskMetaInfo).getJobName(), taskMetaInfo);
     }
 }

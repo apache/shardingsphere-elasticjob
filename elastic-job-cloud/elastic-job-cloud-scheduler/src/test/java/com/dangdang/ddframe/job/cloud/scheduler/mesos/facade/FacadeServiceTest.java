@@ -136,10 +136,16 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertAddRunning() {
-        String taskNodeValue = TaskNode.builder().build().getTaskNodeValue();
-        TaskContext taskContext = TaskContext.from(taskNodeValue);
+        TaskContext taskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
         facadeService.addRunning(taskContext);
         verify(runningService).add(taskContext);
+    }
+    
+    @Test
+    public void assertUpdateDaemonStatus() {
+        TaskContext taskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
+        facadeService.updateDaemonStatus(taskContext, true);
+        verify(runningService).updateDaemonStatus(taskContext, true);
     }
     
     @Test

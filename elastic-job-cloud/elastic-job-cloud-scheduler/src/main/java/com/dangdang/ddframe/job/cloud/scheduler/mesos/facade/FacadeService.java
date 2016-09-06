@@ -136,6 +136,14 @@ public class FacadeService {
     }
     
     /**
+     * 更新常驻作业运行状态.
+     * @param taskContext 任务运行时上下文
+     */
+    public void updateDaemonStatus(final TaskContext taskContext, final boolean isIdle) {
+        runningService.updateDaemonStatus(taskContext, isIdle);
+    }
+    
+    /**
      * 将任务从运行时队列删除..
      *
      * @param metaInfo 任务元信息

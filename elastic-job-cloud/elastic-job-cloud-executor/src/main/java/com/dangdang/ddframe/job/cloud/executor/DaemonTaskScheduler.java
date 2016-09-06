@@ -142,9 +142,9 @@ public final class DaemonTaskScheduler {
         
         @Override
         public void execute(final JobExecutionContext context) throws JobExecutionException {
-            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("JobBegin").build());
+            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
             JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
-            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("JobComplete").build());
+            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
         }
     }
 }
