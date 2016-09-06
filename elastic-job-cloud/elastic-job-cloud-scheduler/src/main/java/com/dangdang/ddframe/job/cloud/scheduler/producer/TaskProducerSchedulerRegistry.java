@@ -93,16 +93,16 @@ public class TaskProducerSchedulerRegistry {
      * @param jobConfig 作业配置
      */
     public void register(final CloudJobConfiguration jobConfig) {
-        if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
-            schedulerInstance.register(jobConfig);
-        } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
-            readyService.addDaemon(jobConfig.getJobName()); 
-        }
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
         if (!jobConfigFromZk.isPresent()) {
             configService.add(jobConfig);
         } else if (!jobConfigFromZk.get().equals(jobConfig)) {
             configService.update(jobConfig);
+        }
+        if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
+            schedulerInstance.register(jobConfig);
+        } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
+            readyService.addDaemon(jobConfig.getJobName());
         }
     }
     
