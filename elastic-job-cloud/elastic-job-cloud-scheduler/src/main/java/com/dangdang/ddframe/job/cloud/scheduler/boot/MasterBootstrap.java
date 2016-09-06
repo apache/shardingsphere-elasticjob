@@ -28,6 +28,7 @@ import com.dangdang.ddframe.restful.RestfulServer;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
+import org.apache.mesos.SchedulerDriver;
 
 import java.io.IOException;
 
@@ -42,7 +43,7 @@ public final class MasterBootstrap {
     
     private final CoordinatorRegistryCenter regCenter;
     
-    private final MesosSchedulerDriver schedulerDriver;
+    private final SchedulerDriver schedulerDriver;
     
     private final RestfulServer restfulServer;
     
@@ -51,7 +52,7 @@ public final class MasterBootstrap {
         regCenter = getRegistryCenter();
         schedulerDriver = getSchedulerDriver();
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
-        CloudJobRestfulApi.init(regCenter);
+        CloudJobRestfulApi.init(schedulerDriver, regCenter);
         initListener();
     }
     
@@ -61,7 +62,7 @@ public final class MasterBootstrap {
         return result;
     }
     
-    private MesosSchedulerDriver getSchedulerDriver() {
+    private SchedulerDriver getSchedulerDriver() {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Protos.FrameworkInfo frameworkInfo = 
                 Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();

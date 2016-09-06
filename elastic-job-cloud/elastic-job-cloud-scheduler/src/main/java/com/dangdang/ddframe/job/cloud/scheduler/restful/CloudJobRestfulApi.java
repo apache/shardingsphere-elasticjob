@@ -19,10 +19,12 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
+import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.TaskProducerSchedulerRegistry;
 import com.dangdang.ddframe.json.GsonFactory;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Preconditions;
+import org.apache.mesos.SchedulerDriver;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -38,21 +40,29 @@ import javax.ws.rs.core.MediaType;
 @Path("/job")
 public final class CloudJobRestfulApi {
     
+    private static SchedulerDriver schedulerDriver;
+    
     private static CoordinatorRegistryCenter regCenter;
     
     private final TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
     
+    private final LifecycleService lifecycleService;
+    
     public CloudJobRestfulApi() {
+        Preconditions.checkNotNull(schedulerDriver);
         Preconditions.checkNotNull(regCenter);
         taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(regCenter);
+        lifecycleService = new LifecycleService(schedulerDriver, regCenter);
     }
     
     /**
      * 初始化.
      * 
+     * @param schedulerDriver Mesos控制器
      * @param regCenter 注册中心
      */
-    public static void init(final CoordinatorRegistryCenter regCenter) {
+    public static void init(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
+        CloudJobRestfulApi.schedulerDriver = schedulerDriver;
         CloudJobRestfulApi.regCenter = regCenter;
         GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
     }
@@ -79,5 +89,6 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public void deregister(final String jobName) {
         taskProducerSchedulerRegistry.deregister(jobName);
+        lifecycleService.killJob(jobName);
     }
 }

@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.scheduler.state.fixture.TaskNode;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import org.hamcrest.core.Is;
 import org.junit.Test;

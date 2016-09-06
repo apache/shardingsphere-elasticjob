@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.state.fixture.TaskNode;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
