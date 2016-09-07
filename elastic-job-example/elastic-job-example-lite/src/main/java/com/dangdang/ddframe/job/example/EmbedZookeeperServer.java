@@ -43,8 +43,9 @@ public final class EmbedZookeeperServer {
                 @Override
                 public void run() {
                     try {
+                        Thread.sleep(1000L);
                         testingServer.close();
-                    } catch (final IOException ex) {
+                    } catch (final InterruptedException | IOException ex) {
                         RegExceptionHandler.handleException(ex);
                     }
                 }

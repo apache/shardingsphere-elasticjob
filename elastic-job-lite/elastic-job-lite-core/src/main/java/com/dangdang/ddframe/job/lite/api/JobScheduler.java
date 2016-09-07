@@ -18,13 +18,13 @@
 package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.executor.JobExecutorFactory;
+import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
+import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.JobFacade;
-import com.dangdang.ddframe.job.api.script.ScriptJob;
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
@@ -115,6 +115,13 @@ public class JobScheduler {
     }
     
     protected void prepareEnvironments(final Properties props) {
+    }
+    
+    /**
+     * 停止作业调度.
+     */
+    public void shutdown() {
+        JobRegistry.getInstance().getJobScheduleController(jobExecutor.getLiteJobConfig().getJobName()).shutdown();
     }
     
     /**

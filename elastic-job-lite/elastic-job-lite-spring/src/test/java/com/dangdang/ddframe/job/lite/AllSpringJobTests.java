@@ -26,8 +26,8 @@ import com.dangdang.ddframe.job.lite.spring.namespace.AllSpringNamespaceTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    AllSpringIntegrateTests.class, 
-    AllSpringNamespaceTests.class
+        AllSpringIntegrateTests.class, 
+        AllSpringNamespaceTests.class
     })
 public class AllSpringJobTests {
 }

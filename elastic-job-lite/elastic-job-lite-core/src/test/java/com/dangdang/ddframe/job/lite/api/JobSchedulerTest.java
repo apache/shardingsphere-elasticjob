@@ -98,4 +98,11 @@ public final class JobSchedulerTest {
         assertTrue(scheduler.isStarted());
         verify(schedulerFacade).newJobTriggerListener();
     }
+    
+    @Test
+    public void assertShutdown() {
+        mockInit(true);
+        jobScheduler.init();
+        jobScheduler.shutdown();
+    }
 }
