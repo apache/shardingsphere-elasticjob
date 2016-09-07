@@ -14,6 +14,7 @@ weight=1
 1. 重构原Elastic-Job至Elastic-Job-Lite
 
 ### 缺陷修正
+1. [ISSUE #119](https://github.com/dangdangdotcom/elastic-job/issues/119) spring容器关闭时，quartz未正常关闭 
 1. [ISSUE #123](https://github.com/dangdangdotcom/elastic-job/issues/123) 单机跑定时任务，zk断开后重连，没有触发leader选举 
 1. [ISSUE #127](https://github.com/dangdangdotcom/elastic-job/issues/127) Spring方式配置作业id无法使用占位符
 
