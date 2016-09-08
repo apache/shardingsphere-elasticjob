@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.example.fixture.repository;
 
 import com.dangdang.ddframe.job.example.fixture.entity.Foo;
-import com.dangdang.ddframe.job.example.fixture.entity.Foo.FooStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -29,30 +28,41 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class FooRepository {
     
-    private Map<Long, Foo> map = new ConcurrentHashMap<>(100);
+    private Map<Long, Foo> data = new ConcurrentHashMap<>(300, 1);
     
     public FooRepository() {
         init();
     }
     
     private void init() {
-        for (long i = 0; i < 100; i++) {
-            map.put(i, new Foo(i, FooStatus.ACTIVE));
+        addData(0L, 100L, "Beijing");
+        addData(100L, 200L, "Shanghai");
+        addData(200L, 300L, "Guangzhou");
+    }
+    
+    private void addData(final long idFrom, final long idTo, final String location) {
+        for (long i = idFrom; i < idTo; i++) {
+            data.put(i, new Foo(i, location, Foo.Status.TODO));
         }
     }
     
-    public List<Foo> findActive(final int shardingItem) {
-        List<Foo> result = new ArrayList<>(10);
-        for (int i = 0; i < 10; i++) {
-            Foo foo = map.get((shardingItem * 10 + i) % 100L);
-            if (FooStatus.ACTIVE == foo.getStatus()) {
+    public List<Foo> findTodoData(final String location, final int limit) {
+        List<Foo> result = new ArrayList<>(limit);
+        int count = 0;
+        for (Map.Entry<Long, Foo> each : data.entrySet()) {
+            Foo foo = each.getValue();
+            if (foo.getLocation().equals(location) && foo.getStatus() == Foo.Status.TODO) {
                 result.add(foo);
+                count++;
+                if (count == limit) {
+                    break;
+                }
             }
         }
         return result;
     }
     
-    public void setInactive(final long id) {
-        map.get(id).setStatus(FooStatus.INACTIVE);
+    public void setCompleted(final long id) {
+        data.get(id).setStatus(Foo.Status.COMPLETED);
     }
 }

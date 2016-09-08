@@ -24,7 +24,7 @@
         <job:event-log />
         <job:event-rdb driver="${event.rdb.driver}" url="${event.rdb.url}" username="${event.rdb.username}" password="${event.rdb.password}" log-level="INFO" />
     </job:simple>
-    <job:dataflow id="${dataflow.id}" class="${dataflow.class}" registry-center-ref="regCenter" sharding-total-count="${dataflow.shardingTotalCount}" cron="${dataflow.cron}" sharding-item-parameters="${dataflow.shardingItemParameters}" monitor-execution="${dataflow.monitorExecution}" failover="${dataflow.failover}" max-time-diff-seconds="${dataflow.maxTimeDiffSeconds}" description="${dataflow.description}" disabled="${dataflow.disabled}" overwrite="${dataflow.overwrite}">
+    <job:dataflow id="${dataflow.id}" class="${dataflow.class}" registry-center-ref="regCenter" sharding-total-count="${dataflow.shardingTotalCount}" cron="${dataflow.cron}" sharding-item-parameters="${dataflow.shardingItemParameters}" monitor-execution="${dataflow.monitorExecution}" failover="${dataflow.failover}" max-time-diff-seconds="${dataflow.maxTimeDiffSeconds}" streaming-process="${dataflow.streamingProcess}" description="${dataflow.description}" disabled="${dataflow.disabled}" overwrite="${dataflow.overwrite}">
         <job:event-log />
         <job:event-rdb driver="${event.rdb.driver}" url="${event.rdb.url}" username="${event.rdb.username}" password="${event.rdb.password}" log-level="INFO" />
     </job:dataflow>

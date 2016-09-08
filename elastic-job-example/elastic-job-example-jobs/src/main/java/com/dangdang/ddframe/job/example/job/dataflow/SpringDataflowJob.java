@@ -36,7 +36,7 @@ public class SpringDataflowJob implements DataflowJob<Foo> {
     @Override
     public List<Foo> fetchData(final ShardingContext shardingContext) {
         System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s", Thread.currentThread().getId(), new Date(), shardingContext, "dataflow job fetch data"));
-        return fooRepository.findActive(shardingContext.getShardingItem());
+        return fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
     }
     
     @Override
@@ -44,7 +44,7 @@ public class SpringDataflowJob implements DataflowJob<Foo> {
         System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s, Data: %s",
                 Thread.currentThread().getId(), new Date(), shardingContext, "dataflow job process data", data));
         for (Foo each : data) {
-            fooRepository.setInactive(each.getId());
+            fooRepository.setCompleted(each.getId());
         }
     }
 }
