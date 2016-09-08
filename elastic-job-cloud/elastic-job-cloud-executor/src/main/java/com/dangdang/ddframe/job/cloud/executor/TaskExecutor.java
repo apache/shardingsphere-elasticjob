@@ -62,6 +62,7 @@ public final class TaskExecutor implements Executor {
             if (jobConfig.isTransient()) {
                 JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContexts, jobConfig)).execute();
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
+                executorDriver.stop();
             } else {
                 new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContexts, jobConfig), executorDriver, taskInfo.getTaskId()).init();
             }
@@ -69,6 +70,7 @@ public final class TaskExecutor implements Executor {
         } catch (final Throwable ex) {
             // CHECKSTYLE:ON
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).build());
+            executorDriver.stop();
             throw ex;
         }
     }

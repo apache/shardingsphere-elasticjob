@@ -199,7 +199,7 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
-        log.warn("call executorLost slaveID is: {}, executorID is: {}", slaveID, executorID);
+        log.debug("call executorLost slaveID is: {}, executorID is: {}", slaveID, executorID);
     }
     
     @Override
