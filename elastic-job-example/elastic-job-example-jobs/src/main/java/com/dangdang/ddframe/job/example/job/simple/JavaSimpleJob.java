@@ -19,13 +19,23 @@ package com.dangdang.ddframe.job.example.job.simple;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
+import com.dangdang.ddframe.job.example.fixture.entity.Foo;
+import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
+import com.dangdang.ddframe.job.example.fixture.repository.FooRepositoryFactory;
 
 import java.util.Date;
+import java.util.List;
 
 public class JavaSimpleJob implements SimpleJob {
+    
+    private FooRepository fooRepository = FooRepositoryFactory.getFooRepository();
     
     @Override
     public void execute(final ShardingContext shardingContext) {
         System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s", Thread.currentThread().getId(), new Date(), shardingContext, "simple job"));
+        List<Foo> data = fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
+        for (Foo each : data) {
+            fooRepository.setCompleted(each.getId());
+        }
     }
 }

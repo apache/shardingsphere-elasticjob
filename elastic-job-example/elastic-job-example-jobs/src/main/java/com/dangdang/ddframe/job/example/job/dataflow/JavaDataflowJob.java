@@ -19,29 +19,29 @@ package com.dangdang.ddframe.job.example.job.dataflow;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
+import com.dangdang.ddframe.job.example.fixture.entity.Foo;
+import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
+import com.dangdang.ddframe.job.example.fixture.repository.FooRepositoryFactory;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-public class JavaDataflowJob implements DataflowJob<String> {
+public class JavaDataflowJob implements DataflowJob<Foo> {
     
-    private int count;
+    private FooRepository fooRepository = FooRepositoryFactory.getFooRepository();
     
     @Override
-    public List<String> fetchData(final ShardingContext shardingContext) {
+    public List<Foo> fetchData(final ShardingContext shardingContext) {
         System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s", Thread.currentThread().getId(), new Date(), shardingContext, "dataflow job fetch data"));
-        count++;
-        if (count > 10) {
-            return Collections.emptyList();
-        }
-        return Collections.singletonList(Integer.toString(new Random().nextInt(10)));
+        return fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
     }
     
     @Override
-    public void processData(final ShardingContext shardingContext, final List<String> data) {
-        System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s, Data: %s", 
+    public void processData(final ShardingContext shardingContext, final List<Foo> data) {
+        System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s, Data: %s",
                 Thread.currentThread().getId(), new Date(), shardingContext, "dataflow job process data", data));
+        for (Foo each : data) {
+            fooRepository.setCompleted(each.getId());
+        }
     }
 }
