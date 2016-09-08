@@ -17,26 +17,18 @@
 
 package com.dangdang.ddframe.job.example;
 
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
 
 import java.io.File;
 import java.io.IOException;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EmbedZookeeperServer {
     
     private static TestingServer testingServer;
     
-    public static void start(final int port) {
+    public static void start(final int port) throws Exception {
         try {
             testingServer = new TestingServer(port, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
-            // CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-            RegExceptionHandler.handleException(ex);
         } finally {
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 
@@ -46,7 +38,7 @@ public final class EmbedZookeeperServer {
                         Thread.sleep(1000L);
                         testingServer.close();
                     } catch (final InterruptedException | IOException ex) {
-                        RegExceptionHandler.handleException(ex);
+                        ex.printStackTrace();
                     }
                 }
             });

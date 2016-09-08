@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.example;
 
 import com.dangdang.ddframe.job.cloud.api.JobBootstrap;
 
-public class CloudJobMain {
+public final class CloudJobMain {
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {

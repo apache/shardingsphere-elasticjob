@@ -21,10 +21,16 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public final class SpringLiteJobMain {
     
+    private static final int EMBED_ZOOKEEPER_PORT = 5181;
+    
     // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON
-        EmbedZookeeperServer.start(5181);
+        setUpEmbedZookeeperServer();
         new ClassPathXmlApplicationContext("classpath:META-INF/applicationContext.xml");
+    }
+    
+    private static void setUpEmbedZookeeperServer() throws Exception {
+        EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
     }
 }

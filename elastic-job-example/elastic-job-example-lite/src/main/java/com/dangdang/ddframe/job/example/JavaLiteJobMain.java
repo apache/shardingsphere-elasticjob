@@ -21,11 +21,9 @@ import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob;
-import com.dangdang.ddframe.job.example.job.listener.SimpleDistributeListener;
-import com.dangdang.ddframe.job.example.job.listener.SimpleListener;
+import com.dangdang.ddframe.job.example.listener.SimpleDistributeListener;
+import com.dangdang.ddframe.job.example.listener.SimpleListener;
 import com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
@@ -41,54 +39,57 @@ import java.nio.file.attribute.PosixFilePermissions;
 
 public final class JavaLiteJobMain {
     
-    private final ZookeeperConfiguration zkConfig = new ZookeeperConfiguration("localhost:4181", "elastic-job-example-lite-java");
+    private static final int EMBED_ZOOKEEPER_PORT = 4181;
     
-    private final CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
+    private static final String ZOOKEEPER_CONNECTION_STRING = "localhost:4181";
+    
+    private static final String JOB_NAMESPACE = "elastic-job-example-lite-java";
     
     // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON
-        EmbedZookeeperServer.start(4181);
-        new JavaLiteJobMain().init();
+        setUpEmbedZookeeperServer();
+        CoordinatorRegistryCenter regCenter = setUpRegistryCenter();
+        setUpSimpleJob(regCenter);
+        setUpDataflowJob(regCenter);
+        setUpScriptJob(regCenter);
     }
     
-    private void init() {
-        regCenter.init();
-        
-        final JobEventConfiguration jobLogEventConfig = new JobEventLogConfiguration();
-        
-        final SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(
-                JobCoreConfiguration.newBuilder("javaSimpleJob", "0/30 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
-                JavaSimpleJob.class.getCanonicalName());
-        
-        final DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(
-                JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 10).shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").build(), 
-                JavaDataflowJob.class.getCanonicalName(), true);
-        
-        final ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 10)
-                .shardingItemParameters("0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J").jobEventConfiguration(jobLogEventConfig).build(), 
-                buildScriptCommandLine());
-                
+    private static void setUpEmbedZookeeperServer() throws Exception {
+        EmbedZookeeperServer.start(EMBED_ZOOKEEPER_PORT);
+    }
+    
+    private static CoordinatorRegistryCenter setUpRegistryCenter() {
+        ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(ZOOKEEPER_CONNECTION_STRING, JOB_NAMESPACE);
+        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(zkConfig);
+        result.init();
+        return result;
+    }
+    
+    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter) {
+        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/30 * * * * ?", 10).build();
+        SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig, JavaSimpleJob.class.getCanonicalName());
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
+    }
+    
+    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter) {
+        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 10).build();
+        DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, JavaDataflowJob.class.getCanonicalName(), true);
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build()).init();
+    }
+    
+    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter) throws IOException {
+        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 10).build();
+        ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build()).init();
     }
     
-    private static String buildScriptCommandLine() {
+    private static String buildScriptCommandLine() throws IOException {
         if (System.getProperties().getProperty("os.name").contains("Windows")) {
             return Paths.get(JavaLiteJobMain.class.getResource("/script/demo.bat").getPath().substring(1)).toString();
-        } else {
-            Path result = Paths.get(JavaLiteJobMain.class.getResource("/script/demo.sh").getPath());
-            changeFilePermissions(result);
-            return result.toString();
         }
-    }
-    
-    private static void changeFilePermissions(final Path path) {
-        try {
-            Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rwxr-xr-x"));
-        } catch (final IOException ex) {
-            ex.printStackTrace();
-        }
+        Path result = Paths.get(JavaLiteJobMain.class.getResource("/script/demo.sh").getPath());
+        Files.setPosixFilePermissions(result, PosixFilePermissions.fromString("rwxr-xr-x"));
+        return result.toString();
     }
 }
