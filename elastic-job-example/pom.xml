@@ -19,6 +19,7 @@
         <springframework.version>4.1.1.RELEASE</springframework.version>
         <slf4j.version>1.7.7</slf4j.version>
         <logback.version>1.1.2</logback.version>
+        <h2.version>1.4.184</h2.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     </properties>
 
@@ -69,6 +70,11 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
