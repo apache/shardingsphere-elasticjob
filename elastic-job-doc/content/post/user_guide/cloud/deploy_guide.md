@@ -68,7 +68,7 @@ http://elastic_job_cloud_masterhost:8899/job/register
 
 ### 注销作业
 
-url：`job/unregister`
+url：`job/deregister`
 
 方法：`DELETE`
 
@@ -77,5 +77,5 @@ url：`job/unregister`
 参数：作业名称
 
 ```shell
-curl -l -H "Content-type: application/text" -X DELETE -d 'foo_job' http://elastic_job_cloud_host:8899/job/unregister
+curl -l -H "Content-type: application/text" -X DELETE -d 'foo_job' http://elastic_job_cloud_host:8899/job/deregister
 ```
