@@ -51,6 +51,13 @@ public class JobController {
     
     @RequestMapping(value = "settings", method = RequestMethod.POST)
     public void updateJobSettings(final JobSettings jobSettings) {
+        if (!jobSettings.isJobEventRdbConfig()) {
+            jobSettings.setUrl("");
+            jobSettings.setDriver("");
+            jobSettings.setUsername("");
+            jobSettings.setPassword("");
+            jobSettings.setLogLevel("");
+        }
         jobAPIService.getJobSettingsAPI().updateJobSettings(jobSettings);
     }
     

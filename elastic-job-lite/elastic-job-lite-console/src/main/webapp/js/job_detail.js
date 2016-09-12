@@ -33,6 +33,15 @@ function renderSettings() {
         $("#monitorExecution").attr("checked", data.monitorExecution);
         $("#failover").attr("checked", data.failover);
         $("#misfire").attr("checked", data.misfire);
+        $("#jobEventLogConfig").attr("checked", data.jobEventLogConfig);
+        $("#jobEventRdbConfig").attr("checked", data.jobEventRdbConfig);
+        $("#driver").attr("value", data.driver);
+        $("#url").attr("value", data.url);
+        $("#username").attr("value", data.username);
+        $("#password").attr("value", data.password);
+        if (data.logLevel) {
+            $("#logLevel").val(data.logLevel);    
+        }
         $("#streamingProcess").attr("checked", data.streamingProcess);
         $("#maxTimeDiffSeconds").attr("value", data.maxTimeDiffSeconds);
         $("#monitorPort").attr("value", data.monitorPort);
@@ -42,6 +51,9 @@ function renderSettings() {
         $("#description").text(data.description);
         if (!data.monitorExecution) {
             $("#execution_info_tab").addClass("disabled");
+        }
+        if (!data.jobEventRdbConfig) {
+            changeJobEventRdbConfigDiv(false);
         }
         $("#scriptCommandLine").attr("value", data.scriptCommandLine);
     });
@@ -62,13 +74,20 @@ function bindSubmitJobSettingsForm() {
         var monitorExecution = $("#monitorExecution").prop("checked");
         var failover = $("#failover").prop("checked");
         var misfire = $("#misfire").prop("checked");
+        var jobEventLogConfig = $("#jobEventLogConfig").prop("checked");
+        var jobEventRdbConfig = $("#jobEventRdbConfig").prop("checked");
+        var driver = $("#driver").val();
+        var url = $("#url").val();
+        var username = $("#username").val();
+        var password = $("#password").val();
+        var logLevel = $("#logLevel").val();
         var shardingItemParameters = $("#shardingItemParameters").val();
         var jobShardingStrategyClass = $("#jobShardingStrategyClass").val();
         var scriptCommandLine = $("#scriptCommandLine").val();
         var executorServiceHandler = $("#executorServiceHandler").val();
         var jobExceptionHandler = $("#jobExceptionHandler").val();
         var description = $("#description").val();
-        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, executorServiceHandler: executorServiceHandler, jobExceptionHandler: jobExceptionHandler, description: description, scriptCommandLine: scriptCommandLine}, function() {
+        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, executorServiceHandler: executorServiceHandler, jobExceptionHandler: jobExceptionHandler, jobEventLogConfig: jobEventLogConfig, jobEventRdbConfig: jobEventRdbConfig, driver: driver, url: url, username: username, password: password, logLevel: logLevel, description: description, scriptCommandLine: scriptCommandLine}, function() {
             showSuccessDialog();
             if (monitorExecution) {
                 $("#execution_info_tab").removeClass("disabled");
@@ -247,4 +266,12 @@ function bindEnableButtons() {
             showSuccessDialog();
         });
     });
+}
+
+function changeJobEventRdbConfigDiv(isChecked) {
+    if (isChecked) {
+        $("#jobEventRdbConfigDiv").show();
+    } else {
+        $("#jobEventRdbConfigDiv").hide();
+    }
 }

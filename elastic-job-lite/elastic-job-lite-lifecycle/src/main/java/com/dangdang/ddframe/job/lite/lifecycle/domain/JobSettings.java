@@ -67,5 +67,19 @@ public final class JobSettings implements Serializable {
     
     private String executorServiceHandler;
     
+    private boolean jobEventLogConfig;
+    
+    private boolean jobEventRdbConfig;
+    
+    private String driver;
+    
+    private String url;
+    
+    private String username;
+    
+    private String password;
+    
+    private String logLevel;
+    
     private String scriptCommandLine;
 }

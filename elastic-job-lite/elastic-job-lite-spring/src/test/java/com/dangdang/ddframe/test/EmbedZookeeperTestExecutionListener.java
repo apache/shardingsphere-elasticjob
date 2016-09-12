@@ -51,7 +51,7 @@ public final class EmbedZookeeperTestExecutionListener extends AbstractTestExecu
                 @Override
                 public void run() {
                     try {
-                        BlockUtils.sleep(1000L);
+                        BlockUtils.sleep(2000L);
                         testingServer.close();
                     } catch (final IOException ex) {
                         RegExceptionHandler.handleException(ex);

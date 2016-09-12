@@ -102,7 +102,57 @@
                         <input type="text" id="executorServiceHandler" name="executorServiceHandler" class="form-control" data-toggle="tooltip" data-placement="bottom" title="扩展`ExecutorServiceHandler`接口，定制线程池。" />
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="jobEventLogConfig" class="col-sm-2 control-label">作业事件追踪-日志文件</label>
+                    <div class="col-sm-2">
+                        <input type="checkbox" id="jobEventLogConfig" name="jobEventLogConfig" data-toggle="tooltip" data-placement="bottom" title="是否开启日志文件作业事件追踪" />
+                    </div>
+
+                    <label for="jobEventRdbConfig" class="col-sm-2 control-label">作业事件追踪-数据库</label>
+                    <div class="col-sm-2">
+                        <input type="checkbox" id="jobEventRdbConfig" name="jobEventRdbConfig" data-toggle="tooltip" data-placement="bottom" title="是否开启数据库作业事件追踪"  onclick="changeJobEventRdbConfigDiv(this.checked)" />
+                    </div>
+                </div>
+
+                <div id="jobEventRdbConfigDiv">
+                    <div class="form-group">
+                        <label for="driver" class="col-sm-2 control-label">数据库驱动</label>
+                        <div class="col-sm-1">
+                            <input type="text" id="driver" name="driver" data-toggle="tooltip" data-placement="bottom" title="驱动类名" />
+                        </div>
+    
+                        <label for="url" class="col-sm-2 control-label">数据库URL</label>
+                        <div class="col-sm-2">
+                            <input type="text" id="url" name="url" data-toggle="tooltip" data-placement="bottom" title="URL" />
+                        </div>
+    
+                        <label for="logLevel" class="col-sm-2 control-label">数据库日志级别</label>
+                        <div class="col-sm-2">
+                            <select id="logLevel" name="logLevel" data-toggle="tooltip" data-placement="bottom" class="selectpicker" title="日志级别" >
+                                <option value="DEBUG">TRACE</option>
+                                <option value="DEBUG">DEBUG</option>
+                                <option value="INFO" selected>INFO</option>
+                                <option value="WARN">WARN</option>
+                                <option value="ERROR">ERROR</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username" class="col-sm-2 control-label">数据库用户名</label>
+                        <div class="col-sm-1">
+                            <input type="text" id="username" name="username" data-toggle="tooltip" data-placement="bottom" title="用户名" />
+                        </div>
+
+                        <label for="password" class="col-sm-2 control-label">数据库密码</label>
+                        <div class="col-sm-2">
+                            <input type="text" id="password" name="password" data-toggle="tooltip" data-placement="bottom" title="密码" />
+                        </div>
+                    </div>
+                </div>
                 
+
                 <div class="form-group">
                     <label for="description" class="col-sm-2 control-label">作业描述信息</label>
                     <div class="col-sm-9">
