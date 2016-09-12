@@ -17,12 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobAPIFactoryTest;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionStatusTest;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobStatusTest;
@@ -30,9 +24,13 @@ import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefStatusTest;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerStatusTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.JobOperateAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactoryTest;
-import com.dangdang.ddframe.job.lite.lifecycle.internal.settings.JobSettingsAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.JobStatisticsAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.ServerStatisticsAPIImplTest;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
@@ -43,7 +41,6 @@ import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.ServerStatist
         ServerBriefStatusTest.class, 
         ExecutionStatusTest.class, 
         RegistryCenterFactoryTest.class, 
-        JobSettingsAPIImplTest.class,
         JobOperateAPIImplTest.class,
         JobStatisticsAPIImplTest.class,
         ServerStatisticsAPIImplTest.class
