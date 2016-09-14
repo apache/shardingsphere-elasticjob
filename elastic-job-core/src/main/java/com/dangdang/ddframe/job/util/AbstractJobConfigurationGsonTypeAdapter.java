@@ -30,6 +30,8 @@ import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.dangdang.ddframe.json.GsonFactory;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -43,9 +45,9 @@ import java.util.Map;
 
 /**
  * 作业配置的Json转换适配器.
- * 
+ *
  * @param <T> 作业配置对象泛型
- *     
+ *
  * @author zhangliang
  * @author caohao
  */
@@ -197,9 +199,9 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
     
     protected abstract void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException;
     
-    private JobCoreConfiguration getJobCoreConfiguration(final String jobName, final String cron, final int shardingTotalCount, 
-                                                         final String shardingItemParameters, final String jobParameter, final boolean failover, 
-                                                         final boolean misfire, final String description, 
+    private JobCoreConfiguration getJobCoreConfiguration(final String jobName, final String cron, final int shardingTotalCount,
+                                                         final String shardingItemParameters, final String jobParameter, final boolean failover,
+                                                         final boolean misfire, final String description,
                                                          final JobProperties jobProperties, final JobEventConfiguration[] jobEventConfigs) {
         return JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount)
                 .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter).failover(failover).misfire(misfire).description(description)
@@ -212,11 +214,14 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
     private JobTypeConfiguration getJobTypeConfiguration(
             final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final boolean streamingProcess, final String scriptCommandLine) {
         JobTypeConfiguration result;
+        Preconditions.checkNotNull(jobType, "jobType cannot be null.");
         switch (jobType) {
             case SIMPLE:
+                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
                 result = new SimpleJobConfiguration(coreConfig, jobClass);
                 break;
             case DATAFLOW:
+                Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
                 result = new DataflowJobConfiguration(coreConfig, jobClass, streamingProcess);
                 break;
             case SCRIPT:

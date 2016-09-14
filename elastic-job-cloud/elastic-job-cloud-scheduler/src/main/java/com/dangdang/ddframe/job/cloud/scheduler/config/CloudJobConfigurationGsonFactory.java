@@ -33,6 +33,7 @@ import java.util.Map;
  * Cloud作业配置的Gson工厂.
  *
  * @author zhangliang
+ * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CloudJobConfigurationGsonFactory {
@@ -43,7 +44,7 @@ public final class CloudJobConfigurationGsonFactory {
     
     /**
      * 将作业配置转换为JSON字符串.
-     * 
+     *
      * @param cloudJobConfig 作业配置对象
      * @return 作业配置JSON字符串
      */
@@ -101,18 +102,20 @@ public final class CloudJobConfigurationGsonFactory {
         @Override
         protected CloudJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
             Preconditions.checkNotNull(customizedValueMap.get("cpuCount"), "cpuCount cannot be null.");
+            Preconditions.checkArgument((double)customizedValueMap.get("cpuCount") >= 0.01, "cpuCount cannot be less than 0.01");
             Preconditions.checkNotNull(customizedValueMap.get("memoryMB"), "memoryMB cannot be null.");
+            Preconditions.checkArgument((double)customizedValueMap.get("memoryMB") >= 32, "cpuCount cannot be less than 32");
             Preconditions.checkNotNull(customizedValueMap.get("appURL"), "appURL cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get("bootstrapScript"), "bootstrapScript cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get("jobExecutionType"), "jobExecutionType cannot be null.");
             if (customizedValueMap.containsKey("beanName") && customizedValueMap.containsKey("applicationContext")) {
-                return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), 
-                        (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
-                        JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), customizedValueMap.get("beanName").toString(), 
+                return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"),
+                        (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"),
+                        JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), customizedValueMap.get("beanName").toString(),
                         customizedValueMap.get("applicationContext").toString());
             } else {
-                return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"), 
-                        (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"), 
+                return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"),
+                        (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"),
                         JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
             }
         }

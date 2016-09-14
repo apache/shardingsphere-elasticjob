@@ -36,9 +36,9 @@ url：`job/register`
 |jobType                             |Enum   |`是`    |       | 作业类型。`SIMPLE`，`DATAFLOW`，`SCRIPT`                                            |
 |jobExecutionType                    |Enum   |`是`    |       | 作业执行类型。`TRANSIENT`为瞬时作业，`DAEMON`为常驻作业                                |
 |cron                                |String |`是`    |       | `cron`表达式，用于配置作业触发时间                                                    |
-|shardingTotalCount                  |int    |`是`    |       | 作业分片总数                                                                        |
-|cpuCount                            |double |`是`    |       | 单片作业所需要的`CPU`数量                                                            |
-|memoryMB                            |double |`是`    |       | 单片作业所需要的内存`MB`                                                             |
+|shardingTotalCount                  |int    |`是`    |       | 作业分片总数                                                                       |
+|cpuCount                            |double |`是`    |       | 单片作业所需要的`CPU`数量，最小值为`0.01`                                             |
+|memoryMB                            |double |`是`    |       | 单片作业所需要的内存`MB`，最小值为`32`                                                |
 |appURL                              |String |`是`    |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
 |bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`。                                                      |
 |failover                            |boolean|否      |`false`| 是否开启失效转移                                                                    |
