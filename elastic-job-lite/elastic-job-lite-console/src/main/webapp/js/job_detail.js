@@ -33,28 +33,28 @@ function renderSettings() {
         $("#monitorExecution").attr("checked", data.monitorExecution);
         $("#failover").attr("checked", data.failover);
         $("#misfire").attr("checked", data.misfire);
-        $("#jobEventLogConfig").attr("checked", data.jobEventLogConfig);
-        $("#jobEventRdbConfig").attr("checked", data.jobEventRdbConfig);
-        $("#driver").attr("value", data.driver);
-        $("#url").attr("value", data.url);
-        $("#username").attr("value", data.username);
-        $("#password").attr("value", data.password);
-        if (data.logLevel) {
-            $("#logLevel").val(data.logLevel);    
+        $("#jobEventLogConfig").attr("checked", data.jobEventConfigs["log"]);
+        $("#jobEventRdbConfig").attr("checked", data.jobEventConfigs["rdb"]);
+        if (data.jobEventConfigs["rdb"]) {
+            $("#driver").attr("value", data.jobEventConfigs["rdb"]["driverClassName"]);
+            $("#url").attr("value", data.jobEventConfigs["rdb"]["url"]);
+            $("#username").attr("value", data.jobEventConfigs["rdb"]["username"]);
+            $("#password").attr("value", data.jobEventConfigs["rdb"]["password"]);
+            if (data.jobEventConfigs["rdb"]["logLevel"]) {
+                $("#logLevel").val(data.jobEventConfigs["rdb"]["logLevel"]);
+            }    
         }
         $("#streamingProcess").attr("checked", data.streamingProcess);
         $("#maxTimeDiffSeconds").attr("value", data.maxTimeDiffSeconds);
         $("#monitorPort").attr("value", data.monitorPort);
         $("#jobShardingStrategyClass").attr("value", data.jobShardingStrategyClass);
-        $("#executorServiceHandler").attr("value", data.executorServiceHandler);
-        $("#jobExceptionHandler").attr("value", data.jobExceptionHandler);
+        $("#executorServiceHandler").attr("value", data.jobProperties["executor_service_handler"]);
+        $("#jobExceptionHandler").attr("value", data.jobProperties["job_exception_handler"]);
         $("#description").text(data.description);
         if (!data.monitorExecution) {
             $("#execution_info_tab").addClass("disabled");
         }
-        if (!data.jobEventRdbConfig) {
-            changeJobEventRdbConfigDiv(false);
-        }
+        changeJobEventRdbConfigDiv(data.jobEventConfigs["rdb"]);
         $("#scriptCommandLine").attr("value", data.scriptCommandLine);
     });
 }
@@ -74,8 +74,8 @@ function bindSubmitJobSettingsForm() {
         var monitorExecution = $("#monitorExecution").prop("checked");
         var failover = $("#failover").prop("checked");
         var misfire = $("#misfire").prop("checked");
-        var jobEventLogConfig = $("#jobEventLogConfig").prop("checked");
-        var jobEventRdbConfig = $("#jobEventRdbConfig").prop("checked");
+        var hasJobEventLogConfig = $("#jobEventLogConfig").prop("checked");
+        var hasJobEventRdbConfig = $("#jobEventRdbConfig").prop("checked");
         var driver = $("#driver").val();
         var url = $("#url").val();
         var username = $("#username").val();
@@ -87,7 +87,28 @@ function bindSubmitJobSettingsForm() {
         var executorServiceHandler = $("#executorServiceHandler").val();
         var jobExceptionHandler = $("#jobExceptionHandler").val();
         var description = $("#description").val();
-        $.post("job/settings", {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, executorServiceHandler: executorServiceHandler, jobExceptionHandler: jobExceptionHandler, jobEventLogConfig: jobEventLogConfig, jobEventRdbConfig: jobEventRdbConfig, driver: driver, url: url, username: username, password: password, logLevel: logLevel, description: description, scriptCommandLine: scriptCommandLine}, function() {
+        var jobEventConfigs = {"log": hasJobEventLogConfig, "rdb": hasJobEventRdbConfig};
+        if (hasJobEventRdbConfig) {
+            if (driver.length == 0) {
+                alert("数据库驱动不能为空!");
+                return;
+            }
+            if (url.length == 0) {
+                alert("数据库URL不能为空!");
+                return;
+            }
+            if (username.length == 0) {
+                alert("数据库用户名不能为空!");
+                return;
+            }
+            jobEventConfigs["rdb.driverClassName"] = driver;
+            jobEventConfigs["rdb.url"] = url;
+            jobEventConfigs["rdb.username"] = username;
+            jobEventConfigs["rdb.password"] = password;
+            jobEventConfigs["rdb.logLevel"] = logLevel;
+        }
+        var postJson = {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, jobEventConfigs: jobEventConfigs, description: description, scriptCommandLine: scriptCommandLine};
+        $.post("job/settings", postJson, function() {
             showSuccessDialog();
             if (monitorExecution) {
                 $("#execution_info_tab").removeClass("disabled");

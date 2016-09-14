@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
@@ -31,6 +30,7 @@ import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -75,19 +75,17 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setMisfire(liteJobConfig.getTypeConfig().getCoreConfig().isMisfire());
         result.setJobShardingStrategyClass(liteJobConfig.getJobShardingStrategyClass());
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
-        result.setExecutorServiceHandler(liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
-        result.setJobExceptionHandler(liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
-        Map<String, JobEventConfiguration> jobEventConfigs = liteJobConfig.getTypeConfig().getCoreConfig().getJobEventConfigs();
-        result.setJobEventLogConfig(jobEventConfigs.containsKey("log"));
-        result.setJobEventRdbConfig(jobEventConfigs.containsKey("rdb"));
-        if (jobEventConfigs.containsKey("rdb")) {
-            JobEventRdbConfiguration config = (JobEventRdbConfiguration)jobEventConfigs.get("rdb");
-            result.setUrl(config.getUrl());
-            result.setDriver(config.getDriverClassName());
-            result.setUsername(config.getUsername());
-            result.setPassword(config.getPassword());
-            result.setLogLevel(config.getLogLevel().toString());
+        result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+        result.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
+        Map<String, Object> jobEventConfigs = new LinkedHashMap<>(2, 1);
+        Map<String, JobEventConfiguration> liteEventConfigs = liteJobConfig.getTypeConfig().getCoreConfig().getJobEventConfigs();
+        if (liteEventConfigs.containsKey("log")) {
+            jobEventConfigs.put("log", liteEventConfigs.get("log"));
         }
+        if (liteEventConfigs.containsKey("rdb")) {
+            jobEventConfigs.put("rdb", liteEventConfigs.get("rdb"));
+        }
+        result.setJobEventConfigs(jobEventConfigs);
     } 
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {

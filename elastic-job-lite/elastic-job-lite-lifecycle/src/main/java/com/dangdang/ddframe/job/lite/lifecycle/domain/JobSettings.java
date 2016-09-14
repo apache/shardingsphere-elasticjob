@@ -17,10 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.domain;
 
+import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 作业设置对象.
@@ -63,23 +66,9 @@ public final class JobSettings implements Serializable {
     
     private String description;
     
-    private String jobExceptionHandler;
+    private Map<String, Object> jobEventConfigs = new LinkedHashMap<>(2, 1);
     
-    private String executorServiceHandler;
-    
-    private boolean jobEventLogConfig;
-    
-    private boolean jobEventRdbConfig;
-    
-    private String driver;
-    
-    private String url;
-    
-    private String username;
-    
-    private String password;
-    
-    private String logLevel;
+    private Map<String, String> jobProperties = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
     
     private String scriptCommandLine;
 }

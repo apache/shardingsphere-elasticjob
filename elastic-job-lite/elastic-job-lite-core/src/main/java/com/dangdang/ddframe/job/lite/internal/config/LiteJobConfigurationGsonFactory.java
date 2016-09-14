@@ -57,7 +57,6 @@ public final class LiteJobConfigurationGsonFactory {
      * @param liteJobConfig 作业配置对象
      * @return 作业配置JSON字符串
      */
-    // TODO API模块jobSettings使用,未来需调整并删除
     public static String toJsonForObject(final Object liteJobConfig) {
         return GsonFactory.getGson().toJson(liteJobConfig);
     }
