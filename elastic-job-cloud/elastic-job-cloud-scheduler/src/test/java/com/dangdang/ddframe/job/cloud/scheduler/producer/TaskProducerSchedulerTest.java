@@ -36,6 +36,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.unitils.util.ReflectionUtils;
 
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -75,7 +76,7 @@ public final class TaskProducerSchedulerTest {
     public void assertRegister() throws SchedulerException {
         when(scheduler.checkExists(jobDetail.getKey())).thenReturn(false);
         taskProducerScheduler.register(jobConfig);
-        verify(scheduler).checkExists(jobDetail.getKey());
+        verify(scheduler, times(2)).checkExists(jobDetail.getKey());
         verify(scheduler).scheduleJob(jobDetail, trigger);
     }
     

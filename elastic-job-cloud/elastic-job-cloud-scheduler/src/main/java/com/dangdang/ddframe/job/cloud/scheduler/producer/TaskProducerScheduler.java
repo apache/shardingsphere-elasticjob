@@ -97,8 +97,10 @@ class TaskProducerScheduler {
     private void scheduleJob(final CloudJobConfiguration jobConfig) throws SchedulerException {
         JobDetail jobDetail = buildJobDetail(jobConfig.getTypeConfig().getCoreConfig().getCron());
         TaskProducerJobContext.getInstance().put(jobDetail.getKey(), jobConfig.getJobName());
-        jobDetail.getJobDataMap().put("readyService", new ReadyService(regCenter));
-        scheduler.scheduleJob(jobDetail, buildTrigger(jobConfig.getTypeConfig().getCoreConfig().getCron()));
+        if (!scheduler.checkExists(jobDetail.getKey())) {
+            jobDetail.getJobDataMap().put("readyService", new ReadyService(regCenter));
+            scheduler.scheduleJob(jobDetail, buildTrigger(jobConfig.getTypeConfig().getCoreConfig().getCron()));
+        }
     }
     
     void deregister(final CloudJobConfiguration jobConfig) {

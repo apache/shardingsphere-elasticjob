@@ -45,7 +45,8 @@ url：`job/register`
 |misfire                             |boolean|否      |`false`| 是否开启错过任务重新执行                                                             |
 |beanName                            |String |否      |       | `Spring`容器中配置的`bean`名称                                                      |
 |applicationContext                  |String |否      |       | `Spring`方式配置`Spring`配置文件相对路径以及名称，如：`META-INF\applicationContext.xml`|
-|jobEventConfigs                     |String |否      |       | 作业事件配置，目前可配置`log`和`rdb`监听器，如:`{"log":{},"rdb":{"driverClassName":"com.mysql.jdbc.Driver", "url":"jdbc:mysql://your_host:3306/elastic_job_log", "username":"root", "password":"", "logLevel":"WARN"}}`|
+|jobEventConfigs                     |String |否      |       | 作业事件配置，目前可配置`log`和`rdb`监听器，如:`{"log":{},"rdb":{"driverClassName":"com.mysql.jdbc.Driver", "url":"jdbc:mysql://your_host:3306/elastic_job_log", "username":"root", "password":"", "logLevel":"WARN"}}`                                     |
+|scriptCommandLine                   |String |否      |       | `SCRIPT`类型作业命令行执行脚本                                                      |
 
 注册的作业可用`Java`和`Spring`两种启动方式，作业启动在[开发指南](../dev_guide/)中有说明，这里只举例说明两种方式如何注册。
 
