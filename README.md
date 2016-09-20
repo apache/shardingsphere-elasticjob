@@ -1,129 +1,120 @@
 ##Elastic-Job - distributed scheduled job solution
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/images/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-  Elastic-Job是ddframe中dd-job的作业模块中分离出来的分布式弹性作业框架。去掉了和dd-job中的监控和ddframe接入规范部分。该项目基于成熟的开源产品Quartz和Zookeeper及其客户端Curator进行二次开发。
-
-  ddframe其他模块也有可独立开源的部分，之前当当曾开源过dd-soa的基石模块DubboX。
+# [中文主页](README_cn.md) 
   
-  elastic-job和ddframe关系见下图
-  
-  ![ddframe演进图](http://static.oschina.net/uploads/space/2015/0915/181703_2fxp_719192.jpg)
+# [原1.x版本文档](README_1.x.md)
 
-##主要贡献者
-* 张亮 [当当网](http://www.dangdang.com/) zhangliang@dangdang.com
-* 曹昊 [当当网](http://www.dangdang.com/) caohao@dangdang.com
-* 江树建 [当当网](http://www.dangdang.com/) jiangshujian@dangdang.com
+[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+[![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
+[![Coverage Status](https://coveralls.io/repos/dangdangdotcom/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/dangdangdotcom/elastic-job?branch=master)
 
-**讨论QQ群：**430066234（不限于Elastic-Job，包括分布式，定时任务相关以及其他互联网技术交流）
+# Overview
 
-## Elastic-Job主要功能
+Elastic-Job is a distributed scheduled job solution. Elastic-Job is composited from 2 independent sub projects: Elastic-Job-Lite and Elastic-Job-Cloud.
 
-* **定时任务：** 基于成熟的定时任务作业框架Quartz CRON表达式执行定时任务。
-* **作业注册中心：** 基于Zookeeper及其客户端Curator实现的全局注册中心。用于注册，控制和协调分布式作业执行。
-* **作业分片：** 将单一任务分片为多个小任务项并在多服务器并行执行。
-* **弹性扩容缩容：** 运行中的作业服务器崩溃或新增，作业框架将在下次作业执行前重分片，不影响当前作业执行。
-* **支持多种作业执行模式：** 支持OneOff，Perpetual和SequencePerpetual三种作业模式。
-* **失效转移：** 运行中的作业服务器崩溃不会导致重分片，只会在下次作业启动时分片。启用失效转移功能可以在本次作业执行过程中，监测其他作业服务器空闲，抓取未完成的孤儿分片项执行。
-* **运行时状态收集：** 监控作业运行时状态，统计最近一段时间处理的数据成功和失败数量，记录作业上次运行开始时间，结束时间和下次运行时间。
-* **作业停止，恢复和禁用：**用于作业启停，并可禁止某作业运行（上线时常用）。
-* **被错过执行的作业重触发：**自动记录错过执行的作业，并在上次作业完成后自动触发。可参考Quartz的misfire。
-* **多线程快速处理数据：**使用多线程处理抓取到的数据，提升吞吐量。
-* **幂等性：**重复作业任务项判定，不重复执行已运行的作业任务项。由于开启幂等性需要监听作业运行状态，对瞬时反复运行的作业对性能有较大影响。
-* **容错处理：**作业服务器与作业注册中心通信失败则立即停止作业运行，防止作业注册中心将失效的分片项分配给其他作业服务器，而当前作业服务器仍在执行任务，导致重复执行。
-* **数据处理偏移量存储：**可将上次处理数据的位置储入Zookeeper。
-* **Spring支持：**支持spring容器，自定义命名空间，占位符等。
-* **运维平台：**提供运维界面，用于管理作业和注册中心。
+Elastic-Job-Lite is a centre-less solution, use lightweight jar to coordinate distributed jobs.
+Elastic-Job-Cloud is a Mesos framework which use Mesos + Docker(todo) to manage and isolate resources and processes.
 
-## 相关文档
+Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need code one time, then decide to deploy Lite or Cloud as you want.
 
-[Release Notes](http://dangdangdotcom.github.io/elastic-job/releaseNotes.html)
+# Features
 
-[目录结构说明](http://dangdangdotcom.github.io/elastic-job/directoryStructure.html)
+## 1. Elastic-Job-Lite
 
-[使用步骤](http://dangdangdotcom.github.io/elastic-job/usage.html)
+* Distributed schedule job coordinate
+* Elastic scale in and scale out supported
+* Failover
+* Misfired jobs refire
+* Sharding consistently, same sharding item for a job only one running instance
+* Parallel scheduling supported
+* Job lifecycle operation
+* Lavish job types
+* Spring integrated and namespace supported
+* Web console
 
-[开发指南](http://dangdangdotcom.github.io/elastic-job/userGuide.html)
+## 2. Elastic-Job-Cloud
+* All Elastic-Job-Lite features included
+* Resources allocated elastically
+* Application distributed automatically
+* Docker based processes isolation support (TBD)
 
-[使用限制](http://dangdangdotcom.github.io/elastic-job/limitations.html)
+***
 
-[运维平台](http://dangdangdotcom.github.io/elastic-job/webConsole.html)
+# Architecture
 
-[阅读源码编译问题说明](http://dangdangdotcom.github.io/elastic-job/sourceCodeGuide.html)
+## Elastic-ob-Lite
 
-[实现原理](http://dangdangdotcom.github.io/elastic-job/theory.html)
+![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_lite.png)
+***
 
-[作业分片策略](http://dangdangdotcom.github.io/elastic-job/jobStrategy.html)
+## Elastic-Job-Cloud
 
-[InfoQ新闻](http://www.infoq.com/cn/news/2015/09/dangdang-elastic-job)
+![Elastic-Job-Cloud Architecture](elastic-job-doc/content/img/architecture/elastic_job_cloud.png)
 
-[Elastic-Job Wiki](https://github.com/dangdangdotcom/elastic-job/wiki) （由社区志愿者自由编辑的）
+# [Roadmap](ROADMAP.md)
 
-## Quick Start
+# Quick Start
 
-* **引入maven依赖**
-
-elastic-job已经发布到中央仓库，可以在pom.xml文件中直接引入maven坐标。
+## Add maven dependency
 
 ```xml
-<!-- 引入elastic-job核心模块 -->
+<!-- import elastic-job lite core -->
 <dependency>
     <groupId>com.dangdang</groupId>
-    <artifactId>elastic-job-core</artifactId>
-    <version>1.0.1</version>
+    <artifactId>elastic-job-lite-core</artifactId>
+    <version>${lasted.release.version}</version>
 </dependency>
 
-<!-- 使用springframework自定义命名空间时引入 -->
+<!-- import other module if need -->
 <dependency>
     <groupId>com.dangdang</groupId>
-    <artifactId>elastic-job-spring</artifactId>
-    <version>1.0.1</version>
+    <artifactId>elastic-job-lite-spring</artifactId>
+    <version>${lasted.release.version}</version>
 </dependency>
 ```
-* **作业开发**
+## Job development
 
 ```java
-public class MyElasticJob extends AbstractPerpetualElasticJob<Foo> {
+public class MyElasticJob implements SimpleJob {
     
     @Override
-    protected List<Foo> fetchData(JobExecutionMultipleShardingContext context) {
-        Map<Integer, String> offset = context.getOffsets();
-        List<Foo> result = // get data from database by sharding items and by offset
-        return result;
-    }
-    
-    @Override
-    protected boolean processData(JobExecutionMultipleShardingContext context, Foo data) {
-        // process data
-        // ...
-        
-        // store offset
-        for (int each : context.getShardingItems()) {
-            updateOffset(each, "your offset, maybe id");
+    public void process(ShardingContext context) {
+        switch (context.getShardingItem()) {
+            case 0: 
+                // do something by sharding item 0
+                break;
+            case 1: 
+                // do something by sharding item 1
+                break;
+            case 2: 
+                // do something by sharding item 2
+                break;
+            // case n: ...
         }
-        return true;
     }
 }
 ```
 
-* **作业配置**
+## Job configuration
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg" 
-    xmlns:job="http://www.dangdang.com/schema/ddframe/job" 
-    xsi:schemaLocation="http://www.springframework.org/schema/beans 
-                        http://www.springframework.org/schema/beans/spring-beans.xsd 
-                        http://www.dangdang.com/schema/ddframe/reg 
-                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd 
-                        http://www.dangdang.com/schema/ddframe/job 
-                        http://www.dangdang.com/schema/ddframe/job/job.xsd 
+    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
+    xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.dangdang.com/schema/ddframe/reg
+                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd
+                        http://www.dangdang.com/schema/ddframe/job
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd
                         ">
-    <!--配置作业注册中心 -->
-    <reg:zookeeper id="regCenter" serverLists=" yourhost:2181" namespace="dd-job" baseSleepTimeMilliseconds="1000" maxSleepTimeMilliseconds="3000" maxRetries="3" />
-    
-    <!-- 配置作业-->
-    <job:bean id="oneOffElasticJob" class="xxx.MyElasticJob" regCenter="regCenter" cron="0/10 * * * * ?"   shardingTotalCount="3" shardingItemParameters="0=A,1=B,2=C" />
+    <!--configure registry center -->
+    <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+
+    <!--configure job -->
+    <job:simple id="myElasticJob" class="xxx.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
 ```

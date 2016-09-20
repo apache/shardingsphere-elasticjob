@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <base href="${base}/" >
+        <title>Elastic Job管理界面</title>
+        <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/dashboard.css" rel="stylesheet">
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Elastic Job Console</a>
+                </div>
+                <div class="navbar-header">
+                    <span class="navbar-brand">当前注册中心：<span id="activated-reg-center"><#if reg_center_config_key??>${reg_center_config_key.name}<#else>未连接</#if></span></span>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li <#if activeTab?? && 0=activeTab>class="active"</#if>><a href="overview">总览</a></li>
+                        <li <#if activeTab?? && 1=activeTab>class="active"</#if>><a href="registry_center_page">注册中心管理</a></li>
+                        <li <#if activeTab?? && 2=activeTab>class="active"</#if>><a href="help">帮助</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <div>
+                        <ul class="nav nav-list">
+                            <li><label class="tree-toggle nav-header">注册中心</label>
+                                <ul id="registry-center-dimension" class="nav nav-list tree"></ul>
+                            </li>
+                            <li><label class="tree-toggle nav-header">作业维度</label>
+                                <ul id="jobs-dimension" class="nav nav-list tree"></ul>
+                            </li>
+                            <li><label class="tree-toggle nav-header">服务器维度</label>
+                                <ul id="servers-dimension" class="nav nav-list tree"></ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    ${body}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.dangdang.com/schema/ddframe/job"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:beans="http://www.springframework.org/schema/beans"
+        targetNamespace="http://www.dangdang.com/schema/ddframe/job"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified">
+    <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+    
+    <xsd:element name="listener">
+        <xsd:complexType>
+            <xsd:attribute name="class" type="xsd:string" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="distributed-listener">
+        <xsd:complexType>
+            <xsd:attribute name="class" type="xsd:string" use="required" />
+            <xsd:attribute name="started-timeout-milliseconds" type="xsd:string" use="required" />
+            <xsd:attribute name="completed-timeout-milliseconds" type="xsd:string" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="event-log" />
+    
+    <xsd:element name="event-rdb">
+        <xsd:complexType>
+            <xsd:attribute name="driver" type="xsd:string" use="required" />
+            <xsd:attribute name="url" type="xsd:string" use="required" />
+            <xsd:attribute name="username" type="xsd:string" use="required" />
+            <xsd:attribute name="password" type="xsd:string" use="required" />
+            <xsd:attribute name="log-level" type="log-level" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:simpleType name="log-level">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="TRACE" />
+            <xsd:enumeration value="DEBUG" />
+            <xsd:enumeration value="INFO" />
+            <xsd:enumeration value="WARN" />
+            <xsd:enumeration value="ERROR" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:complexType name="base">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:all>
+                    <xsd:element ref="listener" minOccurs="0" maxOccurs="1" />
+                    <xsd:element ref="distributed-listener" minOccurs="0" maxOccurs="1" />
+                    <xsd:element ref="event-log" minOccurs="0" maxOccurs="1" />
+                    <xsd:element ref="event-rdb" minOccurs="0" maxOccurs="1" />
+                </xsd:all>
+                <xsd:attribute name="class" type="xsd:string" />
+                <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
+                <xsd:attribute name="cron" type="xsd:string" use="required" />
+                <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
+                <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
+                <xsd:attribute name="job-parameter" type="xsd:string" />
+                <xsd:attribute name="monitor-execution" type="xsd:string" />
+                <xsd:attribute name="monitor-port" type="xsd:string" />
+                <xsd:attribute name="max-time-diff-seconds" type="xsd:string" />
+                <xsd:attribute name="failover" type="xsd:string" />
+                <xsd:attribute name="misfire" type="xsd:string" />
+                <xsd:attribute name="job-sharding-strategy-class" type="xsd:string" />
+                <xsd:attribute name="description" type="xsd:string" />
+                <xsd:attribute name="disabled" type="xsd:string" />
+                <xsd:attribute name="overwrite" type="xsd:string" />
+                <xsd:attribute name="executor-service-handler" type="xsd:string" />
+                <xsd:attribute name="job-exception-handler" type="xsd:string" />
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:element name="simple">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="base" />
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="dataflow">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="base">
+                    <xsd:attribute name="streaming-process" type="xsd:string" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="script">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="base">
+                    <xsd:attribute name="script-command-line" type="xsd:string" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
