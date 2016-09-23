@@ -18,18 +18,25 @@
 package com.dangdang.ddframe.job.cloud.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.script.ScriptJob;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.google.common.base.Strings;
+import com.google.common.util.concurrent.MoreExecutors;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.TaskInfo;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 常驻作业任务执行器.
@@ -37,6 +44,10 @@ import java.util.Map;
  * @author zhangliang
  */
 public final class TaskExecutor implements Executor {
+    
+    private final static int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+    
+    private ExecutorService executorService = MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(THREAD_SIZE, THREAD_SIZE, 1L,TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
     
     @Override
     public void registered(final ExecutorDriver executorDriver, final Protos.ExecutorInfo executorInfo, final Protos.FrameworkInfo frameworkInfo, final Protos.SlaveInfo slaveInfo) {
@@ -52,6 +63,37 @@ public final class TaskExecutor implements Executor {
     
     @Override
     public void launchTask(final ExecutorDriver executorDriver, final Protos.TaskInfo taskInfo) {
+        executorService.submit(new TaskThread(executorDriver, taskInfo));
+    }
+    
+    @Override
+    public void killTask(final ExecutorDriver executorDriver, final Protos.TaskID taskID) {
+        executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskID).setState(Protos.TaskState.TASK_KILLED).build());
+        executorDriver.stop();
+    }
+    
+    @Override
+    public void frameworkMessage(final ExecutorDriver executorDriver, final byte[] bytes) {
+    }
+
+    @Override
+    public void shutdown(final ExecutorDriver executorDriver) {
+    }
+
+    @Override
+    public void error(final ExecutorDriver executorDriver, final String s) {
+    }
+}
+
+@RequiredArgsConstructor
+class TaskThread implements Runnable {
+    
+    private final ExecutorDriver executorDriver;
+    
+    private final TaskInfo taskInfo;
+    
+    @Override
+    public void run() {
         executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
         Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
         ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
@@ -62,7 +104,6 @@ public final class TaskExecutor implements Executor {
             if (jobConfig.isTransient()) {
                 JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContexts, jobConfig)).execute();
                 executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
-                executorDriver.stop();
             } else {
                 new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContexts, jobConfig), executorDriver, taskInfo.getTaskId()).init();
             }
@@ -101,23 +142,5 @@ public final class TaskExecutor implements Executor {
         } catch (final ReflectiveOperationException ex) {
             throw new JobSystemException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
         }
-    }
-    
-    @Override
-    public void killTask(final ExecutorDriver executorDriver, final Protos.TaskID taskID) {
-        executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskID).setState(Protos.TaskState.TASK_KILLED).build());
-        executorDriver.stop();
-    }
-    
-    @Override
-    public void frameworkMessage(final ExecutorDriver executorDriver, final byte[] bytes) {
-    }
-
-    @Override
-    public void shutdown(final ExecutorDriver executorDriver) {
-    }
-
-    @Override
-    public void error(final ExecutorDriver executorDriver, final String s) {
     }
 }

@@ -113,8 +113,6 @@ public final class FailoverServiceTest {
         when(runningService.isTaskRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()))).thenReturn(false);
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(regCenter).isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath());
-        verify(runningService).isTaskRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodeValue()));
-        verify(regCenter).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
     }
     
     @Test

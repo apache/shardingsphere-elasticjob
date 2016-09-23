@@ -17,18 +17,18 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
-import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
-import com.dangdang.ddframe.job.util.ShardingItemParameters;
-import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
+import com.dangdang.ddframe.job.util.ShardingItemParameters;
 import com.google.common.base.Preconditions;
 import com.google.protobuf.ByteString;
 import lombok.EqualsAndHashCode;
@@ -132,7 +132,8 @@ public final class HardwareResource {
      */
     public Protos.TaskInfo createTaskInfo(final JobContext jobContext, final int shardingItem) {
         CloudJobConfiguration jobConfig = jobContext.getJobConfig();
-        Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(new TaskContext(jobConfig.getJobName(), shardingItem, jobContext.getType(), offer.getSlaveId().getValue()).getId()).build();
+        TaskContext taskContext = new TaskContext(jobConfig.getJobName(), shardingItem, jobContext.getType(), offer.getSlaveId().getValue());
+        Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(taskContext.getId()).build();
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
@@ -141,7 +142,8 @@ public final class HardwareResource {
         // TODO 更改cache为elastic-job-cloud-scheduler.properties配置
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(jobConfig.getBootstrapScript()).build();
-        Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskId.getValue())).setCommand(command).build();
+        Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(buildExecutorId(jobConfig.getJobExecutionType(), 
+                taskContext, shardingItem))).setCommand(command).build();
         return Protos.TaskInfo.newBuilder()
                 .setName(taskId.getValue())
                 .setTaskId(taskId)
@@ -151,6 +153,14 @@ public final class HardwareResource {
                 .setExecutor(executorInfo)
                 .setData(ByteString.copyFrom(serialize(shardingContexts, jobConfig)))
                 .build();
+    }
+    
+    private String buildExecutorId(final JobExecutionType jobExecutionType, final TaskContext taskContext, final int shardingItem) {
+        if (JobExecutionType.DAEMON == jobExecutionType) {
+            return taskContext.getMetaInfo().getJobName() + TaskContext.DELIMITER + shardingItem + TaskContext.DELIMITER + taskContext.getSlaveId();
+        } else {
+            return taskContext.getMetaInfo().getJobName() + TaskContext.DELIMITER + taskContext.getSlaveId();
+        }
     }
     
     private byte[] serialize(final ShardingContexts shardingContexts, final CloudJobConfiguration jobConfig) {

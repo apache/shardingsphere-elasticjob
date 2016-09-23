@@ -27,8 +27,6 @@ import com.dangdang.ddframe.job.executor.type.SimpleJobExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * 作业执行器工厂.
  *
@@ -36,8 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JobExecutorFactory {
-    
-    private static volatile ConcurrentHashMap<String, AbstractElasticJobExecutor> executors = new ConcurrentHashMap<>(128, 1);
     
     /**
      * 获取作业执行器.
@@ -47,15 +43,6 @@ public final class JobExecutorFactory {
      * @return 作业执行器
      */
     public static AbstractElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
-        String jobName = jobFacade.getShardingContexts().getJobName();
-        if (!executors.containsKey(jobName)) {
-            executors.putIfAbsent(jobName, getExecutor(elasticJob, jobFacade));
-        }
-        return executors.get(jobName);
-    }
-    
-    @SuppressWarnings("unchecked")
-    private static AbstractElasticJobExecutor getExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
         if (null == elasticJob) {
             return new ScriptJobExecutor(jobFacade);
         }

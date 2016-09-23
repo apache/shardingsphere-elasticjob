@@ -35,11 +35,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -81,8 +79,7 @@ public final class JobExecutorFactoryTest {
         when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("twice_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
         AbstractElasticJobExecutor executor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
-        assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade), is(executor));
-        verify(jobFacade, times(2)).getShardingContexts();
-        verify(jobFacade).loadJobRootConfiguration(true);
+        AbstractElasticJobExecutor anotherExecutor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
+        assertTrue(executor.hashCode() != anotherExecutor.hashCode());
     }
 }

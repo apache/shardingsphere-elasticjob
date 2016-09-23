@@ -82,10 +82,10 @@ public final class CloudJobConfigurationListenerTest {
     @Test
     public void assertChildEventWhenStateIsUpdateAndIsConfigPathAndIsTransientJob() throws Exception {
         when(runningService.getRunningTasks("test_job")).thenReturn(Arrays.asList(
-                TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID")));
+                TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0")));
         cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson().getBytes())));
-        verify(schedulerDriver, times(0)).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID").build());
-        verify(schedulerDriver, times(0)).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID").build());
+        verify(schedulerDriver, times(0)).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@0@-@READY@-@SLAVE-S0").build());
+        verify(schedulerDriver, times(0)).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@1@-@READY@-@SLAVE-S0").build());
         verify(runningService, times(0)).remove(TaskContext.MetaInfo.from("test_job@-@0"));
         verify(runningService, times(0)).remove(TaskContext.MetaInfo.from("test_job@-@1"));
         verify(readyService, times(0)).addDaemon(Matchers.<String>any());
@@ -94,11 +94,11 @@ public final class CloudJobConfigurationListenerTest {
     @Test
     public void assertChildEventWhenStateIsUpdateAndIsConfigPathIsDaemonJob() throws Exception {
         when(runningService.getRunningTasks("test_job")).thenReturn(Arrays.asList(
-                TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID")));
+                TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0")));
         cloudJobConfigurationListener.childEvent(
                 null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson(JobExecutionType.DAEMON).getBytes())));
-        verify(schedulerDriver).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID").build());
-        verify(schedulerDriver).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID").build());
+        verify(schedulerDriver).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@0@-@READY@-@SLAVE-S0").build());
+        verify(schedulerDriver).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@1@-@READY@-@SLAVE-S0").build());
         verify(runningService).remove(TaskContext.MetaInfo.from("test_job@-@0"));
         verify(runningService).remove(TaskContext.MetaInfo.from("test_job@-@1"));
         verify(readyService).addDaemon(Matchers.<String>any());
