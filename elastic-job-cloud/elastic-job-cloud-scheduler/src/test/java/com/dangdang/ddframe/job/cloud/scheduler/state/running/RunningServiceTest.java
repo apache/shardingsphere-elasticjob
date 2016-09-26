@@ -161,10 +161,10 @@ public final class RunningServiceTest {
     public void assertGetRunningTasks() {
         when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Arrays.asList("test_job@-@0", "test_job@-@1"));
-        when(regCenter.get("/state/running/test_job/test_job@-@0")).thenReturn("test_job@-@0@-@READY@-@SLAVE-S0");
-        when(regCenter.get("/state/running/test_job/test_job@-@1")).thenReturn("test_job@-@1@-@READY@-@SLAVE-S0");
+        when(regCenter.get("/state/running/test_job/test_job@-@0")).thenReturn("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID");
+        when(regCenter.get("/state/running/test_job/test_job@-@1")).thenReturn("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID");
         assertThat(runningService.getRunningTasks("test_job"), 
-                Is.<Collection<TaskContext>>is(Arrays.asList(TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0"))));
+                Is.<Collection<TaskContext>>is(Arrays.asList(TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID"))));
     }
     
     @Test

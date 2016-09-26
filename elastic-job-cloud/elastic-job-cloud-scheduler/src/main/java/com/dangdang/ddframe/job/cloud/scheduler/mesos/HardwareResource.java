@@ -133,7 +133,6 @@ public final class HardwareResource {
     public Protos.TaskInfo createTaskInfo(final JobContext jobContext, final int shardingItem) {
         CloudJobConfiguration jobConfig = jobContext.getJobConfig();
         TaskContext taskContext = new TaskContext(jobConfig.getJobName(), shardingItem, jobContext.getType(), offer.getSlaveId().getValue());
-        Protos.TaskID taskId = Protos.TaskID.newBuilder().setValue(taskContext.getId()).build();
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
@@ -145,8 +144,8 @@ public final class HardwareResource {
         Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(buildExecutorId(jobConfig.getJobExecutionType(), 
                 taskContext, shardingItem))).setCommand(command).build();
         return Protos.TaskInfo.newBuilder()
-                .setName(taskId.getValue())
-                .setTaskId(taskId)
+                .setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
+                .setName(taskContext.getTaskName())
                 .setSlaveId(offer.getSlaveId())
                 .addResources(buildResource("cpus", jobConfig.getCpuCount()))
                 .addResources(buildResource("mem", jobConfig.getMemoryMB()))

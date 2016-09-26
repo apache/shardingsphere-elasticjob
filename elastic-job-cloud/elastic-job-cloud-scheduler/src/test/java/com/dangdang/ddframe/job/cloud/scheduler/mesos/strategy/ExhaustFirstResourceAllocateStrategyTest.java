@@ -63,9 +63,9 @@ public final class ExhaustFirstResourceAllocateStrategyTest {
         ResourceAllocateStrategy resourceAllocateStrategy = new ExhaustFirstResourceAllocateStrategy(
                 Arrays.asList(new HardwareResource(OfferBuilder.createOffer("offer_0", 6d, 1280d)), new HardwareResource(OfferBuilder.createOffer("offer_1", 6d, 1280d))), facadeService);
         when(facadeService.getRunningTasks("test_job_0")).thenReturn(
-                Arrays.asList(TaskContext.from("test_job_0@-@0@-@READY@-@SLAVE-S0"), TaskContext.from("test_job_0@-@9@-@READY@-@SLAVE-S0")));
+                Arrays.asList(TaskContext.from("test_job_0@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job_0@-@9@-@READY@-@SLAVE-S0@-@UUID")));
         when(facadeService.getRunningTasks("test_job_1")).thenReturn(
-                Arrays.asList(TaskContext.from("test_job_1@-@0@-@READY@-@SLAVE-S0"), TaskContext.from("test_job_1@-@9@-@READY@-@SLAVE-S0")));
+                Arrays.asList(TaskContext.from("test_job_1@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job_1@-@9@-@READY@-@SLAVE-S0@-@UUID")));
         List<Protos.TaskInfo> actual = resourceAllocateStrategy.allocate(Arrays.asList(
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_0", JobExecutionType.DAEMON), ExecutionType.READY),
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1", JobExecutionType.DAEMON), ExecutionType.READY)));

@@ -24,6 +24,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 /**
  * 任务运行时上下文.
  *
@@ -48,7 +50,7 @@ public final class TaskContext {
         metaInfo = new MetaInfo(jobName, shardingItem);
         this.type = type;
         this.slaveId = slaveId;
-        id = Joiner.on(DELIMITER).join(metaInfo, type, slaveId);
+        id = Joiner.on(DELIMITER).join(metaInfo, type, slaveId, UUID.randomUUID().toString());
     }
     
     /**
@@ -59,9 +61,19 @@ public final class TaskContext {
      */
     public static TaskContext from(final String id) {
         String[] result = id.split(DELIMITER);
-        Preconditions.checkState(4 == result.length);
+        Preconditions.checkState(5 == result.length);
         return new TaskContext(id, new MetaInfo(result[0], Integer.parseInt(result[1])), ExecutionType.valueOf(result[2]), result[3]);
     }
+    
+    /**
+     * 获取任务名称.
+     *
+     * @return 任务名称
+     */
+    public String getTaskName() {
+        return Joiner.on(DELIMITER).join(metaInfo, type, slaveId);
+    }
+    
     
     /**
      * 任务元信息.
