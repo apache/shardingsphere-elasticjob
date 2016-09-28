@@ -82,13 +82,11 @@ public final class SchedulerEngine implements Scheduler {
     }
     
     private List<HardwareResource> getHardwareResource(final List<Protos.Offer> offers) {
-        return Lists.transform(offers, new Function<Protos.Offer, HardwareResource>() {
-            
-            @Override
-            public HardwareResource apply(final Protos.Offer input) {
-                return new HardwareResource(input);
-            }
-        });
+        List<HardwareResource> result = new ArrayList<>();
+        for (Protos.Offer each : offers) {
+            result.add(new HardwareResource(each));
+        }
+        return result;
     }
     
     private List<Protos.Offer> declineUnusedOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers, final List<Protos.TaskInfo> tasks) {
