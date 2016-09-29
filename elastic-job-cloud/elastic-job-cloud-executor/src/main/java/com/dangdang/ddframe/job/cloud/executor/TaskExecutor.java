@@ -25,6 +25,7 @@ import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
@@ -43,6 +44,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zhangliang
  */
+@Slf4j
 public final class TaskExecutor implements Executor {
     
     private final static int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 2;
@@ -81,7 +83,8 @@ public final class TaskExecutor implements Executor {
     }
 
     @Override
-    public void error(final ExecutorDriver executorDriver, final String s) {
+    public void error(final ExecutorDriver executorDriver, final String message) {
+        log.error("call executor error, message is: {}", message);
     }
 }
 

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.context;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import org.junit.Test;
 
@@ -57,5 +58,23 @@ public final class TaskContextTest {
         TaskContext.MetaInfo actual = TaskContext.MetaInfo.from("test_job@-@1");
         assertThat(actual.getJobName(), is("test_job"));
         assertThat(actual.getShardingItem(), is(1));
+    }
+    
+    @Test
+    public void assertGetTaskName() {
+        TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
+        assertThat(actual.getTaskName(), is("test_job@-@0@-@READY@-@slave-S0"));
+    }
+    
+    @Test
+    public void assertGetExecutorIdForTransientJob() {
+        TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
+        assertThat(actual.getExecutorId(JobExecutionType.TRANSIENT), is("test_job@-@slave-S0"));
+    }
+    
+    @Test
+    public void assertGetExecutorIdForDaemonJob() {
+        TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
+        assertThat(actual.getExecutorId(JobExecutionType.DAEMON), is("test_job@-@0@-@slave-S0"));
     }
 }

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.context;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
@@ -30,13 +31,14 @@ import java.util.UUID;
  * 任务运行时上下文.
  *
  * @author zhangliang
+ * @author caohao
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode(of = "id")
 public final class TaskContext {
     
-    public static final String DELIMITER = "@-@";
+    private static final String DELIMITER = "@-@";
     
     private final String id;
     
@@ -74,6 +76,18 @@ public final class TaskContext {
         return Joiner.on(DELIMITER).join(metaInfo, type, slaveId);
     }
     
+    /**
+     * 获取ExecutorId.
+     *
+     * @return executor id
+     */
+    public String getExecutorId(final JobExecutionType jobExecutionType) {
+        if (JobExecutionType.DAEMON == jobExecutionType) {
+            return metaInfo.getJobName() + TaskContext.DELIMITER + metaInfo.getShardingItem() + TaskContext.DELIMITER + slaveId;
+        } else {
+            return metaInfo.getJobName() + TaskContext.DELIMITER + slaveId;
+        }
+    }
     
     /**
      * 任务元信息.

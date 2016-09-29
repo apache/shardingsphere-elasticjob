@@ -39,6 +39,7 @@ import java.util.List;
  * 同一机器资源优先策略.
  *
  * @author zhangliang
+ * @author caohao
  */
 @RequiredArgsConstructor
 @Slf4j

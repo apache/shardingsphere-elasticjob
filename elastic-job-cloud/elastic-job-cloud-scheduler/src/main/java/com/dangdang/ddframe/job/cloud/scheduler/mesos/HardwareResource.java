@@ -44,6 +44,7 @@ import java.util.Map;
  * 硬件资源.
  *
  * @author zhangliang
+ * @author caohao
  */
 @EqualsAndHashCode(of = "offerId")
 public final class HardwareResource {
@@ -141,8 +142,7 @@ public final class HardwareResource {
         // TODO 更改cache为elastic-job-cloud-scheduler.properties配置
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true).setCache(false).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(jobConfig.getBootstrapScript()).build();
-        Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(buildExecutorId(jobConfig.getJobExecutionType(), 
-                taskContext, shardingItem))).setCommand(command).build();
+        Protos.ExecutorInfo executorInfo = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getJobExecutionType()))).setCommand(command).build();
         return Protos.TaskInfo.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName())
@@ -152,14 +152,6 @@ public final class HardwareResource {
                 .setExecutor(executorInfo)
                 .setData(ByteString.copyFrom(serialize(shardingContexts, jobConfig)))
                 .build();
-    }
-    
-    private String buildExecutorId(final JobExecutionType jobExecutionType, final TaskContext taskContext, final int shardingItem) {
-        if (JobExecutionType.DAEMON == jobExecutionType) {
-            return taskContext.getMetaInfo().getJobName() + TaskContext.DELIMITER + shardingItem + TaskContext.DELIMITER + taskContext.getSlaveId();
-        } else {
-            return taskContext.getMetaInfo().getJobName() + TaskContext.DELIMITER + taskContext.getSlaveId();
-        }
     }
     
     private byte[] serialize(final ShardingContexts shardingContexts, final CloudJobConfiguration jobConfig) {
