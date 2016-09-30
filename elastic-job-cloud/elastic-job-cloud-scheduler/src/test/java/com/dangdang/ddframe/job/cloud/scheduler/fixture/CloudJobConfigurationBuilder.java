@@ -15,15 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.state.fixture;
+package com.dangdang.ddframe.job.cloud.scheduler.fixture;
 
-import com.dangdang.ddframe.job.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -48,19 +45,9 @@ public final class CloudJobConfigurationBuilder {
                 1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
     }
     
-    public static CloudJobConfiguration createCloudJobConfigurationWithEventConfiguration(final String jobName) {
-        JobEventRdbConfiguration rdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
-        JobEventLogConfiguration logEventConfig = new JobEventLogConfiguration();
-        return new CloudJobConfiguration(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false)
-                .jobEventConfiguration(rdbEventConfig, logEventConfig).build(), TestSimpleJob.class.getCanonicalName()),
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
-    }
-    
     public static CloudJobConfiguration createCloudSpringJobConfiguration(final String jobName) {
         return new CloudJobConfiguration(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 10).failover(true).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
                 1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT, "springSimpleJob", "applicationContext.xml");
     }
-    
 }

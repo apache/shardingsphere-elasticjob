@@ -20,9 +20,10 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskAllocateStrategy;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.facade.FacadeService;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
@@ -57,19 +58,19 @@ public final class MasterBootstrap {
     public MasterBootstrap() throws IOException {
         env = new BootstrapEnvironment();
         regCenter = getRegistryCenter();
+        LeasesQueue leasesQueue = new LeasesQueue();
         FacadeService facadeService = new FacadeService(regCenter);
         TaskScheduler taskScheduler = getTaskScheduler();
-        schedulerDriver = getSchedulerDriver(taskScheduler, facadeService);
+        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         CloudJobRestfulApi.init(schedulerDriver, regCenter);
         initListener();
-        final TaskAllocateStrategy taskAllocateStrategy = TaskAllocateStrategy.getInstance(schedulerDriver, taskScheduler, facadeService);
-        taskAllocateStrategy.start();
+        new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService)).start();
         Runtime.getRuntime().addShutdownHook(new Thread() {
-    
+            
             @Override
             public void run() {
-                taskAllocateStrategy.shutdown();
+                TaskLaunchProcessor.shutdown();
             }
         });
     }
@@ -80,11 +81,11 @@ public final class MasterBootstrap {
         return result;
     }
     
-    private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final FacadeService facadeService) {
+    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Protos.FrameworkInfo frameworkInfo = 
                 Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(taskScheduler, facadeService), frameworkInfo, mesosConfig.getUrl());
+        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService), frameworkInfo, mesosConfig.getUrl());
     }
     
     private TaskScheduler getTaskScheduler() {
@@ -97,8 +98,7 @@ public final class MasterBootstrap {
                         log.warn("Declining offer on '{}'", lease.hostname());
                         schedulerDriver.declineOffer(lease.getOffer().getId());
                     }
-                })
-                .build();
+                }).build();
     }
     
     private void initListener() {

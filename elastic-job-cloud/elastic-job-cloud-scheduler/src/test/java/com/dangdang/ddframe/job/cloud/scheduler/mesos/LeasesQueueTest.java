@@ -17,15 +17,22 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        LeasesQueueTest.class,
-        JobTaskRequestTest.class, 
-        FacadeServiceTest.class, 
-        SchedulerEngineTest.class
-    })
-public final class AllMesosTests {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+public final class LeasesQueueTest {
+    
+    private LeasesQueue leasesQueue = new LeasesQueue();
+    
+    @Test
+    public void assertOperate() {
+        assertTrue(leasesQueue.drainTo().isEmpty());
+        leasesQueue.offer(OfferBuilder.createOffer("offer_1"));
+        leasesQueue.offer(OfferBuilder.createOffer("offer_2"));
+        assertThat(leasesQueue.drainTo().size(), is(2));
+    }
 }

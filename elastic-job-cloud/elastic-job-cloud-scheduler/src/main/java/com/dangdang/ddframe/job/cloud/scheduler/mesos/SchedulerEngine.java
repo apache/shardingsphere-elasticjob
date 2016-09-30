@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.facade.FacadeService;
 import com.netflix.fenzo.TaskScheduler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +35,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public final class SchedulerEngine implements Scheduler {
+    
+    private final LeasesQueue leasesQueue;
     
     private final TaskScheduler taskScheduler;
     
@@ -59,7 +60,7 @@ public final class SchedulerEngine implements Scheduler {
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
         for (Protos.Offer offer: offers) {
             log.trace("Adding offer {} from host {}", offer.getId(), offer.getHostname());
-            TaskAllocateStrategy.getInstance(schedulerDriver, taskScheduler, facadeService).offer(offer);
+            leasesQueue.offer(offer);
         }
     }
     

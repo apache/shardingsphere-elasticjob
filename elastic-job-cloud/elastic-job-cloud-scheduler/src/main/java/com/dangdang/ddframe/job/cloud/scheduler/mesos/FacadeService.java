@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.mesos.facade;
+package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
@@ -201,5 +201,6 @@ public class FacadeService {
     public void stop() {
         // TODO 停止作业调度
         runningService.clear();
+        TaskLaunchProcessor.shutdown();
     }
 }

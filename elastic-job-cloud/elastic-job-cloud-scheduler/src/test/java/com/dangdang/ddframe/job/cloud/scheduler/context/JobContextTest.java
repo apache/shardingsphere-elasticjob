@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.context;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.state.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;

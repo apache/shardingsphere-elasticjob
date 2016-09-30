@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.facade.FacadeService;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
@@ -35,38 +34,35 @@ import com.dangdang.ddframe.job.util.ShardingItemParameters;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.protobuf.ByteString;
-import com.netflix.fenzo.ConstraintEvaluator;
-import com.netflix.fenzo.SchedulingResult;
 import com.netflix.fenzo.TaskAssignmentResult;
 import com.netflix.fenzo.TaskRequest;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
-import com.netflix.fenzo.VMTaskFitnessCalculator;
 import com.netflix.fenzo.VirtualMachineLease;
-import com.netflix.fenzo.plugins.VMLeaseObject;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * 任务分配策略.
+ * 任务启动处理器.
  *
  * @author zhangliang
  */
-public final class TaskAllocateStrategy {
+@RequiredArgsConstructor
+public final class TaskLaunchProcessor implements Runnable {
     
-    private static TaskAllocateStrategy instance;
+    private static volatile boolean shutdown;
+    
+    private final LeasesQueue leasesQueue;
     
     private final SchedulerDriver schedulerDriver;
     
@@ -74,60 +70,16 @@ public final class TaskAllocateStrategy {
     
     private final FacadeService facadeService;
     
-    private final BlockingQueue<VirtualMachineLease> leasesQueue;
-    
-    private volatile boolean shutdown;
-    
-    private TaskAllocateStrategy(final SchedulerDriver schedulerDriver, final TaskScheduler taskScheduler, final FacadeService facadeService) {
-        this.schedulerDriver = schedulerDriver;
-        this.taskScheduler = taskScheduler;
-        this.facadeService = facadeService;
-        leasesQueue = new LinkedBlockingQueue<>();
-    }
-    
-    public static synchronized TaskAllocateStrategy getInstance(final SchedulerDriver schedulerDriver, final TaskScheduler taskScheduler, final FacadeService facadeService) {
-        if (null == instance) {
-            instance = new TaskAllocateStrategy(schedulerDriver, taskScheduler, facadeService);
-        }
-        return instance;
-    }
-    
     /**
-     * 添加机器Offer至队列.
-     * 
-     * @param offer 机器Offer
+     * 线程关闭.
      */
-    public void offer(final Protos.Offer offer) {
-        leasesQueue.offer(new VMLeaseObject(offer));
-    }
-    
-    /**
-     * 停止监听线程.
-     */
-    public void shutdown() {
+    public static void shutdown() {
         shutdown = true;
     }
     
-    /**
-     * 初始化监听线程.
-     */
-    public void start() {
-        new Thread(new Runnable() {
-            
-            @Override
-            public void run() {
-                listen();
-            }
-        }).start();
-    }
-    
-    private void listen() {
-        while (true) {
-            if (shutdown) {
-                return;
-            }
-            List<VirtualMachineLease> newLeases = new ArrayList<>(leasesQueue.size());
-            leasesQueue.drainTo(newLeases);
+    @Override
+    public void run() {
+        while (!shutdown) {
             Collection<JobContext> eligibleJobContexts =  facadeService.getEligibleJobContext();
             Map<String, Integer> jobShardingTotalCountMap = new HashMap<>(eligibleJobContexts.size(), 1);
             List<TaskRequest> pendingTasks = new ArrayList<>(eligibleJobContexts.size() * 10);
@@ -137,8 +89,7 @@ public final class TaskAllocateStrategy {
                     jobShardingTotalCountMap.put(each.getJobConfig().getJobName(), each.getJobConfig().getTypeConfig().getCoreConfig().getShardingTotalCount());
                 }
             }
-            SchedulingResult schedulingResult = taskScheduler.scheduleOnce(pendingTasks, newLeases);
-            Collection<VMAssignmentResult> vmAssignmentResults = schedulingResult.getResultMap().values();
+            Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(pendingTasks, leasesQueue.drainTo()).getResultMap().values();
             Collection<String> integrityViolationJobs = getIntegrityViolationJobs(jobShardingTotalCountMap, vmAssignmentResults);
             for (VMAssignmentResult each: vmAssignmentResults) {
                 List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
@@ -159,75 +110,9 @@ public final class TaskAllocateStrategy {
     
     private Collection<TaskRequest> getTaskRequests(final JobContext jobContext) {
         Collection<TaskRequest> result = new ArrayList<>(jobContext.getAssignedShardingItems().size());
-        final CloudJobConfiguration jobConfig = jobContext.getJobConfig();
+        CloudJobConfiguration jobConfig = jobContext.getJobConfig();
         for (int each : jobContext.getAssignedShardingItems()) {
-            final TaskContext taskContext = new TaskContext(jobConfig.getJobName(), each, jobContext.getType(), "fake-slave");
-            result.add(new TaskRequest() {
-                
-                @Override
-                public String getId() {
-                    return taskContext.getId();
-                }
-                
-                @Override
-                public String taskGroupName() {
-                    return "";
-                }
-                
-                @Override
-                public double getCPUs() {
-                    return jobConfig.getCpuCount();
-                }
-                
-                @Override
-                public double getMemory() {
-                    return jobConfig.getMemoryMB();
-                }
-                
-                @Override
-                public double getNetworkMbps() {
-                    return 0;
-                }
-                
-                @Override
-                public double getDisk() {
-                    return 10;
-                }
-                
-                @Override
-                public int getPorts() {
-                    return 1;
-                }
-                
-                @Override
-                public Map<String, Double> getScalarRequests() {
-                    return null;
-                }
-                
-                @Override
-                public List<? extends ConstraintEvaluator> getHardConstraints() {
-                    return null;
-                }
-                
-                @Override
-                public List<? extends VMTaskFitnessCalculator> getSoftConstraints() {
-                    return null;
-                }
-                
-                @Override
-                public void setAssignedResources(final AssignedResources assignedResources) {
-                }
-                
-                @Override
-                public AssignedResources getAssignedResources() {
-                    return null;
-                }
-                
-                @Override
-                public Map<String, NamedResourceSetRequest> getCustomNamedResources() {
-                    return Collections.emptyMap();
-                }
-            });
+            result.add(new JobTaskRequest(new TaskContext(jobConfig.getJobName(), each, jobContext.getType(), "fake-slave"), jobConfig));
         }
         return result;
     }
@@ -266,9 +151,8 @@ public final class TaskAllocateStrategy {
     
     private Protos.TaskInfo getTaskInfo(final Protos.SlaveID slaveID, final TaskAssignmentResult taskAssignmentResult) {
         TaskContext originalTaskContext = TaskContext.from(taskAssignmentResult.getTaskId());
-        TaskContext taskContext = new TaskContext(
-                originalTaskContext.getMetaInfo().getJobName(), originalTaskContext.getMetaInfo().getShardingItem(), originalTaskContext.getType(), slaveID.getValue());
-        int shardingItem = taskContext.getMetaInfo().getShardingItem();
+        int shardingItem = originalTaskContext.getMetaInfo().getShardingItem();
+        TaskContext taskContext = new TaskContext(originalTaskContext.getMetaInfo().getJobName(), shardingItem, originalTaskContext.getType(), slaveID.getValue());
         CloudJobConfiguration jobConfig = facadeService.load(taskContext.getMetaInfo().getJobName()).get();
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);

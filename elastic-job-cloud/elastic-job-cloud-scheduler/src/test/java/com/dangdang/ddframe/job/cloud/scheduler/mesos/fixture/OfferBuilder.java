@@ -24,28 +24,14 @@ import org.apache.mesos.Protos;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class OfferBuilder {
     
-    public static Protos.Offer createOffer(final double cpuCount, final double memoryMB) {
-        return createOffer("offer_id_0", cpuCount, memoryMB);
-    }
-    
-    public static Protos.Offer createOffer(final String offerId, final double cpuCount, final double memoryMB) {
+    public static Protos.Offer createOffer(final String offerId) {
         return Protos.Offer.newBuilder()
                 .setId(Protos.OfferID.newBuilder().setValue(offerId))
                 .setFrameworkId(Protos.FrameworkID.newBuilder().setValue("elastic-job-cloud-test").build())
                 .setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-" + offerId).build())
                 .setHostname("localhost")
-                .addResources(Protos.Resource.newBuilder().setName("cpus").setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(cpuCount).build()).build())
-                .addResources(Protos.Resource.newBuilder().setName("mem").setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(memoryMB).build()).build())
-                .build();
-    }
-    
-    public static Protos.Offer createOffer(final double memoryMB) {
-        return Protos.Offer.newBuilder()
-                .setId(Protos.OfferID.newBuilder().setValue("offer_id_0"))
-                .setFrameworkId(Protos.FrameworkID.newBuilder().setValue("elastic-job-cloud-test").build())
-                .setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0").build())
-                .setHostname("localhost")
-                .addResources(Protos.Resource.newBuilder().setName("mem").setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(memoryMB).build()).build())
+                .addResources(Protos.Resource.newBuilder().setName("cpus").setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(100d).build()).build())
+                .addResources(Protos.Resource.newBuilder().setName("mem").setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(128000d).build()).build())
                 .build();
     }
 }
