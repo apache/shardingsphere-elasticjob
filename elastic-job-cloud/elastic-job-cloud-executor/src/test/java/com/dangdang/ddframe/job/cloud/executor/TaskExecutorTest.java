@@ -77,34 +77,20 @@ public final class TaskExecutorTest {
     public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
         TaskInfo taskInfo = buildTransientTaskInfo();
         taskExecutor.launchTask(executorDriver, taskInfo);
-        sendTaskRunningStatusUpdate(taskInfo);
     }
     
     @Test
     public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
         TaskInfo taskInfo = buildDaemonTaskInfo();
         taskExecutor.launchTask(executorDriver, taskInfo);
-        sendTaskRunningStatusUpdate(taskInfo);
     }
     
     @Test
     public void assertLaunchTaskWithTransientTaskAndJavaScriptJob() {
         TaskInfo taskInfo = buildScriptDaemonTaskInfo();
         taskExecutor.launchTask(executorDriver, taskInfo);
-        sendTaskRunningStatusUpdate(taskInfo);
     }
     
-    // TODO Add back test cases, fix it later.
-//    @Test(expected = JobSystemException.class)
-//    public void assertLaunchTaskWithWrongClass() throws NoSuchFieldException {
-//        taskExecutor.launchTask(executorDriver, buildWrongTaskInfo());
-//    }
-//    
-//    @Test(expected = JobSystemException.class)
-//    public void assertLaunchTaskWithNotElasticJobClass() throws NoSuchFieldException {
-//        taskExecutor.launchTask(executorDriver, buildNotElasticJobTaskInfo());
-//    }
-//    
     @Test
     public void assertOtherOperations() throws NoSuchFieldException {
         taskExecutor.registered(executorDriver, executorInfo, frameworkInfo, slaveInfo);
@@ -113,11 +99,6 @@ public final class TaskExecutorTest {
         taskExecutor.frameworkMessage(executorDriver, null);
         taskExecutor.shutdown(executorDriver);
         taskExecutor.error(executorDriver, "");
-    }
-    
-    // TODO Add back test cases, fix it later.
-    private void sendTaskRunningStatusUpdate(TaskInfo taskInfo) {
-//        verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
     }
     
     private TaskInfo buildTransientTaskInfo() {
@@ -130,14 +111,6 @@ public final class TaskExecutorTest {
     
     private TaskInfo buildScriptDaemonTaskInfo() {
         return buildTaskInfo(buildBaseJobConfigurationContextMap(TestJob.class.getCanonicalName(), "ignoredCron", JobType.SCRIPT)).build();
-    }
-    
-    private TaskInfo buildWrongTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClass("WrongJobClass")).build();
-    }
-    
-    private TaskInfo buildNotElasticJobTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClass(Object.class.getCanonicalName())).build();
     }
     
     private TaskInfo.Builder buildTaskInfo(Map<String, String> jobConfigurationContext) {
