@@ -19,17 +19,10 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.BlockUtils;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
-import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.dangdang.ddframe.job.util.ShardingItemParameters;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -40,7 +33,6 @@ import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
@@ -48,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -171,57 +162,12 @@ public final class TaskLaunchProcessor implements Runnable {
                 .addResources(buildResource("cpus", jobConfig.getCpuCount()))
                 .addResources(buildResource("mem", jobConfig.getMemoryMB()))
                 .setExecutor(executorInfo)
-                .setData(ByteString.copyFrom(serialize(shardingContexts, jobConfig)))
+                .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()))
                 .build();
     }
     
     private Protos.Resource.Builder buildResource(final String type, final double resourceValue) {
         return Protos.Resource.newBuilder().setName(type).setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(resourceValue));
-    }
-    
-    private byte[] serialize(final ShardingContexts shardingContexts, final CloudJobConfiguration jobConfig) {
-        LinkedHashMap<String, Object> result = new LinkedHashMap<>(2, 1);
-        result.put("shardingContext", shardingContexts);
-        result.put("jobConfigContext", buildJobConfigurationContext(jobConfig));
-        return SerializationUtils.serialize(result);
-    }
-    
-    private Map<String, String> buildJobConfigurationContext(final CloudJobConfiguration jobConfig) {
-        Map<String, String> result = new LinkedHashMap<>(16, 1);
-        result.put("jobType", jobConfig.getTypeConfig().getJobType().name());
-        result.put("jobName", jobConfig.getJobName());
-        result.put("jobClass", jobConfig.getTypeConfig().getJobClass());
-        result.put("cron", JobExecutionType.DAEMON == jobConfig.getJobExecutionType() ? jobConfig.getTypeConfig().getCoreConfig().getCron() : "");
-        result.put("jobExceptionHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
-        result.put("executorServiceHandler", jobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
-        if (jobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
-            result.put("streamingProcess", Boolean.toString(((DataflowJobConfiguration) jobConfig.getTypeConfig()).isStreamingProcess()));
-        } else if (jobConfig.getTypeConfig() instanceof ScriptJobConfiguration) {
-            result.put("scriptCommandLine", ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine());
-        }
-        result.put("beanName", jobConfig.getBeanName());
-        result.put("applicationContext", jobConfig.getApplicationContext());
-        result.putAll(buildJobEventConfiguration(jobConfig));
-        return result;
-    }
-    
-    private Map<String, String> buildJobEventConfiguration(final CloudJobConfiguration jobConfig) {
-        Map<String, String> result = new LinkedHashMap<>(6, 1);
-        Map<String, JobEventConfiguration> configurations = jobConfig.getTypeConfig().getCoreConfig().getJobEventConfigs();
-        for (JobEventConfiguration each : configurations.values()) {
-            if (each instanceof JobEventRdbConfiguration) {
-                JobEventRdbConfiguration rdbEventConfig = (JobEventRdbConfiguration) each;
-                result.put("driverClassName", rdbEventConfig.getDriverClassName());
-                result.put("url", rdbEventConfig.getUrl());
-                result.put("username", rdbEventConfig.getUsername());
-                result.put("password", rdbEventConfig.getPassword());
-                result.put("logLevel", rdbEventConfig.getLogLevel().name());
-            }
-            if (each instanceof JobEventLogConfiguration) {
-                result.put("logEvent", Boolean.TRUE.toString());
-            }
-        }
-        return result;
     }
     
     private List<Protos.OfferID> getOfferIDs(final List<VirtualMachineLease> leasesUsed) {
