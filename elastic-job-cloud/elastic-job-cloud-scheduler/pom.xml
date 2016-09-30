@@ -34,6 +34,10 @@
             <artifactId>mesos</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.netflix.fenzo</groupId>
+            <artifactId>fenzo-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>

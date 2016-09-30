@@ -38,6 +38,7 @@
         <gson.version>2.6.1</gson.version>
         <javaee-web-api.version>7.0</javaee-web-api.version>
         <mesos.version>0.28.1</mesos.version>
+        <fenzo.version>0.11.1</fenzo.version>
         <jersey.version>1.19</jersey.version>
         <jetty-all-server.version>8.1.19.v20160209</jetty-all-server.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
@@ -199,6 +200,11 @@
                 <groupId>org.apache.mesos</groupId>
                 <artifactId>mesos</artifactId>
                 <version>${mesos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.fenzo</groupId>
+                <artifactId>fenzo-core</artifactId>
+                <version>${fenzo.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax</groupId>

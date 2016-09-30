@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.test;
 
-import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
+import com.dangdang.ddframe.BlockUtils;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
 import org.apache.curator.test.TestingServer;
 import org.springframework.test.context.TestContext;

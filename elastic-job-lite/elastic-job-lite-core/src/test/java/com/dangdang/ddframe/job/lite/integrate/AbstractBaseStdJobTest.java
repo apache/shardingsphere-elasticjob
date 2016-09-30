@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
+import com.dangdang.ddframe.BlockUtils;
 import com.dangdang.ddframe.env.LocalHostService;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
@@ -38,7 +39,6 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
-import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;

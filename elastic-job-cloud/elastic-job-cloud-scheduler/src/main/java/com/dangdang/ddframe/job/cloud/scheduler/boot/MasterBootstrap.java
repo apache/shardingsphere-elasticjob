@@ -20,11 +20,17 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskAllocateStrategy;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.facade.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.restful.RestfulServer;
+import com.netflix.fenzo.TaskScheduler;
+import com.netflix.fenzo.VirtualMachineLease;
+import com.netflix.fenzo.functions.Action1;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
@@ -37,6 +43,7 @@ import java.io.IOException;
  *
  * @author zhangliang
  */
+@Slf4j
 public final class MasterBootstrap {
     
     private final BootstrapEnvironment env;
@@ -50,10 +57,21 @@ public final class MasterBootstrap {
     public MasterBootstrap() throws IOException {
         env = new BootstrapEnvironment();
         regCenter = getRegistryCenter();
-        schedulerDriver = getSchedulerDriver();
+        FacadeService facadeService = new FacadeService(regCenter);
+        TaskScheduler taskScheduler = getTaskScheduler();
+        schedulerDriver = getSchedulerDriver(taskScheduler, facadeService);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         CloudJobRestfulApi.init(schedulerDriver, regCenter);
         initListener();
+        final TaskAllocateStrategy taskAllocateStrategy = TaskAllocateStrategy.getInstance(schedulerDriver, taskScheduler, facadeService);
+        taskAllocateStrategy.start();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+    
+            @Override
+            public void run() {
+                taskAllocateStrategy.shutdown();
+            }
+        });
     }
     
     private CoordinatorRegistryCenter getRegistryCenter() {
@@ -62,11 +80,25 @@ public final class MasterBootstrap {
         return result;
     }
     
-    private SchedulerDriver getSchedulerDriver() {
+    private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final FacadeService facadeService) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Protos.FrameworkInfo frameworkInfo = 
                 Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(regCenter), frameworkInfo, mesosConfig.getUrl());
+        return new MesosSchedulerDriver(new SchedulerEngine(taskScheduler, facadeService), frameworkInfo, mesosConfig.getUrl());
+    }
+    
+    private TaskScheduler getTaskScheduler() {
+        return new TaskScheduler.Builder()
+                .withLeaseOfferExpirySecs(1000000000)
+                .withLeaseRejectAction(new Action1<VirtualMachineLease>() {
+                    
+                    @Override
+                    public void call(final VirtualMachineLease lease) {
+                        log.warn("Declining offer on '{}'", lease.hostname());
+                        schedulerDriver.declineOffer(lease.getOffer().getId());
+                    }
+                })
+                .build();
     }
     
     private void initListener() {

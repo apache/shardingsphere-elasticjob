@@ -20,11 +20,11 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.facade.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.fixture.CloudJobConfigurationBuilder;
-import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.netflix.fenzo.TaskScheduler;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 import org.junit.Before;
@@ -35,11 +35,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -51,7 +49,7 @@ import static org.mockito.Mockito.when;
 public final class SchedulerEngineTest {
     
     @Mock
-    private CoordinatorRegistryCenter regCenter;
+    private TaskScheduler taskScheduler;
     
     @Mock
     private FacadeService facadeService;
@@ -60,7 +58,7 @@ public final class SchedulerEngineTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        schedulerEngine = new SchedulerEngine(regCenter);
+        schedulerEngine = new SchedulerEngine(taskScheduler, facadeService);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
     }
     
@@ -68,32 +66,30 @@ public final class SchedulerEngineTest {
     public void assertRegistered() {
         schedulerEngine.registered(null, null, null);
         verify(facadeService).start();
+        verify(taskScheduler).expireAllLeases();
     }
     
     @Test
     public void assertReregistered() {
         schedulerEngine.reregistered(null, null);
         verify(facadeService).start();
+        verify(taskScheduler).expireAllLeases();
     }
     
-    @SuppressWarnings("unchecked")
     @Test
-    public void assertResourceOffers() {
+    public void assertResourceOffers() throws NoSuchFieldException {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         List<Protos.Offer> offers = Arrays.asList(OfferBuilder.createOffer("offer_0", 100d, 128000d), OfferBuilder.createOffer("offer_1", 100d, 128000d));
         when(facadeService.getEligibleJobContext()).thenReturn(
                 Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER)));
         schedulerEngine.resourceOffers(schedulerDriver, offers);
-        verify(schedulerDriver, times(0)).declineOffer(Protos.OfferID.newBuilder().setValue("offer_0").build());
-        verify(schedulerDriver).declineOffer(Protos.OfferID.newBuilder().setValue("offer_1").build());
-        verify(schedulerDriver).launchTasks(eq(Collections.singletonList(offers.get(0).getId())), (Collection) any());
-        verify(facadeService, times(10)).addRunning((TaskContext) any());
-        verify(facadeService).removeLaunchTasksFromQueue((List<TaskContext>) any());
+        // TODO 断言queue
     }
     
     @Test
     public void assertOfferRescinded() {
-        schedulerEngine.offerRescinded(null, null);
+        schedulerEngine.offerRescinded(null, Protos.OfferID.newBuilder().setValue("myOffer").build());
+        verify(taskScheduler).expireLease("myOffer");
     }
     
     @Test
@@ -181,6 +177,7 @@ public final class SchedulerEngineTest {
     @Test
     public void assertSlaveLost() {
         schedulerEngine.slaveLost(null, Protos.SlaveID.newBuilder().setValue("slave-S0").build());
+        verify(taskScheduler).expireAllLeasesByVMId("slave-S0");
     }
     
     @Test

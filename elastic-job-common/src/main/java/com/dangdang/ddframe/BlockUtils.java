@@ -15,27 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.mesos.strategy;
+package com.dangdang.ddframe;
 
-import org.apache.mesos.Protos;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-
-import java.util.Collection;
-import java.util.List;
-
-/**
- * 资源分配策略接口.
- *
- * @author zhangliang
- */
-public interface ResourceAllocateStrategy {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class BlockUtils {
     
-    /**
-     * 分配资源.
-     * 
-     * @param jobContexts 作业运行时上下文集合
-     * @return 分配的任务列表
-     */
-    List<Protos.TaskInfo> allocate(Collection<JobContext> jobContexts);
+    public static void waitingShortTime() {
+        sleep(100L);
+    }
+    
+    public static void sleep(final long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
 }
