@@ -22,8 +22,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        LeasesQueueTest.class,
+        LeasesQueueTest.class, 
         JobTaskRequestTest.class, 
+        TaskInfoDataTest.class, 
         FacadeServiceTest.class, 
         SchedulerEngineTest.class
     })
