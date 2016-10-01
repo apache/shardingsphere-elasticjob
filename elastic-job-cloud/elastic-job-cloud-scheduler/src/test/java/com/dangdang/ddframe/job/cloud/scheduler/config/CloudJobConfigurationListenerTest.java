@@ -21,8 +21,10 @@ import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.google.common.collect.Lists;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 import org.junit.Before;
@@ -77,6 +79,26 @@ public final class CloudJobConfigurationListenerTest {
     public void assertChildEventWhenStateIsUpdateAndIsNotConfigPath() throws Exception {
         cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/other/test_job", null, "".getBytes())));
         verify(readyService, times(0)).addDaemon(Matchers.<String>any());
+    }
+    
+    @Test
+    public void assertChildEventWhenStateIsRemovedAndIsRootConfigPath() throws Exception {
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/test_job", null, "".getBytes())));
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(Type.NODE_REMOVED, new ChildData("/config", null, "".getBytes())));
+        verify(readyService, times(0)).remove(Lists.<String>newArrayList());
+    }
+    
+    @Test
+    public void assertChildEventWhenStateIsRemovedAndIsJobConfigPath() throws Exception {
+        when(runningService.getRunningTasks("test_job")).thenReturn(Arrays.asList(
+                TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID")));
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/test_job", null, "".getBytes())));
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(Type.NODE_REMOVED, new ChildData("/config/test_job", null, "".getBytes())));
+        verify(schedulerDriver).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID").build());
+        verify(schedulerDriver).killTask(Protos.TaskID.getDefaultInstance().toBuilder().setValue("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID").build());
+        verify(runningService).remove(TaskContext.MetaInfo.from("test_job@-@0"));
+        verify(runningService).remove(TaskContext.MetaInfo.from("test_job@-@1"));
+        verify(readyService).remove(Lists.newArrayList("test_job"));
     }
     
     @Test

@@ -21,8 +21,10 @@ import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.google.common.collect.Lists;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
@@ -31,6 +33,7 @@ import org.apache.mesos.SchedulerDriver;
  * 云作业配置变更监听.
  *
  * @author zhangliang
+ * @author caohao
  */
 public final class CloudJobConfigurationListener implements TreeCacheListener {
     
@@ -49,8 +52,7 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
     @Override
     public void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
         String path = null == event.getData() ? "" : event.getData().getPath();
-        if (TreeCacheEvent.Type.NODE_UPDATED == event.getType() && path.startsWith(ConfigurationNode.ROOT) 
-                && JobExecutionType.DAEMON == CloudJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getJobExecutionType()) {
+        if (isDaemonJobConfigNodeUpdated(event, path)) {
             String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
             // TODO 目前是修改了配置作业都停止,并由调度重启,以后应改成缩容kill相关,并且只有改了cron才重启
             for (TaskContext each : runningService.getRunningTasks(jobName)) {
@@ -59,5 +61,22 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
             }
             readyService.addDaemon(jobName);
         }
+        if (isJobConfigNodeRemoved(event, path)) {
+            String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
+            for (TaskContext each : runningService.getRunningTasks(jobName)) {
+                schedulerDriver.killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
+                runningService.remove(each.getMetaInfo());
+            }
+            readyService.remove(Lists.newArrayList(jobName));
+        }
+    }
+    
+    private boolean isDaemonJobConfigNodeUpdated(final TreeCacheEvent event, final String path) {
+        return Type.NODE_UPDATED == event.getType() && path.startsWith(ConfigurationNode.ROOT) 
+                && JobExecutionType.DAEMON == CloudJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getJobExecutionType();
+    }
+    
+    private boolean isJobConfigNodeRemoved(final TreeCacheEvent event, final String path) {
+        return Type.NODE_REMOVED == event.getType() && path.startsWith(ConfigurationNode.ROOT) && path.length() > ConfigurationNode.ROOT.length();
     }
 }
