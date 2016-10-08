@@ -115,21 +115,21 @@ echo sharding execution context is $*
     // 定义SIMPLE类型配置
     SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, SimpleDemoJob.class.getCanonicalName());
     // 定义Lite作业根配置
-    JobRootConfiguration jobConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
+    JobRootConfiguration simpleJobRootConfig = LiteJobConfiguration.newBuilder(simpleJobConfig).build();
     
     // 定义作业核心配置
     JobCoreConfiguration dataflowCoreConfig = JobCoreConfiguration.newBuilder("demoDataflowJob", "0/30 * * * * ?", 10).build();
     // 定义DATAFLOW类型配置
     DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName(), true);
     // 定义Lite作业根配置
-    JobRootConfiguration jobConfig = LiteJobConfiguration.newBuilder(dataflowJobConfig).build();
+    JobRootConfiguration dataflowJobRootConfig = LiteJobConfiguration.newBuilder(dataflowJobConfig).build();
     
     // 定义作业核心配置配置
     JobCoreConfiguration scriptCoreConfig = JobCoreConfiguration.newBuilder("demoScriptJob", "0/45 * * * * ?", 10).build();
     // 定义SCRIPT类型配置
     ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(scriptCoreConfig, "test.sh");
     // 定义Lite作业根配置
-    JobRootConfiguration jobConfig = LiteJobConfiguration.newBuilder(scriptCoreConfig).build();
+    JobRootConfiguration scriptJobRootConfig = LiteJobConfiguration.newBuilder(scriptCoreConfig).build();
 ```
 
 ### Spring命名空间配置
@@ -268,17 +268,19 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 ```java
 public class JobDemo {
     
-    //init jobRootConfig
-    
-    public static void main(final String[] args) {
-        new JobDemo().init();
+    public static void main(String[] args) {
+        new JobScheduler(createRegistryCenter(), createJobConfiguration()).init();
     }
     
-    private void init() {
-        // 连接注册中心
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("zk_host:2181", "elastic-job-demo"));
         regCenter.init();
-        // 启动作业
-        new JobScheduler(regCenter, jobRootConfig).init();
+        return regCenter;
+    }
+    
+    private static LiteJobConfiguration createJobConfiguration() {
+        // 创建作业配置
+        ...
     }
 }
 ```
@@ -334,12 +336,12 @@ public class JobDemo {
 public class MyElasticJobListener implements ElasticJobListener {
     
     @Override
-    public void beforeJobExecuted(final ShardingContexts shardingContexts) {
+    public void beforeJobExecuted(ShardingContexts shardingContexts) {
         // do something ...
     }
     
     @Override
-    public void afterJobExecuted(final ShardingContexts shardingContexts) {
+    public void afterJobExecuted(ShardingContexts shardingContexts) {
         // do something ...
     }
 }
@@ -350,10 +352,19 @@ public class MyElasticJobListener implements ElasticJobListener {
 ```java
 public class JobMain {
     
-    //init jobRootConfig
+    public static void main(String[] args) {
+        new JobScheduler(createRegistryCenter(), createJobConfiguration(), new MyElasticJobListener()).init();
+    }
     
-    public static void main(final String[] args) {
-        new JobScheduler(regCenter, jobRootConfig, new MyElasticJobListener()).init();    
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("zk_host:2181", "elastic-job-demo"));
+        regCenter.init();
+        return regCenter;
+    }
+    
+    private static LiteJobConfiguration createJobConfiguration() {
+        // 创建作业配置
+        ...
     }
 }
 ```
@@ -367,19 +378,19 @@ public class JobMain {
 
 ```java
 
-public final class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
+public class TestDistributeOnceElasticJobListener extends AbstractDistributeOnceElasticJobListener {
     
-    public TestDistributeOnceElasticJobListener(final long startTimeoutMills, final long completeTimeoutMills) {
+    public TestDistributeOnceElasticJobListener(long startTimeoutMills, long completeTimeoutMills) {
         super(startTimeoutMills, completeTimeoutMills);
     }
     
     @Override
-    public void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts) {
+    public void doBeforeJobExecutedAtLastStarted(ShardingContexts shardingContexts) {
         // do something ...
     }
     
     @Override
-    public void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts) {
+    public void doAfterJobExecutedAtLastCompleted(ShardingContexts shardingContexts) {
         // do something ...
     }
 }
@@ -390,12 +401,21 @@ public final class TestDistributeOnceElasticJobListener extends AbstractDistribu
 ```java
 public class JobMain {
     
-    //init jobRootConfig
-    
-    public static void main(final String[] args) {
+    public static void main(String[] args) {
         long startTimeoutMills = 5000L;
-        long completeTimeoutMills = 10000L;    
-        new JobScheduler(regCenter, jobRootConfig, new MyDistributeOnceElasticJobListener(startTimeoutMills, completeTimeoutMills)).init();
+        long completeTimeoutMills = 10000L;
+        new JobScheduler(createRegistryCenter(), createJobConfiguration(), new MyDistributeOnceElasticJobListener(startTimeoutMills, completeTimeoutMills)).init();
+    }
+    
+    private static CoordinatorRegistryCenter createRegistryCenter() {
+        CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("zk_host:2181", "elastic-job-demo"));
+        regCenter.init();
+        return regCenter;
+    }
+    
+    private static LiteJobConfiguration createJobConfiguration() {
+        // 创建作业配置
+        ...
     }
 }
 ```
