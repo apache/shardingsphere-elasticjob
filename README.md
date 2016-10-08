@@ -39,8 +39,8 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 ## 2. Elastic-Job-Cloud
 * All Elastic-Job-Lite features included
-* Resources allocated elastically
 * Application distributed automatically
+* Fenzo based resources allocated elastically
 * Docker based processes isolation support (TBD)
 
 ***

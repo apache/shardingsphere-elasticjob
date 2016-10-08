@@ -36,7 +36,7 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ### 2. 分片项与业务处理解耦
 
-`Elastic-ob`并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器，开发者需要自行处理分片项与真实数据的对应关系。
+`Elastic-Job`并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器，开发者需要自行处理分片项与真实数据的对应关系。
 
 ### 3. 个性化参数的适用场景
 
@@ -102,8 +102,8 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ## 2. Elastic-Job-Cloud
 * 包含Elastic-Job-Lite的全部功能
-* 弹性资源分配
 * 应用自动分发
+* 基于Fenzo的弹性资源分配
 * 基于Docker的进程隔离(TBD)
 
 ***
