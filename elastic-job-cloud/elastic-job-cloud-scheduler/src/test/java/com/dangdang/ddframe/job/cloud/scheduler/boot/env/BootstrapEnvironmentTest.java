@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;

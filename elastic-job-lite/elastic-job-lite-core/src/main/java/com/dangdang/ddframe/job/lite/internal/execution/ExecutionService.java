@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.BlockUtils;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
@@ -26,7 +25,8 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.util.BlockUtils;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 

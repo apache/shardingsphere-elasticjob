@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

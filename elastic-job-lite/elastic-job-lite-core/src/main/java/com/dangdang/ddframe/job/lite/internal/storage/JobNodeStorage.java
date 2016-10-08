@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.storage;
 
 import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.recipes.cache.TreeCache;

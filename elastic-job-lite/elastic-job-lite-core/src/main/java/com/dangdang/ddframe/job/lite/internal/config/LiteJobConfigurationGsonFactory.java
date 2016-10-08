@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.util.AbstractJobConfigurationGsonTypeAdapter;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.json.GsonFactory;
+import com.dangdang.ddframe.job.util.json.AbstractJobConfigurationGsonTypeAdapter;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import lombok.AccessLevel;

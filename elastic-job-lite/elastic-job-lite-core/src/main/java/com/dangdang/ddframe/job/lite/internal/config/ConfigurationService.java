@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
 /**

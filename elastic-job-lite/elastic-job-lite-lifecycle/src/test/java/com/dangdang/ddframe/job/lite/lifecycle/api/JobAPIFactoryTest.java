@@ -18,11 +18,6 @@
 package com.dangdang.ddframe.job.lite.lifecycle.api;
 
 import com.dangdang.ddframe.job.lite.lifecycle.AbstractEmbedZookeeperBaseTest;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobAPIFactory;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
 import com.google.common.base.Optional;
 import org.junit.Test;
 

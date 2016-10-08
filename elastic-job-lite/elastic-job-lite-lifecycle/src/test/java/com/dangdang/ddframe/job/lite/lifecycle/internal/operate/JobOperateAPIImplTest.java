@@ -18,8 +18,7 @@
 package com.dangdang.ddframe.job.lite.lifecycle.internal.operate;
 
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.JobOperateAPIImpl;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import org.hamcrest.core.Is;
 import org.junit.Before;

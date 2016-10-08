@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
-import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;

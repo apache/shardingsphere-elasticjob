@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
@@ -26,7 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
 

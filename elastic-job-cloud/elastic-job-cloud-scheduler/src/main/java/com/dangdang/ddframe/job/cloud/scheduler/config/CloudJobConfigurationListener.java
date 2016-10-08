@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.config;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.collect.Lists;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;

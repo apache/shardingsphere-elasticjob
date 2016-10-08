@@ -42,6 +42,7 @@ public final class JobExecutorFactory {
      * @param jobFacade 作业内部服务门面服务
      * @return 作业执行器
      */
+    @SuppressWarnings("unchecked")
     public static AbstractElasticJobExecutor getJobExecutor(final ElasticJob elasticJob, final JobFacade jobFacade) {
         if (null == elasticJob) {
             return new ScriptJobExecutor(jobFacade);

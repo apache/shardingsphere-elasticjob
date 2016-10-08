@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.util.AbstractJobConfigurationGsonTypeAdapter;
-import com.dangdang.ddframe.json.GsonFactory;
+import com.dangdang.ddframe.job.util.json.AbstractJobConfigurationGsonTypeAdapter;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Preconditions;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -102,9 +102,9 @@ public final class CloudJobConfigurationGsonFactory {
         @Override
         protected CloudJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
             Preconditions.checkNotNull(customizedValueMap.get("cpuCount"), "cpuCount cannot be null.");
-            Preconditions.checkArgument((double)customizedValueMap.get("cpuCount") >= 0.01, "cpuCount cannot be less than 0.01");
+            Preconditions.checkArgument((double) customizedValueMap.get("cpuCount") >= 0.01, "cpuCount cannot be less than 0.01");
             Preconditions.checkNotNull(customizedValueMap.get("memoryMB"), "memoryMB cannot be null.");
-            Preconditions.checkArgument((double)customizedValueMap.get("memoryMB") >= 32, "cpuCount cannot be less than 32");
+            Preconditions.checkArgument((double) customizedValueMap.get("memoryMB") >= 32, "cpuCount cannot be less than 32");
             Preconditions.checkNotNull(customizedValueMap.get("appURL"), "appURL cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get("bootstrapScript"), "bootstrapScript cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get("jobExecutionType"), "jobExecutionType cannot be null.");

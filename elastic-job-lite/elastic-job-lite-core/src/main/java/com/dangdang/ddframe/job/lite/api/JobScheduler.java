@@ -29,7 +29,7 @@ import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 import lombok.Setter;
 import org.quartz.Job;

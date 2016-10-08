@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
-import com.dangdang.ddframe.env.LocalHostService;
+import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

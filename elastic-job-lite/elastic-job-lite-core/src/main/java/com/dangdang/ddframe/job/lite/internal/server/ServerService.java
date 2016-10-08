@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.env.LocalHostService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 
 import java.util.ArrayList;
 import java.util.Collections;

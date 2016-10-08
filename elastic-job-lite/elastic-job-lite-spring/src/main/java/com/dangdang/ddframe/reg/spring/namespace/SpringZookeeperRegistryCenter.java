@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.reg.spring.namespace;
 
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.reg.spring.placeholder.PlaceholderResolved;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;

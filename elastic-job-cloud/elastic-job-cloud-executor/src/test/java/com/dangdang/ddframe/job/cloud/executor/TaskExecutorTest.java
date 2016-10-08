@@ -113,7 +113,7 @@ public final class TaskExecutorTest {
         return buildTaskInfo(buildBaseJobConfigurationContextMap(TestJob.class.getCanonicalName(), "ignoredCron", JobType.SCRIPT)).build();
     }
     
-    private TaskInfo.Builder buildTaskInfo(Map<String, String> jobConfigurationContext) {
+    private TaskInfo.Builder buildTaskInfo(final Map<String, String> jobConfigurationContext) {
         return TaskInfo.newBuilder().setData(ByteString.copyFrom(serialize(jobConfigurationContext)))
                 .setName("test_job").setTaskId(Protos.TaskID.newBuilder().setValue("task_id")).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0"));
     }
@@ -133,15 +133,15 @@ public final class TaskExecutorTest {
         return context;
     }
     
-    private Map<String, String> buildBaseJobConfigurationContextMapWithJobClass(String jobClass) {
+    private Map<String, String> buildBaseJobConfigurationContextMapWithJobClass(final String jobClass) {
         return buildBaseJobConfigurationContextMapWithJobClassAndCron(jobClass, "0/1 * * * * ?");
     }
     
-    private Map<String, String> buildBaseJobConfigurationContextMapWithJobClassAndCron(String jobClass, String cron) {
+    private Map<String, String> buildBaseJobConfigurationContextMapWithJobClassAndCron(final String jobClass, final String cron) {
         return buildBaseJobConfigurationContextMap(jobClass, cron, JobType.SIMPLE);
     }
     
-    private Map<String, String> buildBaseJobConfigurationContextMap(String jobClass, String cron, JobType jobType) {
+    private Map<String, String> buildBaseJobConfigurationContextMap(final String jobClass, final String cron, final JobType jobType) {
         Map<String, String> result = new HashMap<>();
         result.put("jobName", "test_job");
         result.put("cron", cron);

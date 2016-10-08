@@ -47,9 +47,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public final class TaskExecutor implements Executor {
     
-    private final static int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+    private static final int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 2;
     
-    private ExecutorService executorService = MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(THREAD_SIZE, THREAD_SIZE, 1L,TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
+    private ExecutorService executorService = 
+            MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(THREAD_SIZE, THREAD_SIZE, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
     
     @Override
     public void registered(final ExecutorDriver executorDriver, final Protos.ExecutorInfo executorInfo, final Protos.FrameworkInfo frameworkInfo, final Protos.SlaveInfo slaveInfo) {
@@ -86,64 +87,64 @@ public final class TaskExecutor implements Executor {
     public void error(final ExecutorDriver executorDriver, final String message) {
         log.error("call executor error, message is: {}", message);
     }
-}
-
-@RequiredArgsConstructor
-class TaskThread implements Runnable {
     
-    private final ExecutorDriver executorDriver;
-    
-    private final TaskInfo taskInfo;
-    
-    @Override
-    public void run() {
-        executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
-        Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
-        ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
-        @SuppressWarnings("unchecked")
-        JobConfigurationContext jobConfig = new JobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
-        try {
-            ElasticJob elasticJob = getElasticJobInstance(jobConfig);
-            if (jobConfig.isTransient()) {
-                JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContexts, jobConfig)).execute();
-                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
+    @RequiredArgsConstructor
+    class TaskThread implements Runnable {
+        
+        private final ExecutorDriver executorDriver;
+        
+        private final TaskInfo taskInfo;
+        
+        @Override
+        public void run() {
+            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
+            Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
+            ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");
+            @SuppressWarnings("unchecked")
+            JobConfigurationContext jobConfig = new JobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
+            try {
+                ElasticJob elasticJob = getElasticJobInstance(jobConfig);
+                if (jobConfig.isTransient()) {
+                    JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContexts, jobConfig)).execute();
+                    executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
+                } else {
+                    new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContexts, jobConfig), executorDriver, taskInfo.getTaskId()).init();
+                }
+                // CHECKSTYLE:OFF
+            } catch (final Throwable ex) {
+                // CHECKSTYLE:ON
+                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).build());
+                executorDriver.stop();
+                throw ex;
+            }
+        }
+        
+        private ElasticJob getElasticJobInstance(final JobConfigurationContext jobConfig) {
+            if (!Strings.isNullOrEmpty(jobConfig.getBeanName()) && !Strings.isNullOrEmpty(jobConfig.getApplicationContext())) {
+                return getElasticJobBean(jobConfig);
             } else {
-                new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContexts, jobConfig), executorDriver, taskInfo.getTaskId()).init();
+                return getElasticJobClass(jobConfig);
             }
-            // CHECKSTYLE:OFF
-        } catch (final Throwable ex) {
-            // CHECKSTYLE:ON
-            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).build());
-            executorDriver.stop();
-            throw ex;
         }
-    }
-    
-    private ElasticJob getElasticJobInstance(final JobConfigurationContext jobConfig) {
-        if (!Strings.isNullOrEmpty(jobConfig.getBeanName()) && !Strings.isNullOrEmpty(jobConfig.getApplicationContext())) {
-            return getElasticJobBean(jobConfig);
-        } else {
-            return getElasticJobClass(jobConfig);
+        
+        private ElasticJob getElasticJobBean(final JobConfigurationContext jobConfig) {
+            return (ElasticJob) new ClassPathXmlApplicationContext(jobConfig.getApplicationContext()).getBean(jobConfig.getBeanName());
         }
-    }
-    
-    private ElasticJob getElasticJobBean(final JobConfigurationContext jobConfig) {
-        return (ElasticJob) new ClassPathXmlApplicationContext(jobConfig.getApplicationContext()).getBean(jobConfig.getBeanName());
-    }
-    
-    private ElasticJob getElasticJobClass(final JobConfigurationContext jobConfig) {
-        String jobClass = jobConfig.getTypeConfig().getJobClass();
-        try {
-            Class<?> elasticJobClass = Class.forName(jobClass);
-            if (!ElasticJob.class.isAssignableFrom(elasticJobClass)) {
-                throw new JobSystemException("Elastic-Job: Class '%s' must implements ElasticJob interface.", jobClass);
+        
+        private ElasticJob getElasticJobClass(final JobConfigurationContext jobConfig) {
+            String jobClass = jobConfig.getTypeConfig().getJobClass();
+            try {
+                Class<?> elasticJobClass = Class.forName(jobClass);
+                if (!ElasticJob.class.isAssignableFrom(elasticJobClass)) {
+                    throw new JobSystemException("Elastic-Job: Class '%s' must implements ElasticJob interface.", jobClass);
+                }
+                if (elasticJobClass != ScriptJob.class) {
+                    return (ElasticJob) elasticJobClass.newInstance();
+                }
+                return null;
+            } catch (final ReflectiveOperationException ex) {
+                throw new JobSystemException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
             }
-            if (elasticJobClass != ScriptJob.class) {
-                return (ElasticJob) elasticJobClass.newInstance();
-            }
-            return null;
-        } catch (final ReflectiveOperationException ex) {
-            throw new JobSystemException("Elastic-Job: Class '%s' initialize failure, the error message is '%s'.", jobClass, ex.getMessage());
         }
     }
 }

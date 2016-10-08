@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
@@ -27,8 +28,7 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
-import com.dangdang.ddframe.job.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
-import com.dangdang.ddframe.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;

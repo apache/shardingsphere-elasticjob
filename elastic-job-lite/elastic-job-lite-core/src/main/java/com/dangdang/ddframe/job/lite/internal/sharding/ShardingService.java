@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import com.dangdang.ddframe.BlockUtils;
-import com.dangdang.ddframe.env.LocalHostService;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
@@ -33,8 +31,10 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
-import com.dangdang.ddframe.job.util.ShardingItems;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.config.ShardingItems;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.RequiredArgsConstructor;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 

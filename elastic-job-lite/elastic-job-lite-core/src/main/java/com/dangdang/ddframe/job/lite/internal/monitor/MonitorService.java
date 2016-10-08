@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.internal.monitor;
 
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtils;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;

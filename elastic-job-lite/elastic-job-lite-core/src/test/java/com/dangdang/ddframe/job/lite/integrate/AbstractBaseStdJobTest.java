@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
-import com.dangdang.ddframe.BlockUtils;
-import com.dangdang.ddframe.env.LocalHostService;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
@@ -39,10 +37,12 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.Getter;

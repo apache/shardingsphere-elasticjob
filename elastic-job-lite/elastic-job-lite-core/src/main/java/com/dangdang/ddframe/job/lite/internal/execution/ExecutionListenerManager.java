@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;

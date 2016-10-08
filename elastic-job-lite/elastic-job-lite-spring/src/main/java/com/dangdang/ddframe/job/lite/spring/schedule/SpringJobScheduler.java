@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
 import com.dangdang.ddframe.job.lite.spring.util.AopTargetUtils;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 

@@ -17,15 +17,14 @@
 
 package com.dangdang.ddframe.reg.spring;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import com.dangdang.ddframe.test.AbstractZookeeperJUnit4SpringContextTests;
+import org.junit.Test;
 
 import javax.annotation.Resource;
 
-import org.junit.Test;
-
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.ddframe.test.AbstractZookeeperJUnit4SpringContextTests;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public abstract class AbstractRegSpringIntegrateTest extends AbstractZookeeperJUnit4SpringContextTests {
     

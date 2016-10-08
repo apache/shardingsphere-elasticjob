@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.executor.JobFacade;
-import com.dangdang.ddframe.json.GsonFactory;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Strings;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;

@@ -17,6 +17,15 @@
 
 package com.dangdang.ddframe.job.util;
 
+import com.dangdang.ddframe.job.util.config.ShardingItemParametersTest;
+import com.dangdang.ddframe.job.util.config.ShardingItemsTest;
+import com.dangdang.ddframe.job.util.env.HostExceptionTest;
+import com.dangdang.ddframe.job.util.env.LocalHostServiceTest;
+import com.dangdang.ddframe.job.util.env.TimeServiceTest;
+import com.dangdang.ddframe.job.util.json.GsonFactoryTest;
+import com.dangdang.ddframe.job.util.json.JobConfigurationGsonTypeAdapterTest;
+import com.dangdang.ddframe.job.util.restful.RestfulExceptionTest;
+import com.dangdang.ddframe.job.util.restful.RestfulServerTest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;
@@ -25,7 +34,13 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        JobConfigurationGsonTypeAdapterTest.class,
+        TimeServiceTest.class,
+        LocalHostServiceTest.class,
+        HostExceptionTest.class, 
+        GsonFactoryTest.class,
+        JobConfigurationGsonTypeAdapterTest.class, 
+        RestfulServerTest.class, 
+        RestfulExceptionTest.class, 
         ShardingItemsTest.class, 
         ShardingItemParametersTest.class
     })

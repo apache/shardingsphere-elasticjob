@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.operate;
 
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 
 import java.util.Collection;

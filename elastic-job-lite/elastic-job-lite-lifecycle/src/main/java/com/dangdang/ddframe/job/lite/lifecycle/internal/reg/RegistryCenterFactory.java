@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.internal.reg;
 
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.hash.HashCode;

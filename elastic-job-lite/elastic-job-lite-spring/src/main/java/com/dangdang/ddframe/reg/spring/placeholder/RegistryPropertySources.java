@@ -17,9 +17,8 @@
 
 package com.dangdang.ddframe.reg.spring.placeholder;
 
+import com.dangdang.ddframe.job.reg.base.RegistryCenter;
 import org.springframework.core.env.MutablePropertySources;
-
-import com.dangdang.ddframe.reg.base.RegistryCenter;
 
 /**
  * 配置中心配置项的属性源集合.

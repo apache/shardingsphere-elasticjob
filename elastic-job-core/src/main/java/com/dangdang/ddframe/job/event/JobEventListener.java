@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.event;
 
+
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 

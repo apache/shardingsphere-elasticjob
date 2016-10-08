@@ -23,7 +23,7 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.Setter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;

@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.BlockUtils;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.util.ShardingItemParameters;
+import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.protobuf.ByteString;

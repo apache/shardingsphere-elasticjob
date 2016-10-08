@@ -96,7 +96,7 @@ public final class JobTaskRequestTest {
     }
     
     @Test
-    public void asertGetCustomNamedResources() {
+    public void assertGetCustomNamedResources() {
         assertThat(jobTaskRequest.getCustomNamedResources(), is(Collections.<String, TaskRequest.NamedResourceSetRequest>emptyMap()));
     }
 }

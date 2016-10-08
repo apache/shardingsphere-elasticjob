@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.executor.handler;
 
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
-import com.dangdang.ddframe.json.GsonFactory;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

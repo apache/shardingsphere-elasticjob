@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.AccessLevel;
 import lombok.Getter;
 

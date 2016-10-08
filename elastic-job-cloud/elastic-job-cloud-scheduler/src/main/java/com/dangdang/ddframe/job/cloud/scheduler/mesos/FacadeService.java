@@ -26,7 +26,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;

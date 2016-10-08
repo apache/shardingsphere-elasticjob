@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.console.controller;
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
 import com.dangdang.ddframe.job.lite.console.service.RegistryCenterService;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactory;
-import com.dangdang.ddframe.reg.exception.RegException;
+import com.dangdang.ddframe.job.reg.exception.RegException;
 import com.google.common.base.Optional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

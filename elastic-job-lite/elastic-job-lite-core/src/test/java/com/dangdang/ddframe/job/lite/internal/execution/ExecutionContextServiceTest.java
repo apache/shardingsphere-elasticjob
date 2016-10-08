@@ -17,14 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;

@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;

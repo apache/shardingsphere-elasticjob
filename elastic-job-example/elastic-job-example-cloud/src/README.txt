@@ -5,7 +5,7 @@
 
 使用curl命令调用RESTful API注册作业。
 
-RESTful API:Elastic-Job-Cloud提供作业注册/注销Restful API，可通过curl操作。
+RESTful API:Elastic-Job-Cloud提供作业注册/注销RESTful API，可通过curl操作。
 
 a.注册作业
 注册的作业可用Java和Spring两种启动方式，作业启动在开发指南中有说明，这里只举例说明两种方式如何注册。

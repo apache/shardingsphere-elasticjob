@@ -21,8 +21,8 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.TaskProducerSchedulerRegistry;
-import com.dangdang.ddframe.json.GsonFactory;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Preconditions;
 import org.apache.mesos.SchedulerDriver;
 

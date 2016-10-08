@@ -27,7 +27,7 @@ import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFac
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.LinkedHashMap;
@@ -75,7 +75,8 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setMisfire(liteJobConfig.getTypeConfig().getCoreConfig().isMisfire());
         result.setJobShardingStrategyClass(liteJobConfig.getJobShardingStrategyClass());
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
-        result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
+        result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), 
+                liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         result.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
         Map<String, Object> jobEventConfigs = new LinkedHashMap<>(2, 1);
         Map<String, JobEventConfiguration> liteEventConfigs = liteJobConfig.getTypeConfig().getCoreConfig().getJobEventConfigs();

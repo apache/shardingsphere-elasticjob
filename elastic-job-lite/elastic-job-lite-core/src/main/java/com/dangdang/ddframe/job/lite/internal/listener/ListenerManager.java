@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener;
 
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
@@ -26,7 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
 

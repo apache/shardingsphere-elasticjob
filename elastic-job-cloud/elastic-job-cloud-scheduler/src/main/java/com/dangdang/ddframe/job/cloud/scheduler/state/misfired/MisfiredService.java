@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.misfired;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;

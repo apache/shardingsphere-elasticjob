@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
@@ -25,8 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager.JobPausedStatusJobListener;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
-import com.dangdang.ddframe.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.state.ConnectionState;

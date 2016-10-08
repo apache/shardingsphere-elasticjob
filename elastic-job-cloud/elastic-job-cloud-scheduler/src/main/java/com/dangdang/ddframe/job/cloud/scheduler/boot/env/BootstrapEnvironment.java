@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.Getter;

@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.listener;
 
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.state.ConnectionStateListener;
 

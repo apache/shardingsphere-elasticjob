@@ -17,19 +17,19 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.executor.JobFacade;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Collection;
 import java.util.List;

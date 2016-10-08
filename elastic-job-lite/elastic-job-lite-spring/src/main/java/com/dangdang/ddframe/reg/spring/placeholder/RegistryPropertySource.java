@@ -17,12 +17,11 @@
 
 package com.dangdang.ddframe.reg.spring.placeholder;
 
-import java.util.UUID;
-
+import com.dangdang.ddframe.job.reg.base.RegistryCenter;
+import com.dangdang.ddframe.job.reg.exception.RegException;
 import org.springframework.core.env.PropertySource;
 
-import com.dangdang.ddframe.reg.base.RegistryCenter;
-import com.dangdang.ddframe.reg.exception.RegException;
+import java.util.UUID;
 
 /**
  * 将注册中心的配置数据转化为Spring的属性源.

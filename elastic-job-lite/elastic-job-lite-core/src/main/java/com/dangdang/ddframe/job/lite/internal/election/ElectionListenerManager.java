@@ -17,14 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
