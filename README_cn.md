@@ -96,8 +96,8 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ## 2. Elastic-Job-Cloud
 * 包含Elastic-Job-Lite的全部功能
-* 弹性资源分配
 * 应用自动分发
+* 基于Fenzo的弹性资源分配
 * 基于Docker的进程隔离(TBD)
 
 ***
