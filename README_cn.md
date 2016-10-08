@@ -4,10 +4,6 @@
 
 # [原1.x版本文档](README_1.x.md)
 
-# [Roadmap](ROADMAP.md)
-
-# [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
-
 [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
 [![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
@@ -107,6 +103,10 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 * 基于Docker的进程隔离(TBD)
 
 ***
+
+# [Roadmap](ROADMAP.md)
+
+# [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
 
 # Architecture
 
