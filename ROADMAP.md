@@ -1,6 +1,6 @@
 # Roadmap
 
-## Common
+## Core
 - [x] Unify Job Config API
     - [x] Core Config
     - [x] Type Config
@@ -58,9 +58,10 @@
     - [x] Idempotency
 - [ ] Mesos Scheduler
     - [ ] Leadership Election
+    - [ ] Redis Based Queue Improvement
 - [ ] Mesos Executor
+    - [x] Executor reuse pool
     - [ ] Progress Reporting
-    - [ ] Multiple Tasks
     - [ ] Health Detection
     - [ ] Log Redirect
 - [x] Lifecycle Management
@@ -78,6 +79,8 @@
     - [ ] Docker Based Distribution
 - [x] Resource Management
     - [x] Resources Allocate
+    - [ ] Resources Isolation
     - [ ] Cross Data Center
+    - [ ] A/B Test
 - [x] Spring Integrate
 - [ ] Web Console
