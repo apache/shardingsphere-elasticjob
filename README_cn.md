@@ -2,6 +2,12 @@
 
 # [English](README.md)
 
+# [原1.x版本文档](README_1.x.md)
+
+# [Roadmap](ROADMAP.md)
+
+# [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
+
 [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
 [![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
@@ -102,8 +108,6 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ***
 
-# [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
-
 # Architecture
 
 ## Elastic-Job-Lite
@@ -116,14 +120,14 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_cloud.png)
 
-# [Roadmap](ROADMAP.md)
-
 # Quick Start
 
-## 引入maven依赖
+## Elastic-Job-Lite
+
+### 引入maven依赖
 
 ```xml
-<!-- 引入elastic-job核心模块 -->
+<!-- 引入elastic-job-lite核心模块 -->
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-lite-core</artifactId>
@@ -137,7 +141,7 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
     <version>${latest.release.version}</version>
 </dependency>
 ```
-## 作业开发
+### 作业开发
 
 ```java
 public class MyElasticJob implements SimpleJob {
@@ -160,7 +164,7 @@ public class MyElasticJob implements SimpleJob {
 }
 ```
 
-## 作业配置
+### 作业配置
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -182,6 +186,33 @@ public class MyElasticJob implements SimpleJob {
     <job:simple id="oneOffElasticJob" class="xxx.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
 ```
+***
+
+## Elastic-Job-Cloud
+
+### 引入maven依赖
+
+```xml
+<!-- 引入elastic-job-cloud执行器模块 -->
+<dependency>
+    <groupId>com.dangdang</groupId>
+    <artifactId>elastic-job-cloud-executor</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+### 作业开发
+
+同`Elastic-Job-Lite`
+
+### 作业配置
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
+http://elastic_job_cloud_host:8899/job/register
+```
+
+***
 
 # 相关文档
 
