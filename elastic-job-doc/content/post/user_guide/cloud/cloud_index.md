@@ -14,3 +14,5 @@ weight=50
 ## [部署指南](../deploy_guide/)
 
 ## [Elastic-Job-Cloud-Scheduler启动指南](../scheduler_guide/)
+
+## [其他功能](../other_features/)

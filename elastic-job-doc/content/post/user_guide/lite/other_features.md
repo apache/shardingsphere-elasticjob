@@ -7,6 +7,8 @@ weight=14
 
 # Elastic-Job-Lite其他功能
 
+## [事件追踪](../../common/event_trace/)
+
 ## [作业操作API](../other/lite_job_operate_api/)
 
 ## [运维平台](../other/lite_web_console/)

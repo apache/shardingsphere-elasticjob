@@ -309,6 +309,8 @@ public class JobDemo {
     ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(scriptCoreConfig, "test.sh").jobEventConfiguration(jobLogEventConfig, jobRdbEventConfig);
 ```
 
+更多信息请参见[Elastic-Job事件追踪](../../common/event_trace/)。
+
 ### 2. 异常处理
 
 `elastic-job`在配置中提供了`JobProperties`，可扩展`JobExceptionHandler`接口，并设置`job_exception_handler`定制异常处理流程，默认实现是记录日志但不抛出异常。
