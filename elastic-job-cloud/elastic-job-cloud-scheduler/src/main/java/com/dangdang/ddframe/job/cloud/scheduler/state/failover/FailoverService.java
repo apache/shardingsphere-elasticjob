@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
@@ -29,6 +30,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +44,7 @@ import java.util.Set;
  *
  * @author zhangliang
  */
+@Slf4j
 public class FailoverService {
     
     private final CoordinatorRegistryCenter regCenter;
@@ -62,6 +65,10 @@ public class FailoverService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
+        if (regCenter.getChildrenKeys(FailoverNode.ROOT).size() > BootstrapEnvironment.JOB_STATE_QUEUE_SIZE) {
+            log.error("Cannot add job, caused by read state queue size is larger than {}.", BootstrapEnvironment.JOB_STATE_QUEUE_SIZE);
+            return;
+        }
         Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getMetaInfo().getJobName());
         if (!jobConfig.isPresent() || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
             return;
@@ -97,7 +104,9 @@ public class FailoverService {
             }
             List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskMetaInfoList, assignedTasks);
             if (!assignedShardingItems.isEmpty()) {
-                result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));
+                if (jobConfig.isPresent()) {
+                    result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
+                }
             }
         }
         return result;

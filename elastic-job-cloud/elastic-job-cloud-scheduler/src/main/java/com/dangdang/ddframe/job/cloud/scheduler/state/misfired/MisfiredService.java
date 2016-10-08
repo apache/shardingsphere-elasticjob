@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.misfired;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
@@ -27,6 +28,7 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +40,7 @@ import java.util.List;
  *
  * @author zhangliang
  */
+@Slf4j
 public class MisfiredService {
     
     private final CoordinatorRegistryCenter regCenter;
@@ -58,6 +61,10 @@ public class MisfiredService {
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
+        if (regCenter.getChildrenKeys(MisfiredNode.ROOT).size() > BootstrapEnvironment.JOB_STATE_QUEUE_SIZE) {
+            log.error("Cannot add job, caused by read state queue size is larger than {}.", BootstrapEnvironment.JOB_STATE_QUEUE_SIZE);
+            return;
+        }
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
         if (!jobConfig.isPresent() || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
             return;
@@ -93,7 +100,9 @@ public class MisfiredService {
                 continue;
             }
             if (!ineligibleJobNames.contains(each) && !runningService.isJobRunning(each)) {
-                result.add(JobContext.from(jobConfig.get(), ExecutionType.MISFIRED));
+                if (jobConfig.isPresent()) {
+                    result.add(JobContext.from(jobConfig.get(), ExecutionType.MISFIRED));    
+                }
             }
         }
         return result;
