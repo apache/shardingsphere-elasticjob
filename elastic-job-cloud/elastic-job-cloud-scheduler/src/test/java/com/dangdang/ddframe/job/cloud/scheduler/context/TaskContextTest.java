@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.context;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import org.junit.Test;
 
@@ -67,14 +66,8 @@ public final class TaskContextTest {
     }
     
     @Test
-    public void assertGetExecutorIdForTransientJob() {
+    public void assertGetExecutorId() {
         TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
-        assertThat(actual.getExecutorId(JobExecutionType.TRANSIENT), is("test_job@-@slave-S0"));
-    }
-    
-    @Test
-    public void assertGetExecutorIdForDaemonJob() {
-        TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
-        assertThat(actual.getExecutorId(JobExecutionType.DAEMON), is("test_job@-@0@-@slave-S0"));
+        assertThat(actual.getExecutorId("app"), is("d2a57dc1d883fd21fb9951699df71cc7@-@slave-S0"));
     }
 }

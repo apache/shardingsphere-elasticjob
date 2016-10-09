@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.context;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.util.digest.Encryption;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
@@ -77,16 +77,13 @@ public final class TaskContext {
     }
     
     /**
-     * 获取ExecutorId.
-     *
-     * @return executor id
+     * 获取任务执行器主键.
+     * 
+     * @param appURL 应用URL地址
+     * @return 任务执行器主键
      */
-    public String getExecutorId(final JobExecutionType jobExecutionType) {
-        if (JobExecutionType.DAEMON == jobExecutionType) {
-            return metaInfo.getJobName() + TaskContext.DELIMITER + metaInfo.getShardingItem() + TaskContext.DELIMITER + slaveId;
-        } else {
-            return metaInfo.getJobName() + TaskContext.DELIMITER + slaveId;
-        }
+    public String getExecutorId(final String appURL) {
+        return Joiner.on(DELIMITER).join(Encryption.md5(appURL), slaveId);
     }
     
     /**

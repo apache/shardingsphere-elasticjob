@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.cloud.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.exception.JobSystemException;
+import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.google.common.base.Joiner;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +40,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Properties;
+import java.util.UUID;
 
 /**
  * 常驻作业调度器.
@@ -99,7 +100,7 @@ public final class DaemonTaskScheduler {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
-        result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
+        result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, UUID.randomUUID(), SCHEDULER_INSTANCE_NAME_SUFFIX));
         if (!jobRootConfig.getTypeConfig().getCoreConfig().isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
