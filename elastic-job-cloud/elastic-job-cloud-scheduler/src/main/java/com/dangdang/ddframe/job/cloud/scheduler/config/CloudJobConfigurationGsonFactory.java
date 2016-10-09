@@ -104,7 +104,7 @@ public final class CloudJobConfigurationGsonFactory {
             Preconditions.checkNotNull(customizedValueMap.get("cpuCount"), "cpuCount cannot be null.");
             Preconditions.checkArgument((double) customizedValueMap.get("cpuCount") >= 0.01, "cpuCount cannot be less than 0.01");
             Preconditions.checkNotNull(customizedValueMap.get("memoryMB"), "memoryMB cannot be null.");
-            Preconditions.checkArgument((double) customizedValueMap.get("memoryMB") >= 32, "cpuCount cannot be less than 32");
+            Preconditions.checkArgument((double) customizedValueMap.get("memoryMB") >= 16, "memory cannot be less than 16");
             Preconditions.checkNotNull(customizedValueMap.get("appURL"), "appURL cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get("bootstrapScript"), "bootstrapScript cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get("jobExecutionType"), "jobExecutionType cannot be null.");
