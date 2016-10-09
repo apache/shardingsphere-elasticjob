@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
@@ -30,6 +31,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +45,7 @@ import java.util.Set;
  *
  * @author zhangliang
  */
+@Slf4j
 public class ReadyService {
     
     private final CoordinatorRegistryCenter regCenter;
@@ -66,6 +69,10 @@ public class ReadyService {
      * @param jobName 作业名称
      */
     public void addTransient(final String jobName) {
+        if (regCenter.getChildrenKeys(ReadyNode.ROOT).size() > BootstrapEnvironment.JOB_STATE_QUEUE_SIZE) {
+            log.error("Cannot add transient job, caused by read state queue size is larger than {}.", BootstrapEnvironment.JOB_STATE_QUEUE_SIZE);
+            return;
+        }
         Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
         if (!cloudJobConfig.isPresent() || JobExecutionType.TRANSIENT != cloudJobConfig.get().getJobExecutionType()) {
             return;
@@ -79,6 +86,10 @@ public class ReadyService {
      * @param jobName 作业名称
      */
     public void addDaemon(final String jobName) {
+        if (regCenter.getChildrenKeys(ReadyNode.ROOT).size() > BootstrapEnvironment.JOB_STATE_QUEUE_SIZE) {
+            log.error("Cannot add daemon job, caused by read state queue size is larger than {}.", BootstrapEnvironment.JOB_STATE_QUEUE_SIZE);
+            return;
+        }
         Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
         if (!cloudJobConfig.isPresent() || JobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType()) {
             return;

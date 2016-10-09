@@ -36,6 +36,9 @@ import java.util.Properties;
 @Slf4j
 public final class BootstrapEnvironment {
     
+    // TODO 以后更改为可配置 
+    public static final int JOB_STATE_QUEUE_SIZE = 10000;
+    
     private static final String PROPERTIES_PATH = "conf/elastic-job-cloud-scheduler.properties";
     
     private final Properties properties;

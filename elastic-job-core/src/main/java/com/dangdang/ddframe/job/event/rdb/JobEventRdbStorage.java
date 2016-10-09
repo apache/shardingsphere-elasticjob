@@ -137,7 +137,7 @@ class JobEventRdbStorage {
     }
     
     private String getFailureCause(final String failureCause) {
-        return !Strings.isNullOrEmpty(failureCause) && failureCause.length() > 65535 ? failureCause.substring(0, 65534) : failureCause; 
+        return !Strings.isNullOrEmpty(failureCause) && failureCause.length() > 2000 ? failureCause.substring(0, 1999) : failureCause; 
     }
     
     private void createJobTraceTable() throws SQLException {
@@ -146,7 +146,7 @@ class JobEventRdbStorage {
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`hostname` VARCHAR(255) NOT NULL, "
                 + "`message` VARCHAR(2000) NOT NULL, "
-                + "`failure_cause` TEXT NULL, "
+                + "`failure_cause` VARCHAR(2000) NULL, "
                 + "`creation_time` TIMESTAMP NOT NULL, "
                 + "PRIMARY KEY (`id`));";
         try (
@@ -163,7 +163,7 @@ class JobEventRdbStorage {
                 + "`hostname` VARCHAR(255) NOT NULL, "
                 + "`sharding_item` INT NOT NULL, "
                 + "`execution_source` VARCHAR(20) NOT NULL, "
-                + "`failure_cause` TEXT NULL, "
+                + "`failure_cause` VARCHAR(2000) NULL, "
                 + "`is_success` BIT NOT NULL, "
                 + "`start_time` TIMESTAMP NOT NULL, "
                 + "`complete_time` TIMESTAMP NULL, "

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.misfired;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
@@ -35,6 +36,7 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -55,6 +57,9 @@ public final class MisfiredServiceTest {
     @Mock
     private RunningService runningService;
     
+    @Mock
+    private List<String> mockedMisfiredQueue;
+    
     private MisfiredService misfiredService;
     
     @Before
@@ -74,6 +79,14 @@ public final class MisfiredServiceTest {
     @Test
     public void assertAddWhenIsDaemonJob() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        misfiredService.add("test_job");
+        verify(regCenter, times(0)).persist("/state/misfired/test_job", "");
+    }
+    
+    @Test
+    public void assertAddWithOverJobQueueSize() {
+        when(regCenter.getChildrenKeys(MisfiredNode.ROOT)).thenReturn(mockedMisfiredQueue);
+        when(regCenter.getChildrenKeys(MisfiredNode.ROOT).size()).thenReturn(BootstrapEnvironment.JOB_STATE_QUEUE_SIZE + 1);
         misfiredService.add("test_job");
         verify(regCenter, times(0)).persist("/state/misfired/test_job", "");
     }

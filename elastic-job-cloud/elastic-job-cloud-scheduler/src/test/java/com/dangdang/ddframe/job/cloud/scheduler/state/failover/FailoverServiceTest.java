@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
@@ -38,6 +39,7 @@ import org.unitils.util.ReflectionUtils;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -58,6 +60,9 @@ public final class FailoverServiceTest {
     @Mock
     private RunningService runningService;
     
+    @Mock
+    private List<String> mockedFailoverQueue;
+    
     private FailoverService failoverService;
     
     @Before
@@ -65,6 +70,16 @@ public final class FailoverServiceTest {
         failoverService = new FailoverService(regCenter);
         ReflectionUtils.setFieldValue(failoverService, "configService", configService);
         ReflectionUtils.setFieldValue(failoverService, "runningService", runningService);
+    }
+    
+    @Test
+    public void assertAddWhenJobIsOverQueueSize() {
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(mockedFailoverQueue);
+        when(regCenter.getChildrenKeys(FailoverNode.ROOT).size()).thenReturn(BootstrapEnvironment.JOB_STATE_QUEUE_SIZE + 1);
+        failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(regCenter, times(0)).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
     }
     
     @Test

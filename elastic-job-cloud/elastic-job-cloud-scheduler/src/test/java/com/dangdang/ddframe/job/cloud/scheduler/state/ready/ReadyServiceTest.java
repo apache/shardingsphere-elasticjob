@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
@@ -36,6 +37,7 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -61,8 +63,11 @@ public final class ReadyServiceTest {
     @Mock
     private MisfiredService misfiredService;
     
-    private ReadyService readyService;
+    @Mock
+    private List<String> mockedReadyQueue;
     
+    private ReadyService readyService;
+        
     @Before
     public void setUp() throws NoSuchFieldException {
         readyService = new ReadyService(regCenter);
@@ -93,6 +98,22 @@ public final class ReadyServiceTest {
         when(regCenter.isExisted("/state/ready")).thenReturn(false);
         readyService.addTransient("test_job");
         verify(regCenter).persist((String) any(), eq(""));
+    }
+    
+    @Test
+    public void assertAddTransientWithOverJobQueueSize() {
+        when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(mockedReadyQueue);
+        when(regCenter.getChildrenKeys(ReadyNode.ROOT).size()).thenReturn(BootstrapEnvironment.JOB_STATE_QUEUE_SIZE + 1);
+        readyService.addTransient("test_job");
+        verify(regCenter, times(0)).persist("/state/ready/test_job", "");
+    }
+    
+    @Test
+    public void assertAddDaemonWithOverJobQueueSize() {
+        when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(mockedReadyQueue);
+        when(regCenter.getChildrenKeys(ReadyNode.ROOT).size()).thenReturn(BootstrapEnvironment.JOB_STATE_QUEUE_SIZE + 1);
+        readyService.addDaemon("test_job");
+        verify(regCenter, times(0)).persist("/state/ready/test_job", "");
     }
     
     @Test
@@ -158,7 +179,7 @@ public final class ReadyServiceTest {
         assertThat(readyService.getAllEligibleJobContexts(Collections.singletonList(
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job"), ExecutionType.READY))).size(), is(1));
         verify(regCenter).isExisted("/state/ready");
-        verify(regCenter).getChildrenKeys("/state/ready");
+        verify(regCenter, times(1)).getChildrenKeys("/state/ready");
         verify(configService).load("not_existed_job");
         verify(configService).load("running_job");
         verify(configService).load("eligible_job");
@@ -175,7 +196,7 @@ public final class ReadyServiceTest {
         when(runningService.isJobRunning("running_job")).thenReturn(true);
         assertThat(readyService.getAllEligibleJobContexts(Collections.<JobContext>emptyList()).size(), is(1));
         verify(regCenter).isExisted("/state/ready");
-        verify(regCenter).getChildrenKeys("/state/ready");
+        verify(regCenter, times(1)).getChildrenKeys("/state/ready");
         verify(configService).load("not_existed_job");
         verify(configService).load("running_job");
         verify(misfiredService).add("running_job");
