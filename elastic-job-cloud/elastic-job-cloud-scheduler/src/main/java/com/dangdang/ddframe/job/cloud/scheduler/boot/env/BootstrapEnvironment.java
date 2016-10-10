@@ -111,7 +111,7 @@ public final class BootstrapEnvironment {
         ZOOKEEPER_SERVERS("zk_servers", "localhost:2181", true),
     
         ZOOKEEPER_NAMESPACE("zk_namespace", "elastic-job-cloud", true),
-    
+        
         ZOOKEEPER_DIGEST("zk_digest", "", false),
         
         PORT("http_port", "8899", true);

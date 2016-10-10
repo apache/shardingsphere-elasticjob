@@ -186,6 +186,17 @@ public class FacadeService {
         readyService.addDaemon(jobName);
     }
     
+    
+    /**
+     * 判断作业是否在运行.
+     *
+     * @param jobName 作业名称
+     * @return 作业是否在运行.
+     */
+    public boolean isRunning(final String jobName) {
+        return !runningService.getRunningTasks(jobName).isEmpty();
+    }
+    
     /**
      * 根据作业执行类型判断作业是否在运行.
      * 

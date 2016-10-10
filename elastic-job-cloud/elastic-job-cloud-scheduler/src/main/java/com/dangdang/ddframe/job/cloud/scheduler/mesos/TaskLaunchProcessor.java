@@ -117,7 +117,7 @@ public final class TaskLaunchProcessor implements Runnable {
     
     private void logUnassignedJobs(final Collection<JobContext> eligibleJobContexts, final Collection<VMAssignmentResult> vmAssignmentResults) {
         for (JobContext each : eligibleJobContexts) {
-            if (!isAssigned(each, vmAssignmentResults)) {
+            if (!isAssigned(each, vmAssignmentResults) && !facadeService.isRunning(each.getJobConfig().getJobName())) {
                 log.warn("Job {} is not assigned at this time, because resources not enough.", each.getJobConfig().getJobName());
             }
         }
@@ -132,12 +132,6 @@ public final class TaskLaunchProcessor implements Runnable {
             }
         }
         return false;
-    }
-    
-    private void logIntegrityViolationJobs(final Collection<String> integrityViolationJobs) {
-        for (String each : integrityViolationJobs) {
-            log.warn("Job {} is not assigned at this time, because resources not enough to run all sharding instances.", each);
-        }
     }
     
     private Collection<String> getIntegrityViolationJobs(final Map<String, Integer> jobShardingTotalCountMap, final Collection<VMAssignmentResult> vmAssignmentResults) {
@@ -159,6 +153,12 @@ public final class TaskLaunchProcessor implements Runnable {
             }
         }
         return result;
+    }
+    
+    private void logIntegrityViolationJobs(final Collection<String> integrityViolationJobs) {
+        for (String each : integrityViolationJobs) {
+            log.warn("Job {} is not assigned at this time, because resources not enough to run all sharding instances.", each);
+        }
     }
     
     private List<Protos.TaskInfo> getTaskInfoList(final Collection<String> integrityViolationJobs, final VMAssignmentResult vmAssignmentResult, final String hostname, final Protos.SlaveID slaveId) {
