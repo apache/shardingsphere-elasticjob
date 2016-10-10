@@ -33,6 +33,7 @@ import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
@@ -49,6 +50,7 @@ import java.util.Map;
  * @author zhangliang
  */
 @RequiredArgsConstructor
+@Slf4j
 public final class TaskLaunchProcessor implements Runnable {
     
     private static volatile boolean shutdown;
@@ -81,7 +83,9 @@ public final class TaskLaunchProcessor implements Runnable {
                 }
             }
             Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(pendingTasks, leasesQueue.drainTo()).getResultMap().values();
+            logUnassignedJobs(eligibleJobContexts, vmAssignmentResults);
             Collection<String> integrityViolationJobs = getIntegrityViolationJobs(jobShardingTotalCountMap, vmAssignmentResults);
+            logIntegrityViolationJobs(integrityViolationJobs);
             for (VMAssignmentResult each: vmAssignmentResults) {
                 List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
                 List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
@@ -109,6 +113,31 @@ public final class TaskLaunchProcessor implements Runnable {
             result.add(new JobTaskRequest(new TaskContext(jobConfig.getJobName(), each, jobContext.getType(), "fake-slave"), jobConfig));
         }
         return result;
+    }
+    
+    private void logUnassignedJobs(final Collection<JobContext> eligibleJobContexts, final Collection<VMAssignmentResult> vmAssignmentResults) {
+        for (JobContext each : eligibleJobContexts) {
+            if (!isAssigned(each, vmAssignmentResults)) {
+                log.warn("Job {} is not assigned at this time, because resources not enough.", each.getJobConfig().getJobName());
+            }
+        }
+    }
+    
+    private boolean isAssigned(final JobContext jobContext, final Collection<VMAssignmentResult> vmAssignmentResults) {
+        for (VMAssignmentResult vmAssignmentResult: vmAssignmentResults) {
+            for (TaskAssignmentResult taskAssignmentResult : vmAssignmentResult.getTasksAssigned()) {
+                if (jobContext.getJobConfig().getJobName().equals(TaskContext.from(taskAssignmentResult.getTaskId()).getMetaInfo().getJobName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    private void logIntegrityViolationJobs(final Collection<String> integrityViolationJobs) {
+        for (String each : integrityViolationJobs) {
+            log.warn("Job {} is not assigned at this time, because resources not enough to run all sharding instances.", each);
+        }
     }
     
     private Collection<String> getIntegrityViolationJobs(final Map<String, Integer> jobShardingTotalCountMap, final Collection<VMAssignmentResult> vmAssignmentResults) {
