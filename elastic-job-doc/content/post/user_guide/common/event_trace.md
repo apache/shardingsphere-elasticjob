@@ -48,9 +48,9 @@ weight=30
 |id                 |VARCHAR(40)  |`是`     | 主键                                                                                             |
 |job_name           |VARCHAR(100) |`是`     | 作业名称                                                                                          |
 |hostname           |VARCHAR(255) |`是`     | 主机名称                                                                                          |
-|log_level          |VARCHAR(10)  |`是`     | 日志级别。可选值为`TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`                                        |
+|log_level          |CHAR(5)      |`是`     | 日志级别。可选值为`TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`                                        |
 |message            |VARCHAR(2000)|`是`     | 相关信息                                                                                          |
 |failure_cause      |VARCHAR(2000)|否       | 执行失败原因                                                                                       |
 |creation_time      |TIMESTAMP    |`是`     | 记录创建时间                                                                                       |
 
-`JOB_TRACE_LOG`记录作业运行痕迹表，可作为运行日志查看。
+`JOB_TRACE_LOG`记录作业运行痕迹表，可作为运行日志查看，原理同log框架，只能写入比配置日志级别更高的数据。

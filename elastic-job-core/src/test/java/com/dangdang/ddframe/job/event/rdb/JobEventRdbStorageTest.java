@@ -32,7 +32,6 @@ import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
-
 public class JobEventRdbStorageTest {
     
     private JobEventRdbStorage storage;
@@ -86,7 +85,7 @@ public class JobEventRdbStorageTest {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0);
         assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
         StringBuilder failureMsg = new StringBuilder();
-        for (int i = 0; i < 17000; i++) {
+        for (int i = 0; i < 600; i++) {
             failureMsg.append(i);
         }
         jobExecutionEvent.executionFailure(new RuntimeException("failure" + failureMsg.toString()));

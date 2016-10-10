@@ -57,16 +57,17 @@ class JobEventRdbStorage {
     boolean addJobTraceEvent(final JobTraceEvent traceEvent) {
         boolean result = false;
         if (needTrace(traceEvent.getLogLevel())) {
-            String sql = "INSERT INTO `JOB_TRACE_LOG` (`id`, `job_name`, `hostname`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO `JOB_TRACE_LOG` (`id`, `job_name`, `hostname`, `log_level`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
                     PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
                 preparedStatement.setString(1, UUID.randomUUID().toString());
                 preparedStatement.setString(2, traceEvent.getJobName());
                 preparedStatement.setString(3, traceEvent.getHostname());
-                preparedStatement.setString(4, traceEvent.getMessage());
-                preparedStatement.setString(5, getFailureCause(traceEvent.getFailureCause()));
-                preparedStatement.setTimestamp(6, new Timestamp(traceEvent.getCreationTime().getTime()));
+                preparedStatement.setString(4, traceEvent.getLogLevel().name());
+                preparedStatement.setString(5, traceEvent.getMessage());
+                preparedStatement.setString(6, truncateFailureCause(traceEvent.getFailureCause()));
+                preparedStatement.setTimestamp(7, new Timestamp(traceEvent.getCreationTime().getTime()));
                 preparedStatement.execute();
                 result = true;
             } catch (final SQLException ex) {
@@ -119,7 +120,7 @@ class JobEventRdbStorage {
                         Connection conn = dataSource.getConnection();
                         PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
                     preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
-                    preparedStatement.setString(2, getFailureCause(jobExecutionEvent.getFailureCause()));
+                    preparedStatement.setString(2, truncateFailureCause(jobExecutionEvent.getFailureCause()));
                     preparedStatement.setString(3, jobExecutionEvent.getId());
                     preparedStatement.execute();
                     result = true;
@@ -136,8 +137,8 @@ class JobEventRdbStorage {
         return logLevel.ordinal() >= this.logLevel.ordinal();
     }
     
-    private String getFailureCause(final String failureCause) {
-        return !Strings.isNullOrEmpty(failureCause) && failureCause.length() > 2000 ? failureCause.substring(0, 1999) : failureCause; 
+    private String truncateFailureCause(final String failureCause) {
+        return !Strings.isNullOrEmpty(failureCause) && failureCause.length() > 4000 ? failureCause.substring(0, 4000) : failureCause;
     }
     
     private void createJobTraceTable() throws SQLException {
@@ -145,8 +146,9 @@ class JobEventRdbStorage {
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`hostname` VARCHAR(255) NOT NULL, "
+                + "`log_level` CHAR(5) NOT NULL, "
                 + "`message` VARCHAR(2000) NOT NULL, "
-                + "`failure_cause` VARCHAR(2000) NULL, "
+                + "`failure_cause` VARCHAR(4000) NULL, "
                 + "`creation_time` TIMESTAMP NOT NULL, "
                 + "PRIMARY KEY (`id`));";
         try (
@@ -163,7 +165,7 @@ class JobEventRdbStorage {
                 + "`hostname` VARCHAR(255) NOT NULL, "
                 + "`sharding_item` INT NOT NULL, "
                 + "`execution_source` VARCHAR(20) NOT NULL, "
-                + "`failure_cause` VARCHAR(2000) NULL, "
+                + "`failure_cause` VARCHAR(4000) NULL, "
                 + "`is_success` BIT NOT NULL, "
                 + "`start_time` TIMESTAMP NOT NULL, "
                 + "`complete_time` TIMESTAMP NULL, "
