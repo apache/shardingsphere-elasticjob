@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -26,7 +27,6 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
 /**
@@ -41,12 +41,12 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
     
     private final RunningService runningService;
     
-    private final SchedulerDriver schedulerDriver;
+    private final LifecycleService lifecycleService;
     
     public CloudJobConfigurationListener(final CoordinatorRegistryCenter regCenter, final SchedulerDriver schedulerDriver) {
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
-        this.schedulerDriver = schedulerDriver;
+        lifecycleService = new LifecycleService(schedulerDriver, regCenter);
     }
     
     @Override
@@ -55,16 +55,16 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
         if (isDaemonJobConfigNodeUpdated(event, path)) {
             String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
             // TODO 目前是修改了配置作业都停止,并由调度重启,以后应改成缩容kill相关,并且只有改了cron才重启
+            lifecycleService.killJob(jobName);
             for (TaskContext each : runningService.getRunningTasks(jobName)) {
-                schedulerDriver.killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
                 runningService.remove(each.getMetaInfo());
             }
             readyService.addDaemon(jobName);
         }
         if (isJobConfigNodeRemoved(event, path)) {
             String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
+            lifecycleService.killJob(jobName);
             for (TaskContext each : runningService.getRunningTasks(jobName)) {
-                schedulerDriver.killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
                 runningService.remove(each.getMetaInfo());
             }
             readyService.remove(Lists.newArrayList(jobName));
