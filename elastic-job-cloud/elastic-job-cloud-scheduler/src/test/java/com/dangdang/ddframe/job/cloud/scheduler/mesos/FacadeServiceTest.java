@@ -198,6 +198,12 @@ public final class FacadeServiceTest {
     }
     
     @Test
+    public void assertIsRunningForJobName() {
+        when(runningService.getRunningTasks("test_job")).thenReturn(Collections.<TaskContext>emptyList());
+        assertFalse(facadeService.isRunning("test_job"));
+    }
+    
+    @Test
     public void assertIsRunningForReadyJobAndNotRunning() {
         when(runningService.getRunningTasks("test_job")).thenReturn(Collections.<TaskContext>emptyList());
         assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
