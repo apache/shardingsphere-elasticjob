@@ -91,12 +91,32 @@ public final class TaskExecutorTest {
     }
     
     @Test
-    public void assertOtherOperations() throws NoSuchFieldException {
+    public void assertRegistered() {
         taskExecutor.registered(executorDriver, executorInfo, frameworkInfo, slaveInfo);
+    }
+    
+    @Test
+    public void assertReregistered() {
         taskExecutor.reregistered(executorDriver, slaveInfo);
+    }
+    
+    @Test
+    public void assertDisconnected() {
         taskExecutor.disconnected(executorDriver);
+    }
+    
+    @Test
+    public void assertFrameworkMessage() {
         taskExecutor.frameworkMessage(executorDriver, null);
+    }
+    
+    @Test
+    public void assertShutdown() {
         taskExecutor.shutdown(executorDriver);
+    }
+    
+    @Test
+    public void assertError() {
         taskExecutor.error(executorDriver, "");
     }
     
