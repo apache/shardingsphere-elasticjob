@@ -29,6 +29,7 @@ import org.apache.mesos.SchedulerDriver;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
@@ -77,6 +78,18 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public void register(final CloudJobConfiguration jobConfig) {
         taskProducerSchedulerRegistry.register(jobConfig);
+    }
+    
+    /**
+     * 更新作业配置.
+     *
+     * @param jobConfig 作业配置
+     */
+    @PUT
+    @Path("/update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void update(final CloudJobConfiguration jobConfig) {
+        taskProducerSchedulerRegistry.update(jobConfig);
     }
     
     /**

@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
+import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import org.junit.Before;
@@ -89,7 +90,6 @@ public final class TaskProducerSchedulerRegistryTest {
         verify(configService).add(jobConfig);
         when(configService.load("test_job")).thenReturn(Optional.of(jobConfig));
         taskProducerSchedulerRegistry.deregister("test_job");
-    
         CloudJobConfiguration daemonJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_daemon_job", JobExecutionType.DAEMON);
         when(configService.load("test_daemon_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         taskProducerSchedulerRegistry.register(daemonJobConfig);
@@ -98,35 +98,48 @@ public final class TaskProducerSchedulerRegistryTest {
         taskProducerSchedulerRegistry.deregister("test_daemon_job");
     }
     
-    @SuppressWarnings("unchecked")
-    @Test
-    public void assertRegisterExistedAndSame() {
-        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent(), Optional.of(jobConfig));
+    @Test(expected = JobConfigurationException.class)
+    public void assertRegisterExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.of(jobConfig));
         taskProducerSchedulerRegistry.register(jobConfig);
-        taskProducerSchedulerRegistry.register(jobConfig);
-        verify(configService, times(1)).add(jobConfig);
-        verify(configService, times(0)).update(jobConfig);
-        taskProducerSchedulerRegistry.deregister("test_job");
     }
     
-    @SuppressWarnings("unchecked")
-    @Test
-    public void assertRegisterExistedAndDifferent() {
-        CloudJobConfiguration oldJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
-        CloudJobConfiguration newJobConfig = CloudJobConfigurationBuilder.createOtherCloudJobConfiguration("test_job");
-        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent(), Optional.of(oldJobConfig));
-        taskProducerSchedulerRegistry.register(oldJobConfig);
-        taskProducerSchedulerRegistry.register(newJobConfig);
-        verify(configService).add(oldJobConfig);
-        verify(configService).update(newJobConfig);
-        taskProducerSchedulerRegistry.deregister("test_job");
+    @Test(expected = JobConfigurationException.class)
+    public void assertUpdateNotExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        taskProducerSchedulerRegistry.update(jobConfig);
     }
     
-    @SuppressWarnings("unchecked")
+    @Test(expected = JobConfigurationException.class)
+    public void assertUpdateJobExecutionType() {
+        when(configService.load("test_job")).thenReturn(Optional.of(jobConfig));
+        taskProducerSchedulerRegistry.update(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON));
+    }
+    
     @Test
-    public void assertDeregisterWhenExisted() {
-        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent(), Optional.of(jobConfig));
-        taskProducerSchedulerRegistry.register(jobConfig);
+    public void assertUpdateExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.of(jobConfig));
+        taskProducerSchedulerRegistry.update(jobConfig);
+        verify(configService).update(jobConfig);
+    }
+    
+    @Test
+    public void assertDeregisterForNull() {
+        when(configService.load("test_job")).thenReturn(null);
+        taskProducerSchedulerRegistry.deregister("test_job");
+        verify(configService, times(0)).remove("test_job");
+    }
+    
+    @Test
+    public void assertDeregisterNotExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        taskProducerSchedulerRegistry.deregister("test_job");
+        verify(configService, times(0)).remove("test_job");
+    }
+    
+    @Test
+    public void assertDeregisterExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.of(jobConfig));
         taskProducerSchedulerRegistry.deregister("test_job");
         verify(configService).remove("test_job");
     }

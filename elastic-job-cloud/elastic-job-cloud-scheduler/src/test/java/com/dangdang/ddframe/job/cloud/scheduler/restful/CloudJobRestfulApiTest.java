@@ -82,6 +82,15 @@ public final class CloudJobRestfulApiTest {
     }
     
     @Test
+    public void assertUpdate() throws Exception {
+        when(regCenter.isExisted("/config/test_job")).thenReturn(true);
+        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        assertThat(sentRequest("http://127.0.0.1:19000/job/update", "PUT", CloudJsonConstants.getJobJson()), is(204));
+        verify(regCenter).update("/config/test_job", CloudJsonConstants.getJobJson());
+        sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
+    }
+    
+    @Test
     public void assertDeregister() throws Exception {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job"), is(204));

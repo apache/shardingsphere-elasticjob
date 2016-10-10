@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
+import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -94,16 +95,31 @@ public class TaskProducerSchedulerRegistry {
      */
     public void register(final CloudJobConfiguration jobConfig) {
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
-        if (!jobConfigFromZk.isPresent()) {
-            configService.add(jobConfig);
-        } else if (!jobConfigFromZk.get().equals(jobConfig)) {
-            configService.update(jobConfig);
+        if (jobConfigFromZk.isPresent()) {
+            throw new JobConfigurationException("job '%s' already existed.", jobConfig.getJobName());
         }
+        configService.add(jobConfig);
         if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
             schedulerInstance.register(jobConfig);
         } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
             readyService.addDaemon(jobConfig.getJobName());
         }
+    }
+    
+    /**
+     * 更新作业配置.
+     *
+     * @param jobConfig 作业配置
+     */
+    public void update(final CloudJobConfiguration jobConfig) {
+        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
+        if (!jobConfigFromZk.isPresent()) {
+            throw new JobConfigurationException("Cannot found job '%s', please register first.", jobConfig.getJobName());
+        }
+        if (jobConfig.getJobExecutionType() != jobConfigFromZk.get().getJobExecutionType()) {
+            throw new JobConfigurationException("Cannot support modify jobExecutionType online.");
+        }
+        configService.update(jobConfig);
     }
     
     /**
