@@ -67,6 +67,22 @@ curl -l -H "Content-type: application/json" -X POST -d
 http://elastic_job_cloud_masterhost:8899/job/register
 ```
 
+### 修改作业配置
+
+url：`job/update`
+
+方法：`PUT`
+
+参数类型：`application/json`
+
+参数：同注册作业
+
+```shell
+curl -l -H "Content-type: application/json" -X PUT -d 
+'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
+http://elastic_job_cloud_host:8899/job/update
+```
+
 ### 注销作业
 
 url：`job/deregister`
