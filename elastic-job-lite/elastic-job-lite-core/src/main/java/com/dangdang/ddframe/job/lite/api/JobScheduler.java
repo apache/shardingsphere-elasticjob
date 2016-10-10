@@ -30,7 +30,6 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
 import lombok.Setter;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -55,10 +54,6 @@ public class JobScheduler {
     public static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
-    
-    private static final String SCHEDULER_INSTANCE_NAME_SUFFIX = "Scheduler";
-    
-    private static final String CRON_TRIGGER_IDENTITY_SUFFIX = "Trigger";
     
     private final JobExecutor jobExecutor;
     
@@ -86,7 +81,7 @@ public class JobScheduler {
         JobScheduleController jobScheduleController;
         try {
             jobScheduleController = new JobScheduleController(initializeScheduler(jobDetail.getKey().toString()), jobDetail, 
-                    jobExecutor.getSchedulerFacade(), Joiner.on("_").join(jobExecutor.getLiteJobConfig().getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX));
+                    jobExecutor.getSchedulerFacade(), jobExecutor.getLiteJobConfig().getJobName());
             jobScheduleController.scheduleJob(jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig().getCoreConfig().getCron());
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
@@ -106,7 +101,7 @@ public class JobScheduler {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
-        result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
+        result.put("org.quartz.scheduler.instanceName", jobName);
         if (!jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig().getCoreConfig().isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
