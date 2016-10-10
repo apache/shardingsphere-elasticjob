@@ -94,6 +94,9 @@ public final class TaskLaunchProcessor implements Runnable {
                         return TaskContext.from(input.getTaskId().getValue());
                     }
                 }));
+                for (Protos.TaskInfo taskInfo : taskInfoList) {
+                    facadeService.addRunning(TaskContext.from(taskInfo.getTaskId().getValue()));
+                }
             }
             BlockUtils.waitingShortTime();
         }
@@ -132,7 +135,8 @@ public final class TaskLaunchProcessor implements Runnable {
     private List<Protos.TaskInfo> getTaskInfoList(final Collection<String> integrityViolationJobs, final VMAssignmentResult vmAssignmentResult, final String hostname, final Protos.SlaveID slaveId) {
         List<Protos.TaskInfo> result = new ArrayList<>(vmAssignmentResult.getTasksAssigned().size());
         for (TaskAssignmentResult each: vmAssignmentResult.getTasksAssigned()) {
-            if (!integrityViolationJobs.contains(TaskContext.from(each.getTaskId()).getMetaInfo().getJobName())) {
+            TaskContext taskContext = TaskContext.from(each.getTaskId());
+            if (!integrityViolationJobs.contains(taskContext.getMetaInfo().getJobName()) && !facadeService.isRunning(taskContext)) {
                 result.add(getTaskInfo(slaveId, each));
                 taskScheduler.getTaskAssigner().call(each.getRequest(), hostname);
             }

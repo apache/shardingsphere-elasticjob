@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.TaskProducerSchedulerRegistry;
@@ -186,13 +187,16 @@ public class FacadeService {
     }
     
     /**
-     * 获取运行中的任务集合.
-     *
-     * @param jobName 作业名称
-     * @return 运行中的任务集合
+     * 根据作业执行类型判断作业是否在运行.
+     * 
+     * <p>READY和MISFIRE类型的作业为整体, 任意一片运行都视为作业运行. FAILOVER则仅以当前分片运行为运行依据.</p>
+     * 
+     * @param taskContext 任务运行时上下文
+     * @return 作业是否在运行.
      */
-    public Collection<TaskContext> getRunningTasks(final String jobName) {
-        return runningService.getRunningTasks(jobName);
+    public boolean isRunning(final TaskContext taskContext) {
+        return ExecutionType.FAILOVER != taskContext.getType() && !runningService.getRunningTasks(taskContext.getMetaInfo().getJobName()).isEmpty()
+                || ExecutionType.FAILOVER == taskContext.getType() && runningService.isTaskRunning(taskContext.getMetaInfo());
     }
     
     /**

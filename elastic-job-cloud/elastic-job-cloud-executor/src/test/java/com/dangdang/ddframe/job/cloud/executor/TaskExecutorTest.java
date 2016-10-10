@@ -70,7 +70,6 @@ public final class TaskExecutorTest {
         TaskID taskID = Protos.TaskID.newBuilder().setValue("task_id").build();
         taskExecutor.killTask(executorDriver, taskID);
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskID).setState(Protos.TaskState.TASK_KILLED).build());
-        verify(executorDriver).stop();
     }
     
     @Test

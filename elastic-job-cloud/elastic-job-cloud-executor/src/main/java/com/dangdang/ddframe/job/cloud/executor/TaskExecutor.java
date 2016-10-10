@@ -72,7 +72,7 @@ public final class TaskExecutor implements Executor {
     @Override
     public void killTask(final ExecutorDriver executorDriver, final Protos.TaskID taskID) {
         executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskID).setState(Protos.TaskState.TASK_KILLED).build());
-        executorDriver.stop();
+        DaemonTaskScheduler.shutdown(taskID);
     }
     
     @Override

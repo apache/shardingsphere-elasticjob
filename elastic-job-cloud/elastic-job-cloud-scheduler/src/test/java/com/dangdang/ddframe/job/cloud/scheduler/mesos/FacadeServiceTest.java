@@ -32,7 +32,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +44,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -197,9 +198,28 @@ public final class FacadeServiceTest {
     }
     
     @Test
-    public void assertGetRunningTasks() {
+    public void assertIsRunningForReadyJobAndNotRunning() {
         when(runningService.getRunningTasks("test_job")).thenReturn(Collections.<TaskContext>emptyList());
-        assertThat(facadeService.getRunningTasks("test_job"), Is.<Collection<TaskContext>>is(Collections.<TaskContext>emptyList()));
+        assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
+    }
+    
+    @Test
+    public void assertIsRunningForMisfiredJobRunning() {
+        when(runningService.getRunningTasks("test_job")).thenReturn(
+                Collections.singletonList(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
+        assertTrue(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.MISFIRED).build().getTaskNodeValue())));
+    }
+    
+    @Test
+    public void assertIsRunningForFailoverJobAndNotRunning() {
+        when(runningService.isTaskRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()).getMetaInfo())).thenReturn(false);
+        assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue())));
+    }
+    
+    @Test
+    public void assertIsRunningForFailoverJobAndRunning() {
+        when(runningService.isTaskRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()).getMetaInfo())).thenReturn(true);
+        assertTrue(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue())));
     }
     
     @Test
