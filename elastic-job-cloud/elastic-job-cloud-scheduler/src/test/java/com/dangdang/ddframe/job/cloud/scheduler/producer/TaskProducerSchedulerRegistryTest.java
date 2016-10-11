@@ -64,7 +64,7 @@ public final class TaskProducerSchedulerRegistryTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(regCenter);
-        ReflectionUtils.setFieldValue(taskProducerSchedulerRegistry, "schedulerInstance", taskProducerScheduler);
+        ReflectionUtils.setFieldValue(taskProducerSchedulerRegistry, "transientProducerScheduler", taskProducerScheduler);
         ReflectionUtils.setFieldValue(taskProducerSchedulerRegistry, "configService", configService);
         ReflectionUtils.setFieldValue(taskProducerSchedulerRegistry, "readyService", readyService);
     }
