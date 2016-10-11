@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.mesos.SchedulerDriver;
 
 /**
  * 发布任务作业调度管理器工厂.
@@ -34,14 +35,15 @@ public final class ProducerManagerFactory {
     /**
      * 获取发布任务作业调度管理器.
      *
+     * @param schedulerDriver Mesos控制器
      * @param regCenter 注册中心
      * @return 发布任务作业调度管理器对象
      */
-    public static ProducerManager getInstance(final CoordinatorRegistryCenter regCenter) {
+    public static ProducerManager getInstance(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
         if (null == instance) {
             synchronized (ProducerManager.class) {
                 if (null == instance) {
-                    instance = new ProducerManager(regCenter);
+                    instance = new ProducerManager(schedulerDriver, regCenter);
                 }
             }
         }

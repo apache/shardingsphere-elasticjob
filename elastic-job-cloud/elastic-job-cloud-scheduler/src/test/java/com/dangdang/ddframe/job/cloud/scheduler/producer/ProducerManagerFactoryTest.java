@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import org.apache.mesos.SchedulerDriver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +34,9 @@ import static org.junit.Assert.assertThat;
 public final class ProducerManagerFactoryTest {
     
     @Mock
+    private SchedulerDriver schedulerDriver;
+    
+    @Mock
     private CoordinatorRegistryCenter regCenter;
     
     @Before
@@ -43,6 +47,6 @@ public final class ProducerManagerFactoryTest {
     
     @Test
     public void assertGetInstance() {
-        assertThat(ProducerManagerFactory.getInstance(regCenter), is(ProducerManagerFactory.getInstance(regCenter)));
+        assertThat(ProducerManagerFactory.getInstance(schedulerDriver, regCenter), is(ProducerManagerFactory.getInstance(schedulerDriver, regCenter)));
     }
 }

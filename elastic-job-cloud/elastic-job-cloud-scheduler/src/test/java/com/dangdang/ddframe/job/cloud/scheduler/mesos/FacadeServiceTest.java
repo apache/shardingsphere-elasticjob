@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
@@ -72,9 +71,6 @@ public final class FacadeServiceTest {
     @Mock
     private MisfiredService misfiredService;
     
-    @Mock
-    private ProducerManager producerManager;
-    
     private FacadeService facadeService;
     
     @Before
@@ -85,14 +81,12 @@ public final class FacadeServiceTest {
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
         ReflectionUtils.setFieldValue(facadeService, "misfiredService", misfiredService);
-        ReflectionUtils.setFieldValue(facadeService, "producerManager", producerManager);
     }
     
     @Test
     public void assertStart() {
         facadeService.start();
         verify(runningService).clear();
-        verify(producerManager).startup();
     }
     
     @Test

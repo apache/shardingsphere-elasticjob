@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -60,19 +61,21 @@ public final class MasterBootstrap {
         env = new BootstrapEnvironment();
         regCenter = getRegistryCenter();
         LeasesQueue leasesQueue = new LeasesQueue();
-        FacadeService facadeService = new FacadeService(regCenter);
+        final FacadeService facadeService = new FacadeService(regCenter);
         TaskScheduler taskScheduler = getTaskScheduler();
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         CloudJobRestfulApi.init(schedulerDriver, regCenter);
         initListener();
+        final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
+        producerManager.startup();
         new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService)).start();
         Runtime.getRuntime().addShutdownHook(new Thread() {
             
             @Override
             public void run() {
-                TaskLaunchProcessor.shutdown();
-                ProducerManagerFactory.getInstance(regCenter).shutdown();
+                facadeService.stop();
+                producerManager.shutdown();
             }
         });
     }
@@ -105,11 +108,11 @@ public final class MasterBootstrap {
     
     private void initListener() {
         regCenter.addCacheData("/");
-        ((TreeCache) regCenter.getRawCache("/")).getListenable().addListener(new CloudJobConfigurationListener(regCenter, schedulerDriver));
+        ((TreeCache) regCenter.getRawCache("/")).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
     }
     
     /**
-     * 以守护进程方式运行Elastic-Job-Cloud的Mesos框架.
+     * 以守护进程方式启动.
      * 
      * @return 框架运行状态
      * @throws Exception 运行时异常
@@ -120,7 +123,7 @@ public final class MasterBootstrap {
     }
     
     /**
-     * 停止运行Elastic-Job-Cloud的Mesos框架.
+     * 停止运行.
      * 
      * @param status 框架运行状态
      * @return 是否正常停止

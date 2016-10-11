@@ -17,12 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
-import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
-import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.collect.Lists;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
@@ -37,46 +34,42 @@ import org.apache.mesos.SchedulerDriver;
  */
 public final class CloudJobConfigurationListener implements TreeCacheListener {
     
-    private final ReadyService readyService;
+    private final ProducerManager producerManager;
     
-    private final RunningService runningService;
-    
-    private final LifecycleService lifecycleService;
-    
-    public CloudJobConfigurationListener(final CoordinatorRegistryCenter regCenter, final SchedulerDriver schedulerDriver) {
-        readyService = new ReadyService(regCenter);
-        runningService = new RunningService(regCenter);
-        lifecycleService = new LifecycleService(schedulerDriver, regCenter);
+    public CloudJobConfigurationListener(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
+        producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
     }
     
     @Override
     public void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
         String path = null == event.getData() ? "" : event.getData().getPath();
-        if (isDaemonJobConfigNodeUpdated(event, path)) {
-            String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
-            // TODO 目前是修改了配置作业都停止,并由调度重启,以后应改成缩容kill相关,并且只有改了cron才重启
-            lifecycleService.killJob(jobName);
-            for (TaskContext each : runningService.getRunningTasks(jobName)) {
-                runningService.remove(each.getMetaInfo());
+        if (isJobConfigNode(event, path, Type.NODE_ADDED)) {
+            CloudJobConfiguration jobConfig = getJobConfig(event);
+            if (null != jobConfig) {
+                producerManager.schedule(jobConfig);
             }
-            readyService.addDaemon(jobName);
-        }
-        if (isJobConfigNodeRemoved(event, path)) {
-            String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
-            lifecycleService.killJob(jobName);
-            for (TaskContext each : runningService.getRunningTasks(jobName)) {
-                runningService.remove(each.getMetaInfo());
+        } else if (isJobConfigNode(event, path, Type.NODE_UPDATED)) {
+            CloudJobConfiguration jobConfig = getJobConfig(event);
+            if (null != jobConfig) {
+                producerManager.reschedule(jobConfig);
             }
-            readyService.remove(Lists.newArrayList(jobName));
+        } else if (isJobConfigNode(event, path, Type.NODE_REMOVED)) {
+            String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
+            producerManager.unschedule(jobName);
         }
     }
     
-    private boolean isDaemonJobConfigNodeUpdated(final TreeCacheEvent event, final String path) {
-        return Type.NODE_UPDATED == event.getType() && path.startsWith(ConfigurationNode.ROOT) 
-                && JobExecutionType.DAEMON == CloudJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getJobExecutionType();
+    private boolean isJobConfigNode(final TreeCacheEvent event, final String path, final Type type) {
+        return type == event.getType() && path.startsWith(ConfigurationNode.ROOT) && path.length() > ConfigurationNode.ROOT.length();
     }
     
-    private boolean isJobConfigNodeRemoved(final TreeCacheEvent event, final String path) {
-        return Type.NODE_REMOVED == event.getType() && path.startsWith(ConfigurationNode.ROOT) && path.length() > ConfigurationNode.ROOT.length();
+    private CloudJobConfiguration getJobConfig(final TreeCacheEvent event) {
+        try {
+            return CloudJobConfigurationGsonFactory.fromJson(new String(event.getData().getData()));
+            // CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            // CHECKSTYLE:ON
+            return null;
+        }
     }
 }

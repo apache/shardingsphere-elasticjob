@@ -20,10 +20,15 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
+import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import org.apache.mesos.SchedulerDriver;
 
 /**
  * 发布任务作业调度管理器.
@@ -34,15 +39,21 @@ import com.google.common.base.Optional;
 public class ProducerManager {
     
     private final ConfigurationService configService;
-    
+            
     private final ReadyService readyService;
+    
+    private final RunningService runningService;
     
     private final TransientProducerScheduler transientProducerScheduler;
     
-    ProducerManager(final CoordinatorRegistryCenter regCenter) {
+    private final LifecycleService lifecycleService;
+    
+    ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
+        runningService = new RunningService(regCenter);
         transientProducerScheduler = new TransientProducerScheduler(readyService);
+        lifecycleService = new LifecycleService(schedulerDriver, regCenter);
     }
     
     /**
@@ -68,14 +79,6 @@ public class ProducerManager {
         schedule(jobConfig);
     }
     
-    private void schedule(final CloudJobConfiguration jobConfig) {
-        if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
-            transientProducerScheduler.register(jobConfig);
-        } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
-            readyService.addDaemon(jobConfig.getJobName());
-        }
-    }
-    
     /**
      * 更新作业配置.
      *
@@ -86,10 +89,8 @@ public class ProducerManager {
         if (!jobConfigFromZk.isPresent()) {
             throw new JobConfigurationException("Cannot found job '%s', please register first.", jobConfig.getJobName());
         }
-        if (jobConfig.getJobExecutionType() != jobConfigFromZk.get().getJobExecutionType()) {
-            throw new JobConfigurationException("Cannot support modify jobExecutionType online.");
-        }
         configService.update(jobConfig);
+        reschedule(jobConfig);
     }
     
     /**
@@ -98,11 +99,48 @@ public class ProducerManager {
      * @param jobName 作业名称
      */
     public void deregister(final String jobName) {
-        Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobName);
-        if (jobConfigFromZk.isPresent()) {
-            transientProducerScheduler.deregister(jobConfigFromZk.get());
+        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+        if (jobConfig.isPresent()) {
             configService.remove(jobName);
+            transientProducerScheduler.deregister(jobConfig.get());
         }
+        unschedule(jobName);
+    }
+    
+    /**
+     * 调度作业.
+     * 
+     * @param jobConfig 作业配置
+     */
+    public void schedule(final CloudJobConfiguration jobConfig) {
+        if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
+            transientProducerScheduler.register(jobConfig);
+        } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
+            readyService.addDaemon(jobConfig.getJobName());
+        }
+    }
+    
+    /**
+     * 停止调度作业.
+     *
+     * @param jobName 作业名称
+     */
+    public void unschedule(final String jobName) {
+        lifecycleService.killJob(jobName);
+        for (TaskContext each : runningService.getRunningTasks(jobName)) {
+            runningService.remove(each.getMetaInfo());
+        }
+        readyService.remove(Lists.newArrayList(jobName));
+    }
+    
+    /**
+     * 重新调度作业.
+     *
+     * @param jobConfig 作业配置
+     */
+    public void reschedule(final CloudJobConfiguration jobConfig) {
+        unschedule(jobConfig.getJobName());
+        schedule(jobConfig);
     }
     
     /**

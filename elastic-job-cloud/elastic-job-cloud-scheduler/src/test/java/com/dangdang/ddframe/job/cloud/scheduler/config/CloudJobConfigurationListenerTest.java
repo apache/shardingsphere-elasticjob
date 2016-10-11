@@ -17,15 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
-import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
-import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
-import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
-import com.google.common.collect.Lists;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,91 +30,70 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.Arrays;
-
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobConfigurationListenerTest {
     
     @Mock
-    private ReadyService readyService;
-    
-    @Mock
-    private RunningService runningService;
-    
-    @Mock
-    private LifecycleService lifecycleService;
+    private ProducerManager producerManager;
     
     @InjectMocks
     private CloudJobConfigurationListener cloudJobConfigurationListener;
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "readyService", readyService);
-        ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "runningService", runningService);
-        ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "lifecycleService", lifecycleService);
+        ReflectionUtils.setFieldValue(cloudJobConfigurationListener, "producerManager", producerManager);
     }
     
     @Test
     public void assertChildEventWhenDataIsNull() throws Exception {
         cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, null));
-        verify(readyService, times(0)).addDaemon(Matchers.<String>any());
-    }
-    
-    @Test
-    public void assertChildEventWhenStateIsNotUpdate() throws Exception {
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/test_job", null, "".getBytes())));
-        verify(readyService, times(0)).addDaemon(Matchers.<String>any());
+        verify(producerManager, times(0)).schedule(Matchers.<CloudJobConfiguration>any());
+        verify(producerManager, times(0)).reschedule(Matchers.<CloudJobConfiguration>any());
+        verify(producerManager, times(0)).unschedule(Matchers.<String>any());
     }
     
     @Test
     public void assertChildEventWhenStateIsUpdateAndIsNotConfigPath() throws Exception {
         cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/other/test_job", null, "".getBytes())));
-        verify(readyService, times(0)).addDaemon(Matchers.<String>any());
+        verify(producerManager, times(0)).schedule(Matchers.<CloudJobConfiguration>any());
+        verify(producerManager, times(0)).reschedule(Matchers.<CloudJobConfiguration>any());
+        verify(producerManager, times(0)).unschedule(Matchers.<String>any());
     }
     
     @Test
     public void assertChildEventWhenStateIsRemovedAndIsRootConfigPath() throws Exception {
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/config", null, "".getBytes())));
+        verify(producerManager, times(0)).schedule(Matchers.<CloudJobConfiguration>any());
+        verify(producerManager, times(0)).reschedule(Matchers.<CloudJobConfiguration>any());
+        verify(producerManager, times(0)).unschedule(Matchers.<String>any());
+    }
+    
+    @Test
+    public void assertChildEventWhenStateIsAddAndIsConfigPathAndInvalidData() throws Exception {
         cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/test_job", null, "".getBytes())));
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(Type.NODE_REMOVED, new ChildData("/config", null, "".getBytes())));
-        verify(readyService, times(0)).remove(Lists.<String>newArrayList());
+        verify(producerManager, times(0)).schedule(Matchers.<CloudJobConfiguration>any());
+        verify(producerManager, times(0)).reschedule(Matchers.<CloudJobConfiguration>any());
+        verify(producerManager, times(0)).unschedule(Matchers.<String>any());
+    }
+    
+    @Test
+    public void assertChildEventWhenStateIsAddAndIsConfigPath() throws Exception {
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson().getBytes())));
+        verify(producerManager).schedule(Matchers.<CloudJobConfiguration>any());
+    }
+    
+    @Test
+    public void assertChildEventWhenStateIsUpdateAndIsConfigPath() throws Exception {
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson().getBytes())));
+        verify(producerManager).reschedule(Matchers.<CloudJobConfiguration>any());
     }
     
     @Test
     public void assertChildEventWhenStateIsRemovedAndIsJobConfigPath() throws Exception {
-        when(runningService.getRunningTasks("test_job")).thenReturn(Arrays.asList(
-                TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID")));
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/test_job", null, "".getBytes())));
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(Type.NODE_REMOVED, new ChildData("/config/test_job", null, "".getBytes())));
-        verify(lifecycleService).killJob("test_job");
-        verify(runningService).remove(TaskContext.MetaInfo.from("test_job@-@0"));
-        verify(runningService).remove(TaskContext.MetaInfo.from("test_job@-@1"));
-        verify(readyService).remove(Lists.newArrayList("test_job"));
-    }
-    
-    @Test
-    public void assertChildEventWhenStateIsUpdateAndIsConfigPathAndIsTransientJob() throws Exception {
-        when(runningService.getRunningTasks("test_job")).thenReturn(Arrays.asList(
-                TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID")));
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson().getBytes())));
-        verify(lifecycleService, times(0)).killJob("test_job");
-        verify(runningService, times(0)).remove(TaskContext.MetaInfo.from("test_job@-@0"));
-        verify(runningService, times(0)).remove(TaskContext.MetaInfo.from("test_job@-@1"));
-        verify(readyService, times(0)).addDaemon(Matchers.<String>any());
-    }
-    
-    @Test
-    public void assertChildEventWhenStateIsUpdateAndIsConfigPathIsDaemonJob() throws Exception {
-        when(runningService.getRunningTasks("test_job")).thenReturn(Arrays.asList(
-                TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID")));
-        cloudJobConfigurationListener.childEvent(
-                null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson(JobExecutionType.DAEMON).getBytes())));
-        verify(lifecycleService).killJob("test_job");
-        verify(runningService).remove(TaskContext.MetaInfo.from("test_job@-@0"));
-        verify(runningService).remove(TaskContext.MetaInfo.from("test_job@-@1"));
-        verify(readyService).addDaemon(Matchers.<String>any());
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/config/test_job", null, "".getBytes())));
+        verify(producerManager).unschedule("test_job");
     }
 }

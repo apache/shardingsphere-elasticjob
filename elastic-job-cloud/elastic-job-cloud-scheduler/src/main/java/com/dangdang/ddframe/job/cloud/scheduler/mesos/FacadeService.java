@@ -22,8 +22,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
@@ -55,15 +53,12 @@ public class FacadeService {
     
     private final MisfiredService misfiredService;
     
-    private final ProducerManager producerManager;
-    
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
         failoverService = new FailoverService(regCenter);
         misfiredService = new MisfiredService(regCenter);
-        producerManager = ProducerManagerFactory.getInstance(regCenter);
     }
     
     /**
@@ -71,7 +66,6 @@ public class FacadeService {
      */
     public void start() {
         runningService.clear();
-        producerManager.startup();
     }
     
     /**
