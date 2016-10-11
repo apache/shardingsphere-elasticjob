@@ -20,7 +20,8 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.TaskProducerSchedulerRegistry;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Preconditions;
@@ -45,14 +46,14 @@ public final class CloudJobRestfulApi {
     
     private static CoordinatorRegistryCenter regCenter;
     
-    private final TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
+    private final ProducerManager producerManager;
     
     private final LifecycleService lifecycleService;
     
     public CloudJobRestfulApi() {
         Preconditions.checkNotNull(schedulerDriver);
         Preconditions.checkNotNull(regCenter);
-        taskProducerSchedulerRegistry = TaskProducerSchedulerRegistry.getInstance(regCenter);
+        producerManager = ProducerManagerFactory.getInstance(regCenter);
         lifecycleService = new LifecycleService(schedulerDriver, regCenter);
     }
     
@@ -77,7 +78,7 @@ public final class CloudJobRestfulApi {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public void register(final CloudJobConfiguration jobConfig) {
-        taskProducerSchedulerRegistry.register(jobConfig);
+        producerManager.register(jobConfig);
     }
     
     /**
@@ -89,7 +90,7 @@ public final class CloudJobRestfulApi {
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
     public void update(final CloudJobConfiguration jobConfig) {
-        taskProducerSchedulerRegistry.update(jobConfig);
+        producerManager.update(jobConfig);
     }
     
     /**
@@ -101,7 +102,7 @@ public final class CloudJobRestfulApi {
     @Path("/deregister")
     @Consumes(MediaType.APPLICATION_JSON)
     public void deregister(final String jobName) {
-        taskProducerSchedulerRegistry.deregister(jobName);
+        producerManager.deregister(jobName);
         lifecycleService.killJob(jobName);
     }
 }

@@ -29,59 +29,56 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class TransientProducerJobContextTest {
+public final class TransientProducerRepositoryTest {
     
     private final JobKey jobKey = JobKey.jobKey("0/45 * * * * ?");
     
     private final String jobName = "test_job";
     
-    @Test
-    public void assertGetInstance() {
-        assertThat(TransientJobRegistry.getInstance(), is(TransientJobRegistry.getInstance()));
-    }
+    private TransientProducerRepository transientProducerRepository = new TransientProducerRepository();
     
     @Test
     public void assertPutJobKey() throws JobExecutionException {
-        TransientJobRegistry.getInstance().put(jobKey, jobName);
-        assertThat(TransientJobRegistry.getInstance().get(jobKey).get(0), is(jobName));
-        TransientJobRegistry.getInstance().remove(jobName);
+        transientProducerRepository.put(jobKey, jobName);
+        assertThat(transientProducerRepository.get(jobKey).get(0), is(jobName));
+        transientProducerRepository.remove(jobName);
     }
     
     @Test
     public void assertPutJobWithChangedCron() throws JobExecutionException {
-        TransientJobRegistry.getInstance().put(jobKey, jobName);
+        transientProducerRepository.put(jobKey, jobName);
         JobKey newJobKey = JobKey.jobKey("0/15 * * * * ?");
-        TransientJobRegistry.getInstance().put(newJobKey, jobName);
-        assertTrue(TransientJobRegistry.getInstance().get(jobKey).isEmpty());
-        assertThat(TransientJobRegistry.getInstance().get(newJobKey).get(0), is(jobName));
-        TransientJobRegistry.getInstance().remove(jobName);
+        transientProducerRepository.put(newJobKey, jobName);
+        assertTrue(transientProducerRepository.get(jobKey).isEmpty());
+        assertThat(transientProducerRepository.get(newJobKey).get(0), is(jobName));
+        transientProducerRepository.remove(jobName);
     }
     
     @Test
     public void assertPutMoreJobWithChangedCron() throws JobExecutionException {
         String jobName2 = "other_test_job";
-        TransientJobRegistry.getInstance().put(jobKey, jobName);
-        TransientJobRegistry.getInstance().put(jobKey, jobName2);
+        transientProducerRepository.put(jobKey, jobName);
+        transientProducerRepository.put(jobKey, jobName2);
         JobKey newJobKey = JobKey.jobKey("0/15 * * * * ?");
-        TransientJobRegistry.getInstance().put(newJobKey, jobName);
-        assertThat(TransientJobRegistry.getInstance().get(jobKey).get(0), is(jobName2));
-        assertThat(TransientJobRegistry.getInstance().get(newJobKey).get(0), is(jobName));
-        TransientJobRegistry.getInstance().remove(jobName);
-        TransientJobRegistry.getInstance().remove(jobName2);
+        transientProducerRepository.put(newJobKey, jobName);
+        assertThat(transientProducerRepository.get(jobKey).get(0), is(jobName2));
+        assertThat(transientProducerRepository.get(newJobKey).get(0), is(jobName));
+        transientProducerRepository.remove(jobName);
+        transientProducerRepository.remove(jobName2);
     }
     
     @Test
     public void assertRemoveJobKey() throws JobExecutionException {
-        TransientJobRegistry.getInstance().put(jobKey, jobName);
-        TransientJobRegistry.getInstance().remove(jobName);
-        assertTrue(TransientJobRegistry.getInstance().get(jobKey).isEmpty());
+        transientProducerRepository.put(jobKey, jobName);
+        transientProducerRepository.remove(jobName);
+        assertTrue(transientProducerRepository.get(jobKey).isEmpty());
     }
     
     @Test
     public void assertContainsKey() {
-        TransientJobRegistry.getInstance().put(jobKey, jobName);
-        assertTrue(TransientJobRegistry.getInstance().containsKey(jobKey));
-        TransientJobRegistry.getInstance().remove(jobName);
-        assertFalse(TransientJobRegistry.getInstance().containsKey(jobKey));
+        transientProducerRepository.put(jobKey, jobName);
+        assertTrue(transientProducerRepository.containsKey(jobKey));
+        transientProducerRepository.remove(jobName);
+        assertFalse(transientProducerRepository.containsKey(jobKey));
     }
 }

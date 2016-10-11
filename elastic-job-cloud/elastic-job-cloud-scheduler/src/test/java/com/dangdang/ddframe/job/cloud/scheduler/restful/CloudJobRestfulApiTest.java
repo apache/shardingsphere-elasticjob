@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.TaskProducerSchedulerRegistry;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.restful.RestfulServer;
 import org.apache.mesos.SchedulerDriver;
@@ -54,7 +54,7 @@ public final class CloudJobRestfulApiTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ReflectionUtils.setFieldValue(TaskProducerSchedulerRegistry.getInstance(regCenter), "instance", null);
+        ReflectionUtils.setFieldValue(ProducerManagerFactory.class, ProducerManagerFactory.class.getDeclaredField("instance"), null);
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         regCenter = mock(CoordinatorRegistryCenter.class);
         server = new RestfulServer(19000);

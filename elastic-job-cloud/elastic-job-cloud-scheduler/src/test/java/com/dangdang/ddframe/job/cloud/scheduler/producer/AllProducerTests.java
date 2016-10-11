@@ -22,10 +22,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        ProducerJobTest.class,
-        TransientProducerJobContextTest.class,
-        TransientProducerSchedulerTest.class,
-        TaskProducerSchedulerRegistryTest.class
+        ProducerJobTest.class, 
+        TransientProducerRepositoryTest.class, 
+        TransientProducerSchedulerTest.class, 
+        ProducerManagerTest.class, 
+        ProducerManagerFactoryTest.class
     })
 public final class AllProducerTests {
 }

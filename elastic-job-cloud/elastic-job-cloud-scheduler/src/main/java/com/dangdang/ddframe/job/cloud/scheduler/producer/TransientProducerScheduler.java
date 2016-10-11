@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.Setter;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
@@ -37,7 +36,6 @@ import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.simpl.SimpleThreadPool;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -48,15 +46,21 @@ import java.util.Properties;
  */
 class TransientProducerScheduler {
     
-    private final CoordinatorRegistryCenter regCenter;
+    private final TransientProducerRepository repository;
+    
+    private final ReadyService readyService;
     
     private final Scheduler scheduler;
     
-    private final TransientJobRegistry transientJobRegistry = TransientJobRegistry.getInstance();
-    
-    TransientProducerScheduler(final CoordinatorRegistryCenter regCenter) {
-        this.regCenter = regCenter;
+    TransientProducerScheduler(final ReadyService readyService) {
+        repository = new TransientProducerRepository();
+        this.readyService = readyService;
         scheduler = getScheduler();
+        try {
+            scheduler.start();
+        } catch (final SchedulerException ex) {
+            throw new JobSystemException(ex);
+        }
     }
     
     private Scheduler getScheduler() {
@@ -77,22 +81,11 @@ class TransientProducerScheduler {
         return result;
     }
     
-    void startup(final Collection<CloudJobConfiguration> jobConfigs) {
-        try {
-            for (CloudJobConfiguration each : jobConfigs) {
-                register(each);
-            }
-            scheduler.start();
-        } catch (final SchedulerException ex) {
-            throw new JobSystemException(ex);
-        }
-    }
-    
     //TODO 并发优化
     synchronized void register(final CloudJobConfiguration jobConfig) {
         String cron = jobConfig.getTypeConfig().getCoreConfig().getCron();
         JobKey jobKey = buildJobKey(cron);
-        transientJobRegistry.put(jobKey, jobConfig.getJobName());
+        repository.put(jobKey, jobConfig.getJobName());
         try {
             if (!scheduler.checkExists(jobKey)) {
                 scheduler.scheduleJob(buildJobDetail(jobKey), buildTrigger(jobKey.getName()));
@@ -104,7 +97,8 @@ class TransientProducerScheduler {
     
     private JobDetail buildJobDetail(final JobKey jobKey) {
         JobDetail result = JobBuilder.newJob(ProducerJob.class).withIdentity(jobKey).build();
-        result.getJobDataMap().put("readyService", new ReadyService(regCenter));
+        result.getJobDataMap().put("repository", repository);
+        result.getJobDataMap().put("readyService", readyService);
         return result;
     }
     
@@ -113,9 +107,9 @@ class TransientProducerScheduler {
     }
     
     void deregister(final CloudJobConfiguration jobConfig) {
-        transientJobRegistry.remove(jobConfig.getJobName());
+        repository.remove(jobConfig.getJobName());
         String cron = jobConfig.getTypeConfig().getCoreConfig().getCron();
-        if (!transientJobRegistry.containsKey(buildJobKey(cron))) {
+        if (!repository.containsKey(buildJobKey(cron))) {
             try {
                 scheduler.unscheduleJob(TriggerKey.triggerKey(cron));
             } catch (final SchedulerException ex) {
@@ -141,11 +135,13 @@ class TransientProducerScheduler {
     @Setter
     public static final class ProducerJob implements Job {
         
+        private TransientProducerRepository repository;
+        
         private ReadyService readyService;
         
         @Override
         public void execute(final JobExecutionContext context) throws JobExecutionException {
-            List<String> jobNames = TransientJobRegistry.getInstance().get(context.getJobDetail().getKey());
+            List<String> jobNames = repository.get(context.getJobDetail().getKey());
             for (String each : jobNames) {
                 readyService.addTransient(each);
             }

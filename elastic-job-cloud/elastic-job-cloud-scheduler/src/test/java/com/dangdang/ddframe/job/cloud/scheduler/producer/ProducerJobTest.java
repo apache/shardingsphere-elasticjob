@@ -40,20 +40,23 @@ public final class ProducerJobTest {
     @Mock
     private ReadyService readyService;
     
-    private TransientProducerScheduler.ProducerJob taskProducerJob;
+    private TransientProducerRepository repository = new TransientProducerRepository();
+    
+    private TransientProducerScheduler.ProducerJob producerJob;
     
     @Before
     public void setUp() {
-        taskProducerJob = new TransientProducerScheduler.ProducerJob();
-        taskProducerJob.setReadyService(readyService);
+        producerJob = new TransientProducerScheduler.ProducerJob();
+        producerJob.setRepository(repository);
+        producerJob.setReadyService(readyService);
     }
     
     @Test
     public void assertExecute() throws JobExecutionException {
         when(jobExecutionContext.getJobDetail()).thenReturn(JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity("0/30 * * * * ?").build());
-        TransientJobRegistry.getInstance().put(JobKey.jobKey("0/30 * * * * ?"), "test_job");
-        taskProducerJob.execute(jobExecutionContext);
+        repository.put(JobKey.jobKey("0/30 * * * * ?"), "test_job");
+        producerJob.execute(jobExecutionContext);
         verify(readyService).addTransient("test_job");
-        TransientJobRegistry.getInstance().remove("test_job");
+        repository.remove("test_job");
     }
 }

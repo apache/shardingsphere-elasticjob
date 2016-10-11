@@ -24,68 +24,34 @@ import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
-import java.util.Collection;
 
 /**
- * 发布任务作业调度注册表.
+ * 发布任务作业调度管理器.
  *
  * @author caohao
+ * @author zhangliang
  */
-public class TaskProducerSchedulerRegistry {
-    
-    private static volatile TaskProducerSchedulerRegistry instance;
-    
-    private final TransientProducerScheduler transientProducerScheduler;
+public class ProducerManager {
     
     private final ConfigurationService configService;
     
     private final ReadyService readyService;
     
-    private TaskProducerSchedulerRegistry(final CoordinatorRegistryCenter regCenter) {
-        configService = new ConfigurationService(regCenter);
-        transientProducerScheduler = new TransientProducerScheduler(regCenter);
-        readyService = new ReadyService(regCenter);
-    }
+    private final TransientProducerScheduler transientProducerScheduler;
     
-    /**
-     * 获取实例.
-     * 
-     * @param regCenter 注册中心对象
-     * @return 实例对象
-     */
-    public static TaskProducerSchedulerRegistry getInstance(final CoordinatorRegistryCenter regCenter) {
-        if (null == instance) {
-            synchronized (TaskProducerSchedulerRegistry.class) {
-                if (null == instance) {
-                    instance = new TaskProducerSchedulerRegistry(regCenter);
-                }
-            }
-        }
-        return instance;
+    ProducerManager(final CoordinatorRegistryCenter regCenter) {
+        configService = new ConfigurationService(regCenter);
+        readyService = new ReadyService(regCenter);
+        transientProducerScheduler = new TransientProducerScheduler(readyService);
     }
     
     /**
      * 启动作业调度器.
      */
     public void startup() {
-        Collection<CloudJobConfiguration> configs = configService.loadAll();
-        transientProducerScheduler.startup(filterJobConfiguration(configs, JobExecutionType.TRANSIENT));
-        for (CloudJobConfiguration each : filterJobConfiguration(configs, JobExecutionType.DAEMON)) {
-            readyService.addDaemon(each.getJobName());
+        for (CloudJobConfiguration each : configService.loadAll()) {
+            schedule(each);
         }
-    }
-    
-    private Collection<CloudJobConfiguration> filterJobConfiguration(final Collection<CloudJobConfiguration> configs, final JobExecutionType jobExecutionType) {
-        return Collections2.filter(configs, new Predicate<CloudJobConfiguration>() {
-            
-            @Override
-            public boolean apply(final CloudJobConfiguration input) {
-                return jobExecutionType == input.getJobExecutionType();
-            }
-        });
     }
     
     /**
@@ -99,6 +65,10 @@ public class TaskProducerSchedulerRegistry {
             throw new JobConfigurationException("job '%s' already existed.", jobConfig.getJobName());
         }
         configService.add(jobConfig);
+        schedule(jobConfig);
+    }
+    
+    private void schedule(final CloudJobConfiguration jobConfig) {
         if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
             transientProducerScheduler.register(jobConfig);
         } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {

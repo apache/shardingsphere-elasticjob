@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.quartz.JobKey;
 
 import java.util.Collections;
@@ -28,20 +26,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 瞬时作业主键与作业名称注册表.
+ * 瞬时作业生成器数据访问对象.
  *
  * @author caohao
+ * @author zhangliang
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-class TransientJobRegistry {
-    
-    private static final TransientJobRegistry INSTANCE = new TransientJobRegistry();
+class TransientProducerRepository {
     
     private final ConcurrentHashMap<JobKey, List<String>> cronTasks = new ConcurrentHashMap<>(256, 1);
-    
-    static TransientJobRegistry getInstance() {
-        return INSTANCE;
-    }
     
     //TODO 并发优化
     synchronized void put(final JobKey jobKey, final String jobName) {

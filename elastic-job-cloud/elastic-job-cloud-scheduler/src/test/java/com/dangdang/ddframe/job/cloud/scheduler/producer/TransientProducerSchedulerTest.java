@@ -19,8 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.collect.Lists;
+import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,13 +42,13 @@ import static org.mockito.Mockito.when;
 public final class TransientProducerSchedulerTest {
     
     @Mock
-    private CoordinatorRegistryCenter regCenter;
+    private ReadyService readyService;
     
     @Mock
     private Scheduler scheduler;
     
     
-    private TransientProducerScheduler taskProducerScheduler;
+    private TransientProducerScheduler transientProducerScheduler;
     
     private final CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
@@ -60,34 +59,28 @@ public final class TransientProducerSchedulerTest {
                         .withMisfireHandlingInstructionDoNothing()).build();
     
     @Before
-    public void setUp() throws NoSuchFieldException {
-        taskProducerScheduler = new TransientProducerScheduler(regCenter);
-        ReflectionUtils.setFieldValue(taskProducerScheduler, "scheduler", scheduler);
-    }
-    
-    @Test
-    public void assertStartup() throws SchedulerException {
-        taskProducerScheduler.startup(Lists.newArrayList(jobConfig));
-        verify(scheduler).start();
+    public void setUp() throws NoSuchFieldException, SchedulerException {
+        transientProducerScheduler = new TransientProducerScheduler(readyService);
+        ReflectionUtils.setFieldValue(transientProducerScheduler, "scheduler", scheduler);
     }
     
     @Test
     public void assertRegister() throws SchedulerException {
         when(scheduler.checkExists(jobDetail.getKey())).thenReturn(false);
-        taskProducerScheduler.register(jobConfig);
+        transientProducerScheduler.register(jobConfig);
         verify(scheduler).checkExists(jobDetail.getKey());
         verify(scheduler).scheduleJob(jobDetail, trigger);
     }
     
     @Test
     public void assertDeregister() throws SchedulerException {
-        taskProducerScheduler.deregister(jobConfig);
+        transientProducerScheduler.deregister(jobConfig);
         verify(scheduler).unscheduleJob(TriggerKey.triggerKey(jobConfig.getTypeConfig().getCoreConfig().getCron()));
     }
     
     @Test
     public void assertShutdown() throws SchedulerException {
-        taskProducerScheduler.shutdown();
+        transientProducerScheduler.shutdown();
         verify(scheduler).isShutdown();
         verify(scheduler).shutdown();
     }
