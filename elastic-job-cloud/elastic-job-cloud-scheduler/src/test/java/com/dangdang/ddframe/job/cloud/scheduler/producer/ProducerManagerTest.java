@@ -114,13 +114,6 @@ public final class ProducerManagerTest {
     }
     
     @Test
-    public void assertDeregisterForNull() {
-        when(configService.load("test_job")).thenReturn(null);
-        producerManager.deregister("test_job");
-        verify(configService, times(0)).remove("test_job");
-    }
-    
-    @Test
     public void assertDeregisterNotExisted() {
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         producerManager.deregister("test_job");

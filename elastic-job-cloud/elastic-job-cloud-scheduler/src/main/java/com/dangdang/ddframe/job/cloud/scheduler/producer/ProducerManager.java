@@ -99,7 +99,7 @@ public class ProducerManager {
      */
     public void deregister(final String jobName) {
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobName);
-        if (jobConfigFromZk != null && jobConfigFromZk.isPresent()) {
+        if (jobConfigFromZk.isPresent()) {
             transientProducerScheduler.deregister(jobConfigFromZk.get());
             configService.remove(jobName);
         }
