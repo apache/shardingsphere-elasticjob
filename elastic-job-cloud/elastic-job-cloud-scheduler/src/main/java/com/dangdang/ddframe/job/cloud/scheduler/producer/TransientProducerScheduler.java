@@ -52,7 +52,7 @@ class TransientProducerScheduler {
     
     private final Scheduler scheduler;
     
-    private final TransientJobRegistry transientProducerJobContext = TransientJobRegistry.getInstance();
+    private final TransientJobRegistry transientJobRegistry = TransientJobRegistry.getInstance();
     
     TransientProducerScheduler(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
@@ -92,7 +92,7 @@ class TransientProducerScheduler {
     synchronized void register(final CloudJobConfiguration jobConfig) {
         String cron = jobConfig.getTypeConfig().getCoreConfig().getCron();
         JobKey jobKey = buildJobKey(cron);
-        transientProducerJobContext.put(jobKey, jobConfig.getJobName());
+        transientJobRegistry.put(jobKey, jobConfig.getJobName());
         try {
             if (!scheduler.checkExists(jobKey)) {
                 scheduler.scheduleJob(buildJobDetail(jobKey), buildTrigger(jobKey.getName()));
@@ -113,9 +113,9 @@ class TransientProducerScheduler {
     }
     
     void deregister(final CloudJobConfiguration jobConfig) {
-        transientProducerJobContext.remove(jobConfig.getJobName());
+        transientJobRegistry.remove(jobConfig.getJobName());
         String cron = jobConfig.getTypeConfig().getCoreConfig().getCron();
-        if (!transientProducerJobContext.containsKey(buildJobKey(cron))) {
+        if (!transientJobRegistry.containsKey(buildJobKey(cron))) {
             try {
                 scheduler.unscheduleJob(TriggerKey.triggerKey(cron));
             } catch (final SchedulerException ex) {
@@ -139,7 +139,7 @@ class TransientProducerScheduler {
     }
     
     @Setter
-    static final class ProducerJob implements Job {
+    public static final class ProducerJob implements Job {
         
         private ReadyService readyService;
         

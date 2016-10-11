@@ -38,7 +38,7 @@ public class TaskProducerSchedulerRegistry {
     
     private static volatile TaskProducerSchedulerRegistry instance;
     
-    private final TransientProducerScheduler schedulerInstance;
+    private final TransientProducerScheduler transientProducerScheduler;
     
     private final ConfigurationService configService;
     
@@ -46,7 +46,7 @@ public class TaskProducerSchedulerRegistry {
     
     private TaskProducerSchedulerRegistry(final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
-        schedulerInstance = new TransientProducerScheduler(regCenter);
+        transientProducerScheduler = new TransientProducerScheduler(regCenter);
         readyService = new ReadyService(regCenter);
     }
     
@@ -72,7 +72,7 @@ public class TaskProducerSchedulerRegistry {
      */
     public void startup() {
         Collection<CloudJobConfiguration> configs = configService.loadAll();
-        schedulerInstance.startup(filterJobConfiguration(configs, JobExecutionType.TRANSIENT));
+        transientProducerScheduler.startup(filterJobConfiguration(configs, JobExecutionType.TRANSIENT));
         for (CloudJobConfiguration each : filterJobConfiguration(configs, JobExecutionType.DAEMON)) {
             readyService.addDaemon(each.getJobName());
         }
@@ -100,7 +100,7 @@ public class TaskProducerSchedulerRegistry {
         }
         configService.add(jobConfig);
         if (JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
-            schedulerInstance.register(jobConfig);
+            transientProducerScheduler.register(jobConfig);
         } else if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
             readyService.addDaemon(jobConfig.getJobName());
         }
@@ -130,7 +130,7 @@ public class TaskProducerSchedulerRegistry {
     public void deregister(final String jobName) {
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobName);
         if (jobConfigFromZk != null && jobConfigFromZk.isPresent()) {
-            schedulerInstance.deregister(jobConfigFromZk.get());
+            transientProducerScheduler.deregister(jobConfigFromZk.get());
             configService.remove(jobName);
         }
     }
@@ -139,6 +139,6 @@ public class TaskProducerSchedulerRegistry {
      * 关闭作业调度器.
      */
     public void shutdown() {
-        schedulerInstance.shutdown();
+        transientProducerScheduler.shutdown();
     }
 }
