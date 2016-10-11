@@ -82,7 +82,7 @@ public class ConfigurationService {
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
         return !regCenter.isExisted(ConfigurationNode.getRootNodePath(jobName)) ? Optional.<CloudJobConfiguration>absent()
-                : Optional.of(CloudJobConfigurationGsonFactory.fromJson(regCenter.get(ConfigurationNode.getRootNodePath(jobName))));
+                : Optional.fromNullable(CloudJobConfigurationGsonFactory.fromJson(regCenter.get(ConfigurationNode.getRootNodePath(jobName))));
     }
     
     /**

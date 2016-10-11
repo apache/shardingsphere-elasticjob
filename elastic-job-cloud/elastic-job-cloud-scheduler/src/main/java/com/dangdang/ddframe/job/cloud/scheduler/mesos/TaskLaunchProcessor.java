@@ -25,6 +25,7 @@ import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.util.BlockUtils;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
@@ -166,7 +167,10 @@ public final class TaskLaunchProcessor implements Runnable {
         for (TaskAssignmentResult each: vmAssignmentResult.getTasksAssigned()) {
             TaskContext taskContext = TaskContext.from(each.getTaskId());
             if (!integrityViolationJobs.contains(taskContext.getMetaInfo().getJobName()) && !facadeService.isRunning(taskContext)) {
-                result.add(getTaskInfo(slaveId, each));
+                Protos.TaskInfo taskInfo = getTaskInfo(slaveId, each);
+                if (null != taskInfo) {
+                    result.add(getTaskInfo(slaveId, each));
+                }
                 taskScheduler.getTaskAssigner().call(each.getRequest(), hostname);
             }
         }
@@ -177,7 +181,11 @@ public final class TaskLaunchProcessor implements Runnable {
         TaskContext originalTaskContext = TaskContext.from(taskAssignmentResult.getTaskId());
         int shardingItem = originalTaskContext.getMetaInfo().getShardingItem();
         TaskContext taskContext = new TaskContext(originalTaskContext.getMetaInfo().getJobName(), shardingItem, originalTaskContext.getType(), slaveID.getValue());
-        CloudJobConfiguration jobConfig = facadeService.load(taskContext.getMetaInfo().getJobName()).get();
+        Optional<CloudJobConfiguration> jobConfigOptional = facadeService.load(taskContext.getMetaInfo().getJobName());
+        if (!jobConfigOptional.isPresent()) {
+            return null;
+        }
+        CloudJobConfiguration jobConfig = jobConfigOptional.get();
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
