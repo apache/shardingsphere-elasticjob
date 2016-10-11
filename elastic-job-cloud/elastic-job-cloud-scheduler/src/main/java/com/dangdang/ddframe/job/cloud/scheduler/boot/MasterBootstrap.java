@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.TaskProducerSchedulerRegistry;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
@@ -71,6 +72,7 @@ public final class MasterBootstrap {
             @Override
             public void run() {
                 TaskLaunchProcessor.shutdown();
+                TaskProducerSchedulerRegistry.getInstance(regCenter).shutdown();
             }
         });
     }

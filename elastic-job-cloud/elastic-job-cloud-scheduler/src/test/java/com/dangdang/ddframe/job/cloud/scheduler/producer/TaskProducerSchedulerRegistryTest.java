@@ -55,7 +55,7 @@ public final class TaskProducerSchedulerRegistryTest {
     private ReadyService readyService;
     
     @Mock
-    private TaskProducerScheduler taskProducerScheduler;
+    private TransientProducerScheduler taskProducerScheduler;
     
     private TaskProducerSchedulerRegistry taskProducerSchedulerRegistry;
     

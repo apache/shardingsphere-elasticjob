@@ -36,12 +36,11 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.unitils.util.ReflectionUtils;
 
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class TaskProducerSchedulerTest {
+public final class TransientProducerSchedulerTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
@@ -50,11 +49,11 @@ public final class TaskProducerSchedulerTest {
     private Scheduler scheduler;
     
     
-    private TaskProducerScheduler taskProducerScheduler;
+    private TransientProducerScheduler taskProducerScheduler;
     
     private final CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
     
-    private final JobDetail jobDetail = JobBuilder.newJob(TaskProducerJob.class).withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron()).build();
+    private final JobDetail jobDetail = JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron()).build();
     
     private final Trigger trigger = TriggerBuilder.newTrigger().withIdentity(jobConfig.getTypeConfig().getCoreConfig().getCron())
                         .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.getTypeConfig().getCoreConfig().getCron())
@@ -62,7 +61,7 @@ public final class TaskProducerSchedulerTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        taskProducerScheduler = new TaskProducerScheduler(regCenter);
+        taskProducerScheduler = new TransientProducerScheduler(regCenter);
         ReflectionUtils.setFieldValue(taskProducerScheduler, "scheduler", scheduler);
     }
     
@@ -76,7 +75,7 @@ public final class TaskProducerSchedulerTest {
     public void assertRegister() throws SchedulerException {
         when(scheduler.checkExists(jobDetail.getKey())).thenReturn(false);
         taskProducerScheduler.register(jobConfig);
-        verify(scheduler, times(2)).checkExists(jobDetail.getKey());
+        verify(scheduler).checkExists(jobDetail.getKey());
         verify(scheduler).scheduleJob(jobDetail, trigger);
     }
     

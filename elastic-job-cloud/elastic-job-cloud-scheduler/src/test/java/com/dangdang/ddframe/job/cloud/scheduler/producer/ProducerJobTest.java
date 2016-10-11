@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class TaskProducerJobTest {
+public final class ProducerJobTest {
     
     @Mock
     private JobExecutionContext jobExecutionContext;
@@ -40,20 +40,20 @@ public final class TaskProducerJobTest {
     @Mock
     private ReadyService readyService;
     
-    private TaskProducerJob taskProducerJob;
+    private TransientProducerScheduler.ProducerJob taskProducerJob;
     
     @Before
     public void setUp() {
-        taskProducerJob = new TaskProducerJob();
+        taskProducerJob = new TransientProducerScheduler.ProducerJob();
         taskProducerJob.setReadyService(readyService);
     }
     
     @Test
     public void assertExecute() throws JobExecutionException {
-        when(jobExecutionContext.getJobDetail()).thenReturn(JobBuilder.newJob(TaskProducerJob.class).withIdentity("0/30 * * * * ?").build());
-        TaskProducerJobContext.getInstance().put(JobKey.jobKey("0/30 * * * * ?"), "test_job");
+        when(jobExecutionContext.getJobDetail()).thenReturn(JobBuilder.newJob(TransientProducerScheduler.ProducerJob.class).withIdentity("0/30 * * * * ?").build());
+        TransientJobRegistry.getInstance().put(JobKey.jobKey("0/30 * * * * ?"), "test_job");
         taskProducerJob.execute(jobExecutionContext);
         verify(readyService).addTransient("test_job");
-        TaskProducerJobContext.getInstance().remove("test_job");
+        TransientJobRegistry.getInstance().remove("test_job");
     }
 }

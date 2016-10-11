@@ -17,25 +17,29 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.quartz.JobKey;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 发布任务的作业上下文.
+ * 瞬时作业主键与作业名称注册表.
  *
  * @author caohao
  */
-class TaskProducerJobContext {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+class TransientJobRegistry {
     
-    private static final TaskProducerJobContext INSTANCE = new TaskProducerJobContext();
+    private static final TransientJobRegistry INSTANCE = new TransientJobRegistry();
     
     private final ConcurrentHashMap<JobKey, List<String>> cronTasks = new ConcurrentHashMap<>(256, 1);
     
-    public static TaskProducerJobContext getInstance() {
+    static TransientJobRegistry getInstance() {
         return INSTANCE;
     }
     
@@ -66,10 +70,10 @@ class TaskProducerJobContext {
     }
     
     List<String> get(final JobKey jobKey) {
-        return cronTasks.get(jobKey);
+        return cronTasks.containsKey(jobKey) ? cronTasks.get(jobKey) : Collections.<String>emptyList();
     }
     
-    synchronized boolean contains(final JobKey jobKey) {
-        return cronTasks.contains(jobKey);
+    boolean containsKey(final JobKey jobKey) {
+        return cronTasks.containsKey(jobKey);
     }
 }
