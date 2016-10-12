@@ -51,7 +51,7 @@ public class ProducerManager {
     ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
-        runningService = new RunningService(regCenter);
+        runningService = new RunningService();
         transientProducerScheduler = new TransientProducerScheduler(readyService);
         lifecycleService = new LifecycleService(schedulerDriver, regCenter);
     }
@@ -128,7 +128,7 @@ public class ProducerManager {
     public void unschedule(final String jobName) {
         lifecycleService.killJob(jobName);
         for (TaskContext each : runningService.getRunningTasks(jobName)) {
-            runningService.remove(each.getMetaInfo());
+            runningService.remove(each);
         }
         readyService.remove(Lists.newArrayList(jobName));
     }

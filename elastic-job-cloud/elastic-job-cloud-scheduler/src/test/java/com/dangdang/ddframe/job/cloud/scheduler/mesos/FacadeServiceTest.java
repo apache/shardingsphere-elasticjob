@@ -140,15 +140,15 @@ public final class FacadeServiceTest {
     public void assertUpdateDaemonStatus() {
         TaskContext taskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
         facadeService.updateDaemonStatus(taskContext, true);
-        verify(runningService).updateDaemonStatus(taskContext, true);
+        verify(runningService).updateIdle(taskContext, true);
     }
     
     @Test
     public void assertRemoveRunning() {
-        String taskNodePath = TaskNode.builder().build().getTaskNodePath();
-        TaskContext.MetaInfo metaInfo = TaskContext.MetaInfo.from(taskNodePath);
-        facadeService.removeRunning(metaInfo);
-        verify(runningService).remove(metaInfo);
+        String taskNodeValue = TaskNode.builder().build().getTaskNodeValue();
+        TaskContext taskContext = TaskContext.from(taskNodeValue);
+        facadeService.removeRunning(taskContext);
+        verify(runningService).remove(taskContext);
     }
     
     @Test
@@ -157,7 +157,7 @@ public final class FacadeServiceTest {
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(failoverService, times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(runningService).remove(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test
@@ -166,7 +166,7 @@ public final class FacadeServiceTest {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createOtherCloudJobConfiguration("test_job")));
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(failoverService, times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(runningService).remove(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test
@@ -176,7 +176,7 @@ public final class FacadeServiceTest {
         TaskContext taskContext = TaskContext.from(taskNode.getTaskNodeValue());
         facadeService.recordFailoverTask(taskContext);
         verify(failoverService).add(taskContext);
-        verify(runningService).remove(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test

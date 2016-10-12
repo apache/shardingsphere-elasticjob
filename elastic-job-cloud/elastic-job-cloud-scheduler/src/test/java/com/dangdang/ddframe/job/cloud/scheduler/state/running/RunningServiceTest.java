@@ -19,157 +19,82 @@ package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.hamcrest.core.Is;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class RunningServiceTest {
     
-    @Mock
-    private CoordinatorRegistryCenter regCenter;
-    
-    @InjectMocks
     private RunningService runningService;
     
+    private TaskContext taskContext;
+    
+    @Before
+    public void setUp() {
+        runningService = new RunningService();
+        taskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
+        runningService.add(taskContext);
+    }
+    
+    @After
+    public void tearDown() {
+        runningService.clear();
+    }
+    
     @Test
-    public void assertAddWithRootNode() {
-        TaskNode taskNode = TaskNode.builder().build();
-        when(regCenter.isExisted("/state/running/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
+    public void assertAddWithoutData() {
+        assertThat(runningService.getRunningTasks("test_job").size(), is(1));
+        assertThat(runningService.getRunningTasks("test_job").iterator().next(), is(taskContext));
+    }
+    
+    @Test
+    public void assertAddWithData() {
+        TaskNode taskNode = TaskNode.builder().jobName("other_job").build();
         runningService.add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(regCenter).isExisted("/state/running/test_job/" + taskNode.getTaskNodePath());
-        verify(regCenter, times(0)).persist("/state/running/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
+        assertThat(runningService.getRunningTasks("other_job").size(), is(1));
+        assertThat(runningService.getRunningTasks("other_job").iterator().next(), is(TaskContext.from(taskNode.getTaskNodeValue())));
     }
     
     @Test
-    public void assertAddWithoutRootNode() {
-        TaskNode taskNode = TaskNode.builder().build();
-        when(regCenter.isExisted("/state/running/test_job/" + taskNode.getTaskNodePath())).thenReturn(false);
-        runningService.add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(regCenter).isExisted("/state/running/test_job/" + taskNode.getTaskNodePath());
-        verify(regCenter).persist("/state/running/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
+    public void assertUpdateIdle() {
+        runningService.updateIdle(taskContext, true);
+        assertThat(runningService.getRunningTasks("test_job").size(), is(1));
+        assertTrue(runningService.getRunningTasks("test_job").iterator().next().isIdle());
     }
     
     @Test
-    public void assertUpdateDaemonStatusWithoutRunningNode() {
-        TaskNode taskNode = TaskNode.builder().build();
-        when(regCenter.isExisted("/state/running/test_job/" + taskNode.getTaskNodePath())).thenReturn(false);
-        runningService.updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), true);
-        verify(regCenter).isExisted("/state/running/test_job/" + taskNode.getTaskNodePath());
-        verify(regCenter, times(0)).persist("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle", "");
-        verify(regCenter, times(0)).remove("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle");
-    }
-    
-    @Test
-    public void assertUpdateDaemonStatusWithRunningNodeAndIdle() {
-        TaskNode taskNode = TaskNode.builder().build();
-        when(regCenter.isExisted("/state/running/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
-        runningService.updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), true);
-        verify(regCenter).isExisted("/state/running/test_job/" + taskNode.getTaskNodePath());
-        verify(regCenter).persist("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle", "");
-        verify(regCenter, times(0)).remove("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle");
-    }
-    
-    @Test
-    public void assertUpdateDaemonStatusWithRunningNodeAndNotIdle() {
-        TaskNode taskNode = TaskNode.builder().build();
-        when(regCenter.isExisted("/state/running/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
-        runningService.updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), false);
-        verify(regCenter).isExisted("/state/running/test_job/" + taskNode.getTaskNodePath());
-        verify(regCenter, times(0)).persist("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle", "");
-        verify(regCenter).remove("/state/running/test_job/" + taskNode.getTaskNodePath() + "/idle");
-    }
-    
-    @Test
-    public void assertRemoveWithoutRootNode() {
-        String nodePath = TaskNode.builder().build().getTaskNodePath();
-        when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);
-        runningService.remove(TaskContext.MetaInfo.from(nodePath));
-        verify(regCenter).remove("/state/running/test_job/" + nodePath);
-        verify(regCenter, times(0)).getChildrenKeys("/state/running/test_job");
-        verify(regCenter, times(0)).remove("/state/running/test_job");
-    }
-    
-    @Test
-    public void assertRemoveWithRootNodeAndNotEmpty() {
-        String nodePath1 = TaskNode.builder().build().getTaskNodePath();
-        String nodePath2 = TaskNode.builder().uuid("1").build().getTaskNodePath();
-        String nodePath3 = TaskNode.builder().shardingItem(1).build().getTaskNodePath();
-        when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Arrays.asList(nodePath1, nodePath2, nodePath3));
-        runningService.remove(TaskContext.MetaInfo.from(nodePath1));
-        verify(regCenter).remove("/state/running/test_job/" + nodePath1);
-        verify(regCenter).remove("/state/running/test_job/" + nodePath2);
-        verify(regCenter, times(0)).remove("/state/running/test_job/" + nodePath3);
-        verify(regCenter, times(0)).remove("/state/running/test_job");
-    }
-    
-    @Test
-    public void assertRemoveWithRootNodeAndEmptyAfterRemove() {
-        String nodePath = TaskNode.builder().build().getTaskNodePath();
-        when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
-        runningService.remove(TaskContext.MetaInfo.from(nodePath));
-        verify(regCenter).remove("/state/running/test_job/" + nodePath);
-        verify(regCenter).remove("/state/running/test_job");
+    public void assertRemove() {
+        runningService.remove(taskContext);
+        assertTrue(runningService.getRunningTasks("test_job").isEmpty());
     }
     
     @Test
     public void assertIsJobRunning() {
-        when(regCenter.getChildrenKeys("/state/running/running_job")).thenReturn(Collections.singletonList(TaskNode.builder().build().getTaskNodeValue()));
-        assertTrue(runningService.isJobRunning("running_job"));
-        assertFalse(runningService.isJobRunning("pending_job"));
-        verify(regCenter).getChildrenKeys("/state/running/running_job");
-        verify(regCenter).getChildrenKeys("/state/running/pending_job");
+        assertTrue(runningService.isJobRunning("test_job"));
     }
     
     @Test
-    public void assertIsTaskRunningWithoutRootNode() {
-        when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);
-        assertFalse(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
+    public void assertIsTaskRunning() {
+        assertTrue(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
     }
     
     @Test
-    public void assertIsTaskRunningWitRootNode() {
-        when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Collections.singletonList(TaskNode.builder().build().getTaskNodePath()));
-        assertTrue(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().uuid("1").build().getTaskNodePath())));
-        assertFalse(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().shardingItem(1).build().getTaskNodePath())));
-    }
-    
-    @Test
-    public void assertGetRunningTasksWithoutRootNode() {
-        when(regCenter.isExisted("/state/running/test_job")).thenReturn(false);
-        assertThat(runningService.getRunningTasks("test_job"), Is.<Collection<TaskContext>>is(Collections.<TaskContext>emptyList()));
-    }
-    
-    @Test
-    public void assertGetRunningTasks() {
-        when(regCenter.isExisted("/state/running/test_job")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/state/running/test_job")).thenReturn(Arrays.asList("test_job@-@0", "test_job@-@1"));
-        when(regCenter.get("/state/running/test_job/test_job@-@0")).thenReturn("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID");
-        when(regCenter.get("/state/running/test_job/test_job@-@1")).thenReturn("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID");
-        assertThat(runningService.getRunningTasks("test_job"), 
-                Is.<Collection<TaskContext>>is(Arrays.asList(TaskContext.from("test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"), TaskContext.from("test_job@-@1@-@READY@-@SLAVE-S0@-@UUID"))));
+    public void assertIsTaskNotRunning() {
+        assertFalse(runningService.isTaskRunning(TaskContext.MetaInfo.from(TaskNode.builder().shardingItem(2).build().getTaskNodePath())));
     }
     
     @Test
     public void assertClear() {
+        assertFalse(runningService.getRunningTasks("test_job").isEmpty());
         runningService.clear();
-        verify(regCenter).remove("/state/running");
+        assertTrue(runningService.getRunningTasks("test_job").isEmpty());
     }
 }

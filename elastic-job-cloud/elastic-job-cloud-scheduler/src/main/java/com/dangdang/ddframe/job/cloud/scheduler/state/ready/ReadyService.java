@@ -61,7 +61,7 @@ public class ReadyService {
     public ReadyService(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
         configService = new ConfigurationService(regCenter);
-        runningService = new RunningService(regCenter);
+        runningService = new RunningService();
         misfiredService = new MisfiredService(regCenter);
     }
     

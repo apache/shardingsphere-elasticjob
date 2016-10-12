@@ -58,7 +58,7 @@ public class FailoverService {
     public FailoverService(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
         configService = new ConfigurationService(regCenter);
-        runningService = new RunningService(regCenter);
+        runningService = new RunningService();
     }
     
     /**

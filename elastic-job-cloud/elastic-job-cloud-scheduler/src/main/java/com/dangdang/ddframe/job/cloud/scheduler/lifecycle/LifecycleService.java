@@ -36,7 +36,7 @@ public class LifecycleService {
     
     public LifecycleService(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
         this.schedulerDriver = schedulerDriver;
-        runningService = new RunningService(regCenter);
+        runningService = new RunningService();
     }
     
     /**

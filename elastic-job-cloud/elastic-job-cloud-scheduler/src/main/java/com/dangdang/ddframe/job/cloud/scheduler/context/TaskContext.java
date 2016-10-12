@@ -24,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -47,6 +48,9 @@ public final class TaskContext {
     private final ExecutionType type;
     
     private final String slaveId;
+    
+    @Setter
+    private boolean idle;
     
     public TaskContext(final String jobName, final int shardingItem, final ExecutionType type, final String slaveId) {
         metaInfo = new MetaInfo(jobName, shardingItem);

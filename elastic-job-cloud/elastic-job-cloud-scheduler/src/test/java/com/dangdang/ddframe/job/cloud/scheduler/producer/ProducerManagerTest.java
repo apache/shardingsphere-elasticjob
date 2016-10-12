@@ -128,8 +128,8 @@ public final class ProducerManagerTest {
         producerManager.update(transientJobConfig);
         verify(configService).update(transientJobConfig);
         verify(lifecycleService).killJob("transient_test_job");
-        verify(runningService).remove(TaskContext.MetaInfo.from("transient_test_job@-@0"));
-        verify(runningService).remove(TaskContext.MetaInfo.from("transient_test_job@-@1"));
+        verify(runningService).remove(TaskContext.from("transient_test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"));
+        verify(runningService).remove(TaskContext.from("transient_test_job@-@1@-@READY@-@SLAVE-S0@-@UUID"));
         verify(readyService).remove(Lists.newArrayList("transient_test_job"));
     }
     
@@ -148,8 +148,8 @@ public final class ProducerManagerTest {
         producerManager.deregister("transient_test_job");
         verify(configService).remove("transient_test_job");
         verify(lifecycleService).killJob("transient_test_job");
-        verify(runningService).remove(TaskContext.MetaInfo.from("transient_test_job@-@0"));
-        verify(runningService).remove(TaskContext.MetaInfo.from("transient_test_job@-@1"));
+        verify(runningService).remove(TaskContext.from("transient_test_job@-@0@-@READY@-@SLAVE-S0@-@UUID"));
+        verify(runningService).remove(TaskContext.from("transient_test_job@-@1@-@READY@-@SLAVE-S0@-@UUID"));
         verify(readyService).remove(Lists.newArrayList("transient_test_job"));
     }
     

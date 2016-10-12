@@ -54,7 +54,7 @@ public class MisfiredService {
     public MisfiredService(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
         configService = new ConfigurationService(regCenter);
-        runningService = new RunningService(regCenter);
+        runningService = new RunningService();
     }
     
     /**

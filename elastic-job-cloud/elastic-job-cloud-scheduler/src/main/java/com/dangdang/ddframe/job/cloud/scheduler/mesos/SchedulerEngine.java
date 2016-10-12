@@ -84,11 +84,11 @@ public final class SchedulerEngine implements Scheduler {
                 }
                 break;
             case TASK_FINISHED:
-                facadeService.removeRunning(taskContext.getMetaInfo());
+                facadeService.removeRunning(taskContext);
                 unAssignTask(taskId);
                 break;
             case TASK_KILLED:
-                facadeService.removeRunning(taskContext.getMetaInfo());
+                facadeService.removeRunning(taskContext);
                 facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
                 break;
@@ -96,7 +96,7 @@ public final class SchedulerEngine implements Scheduler {
             case TASK_FAILED:
             case TASK_ERROR:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
-                facadeService.removeRunning(taskContext.getMetaInfo());
+                facadeService.removeRunning(taskContext);
                 facadeService.recordFailoverTask(taskContext);
                 facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);

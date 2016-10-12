@@ -18,23 +18,20 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 任务运行时服务.
  *
  * @author zhangliang
  */
-@RequiredArgsConstructor
 public class RunningService {
     
-    private final CoordinatorRegistryCenter regCenter;
+    private static final ConcurrentHashMap<String, Set<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(Integer.MAX_VALUE); 
     
     /**
      * 将任务运行时上下文放入运行时队列.
@@ -42,38 +39,30 @@ public class RunningService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
-        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString());
-        if (!regCenter.isExisted(runningTaskNodePath)) {
-            regCenter.persist(runningTaskNodePath, taskContext.getId());
-        }
+        getRunningTasks(taskContext.getMetaInfo().getJobName()).add(taskContext);
     }
     
     /**
-     * 更新常驻作业运行状态.
+     * 更新作业闲置状态.
      * @param taskContext 任务运行时上下文
+     * @param isIdle 是否闲置
      */
-    public void updateDaemonStatus(final TaskContext taskContext, final boolean isIdle) {
-        if (!regCenter.isExisted(RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString()))) {
-            return;
-        }
-        if (isIdle) {
-            regCenter.persist(RunningNode.getRunningTaskIdleNodePath(taskContext.getMetaInfo().toString()), "");
-        } else {
-            regCenter.remove(RunningNode.getRunningTaskIdleNodePath(taskContext.getMetaInfo().toString()));
+    public void updateIdle(final TaskContext taskContext, final boolean isIdle) {
+        Collection<TaskContext> runningTasks = getRunningTasks(taskContext.getMetaInfo().getJobName());
+        for (TaskContext each : runningTasks) {
+            if (each.equals(taskContext)) {
+                each.setIdle(isIdle);
+            }
         }
     }
     
     /**
      * 将任务从运行时队列删除.
      * 
-     * @param metaInfo 任务元信息
+     * @param taskContext 任务运行时上下文
      */
-    public void remove(final TaskContext.MetaInfo metaInfo) {
-        regCenter.remove(RunningNode.getRunningTaskNodePath(metaInfo.toString()));
-        String jobRootNode = RunningNode.getRunningJobNodePath(metaInfo.getJobName());
-        if (regCenter.isExisted(jobRootNode) && regCenter.getChildrenKeys(jobRootNode).isEmpty()) {
-            regCenter.remove(jobRootNode);
-        }
+    public void remove(final TaskContext taskContext) {
+        getRunningTasks(taskContext.getMetaInfo().getJobName()).remove(taskContext);
     }
     
     /**
@@ -83,7 +72,7 @@ public class RunningService {
      * @return 作业是否运行
      */
     public boolean isJobRunning(final String jobName) {
-        return !regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(jobName)).isEmpty();
+        return !getRunningTasks(jobName).isEmpty();
     }
     
     /**
@@ -93,11 +82,8 @@ public class RunningService {
      * @return 任务是否运行
      */
     public boolean isTaskRunning(final TaskContext.MetaInfo metaInfo) {
-        if (!regCenter.isExisted(RunningNode.getRunningJobNodePath(metaInfo.getJobName()))) {
-            return false;
-        }
-        for (String each : regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(metaInfo.getJobName()))) {
-            if (TaskContext.MetaInfo.from(each).getShardingItem() == metaInfo.getShardingItem()) {
+        for (TaskContext each : getRunningTasks(metaInfo.getJobName())) {
+            if (each.getMetaInfo().equals(metaInfo)) {
                 return true;
             }
         }
@@ -111,22 +97,20 @@ public class RunningService {
      * @return 运行中的任务集合
      */
     public Collection<TaskContext> getRunningTasks(final String jobName) {
-        if (!regCenter.isExisted(RunningNode.getRunningJobNodePath(jobName))) {
-            return Collections.emptyList();
+        Set<TaskContext> result;
+        if (RUNNING_TASKS.containsKey(jobName)) {
+            result = RUNNING_TASKS.get(jobName);
+        } else {
+            result = new CopyOnWriteArraySet<>();
+            RUNNING_TASKS.put(jobName, result);
         }
-        return Lists.transform(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(jobName)), new Function<String, TaskContext>() {
-            
-            @Override
-            public TaskContext apply(final String input) {
-                return TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(input)));
-            }
-        });
+        return result;
     }
     
     /**
      * 清理所有运行时状态.
      */
     public void clear() {
-        regCenter.remove(RunningNode.ROOT);
+        RUNNING_TASKS.clear();
     }
 }

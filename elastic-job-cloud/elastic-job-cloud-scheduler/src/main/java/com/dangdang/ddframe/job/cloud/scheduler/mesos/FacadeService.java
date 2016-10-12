@@ -56,7 +56,7 @@ public class FacadeService {
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
-        runningService = new RunningService(regCenter);
+        runningService = new RunningService();
         failoverService = new FailoverService(regCenter);
         misfiredService = new MisfiredService(regCenter);
     }
@@ -136,16 +136,16 @@ public class FacadeService {
      * @param taskContext 任务运行时上下文
      */
     public void updateDaemonStatus(final TaskContext taskContext, final boolean isIdle) {
-        runningService.updateDaemonStatus(taskContext, isIdle);
+        runningService.updateIdle(taskContext, isIdle);
     }
     
     /**
-     * 将任务从运行时队列删除..
+     * 将任务从运行时队列删除.
      *
-     * @param metaInfo 任务元信息
+     * @param taskContext 任务运行时上下文
      */
-    public void removeRunning(final TaskContext.MetaInfo metaInfo) {
-        runningService.remove(metaInfo);
+    public void removeRunning(final TaskContext taskContext) {
+        runningService.remove(taskContext);
     }
     
     /**
@@ -154,12 +154,11 @@ public class FacadeService {
      * @param taskContext 任务上下文
      */
     public void recordFailoverTask(final TaskContext taskContext) {
-        TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
-        Optional<CloudJobConfiguration> jobConfig = configService.load(metaInfo.getJobName());
+        Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getMetaInfo().getJobName());
         if (jobConfig.isPresent() && jobConfig.get().getTypeConfig().getCoreConfig().isFailover()) {
             failoverService.add(taskContext);
         }
-        runningService.remove(metaInfo);
+        runningService.remove(taskContext);
     }
     
     /**
