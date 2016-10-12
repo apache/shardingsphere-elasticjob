@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
+import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
@@ -107,8 +108,8 @@ public final class MasterBootstrap {
     }
     
     private void initListener() {
-        regCenter.addCacheData("/");
-        ((TreeCache) regCenter.getRawCache("/")).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
+        regCenter.addCacheData(ConfigurationNode.ROOT);
+        ((TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT)).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
     }
     
     /**

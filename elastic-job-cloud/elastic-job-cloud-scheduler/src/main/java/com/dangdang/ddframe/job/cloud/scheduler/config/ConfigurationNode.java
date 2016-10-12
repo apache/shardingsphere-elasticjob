@@ -22,9 +22,9 @@ package com.dangdang.ddframe.job.cloud.scheduler.config;
  *
  * @author zhangliang
  */
-final class ConfigurationNode {
+public final class ConfigurationNode {
     
-    static final String ROOT =  "/config";
+    public static final String ROOT =  "/config";
     
     private static final String JOB_CONFIG =  ROOT + "/%s";
     
