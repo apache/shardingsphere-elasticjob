@@ -29,5 +29,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public final class FrameworkConfiguration {
     
+    private final boolean appCacheEnable;
+    
     private final int jobStateQueueSize;
 }

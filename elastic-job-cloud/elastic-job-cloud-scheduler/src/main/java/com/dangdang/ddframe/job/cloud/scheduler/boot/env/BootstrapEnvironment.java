@@ -96,7 +96,7 @@ public final class BootstrapEnvironment {
      * @return Mesos框架配置对象
      */
     public FrameworkConfiguration getFrameworkConfiguration() {
-        return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
+        return new FrameworkConfiguration(Boolean.valueOf(getValue(EnvironmentArgument.APP_CACHE_ENABLE)), Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
     }
     
     private String getValue(final EnvironmentArgument environmentArgument) {
@@ -107,6 +107,11 @@ public final class BootstrapEnvironment {
         return result;
     }
     
+    /**
+     * 环境参数.
+     * 
+     * @author zhangliang 
+     */
     @RequiredArgsConstructor
     @Getter
     public enum EnvironmentArgument {
@@ -116,21 +121,23 @@ public final class BootstrapEnvironment {
         MESOS_URL("mesos_url", "zk://localhost:2181/mesos", true),
         
         USER("user", "", false),
-    
+        
         ZOOKEEPER_SERVERS("zk_servers", "localhost:2181", true),
-    
+        
         ZOOKEEPER_NAMESPACE("zk_namespace", "elastic-job-cloud", true),
         
         ZOOKEEPER_DIGEST("zk_digest", "", false),
         
         PORT("http_port", "8899", true),
-    
+        
+        APP_CACHE_ENABLE("app_cache_enable", "true", true),
+        
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true);
         
         private final String key;
         
         private final String defaultValue;
-    
+        
         private final boolean required;
     }
 }
