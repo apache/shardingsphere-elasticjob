@@ -86,7 +86,7 @@ public final class MisfiredServiceTest {
     @Test
     public void assertAddWithOverJobQueueSize() {
         when(regCenter.getChildrenKeys(MisfiredNode.ROOT)).thenReturn(mockedMisfiredQueue);
-        when(regCenter.getChildrenKeys(MisfiredNode.ROOT).size()).thenReturn(BootstrapEnvironment.JOB_STATE_QUEUE_SIZE + 1);
+        when(regCenter.getChildrenKeys(MisfiredNode.ROOT).size()).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
         misfiredService.add("test_job");
         verify(regCenter, times(0)).persist("/state/misfired/test_job", "");
     }

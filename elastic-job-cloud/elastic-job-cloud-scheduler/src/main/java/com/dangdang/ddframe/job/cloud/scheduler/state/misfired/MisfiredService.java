@@ -43,6 +43,8 @@ import java.util.List;
 @Slf4j
 public class MisfiredService {
     
+    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
+    
     private final CoordinatorRegistryCenter regCenter;
     
     private final ConfigurationService configService;
@@ -61,8 +63,8 @@ public class MisfiredService {
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
-        if (regCenter.getChildrenKeys(MisfiredNode.ROOT).size() > BootstrapEnvironment.JOB_STATE_QUEUE_SIZE) {
-            log.error("Cannot add job, caused by read state queue size is larger than {}.", BootstrapEnvironment.JOB_STATE_QUEUE_SIZE);
+        if (regCenter.getChildrenKeys(MisfiredNode.ROOT).size() > env.getFrameworkConfiguration().getJobStateQueueSize()) {
+            log.error("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);

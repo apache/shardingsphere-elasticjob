@@ -47,6 +47,8 @@ import java.util.Set;
 @Slf4j
 public class FailoverService {
     
+    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
+    
     private final CoordinatorRegistryCenter regCenter;
     
     private final ConfigurationService configService;
@@ -65,8 +67,8 @@ public class FailoverService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
-        if (regCenter.getChildrenKeys(FailoverNode.ROOT).size() > BootstrapEnvironment.JOB_STATE_QUEUE_SIZE) {
-            log.error("Cannot add job, caused by read state queue size is larger than {}.", BootstrapEnvironment.JOB_STATE_QUEUE_SIZE);
+        if (regCenter.getChildrenKeys(FailoverNode.ROOT).size() > env.getFrameworkConfiguration().getJobStateQueueSize()) {
+            log.error("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
         Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getMetaInfo().getJobName());

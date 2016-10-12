@@ -40,8 +40,6 @@ import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
-import java.io.IOException;
-
 /**
  * Mesos框架启动器.
  *
@@ -58,8 +56,8 @@ public final class MasterBootstrap {
     
     private final RestfulServer restfulServer;
     
-    public MasterBootstrap() throws IOException {
-        env = new BootstrapEnvironment();
+    public MasterBootstrap() {
+        env = BootstrapEnvironment.getInstance();
         regCenter = getRegistryCenter();
         LeasesQueue leasesQueue = new LeasesQueue();
         final FacadeService facadeService = new FacadeService(regCenter);

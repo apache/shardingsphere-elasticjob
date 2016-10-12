@@ -36,18 +36,18 @@ import java.util.Properties;
 @Slf4j
 public final class BootstrapEnvironment {
     
-    // TODO 以后更改为可配置 
-    public static final int JOB_STATE_QUEUE_SIZE = 10000;
+    @Getter
+    private static BootstrapEnvironment instance = new BootstrapEnvironment();
     
     private static final String PROPERTIES_PATH = "conf/elastic-job-cloud-scheduler.properties";
     
     private final Properties properties;
     
-    public BootstrapEnvironment() throws IOException {
+    private BootstrapEnvironment() {
         properties = getProperties();
     }
     
-    private static Properties getProperties() {
+    private Properties getProperties() {
         Properties result = new Properties();
         try (FileInputStream fileInputStream = new FileInputStream(PROPERTIES_PATH)) {
             result.load(fileInputStream);
@@ -90,6 +90,15 @@ public final class BootstrapEnvironment {
         return new RestfulServerConfiguration(Integer.parseInt(getValue(EnvironmentArgument.PORT)));
     }
     
+    /**
+     * 获取Mesos框架配置对象.
+     *
+     * @return Mesos框架配置对象
+     */
+    public FrameworkConfiguration getFrameworkConfiguration() {
+        return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
+    }
+    
     private String getValue(final EnvironmentArgument environmentArgument) {
         String result = properties.getProperty(environmentArgument.getKey(), environmentArgument.getDefaultValue());
         if (environmentArgument.isRequired()) {
@@ -100,7 +109,7 @@ public final class BootstrapEnvironment {
     
     @RequiredArgsConstructor
     @Getter
-    enum EnvironmentArgument {
+    public enum EnvironmentArgument {
         
         HOSTNAME("hostname", "", true),
         
@@ -114,7 +123,9 @@ public final class BootstrapEnvironment {
         
         ZOOKEEPER_DIGEST("zk_digest", "", false),
         
-        PORT("http_port", "8899", true);
+        PORT("http_port", "8899", true),
+    
+        JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true);
         
         private final String key;
         

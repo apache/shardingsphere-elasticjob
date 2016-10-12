@@ -48,6 +48,8 @@ import java.util.Set;
 @Slf4j
 public class ReadyService {
     
+    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
+    
     private final CoordinatorRegistryCenter regCenter;
     
     private final ConfigurationService configService;
@@ -69,8 +71,8 @@ public class ReadyService {
      * @param jobName 作业名称
      */
     public void addTransient(final String jobName) {
-        if (regCenter.getChildrenKeys(ReadyNode.ROOT).size() > BootstrapEnvironment.JOB_STATE_QUEUE_SIZE) {
-            log.error("Cannot add transient job, caused by read state queue size is larger than {}.", BootstrapEnvironment.JOB_STATE_QUEUE_SIZE);
+        if (regCenter.getChildrenKeys(ReadyNode.ROOT).size() > env.getFrameworkConfiguration().getJobStateQueueSize()) {
+            log.error("Cannot add transient job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
         Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
@@ -86,8 +88,8 @@ public class ReadyService {
      * @param jobName 作业名称
      */
     public void addDaemon(final String jobName) {
-        if (regCenter.getChildrenKeys(ReadyNode.ROOT).size() > BootstrapEnvironment.JOB_STATE_QUEUE_SIZE) {
-            log.error("Cannot add daemon job, caused by read state queue size is larger than {}.", BootstrapEnvironment.JOB_STATE_QUEUE_SIZE);
+        if (regCenter.getChildrenKeys(ReadyNode.ROOT).size() > env.getFrameworkConfiguration().getJobStateQueueSize()) {
+            log.error("Cannot add daemon job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
         Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);

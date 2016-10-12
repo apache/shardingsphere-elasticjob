@@ -19,11 +19,9 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
-import org.junit.Before;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import static org.hamcrest.core.Is.is;
@@ -31,11 +29,13 @@ import static org.junit.Assert.assertThat;
 
 public final class BootstrapEnvironmentTest {
     
-    private BootstrapEnvironment bootstrapEnvironment;
+    private BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getInstance();
     
-    @Before
-    public void setUp() throws IOException {
-        bootstrapEnvironment = new BootstrapEnvironment();
+    @Test(expected = IllegalStateException.class)
+    public void assertGetMesosConfigurationWithoutRequiredProperties() throws NoSuchFieldException {
+        Properties properties = new Properties();
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
+        bootstrapEnvironment.getMesosConfiguration();
     }
     
     @Test
@@ -47,11 +47,6 @@ public final class BootstrapEnvironmentTest {
         assertThat(mesosConfig.getHostname(), is("127.0.0.1"));
         assertThat(mesosConfig.getUser(), is(""));
         assertThat(mesosConfig.getUrl(), is("zk://localhost:2181/mesos"));
-    }
-    
-    @Test(expected = IllegalStateException.class)
-    public void assertGetMesosConfigurationWithoutRequiredProperties() throws NoSuchFieldException {
-        bootstrapEnvironment.getMesosConfiguration();
     }
     
     @Test
@@ -69,5 +64,11 @@ public final class BootstrapEnvironmentTest {
     public void assertGetRestfulServerConfiguration() {
         RestfulServerConfiguration restfulServerConfig = bootstrapEnvironment.getRestfulServerConfiguration();
         assertThat(restfulServerConfig.getPort(), is(8899));
+    }
+    
+    @Test
+    public void assertGetFrameworkConfiguration() {
+        FrameworkConfiguration frameworkConfig = bootstrapEnvironment.getFrameworkConfiguration();
+        assertThat(frameworkConfig.getJobStateQueueSize(), is(10000));
     }
 }

@@ -77,7 +77,7 @@ public final class FailoverServiceTest {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(mockedFailoverQueue);
-        when(regCenter.getChildrenKeys(FailoverNode.ROOT).size()).thenReturn(BootstrapEnvironment.JOB_STATE_QUEUE_SIZE + 1);
+        when(regCenter.getChildrenKeys(FailoverNode.ROOT).size()).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(regCenter, times(0)).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
     }
