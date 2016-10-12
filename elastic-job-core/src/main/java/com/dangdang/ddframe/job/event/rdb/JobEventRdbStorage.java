@@ -57,17 +57,18 @@ class JobEventRdbStorage {
     boolean addJobTraceEvent(final JobTraceEvent traceEvent) {
         boolean result = false;
         if (needTrace(traceEvent.getLogLevel())) {
-            String sql = "INSERT INTO `JOB_TRACE_LOG` (`id`, `job_name`, `hostname`, `log_level`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO `JOB_TRACE_LOG` (`id`, `job_name`, `hostname`, `ip`, `log_level`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
                     PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
                 preparedStatement.setString(1, UUID.randomUUID().toString());
                 preparedStatement.setString(2, traceEvent.getJobName());
                 preparedStatement.setString(3, traceEvent.getHostname());
-                preparedStatement.setString(4, traceEvent.getLogLevel().name());
-                preparedStatement.setString(5, traceEvent.getMessage());
-                preparedStatement.setString(6, truncateFailureCause(traceEvent.getFailureCause()));
-                preparedStatement.setTimestamp(7, new Timestamp(traceEvent.getCreationTime().getTime()));
+                preparedStatement.setString(4, traceEvent.getIp());
+                preparedStatement.setString(5, traceEvent.getLogLevel().name());
+                preparedStatement.setString(6, traceEvent.getMessage());
+                preparedStatement.setString(7, truncateFailureCause(traceEvent.getFailureCause()));
+                preparedStatement.setTimestamp(8, new Timestamp(traceEvent.getCreationTime().getTime()));
                 preparedStatement.execute();
                 result = true;
             } catch (final SQLException ex) {
@@ -81,18 +82,19 @@ class JobEventRdbStorage {
     boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         if (null == jobExecutionEvent.getCompleteTime()) {
-            String sql = "INSERT INTO `JOB_EXECUTION_LOG` (`id`, `job_name`, `hostname`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO `JOB_EXECUTION_LOG` (`id`, `job_name`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
                     PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
                 preparedStatement.setString(1, jobExecutionEvent.getId());
                 preparedStatement.setString(2, jobExecutionEvent.getJobName());
                 preparedStatement.setString(3, jobExecutionEvent.getHostname());
-                preparedStatement.setInt(4, jobExecutionEvent.getShardingItem());
-                preparedStatement.setString(5, jobExecutionEvent.getSource().toString());
-                preparedStatement.setBoolean(6, jobExecutionEvent.isSuccess());
-                preparedStatement.setTimestamp(7, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
+                preparedStatement.setString(4, jobExecutionEvent.getIp());
+                preparedStatement.setInt(5, jobExecutionEvent.getShardingItem());
+                preparedStatement.setString(6, jobExecutionEvent.getSource().toString());
+                preparedStatement.setBoolean(7, jobExecutionEvent.isSuccess());
+                preparedStatement.setTimestamp(8, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
                 preparedStatement.execute();
                 result = true;
             } catch (final SQLException ex) {
@@ -146,6 +148,7 @@ class JobEventRdbStorage {
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`hostname` VARCHAR(255) NOT NULL, "
+                + "`ip` VARCHAR(50) NOT NULL, "
                 + "`log_level` CHAR(5) NOT NULL, "
                 + "`message` VARCHAR(2000) NOT NULL, "
                 + "`failure_cause` VARCHAR(4000) NULL, "
@@ -163,6 +166,7 @@ class JobEventRdbStorage {
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`hostname` VARCHAR(255) NOT NULL, "
+                + "`ip` VARCHAR(50) NOT NULL, "
                 + "`sharding_item` INT NOT NULL, "
                 + "`execution_source` VARCHAR(20) NOT NULL, "
                 + "`failure_cause` VARCHAR(4000) NULL, "
