@@ -48,6 +48,8 @@ public class JobTraceEvent implements JobEvent {
     
     private final String hostname = localHostService.getHostName();
     
+    private final String ip = localHostService.getIp();
+    
     private final Date creationTime = new Date();
     
     /**
