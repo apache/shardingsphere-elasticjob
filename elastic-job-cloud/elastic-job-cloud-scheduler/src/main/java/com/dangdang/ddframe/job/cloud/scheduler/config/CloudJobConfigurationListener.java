@@ -19,12 +19,15 @@ package com.dangdang.ddframe.job.cloud.scheduler.config;
 
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
+import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.mesos.SchedulerDriver;
+
+import java.util.Collections;
 
 /**
  * 云作业配置变更监听.
@@ -36,8 +39,11 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
     
     private final ProducerManager producerManager;
     
+    private final ReadyService readyService;
+    
     public CloudJobConfigurationListener(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
         producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
+        readyService = new ReadyService(regCenter);
     }
     
     @Override
@@ -51,6 +57,9 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
         } else if (isJobConfigNode(event, path, Type.NODE_UPDATED)) {
             CloudJobConfiguration jobConfig = getJobConfig(event);
             if (null != jobConfig) {
+                if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
+                    readyService.remove(Collections.singletonList(jobConfig.getJobName()));
+                }
                 producerManager.reschedule(jobConfig);
             }
         } else if (isJobConfigNode(event, path, Type.NODE_REMOVED)) {
