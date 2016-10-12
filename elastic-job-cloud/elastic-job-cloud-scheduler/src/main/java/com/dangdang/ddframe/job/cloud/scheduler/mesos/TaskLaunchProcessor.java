@@ -74,11 +74,14 @@ public final class TaskLaunchProcessor implements Runnable {
     @Override
     public void run() {
         while (!shutdown) {
+            Collection<JobContext> eligibleJobContexts =  facadeService.getEligibleJobContext();
             if (!leasesQueue.hasOffer()) {
+                if (!eligibleJobContexts.isEmpty()) {
+                    log.info("Ready queue has more jobs not assigned.");
+                }
                 BlockUtils.waitingShortTime();
                 continue;
             }
-            Collection<JobContext> eligibleJobContexts =  facadeService.getEligibleJobContext();
             Map<String, Integer> jobShardingTotalCountMap = new HashMap<>(eligibleJobContexts.size(), 1);
             List<TaskRequest> pendingTasks = new ArrayList<>(eligibleJobContexts.size() * 10);
             for (JobContext each : eligibleJobContexts) {
