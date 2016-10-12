@@ -54,4 +54,13 @@ public final class LeasesQueue {
         queue.drainTo(result);
         return result;
     }
+    
+    /**
+     * 判断当前是否有资源.
+     * 
+     * @return 当前是否有资源
+     */
+    public boolean hasOffer() {
+        return !queue.isEmpty();
+    }
 }
