@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -35,14 +34,5 @@ public final class LeasesQueueTest {
         leasesQueue.offer(OfferBuilder.createOffer("offer_1"));
         leasesQueue.offer(OfferBuilder.createOffer("offer_2"));
         assertThat(leasesQueue.drainTo().size(), is(2));
-    }
-    
-    @Test
-    public void assertHasOffer() {
-        assertFalse(leasesQueue.hasOffer());
-        leasesQueue.offer(OfferBuilder.createOffer("offer"));
-        assertTrue(leasesQueue.hasOffer());
-        leasesQueue.drainTo();
-        assertFalse(leasesQueue.hasOffer());
     }
 }

@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBui
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
 import com.netflix.fenzo.TaskScheduler;
+import com.netflix.fenzo.functions.Action2;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 import org.junit.Before;
@@ -63,6 +64,7 @@ public final class SchedulerEngineTest {
     public void setUp() throws NoSuchFieldException {
         schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
+        TaskLaunchProcessor.getLAUNCHED_TASKS().clear();
     }
     
     @Test
@@ -120,50 +122,84 @@ public final class SchedulerEngineTest {
     }
     
     @Test
-    public void assertFinishedStatusUpdate() {
+    public void assertFinishedStatusUpdateWithoutLaunchedTasks() {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(taskScheduler, times(0)).getTaskUnAssigner();
+    }
+    
+    @Test
+    public void assertFinishedStatusUpdate() {
+        @SuppressWarnings("unchecked") 
+        Action2<String, String> taskUnAssigner = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
+        TaskNode taskNode = TaskNode.builder().build();
+        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
+        schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
+                .setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
     }
     
     @Test
     public void assertKilledStatusUpdate() {
+        @SuppressWarnings("unchecked")
+        Action2<String, String> taskUnAssigner = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
+        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_KILLED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
+        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
     }
     
     @Test
     public void assertFailedStatusUpdate() {
+        @SuppressWarnings("unchecked")
+        Action2<String, String> taskUnAssigner = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
+        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_FAILED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
+        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
     }
     
     @Test
     public void assertErrorStatusUpdate() {
+        @SuppressWarnings("unchecked")
+        Action2<String, String> taskUnAssigner = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
+        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_ERROR).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
+        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
     }
     
     @Test
     public void assertLostStatusUpdate() {
+        @SuppressWarnings("unchecked")
+        Action2<String, String> taskUnAssigner = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
+        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_LOST).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
+        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
     }
     
     @Test
