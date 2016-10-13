@@ -34,7 +34,6 @@ import com.netflix.fenzo.TaskRequest;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
@@ -46,7 +45,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 任务启动处理器.
@@ -56,9 +54,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 @Slf4j
 public final class TaskLaunchProcessor implements Runnable {
-    
-    @Getter
-    private static final ConcurrentHashMap<String, String> LAUNCHED_TASKS = new ConcurrentHashMap<>(1024);
     
     private static volatile boolean shutdown;
     
@@ -176,7 +171,7 @@ public final class TaskLaunchProcessor implements Runnable {
                 if (null != taskInfo) {
                     result.add(getTaskInfo(slaveId, each));
                 }
-                LAUNCHED_TASKS.put(taskInfo.getTaskId().getValue(), hostname);
+                facadeService.addMapping(taskInfo.getTaskId().getValue(), hostname);
                 taskScheduler.getTaskAssigner().call(each.getRequest(), hostname);
             }
         }

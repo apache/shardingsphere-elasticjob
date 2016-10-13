@@ -223,6 +223,18 @@ public final class FacadeServiceTest {
     }
     
     @Test
+    public void assertAddMapping() {
+        facadeService.addMapping("taskId", "localhost");
+        verify(runningService).addMapping("taskId", "localhost");
+    }
+    
+    @Test
+    public void assertPopMapping() {
+        facadeService.popMapping("taskId");
+        verify(runningService).popMapping("taskId");
+    }
+    
+    @Test
     public void assertStop() {
         facadeService.stop();
         verify(runningService).clear();

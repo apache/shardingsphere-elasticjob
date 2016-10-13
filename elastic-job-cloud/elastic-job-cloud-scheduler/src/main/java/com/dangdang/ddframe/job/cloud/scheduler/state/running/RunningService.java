@@ -32,7 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RunningService {
     
-    private static final ConcurrentHashMap<String, Set<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(1024); 
+    private static final int TASK_INITIAL_SIZE = 1024;
+    
+    private static final ConcurrentHashMap<String, Set<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(TASK_INITIAL_SIZE);
+    
+    private static final ConcurrentHashMap<String, String> TASK_HOSTNAME_MAPPER = new ConcurrentHashMap<>(TASK_INITIAL_SIZE);
     
     /**
      * 将任务运行时上下文放入运行时队列.
@@ -103,9 +107,29 @@ public class RunningService {
     }
     
     /**
+     * 添加任务主键和主机名称的映射.
+     *
+     * @param taskId 任务主键
+     * @param hostname 主机名称
+     */
+    public void addMapping(final String taskId, final String hostname) {
+        TASK_HOSTNAME_MAPPER.putIfAbsent(taskId, hostname);
+    }
+    
+    /**
+     * 根据任务主键获取主机名称并清除该任务.
+     *
+     * @param taskId 任务主键
+     */
+    public String popMapping(final String taskId) {
+        return TASK_HOSTNAME_MAPPER.remove(taskId);
+    }
+    
+    /**
      * 清理所有运行时状态.
      */
     public void clear() {
         RUNNING_TASKS.clear();
+        TASK_HOSTNAME_MAPPER.clear();
     }
 }

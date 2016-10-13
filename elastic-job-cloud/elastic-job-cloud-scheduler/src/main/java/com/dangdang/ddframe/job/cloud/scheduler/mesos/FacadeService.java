@@ -205,6 +205,25 @@ public class FacadeService {
     }
     
     /**
+     * 添加任务主键和主机名称的映射.
+     *
+     * @param taskId 任务主键
+     * @param hostname 主机名称
+     */
+    public void addMapping(final String taskId, final String hostname) {
+        runningService.addMapping(taskId, hostname);
+    }
+    
+    /**
+     * 根据任务主键获取主机名称并清除该任务.
+     *
+     * @param taskId 任务主键
+     */
+    public String popMapping(final String taskId) {
+        return runningService.popMapping(taskId);
+    }
+    
+    /**
      * 框架停止.
      */
     public void stop() {

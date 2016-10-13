@@ -108,9 +108,9 @@ public final class SchedulerEngine implements Scheduler {
     }
     
     private void unAssignTask(final String taskId) {
-        if (TaskLaunchProcessor.getLAUNCHED_TASKS().containsKey(taskId)) {
-            taskScheduler.getTaskUnAssigner().call(taskId, TaskLaunchProcessor.getLAUNCHED_TASKS().get(taskId));
-            TaskLaunchProcessor.getLAUNCHED_TASKS().remove(taskId);
+        String hostname = facadeService.popMapping(taskId);
+        if (null != hostname) {
+            taskScheduler.getTaskUnAssigner().call(taskId, hostname);
         }
     }
     

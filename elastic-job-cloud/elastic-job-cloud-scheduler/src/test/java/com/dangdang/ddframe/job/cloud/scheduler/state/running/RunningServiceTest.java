@@ -27,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -92,9 +93,20 @@ public final class RunningServiceTest {
     }
     
     @Test
+    public void assertMappingOperate() {
+        String taskId = TaskNode.builder().build().getTaskNodeValue();
+        assertNull(runningService.popMapping(taskId));
+        runningService.addMapping(taskId, "localhost");
+        assertThat(runningService.popMapping(taskId), is("localhost"));
+        assertNull(runningService.popMapping(taskId));
+    }
+    
+    @Test
     public void assertClear() {
         assertFalse(runningService.getRunningTasks("test_job").isEmpty());
+        runningService.addMapping(TaskNode.builder().build().getTaskNodeValue(), "localhost");
         runningService.clear();
         assertTrue(runningService.getRunningTasks("test_job").isEmpty());
+        assertNull(runningService.popMapping(TaskNode.builder().build().getTaskNodeValue()));
     }
 }

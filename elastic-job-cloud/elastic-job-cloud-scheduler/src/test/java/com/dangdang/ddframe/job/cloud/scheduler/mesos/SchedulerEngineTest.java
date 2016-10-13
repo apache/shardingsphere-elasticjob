@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
+import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.functions.Action2;
 import org.apache.mesos.Protos;
@@ -64,7 +65,7 @@ public final class SchedulerEngineTest {
     public void setUp() throws NoSuchFieldException {
         schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
-        TaskLaunchProcessor.getLAUNCHED_TASKS().clear();
+        new RunningService().clear();
     }
     
     @Test
@@ -139,7 +140,7 @@ public final class SchedulerEngineTest {
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
-        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
+        when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
@@ -152,7 +153,7 @@ public final class SchedulerEngineTest {
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
-        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
+        when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_KILLED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
@@ -166,7 +167,7 @@ public final class SchedulerEngineTest {
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
-        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
+        when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_FAILED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
@@ -181,7 +182,7 @@ public final class SchedulerEngineTest {
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
-        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
+        when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_ERROR).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
@@ -196,7 +197,7 @@ public final class SchedulerEngineTest {
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
-        TaskLaunchProcessor.getLAUNCHED_TASKS().put(taskNode.getTaskNodeValue(), "localhost");
+        when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_LOST).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
