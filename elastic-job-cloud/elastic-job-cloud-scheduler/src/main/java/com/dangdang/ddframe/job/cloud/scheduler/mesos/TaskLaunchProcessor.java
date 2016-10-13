@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.util.BlockUtils;
@@ -30,7 +28,6 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
-import com.netflix.fenzo.TaskRequest;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
@@ -42,7 +39,6 @@ import org.apache.mesos.SchedulerDriver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -75,25 +71,12 @@ public final class TaskLaunchProcessor implements Runnable {
     @Override
     public void run() {
         while (!shutdown) {
-            Collection<JobContext> eligibleJobContexts =  facadeService.getEligibleJobContext();
-            Map<String, Integer> jobShardingTotalCountMap = new HashMap<>(eligibleJobContexts.size(), 1);
-            List<TaskRequest> pendingTasks = new ArrayList<>(eligibleJobContexts.size() * 10);
-            for (JobContext each : eligibleJobContexts) {
-                pendingTasks.addAll(getTaskRequests(each));
-                if (ExecutionType.FAILOVER != each.getType()) {
-                    jobShardingTotalCountMap.put(each.getJobConfig().getJobName(), each.getJobConfig().getTypeConfig().getCoreConfig().getShardingTotalCount());
-                }
-            }
-            Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(pendingTasks, leasesQueue.drainTo()).getResultMap().values();
-            // TODO log判断逻辑不准确,需要调整
-            //logUnassignedJobs(eligibleJobContexts, vmAssignmentResults);
-            Collection<String> integrityViolationJobs = getIntegrityViolationJobs(jobShardingTotalCountMap, vmAssignmentResults);
-            // TODO log判断逻辑不准确,需要调整
-            //logIntegrityViolationJobs(integrityViolationJobs);
+            LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
+            Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), leasesQueue.drainTo()).getResultMap().values();
             for (VMAssignmentResult each: vmAssignmentResults) {
                 List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
                 List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
-                taskInfoList.addAll(getTaskInfoList(integrityViolationJobs, each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
+                taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
                 schedulerDriver.launchTasks(getOfferIDs(leasesUsed), taskInfoList);
                 facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
                     
@@ -104,61 +87,6 @@ public final class TaskLaunchProcessor implements Runnable {
                 }));
             }
             BlockUtils.waitingShortTime();
-        }
-    }
-    
-    private Collection<TaskRequest> getTaskRequests(final JobContext jobContext) {
-        Collection<TaskRequest> result = new ArrayList<>(jobContext.getAssignedShardingItems().size());
-        CloudJobConfiguration jobConfig = jobContext.getJobConfig();
-        for (int each : jobContext.getAssignedShardingItems()) {
-            result.add(new JobTaskRequest(new TaskContext(jobConfig.getJobName(), each, jobContext.getType(), "fake-slave"), jobConfig));
-        }
-        return result;
-    }
-    
-    private void logUnassignedJobs(final Collection<JobContext> eligibleJobContexts, final Collection<VMAssignmentResult> vmAssignmentResults) {
-        for (JobContext each : eligibleJobContexts) {
-            if (!isAssigned(each, vmAssignmentResults) && !facadeService.isRunning(each.getJobConfig().getJobName())) {
-                log.warn("Job {} is not assigned at this time, because resources not enough.", each.getJobConfig().getJobName());
-            }
-        }
-    }
-    
-    private boolean isAssigned(final JobContext jobContext, final Collection<VMAssignmentResult> vmAssignmentResults) {
-        for (VMAssignmentResult vmAssignmentResult: vmAssignmentResults) {
-            for (TaskAssignmentResult taskAssignmentResult : vmAssignmentResult.getTasksAssigned()) {
-                if (jobContext.getJobConfig().getJobName().equals(TaskContext.from(taskAssignmentResult.getTaskId()).getMetaInfo().getJobName())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
-    private Collection<String> getIntegrityViolationJobs(final Map<String, Integer> jobShardingTotalCountMap, final Collection<VMAssignmentResult> vmAssignmentResults) {
-        Map<String, Integer> assignedJobShardingTotalCountMap = new HashMap<>(jobShardingTotalCountMap.size(), 1);
-        for (VMAssignmentResult vmAssignmentResult: vmAssignmentResults) {
-            for (TaskAssignmentResult tasksAssigned: vmAssignmentResult.getTasksAssigned()) {
-                String jobName = TaskContext.from(tasksAssigned.getTaskId()).getMetaInfo().getJobName();
-                if (assignedJobShardingTotalCountMap.containsKey(jobName)) {
-                    assignedJobShardingTotalCountMap.put(jobName, assignedJobShardingTotalCountMap.get(jobName) + 1);
-                } else {
-                    assignedJobShardingTotalCountMap.put(jobName, 1);
-                }
-            }
-        }
-        Collection<String> result = new HashSet<>(assignedJobShardingTotalCountMap.size(), 1);
-        for (Map.Entry<String, Integer> entry : assignedJobShardingTotalCountMap.entrySet()) {
-            if (jobShardingTotalCountMap.containsKey(entry.getKey()) && !entry.getValue().equals(jobShardingTotalCountMap.get(entry.getKey()))) {
-                result.add(entry.getKey());
-            }
-        }
-        return result;
-    }
-    
-    private void logIntegrityViolationJobs(final Collection<String> integrityViolationJobs) {
-        for (String each : integrityViolationJobs) {
-            log.warn("Job {} is not assigned at this time, because resources not enough to run all sharding instances.", each);
         }
     }
     
@@ -213,10 +141,10 @@ public final class TaskLaunchProcessor implements Runnable {
     }
     
     private List<Protos.OfferID> getOfferIDs(final List<VirtualMachineLease> leasesUsed) {
-        List<Protos.OfferID> offerIDs = new ArrayList<>();
+        List<Protos.OfferID> result = new ArrayList<>();
         for (VirtualMachineLease virtualMachineLease: leasesUsed) {
-            offerIDs.add(virtualMachineLease.getOffer().getId());
+            result.add(virtualMachineLease.getOffer().getId());
         }
-        return offerIDs;
+        return result;
     }
 }

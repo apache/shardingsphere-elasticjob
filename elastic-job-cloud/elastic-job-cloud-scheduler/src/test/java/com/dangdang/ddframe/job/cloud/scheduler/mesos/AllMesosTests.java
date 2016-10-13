@@ -26,7 +26,8 @@ import org.junit.runners.Suite;
         JobTaskRequestTest.class, 
         TaskInfoDataTest.class, 
         FacadeServiceTest.class, 
-        SchedulerEngineTest.class
+        SchedulerEngineTest.class,
+        LaunchingTasksTest.class
     })
 public final class AllMesosTests {
 }
