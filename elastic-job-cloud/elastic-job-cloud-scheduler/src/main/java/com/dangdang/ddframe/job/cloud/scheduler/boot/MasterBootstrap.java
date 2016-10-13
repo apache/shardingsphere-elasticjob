@@ -96,7 +96,7 @@ public final class MasterBootstrap {
     
     private TaskScheduler getTaskScheduler() {
         return new TaskScheduler.Builder()
-                .withLeaseOfferExpirySecs(1000000000)
+                .withLeaseOfferExpirySecs(1000000000L)
                 .withLeaseRejectAction(new Action1<VirtualMachineLease>() {
                     
                     @Override

@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public final class TaskExecutor implements Executor {
     
-    private static final int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+    private static final int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 100;
     
     private ExecutorService executorService = 
             MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(THREAD_SIZE, THREAD_SIZE, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
