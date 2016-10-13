@@ -18,10 +18,13 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import lombok.Getter;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,6 +37,7 @@ public class RunningService {
     
     private static final int TASK_INITIAL_SIZE = 1024;
     
+    @Getter
     private static final ConcurrentHashMap<String, Set<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(TASK_INITIAL_SIZE);
     
     private static final ConcurrentHashMap<String, String> TASK_HOSTNAME_MAPPER = new ConcurrentHashMap<>(TASK_INITIAL_SIZE);
@@ -104,6 +108,17 @@ public class RunningService {
     public Collection<TaskContext> getRunningTasks(final String jobName) {
         RUNNING_TASKS.putIfAbsent(jobName, Collections.synchronizedSet(new HashSet<TaskContext>(16)));
         return RUNNING_TASKS.get(jobName);
+    }
+    
+    /**
+     * 获取运行中的全部任务.
+     *
+     * @return 运行中的全部任务
+     */
+    public Map<String, Set<TaskContext>> getAllRunningTasks() {
+        Map<String, Set<TaskContext>> result = new HashMap<>(RUNNING_TASKS.size(), 1);
+        result.putAll(RUNNING_TASKS);
+        return result;
     }
     
     /**

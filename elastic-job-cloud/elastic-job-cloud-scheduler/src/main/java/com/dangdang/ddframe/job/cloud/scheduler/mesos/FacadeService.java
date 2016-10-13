@@ -230,5 +230,6 @@ public class FacadeService {
         // TODO 停止作业调度
         runningService.clear();
         TaskLaunchProcessor.shutdown();
+        StatisticsProcessor.shutdown();
     }
 }

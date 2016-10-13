@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsProcessor;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
@@ -69,6 +70,7 @@ public final class MasterBootstrap {
         final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         producerManager.startup();
         new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService)).start();
+        new Thread(new StatisticsProcessor()).start();
         Runtime.getRuntime().addShutdownHook(new Thread() {
             
             @Override
