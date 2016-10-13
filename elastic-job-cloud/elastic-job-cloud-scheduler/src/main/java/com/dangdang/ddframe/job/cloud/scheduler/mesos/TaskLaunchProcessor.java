@@ -98,9 +98,9 @@ public final class TaskLaunchProcessor implements Runnable {
                 Protos.TaskInfo taskInfo = getTaskInfo(slaveId, each);
                 if (null != taskInfo) {
                     result.add(getTaskInfo(slaveId, each));
+                    facadeService.addMapping(taskInfo.getTaskId().getValue(), hostname);
+                    taskScheduler.getTaskAssigner().call(each.getRequest(), hostname);
                 }
-                facadeService.addMapping(taskInfo.getTaskId().getValue(), hostname);
-                taskScheduler.getTaskAssigner().call(each.getRequest(), hostname);
             }
         }
         return result;
