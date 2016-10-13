@@ -130,7 +130,7 @@ public final class BootstrapEnvironment {
         
         PORT("http_port", "8899", true),
         
-        APP_CACHE_ENABLE("app_cache_enable", "true", true),
+        APP_CACHE_ENABLE("app_cache_enable", "false", true),
         
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true);
         

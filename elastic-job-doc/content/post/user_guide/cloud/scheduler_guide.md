@@ -28,7 +28,7 @@ weight=54
 | zk_namespace                     | 否      | elastic-job-cloud           | `Elastic-Job-Cloud`所使用的`Zookeeper`命名空间              |
 | zk_digest                        | 否      |                             | `Elastic-Job-Cloud`所使用的`Zookeeper`登录凭证              |
 | http_port                        | `是`    | 8899                        | `Restful API`所使用的端口号                                 |
-| app_cache_enable                 | `是`    | true                        | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地 |
+| app_cache_enable                 | `是`    | false                       | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地 |
 | job_state_queue_size             | `是`    | 10000                       | 堆积作业最大值, 超过此阀值的堆积作业将直接丢弃。阀值过大可能会导致`Zookeeper`无响应，应根据实测情况调整 |
 
 ***
