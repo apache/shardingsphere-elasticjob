@@ -20,9 +20,10 @@ package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 任务运行时服务.
@@ -31,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class RunningService {
     
-    private static final ConcurrentHashMap<String, Set<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(Integer.MAX_VALUE); 
+    private static final ConcurrentHashMap<String, Set<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(1024); 
     
     /**
      * 将任务运行时上下文放入运行时队列.
@@ -97,14 +98,8 @@ public class RunningService {
      * @return 运行中的任务集合
      */
     public Collection<TaskContext> getRunningTasks(final String jobName) {
-        Set<TaskContext> result;
-        if (RUNNING_TASKS.containsKey(jobName)) {
-            result = RUNNING_TASKS.get(jobName);
-        } else {
-            result = new CopyOnWriteArraySet<>();
-            RUNNING_TASKS.put(jobName, result);
-        }
-        return result;
+        RUNNING_TASKS.putIfAbsent(jobName, Collections.synchronizedSet(new HashSet<TaskContext>(16)));
+        return RUNNING_TASKS.get(jobName);
     }
     
     /**

@@ -102,6 +102,7 @@ public final class SchedulerEngineTest {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).addRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), false);
     }
     
@@ -110,6 +111,7 @@ public final class SchedulerEngineTest {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).addRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), true);
     }
     
@@ -118,6 +120,7 @@ public final class SchedulerEngineTest {
         TaskNode taskNode = TaskNode.builder().build();
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_RUNNING).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).addRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService, times(0)).updateDaemonStatus(TaskContext.from(taskNode.getTaskNodeValue()), eq(anyBoolean()));
     }
     

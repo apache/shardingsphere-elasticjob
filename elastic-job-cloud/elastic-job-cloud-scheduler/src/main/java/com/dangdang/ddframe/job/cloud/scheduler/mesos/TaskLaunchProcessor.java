@@ -107,9 +107,6 @@ public final class TaskLaunchProcessor implements Runnable {
                         return TaskContext.from(input.getTaskId().getValue());
                     }
                 }));
-                for (Protos.TaskInfo taskInfo : taskInfoList) {
-                    facadeService.addRunning(TaskContext.from(taskInfo.getTaskId().getValue()));
-                }
             }
             BlockUtils.waitingShortTime();
         }
