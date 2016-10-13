@@ -77,7 +77,6 @@ public final class SchedulerEngine implements Scheduler {
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
-                facadeService.addRunning(taskContext);
                 if ("BEGIN".equals(taskStatus.getMessage())) {
                     facadeService.updateDaemonStatus(taskContext, false);
                 } else if ("COMPLETE".equals(taskStatus.getMessage())) {

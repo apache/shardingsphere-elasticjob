@@ -77,7 +77,9 @@ public final class TaskLaunchProcessor implements Runnable {
                 List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
                 List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
                 taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
-                schedulerDriver.launchTasks(getOfferIDs(leasesUsed), taskInfoList);
+                for (Protos.TaskInfo taskInfo : taskInfoList) {
+                    facadeService.addRunning(TaskContext.from(taskInfo.getTaskId().getValue()));
+                }
                 facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
                     
                     @Override
@@ -85,6 +87,7 @@ public final class TaskLaunchProcessor implements Runnable {
                         return TaskContext.from(input.getTaskId().getValue());
                     }
                 }));
+                schedulerDriver.launchTasks(getOfferIDs(leasesUsed), taskInfoList);
             }
             BlockUtils.waitingShortTime();
         }
