@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.reg.zookeeper;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.exception.RegException;
 import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
@@ -40,14 +41,8 @@ import org.apache.zookeeper.data.ACL;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -83,7 +78,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
             builder.connectionTimeoutMs(zkConfig.getConnectionTimeoutMilliseconds());
         }
         if (!Strings.isNullOrEmpty(zkConfig.getDigest())) {
-            builder.authorization("digest", zkConfig.getDigest().getBytes(Charset.forName("UTF-8")))
+            builder.authorization("digest", zkConfig.getDigest().getBytes(Charsets.UTF_8))
                    .aclProvider(new ACLProvider() {
                        
                        @Override
@@ -117,7 +112,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     private void fillData() throws Exception {
         for (Entry<Object, Object> entry : loadLocalProperties().entrySet()) {
             String key = entry.getKey().toString();
-            byte[] value = entry.getValue().toString().getBytes(Charset.forName("UTF-8"));
+            byte[] value = entry.getValue().toString().getBytes(Charsets.UTF_8);
             if (null == client.checkExists().forPath(key)) {
                 client.create().creatingParentsIfNeeded().forPath(key, value);
             } else if (zkConfig.isOverwrite() || 0 == client.getData().forPath(key).length) {
@@ -169,7 +164,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         }
         ChildData resultInCache = cache.getCurrentData(key);
         if (null != resultInCache) {
-            return null == resultInCache.getData() ? null : new String(resultInCache.getData(), Charset.forName("UTF-8"));
+            return null == resultInCache.getData() ? null : new String(resultInCache.getData(), Charsets.UTF_8);
         }
         return getDirectly(key);
     }
@@ -186,7 +181,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     @Override
     public String getDirectly(final String key) {
         try {
-            return new String(client.getData().forPath(key), Charset.forName("UTF-8"));
+            return new String(client.getData().forPath(key), Charsets.UTF_8);
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -230,7 +225,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     public void persist(final String key, final String value) {
         try {
             if (!isExisted(key)) {
-                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(key, value.getBytes());
+                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(key, value.getBytes(Charsets.UTF_8));
             } else {
                 update(key, value);
             }
@@ -244,7 +239,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     @Override
     public void update(final String key, final String value) {
         try {
-            client.inTransaction().check().forPath(key).and().setData().forPath(key, value.getBytes(Charset.forName("UTF-8"))).and().commit();
+            client.inTransaction().check().forPath(key).and().setData().forPath(key, value.getBytes(Charsets.UTF_8)).and().commit();
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -258,7 +253,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
             if (isExisted(key)) {
                 client.delete().deletingChildrenIfNeeded().forPath(key);
             }
-            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(Charset.forName("UTF-8")));
+            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(Charsets.UTF_8));
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
@@ -269,7 +264,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     @Override
     public String persistSequential(final String key, final String value) {
         try {
-            return client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(key, value.getBytes(Charset.forName("UTF-8")));
+            return client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(key, value.getBytes(Charsets.UTF_8));
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
