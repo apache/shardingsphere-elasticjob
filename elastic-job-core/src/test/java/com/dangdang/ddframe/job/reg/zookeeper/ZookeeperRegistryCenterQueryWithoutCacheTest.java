@@ -24,6 +24,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static junit.framework.TestCase.assertNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -65,6 +66,14 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     }
     
     @Test
+    public void assertGetNumChildren() {
+        assertThat(zkRegCenter.getNumChildren("/test"), is(2));
+        assertThat(zkRegCenter.getNumChildren("/test/deep"), is(1));
+        assertThat(zkRegCenter.getNumChildren("/test/child"), is(0));
+        assertThat(zkRegCenter.getNumChildren("/test/notExisted"), is(0));
+    }
+    
+    @Test
     public void assertIsExisted() {
         assertTrue(zkRegCenter.isExisted("/test"));
         assertTrue(zkRegCenter.isExisted("/test/deep/nested"));
@@ -74,5 +83,11 @@ public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     @Test
     public void assertGetRegistryCenterTime() {
         assertTrue(zkRegCenter.getRegistryCenterTime("/_systemTime/current") <= System.currentTimeMillis());
+    }
+    
+    
+    @Test
+    public void assertGetWithoutNode() {
+        assertNull(zkRegCenter.get("/notExisted"));
     }
 }

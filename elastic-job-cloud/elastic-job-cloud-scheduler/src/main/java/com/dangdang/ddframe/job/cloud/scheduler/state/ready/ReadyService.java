@@ -71,7 +71,7 @@ public class ReadyService {
      * @param jobName 作业名称
      */
     public void addTransient(final String jobName) {
-        if (regCenter.getChildrenKeys(ReadyNode.ROOT).size() > env.getFrameworkConfiguration().getJobStateQueueSize()) {
+        if (regCenter.getNumChildren(ReadyNode.ROOT) > env.getFrameworkConfiguration().getJobStateQueueSize()) {
             log.error("Cannot add transient job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }

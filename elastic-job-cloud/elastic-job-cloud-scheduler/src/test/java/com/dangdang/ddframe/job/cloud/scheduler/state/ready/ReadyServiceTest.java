@@ -103,7 +103,7 @@ public final class ReadyServiceTest {
     @Test
     public void assertAddTransientWithOverJobQueueSize() {
         when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(mockedReadyQueue);
-        when(regCenter.getChildrenKeys(ReadyNode.ROOT).size()).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
+        when(regCenter.getNumChildren(ReadyNode.ROOT)).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
         readyService.addTransient("test_job");
         verify(regCenter, times(0)).persist("/state/ready/test_job", "");
     }

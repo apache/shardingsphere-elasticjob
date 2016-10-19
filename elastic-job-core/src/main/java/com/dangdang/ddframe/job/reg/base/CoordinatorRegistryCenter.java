@@ -43,6 +43,14 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     List<String> getChildrenKeys(String key);
     
     /**
+     * 获取子节点数量.
+     *
+     * @param key 键
+     * @return 子节点数量
+     */
+    int getNumChildren(String key);
+    
+    /**
      * 持久化临时注册数据.
      * 
      * @param key 键

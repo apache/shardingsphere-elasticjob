@@ -37,6 +37,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
+import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -195,6 +196,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         }
     }
     
+    @Override
     public List<String> getChildrenKeys(final String key) {
         try {
             List<String> result = client.getChildren().forPath(key);
@@ -212,6 +214,26 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
             RegExceptionHandler.handleException(ex);
             return Collections.emptyList();
         }
+    }
+    
+    @Override
+    public int getNumChildren(final String key) {
+        try {
+            Stat stat = client.getZookeeperClient().getZooKeeper().exists(getNameSpace() + key, false);
+            if (null != stat) {
+                return stat.getNumChildren();   
+            }
+            //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            //CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+        return 0;
+    }
+    
+    private String getNameSpace() {
+        String result = this.getZkConfig().getNamespace();
+        return Strings.isNullOrEmpty(result) ? "" : "/" + result;
     }
     
     @Override
