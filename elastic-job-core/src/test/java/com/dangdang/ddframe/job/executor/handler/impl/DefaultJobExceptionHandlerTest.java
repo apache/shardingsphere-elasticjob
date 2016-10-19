@@ -31,6 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
 
+import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,6 +54,6 @@ public final class DefaultJobExceptionHandlerTest {
     @Test
     public void assertHandleException() {
         new DefaultJobExceptionHandler().handleException("test_job", new RuntimeException("test"));
-        verify(caller).call();
+        verify(caller, atMost(1)).call();
     }
 }
