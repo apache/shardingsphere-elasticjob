@@ -34,6 +34,7 @@ import com.netflix.fenzo.VirtualMachineLease;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public final class TaskLaunchProcessor implements Runnable {
                 for (Protos.TaskInfo taskInfo : taskInfoList) {
                     facadeService.addRunning(TaskContext.from(taskInfo.getTaskId().getValue()));
                 }
-                facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
+                facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<TaskInfo, TaskContext>() {
                     
                     @Override
                     public TaskContext apply(final Protos.TaskInfo input) {
