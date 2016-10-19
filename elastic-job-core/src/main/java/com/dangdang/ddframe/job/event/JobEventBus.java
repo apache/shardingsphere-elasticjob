@@ -17,13 +17,18 @@
 
 package com.dangdang.ddframe.job.event;
 
+import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
+import com.google.common.util.concurrent.MoreExecutors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 运行痕迹事件总线.
@@ -85,8 +90,10 @@ public final class JobEventBus {
     
     @RequiredArgsConstructor
     private class JobEventBusInstance {
+    
+        private final int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 10;
         
-        private final EventBus eventBus = new EventBus();
+        private final EventBus eventBus = new AsyncEventBus(MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(THREAD_SIZE, THREAD_SIZE, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>()))));
         
         private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
         
