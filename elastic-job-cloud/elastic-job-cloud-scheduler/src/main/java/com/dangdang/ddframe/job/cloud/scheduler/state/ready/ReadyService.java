@@ -23,22 +23,18 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.cloud.scheduler.state.UniqueJob;
 import com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 待运行作业队列服务.
@@ -79,7 +75,9 @@ public class ReadyService {
         if (!cloudJobConfig.isPresent() || JobExecutionType.TRANSIENT != cloudJobConfig.get().getJobExecutionType()) {
             return;
         }
-        regCenter.persist(ReadyNode.getReadyJobNodePath(new UniqueJob(jobName).getUniqueName()), "");
+        String readyJobNode = ReadyNode.getReadyJobNodePath(jobName);
+        String times = regCenter.getDirectly(readyJobNode);
+        regCenter.persist(readyJobNode, Integer.toString(null == times ? 1 : Integer.parseInt(times) + 1));
     }
     
     /**
@@ -88,7 +86,7 @@ public class ReadyService {
      * @param jobName 作业名称
      */
     public void addDaemon(final String jobName) {
-        if (regCenter.getChildrenKeys(ReadyNode.ROOT).size() > env.getFrameworkConfiguration().getJobStateQueueSize()) {
+        if (regCenter.getNumChildren(ReadyNode.ROOT) > env.getFrameworkConfiguration().getJobStateQueueSize()) {
             log.error("Cannot add daemon job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
@@ -96,12 +94,7 @@ public class ReadyService {
         if (!cloudJobConfig.isPresent() || JobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType()) {
             return;
         }
-        for (String each : regCenter.getChildrenKeys(ReadyNode.ROOT)) {
-            if (UniqueJob.from(each).getJobName().equals(jobName)) {
-                return;
-            }
-        }
-        regCenter.persist(ReadyNode.getReadyJobNodePath(new UniqueJob(jobName).getUniqueName()), "");
+        regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");
     }
     
     /**
@@ -121,22 +114,20 @@ public class ReadyService {
                 return input.getJobConfig().getJobName();
             }
         });
-        List<String> uniqueNames = regCenter.getChildrenKeys(ReadyNode.ROOT);
-        List<JobContext> result = new ArrayList<>(uniqueNames.size());
-        Set<String> assignedJobNames = new HashSet<>(uniqueNames.size(), 1);
-        for (String each : uniqueNames) {
-            String jobName = UniqueJob.from(each).getJobName();
-            if (assignedJobNames.contains(jobName) || ineligibleJobNames.contains(jobName)) {
+        List<String> jobNames = regCenter.getChildrenKeys(ReadyNode.ROOT);
+        List<JobContext> result = new ArrayList<>(jobNames.size());
+        for (String each : jobNames) {
+            if (ineligibleJobNames.contains(each)) {
                 continue;
             }
-            Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+            Optional<CloudJobConfiguration> jobConfig = configService.load(each);
             if (!jobConfig.isPresent()) {
                 regCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 continue;
             }
-            if (runningService.isJobRunning(jobName)) {
+            if (runningService.isJobRunning(each)) {
                 if (jobConfig.get().getTypeConfig().getCoreConfig().isMisfire()) {
-                    misfiredService.add(jobName);
+                    misfiredService.add(each);
                 }
                 if (JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
                     result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
@@ -144,7 +135,6 @@ public class ReadyService {
                 continue;
             }
             result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
-            assignedJobNames.add(jobName);
         }
         return result;
     }
@@ -155,27 +145,15 @@ public class ReadyService {
      * @param jobNames 待删除的作业名集合
      */
     public void remove(final Collection<String> jobNames) {
-        List<UniqueJob> uniqueJobs = Lists.transform(regCenter.getChildrenKeys(ReadyNode.ROOT), new Function<String, UniqueJob>() {
-            
-            @Override
-            public UniqueJob apply(final String input) {
-                return UniqueJob.from(input);
-            }
-        });
         for (String each : jobNames) {
-            Optional<UniqueJob> uniqueJob = find(each, uniqueJobs);
-            if (uniqueJob.isPresent()) {
-                regCenter.remove(ReadyNode.getReadyJobNodePath(uniqueJob.get().getUniqueName()));
+            String readyJobNode = ReadyNode.getReadyJobNodePath(each);
+            String timesStr = regCenter.getDirectly(readyJobNode);
+            int times = null == timesStr ? 0 : Integer.parseInt(timesStr);
+            if (times <= 1) {
+                regCenter.remove(readyJobNode);
+            } else {
+                regCenter.persist(readyJobNode, Integer.toString(times - 1));
             }
         }
-    }
-    
-    private Optional<UniqueJob> find(final String jobName, final List<UniqueJob> uniqueJobs) {
-        for (UniqueJob each : uniqueJobs) {
-            if (jobName.equals(each.getJobName())) {
-                return Optional.of(each);
-            }
-        }
-        return Optional.absent();
     }
 }
