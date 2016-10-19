@@ -132,7 +132,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
             factory.addPropertyValue("url", eventRdbElement.getAttribute(EVENT_RDB_URL_ATTRIBUTE));
             factory.addPropertyValue("username", eventRdbElement.getAttribute(EVENT_RDB_USERNAME_ATTRIBUTE));
             factory.addPropertyValue("password", eventRdbElement.getAttribute(EVENT_RDB_PASSWORD_ATTRIBUTE));
-            factory.addPropertyValue("logLevel", eventRdbElement.getAttribute(EVENT_RDB_LOG_LEVEL_ATTRIBUTE));    
+            factory.addPropertyValue("logLevel", eventRdbElement.getAttribute(EVENT_RDB_LOG_LEVEL_ATTRIBUTE));
         }
         factory.addPropertyValue("logEvent", DomUtils.getChildElementByTagName(element, EVENT_LOG_TAG) != null);
         
