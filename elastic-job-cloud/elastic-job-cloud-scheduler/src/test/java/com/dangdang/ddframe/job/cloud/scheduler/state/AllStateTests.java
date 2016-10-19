@@ -29,7 +29,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        UniqueJobTest.class, 
         ReadyNodeTest.class, 
         ReadyServiceTest.class, 
         MisfiredNodeTest.class, 
