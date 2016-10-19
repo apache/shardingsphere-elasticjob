@@ -67,7 +67,7 @@ public class FailoverService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
-        if (regCenter.getChildrenKeys(FailoverNode.ROOT).size() > env.getFrameworkConfiguration().getJobStateQueueSize()) {
+        if (regCenter.getNumChildren(FailoverNode.ROOT) > env.getFrameworkConfiguration().getJobStateQueueSize()) {
             log.error("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }

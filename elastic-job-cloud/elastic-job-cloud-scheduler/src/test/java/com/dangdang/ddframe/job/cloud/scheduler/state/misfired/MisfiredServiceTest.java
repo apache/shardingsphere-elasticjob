@@ -70,6 +70,13 @@ public final class MisfiredServiceTest {
     }
     
     @Test
+    public void assertAddWithOverJobQueueSize() {
+        when(regCenter.getNumChildren(MisfiredNode.ROOT)).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
+        misfiredService.add("test_job");
+        verify(regCenter, times(0)).persist("/state/misfired/test_job", "");
+    }
+    
+    @Test
     public void assertAddWhenJobIsNotPresent() {
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         misfiredService.add("test_job");
@@ -79,14 +86,6 @@ public final class MisfiredServiceTest {
     @Test
     public void assertAddWhenIsDaemonJob() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
-        misfiredService.add("test_job");
-        verify(regCenter, times(0)).persist("/state/misfired/test_job", "");
-    }
-    
-    @Test
-    public void assertAddWithOverJobQueueSize() {
-        when(regCenter.getChildrenKeys(MisfiredNode.ROOT)).thenReturn(mockedMisfiredQueue);
-        when(regCenter.getChildrenKeys(MisfiredNode.ROOT).size()).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
         misfiredService.add("test_job");
         verify(regCenter, times(0)).persist("/state/misfired/test_job", "");
     }

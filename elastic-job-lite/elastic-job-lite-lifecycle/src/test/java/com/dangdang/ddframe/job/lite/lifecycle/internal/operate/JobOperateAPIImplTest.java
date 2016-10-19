@@ -203,10 +203,10 @@ public final class JobOperateAPIImplTest {
     @Test
     public void assertRemoveWithJobNameAndServerIpWhenIsLastInstance() {
         when(regCenter.isExisted("/test_job/servers/localhost/status")).thenReturn(false);
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Collections.<String>emptyList());
+        when(regCenter.getNumChildren("/test_job/servers")).thenReturn(0);
         assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.of("localhost")), Is.<Collection<String>>is(Collections.<String>emptyList()));
         verify(regCenter).isExisted("/test_job/servers/localhost/status");
-        verify(regCenter).getChildrenKeys("/test_job/servers");
+        verify(regCenter).getNumChildren("/test_job/servers");
         verify(regCenter).remove("/test_job/servers/localhost");
         verify(regCenter).remove("/test_job");
     }
@@ -214,10 +214,10 @@ public final class JobOperateAPIImplTest {
     @Test
     public void assertRemoveWithJobNameAndServerIpWhenIsNotLastInstance() {
         when(regCenter.isExisted("/test_job/servers/localhost/status")).thenReturn(false);
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Collections.singletonList("other_host"));
+        when(regCenter.getNumChildren("/test_job/servers")).thenReturn(1);
         assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.of("localhost")), Is.<Collection<String>>is(Collections.<String>emptyList()));
         verify(regCenter).isExisted("/test_job/servers/localhost/status");
-        verify(regCenter).getChildrenKeys("/test_job/servers");
+        verify(regCenter).getNumChildren("/test_job/servers");
         verify(regCenter).remove("/test_job/servers/localhost");
         verify(regCenter, times(0)).remove("/test_job");
     }
@@ -230,8 +230,9 @@ public final class JobOperateAPIImplTest {
         assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.<String>absent()), Is.<Collection<String>>is(Collections.singletonList("ip2")));
         verify(regCenter).isExisted("/test_job/servers/ip1/status");
         verify(regCenter).isExisted("/test_job/servers/ip2/status");
-        verify(regCenter, times(2)).getChildrenKeys("/test_job/servers");
+        verify(regCenter).getChildrenKeys("/test_job/servers");
         verify(regCenter).remove("/test_job/servers/ip1");
+        verify(regCenter).getNumChildren("/test_job/servers");
         verify(regCenter, times(0)).remove("/test_job/servers/ip2");
     }
     

@@ -63,7 +63,7 @@ public class MisfiredService {
      * @param jobName 作业名称
      */
     public void add(final String jobName) {
-        if (regCenter.getChildrenKeys(MisfiredNode.ROOT).size() > env.getFrameworkConfiguration().getJobStateQueueSize()) {
+        if (regCenter.getNumChildren(MisfiredNode.ROOT) > env.getFrameworkConfiguration().getJobStateQueueSize()) {
             log.error("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }

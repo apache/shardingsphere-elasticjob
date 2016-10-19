@@ -123,7 +123,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
                     return false;
                 }
                 regCenter.remove(jobNodePath.getServerNodePath(serverIp));
-                if (regCenter.getChildrenKeys(jobNodePath.getServerNodePath()).isEmpty()) {
+                if (0 == regCenter.getNumChildren(jobNodePath.getServerNodePath())) {
                     regCenter.remove("/" + jobName);
                 }
                 return true;
