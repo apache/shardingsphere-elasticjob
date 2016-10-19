@@ -86,9 +86,8 @@ public final class ConfigurationServiceTest {
         assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
         verify(regCenter).isExisted("/config");
         verify(regCenter).getChildrenKeys("/config");
-        verify(regCenter).isExisted("/config/test_job_1");
-        verify(regCenter).isExisted("/config/test_job_2");
         verify(regCenter).get("/config/test_job_1");
+        verify(regCenter).get("/config/test_job_2");
     }
     
     @Test

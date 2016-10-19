@@ -94,7 +94,7 @@ public final class CloudJobRestfulApiTest {
     public void assertDeregister() throws Exception {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job"), is(204));
-        verify(regCenter).isExisted("/config/test_job");
+        verify(regCenter).get("/config/test_job");
     }
     
     private static int sentRequest(final String url, final String method, final String content) throws Exception {
