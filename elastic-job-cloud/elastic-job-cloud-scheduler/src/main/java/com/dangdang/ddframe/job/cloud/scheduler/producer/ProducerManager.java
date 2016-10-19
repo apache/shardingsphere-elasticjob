@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
@@ -127,9 +126,7 @@ public class ProducerManager {
      */
     public void unschedule(final String jobName) {
         lifecycleService.killJob(jobName);
-        for (TaskContext each : runningService.getRunningTasks(jobName)) {
-            runningService.remove(each);
-        }
+        runningService.remove(jobName);
         readyService.remove(Lists.newArrayList(jobName));
     }
     

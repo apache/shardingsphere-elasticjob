@@ -21,12 +21,11 @@ import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import lombok.Getter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 任务运行时服务.
@@ -63,6 +62,15 @@ public class RunningService {
                 each.setIdle(isIdle);
             }
         }
+    }
+    
+    /**
+     * 将作业从运行时队列删除.
+     *
+     * @param jobName 作业名称
+     */
+    public void remove(final String jobName) {
+        RUNNING_TASKS.remove(jobName);
     }
     
     /**
@@ -106,7 +114,7 @@ public class RunningService {
      * @return 运行中的任务集合
      */
     public Collection<TaskContext> getRunningTasks(final String jobName) {
-        RUNNING_TASKS.putIfAbsent(jobName, Collections.synchronizedSet(new HashSet<TaskContext>(16)));
+        RUNNING_TASKS.putIfAbsent(jobName, new CopyOnWriteArraySet<TaskContext>());
         return RUNNING_TASKS.get(jobName);
     }
     

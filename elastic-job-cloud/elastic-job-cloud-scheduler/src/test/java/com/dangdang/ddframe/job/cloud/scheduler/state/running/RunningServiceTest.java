@@ -72,7 +72,13 @@ public final class RunningServiceTest {
     }
     
     @Test
-    public void assertRemove() {
+    public void assertRemoveByJobName() {
+        runningService.remove("test_job");
+        assertTrue(runningService.getRunningTasks("test_job").isEmpty());
+    }
+    
+    @Test
+    public void assertRemoveByTaskContext() {
         runningService.remove(taskContext);
         assertTrue(runningService.getRunningTasks("test_job").isEmpty());
     }
