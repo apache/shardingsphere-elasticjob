@@ -37,6 +37,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -100,6 +101,8 @@ public final class DaemonTaskScheduler {
         if (!jobRootConfig.getTypeConfig().getCoreConfig().isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
+        result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
+        result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
         return result;
     }
     

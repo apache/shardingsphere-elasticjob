@@ -34,6 +34,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.plugins.management.ShutdownHookPlugin;
 import org.quartz.simpl.SimpleThreadPool;
 
 import java.util.List;
@@ -78,6 +79,8 @@ class TransientProducerScheduler {
         result.put("org.quartz.threadPool.class", SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", Integer.toString(Runtime.getRuntime().availableProcessors() * 2));
         result.put("org.quartz.scheduler.instanceName", "ELASTIC_JOB_CLOUD_TRANSIENT_PRODUCER");
+        result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
+        result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
         return result;
     }
     

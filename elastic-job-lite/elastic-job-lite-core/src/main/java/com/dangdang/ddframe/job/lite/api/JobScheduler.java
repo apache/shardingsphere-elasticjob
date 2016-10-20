@@ -39,6 +39,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Arrays;
 import java.util.Properties;
@@ -105,6 +106,8 @@ public class JobScheduler {
         if (!jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig().getCoreConfig().isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
+        result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
+        result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
         prepareEnvironments(result);
         return result;
     }
