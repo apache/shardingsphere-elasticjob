@@ -51,7 +51,7 @@ public final class JobEventLogListener extends JobEventLogIdentity implements Jo
                 log.info(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
                 break;
             case WARN:
-                log.info(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
+                log.warn(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
                 break;
             case ERROR:
                 log.error(msg, traceEvent.getJobName(), traceEvent.getHostname(), traceEvent.getMessage(), traceEvent.getFailureCause(), format.format(traceEvent.getCreationTime()));
@@ -66,13 +66,13 @@ public final class JobEventLogListener extends JobEventLogIdentity implements Jo
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
         if (null == jobExecutionEvent.getCompleteTime()) {
             String msg = "Elastic-Job execution start => jobName: '{}', hostname: '{}', shardingItem: '{}', executionSource: '{}', startTime: '{}'";
-            log.info(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItem(), jobExecutionEvent.getSource(),
+            log.debug(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItem(), jobExecutionEvent.getSource(),
                     format.format(jobExecutionEvent.getStartTime()));
             return;
         }
         if (jobExecutionEvent.isSuccess()) {
             String msg = "Elastic-Job execution success => jobName: '{}', hostname: '{}', shardingItem: '{}', executionSource: '{}', startTime: '{}', completeTime: '{}'";
-            log.info(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItem(), jobExecutionEvent.getSource(),
+            log.debug(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItem(), jobExecutionEvent.getSource(),
                     format.format(jobExecutionEvent.getStartTime()), format.format(jobExecutionEvent.getCompleteTime()));
             return;
         }

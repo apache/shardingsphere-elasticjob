@@ -45,7 +45,7 @@ public final class StatisticsProcessor implements Runnable {
     @Override
     public void run() {
         while (!shutdown) {
-            log.info("All running tasks are: " + runningService.getAllRunningTasks());
+            log.debug("All running tasks are: " + runningService.getAllRunningTasks());
             BlockUtils.sleep(10000L);
         }
     }

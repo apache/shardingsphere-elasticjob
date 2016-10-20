@@ -64,7 +64,7 @@ public class MisfiredService {
      */
     public void add(final String jobName) {
         if (regCenter.getNumChildren(MisfiredNode.ROOT) > env.getFrameworkConfiguration().getJobStateQueueSize()) {
-            log.error("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
+            log.warn("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);

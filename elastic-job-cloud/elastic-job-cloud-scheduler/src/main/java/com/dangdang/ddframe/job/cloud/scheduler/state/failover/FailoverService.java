@@ -68,7 +68,7 @@ public class FailoverService {
      */
     public void add(final TaskContext taskContext) {
         if (regCenter.getNumChildren(FailoverNode.ROOT) > env.getFrameworkConfiguration().getJobStateQueueSize()) {
-            log.error("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
+            log.warn("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
         Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getMetaInfo().getJobName());

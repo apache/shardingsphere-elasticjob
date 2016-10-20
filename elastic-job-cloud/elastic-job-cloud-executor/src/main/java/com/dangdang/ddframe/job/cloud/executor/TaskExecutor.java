@@ -78,11 +78,11 @@ public final class TaskExecutor implements Executor {
     @Override
     public void frameworkMessage(final ExecutorDriver executorDriver, final byte[] bytes) {
     }
-
+    
     @Override
     public void shutdown(final ExecutorDriver executorDriver) {
     }
-
+    
     @Override
     public void error(final ExecutorDriver executorDriver, final String message) {
         log.error("call executor error, message is: {}", message);

@@ -68,7 +68,7 @@ public class ReadyService {
      */
     public void addTransient(final String jobName) {
         if (regCenter.getNumChildren(ReadyNode.ROOT) > env.getFrameworkConfiguration().getJobStateQueueSize()) {
-            log.error("Cannot add transient job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
+            log.warn("Cannot add transient job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
         Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
@@ -87,7 +87,7 @@ public class ReadyService {
      */
     public void addDaemon(final String jobName) {
         if (regCenter.getNumChildren(ReadyNode.ROOT) > env.getFrameworkConfiguration().getJobStateQueueSize()) {
-            log.error("Cannot add daemon job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
+            log.warn("Cannot add daemon job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
         Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
