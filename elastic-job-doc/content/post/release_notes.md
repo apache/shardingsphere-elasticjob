@@ -6,7 +6,7 @@ weight=1
 
 # Release Notes
 
-## 2.0.0-SNAPSHOT
+## 2.0.0
 
 ### 新功能
 
