@@ -91,9 +91,10 @@ public final class JobEventBus {
     @RequiredArgsConstructor
     private class JobEventBusInstance {
     
-        private final int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 10;
+        private  final int threadSize = Runtime.getRuntime().availableProcessors() * 10;
         
-        private final EventBus eventBus = new AsyncEventBus(MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(THREAD_SIZE, THREAD_SIZE, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>()))));
+        private final EventBus eventBus = new AsyncEventBus(
+                MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(threadSize, threadSize, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>()))));
         
         private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
         
