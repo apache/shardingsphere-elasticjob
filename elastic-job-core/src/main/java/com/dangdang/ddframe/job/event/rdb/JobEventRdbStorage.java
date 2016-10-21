@@ -22,8 +22,8 @@ import com.dangdang.ddframe.job.event.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.dbcp.BasicDataSource;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -36,20 +36,15 @@ import java.util.UUID;
  * @author caohao
  */
 @Slf4j
-class JobEventRdbStorage { 
+class JobEventRdbStorage {
     
-    private final BasicDataSource dataSource;
+    private final DataSource dataSource;
     
     private final LogLevel logLevel;
     
     JobEventRdbStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) throws SQLException {
         this.logLevel = logLevel;
-        // TODO 细化pool配置
-        dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(driverClassName);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        dataSource = DataSourceFactory.getDataSource(driverClassName, url, username, password);
         createJobExecutionTable();
         createJobTraceTable();
     }

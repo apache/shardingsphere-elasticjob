@@ -114,8 +114,9 @@ public class RunningService {
      * @return 运行中的任务集合
      */
     public Collection<TaskContext> getRunningTasks(final String jobName) {
-        RUNNING_TASKS.putIfAbsent(jobName, new CopyOnWriteArraySet<TaskContext>());
-        return RUNNING_TASKS.get(jobName);
+        Set<TaskContext> taskContexts = new CopyOnWriteArraySet<>();
+        RUNNING_TASKS.putIfAbsent(jobName, taskContexts);
+        return null == RUNNING_TASKS.get(jobName) ? taskContexts : RUNNING_TASKS.get(jobName);
     }
     
     /**
