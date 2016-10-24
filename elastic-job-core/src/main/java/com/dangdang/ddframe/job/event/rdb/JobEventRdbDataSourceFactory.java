@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zhangliang
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-class DataSourceFactory {
+class JobEventRdbDataSourceFactory {
     
     private static final ConcurrentHashMap<String, DataSource> DATA_SOURCES = new ConcurrentHashMap<>();
     

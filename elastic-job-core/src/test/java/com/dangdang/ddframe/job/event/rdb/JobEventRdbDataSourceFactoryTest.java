@@ -25,12 +25,12 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 
-public final class DataSourceFactoryTest {
+public final class JobEventRdbDataSourceFactoryTest {
     
     @Test
     public void assertGetDataSource() {
-        DataSource actual = DataSourceFactory.getDataSource("mockDriverClass", "mockUrl", "root", "root");
-        assertThat(actual, is(DataSourceFactory.getDataSource("mockDriverClass", "mockUrl", "root", "root")));
-        assertThat(actual, not(DataSourceFactory.getDataSource("mockDriverClass", "otherMockUrl", "root", "root")));
+        DataSource actual = JobEventRdbDataSourceFactory.getDataSource("mockDriverClass", "mockUrl", "root", "root");
+        assertThat(actual, is(JobEventRdbDataSourceFactory.getDataSource("mockDriverClass", "mockUrl", "root", "root")));
+        assertThat(actual, not(JobEventRdbDataSourceFactory.getDataSource("mockDriverClass", "otherMockUrl", "root", "root")));
     }
 }

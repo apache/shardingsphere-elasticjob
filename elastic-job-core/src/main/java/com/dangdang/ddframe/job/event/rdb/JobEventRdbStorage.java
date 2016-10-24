@@ -44,7 +44,7 @@ class JobEventRdbStorage {
     
     JobEventRdbStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) throws SQLException {
         this.logLevel = logLevel;
-        dataSource = DataSourceFactory.getDataSource(driverClassName, url, username, password);
+        dataSource = JobEventRdbDataSourceFactory.getDataSource(driverClassName, url, username, password);
         createJobExecutionTable();
         createJobTraceTable();
     }
