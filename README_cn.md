@@ -147,7 +147,7 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 public class MyElasticJob implements SimpleJob {
     
     @Override
-    public void process(ShardingContext context) {
+    public void execute(ShardingContext context) {
         switch (context.getShardingItem()) {
             case 0: 
                 // do something by sharding item 0
