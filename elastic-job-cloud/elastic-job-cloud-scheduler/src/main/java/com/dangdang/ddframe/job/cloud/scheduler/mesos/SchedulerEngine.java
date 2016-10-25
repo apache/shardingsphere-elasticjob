@@ -109,7 +109,7 @@ public final class SchedulerEngine implements Scheduler {
     private void unAssignTask(final String taskId) {
         String hostname = facadeService.popMapping(taskId);
         if (null != hostname) {
-            taskScheduler.getTaskUnAssigner().call(taskId, hostname);
+            taskScheduler.getTaskUnAssigner().call(TaskContext.getIdForUnassignedSlave(taskId), hostname);
         }
     }
     

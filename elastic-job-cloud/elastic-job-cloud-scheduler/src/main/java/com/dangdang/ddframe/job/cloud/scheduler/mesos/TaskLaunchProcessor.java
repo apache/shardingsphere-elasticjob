@@ -101,7 +101,7 @@ public final class TaskLaunchProcessor implements Runnable {
             if (!integrityViolationJobs.contains(taskContext.getMetaInfo().getJobName()) && !facadeService.isRunning(taskContext)) {
                 Protos.TaskInfo taskInfo = getTaskInfo(slaveId, each);
                 if (null != taskInfo) {
-                    result.add(getTaskInfo(slaveId, each));
+                    result.add(taskInfo);
                     facadeService.addMapping(taskInfo.getTaskId().getValue(), hostname);
                     taskScheduler.getTaskAssigner().call(each.getRequest(), hostname);
                 }
@@ -111,16 +111,16 @@ public final class TaskLaunchProcessor implements Runnable {
     }
     
     private Protos.TaskInfo getTaskInfo(final Protos.SlaveID slaveID, final TaskAssignmentResult taskAssignmentResult) {
-        TaskContext originalTaskContext = TaskContext.from(taskAssignmentResult.getTaskId());
-        int shardingItem = originalTaskContext.getMetaInfo().getShardingItem();
-        TaskContext taskContext = new TaskContext(originalTaskContext.getMetaInfo().getJobName(), shardingItem, originalTaskContext.getType(), slaveID.getValue());
+        TaskContext taskContext = TaskContext.from(taskAssignmentResult.getTaskId());
         Optional<CloudJobConfiguration> jobConfigOptional = facadeService.load(taskContext.getMetaInfo().getJobName());
         if (!jobConfigOptional.isPresent()) {
             return null;
         }
+        taskContext.setSlaveId(slaveID.getValue());
         CloudJobConfiguration jobConfig = jobConfigOptional.get();
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
+        int shardingItem = taskContext.getMetaInfo().getShardingItem();
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
         ShardingContexts shardingContexts = new ShardingContexts(
                 jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);

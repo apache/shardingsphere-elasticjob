@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.scheduler.context;
 import com.dangdang.ddframe.job.util.digest.Encryption;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ import java.util.UUID;
  * @author zhangliang
  * @author caohao
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @EqualsAndHashCode(of = "id")
 @ToString(of = "id")
@@ -43,22 +41,35 @@ public final class TaskContext {
     
     private static final String DELIMITER = "@-@";
     
-    private final String id;
+    private static final String UNASSIGNED_SLAVE_ID = "unassigned-slave";
+    
+    private String id;
     
     private final MetaInfo metaInfo;
     
     private final ExecutionType type;
     
-    private final String slaveId;
+    private String slaveId;
     
     @Setter
     private boolean idle;
+    
+    public TaskContext(final String jobName, final int shardingItem, final ExecutionType type) {
+        this(jobName, shardingItem, type, UNASSIGNED_SLAVE_ID);
+    }
     
     public TaskContext(final String jobName, final int shardingItem, final ExecutionType type, final String slaveId) {
         metaInfo = new MetaInfo(jobName, shardingItem);
         this.type = type;
         this.slaveId = slaveId;
         id = Joiner.on(DELIMITER).join(metaInfo, type, slaveId, UUID.randomUUID().toString());
+    }
+    
+    private TaskContext(final String id, final MetaInfo metaInfo, final ExecutionType type, final String slaveId) {
+        this.id = id;
+        this.metaInfo = metaInfo;
+        this.type = type;
+        this.slaveId = slaveId;
     }
     
     /**
@@ -71,6 +82,26 @@ public final class TaskContext {
         String[] result = id.split(DELIMITER);
         Preconditions.checkState(5 == result.length);
         return new TaskContext(id, new MetaInfo(result[0], Integer.parseInt(result[1])), ExecutionType.valueOf(result[2]), result[3]);
+    }
+    
+    /**
+     * 获取未分配执行服务器前的任务主键.
+     *
+     * @param id 任务主键
+     * @return 未分配执行服务器前的任务主键
+     */
+    public static String getIdForUnassignedSlave(final String id) {
+        return id.replaceAll(TaskContext.from(id).getSlaveId(), UNASSIGNED_SLAVE_ID);
+    }
+    
+    /**
+     * 设置任务执行服务器主键.
+     * 
+     * @param slaveId 任务执行服务器主键
+     */
+    public void setSlaveId(final String slaveId) {
+        id = id.replaceAll(this.slaveId, slaveId);
+        this.slaveId = slaveId;
     }
     
     /**

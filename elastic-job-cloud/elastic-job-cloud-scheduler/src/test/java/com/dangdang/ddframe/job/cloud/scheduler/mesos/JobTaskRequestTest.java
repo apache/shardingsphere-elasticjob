@@ -33,11 +33,11 @@ import static org.junit.Assert.assertThat;
 public final class JobTaskRequestTest {
     
     private JobTaskRequest jobTaskRequest = 
-            new JobTaskRequest(new TaskContext("test_job", 0, ExecutionType.READY, "fake-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
+            new JobTaskRequest(new TaskContext("test_job", 0, ExecutionType.READY, "unassigned-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
     
     @Test
     public void assertGetId() {
-        assertThat(jobTaskRequest.getId(), startsWith("test_job@-@0@-@READY@-@fake-slave"));
+        assertThat(jobTaskRequest.getId(), startsWith("test_job@-@0@-@READY@-@unassigned-slave"));
     }
     
     @Test

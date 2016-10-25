@@ -60,7 +60,7 @@ public final class LaunchingTasks {
     private Collection<TaskRequest> createTaskRequests(final JobContext jobContext) {
         Collection<TaskRequest> result = new ArrayList<>(jobContext.getAssignedShardingItems().size());
         for (int each : jobContext.getAssignedShardingItems()) {
-            result.add(new JobTaskRequest(new TaskContext(jobContext.getJobConfig().getJobName(), each, jobContext.getType(), "fake-slave"), jobContext.getJobConfig()));
+            result.add(new JobTaskRequest(new TaskContext(jobContext.getJobConfig().getJobName(), each, jobContext.getType()), jobContext.getJobConfig()));
         }
         return result;
     }

@@ -141,7 +141,7 @@ public final class SchedulerEngineTest {
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
+        verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
     }
     
     @Test
@@ -155,7 +155,7 @@ public final class SchedulerEngineTest {
                 .setState(Protos.TaskState.TASK_KILLED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
-        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
+        verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
     }
     
     @Test
@@ -170,7 +170,7 @@ public final class SchedulerEngineTest {
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
-        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
+        verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
     }
     
     @Test
@@ -185,7 +185,7 @@ public final class SchedulerEngineTest {
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
-        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
+        verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
     }
     
     @Test
@@ -200,7 +200,7 @@ public final class SchedulerEngineTest {
         verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
-        verify(taskUnAssigner).call(taskNode.getTaskNodeValue(), "localhost");
+        verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
     }
     
     @Test
