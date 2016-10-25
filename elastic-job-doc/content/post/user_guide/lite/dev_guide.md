@@ -44,7 +44,7 @@ public class MyElasticJob implements SimpleJob {
 `Dataflow`类型用于处理数据流，需实现`DataflowJob`接口。该接口提供`2`个方法可供覆盖，分别用于抓取(`fetchData`)和处理(`processData`)数据。
 
 ```java
-public class MyElasticJob implements DataflowElasticJob<Foo> {
+public class MyElasticJob implements DataflowJob<Foo> {
     
     @Override
     public List<Foo> fetchData(ShardingContext context) {
