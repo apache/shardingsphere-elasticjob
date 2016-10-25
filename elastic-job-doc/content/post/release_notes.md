@@ -8,6 +8,9 @@ weight=1
 
 ## 2.0.1-SNAPSHOT
 
+### 缺陷修正
+1. [ISSUE #143](https://github.com/dangdangdotcom/elastic-job/issues/143) elastic-job-cloud-scheduler内存泄漏问题
+
 ## 2.0.0
 
 ### 新功能
