@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.executor.handler.impl;
 import com.dangdang.ddframe.job.executor.handler.ExecutorServiceHandler;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -32,9 +33,29 @@ import java.util.concurrent.TimeUnit;
  */
 public final class DefaultExecutorServiceHandler implements ExecutorServiceHandler {
     
+    private final ThreadPoolExecutor threadPoolExecutor;
+    
+    private final BlockingQueue<Runnable> blockingQueue;
+    
+    public DefaultExecutorServiceHandler() {
+        int threadSize = Runtime.getRuntime().availableProcessors() * 2;
+        blockingQueue = new LinkedBlockingQueue<>();
+        threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, blockingQueue);
+        threadPoolExecutor.allowCoreThreadTimeOut(true);
+    }
+    
     @Override
     public ExecutorService createExecutorService() {
-        int threadSize = Runtime.getRuntime().availableProcessors() * 2;
-        return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(threadSize, threadSize, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
+        return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
+    }
+    
+    @Override
+    public int getActiveThreadCount() {
+        return threadPoolExecutor.getActiveCount();
+    }
+    
+    @Override
+    public int getBlockingQueueSize() {
+        return blockingQueue.size();
     }
 }

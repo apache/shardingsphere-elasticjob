@@ -21,10 +21,14 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.util.concurrent.MoreExecutors;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -88,15 +92,43 @@ public final class JobEventBus {
         }
     }
     
-    @RequiredArgsConstructor
+    // TODO 通过JMX暴露
+    public Map<String, Integer> getBlockingQueueSize() {
+        Map<String, Integer> result = new HashMap<>();
+        for (Entry<String, JobEventBusInstance> each : itemMap.entrySet()) {
+            result.put(each.getKey(), each.getValue().getBlockingQueue().size());
+        }
+        return result;
+    }
+    
+    // TODO 通过JMX暴露
+    public Map<String, Integer> getActiveThreadCount() {
+        Map<String, Integer> result = new HashMap<>();
+        for (Entry<String, JobEventBusInstance> each : itemMap.entrySet()) {
+            result.put(each.getKey(), each.getValue().getThreadPoolExecutor().getActiveCount());
+        }
+        return result;
+    }
+    
     private class JobEventBusInstance {
     
-        private  final int threadSize = Runtime.getRuntime().availableProcessors() * 10;
+        @Getter
+        private final BlockingQueue<Runnable> blockingQueue; 
         
-        private final EventBus eventBus = new AsyncEventBus(
-                MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(threadSize, threadSize, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>()))));
-        
+        @Getter
+        private final ThreadPoolExecutor threadPoolExecutor;
+    
+        private final EventBus eventBus;
+    
         private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
+        
+        JobEventBusInstance() {
+            int threadSize = Runtime.getRuntime().availableProcessors() * 2;
+            blockingQueue = new LinkedBlockingQueue<>();
+            threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, blockingQueue);
+            threadPoolExecutor.allowCoreThreadTimeOut(true);
+            eventBus = new AsyncEventBus(MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor)));
+        }
         
         void register(final Collection<JobEventConfiguration> jobEventConfigs) {
             for (JobEventConfiguration each : jobEventConfigs) {

@@ -47,10 +47,14 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public final class TaskExecutor implements Executor {
     
-    private static final int THREAD_SIZE = Runtime.getRuntime().availableProcessors() * 100;
+    private final ExecutorService executorService;
     
-    private ExecutorService executorService = 
-            MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(new ThreadPoolExecutor(THREAD_SIZE, THREAD_SIZE, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>())));
+    public TaskExecutor() {
+        int threadSize = Runtime.getRuntime().availableProcessors() * 100;
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
+        threadPoolExecutor.allowCoreThreadTimeOut(true);
+        executorService = MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
+    }
     
     @Override
     public void registered(final ExecutorDriver executorDriver, final Protos.ExecutorInfo executorInfo, final Protos.FrameworkInfo frameworkInfo, final Protos.SlaveInfo slaveInfo) {
