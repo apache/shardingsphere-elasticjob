@@ -36,6 +36,7 @@ public class RunningService {
     
     private static final int TASK_INITIAL_SIZE = 1024;
     
+    // TODO 使用JMX导出
     @Getter
     private static final ConcurrentHashMap<String, Set<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(TASK_INITIAL_SIZE);
     

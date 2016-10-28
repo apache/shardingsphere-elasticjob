@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RegistryCenterFactory {
     
-    private static ConcurrentHashMap<HashCode, CoordinatorRegistryCenter> regCenterMap = new ConcurrentHashMap<>(); 
+    private static final ConcurrentHashMap<HashCode, CoordinatorRegistryCenter> REG_CENTER_REGISTRY = new ConcurrentHashMap<>(); 
     
     /**
      * 创建注册中心.
@@ -54,16 +54,17 @@ public final class RegistryCenterFactory {
             hasher.putString(digest.get(), Charsets.UTF_8);
         }
         HashCode hashCode = hasher.hash();
-        if (regCenterMap.containsKey(hashCode)) {
-            return regCenterMap.get(hashCode);
+        CoordinatorRegistryCenter result = REG_CENTER_REGISTRY.get(hashCode);
+        if (null != result) {
+            return result;
         }
         ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(connectString, namespace);
         if (digest.isPresent()) {
             zkConfig.setDigest(digest.get());
         }
-        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(zkConfig);
+        result = new ZookeeperRegistryCenter(zkConfig);
         result.init();
-        regCenterMap.putIfAbsent(hashCode, result);
+        REG_CENTER_REGISTRY.put(hashCode, result);
         return result;
     }
 }

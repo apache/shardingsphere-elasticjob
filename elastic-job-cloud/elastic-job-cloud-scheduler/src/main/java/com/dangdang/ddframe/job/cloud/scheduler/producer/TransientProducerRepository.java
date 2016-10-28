@@ -35,18 +35,17 @@ class TransientProducerRepository {
     
     private final ConcurrentHashMap<JobKey, List<String>> cronTasks = new ConcurrentHashMap<>(256, 1);
     
-    //TODO 并发优化
     synchronized void put(final JobKey jobKey, final String jobName) {
         remove(jobName);
-        if (cronTasks.containsKey(jobKey)) {
-            List<String> taskList = cronTasks.get(jobKey);
-            if (!taskList.contains(jobName)) {
-                taskList.add(jobName);
-            }
-        } else {
-            List<String> taskList = new CopyOnWriteArrayList<>();
+        List<String> taskList = cronTasks.get(jobKey);
+        if (null == taskList) {
+            taskList = new CopyOnWriteArrayList<>();
             taskList.add(jobName);
             cronTasks.put(jobKey, taskList);
+            return;
+        }
+        if (!taskList.contains(jobName)) {
+            taskList.add(jobName);
         }
     }
     
@@ -62,7 +61,8 @@ class TransientProducerRepository {
     }
     
     List<String> get(final JobKey jobKey) {
-        return cronTasks.containsKey(jobKey) ? cronTasks.get(jobKey) : Collections.<String>emptyList();
+        List<String> result = cronTasks.get(jobKey);
+        return null == result ? Collections.<String>emptyList() : result;
     }
     
     boolean containsKey(final JobKey jobKey) {

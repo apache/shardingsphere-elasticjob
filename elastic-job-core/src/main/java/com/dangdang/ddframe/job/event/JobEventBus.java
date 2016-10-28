@@ -43,6 +43,11 @@ public final class JobEventBus {
     
     private final ConcurrentHashMap<String, JobEventBusInstance> itemMap = new ConcurrentHashMap<>();
     
+    /**
+     * 获取运行痕迹事件总线单例.
+     * 
+     * @return 运行痕迹事件总线单例
+     */
     public static JobEventBus getInstance() {
         if (null == instance) {
             synchronized (JobEventBus.class) {
@@ -60,9 +65,14 @@ public final class JobEventBus {
      * @param jobName 作业名
      * @param jobEventConfigs 作业事件配置
      */
-    public synchronized void register(final String jobName, final Collection<JobEventConfiguration> jobEventConfigs) {
-        itemMap.putIfAbsent(jobName, new JobEventBusInstance());
-        itemMap.get(jobName).register(jobEventConfigs);
+    public void register(final String jobName, final Collection<JobEventConfiguration> jobEventConfigs) {
+        JobEventBusInstance newValue = new JobEventBusInstance();
+        JobEventBusInstance originalValue = itemMap.putIfAbsent(jobName, newValue);
+        if (null != originalValue) {
+            originalValue.register(jobEventConfigs);
+        } else {
+            newValue.register(jobEventConfigs);
+        }
     }
     
     /**
@@ -70,10 +80,10 @@ public final class JobEventBus {
      *
      * @param jobEvent 作业事件
      */
-    public synchronized void post(final JobEvent jobEvent) {
-        String jobName = jobEvent.getJobName();
-        if (itemMap.containsKey(jobName)) {
-            itemMap.get(jobName).post(jobEvent);
+    public void post(final JobEvent jobEvent) {
+        JobEventBusInstance jobEventBusInstance = itemMap.get(jobEvent.getJobName());
+        if (null != jobEventBusInstance) {
+            jobEventBusInstance.post(jobEvent);
         }
     }
     
@@ -82,9 +92,10 @@ public final class JobEventBus {
      * 
      * @param jobName 作业名
      */
-    public synchronized void clearListeners(final String jobName) {
-        if (itemMap.containsKey(jobName)) {
-            itemMap.get(jobName).clearListeners();
+    public void clearListeners(final String jobName) {
+        JobEventBusInstance jobEventBusInstance = itemMap.get(jobName);
+        if (null != jobEventBusInstance) {
+            jobEventBusInstance.clearListeners();
         }
     }
     
@@ -138,7 +149,7 @@ public final class JobEventBus {
             }
         }
         
-        void clearListeners() {
+        synchronized void clearListeners() {
             for (Object each : listeners.values()) {
                 eventBus.unregister(each);
             }
