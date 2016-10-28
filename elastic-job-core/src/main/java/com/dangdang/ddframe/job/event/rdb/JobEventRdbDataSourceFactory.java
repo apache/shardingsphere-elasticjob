@@ -17,6 +17,9 @@
 
 package com.dangdang.ddframe.job.event.rdb;
 
+import com.google.common.base.Charsets;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -32,12 +35,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class JobEventRdbDataSourceFactory {
     
-    private static final ConcurrentHashMap<String, DataSource> DATA_SOURCES = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<HashCode, DataSource> DATA_SOURCES = new ConcurrentHashMap<>();
     
     static DataSource getDataSource(final String driverClassName, final String url, final String username, final String password) {
         DataSource dataSource = createDataSource(driverClassName, url, username, password);
-        DataSource result = DATA_SOURCES.putIfAbsent(url, dataSource);
+        HashCode hashCode = buildHashCode(url, username, password);
+        DataSource result = DATA_SOURCES.putIfAbsent(hashCode, dataSource);
         return null == result ? dataSource : result;
+    }
+    
+    private static HashCode buildHashCode(final String url, final String username, final String password) {
+        return Hashing.md5().newHasher().putString(url, Charsets.UTF_8).putString(username, Charsets.UTF_8).putString(password, Charsets.UTF_8).hash();
     }
     
     private static DataSource createDataSource(final String driverClassName, final String url, final String username, final String password) {

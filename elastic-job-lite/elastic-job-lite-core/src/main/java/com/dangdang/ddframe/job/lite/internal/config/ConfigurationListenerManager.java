@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -38,26 +40,33 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
+    private final JobEventBus jobEventBus;
+    
     public ConfigurationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
         configNode = new ConfigurationNode(jobName);
+        jobEventBus = JobEventBus.getInstance();
     }
     
     @Override
     public void start() {
-        addDataListener(new CronSettingChangedJobListener());
+        addDataListener(new CronSettingAndJobEventChangedJobListener());
     }
     
-    class CronSettingChangedJobListener extends AbstractJobListener {
+    class CronSettingAndJobEventChangedJobListener extends AbstractJobListener {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType()) {
                 JobScheduleController jobScheduler = JobRegistry.getInstance().getJobScheduleController(jobName);
-                if (null != jobScheduler) {
-                    jobScheduler.rescheduleJob(LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getTypeConfig().getCoreConfig().getCron());
+                if (null == jobScheduler) {
+                    return;
                 }
+                LiteJobConfiguration liteJobConfiguration = LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData()));
+                jobEventBus.deregister(liteJobConfiguration.getJobName());
+                jobEventBus.register(liteJobConfiguration.getJobName(), liteJobConfiguration.getTypeConfig().getCoreConfig().getJobEventConfigs().values());
+                jobScheduler.rescheduleJob(liteJobConfiguration.getTypeConfig().getCoreConfig().getCron());
             }
         }
     }

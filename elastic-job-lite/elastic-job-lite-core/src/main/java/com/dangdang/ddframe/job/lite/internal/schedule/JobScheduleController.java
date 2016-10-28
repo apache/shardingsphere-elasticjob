@@ -50,12 +50,12 @@ public class JobScheduleController {
     /**
      * 调度作业.
      * 
-     * @param cronExpression CRON表达式
+     * @param cron CRON表达式
      */
-    public void scheduleJob(final String cronExpression) {
+    public void scheduleJob(final String cron) {
         try {
             if (!scheduler.checkExists(jobDetail.getKey())) {
-                scheduler.scheduleJob(jobDetail, createTrigger(cronExpression));
+                scheduler.scheduleJob(jobDetail, createTrigger(cron));
             }
             scheduler.start();
         } catch (final SchedulerException ex) {
@@ -79,8 +79,8 @@ public class JobScheduleController {
         }
     }
     
-    private CronTrigger createTrigger(final String cronExpression) {
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
+    private CronTrigger createTrigger(final String cron) {
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cron);
         if (schedulerFacade.loadJobConfiguration().getTypeConfig().getCoreConfig().isMisfire()) {
             cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
         } else {

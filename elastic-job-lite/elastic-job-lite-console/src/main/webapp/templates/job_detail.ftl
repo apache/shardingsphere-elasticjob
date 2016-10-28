@@ -130,7 +130,7 @@
                         <label for="logLevel" class="col-sm-2 control-label">数据库日志级别</label>
                         <div class="col-sm-2">
                             <select id="logLevel" name="logLevel" data-toggle="tooltip" data-placement="bottom" class="selectpicker" title="日志级别" >
-                                <option value="DEBUG">TRACE</option>
+                                <option value="TRACE">TRACE</option>
                                 <option value="DEBUG">DEBUG</option>
                                 <option value="INFO" selected>INFO</option>
                                 <option value="WARN">WARN</option>
@@ -147,7 +147,7 @@
 
                         <label for="password" class="col-sm-2 control-label">数据库密码</label>
                         <div class="col-sm-2">
-                            <input type="text" id="password" name="password" data-toggle="tooltip" data-placement="bottom" title="密码" />
+                            <input type="password" id="password" name="password" data-toggle="tooltip" data-placement="bottom" title="密码" />
                         </div>
                     </div>
                 </div>

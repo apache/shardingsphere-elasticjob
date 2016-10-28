@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JobEventBus {
+public class JobEventBus {
     
     private static volatile JobEventBus instance;
     
@@ -72,6 +72,18 @@ public final class JobEventBus {
             originalValue.register(jobEventConfigs);
         } else {
             newValue.register(jobEventConfigs);
+        }
+    }
+    
+    /**
+     * 注销事件监听器.
+     *
+     * @param jobName 作业名
+     */
+    public void deregister(final String jobName) {
+        JobEventBusInstance jobEventBusInstance = itemMap.remove(jobName);
+        if (null != jobEventBusInstance) {
+            jobEventBusInstance.clearListeners();
         }
     }
     
@@ -117,7 +129,7 @@ public final class JobEventBus {
         return result;
     }
     
-    private class JobEventBusInstance {
+    class JobEventBusInstance {
         
         @Getter
         private final ExecutorServiceObject executorServiceObject;

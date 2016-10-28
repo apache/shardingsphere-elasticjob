@@ -32,5 +32,7 @@ public final class JobEventRdbDataSourceFactoryTest {
         DataSource actual = JobEventRdbDataSourceFactory.getDataSource("mockDriverClass", "mockUrl", "root", "root");
         assertThat(actual, is(JobEventRdbDataSourceFactory.getDataSource("mockDriverClass", "mockUrl", "root", "root")));
         assertThat(actual, not(JobEventRdbDataSourceFactory.getDataSource("mockDriverClass", "otherMockUrl", "root", "root")));
+        assertThat(actual, not(JobEventRdbDataSourceFactory.getDataSource("mockDriverClass", "mockUrl", "root", "test")));
+        assertThat(actual, not(JobEventRdbDataSourceFactory.getDataSource("mockDriverClass", "mockUrl", "test", "root")));
     }
 }
