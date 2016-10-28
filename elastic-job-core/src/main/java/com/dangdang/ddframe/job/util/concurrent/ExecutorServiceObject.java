@@ -51,6 +51,10 @@ public final class ExecutorServiceObject {
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
     }
     
+    public boolean isShutdown() {
+        return threadPoolExecutor.isShutdown();
+    }
+    
     /**
      * 获取当前活跃的线程数.
      *

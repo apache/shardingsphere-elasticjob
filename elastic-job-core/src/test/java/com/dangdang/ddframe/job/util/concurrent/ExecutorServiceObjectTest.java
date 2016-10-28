@@ -21,6 +21,8 @@ import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -34,16 +36,20 @@ public final class ExecutorServiceObjectTest {
         ExecutorService executorService = executorServiceObject.createExecutorService();
         assertThat(executorServiceObject.getActiveThreadCount(), is(0));
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));
+        assertFalse(executorServiceObject.isShutdown());
         executorService.submit(new FooTask());
         BlockUtils.waitingShortTime();
         assertThat(executorServiceObject.getActiveThreadCount(), is(1));
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));
+        assertFalse(executorServiceObject.isShutdown());
         executorService.submit(new FooTask());
         BlockUtils.waitingShortTime();
         assertThat(executorServiceObject.getActiveThreadCount(), is(1));
         assertThat(executorServiceObject.getWorkQueueSize(), is(1));
+        assertFalse(executorServiceObject.isShutdown());
         executorService.shutdownNow();
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));
+        assertTrue(executorServiceObject.isShutdown());
     }
     
     class FooTask implements Runnable {

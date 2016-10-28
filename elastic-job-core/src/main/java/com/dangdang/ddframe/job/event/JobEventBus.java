@@ -145,7 +145,9 @@ public final class JobEventBus {
         
         void post(final Object event) {
             if (!listeners.isEmpty()) {
-                eventBus.post(event);
+                if (!executorServiceObject.isShutdown()) {
+                    eventBus.post(event);    
+                }
             }
         }
         
