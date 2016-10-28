@@ -36,8 +36,8 @@ class JobEventRdbDataSourceFactory {
     
     static DataSource getDataSource(final String driverClassName, final String url, final String username, final String password) {
         DataSource dataSource = createDataSource(driverClassName, url, username, password);
-        DATA_SOURCES.putIfAbsent(url, dataSource);
-        return null == DATA_SOURCES.get(url) ? dataSource : DATA_SOURCES.get(url);
+        DataSource result = DATA_SOURCES.putIfAbsent(url, dataSource);
+        return null == result ? dataSource : result;
     }
     
     private static DataSource createDataSource(final String driverClassName, final String url, final String username, final String password) {

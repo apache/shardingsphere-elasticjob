@@ -128,10 +128,10 @@ public final class DaemonTaskScheduler {
      * @param taskID 任务主键
      */
     public static void shutdown(final Protos.TaskID taskID) {
-        if (RUNNING_SCHEDULERS.containsKey(taskID.getValue())) {
+        Scheduler scheduler = RUNNING_SCHEDULERS.remove(taskID.getValue());
+        if (null != scheduler) {
             try {
-                RUNNING_SCHEDULERS.get(taskID.getValue()).shutdown();
-                RUNNING_SCHEDULERS.remove(taskID.getValue());
+                scheduler.shutdown();
             } catch (final SchedulerException ex) {
                 throw new JobSystemException(ex);
             }
