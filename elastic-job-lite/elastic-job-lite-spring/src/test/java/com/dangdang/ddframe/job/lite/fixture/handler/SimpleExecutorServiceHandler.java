@@ -28,14 +28,4 @@ public class SimpleExecutorServiceHandler implements ExecutorServiceHandler {
     public ExecutorService createExecutorService() {
         return Executors.newFixedThreadPool(1);
     }
-    
-    @Override
-    public int getActiveThreadCount() {
-        return 1;
-    }
-    
-    @Override
-    public int getBlockingQueueSize() {
-        return 0;
-    }
 }

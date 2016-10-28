@@ -22,8 +22,8 @@ import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.util.concurrent.ExecutorServiceObject;
 import com.google.common.base.Strings;
-import com.google.common.util.concurrent.MoreExecutors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
@@ -35,9 +35,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 常驻作业任务执行器.
@@ -50,10 +47,7 @@ public final class TaskExecutor implements Executor {
     private final ExecutorService executorService;
     
     public TaskExecutor() {
-        int threadSize = Runtime.getRuntime().availableProcessors() * 100;
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 1L, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
-        threadPoolExecutor.allowCoreThreadTimeOut(true);
-        executorService = MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
+        executorService = new ExecutorServiceObject(Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
     }
     
     @Override

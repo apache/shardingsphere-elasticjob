@@ -116,6 +116,7 @@ public class RunningService {
     public Collection<TaskContext> getRunningTasks(final String jobName) {
         Set<TaskContext> taskContexts = new CopyOnWriteArraySet<>();
         RUNNING_TASKS.putIfAbsent(jobName, taskContexts);
+        // TODO 即使前面putIfAbsent,但仍然有时get为null,待调研
         return null == RUNNING_TASKS.get(jobName) ? taskContexts : RUNNING_TASKS.get(jobName);
     }
     

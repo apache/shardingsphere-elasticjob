@@ -26,6 +26,7 @@ import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.handler.ExecutorServiceHandler;
+import com.dangdang.ddframe.job.executor.handler.ExecutorServiceHandlerRegistry;
 import com.dangdang.ddframe.job.executor.handler.JobExceptionHandler;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import lombok.AccessLevel;
@@ -52,8 +53,6 @@ public abstract class AbstractElasticJobExecutor {
     
     private final ExecutorService executorService;
     
-    private final ExecutorServiceHandler handler;
-    
     private final JobExceptionHandler jobExceptionHandler;
     
     private final JobEventBus jobEventBus = JobEventBus.getInstance();
@@ -62,8 +61,7 @@ public abstract class AbstractElasticJobExecutor {
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
-        handler = (ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER);
-        executorService = handler.createExecutorService();
+        executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
         jobEventBus.register(jobName, jobRootConfig.getTypeConfig().getCoreConfig().getJobEventConfigs().values());
     }
@@ -95,8 +93,7 @@ public abstract class AbstractElasticJobExecutor {
      * 执行作业.
      */
     public final void execute() {
-        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.TRACE, String.format("Job execute begin, active thread count is %s, blocking queue size is %s:", 
-                handler.getActiveThreadCount(), handler.getBlockingQueueSize())));
+        jobEventBus.post(new JobTraceEvent(jobName, LogLevel.TRACE, "Job execute begin."));
         try {
             jobFacade.checkJobExecutionEnvironment();
         } catch (final JobExecutionEnvironmentException cause) {

@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.RequiredArgsConstructor;
 

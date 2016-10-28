@@ -41,7 +41,7 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.google.common.base.Joiner;
 import lombok.AccessLevel;

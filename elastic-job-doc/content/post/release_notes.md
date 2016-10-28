@@ -10,6 +10,7 @@ weight=1
 
 ### 缺陷修正
 1. [ISSUE #143](https://github.com/dangdangdotcom/elastic-job/issues/143) elastic-job-cloud-scheduler内存泄漏问题
+1. [ISSUE #146](https://github.com/dangdangdotcom/elastic-job/issues/146) 作业的线程池复用问题
 
 ## 2.0.0
 

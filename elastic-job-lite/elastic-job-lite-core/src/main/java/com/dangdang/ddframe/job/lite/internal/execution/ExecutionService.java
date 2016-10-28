@@ -26,7 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 

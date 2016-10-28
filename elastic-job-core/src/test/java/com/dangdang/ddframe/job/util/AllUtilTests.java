@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.util;
 
+import com.dangdang.ddframe.job.util.concurrent.ExecutorServiceObjectTest;
 import com.dangdang.ddframe.job.util.config.ShardingItemParametersTest;
 import com.dangdang.ddframe.job.util.config.ShardingItemsTest;
 import com.dangdang.ddframe.job.util.digest.EncryptionTest;
@@ -35,6 +36,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+        ExecutorServiceObjectTest.class, 
         EncryptionTest.class, 
         TimeServiceTest.class, 
         LocalHostServiceTest.class, 

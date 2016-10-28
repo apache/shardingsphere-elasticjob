@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;

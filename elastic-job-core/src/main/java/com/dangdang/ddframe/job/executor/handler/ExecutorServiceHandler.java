@@ -34,8 +34,4 @@ public interface ExecutorServiceHandler {
      * @return 线程池服务对象
      */
     ExecutorService createExecutorService();
-    
-    int getActiveThreadCount();
-    
-    int getBlockingQueueSize();
 }

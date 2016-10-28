@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util;
+package com.dangdang.ddframe.job.util.concurrent;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

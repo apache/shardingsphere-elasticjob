@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.test;
 
 import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
-import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import org.apache.curator.test.TestingServer;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;

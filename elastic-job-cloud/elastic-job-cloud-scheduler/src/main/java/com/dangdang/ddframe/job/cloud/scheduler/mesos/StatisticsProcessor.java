@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
-import com.dangdang.ddframe.job.util.BlockUtils;
+import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

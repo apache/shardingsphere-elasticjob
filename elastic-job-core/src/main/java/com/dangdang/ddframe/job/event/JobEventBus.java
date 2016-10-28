@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.event;
 
+import com.dangdang.ddframe.job.util.concurrent.ExecutorServiceObject;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
-import com.google.common.util.concurrent.MoreExecutors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,11 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 运行痕迹事件总线.
@@ -93,10 +89,10 @@ public final class JobEventBus {
     }
     
     // TODO 通过JMX暴露
-    public Map<String, Integer> getBlockingQueueSize() {
+    public Map<String, Integer> getWorkQueueSize() {
         Map<String, Integer> result = new HashMap<>();
         for (Entry<String, JobEventBusInstance> each : itemMap.entrySet()) {
-            result.put(each.getKey(), each.getValue().getBlockingQueue().size());
+            result.put(each.getKey(), each.getValue().getExecutorServiceObject().getWorkQueueSize());
         }
         return result;
     }
@@ -105,29 +101,23 @@ public final class JobEventBus {
     public Map<String, Integer> getActiveThreadCount() {
         Map<String, Integer> result = new HashMap<>();
         for (Entry<String, JobEventBusInstance> each : itemMap.entrySet()) {
-            result.put(each.getKey(), each.getValue().getThreadPoolExecutor().getActiveCount());
+            result.put(each.getKey(), each.getValue().getExecutorServiceObject().getActiveThreadCount());
         }
         return result;
     }
     
     private class JobEventBusInstance {
-    
-        @Getter
-        private final BlockingQueue<Runnable> blockingQueue; 
         
         @Getter
-        private final ThreadPoolExecutor threadPoolExecutor;
-    
+        private final ExecutorServiceObject executorServiceObject;
+        
         private final EventBus eventBus;
-    
+        
         private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
         
         JobEventBusInstance() {
-            int threadSize = Runtime.getRuntime().availableProcessors() * 2;
-            blockingQueue = new LinkedBlockingQueue<>();
-            threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, blockingQueue);
-            threadPoolExecutor.allowCoreThreadTimeOut(true);
-            eventBus = new AsyncEventBus(MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor)));
+            executorServiceObject = new ExecutorServiceObject(Runtime.getRuntime().availableProcessors() * 2);
+            eventBus = new AsyncEventBus(executorServiceObject.createExecutorService());
         }
         
         void register(final Collection<JobEventConfiguration> jobEventConfigs) {
