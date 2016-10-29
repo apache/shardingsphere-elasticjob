@@ -94,13 +94,6 @@ public final class JobEventBusTest {
     }
     
     @Test
-    public void assertGetActiveThreadCount() {
-        registerEventConfigs();
-        assertThat(jobEventBus.getActiveThreadCount().size(), is(1));
-        assertThat(jobEventBus.getActiveThreadCount().get(jobName), is(0));
-    }
-    
-    @Test
     public void assertClearListeners() throws NoSuchFieldException {
         JobEventBusInstance jobEventBusInstance = mock(JobEventBusInstance.class);
         setItemMap(jobEventBusInstance);
