@@ -31,6 +31,6 @@ public final class DefaultExecutorServiceHandler implements ExecutorServiceHandl
     
     @Override
     public ExecutorService createExecutorService() {
-        return new ExecutorServiceObject(Runtime.getRuntime().availableProcessors() * 2).createExecutorService();
+        return new ExecutorServiceObject("inner-job", Runtime.getRuntime().availableProcessors() * 2).createExecutorService();
     }
 }

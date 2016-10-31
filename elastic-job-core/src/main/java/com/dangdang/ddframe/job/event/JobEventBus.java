@@ -139,7 +139,7 @@ public class JobEventBus {
         private final ConcurrentHashMap<String, JobEventListener> listeners = new ConcurrentHashMap<>();
         
         JobEventBusInstance() {
-            executorServiceObject = new ExecutorServiceObject(Runtime.getRuntime().availableProcessors() * 2);
+            executorServiceObject = new ExecutorServiceObject("job-event", Runtime.getRuntime().availableProcessors() * 2);
             eventBus = new AsyncEventBus(executorServiceObject.createExecutorService());
         }
         

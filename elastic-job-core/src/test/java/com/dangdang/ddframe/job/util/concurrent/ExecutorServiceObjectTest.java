@@ -32,7 +32,7 @@ public final class ExecutorServiceObjectTest {
     
     @Test
     public void assertCreateExecutorService() {
-        executorServiceObject = new ExecutorServiceObject(1);
+        executorServiceObject = new ExecutorServiceObject("executor-service-test", 1);
         ExecutorService executorService = executorServiceObject.createExecutorService();
         assertThat(executorServiceObject.getActiveThreadCount(), is(0));
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));

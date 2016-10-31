@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 常驻作业任务执行器.
+ * 作业任务执行器.
  *
  * @author zhangliang
  */
@@ -47,7 +47,7 @@ public final class TaskExecutor implements Executor {
     private final ExecutorService executorService;
     
     public TaskExecutor() {
-        executorService = new ExecutorServiceObject(Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
+        executorService = new ExecutorServiceObject("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
     }
     
     @Override
