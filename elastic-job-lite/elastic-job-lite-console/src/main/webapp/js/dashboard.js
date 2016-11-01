@@ -42,6 +42,9 @@ function bindConnectLink() {
 }
 
 function renderJobsForDashboardNav() {
+    if ('未连接' === $("#activated-reg-center").text()) {
+        return;
+    }
     $.get("job/jobs", {}, function (data) {
         var currentJob = $("#job-name").text();
         var $jobsDimension = $("#jobs-dimension");
@@ -58,6 +61,9 @@ function renderJobsForDashboardNav() {
 }
 
 function renderJServersForDashboardNav() {
+    if ('未连接' === $("#activated-reg-center").text()) {
+        return;
+    }
     $.get("server/servers", {}, function (data) {
         var currentIp = $("#server-ip").text();
         var $serversDimension = $("#servers-dimension");
