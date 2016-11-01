@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.reg;
 import com.dangdang.ddframe.job.reg.exception.RegExceptionHandlerTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfigurationTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenterForAuthTest;
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenterForLocalPropertiesTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenterInitFailureTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenterMiscellaneousTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenterModifyTest;
@@ -35,7 +34,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         ZookeeperConfigurationTest.class, 
-        ZookeeperRegistryCenterForLocalPropertiesTest.class, 
         ZookeeperRegistryCenterForAuthTest.class, 
         ZookeeperRegistryCenterQueryWithCacheTest.class, 
         ZookeeperRegistryCenterQueryWithoutCacheTest.class, 

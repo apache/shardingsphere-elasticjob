@@ -17,20 +17,20 @@
 
 package com.dangdang.ddframe.job.reg.zookeeper;
 
-import com.dangdang.ddframe.job.reg.base.AbstractRegistryCenterConfiguration;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * 基于Zookeeper的注册中心配置.
  * 
  * @author zhangliang
+ * @author caohao
  */
 @Getter
 @Setter
-@NoArgsConstructor
-public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration {
+@RequiredArgsConstructor
+public class ZookeeperConfiguration {
     
     /**
      * 连接Zookeeper服务器的列表.
@@ -38,12 +38,12 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
      * 多个地址用逗号分隔.
      * 如: host1:2181,host2:2181
      */
-    private String serverLists;
+    private final String serverLists;
     
     /**
      * 命名空间.
      */
-    private String namespace;
+    private final String namespace;
     
     /**
      * 等待重试的间隔时间的初始值.
@@ -79,32 +79,4 @@ public class ZookeeperConfiguration extends AbstractRegistryCenterConfiguration 
      * 缺省为不需要权限验证.
      */
     private String digest;
-    
-    /**
-     * 包含了必需属性的构造器.
-     *
-     * @param serverLists 连接Zookeeper服务器的列表
-     * @param namespace 命名空间
-     */
-    public ZookeeperConfiguration(final String serverLists, final String namespace) {
-        this.serverLists = serverLists;
-        this.namespace = namespace;
-    }
-    
-    /**
-     * 包含了必需属性的构造器.
-     * 
-     * @param serverLists 连接Zookeeper服务器的列表
-     * @param namespace 命名空间
-     * @param baseSleepTimeMilliseconds 等待重试的间隔时间的初始值
-     * @param maxSleepTimeMilliseconds 等待重试的间隔时间的最大值
-     * @param maxRetries 最大重试次数
-     */
-    public ZookeeperConfiguration(final String serverLists, final String namespace, final int baseSleepTimeMilliseconds, final int maxSleepTimeMilliseconds, final int maxRetries) {
-        this.serverLists = serverLists;
-        this.namespace = namespace;
-        this.baseSleepTimeMilliseconds = baseSleepTimeMilliseconds;
-        this.maxSleepTimeMilliseconds = maxSleepTimeMilliseconds;
-        this.maxRetries = maxRetries;
-    }
 }

@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.reg.zookeeper;
 
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.reg.exception.RegException;
 import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
@@ -40,15 +39,12 @@ import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Stat;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -105,39 +101,11 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
             if (!client.getZookeeperClient().isConnected()) {
                 throw new KeeperException.OperationTimeoutException();
             }
-            if (!Strings.isNullOrEmpty(zkConfig.getLocalPropertiesPath())) {
-                fillData();
-            }
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
-    }
-    
-    private void fillData() throws Exception {
-        for (Entry<Object, Object> entry : loadLocalProperties().entrySet()) {
-            String key = entry.getKey().toString();
-            byte[] value = entry.getValue().toString().getBytes(Charsets.UTF_8);
-            if (null == client.checkExists().forPath(key)) {
-                client.create().creatingParentsIfNeeded().forPath(key, value);
-            } else if (zkConfig.isOverwrite() || 0 == client.getData().forPath(key).length) {
-                client.setData().forPath(key, value);
-            }
-        }
-    }
-    
-    private Properties loadLocalProperties() {
-        Properties result = new Properties();
-        try (InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(zkConfig.getLocalPropertiesPath())) {
-            if (null == input) {
-                throw new RegException("Can not found local properties files: '%s'.", zkConfig.getLocalPropertiesPath());
-            }
-            result.load(input);
-        } catch (final IOException ex) {
-            throw new RegException(ex);
-        }
-        return result;
     }
     
     @Override

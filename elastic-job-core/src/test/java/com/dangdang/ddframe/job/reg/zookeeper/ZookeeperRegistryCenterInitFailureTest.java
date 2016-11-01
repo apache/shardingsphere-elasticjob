@@ -18,15 +18,13 @@
 package com.dangdang.ddframe.job.reg.zookeeper;
 
 import com.dangdang.ddframe.job.reg.exception.RegException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public final class ZookeeperRegistryCenterInitFailureTest {
     
     @Test(expected = RegException.class)
-    @Ignore
     public void assertInitFailure() {
-        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:1", ZookeeperRegistryCenterInitFailureTest.class.getName(), 100, 200, 1));
+        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(new ZookeeperConfiguration("localhost:1", ZookeeperRegistryCenterInitFailureTest.class.getName()));
         zkRegCenter.init();
     }
 }

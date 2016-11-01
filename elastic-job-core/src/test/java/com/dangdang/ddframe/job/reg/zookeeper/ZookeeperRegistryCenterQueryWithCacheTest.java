@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.reg.zookeeper;
 
+import com.dangdang.ddframe.job.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,8 +37,8 @@ public final class ZookeeperRegistryCenterQueryWithCacheTest {
         EmbedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkConfig.setConnectionTimeoutMilliseconds(30000);
-        zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter.init();
+        ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
         zkRegCenter.addCacheData("/test");
     }
     

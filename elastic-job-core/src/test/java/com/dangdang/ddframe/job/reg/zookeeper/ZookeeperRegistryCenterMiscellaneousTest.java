@@ -60,8 +60,7 @@ public final class ZookeeperRegistryCenterMiscellaneousTest {
     
     @Test
     public void assertGetZkConfig() {
-        ZookeeperConfiguration expected = new ZookeeperConfiguration();
-        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(expected);
-        assertThat(zkRegCenter.getZkConfig(), is(expected));
+        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
+        assertThat(zkRegCenter.getZkConfig(), is(zkConfig));
     }
 }

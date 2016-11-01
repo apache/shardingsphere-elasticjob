@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.reg.zookeeper;
 
+import com.dangdang.ddframe.job.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;
@@ -44,8 +45,8 @@ public final class ZookeeperRegistryCenterModifyTest {
         EmbedTestingServer.start();
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
         zkConfig.setConnectionTimeoutMilliseconds(30000);
-        zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkRegCenter.init();
+        ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
     }
     
     @AfterClass

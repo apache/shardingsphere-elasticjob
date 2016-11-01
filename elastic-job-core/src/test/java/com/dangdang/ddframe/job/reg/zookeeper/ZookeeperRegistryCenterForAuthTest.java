@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.reg.zookeeper;
 
+import com.dangdang.ddframe.job.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;
@@ -30,7 +31,9 @@ import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterForAuthTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterForAuthTest.class.getName());
+    private static final String NAME_SPACE = ZookeeperRegistryCenterForAuthTest.class.getName();
+    
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), NAME_SPACE);
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
@@ -38,10 +41,11 @@ public final class ZookeeperRegistryCenterForAuthTest {
     public static void setUp() {
         EmbedTestingServer.start();
         zkConfig.setDigest("digest:password");
-        zkConfig.setLocalPropertiesPath("conf/reg/local.properties");
         zkConfig.setSessionTimeoutMilliseconds(5000);
         zkConfig.setConnectionTimeoutMilliseconds(5000);
         zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
+        zkRegCenter.init();
+        ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
     }
     
     @AfterClass
@@ -51,8 +55,6 @@ public final class ZookeeperRegistryCenterForAuthTest {
     
     @Test
     public void assertInitWithDigestSuccess() throws Exception {
-        zkRegCenter.init();
-        zkRegCenter.close();
         CuratorFramework client = CuratorFrameworkFactory.builder()
             .connectString(EmbedTestingServer.getConnectionString())
             .retryPolicy(new RetryOneTime(2000))
@@ -64,8 +66,6 @@ public final class ZookeeperRegistryCenterForAuthTest {
     
     @Test(expected = NoAuthException.class)
     public void assertInitWithDigestFailure() throws Exception {
-        zkRegCenter.init();
-        zkRegCenter.close();
         CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
