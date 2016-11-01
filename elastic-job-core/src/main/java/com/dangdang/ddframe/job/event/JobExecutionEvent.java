@@ -72,6 +72,7 @@ public class JobExecutionEvent implements JobEvent {
      */
     public void executionFailure(final Throwable failureCause) {
         completeTime = new Date();
+        success = false;
         this.failureCause = failureCause;
     }
     
