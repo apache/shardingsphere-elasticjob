@@ -54,7 +54,7 @@ public final class CloudJobRestfulApi {
         Preconditions.checkNotNull(schedulerDriver);
         Preconditions.checkNotNull(regCenter);
         producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
-        lifecycleService = new LifecycleService(schedulerDriver, regCenter);
+        lifecycleService = new LifecycleService(schedulerDriver);
     }
     
     /**

@@ -58,9 +58,11 @@ public class RunningService {
      */
     public void updateIdle(final TaskContext taskContext, final boolean isIdle) {
         Collection<TaskContext> runningTasks = getRunningTasks(taskContext.getMetaInfo().getJobName());
-        for (TaskContext each : runningTasks) {
-            if (each.equals(taskContext)) {
-                each.setIdle(isIdle);
+        synchronized (RUNNING_TASKS) {
+            for (TaskContext each : runningTasks) {
+                if (each.equals(taskContext)) {
+                    each.setIdle(isIdle);
+                }
             }
         }
     }
