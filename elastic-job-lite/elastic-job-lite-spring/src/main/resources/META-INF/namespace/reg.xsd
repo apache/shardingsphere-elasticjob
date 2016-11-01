@@ -19,17 +19,8 @@
                     <xsd:attribute name="session-timeout-milliseconds" type="xsd:string" />
                     <xsd:attribute name="connection-timeout-milliseconds" type="xsd:string" />
                     <xsd:attribute name="digest" type="xsd:string" />
-                    <xsd:attribute name="local-properties-path" type="xsd:string" />
-                    <xsd:attribute name="overwrite" type="xsd:string" />
                 </xsd:extension>
             </xsd:complexContent>
-        </xsd:complexType>
-    </xsd:element>
-    
-    <xsd:element name="placeholder">
-        <xsd:complexType>
-            <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
-            <xsd:attribute name="order" type="xsd:integer" />
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>

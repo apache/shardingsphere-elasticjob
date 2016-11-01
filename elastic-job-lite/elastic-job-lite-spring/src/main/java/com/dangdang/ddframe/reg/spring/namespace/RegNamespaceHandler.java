@@ -29,6 +29,5 @@ public class RegNamespaceHandler extends NamespaceHandlerSupport {
     @Override
     public void init() {
         registerBeanDefinitionParser("zookeeper", new ZookeeperBeanDefinitionParser());
-        registerBeanDefinitionParser("placeholder", new PlaceholderBeanDefinitionParser());
     }
 }
