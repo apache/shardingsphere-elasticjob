@@ -45,6 +45,12 @@ public final class CloudJobConfigurationBuilder {
                 1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", jobExecutionType);
     }
     
+    public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final boolean misfire) {
+        return new CloudJobConfiguration(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 10).failover(true).misfire(misfire).build(), TestSimpleJob.class.getCanonicalName()),
+                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
+    }
+    
     public static CloudJobConfiguration createOtherCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),

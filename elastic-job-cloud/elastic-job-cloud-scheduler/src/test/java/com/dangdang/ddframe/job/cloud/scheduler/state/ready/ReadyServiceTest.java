@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
@@ -61,9 +60,6 @@ public final class ReadyServiceTest {
     private RunningService runningService;
     
     @Mock
-    private MisfiredService misfiredService;
-    
-    @Mock
     private List<String> mockedReadyQueue;
     
     private ReadyService readyService;
@@ -73,7 +69,6 @@ public final class ReadyServiceTest {
         readyService = new ReadyService(regCenter);
         ReflectionUtils.setFieldValue(readyService, "configService", configService);
         ReflectionUtils.setFieldValue(readyService, "runningService", runningService);
-        ReflectionUtils.setFieldValue(readyService, "misfiredService", misfiredService);
     }
     
     @Test
@@ -93,7 +88,7 @@ public final class ReadyServiceTest {
     }
     
     @Test
-    public void assertAddTransientWhenJobNotExisted() {
+    public void assertAddTransientWhenJobExistedAndEnableMisfired() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(regCenter.getDirectly("/state/ready/test_job")).thenReturn("1");
         readyService.addTransient("test_job");
@@ -101,9 +96,16 @@ public final class ReadyServiceTest {
     }
     
     @Test
-    public void assertAddTransientWhenJobExisted() {
+    public void assertAddTransientWhenJobExistedAndDisableMisfired() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", false)));
+        when(regCenter.getDirectly("/state/ready/test_job")).thenReturn("1");
+        readyService.addTransient("test_job");
+        verify(regCenter).persist("/state/ready/test_job", "1");
+    }
+    
+    @Test
+    public void assertAddTransientWhenJobNotExisted() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
-        when(regCenter.isExisted("/state/ready")).thenReturn(true);
         readyService.addTransient("test_job");
         verify(regCenter).persist("/state/ready/test_job", "1");
     }
@@ -174,6 +176,28 @@ public final class ReadyServiceTest {
     }
     
     @Test
+    public void assertSetMisfireDisabledWhenJobIsNotExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        readyService.setMisfireDisabled("test_job");
+        verify(regCenter, times(0)).persist("/state/ready/test_job", "1");
+    }
+    
+    @Test
+    public void assertSetMisfireDisabledWhenReadyNodeNotExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        readyService.setMisfireDisabled("test_job");
+        verify(regCenter, times(0)).persist("/state/ready/test_job", "1");
+    }
+    
+    @Test
+    public void assertSetMisfireDisabledWhenReadyNodeExisted() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(regCenter.getDirectly("/state/ready/test_job")).thenReturn("100");
+        readyService.setMisfireDisabled("test_job");
+        verify(regCenter).persist("/state/ready/test_job", "1");
+    }
+    
+    @Test
     public void assertGetAllEligibleJobContextsWithRootNode() {
         when(regCenter.isExisted("/state/ready")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("not_existed_job", "running_job", "ineligible_job", "eligible_job"));
@@ -195,7 +219,6 @@ public final class ReadyServiceTest {
         verify(configService).load("running_job");
         verify(configService).load("eligible_job");
         verify(regCenter).remove("/state/ready/not_existed_job");
-        verify(misfiredService).add("running_job");
     }
     
     @Test
@@ -210,7 +233,6 @@ public final class ReadyServiceTest {
         verify(regCenter, times(1)).getChildrenKeys("/state/ready");
         verify(configService).load("not_existed_job");
         verify(configService).load("running_job");
-        verify(misfiredService).add("running_job");
     }
     
     @Test

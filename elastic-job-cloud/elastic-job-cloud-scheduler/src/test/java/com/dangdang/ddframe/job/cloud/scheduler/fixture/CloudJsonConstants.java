@@ -30,29 +30,33 @@ public final class CloudJsonConstants {
             + "\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
     private static final String JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.scheduler.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
-            + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
+            + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":%s,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"jobEventConfigs\":{\"log\":{}}" + ",\"cpuCount\":1.0,\"memoryMB\":128.0," 
             + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"%s\"}";
     
-    private static final String SPRING_JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.scheduler.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
+    private static final String SPRING_JOB_JSON = "{\"jobName\":\"test_spring_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.scheduler.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"jobEventConfigs\":{\"log\":{}}" + ",\"cpuCount\":1.0,\"memoryMB\":128.0,"
-            + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"%s\",\"beanName\":\"springSimpleJob\","
+            + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"TRANSIENT\",\"beanName\":\"springSimpleJob\","
             + "\"applicationContext\":\"applicationContext.xml\"}";
     
     public static String getJobJson() {
-        return String.format(JOB_JSON, "test_job", "TRANSIENT");
+        return String.format(JOB_JSON, "test_job", true, "TRANSIENT");
     }
     
     public static String getJobJson(final String jobName) {
-        return String.format(JOB_JSON, jobName, "TRANSIENT");
+        return String.format(JOB_JSON, jobName, true, "TRANSIENT");
     }
     
     public static String getJobJson(final JobExecutionType jobExecutionType) {
-        return String.format(JOB_JSON, "test_job", jobExecutionType.name());
+        return String.format(JOB_JSON, "test_job", true, jobExecutionType.name());
+    }
+    
+    public static String getJobJson(final boolean misfire) {
+        return String.format(JOB_JSON, "test_job", misfire, "TRANSIENT");
     }
     
     public static String getSpringJobJson() {
-        return String.format(SPRING_JOB_JSON, "test_spring_job", "TRANSIENT");
+        return SPRING_JOB_JSON;
     }
 }

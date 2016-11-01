@@ -56,12 +56,16 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
             }
         } else if (isJobConfigNode(event, path, Type.NODE_UPDATED)) {
             CloudJobConfiguration jobConfig = getJobConfig(event);
-            if (null != jobConfig) {
-                if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
-                    readyService.remove(Collections.singletonList(jobConfig.getJobName()));
-                }
-                producerManager.reschedule(jobConfig);
+            if (null == jobConfig) {
+                return;
             }
+            if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
+                readyService.remove(Collections.singletonList(jobConfig.getJobName()));
+            }
+            if (!jobConfig.getTypeConfig().getCoreConfig().isMisfire()) {
+                readyService.setMisfireDisabled(jobConfig.getJobName());
+            }
+            producerManager.reschedule(jobConfig);
         } else if (isJobConfigNode(event, path, Type.NODE_REMOVED)) {
             String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
             producerManager.unschedule(jobName);

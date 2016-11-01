@@ -38,13 +38,12 @@ public final class LaunchingTasksTest {
     public void setUp() {
         launchingTasks = new LaunchingTasks(Arrays.asList(
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job"), ExecutionType.READY),
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("misfire_job"), ExecutionType.MISFIRED),
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER)));
     }
     
     @Test
     public void assertGetPendingTasks() {
         List<TaskRequest> actual = launchingTasks.getPendingTasks();
-        assertThat(actual.size(), is(30));
+        assertThat(actual.size(), is(20));
     }
 }

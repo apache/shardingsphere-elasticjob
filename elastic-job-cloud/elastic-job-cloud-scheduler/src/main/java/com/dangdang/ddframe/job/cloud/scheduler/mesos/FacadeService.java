@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
-import com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -51,14 +50,11 @@ public class FacadeService {
     
     private final FailoverService failoverService;
     
-    private final MisfiredService misfiredService;
-    
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService();
         failoverService = new FailoverService(regCenter);
-        misfiredService = new MisfiredService(regCenter);
     }
     
     /**
@@ -75,14 +71,9 @@ public class FacadeService {
      */
     public Collection<JobContext> getEligibleJobContext() {
         Collection<JobContext> failoverJobContexts = failoverService.getAllEligibleJobContexts();
-        Collection<JobContext> misfiredJobContexts = misfiredService.getAllEligibleJobContexts(failoverJobContexts);
-        Collection<JobContext> ineligibleJobContexts = new ArrayList<>(failoverJobContexts.size() + misfiredJobContexts.size());
-        ineligibleJobContexts.addAll(failoverJobContexts);
-        ineligibleJobContexts.addAll(misfiredJobContexts);
-        Collection<JobContext> readyJobContexts = readyService.getAllEligibleJobContexts(ineligibleJobContexts);
-        Collection<JobContext> result = new ArrayList<>(failoverJobContexts.size() + misfiredJobContexts.size() + readyJobContexts.size());
+        Collection<JobContext> readyJobContexts = readyService.getAllEligibleJobContexts(failoverJobContexts);
+        Collection<JobContext> result = new ArrayList<>(failoverJobContexts.size() + readyJobContexts.size());
         result.addAll(failoverJobContexts);
-        result.addAll(misfiredJobContexts);
         result.addAll(readyJobContexts);
         return result;
     }
@@ -94,15 +85,11 @@ public class FacadeService {
      */
     public void removeLaunchTasksFromQueue(final List<TaskContext> taskContexts) {
         List<TaskContext> failoverTaskContexts = new ArrayList<>(taskContexts.size());
-        Collection<String> misfiredJobNames = new HashSet<>(taskContexts.size(), 1);
         Collection<String> readyJobNames = new HashSet<>(taskContexts.size(), 1);
         for (TaskContext each : taskContexts) {
             switch (each.getType()) {
                 case FAILOVER:
                     failoverTaskContexts.add(each);
-                    break;
-                case MISFIRED:
-                    misfiredJobNames.add(each.getMetaInfo().getJobName());
                     break;
                 case READY:
                     readyJobNames.add(each.getMetaInfo().getJobName());
@@ -118,7 +105,6 @@ public class FacadeService {
                 return input.getMetaInfo();
             }
         }));
-        misfiredService.remove(misfiredJobNames);
         readyService.remove(readyJobNames);
     }
     
@@ -194,7 +180,7 @@ public class FacadeService {
     /**
      * 根据作业执行类型判断作业是否在运行.
      * 
-     * <p>READY和MISFIRE类型的作业为整体, 任意一片运行都视为作业运行. FAILOVER则仅以当前分片运行为运行依据.</p>
+     * <p>READY类型的作业为整体, 任意一片运行都视为作业运行. FAILOVER则仅以当前分片运行为运行依据.</p>
      * 
      * @param taskContext 任务运行时上下文
      * @return 作业是否在运行.

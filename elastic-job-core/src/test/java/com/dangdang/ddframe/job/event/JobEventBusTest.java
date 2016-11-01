@@ -117,7 +117,7 @@ public final class JobEventBusTest {
         verify(jobEventBusInstance, times(0)).clearListeners();
     }
     
-    private void setItemMap(JobEventBusInstance jobEventBusInstance) throws NoSuchFieldException {
+    private void setItemMap(final JobEventBusInstance jobEventBusInstance) throws NoSuchFieldException {
         ConcurrentHashMap<String, JobEventBusInstance> itemMap = new ConcurrentHashMap<>();
         itemMap.put(jobName, jobEventBusInstance);
         ReflectionUtils.setFieldValue(jobEventBus, "itemMap", itemMap);

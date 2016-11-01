@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
@@ -52,13 +51,10 @@ public class ReadyService {
     
     private final RunningService runningService;
     
-    private final MisfiredService misfiredService;
-    
     public ReadyService(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
         configService = new ConfigurationService(regCenter);
         runningService = new RunningService();
-        misfiredService = new MisfiredService(regCenter);
     }
     
     /**
@@ -77,7 +73,11 @@ public class ReadyService {
         }
         String readyJobNode = ReadyNode.getReadyJobNodePath(jobName);
         String times = regCenter.getDirectly(readyJobNode);
-        regCenter.persist(readyJobNode, Integer.toString(null == times ? 1 : Integer.parseInt(times) + 1));
+        if (cloudJobConfig.get().getTypeConfig().getCoreConfig().isMisfire()) {
+            regCenter.persist(readyJobNode, Integer.toString(null == times ? 1 : Integer.parseInt(times) + 1));
+        } else {
+            regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");
+        }
     }
     
     /**
@@ -95,6 +95,18 @@ public class ReadyService {
             return;
         }
         regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");
+    }
+    
+    /**
+     * 设置禁用错过重执行.
+     * 
+     * @param jobName 作业名称
+     */
+    public void setMisfireDisabled(final String jobName) {
+        Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
+        if (cloudJobConfig.isPresent() && null != regCenter.getDirectly(ReadyNode.getReadyJobNodePath(jobName))) {
+            regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");
+        }
     }
     
     /**
@@ -125,16 +137,9 @@ public class ReadyService {
                 regCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 continue;
             }
-            if (runningService.isJobRunning(each)) {
-                if (jobConfig.get().getTypeConfig().getCoreConfig().isMisfire()) {
-                    misfiredService.add(each);
-                }
-                if (JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
-                    result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
-                }
-                continue;
+            if (!runningService.isJobRunning(each) || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
+                result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
             }
-            result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
         }
         return result;
     }

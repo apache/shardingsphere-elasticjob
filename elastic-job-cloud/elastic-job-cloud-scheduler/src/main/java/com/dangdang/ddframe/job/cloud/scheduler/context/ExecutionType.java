@@ -30,11 +30,6 @@ public enum ExecutionType {
     READY,
     
     /**
-     * 错过执行的任务.
-     */
-    MISFIRED,
-    
-    /**
      * 失效转移的任务.
      */
     FAILOVER

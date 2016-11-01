@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
-import com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -68,9 +67,6 @@ public final class FacadeServiceTest {
     @Mock
     private FailoverService failoverService;
     
-    @Mock
-    private MisfiredService misfiredService;
-    
     private FacadeService facadeService;
     
     @Before
@@ -80,7 +76,6 @@ public final class FacadeServiceTest {
         ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
-        ReflectionUtils.setFieldValue(facadeService, "misfiredService", misfiredService);
     }
     
     @Test
@@ -92,13 +87,11 @@ public final class FacadeServiceTest {
     @Test
     public void assertGetEligibleJobContext() {
         Collection<JobContext> failoverJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER));
-        Collection<JobContext> misfiredJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("misfire_job"), ExecutionType.MISFIRED));
         Collection<JobContext> readyJobContexts = Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ready_job"), ExecutionType.READY));
         when(failoverService.getAllEligibleJobContexts()).thenReturn(failoverJobContexts);
-        when(misfiredService.getAllEligibleJobContexts(failoverJobContexts)).thenReturn(misfiredJobContexts);
-        when(readyService.getAllEligibleJobContexts(Arrays.asList(failoverJobContexts.iterator().next(), misfiredJobContexts.iterator().next()))).thenReturn(readyJobContexts);
+        when(readyService.getAllEligibleJobContexts(failoverJobContexts)).thenReturn(readyJobContexts);
         Collection<JobContext> actual = facadeService.getEligibleJobContext();
-        assertThat(actual.size(), is(3));
+        assertThat(actual.size(), is(2));
         int i = 0;
         for (JobContext each : actual) {
             switch (i) {
@@ -106,9 +99,6 @@ public final class FacadeServiceTest {
                     assertThat(each.getJobConfig().getJobName(), is("failover_job"));
                     break;
                 case 1:
-                    assertThat(each.getJobConfig().getJobName(), is("misfire_job"));
-                    break;
-                case 2:
                     assertThat(each.getJobConfig().getJobName(), is("ready_job"));
                     break;
                 default:
@@ -122,10 +112,8 @@ public final class FacadeServiceTest {
     public void assertRemoveLaunchTasksFromQueue() {
         facadeService.removeLaunchTasksFromQueue(Arrays.asList(
                 TaskContext.from(TaskNode.builder().type(ExecutionType.FAILOVER).build().getTaskNodeValue()), 
-                TaskContext.from(TaskNode.builder().type(ExecutionType.MISFIRED).build().getTaskNodeValue()), 
                 TaskContext.from(TaskNode.builder().build().getTaskNodeValue())));
         verify(failoverService).remove(Collections.singletonList(TaskContext.MetaInfo.from(TaskNode.builder().build().getTaskNodePath())));
-        verify(misfiredService).remove(Sets.newHashSet("test_job"));
         verify(readyService).remove(Sets.newHashSet("test_job"));
     }
     
@@ -201,13 +189,6 @@ public final class FacadeServiceTest {
     public void assertIsRunningForReadyJobAndNotRunning() {
         when(runningService.getRunningTasks("test_job")).thenReturn(Collections.<TaskContext>emptyList());
         assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
-    }
-    
-    @Test
-    public void assertIsRunningForMisfiredJobRunning() {
-        when(runningService.getRunningTasks("test_job")).thenReturn(
-                Collections.singletonList(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
-        assertTrue(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.MISFIRED).build().getTaskNodeValue())));
     }
     
     @Test
