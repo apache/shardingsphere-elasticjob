@@ -18,15 +18,13 @@
 package com.dangdang.ddframe;
 
 import com.dangdang.ddframe.job.lite.AllSpringJobTests;
-import com.dangdang.ddframe.reg.AllSpringRegTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        AllSpringRegTests.class, 
-        AllSpringJobTests.class
+        AllSpringJobTests.class,
     })
 public class AllLiteSpringTests {
 }

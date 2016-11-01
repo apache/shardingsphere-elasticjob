@@ -17,40 +17,46 @@
 
 package com.dangdang.ddframe.reg.spring.namespace;
 
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import com.google.common.base.Strings;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
+import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
+import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 /**
  * 基于Zookeeper注册中心的命名空间解析器.
  * 
- * @author zhangliang
+ * @author caohao
  */
-class ZookeeperBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+class ZookeeperBeanDefinitionParser extends AbstractBeanDefinitionParser {
     
     @Override
-    protected Class<?> getBeanClass(final Element element) {
-        return SpringZookeeperRegistryCenter.class;
+    protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
+        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(ZookeeperRegistryCenter.class);
+        result.addConstructorArgValue(buildZookeeperConfigurationBeanDefinition(element));
+        result.setInitMethodName("init");
+        return result.getBeanDefinition();
     }
     
-    @Override
-    protected void doParse(final Element element, final BeanDefinitionBuilder bean) {
-        bean.addConstructorArgValue(createZookeeperConfiguration(element));
-        bean.setDestroyMethodName("close");
+    private AbstractBeanDefinition buildZookeeperConfigurationBeanDefinition(final Element element) {
+        BeanDefinitionBuilder configuration = BeanDefinitionBuilder.rootBeanDefinition(ZookeeperConfiguration.class);
+        configuration.addConstructorArgValue(element.getAttribute("server-lists"));
+        configuration.addConstructorArgValue(element.getAttribute("namespace"));
+        addPropertyValueIfNotEmpty("base-sleep-time-milliseconds", "baseSleepTimeMilliseconds", element, configuration);
+        addPropertyValueIfNotEmpty("max-sleep-time-milliseconds", "maxSleepTimeMilliseconds", element, configuration);
+        addPropertyValueIfNotEmpty("session-timeout-milliseconds", "sessionTimeoutMilliseconds", element, configuration);
+        addPropertyValueIfNotEmpty("connection-timeout-milliseconds", "connectionTimeoutMilliseconds", element, configuration);
+        addPropertyValueIfNotEmpty("digest", "digest", element, configuration);
+        return configuration.getBeanDefinition();
     }
     
-    private SpringZookeeperConfigurationDto createZookeeperConfiguration(final Element element) {
-        SpringZookeeperConfigurationDto result = new SpringZookeeperConfigurationDto(
-                element.getAttribute("server-lists"), 
-                element.getAttribute("namespace"), 
-                element.getAttribute("base-sleep-time-milliseconds"), 
-                element.getAttribute("max-sleep-time-milliseconds"), 
-                element.getAttribute("max-retries"));
-        result.setSessionTimeoutMilliseconds(element.getAttribute("session-timeout-milliseconds"));
-        result.setConnectionTimeoutMilliseconds(element.getAttribute("connection-timeout-milliseconds"));
-        result.setDigest(element.getAttribute("digest"));
-        result.setLocalPropertiesPath(element.getAttribute("local-properties-path"));
-        result.setOverwrite(element.getAttribute("overwrite"));
-        return result;
+    private void addPropertyValueIfNotEmpty(final String attributeName, final String propertyName, final Element element, final BeanDefinitionBuilder factory) {
+        String attributeValue = element.getAttribute(attributeName);
+        if (!Strings.isNullOrEmpty(attributeValue)) {
+            factory.addPropertyValue(propertyName, attributeValue);
+        }
     }
 }

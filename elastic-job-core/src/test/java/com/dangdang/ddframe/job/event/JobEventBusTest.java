@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.event;
 
+import com.dangdang.ddframe.job.event.JobEventBus.JobEventBusInstance;
 import com.dangdang.ddframe.job.event.JobExecutionEvent.ExecutionSource;
 import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
@@ -27,10 +28,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -46,7 +52,7 @@ public final class JobEventBusTest {
     
     @After
     public void tearDown() {
-        jobEventBus.clearListeners(jobName);
+        jobEventBus.deregister(jobName);
         TestJobEventListener.reset();
     }
     
@@ -78,6 +84,43 @@ public final class JobEventBusTest {
             Thread.sleep(100L);
         }
         verify(jobEventCaller, times(2)).call();
+    }
+    
+    @Test
+    public void assertGetWorkQueueSize() {
+        registerEventConfigs();
+        assertThat(jobEventBus.getWorkQueueSize().size(), is(1));
+        assertThat(jobEventBus.getWorkQueueSize().get(jobName), is(0));
+    }
+    
+    @Test
+    public void assertClearListeners() throws NoSuchFieldException {
+        JobEventBusInstance jobEventBusInstance = mock(JobEventBusInstance.class);
+        setItemMap(jobEventBusInstance);
+        jobEventBus.clearListeners(jobName);
+        verify(jobEventBusInstance).clearListeners();
+    }
+    
+    @Test
+    public void assertDeregister() throws InterruptedException, NoSuchFieldException {
+        JobEventBusInstance jobEventBusInstance = mock(JobEventBusInstance.class);
+        setItemMap(jobEventBusInstance);
+        jobEventBus.deregister(jobName);
+        verify(jobEventBusInstance).clearListeners();
+    }
+    
+    @Test
+    public void assertDeregisterWitAnotherJobName() throws InterruptedException, NoSuchFieldException {
+        JobEventBusInstance jobEventBusInstance = mock(JobEventBusInstance.class);
+        setItemMap(jobEventBusInstance);
+        jobEventBus.deregister("anotherJob");
+        verify(jobEventBusInstance, times(0)).clearListeners();
+    }
+    
+    private void setItemMap(JobEventBusInstance jobEventBusInstance) throws NoSuchFieldException {
+        ConcurrentHashMap<String, JobEventBusInstance> itemMap = new ConcurrentHashMap<>();
+        itemMap.put(jobName, jobEventBusInstance);
+        ReflectionUtils.setFieldValue(jobEventBus, "itemMap", itemMap);
     }
     
     private void registerEventConfigs() {

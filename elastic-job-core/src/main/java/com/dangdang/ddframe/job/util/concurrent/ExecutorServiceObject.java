@@ -17,7 +17,9 @@
 
 package com.dangdang.ddframe.job.util.concurrent;
 
+import com.google.common.base.Joiner;
 import com.google.common.util.concurrent.MoreExecutors;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -36,9 +38,10 @@ public final class ExecutorServiceObject {
     
     private final BlockingQueue<Runnable> workQueue;
     
-    public ExecutorServiceObject(final int threadSize) {
+    public ExecutorServiceObject(final String namingPattern, final int threadSize) {
         workQueue = new LinkedBlockingQueue<>();
-        threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, workQueue);
+        threadPoolExecutor = new ThreadPoolExecutor(threadSize, threadSize, 5L, TimeUnit.MINUTES, workQueue, 
+                new BasicThreadFactory.Builder().namingPattern(Joiner.on("-").join(namingPattern, "%s")).build());
         threadPoolExecutor.allowCoreThreadTimeOut(true);
     }
     
@@ -49,6 +52,10 @@ public final class ExecutorServiceObject {
      */
     public ExecutorService createExecutorService() {
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
+    }
+    
+    public boolean isShutdown() {
+        return threadPoolExecutor.isShutdown();
     }
     
     /**

@@ -69,8 +69,8 @@ public final class MasterBootstrap {
         initListener();
         final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         producerManager.startup();
-        new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService)).start();
-        new Thread(new StatisticsProcessor()).start();
+        new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService), "task-launch-processor-" + Thread.currentThread().getId()).start();
+        new Thread(new StatisticsProcessor(), "statistics-processor-" + Thread.currentThread().getId()).start();
         Runtime.getRuntime().addShutdownHook(new Thread() {
             
             @Override
