@@ -28,6 +28,8 @@ weight=500
 
 ## [拉手网](http://www.lashou.com/)
 
+## [米袋集团](http://www.midaigroup.com/)
+
 ## [全时](http://www.quanshi.com/)
 
 ## [赛特斯](http://www.certusnet.com.cn/)
