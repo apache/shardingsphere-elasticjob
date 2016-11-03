@@ -248,4 +248,13 @@ public final class JobOperateAPIImplTest {
         verify(regCenter).remove("/test_job1/servers/localhost");
         verify(regCenter, times(0)).remove("/test_job2/servers/localhost");
     }
+    
+    @Test
+    public void assertRemoveWithJobNameWhenLeaderHostStillExisted() {
+        when(regCenter.isExisted("/test_job/leader/election/host")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Collections.<String>emptyList());
+        assertThat(jobOperateAPI.remove(Optional.of("test_job"),  Optional.of("localhost")), Is.<Collection<String>>is(Collections.singletonList("localhost")));
+        verify(regCenter).isExisted("/test_job/leader/election/host");
+        verify(regCenter).isExisted("/test_job/servers/localhost/status");
+    }
 }

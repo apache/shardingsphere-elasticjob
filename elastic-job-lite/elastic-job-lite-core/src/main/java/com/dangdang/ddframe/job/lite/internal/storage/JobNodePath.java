@@ -56,6 +56,8 @@ public final class JobNodePath {
      */
     public static final String STATUS_NODE = "status";
     
+    private static final String LEADER_HOST_NODE = "leader/election/host";
+    
     private static final String CONFIG_NODE = "config";
     
     private static final String SERVERS_NODE = "servers";
@@ -81,6 +83,15 @@ public final class JobNodePath {
      */
     public String getConfigNodePath() {
         return String.format("/%s/%s", jobName, CONFIG_NODE);
+    }
+    
+    /**
+     * 获取leader选举地址节点路径.
+     *
+     * @return leader选举地址节点路径
+     */
+    public String getLeaderHostNodePath() {
+        return String.format("/%s/%s", jobName, LEADER_HOST_NODE);
     }
     
     /**

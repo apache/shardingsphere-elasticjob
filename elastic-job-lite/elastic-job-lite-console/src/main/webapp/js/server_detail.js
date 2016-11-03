@@ -32,7 +32,7 @@ function renderJobs() {
                 operationTd = operationTd + shutdownButton + "&nbsp;";
             }
             if ("SHUTDOWN" === status || "CRASHED" === status) {
-                operationTd = operationTd + removeButton;
+                operationTd = removeButton;
             }
             operationTd = "<td>" + operationTd + "</td>";
             var trClass = "";
@@ -125,8 +125,12 @@ function bindShutdownButtons() {
 function bindRemoveButtons() {
     $(document).on("click", "button[operation='remove']", function(event) {
         $.post("job/remove", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
+            if (data.length > 0) {
+                showFailureDialog("remove-job-failure-dialog");
+            } else {
+                showSuccessDialog();
+            }
             renderJobs();
-            showSuccessDialog();
         });
     });
     $(document).on("click", "button[operation='remove']", function(event) {

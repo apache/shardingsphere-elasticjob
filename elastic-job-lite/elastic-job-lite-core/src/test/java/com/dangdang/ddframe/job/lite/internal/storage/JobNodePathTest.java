@@ -55,4 +55,9 @@ public final class JobNodePathTest {
     public void assertGetExecutionNodePathWihItemAndNode() {
         assertThat(jobNodePath.getExecutionNodePath("0", "running"), is("/test_job/execution/0/running"));
     }
+    
+    @Test
+    public void assertGetLeaderIpNodePath() {
+        assertThat(jobNodePath.getLeaderHostNodePath(), is("/test_job/leader/election/host"));
+    }
 }

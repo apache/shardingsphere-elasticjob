@@ -143,7 +143,7 @@ function renderServers() {
                 operationTd = operationTd + shutdownButton + "&nbsp;";
             }
             if ("SHUTDOWN" === status || "CRASHED" === status) {
-                operationTd = operationTd + removeButton + "&nbsp;";
+                operationTd = removeButton + "&nbsp;";
             }
             if("DISABLED" == status) {
                 operationTd = operationTd + enableButton;
@@ -262,9 +262,13 @@ function bindShutdownButtons() {
 function bindRemoveButtons() {
     $(document).on("click", "button[operation='remove']", function(event) {
         var jobName = $("#job-name").text();
-        $.post("job/remove", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function () {
+        $.post("job/remove", {jobName : jobName, ip : $(event.currentTarget).attr("ip")}, function (data) {
+            if (data.length > 0) {
+                showFailureDialog("remove-job-failure-dialog");
+            } else {
+                showSuccessDialog();
+            }
             renderServers();
-            showSuccessDialog();
         });
     });
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("job")
@@ -84,15 +85,15 @@ public class JobOperationController {
     }
     
     @RequestMapping(value = "remove", method = RequestMethod.POST)
-    public void removeJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().remove(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+    public Collection<String> removeJob(final ServerInfo jobServer) {
+        return jobAPIService.getJobOperatorAPI().remove(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
     }
-
+    
     @RequestMapping(value = "disable", method = RequestMethod.POST)
     public void disableJob(final ServerInfo jobServer) {
         jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
     }
-
+    
     @RequestMapping(value = "enable", method = RequestMethod.POST)
     public void enableJob(final ServerInfo jobServer) {
         jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));

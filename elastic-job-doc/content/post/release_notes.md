@@ -16,6 +16,7 @@ weight=1
 1. [ISSUE #145](https://github.com/dangdangdotcom/elastic-job/issues/145) 修改作业日志的数据库连接后日志还是会写入老的数据库
 1. [ISSUE #146](https://github.com/dangdangdotcom/elastic-job/issues/146) 作业的线程池复用问题
 1. [ISSUE #147](https://github.com/dangdangdotcom/elastic-job/issues/147) console作业维度加载不出来 后台有报空指针错误
+1. [ISSUE #149](https://github.com/dangdangdotcom/elastic-job/issues/149) 运维平台删除作业，偶尔会遇到删除不全的情况
 1. [ISSUE #150](https://github.com/dangdangdotcom/elastic-job/issues/150) Cloud的misfire功能在作业堆积时将会一直执行
 
 ## 2.0.0
