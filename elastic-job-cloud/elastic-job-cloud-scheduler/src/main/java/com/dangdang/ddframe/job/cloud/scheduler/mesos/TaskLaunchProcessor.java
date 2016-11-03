@@ -127,14 +127,17 @@ public final class TaskLaunchProcessor implements Runnable {
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true)
                 .setCache(BootstrapEnvironment.getInstance().getFrameworkConfiguration().isAppCacheEnable()).build();
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(jobConfig.getBootstrapScript()).build();
+        Protos.Resource.Builder cpus = buildResource("cpus", jobConfig.getCpuCount());
+        Protos.Resource.Builder mem = buildResource("mem", jobConfig.getMemoryMB());
         Protos.ExecutorInfo executorInfo = 
-                Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL()))).setCommand(command).build();
+                Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL()))).setCommand(command)
+                        .addResources(cpus).addResources(mem).build();
         return Protos.TaskInfo.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName())
                 .setSlaveId(slaveID)
-                .addResources(buildResource("cpus", jobConfig.getCpuCount()))
-                .addResources(buildResource("mem", jobConfig.getMemoryMB()))
+                .addResources(cpus)
+                .addResources(mem)
                 .setExecutor(executorInfo)
                 .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()))
                 .build();
