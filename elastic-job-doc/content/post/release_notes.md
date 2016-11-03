@@ -9,9 +9,10 @@ weight=1
 ## 2.0.1-SNAPSHOT
 
 ### 缺陷修正
+1. [ISSUE #115](https://github.com/dangdangdotcom/elastic-job/issues/115) 新增注册中心，没有连接成功，后台一直报错
+1. [ISSUE #141](https://github.com/dangdangdotcom/elastic-job/issues/141) 删除reg模块从zk读取信息功能，使reg命名空间的placeholder完全可用
 1. [ISSUE #143](https://github.com/dangdangdotcom/elastic-job/issues/143) elastic-job-cloud-scheduler内存泄漏问题
 1. [ISSUE #145](https://github.com/dangdangdotcom/elastic-job/issues/145) 修改作业日志的数据库连接后日志还是会写入老的数据库
-1. [ISSUE #141](https://github.com/dangdangdotcom/elastic-job/issues/141) 删除reg模块从zk读取信息功能，使reg命名空间的placeholder完全可用
 1. [ISSUE #146](https://github.com/dangdangdotcom/elastic-job/issues/146) 作业的线程池复用问题
 1. [ISSUE #150](https://github.com/dangdangdotcom/elastic-job/issues/150) Cloud的misfire功能在作业堆积时将会一直执行
 
