@@ -7,7 +7,7 @@ weight=1
 
 # Release Notes
 
-## 2.0.1-SNAPSHOT
+## 2.0.1
 
 ### 缺陷修正
 1. [ISSUE #141](https://github.com/dangdangdotcom/elastic-job/issues/141) 删除reg模块从zk读取信息功能，使reg命名空间的placeholder完全可用
