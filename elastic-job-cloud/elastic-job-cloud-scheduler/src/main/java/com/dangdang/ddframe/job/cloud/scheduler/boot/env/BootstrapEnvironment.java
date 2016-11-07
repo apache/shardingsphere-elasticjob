@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -103,15 +105,15 @@ public final class BootstrapEnvironment {
     /**
      * 获取RDB关系型数据库配置对象.
      *
-     * @return Mesos框架配置对象
+     * @return RDB关系型数据库配置对象
      */
-    public Optional<RdbConfiguration> getRdbConfiguration() {
-        String driver = getValue(EnvironmentArgument.RDB_DRIVER);
-        String url = getValue(EnvironmentArgument.RDB_URL);
-        String username = getValue(EnvironmentArgument.RDB_USERNAME);
-        String password = getValue(EnvironmentArgument.RDB_PASSWORD);
+    public Optional<JobEventRdbConfiguration> getRdbConfiguration() {
+        String driver = getValue(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER);
+        String url = getValue(EnvironmentArgument.EVENT_TRACE_RDB_URL);
+        String username = getValue(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME);
+        String password = getValue(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD);
         if (!Strings.isNullOrEmpty(driver) && !Strings.isNullOrEmpty(url) && !Strings.isNullOrEmpty(username)) {
-            return Optional.of(new RdbConfiguration(driver, url, username, password));
+            return Optional.of(new JobEventRdbConfiguration(driver, url, username, password, JobTraceEvent.LogLevel.INFO));
         }
         return Optional.absent();
     }
@@ -151,13 +153,15 @@ public final class BootstrapEnvironment {
         
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true),
         
-        RDB_URL("rdb_url", "", false),
+        EVENT_TRACE_RDB_URL("event_trace_rdb_url", "", false),
         
-        RDB_DRIVER("rdb_driver", "", false),
+        EVENT_TRACE_RDB_DRIVER("event_trace_rdb_driver", "", false),
         
-        RDB_USERNAME("rdb_username", "", false),
+        EVENT_TRACE_RDB_USERNAME("event_trace_rdb_username", "", false),
         
-        RDB_PASSWORD("rdb_password", "", false);
+        EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false),
+        
+        EVENT_TRACE_RDB_LOG_LEVEL("event_trace_rdb_log_level", "INFO", true);
         
         private final String key;
         

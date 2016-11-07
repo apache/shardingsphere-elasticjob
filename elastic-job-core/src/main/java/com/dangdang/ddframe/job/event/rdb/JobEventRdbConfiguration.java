@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
@@ -34,7 +35,9 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 @Getter
 @Slf4j
-public class JobEventRdbConfiguration extends JobEventRdbIdentity implements JobEventConfiguration {
+public class JobEventRdbConfiguration extends JobEventRdbIdentity implements JobEventConfiguration, Serializable {
+    
+    private static final long serialVersionUID = 3344410699286435226L;
     
     private final String driverClassName;
     

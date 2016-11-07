@@ -19,6 +19,9 @@ package com.dangdang.ddframe.job.cloud.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -46,12 +49,18 @@ public final class TaskExecutor implements Executor {
     
     private final ExecutorService executorService;
     
+    private JobEventBus jobEventBus;
+    
     public TaskExecutor() {
         executorService = new ExecutorServiceObject("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
     }
     
     @Override
     public void registered(final ExecutorDriver executorDriver, final Protos.ExecutorInfo executorInfo, final Protos.FrameworkInfo frameworkInfo, final Protos.SlaveInfo slaveInfo) {
+        if (!executorInfo.getData().isEmpty()) {
+            JobEventRdbConfiguration jobEventRdbConfig = SerializationUtils.deserialize(executorInfo.getData().toByteArray());
+            jobEventBus = new JobEventBus(new JobEventLogConfiguration(), jobEventRdbConfig);
+        }
     }
     
     @Override
@@ -103,10 +112,10 @@ public final class TaskExecutor implements Executor {
             try {
                 ElasticJob elasticJob = getElasticJobInstance(jobConfig);
                 if (jobConfig.isTransient()) {
-                    JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContexts, jobConfig)).execute();
+                    JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContexts, jobConfig, jobEventBus)).execute();
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
                 } else {
-                    new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContexts, jobConfig), executorDriver, taskInfo.getTaskId()).init();
+                    new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContexts, jobConfig, jobEventBus), executorDriver, taskInfo.getTaskId()).init();
                 }
                 // CHECKSTYLE:OFF
             } catch (final Throwable ex) {

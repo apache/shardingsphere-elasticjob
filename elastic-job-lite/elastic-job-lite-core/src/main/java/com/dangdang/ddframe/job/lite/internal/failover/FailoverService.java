@@ -17,9 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
@@ -28,6 +25,7 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +37,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
+@Slf4j
 public class FailoverService {
     
     private final String jobName;
@@ -150,7 +149,7 @@ public class FailoverService {
                 return;
             }
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.DEBUG, String.format("Failover job begin, crashed item:%s", crashedItem)));
+            log.debug("Failover job '{}' begin, crashed item '{}'", jobName, crashedItem);
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             // TODO 不应使用triggerJob, 而是使用executor统一调度

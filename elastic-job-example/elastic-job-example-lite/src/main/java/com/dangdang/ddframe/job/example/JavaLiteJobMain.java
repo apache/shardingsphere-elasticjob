@@ -22,9 +22,9 @@ import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob;
 import com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob;
 import com.dangdang.ddframe.job.example.listener.SimpleDistributeListener;
@@ -40,6 +40,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Arrays;
+import java.util.Collection;
 
 public final class JavaLiteJobMain {
     
@@ -58,6 +60,9 @@ public final class JavaLiteJobMain {
     private static final String EVENT_RDB_STORAGE_PASSWORD = "";
     
     private static final JobTraceEvent.LogLevel EVENT_RDB_STORAGE_LOG_LEVEL = JobTraceEvent.LogLevel.INFO;
+    
+    private static final Collection<JobEventConfiguration> JOB_EVENT_CONFIGS =  Arrays.asList(new JobEventLogConfiguration(),
+            new JobEventRdbConfiguration("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/elastic-job-cloud-log", "root", "", EVENT_RDB_STORAGE_LOG_LEVEL));
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
@@ -84,6 +89,7 @@ public final class JavaLiteJobMain {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
                 .jobEventConfiguration(getJobEventConfigurations()).build();
         SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig, JavaSimpleJob.class.getCanonicalName());
+//        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), JOB_EVENT_CONFIGS, new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
     }
     
@@ -91,12 +97,14 @@ public final class JavaLiteJobMain {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
                 .jobEventConfiguration(getJobEventConfigurations()).build();
         DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, JavaDataflowJob.class.getCanonicalName(), true);
+//        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), JOB_EVENT_CONFIGS).init();
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build()).init();
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter) throws IOException {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).jobEventConfiguration(getJobEventConfigurations()).build();
         ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
+//        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), JOB_EVENT_CONFIGS).init();
         new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build()).init();
     }
     

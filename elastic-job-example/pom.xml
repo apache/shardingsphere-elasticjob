@@ -22,6 +22,14 @@
         <h2.version>1.4.184</h2.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.30</version>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>

@@ -17,15 +17,16 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
+import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestElasticJobListener;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
@@ -71,6 +72,9 @@ public class LiteJobFacadeTest {
     private FailoverService failoverService;
     
     @Mock
+    private JobEventBus eventBus;
+    
+    @Mock
     private ElasticJobListenerCaller caller;
     
     private LiteJobFacade liteJobFacade;
@@ -78,7 +82,7 @@ public class LiteJobFacadeTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        liteJobFacade = new LiteJobFacade(null, "test_job", Collections.<ElasticJobListener>singletonList(new TestElasticJobListener(caller)));
+        liteJobFacade = new LiteJobFacade(null, "test_job", Collections.<ElasticJobListener>singletonList(new TestElasticJobListener(caller)), eventBus);
         ReflectionUtils.setFieldValue(liteJobFacade, "configService", configService);
         ReflectionUtils.setFieldValue(liteJobFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(liteJobFacade, "shardingService", shardingService);
@@ -260,5 +264,11 @@ public class LiteJobFacadeTest {
         verify(serverService).isJobPausedManually();
         verify(shardingService).isNeedSharding();
         verify(configService).load(true);
+    }
+    
+    @Test
+    public void assertPostJobEvent() {
+        liteJobFacade.postJobEvent(null);
+        verify(eventBus).post(null);
     }
 }

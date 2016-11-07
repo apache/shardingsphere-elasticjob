@@ -45,6 +45,8 @@ public final class SchedulerEngine implements Scheduler {
     
     private final FacadeService facadeService;
     
+    private final JobEventBus jobEventBus;
+    
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
         log.info("call registered");
@@ -78,7 +80,7 @@ public final class SchedulerEngine implements Scheduler {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
-        JobEventBus.getInstance().post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
+        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
                 taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()), 
                 State.valueOf(taskStatus.getState().name()), String.format("source is: %s, message is: %s.", taskStatus.getSource(), taskStatus.getMessage())));
         switch (taskStatus.getState()) {

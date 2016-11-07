@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -36,6 +37,7 @@ import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.SchedulerDriver;
@@ -65,6 +67,8 @@ public final class TaskLaunchProcessor implements Runnable {
     
     private final FacadeService facadeService;
     
+    private final JobEventBus jobEventBus;
+    
     /**
      * 线程关闭.
      */
@@ -84,7 +88,7 @@ public final class TaskLaunchProcessor implements Runnable {
                 for (Protos.TaskInfo taskInfo : taskInfoList) {
                     TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
                     facadeService.addRunning(taskContext);
-                    JobEventBus.getInstance().post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(),
+                    jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(),
                             taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()),
                             State.TASK_STAGING, String.format("task info is: %s", taskInfo)));
                 }
@@ -136,16 +140,19 @@ public final class TaskLaunchProcessor implements Runnable {
         Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(jobConfig.getBootstrapScript()).build();
         Protos.Resource.Builder cpus = buildResource("cpus", jobConfig.getCpuCount());
         Protos.Resource.Builder mem = buildResource("mem", jobConfig.getMemoryMB());
-        Protos.ExecutorInfo executorInfo = 
-                Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL()))).setCommand(command)
-                        .addResources(cpus).addResources(mem).build();
+        Protos.ExecutorInfo.Builder executorInfoBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL())))
+                .setCommand(command).setData(ByteString.copyFrom(SerializationUtils.serialize(BootstrapEnvironment.getInstance().getRdbConfiguration()))).addResources(cpus).addResources(mem);
+        Optional<JobEventRdbConfiguration> rdbConfig = BootstrapEnvironment.getInstance().getRdbConfiguration();
+        if (rdbConfig.isPresent()) {
+            executorInfoBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(rdbConfig.get()))).build();
+        }
         return Protos.TaskInfo.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName())
                 .setSlaveId(slaveID)
                 .addResources(cpus)
                 .addResources(mem)
-                .setExecutor(executorInfo)
+                .setExecutor(executorInfoBuilder.build())
                 .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()))
                 .build();
     }

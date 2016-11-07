@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.executor;
 
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
+import com.dangdang.ddframe.job.event.JobEvent;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 
 import java.util.Collection;
@@ -127,4 +128,11 @@ public interface JobFacade {
      * @param shardingContexts 分片上下文
      */
     void afterJobExecuted(ShardingContexts shardingContexts);
+    
+    /**
+     * 发布事件.
+     *
+     * @param jobEvent 作业事件
+     */
+    void postJobEvent(JobEvent jobEvent);
 }

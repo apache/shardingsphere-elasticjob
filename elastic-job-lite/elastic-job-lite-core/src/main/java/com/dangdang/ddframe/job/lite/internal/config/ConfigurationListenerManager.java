@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
-import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
@@ -40,13 +39,10 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    private final JobEventBus jobEventBus;
-    
     public ConfigurationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
         configNode = new ConfigurationNode(jobName);
-        jobEventBus = JobEventBus.getInstance();
     }
     
     @Override
@@ -64,8 +60,6 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
                     return;
                 }
                 LiteJobConfiguration liteJobConfiguration = LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData()));
-                jobEventBus.deregister(liteJobConfiguration.getJobName());
-                jobEventBus.register(liteJobConfiguration.getJobName(), liteJobConfiguration.getTypeConfig().getCoreConfig().getJobEventConfigs().values());
                 jobScheduler.rescheduleJob(liteJobConfiguration.getTypeConfig().getCoreConfig().getCron());
             }
         }

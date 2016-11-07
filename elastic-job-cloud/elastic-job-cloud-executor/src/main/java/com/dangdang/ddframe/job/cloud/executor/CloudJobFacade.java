@@ -17,11 +17,13 @@
 
 package com.dangdang.ddframe.job.cloud.executor;
 
-import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
+import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.event.JobEvent;
+import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
-import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
@@ -37,6 +39,8 @@ public class CloudJobFacade implements JobFacade {
     private final ShardingContexts shardingContexts;
     
     private final JobConfigurationContext jobConfig;
+    
+    private final JobEventBus jobEventBus;
     
     @Override
     public JobRootConfiguration loadJobRootConfiguration(final boolean fromCache) {
@@ -97,5 +101,10 @@ public class CloudJobFacade implements JobFacade {
     
     @Override
     public void afterJobExecuted(final ShardingContexts shardingContexts) {
+    }
+    
+    @Override
+    public void postJobEvent(final JobEvent jobEvent) {
+        jobEventBus.post(jobEvent);
     }
 }

@@ -18,19 +18,18 @@
 package com.dangdang.ddframe.job.executor.handler.impl;
 
 import com.dangdang.ddframe.job.executor.handler.JobExceptionHandler;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 默认作业异常处理器.
  *
  * @author zhangliang
  */
+@Slf4j
 public final class DefaultJobExceptionHandler implements JobExceptionHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
-        JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "exception occur in job processing", cause));
+        log.error(String.format("Job '%s' exception occur in job processing", jobName), cause);
     }
 }

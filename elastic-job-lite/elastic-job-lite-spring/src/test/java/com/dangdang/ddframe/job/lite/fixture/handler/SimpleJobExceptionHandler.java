@@ -23,6 +23,6 @@ public class SimpleJobExceptionHandler implements JobExceptionHandler {
     
     @Override
     public void handleException(final String jobName, final Throwable cause) {
-        throw new RuntimeException(cause);    
+        throw new RuntimeException(cause);
     }
 }

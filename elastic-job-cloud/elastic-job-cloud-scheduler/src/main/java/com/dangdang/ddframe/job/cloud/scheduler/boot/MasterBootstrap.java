@@ -19,11 +19,8 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.RdbConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
@@ -50,9 +47,6 @@ import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
  * Mesos框架启动器.
  *
@@ -75,15 +69,14 @@ public final class MasterBootstrap {
         LeasesQueue leasesQueue = new LeasesQueue();
         final FacadeService facadeService = new FacadeService(regCenter);
         TaskScheduler taskScheduler = getTaskScheduler();
-        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService);
+        JobEventBus jobEventBus = getJobEventBus();
+        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
-        ConfigurationService configService = new ConfigurationService(regCenter);
         CloudJobRestfulApi.init(schedulerDriver, regCenter);
         initConfigurationListener();
-        initEventListener(configService.loadAll());
         final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         producerManager.startup();
-        new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService), "task-launch-processor-" + Thread.currentThread().getId()).start();
+        new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus), "task-launch-processor-" + Thread.currentThread().getId()).start();
         new Thread(new StatisticsProcessor(), "statistics-processor-" + Thread.currentThread().getId()).start();
         Runtime.getRuntime().addShutdownHook(new Thread() {
             
@@ -101,11 +94,11 @@ public final class MasterBootstrap {
         return result;
     }
     
-    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService) {
+    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Protos.FrameworkInfo frameworkInfo = 
                 Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService), frameworkInfo, mesosConfig.getUrl());
+        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus), frameworkInfo, mesosConfig.getUrl());
     }
     
     private TaskScheduler getTaskScheduler() {
@@ -126,17 +119,18 @@ public final class MasterBootstrap {
         ((TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT)).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
     }
     
-    private void initEventListener(final Collection<CloudJobConfiguration> cloudJobConfigurations) {
-        Optional<RdbConfiguration> rdbConfigurationOptional = BootstrapEnvironment.getInstance().getRdbConfiguration();
-        Collection<JobEventConfiguration> jobEventConfigurations = new ArrayList<>(2);
-        jobEventConfigurations.add(new JobEventLogConfiguration());
-        if (rdbConfigurationOptional.isPresent()) {
-            RdbConfiguration config = rdbConfigurationOptional.get();
-            jobEventConfigurations.add(new JobEventRdbConfiguration(config.getDriver(), config.getUrl(), config.getUsername(), config.getPassword(), LogLevel.INFO));    
+    private JobEventBus getJobEventBus() {
+        JobEventConfiguration[] jobEventConfigurations;
+        Optional<JobEventRdbConfiguration> rdbConfig = env.getRdbConfiguration();
+        if (rdbConfig.isPresent()) {
+            jobEventConfigurations = new JobEventConfiguration[2];
+            JobEventRdbConfiguration config = rdbConfig.get();
+            jobEventConfigurations[1] = new JobEventRdbConfiguration(config.getDriverClassName(), config.getUrl(), config.getUsername(), config.getPassword(), LogLevel.INFO);
+        } else {
+            jobEventConfigurations = new JobEventConfiguration[1];
         }
-        for (CloudJobConfiguration each : cloudJobConfigurations) {
-            JobEventBus.getInstance().register(each.getJobName(), jobEventConfigurations);
-        }
+        jobEventConfigurations[0] = new JobEventLogConfiguration();
+        return new JobEventBus(jobEventConfigurations);
     }
     
     /**

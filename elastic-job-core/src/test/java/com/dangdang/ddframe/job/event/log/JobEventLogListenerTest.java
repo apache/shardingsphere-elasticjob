@@ -18,53 +18,40 @@
 package com.dangdang.ddframe.job.event.log;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.Collections;
 
 public final class JobEventLogListenerTest {
     
     private static final String JOB_NAME = "test_log_event_listener_job";
     
-    @BeforeClass
-    public static void setUp() {
-        JobEventBus.getInstance().register(JOB_NAME, Collections.<JobEventConfiguration>singletonList(new JobEventLogConfiguration()));
-    }
-    
-    @AfterClass
-    public static void tearDown() {
-        JobEventBus.getInstance().clearListeners(JOB_NAME);
-    }
+    private JobEventBus jobEventBus = new JobEventBus();
     
     @Test
     public void assertPostJobTraceEvent() {
         for (LogLevel each : LogLevel.values()) {
-            JobEventBus.getInstance().post(new JobTraceEvent(JOB_NAME, each, "ok"));
+            jobEventBus.post(new JobTraceEvent(JOB_NAME, each, "ok"));
         }
     }
     
     @Test
     public void assertPostJobExecutionEventWhenStart() {
-        JobEventBus.getInstance().post(new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0));
     }
     
     @Test
     public void assertPostJobExecutionEventWhenCompleteWithSuccess() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobExecutionEvent.executionSuccess();
-        JobEventBus.getInstance().post(jobExecutionEvent);
+        jobEventBus.post(jobExecutionEvent);
     }
     
     @Test
     public void assertPostJobExecutionEventWhenCompleteWithFailure() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         jobExecutionEvent.executionFailure(new RuntimeException("test"));
-        JobEventBus.getInstance().post(jobExecutionEvent);
+        jobEventBus.post(jobExecutionEvent);
     }
 }

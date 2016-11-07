@@ -17,9 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
@@ -27,24 +24,23 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 选举主节点的服务.
  * 
  * @author zhangliang
  */
+@Slf4j
 public class LeaderElectionService {
     
     private final LocalHostService localHostService = new LocalHostService();
-    
-    private final String jobName;
     
     private final ServerService serverService;
     
     private final JobNodeStorage jobNodeStorage;
     
     public LeaderElectionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
-        this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
     }
@@ -75,7 +71,7 @@ public class LeaderElectionService {
     public Boolean isLeader() {
         String localHostIp = localHostService.getIp();
         while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.INFO, "Leader node is electing, waiting for 100 ms"));
+            log.info("Leader node is electing, waiting for {} ms", 100);
             BlockUtils.waitingShortTime();
             leaderElection();
         }

@@ -19,6 +19,9 @@ package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
@@ -42,6 +45,8 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -61,8 +66,14 @@ public class JobScheduler {
     private final JobFacade jobFacade;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
+        this(regCenter, liteJobConfig, Collections.<JobEventConfiguration>singletonList(new JobEventLogConfiguration()), elasticJobListeners);
+    }
+    
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final Collection<JobEventConfiguration> jobEventConfigs, 
+                        final ElasticJobListener... elasticJobListeners) {
+        JobEventBus jobEventBus = new JobEventBus(jobEventConfigs.toArray(new JobEventConfiguration[jobEventConfigs.size()]));
         jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
-        jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners));
+        jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
     }
     
     /**

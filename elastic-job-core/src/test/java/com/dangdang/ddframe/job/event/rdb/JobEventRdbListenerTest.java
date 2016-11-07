@@ -18,13 +18,11 @@
 package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +31,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.sql.SQLException;
-import java.util.Collections;
 
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.verify;
@@ -50,38 +47,34 @@ public final class JobEventRdbListenerTest {
     @Mock
     private JobEventRdbStorage repository;
     
+    private JobEventBus jobEventBus;
+    
     @Before
     public void setUp() throws SQLException, NoSuchFieldException {
         JobEventRdbListener jobEventRdbListener = new JobEventRdbListener(new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", JobTraceEvent.LogLevel.INFO));
         ReflectionUtils.setFieldValue(jobEventRdbListener, "repository", repository);
         when(jobEventRdbConfiguration.createJobEventListener()).thenReturn(jobEventRdbListener);
-        JobEventBus.getInstance().register(JOB_NAME, Collections.<JobEventConfiguration>singletonList(jobEventRdbConfiguration));
-    }
-    
-    @After
-    public void tearDown() {
-        JobEventBus.getInstance().clearListeners(JOB_NAME);
+        jobEventBus = new JobEventBus(jobEventRdbConfiguration);
     }
     
     @Test
     public void assertPostJobTraceEvent() {
         JobTraceEvent jobTraceEvent = new JobTraceEvent(JOB_NAME, LogLevel.INFO, "ok");
-        JobEventBus.getInstance().post(jobTraceEvent);
+        jobEventBus.post(jobTraceEvent);
         verify(repository, atMost(1)).addJobTraceEvent(jobTraceEvent);
     }
     
     @Test
     public void assertPostJobExecutionEvent() {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        JobEventBus.getInstance().post(jobExecutionEvent);
+        jobEventBus.post(jobExecutionEvent);
         verify(repository, atMost(1)).addJobExecutionEvent(jobExecutionEvent);
     }
     
     @Test
     public void assertPostJobStatusTraceEvent() {
-        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", "READY", "0", 
-                State.TASK_RUNNING, "message is empty.");
-        JobEventBus.getInstance().post(jobStatusTraceEvent);
+        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", "READY", "0", State.TASK_RUNNING, "message is empty.");
+        jobEventBus.post(jobStatusTraceEvent);
         verify(repository, atMost(1)).addJobStatusTraceEvent(jobStatusTraceEvent);
     }
 }

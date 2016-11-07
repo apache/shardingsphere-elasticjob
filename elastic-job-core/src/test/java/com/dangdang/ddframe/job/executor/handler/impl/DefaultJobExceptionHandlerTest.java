@@ -17,19 +17,11 @@
 
 package com.dangdang.ddframe.job.executor.handler.impl;
 
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
-import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
-import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Collections;
 
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.verify;
@@ -39,17 +31,6 @@ public final class DefaultJobExceptionHandlerTest {
     
     @Mock
     private JobEventCaller caller;
-    
-    @Before
-    public void setUp() {
-        JobEventBus.getInstance().register("test_job", Collections.<JobEventConfiguration>singletonList(new TestJobEventConfiguration(caller)));
-    }
-    
-    @After
-    public void tearDown() {
-        JobEventBus.getInstance().clearListeners("test_job");
-        TestJobEventListener.reset();
-    }
     
     @Test
     public void assertHandleException() {

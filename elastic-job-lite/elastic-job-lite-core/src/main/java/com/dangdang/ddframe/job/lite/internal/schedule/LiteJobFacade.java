@@ -18,6 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.event.JobEvent;
+import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -55,7 +57,9 @@ public class LiteJobFacade implements JobFacade {
     
     private final List<ElasticJobListener> elasticJobListeners;
     
-    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+    private final JobEventBus jobEventBus;
+    
+    public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final JobEventBus jobEventBus) {
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
@@ -63,6 +67,7 @@ public class LiteJobFacade implements JobFacade {
         executionService = new ExecutionService(regCenter, jobName);
         failoverService = new FailoverService(regCenter, jobName);
         this.elasticJobListeners = elasticJobListeners;
+        this.jobEventBus = jobEventBus;
     }
     
     @Override
@@ -157,5 +162,10 @@ public class LiteJobFacade implements JobFacade {
         for (ElasticJobListener each : elasticJobListeners) {
             each.afterJobExecuted(shardingContexts);
         }
+    }
+    
+    @Override
+    public void postJobEvent(final JobEvent jobEvent) {
+        jobEventBus.post(jobEvent);
     }
 }

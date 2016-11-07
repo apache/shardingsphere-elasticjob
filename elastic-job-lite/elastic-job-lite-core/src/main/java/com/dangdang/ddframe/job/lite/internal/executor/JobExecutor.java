@@ -17,17 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.internal.executor;
 
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,14 +34,15 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-@Getter
+@Slf4j
 public class JobExecutor {
     
+    @Getter
     private final LiteJobConfiguration liteJobConfig;
     
-    @Getter(AccessLevel.NONE)
     private final CoordinatorRegistryCenter regCenter;
     
+    @Getter
     private final SchedulerFacade schedulerFacade;
     
     public JobExecutor(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
@@ -68,7 +66,7 @@ public class JobExecutor {
      * 初始化作业.
      */
     public void init() {
-        JobEventBus.getInstance().post(new JobTraceEvent(liteJobConfig.getJobName(), LogLevel.DEBUG, "Job controller init."));
+        log.debug("Job '{}' controller init.", liteJobConfig.getJobName());
         schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + liteJobConfig.getJobName());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
