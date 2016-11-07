@@ -41,15 +41,15 @@ import java.util.UUID;
 @Slf4j
 class JobEventRdbStorage {
     
-    private final DataSource dataSource;
-    
-    private final LogLevel logLevel;
-    
     private static final String TABLE_JOB_TRACE_LOG = "JOB_TRACE_LOG";
     
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     
     private static final String TABLE_JOB_STATUS_TRACE_LOG = "JOB_STATUS_TRACE_LOG";
+    
+    private final DataSource dataSource;
+    
+    private final LogLevel logLevel;
     
     JobEventRdbStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) throws SQLException {
         this.logLevel = logLevel;
@@ -58,22 +58,77 @@ class JobEventRdbStorage {
     }
     
     private void initTables() throws SQLException {
-        DatabaseMetaData dbMetaData = dataSource.getConnection().getMetaData();
-        ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_TRACE_LOG, new String[]{"TABLE"});
-        if (!resultSet.next()) {
-            createJobTraceTable();
+        try (Connection conn = dataSource.getConnection()) {
+            DatabaseMetaData dbMetaData = conn.getMetaData();
+            try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_TRACE_LOG, new String[]{"TABLE"})) {
+                if (!resultSet.next()) {
+                    createJobTraceTable(conn);
+                } 
+            }
+            try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
+                if (!resultSet.next()) {
+                    createJobExecutionTable(conn);
+                }
+            }
+            try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"})) {
+                if (!resultSet.next()) {
+                    createJobStatusTraceTable(conn);
+                }
+            }
         }
-        resultSet.close();
-        resultSet = dbMetaData.getTables(null, null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"});
-        if (!resultSet.next()) {
-            createJobExecutionTable();
+    }
+    
+    private void createJobTraceTable(final Connection conn) throws SQLException {
+        String dbSchema = "CREATE TABLE `" + TABLE_JOB_TRACE_LOG + "` ("
+                + "`id` VARCHAR(40) NOT NULL, "
+                + "`job_name` VARCHAR(100) NOT NULL, "
+                + "`hostname` VARCHAR(255) NOT NULL, "
+                + "`ip` VARCHAR(50) NOT NULL, "
+                + "`log_level` CHAR(5) NOT NULL, "
+                + "`message` VARCHAR(2000) NOT NULL, "
+                + "`failure_cause` VARCHAR(4000) NULL, "
+                + "`creation_time` TIMESTAMP NOT NULL, "
+                + "PRIMARY KEY (`id`));";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+            preparedStatement.execute();
         }
-        resultSet.close();
-        resultSet = dbMetaData.getTables(null, null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"});
-        if (!resultSet.next()) {
-            createJobStatusTraceTable();
+    }
+    
+    private void createJobExecutionTable(final Connection conn) throws SQLException {
+        String dbSchema = "CREATE TABLE `" + TABLE_JOB_EXECUTION_LOG + "` ("
+                + "`id` VARCHAR(40) NOT NULL, "
+                + "`job_name` VARCHAR(100) NOT NULL, "
+                + "`hostname` VARCHAR(255) NOT NULL, "
+                + "`ip` VARCHAR(50) NOT NULL, "
+                + "`sharding_item` INT NOT NULL, "
+                + "`execution_source` VARCHAR(20) NOT NULL, "
+                + "`failure_cause` VARCHAR(4000) NULL, "
+                + "`is_success` BIT NOT NULL, "
+                + "`start_time` TIMESTAMP NOT NULL, "
+                + "`complete_time` TIMESTAMP NULL, "
+                + "PRIMARY KEY (`id`));";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+            preparedStatement.execute();
         }
-        resultSet.close();
+    }
+    
+    private void createJobStatusTraceTable(final Connection conn) throws SQLException {
+        String dbSchema = "CREATE TABLE `" + TABLE_JOB_STATUS_TRACE_LOG + "` ("
+                + "`id` VARCHAR(40) NOT NULL, "
+                + "`job_name` VARCHAR(100) NOT NULL, "
+                + "`task_id` VARCHAR(1000) NOT NULL, "
+                + "`slave_id` VARCHAR(1000) NOT NULL, "
+                + "`execution_type` VARCHAR(20) NOT NULL, "
+                + "`hostname` VARCHAR(255) NOT NULL, "
+                + "`ip` VARCHAR(50) NOT NULL, "
+                + "`sharding_item` INT NOT NULL, "
+                + "`state` VARCHAR(20) NOT NULL, "
+                + "`message` VARCHAR(4000) NULL, "
+                + "`creation_time` TIMESTAMP NULL, "
+                + "PRIMARY KEY (`id`));";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+            preparedStatement.execute();
+        }
     }
     
     boolean addJobTraceEvent(final JobTraceEvent traceEvent) {
@@ -159,8 +214,8 @@ class JobEventRdbStorage {
     
     boolean addJobStatusTraceEvent(final JobStatusTraceEvent jobStatusTraceEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_TRACE_LOG + "` (`id`, `job_name`, `task_id`, `slave_id`, `execution_type`, `hostname`, `ip`,  `sharding_item`,  " +
-                "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO `" + TABLE_JOB_TRACE_LOG + "` (`id`, `job_name`, `task_id`, `slave_id`, `execution_type`, `hostname`, `ip`,  `sharding_item`,  " 
+                + "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -190,64 +245,5 @@ class JobEventRdbStorage {
     
     private String truncateString(final String str) {
         return !Strings.isNullOrEmpty(str) && str.length() > 4000 ? str.substring(0, 4000) : str;
-    }
-    
-    private void createJobTraceTable() throws SQLException {
-        String dbSchema = "CREATE TABLE `" + TABLE_JOB_TRACE_LOG + "` ("
-                + "`id` VARCHAR(40) NOT NULL, "
-                + "`job_name` VARCHAR(100) NOT NULL, "
-                + "`hostname` VARCHAR(255) NOT NULL, "
-                + "`ip` VARCHAR(50) NOT NULL, "
-                + "`log_level` CHAR(5) NOT NULL, "
-                + "`message` VARCHAR(2000) NOT NULL, "
-                + "`failure_cause` VARCHAR(4000) NULL, "
-                + "`creation_time` TIMESTAMP NOT NULL, "
-                + "PRIMARY KEY (`id`));";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
-            preparedStatement.execute();
-        }
-    }
-    
-    private void createJobExecutionTable() throws SQLException {
-        String dbSchema = "CREATE TABLE `" + TABLE_JOB_EXECUTION_LOG + "` ("
-                + "`id` VARCHAR(40) NOT NULL, "
-                + "`job_name` VARCHAR(100) NOT NULL, "
-                + "`hostname` VARCHAR(255) NOT NULL, "
-                + "`ip` VARCHAR(50) NOT NULL, "
-                + "`sharding_item` INT NOT NULL, "
-                + "`execution_source` VARCHAR(20) NOT NULL, "
-                + "`failure_cause` VARCHAR(4000) NULL, "
-                + "`is_success` BIT NOT NULL, "
-                + "`start_time` TIMESTAMP NOT NULL, "
-                + "`complete_time` TIMESTAMP NULL, "
-                + "PRIMARY KEY (`id`));";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
-            preparedStatement.execute();
-        }
-    }
-    
-    private void createJobStatusTraceTable() throws SQLException {
-        String dbSchema = "CREATE TABLE `" + TABLE_JOB_STATUS_TRACE_LOG + "` ("
-                + "`id` VARCHAR(40) NOT NULL, "
-                + "`job_name` VARCHAR(100) NOT NULL, "
-                + "`task_id` VARCHAR(1000) NOT NULL, "
-                + "`slave_id` VARCHAR(1000) NOT NULL, "
-                + "`execution_type` VARCHAR(20) NOT NULL, "
-                + "`hostname` VARCHAR(255) NOT NULL, "
-                + "`ip` VARCHAR(50) NOT NULL, "
-                + "`sharding_item` INT NOT NULL, "
-                + "`state` VARCHAR(20) NOT NULL, "
-                + "`message` VARCHAR(4000) NULL, "
-                + "`creation_time` TIMESTAMP NULL, "
-                + "PRIMARY KEY (`id`));";
-        try (
-                Connection conn = dataSource.getConnection();
-                PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
-            preparedStatement.execute();
-        }
     }
 }
