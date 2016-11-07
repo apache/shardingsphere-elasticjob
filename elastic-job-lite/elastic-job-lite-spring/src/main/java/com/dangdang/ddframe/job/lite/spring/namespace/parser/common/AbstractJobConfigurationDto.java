@@ -98,10 +98,10 @@ public abstract class AbstractJobConfigurationDto {
             jobCoreConfigBuilder.misfire(misfire);
         }
         if (null != executorServiceHandler) {
-            jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), executorServiceHandler);
+            jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), executorServiceHandler);
         }
         if (null != jobExceptionHandler) {
-            jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobExceptionHandler);
+            jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobExceptionHandler);
         }
         buildEventConfiguration(jobCoreConfigBuilder);
         jobCoreConfigBuilder.description(description);

@@ -9,6 +9,10 @@ weight=1
 
 ## 2.0.2-SNAPSHOT
 
+### 缺陷修正
+1. [ISSUE #151](https://github.com/dangdangdotcom/elastic-job/issues/151) Elastic-Job事件追踪-基于关系型数据库的事件追踪不支持oracle数据库
+1. [ISSUE #152](https://github.com/dangdangdotcom/elastic-job/issues/152) job自定义异常处理器无效，总是被DefaultJobExceptionHandler处理
+
 ## 2.0.1
 
 ### 缺陷修正
