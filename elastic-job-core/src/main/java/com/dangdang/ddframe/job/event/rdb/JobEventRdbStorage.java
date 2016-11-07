@@ -26,7 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -43,18 +45,41 @@ class JobEventRdbStorage {
     
     private final LogLevel logLevel;
     
+    private static final String TABLE_JOB_TRACE_LOG = "JOB_TRACE_LOG";
+    
+    private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
+    
+    private static final String TABLE_JOB_STATUS_TRACE_LOG = "JOB_STATUS_TRACE_LOG";
+    
     JobEventRdbStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) throws SQLException {
         this.logLevel = logLevel;
         dataSource = JobEventRdbDataSourceFactory.getDataSource(driverClassName, url, username, password);
-        createJobExecutionTable();
-        createJobTraceTable();
-        createJobStatusTraceTable();
+        initTables();
+    }
+    
+    private void initTables() throws SQLException {
+        DatabaseMetaData dbMetaData = dataSource.getConnection().getMetaData();
+        ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_TRACE_LOG, new String[]{"TABLE"});
+        if (!resultSet.next()) {
+            createJobTraceTable();
+        }
+        resultSet.close();
+        resultSet = dbMetaData.getTables(null, null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"});
+        if (!resultSet.next()) {
+            createJobExecutionTable();
+        }
+        resultSet.close();
+        resultSet = dbMetaData.getTables(null, null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"});
+        if (!resultSet.next()) {
+            createJobStatusTraceTable();
+        }
+        resultSet.close();
     }
     
     boolean addJobTraceEvent(final JobTraceEvent traceEvent) {
         boolean result = false;
         if (needTrace(traceEvent.getLogLevel())) {
-            String sql = "INSERT INTO `JOB_TRACE_LOG` (`id`, `job_name`, `hostname`, `ip`, `log_level`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO `" + TABLE_JOB_TRACE_LOG + "` (`id`, `job_name`, `hostname`, `ip`, `log_level`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
                     PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -79,7 +104,7 @@ class JobEventRdbStorage {
     boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         if (null == jobExecutionEvent.getCompleteTime()) {
-            String sql = "INSERT INTO `JOB_EXECUTION_LOG` (`id`, `job_name`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
+            String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
@@ -100,7 +125,7 @@ class JobEventRdbStorage {
             }
         } else {
             if (jobExecutionEvent.isSuccess()) {
-                String sql = "UPDATE `JOB_EXECUTION_LOG` SET `is_success` = ?, `complete_time` = ? WHERE id = ?";
+                String sql = "UPDATE `" + TABLE_JOB_EXECUTION_LOG + "` SET `is_success` = ?, `complete_time` = ? WHERE id = ?";
                 try (
                         Connection conn = dataSource.getConnection();
                         PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -114,7 +139,7 @@ class JobEventRdbStorage {
                     log.error(ex.getMessage());
                 }
             } else {
-                String sql = "UPDATE `JOB_EXECUTION_LOG` SET `is_success` = ?, `failure_cause` = ? WHERE id = ?";
+                String sql = "UPDATE `" + TABLE_JOB_EXECUTION_LOG + "` SET `is_success` = ?, `failure_cause` = ? WHERE id = ?";
                 try (
                         Connection conn = dataSource.getConnection();
                         PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -134,7 +159,7 @@ class JobEventRdbStorage {
     
     boolean addJobStatusTraceEvent(final JobStatusTraceEvent jobStatusTraceEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `JOB_STATUS_TRACE_LOG` (`id`, `job_name`, `task_id`, `slave_id`, `execution_type`, `hostname`, `ip`,  `sharding_item`,  " +
+        String sql = "INSERT INTO `" + TABLE_JOB_TRACE_LOG + "` (`id`, `job_name`, `task_id`, `slave_id`, `execution_type`, `hostname`, `ip`,  `sharding_item`,  " +
                 "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
                 Connection conn = dataSource.getConnection();
@@ -168,7 +193,7 @@ class JobEventRdbStorage {
     }
     
     private void createJobTraceTable() throws SQLException {
-        String dbSchema = "CREATE TABLE IF NOT EXISTS `JOB_TRACE_LOG` ("
+        String dbSchema = "CREATE TABLE `" + TABLE_JOB_TRACE_LOG + "` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`hostname` VARCHAR(255) NOT NULL, "
@@ -186,7 +211,7 @@ class JobEventRdbStorage {
     }
     
     private void createJobExecutionTable() throws SQLException {
-        String dbSchema = "CREATE TABLE IF NOT EXISTS `JOB_EXECUTION_LOG` ("
+        String dbSchema = "CREATE TABLE `" + TABLE_JOB_EXECUTION_LOG + "` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`hostname` VARCHAR(255) NOT NULL, "
@@ -206,7 +231,7 @@ class JobEventRdbStorage {
     }
     
     private void createJobStatusTraceTable() throws SQLException {
-        String dbSchema = "CREATE TABLE IF NOT EXISTS `JOB_STATUS_TRACE_LOG` ("
+        String dbSchema = "CREATE TABLE `" + TABLE_JOB_STATUS_TRACE_LOG + "` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`task_id` VARCHAR(1000) NOT NULL, "
