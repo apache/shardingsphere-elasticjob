@@ -20,6 +20,9 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
@@ -79,7 +82,11 @@ public final class TaskLaunchProcessor implements Runnable {
                 List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
                 taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
                 for (Protos.TaskInfo taskInfo : taskInfoList) {
-                    facadeService.addRunning(TaskContext.from(taskInfo.getTaskId().getValue()));
+                    TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
+                    facadeService.addRunning(taskContext);
+                    JobEventBus.getInstance().post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(),
+                            taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()),
+                            State.TASK_STAGING, String.format("task info is: %s", taskInfo)));
                 }
                 facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<TaskInfo, TaskContext>() {
                     

@@ -18,8 +18,9 @@
 package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.JobEventListener;
-import com.dangdang.ddframe.job.event.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 
 import java.sql.SQLException;
 
@@ -44,5 +45,10 @@ public final class JobEventRdbListener extends JobEventRdbIdentity implements Jo
     @Override
     public void listen(final JobExecutionEvent executionEvent) {
         repository.addJobExecutionEvent(executionEvent);
+    }
+    
+    @Override
+    public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
+        repository.addJobStatusTraceEvent(jobStatusTraceEvent);
     }
 }

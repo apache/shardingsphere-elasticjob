@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration.Builder;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;

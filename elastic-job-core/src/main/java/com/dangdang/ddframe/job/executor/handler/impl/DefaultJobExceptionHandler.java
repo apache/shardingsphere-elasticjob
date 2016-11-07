@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.executor.handler.impl;
 
 import com.dangdang.ddframe.job.executor.handler.JobExceptionHandler;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 
 /**
  * 默认作业异常处理器.

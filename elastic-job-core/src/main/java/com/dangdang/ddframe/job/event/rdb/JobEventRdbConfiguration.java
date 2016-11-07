@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobEventListener;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

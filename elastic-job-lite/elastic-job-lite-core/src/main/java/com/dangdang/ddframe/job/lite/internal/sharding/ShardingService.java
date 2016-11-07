@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyFactory;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;

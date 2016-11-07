@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.util.json;
 
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
@@ -95,7 +95,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
         assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     
-    public static class JobConfigurationGsonTypeAdapter extends AbstractJobConfigurationGsonTypeAdapter<TestJobRootConfiguration> {
+    private static class JobConfigurationGsonTypeAdapter extends AbstractJobConfigurationGsonTypeAdapter<TestJobRootConfiguration> {
     
         @Override
         protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {

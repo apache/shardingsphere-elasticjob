@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.Getter;
@@ -99,6 +100,22 @@ public final class BootstrapEnvironment {
         return new FrameworkConfiguration(Boolean.valueOf(getValue(EnvironmentArgument.APP_CACHE_ENABLE)), Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
     }
     
+    /**
+     * 获取RDB关系型数据库配置对象.
+     *
+     * @return Mesos框架配置对象
+     */
+    public Optional<RdbConfiguration> getRdbConfiguration() {
+        String driver = getValue(EnvironmentArgument.RDB_DRIVER);
+        String url = getValue(EnvironmentArgument.RDB_URL);
+        String username = getValue(EnvironmentArgument.RDB_USERNAME);
+        String password = getValue(EnvironmentArgument.RDB_PASSWORD);
+        if (!Strings.isNullOrEmpty(driver) && !Strings.isNullOrEmpty(url) && !Strings.isNullOrEmpty(username)) {
+            return Optional.of(new RdbConfiguration(driver, url, username, password));
+        }
+        return Optional.absent();
+    }
+    
     private String getValue(final EnvironmentArgument environmentArgument) {
         String result = properties.getProperty(environmentArgument.getKey(), environmentArgument.getDefaultValue());
         if (environmentArgument.isRequired()) {
@@ -132,7 +149,15 @@ public final class BootstrapEnvironment {
         
         APP_CACHE_ENABLE("app_cache_enable", "false", true),
         
-        JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true);
+        JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true),
+        
+        RDB_URL("rdb_url", "", false),
+        
+        RDB_DRIVER("rdb_driver", "", false),
+        
+        RDB_USERNAME("rdb_username", "", false),
+        
+        RDB_PASSWORD("rdb_password", "", false);
         
         private final String key;
         

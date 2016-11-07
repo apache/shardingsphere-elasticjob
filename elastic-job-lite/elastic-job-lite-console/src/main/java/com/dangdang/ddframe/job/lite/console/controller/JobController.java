@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.console.controller;
 
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;

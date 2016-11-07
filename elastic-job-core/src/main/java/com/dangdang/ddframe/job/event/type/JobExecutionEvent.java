@@ -15,8 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.event;
+package com.dangdang.ddframe.job.event.type;
 
+import com.dangdang.ddframe.job.event.JobEvent;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

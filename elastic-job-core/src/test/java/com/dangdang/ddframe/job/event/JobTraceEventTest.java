@@ -17,7 +17,8 @@
 
 package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.startsWith;

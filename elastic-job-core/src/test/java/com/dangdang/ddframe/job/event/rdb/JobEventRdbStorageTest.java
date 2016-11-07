@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.event.rdb;
 
-import com.dangdang.ddframe.job.event.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.JobExecutionEvent.ExecutionSource;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import org.junit.Before;
 import org.junit.Test;
 

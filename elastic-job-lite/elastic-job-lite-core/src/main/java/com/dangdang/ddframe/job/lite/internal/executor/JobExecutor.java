@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.executor;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;

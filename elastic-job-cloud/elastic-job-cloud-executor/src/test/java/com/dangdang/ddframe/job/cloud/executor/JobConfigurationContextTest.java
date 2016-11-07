@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import org.junit.Test;
 
 import java.util.HashMap;

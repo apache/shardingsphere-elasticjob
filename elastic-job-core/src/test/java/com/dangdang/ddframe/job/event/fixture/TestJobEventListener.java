@@ -18,8 +18,9 @@
 package com.dangdang.ddframe.job.event.fixture;
 
 import com.dangdang.ddframe.job.event.JobEventListener;
-import com.dangdang.ddframe.job.event.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +32,9 @@ public final class TestJobEventListener extends TestJobEventIdentity implements 
     
     @Getter
     private static volatile boolean executionEventCalled;
+    
+    @Getter
+    private static volatile boolean statusTraceEventCalled;
     
     private final JobEventCaller jobEventCaller;
     
@@ -46,8 +50,15 @@ public final class TestJobEventListener extends TestJobEventIdentity implements 
         executionEventCalled = true;
     }
     
+    @Override
+    public void listen(JobStatusTraceEvent jobStatusTraceEvent) {
+        jobEventCaller.call();
+        statusTraceEventCalled = true;
+    }
+    
     public static void reset() {
         traceEventCalled = false;
         executionEventCalled = false;
+        statusTraceEventCalled = false;
     }
 }

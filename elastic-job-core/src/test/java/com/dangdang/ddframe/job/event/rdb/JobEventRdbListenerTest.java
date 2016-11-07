@@ -19,9 +19,11 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,5 +75,13 @@ public final class JobEventRdbListenerTest {
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(JOB_NAME, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
         JobEventBus.getInstance().post(jobExecutionEvent);
         verify(repository, atMost(1)).addJobExecutionEvent(jobExecutionEvent);
+    }
+    
+    @Test
+    public void assertPostJobStatusTraceEvent() {
+        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", "READY", "0", 
+                State.TASK_RUNNING, "message is empty.");
+        JobEventBus.getInstance().post(jobStatusTraceEvent);
+        verify(repository, atMost(1)).addJobStatusTraceEvent(jobStatusTraceEvent);
     }
 }

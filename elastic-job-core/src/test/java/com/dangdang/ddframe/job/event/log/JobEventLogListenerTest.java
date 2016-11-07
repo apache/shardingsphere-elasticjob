@@ -19,9 +19,9 @@ package com.dangdang.ddframe.job.event.log;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -27,7 +27,7 @@ import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.event.rdb;
 
-import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

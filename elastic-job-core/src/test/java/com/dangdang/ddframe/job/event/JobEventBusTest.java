@@ -18,8 +18,10 @@
 package com.dangdang.ddframe.job.event;
 
 import com.dangdang.ddframe.job.event.JobEventBus.JobEventBusInstance;
-import com.dangdang.ddframe.job.event.JobExecutionEvent.ExecutionSource;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;

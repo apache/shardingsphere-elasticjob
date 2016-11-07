@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.event;
 
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.startsWith;

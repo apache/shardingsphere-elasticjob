@@ -18,8 +18,9 @@
 package com.dangdang.ddframe.job.event.log;
 
 import com.dangdang.ddframe.job.event.JobEventListener;
-import com.dangdang.ddframe.job.event.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,5 +80,13 @@ public final class JobEventLogListener extends JobEventLogIdentity implements Jo
         String msg = "Elastic-Job execution failure => jobName: '{}', hostname: '{}', shardingItem: '{}', executionSource: '{}', startTime: '{}', completeTime: '{}', failureCause: '{}'";
         log.error(msg, jobExecutionEvent.getJobName(), jobExecutionEvent.getHostname(), jobExecutionEvent.getShardingItem(), jobExecutionEvent.getSource(),
                 format.format(jobExecutionEvent.getStartTime()), format.format(jobExecutionEvent.getCompleteTime()), jobExecutionEvent.getFailureCause());
+    }
+    
+    @Override
+    public void listen(final JobStatusTraceEvent jobStatusTraceEvent) {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
+        String msg = "Elastic-Job job status trace => taskId: '{}', jobName: '{}', hostname: '{}', shardingItem: '{}', state: '{}', message: '{}', creationTime: '{}'";
+        log.debug(msg, jobStatusTraceEvent.getTaskId(), jobStatusTraceEvent.getJobName(), jobStatusTraceEvent.getHostname(), jobStatusTraceEvent.getShardingItem(), jobStatusTraceEvent.getMessage(),
+                format.format(jobStatusTraceEvent.getCreationTime()));
     }
 }

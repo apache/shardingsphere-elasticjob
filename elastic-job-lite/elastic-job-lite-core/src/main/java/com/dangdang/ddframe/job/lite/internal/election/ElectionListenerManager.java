@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.election;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;

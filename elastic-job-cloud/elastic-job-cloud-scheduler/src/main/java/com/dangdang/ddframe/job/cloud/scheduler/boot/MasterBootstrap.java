@@ -19,8 +19,11 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.RdbConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
+import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
@@ -29,9 +32,15 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
+import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobEventConfiguration;
+import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.util.restful.RestfulServer;
+import com.google.common.base.Optional;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.functions.Action1;
@@ -40,6 +49,9 @@ import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Mesos框架启动器.
@@ -65,8 +77,10 @@ public final class MasterBootstrap {
         TaskScheduler taskScheduler = getTaskScheduler();
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
+        ConfigurationService configService = new ConfigurationService(regCenter);
         CloudJobRestfulApi.init(schedulerDriver, regCenter);
-        initListener();
+        initConfigurationListener();
+        initEventListener(configService.loadAll());
         final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         producerManager.startup();
         new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService), "task-launch-processor-" + Thread.currentThread().getId()).start();
@@ -107,9 +121,22 @@ public final class MasterBootstrap {
                 }).build();
     }
     
-    private void initListener() {
+    private void initConfigurationListener() {
         regCenter.addCacheData(ConfigurationNode.ROOT);
         ((TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT)).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
+    }
+    
+    private void initEventListener(final Collection<CloudJobConfiguration> cloudJobConfigurations) {
+        Optional<RdbConfiguration> rdbConfigurationOptional = BootstrapEnvironment.getInstance().getRdbConfiguration();
+        Collection<JobEventConfiguration> jobEventConfigurations = new ArrayList<>(2);
+        jobEventConfigurations.add(new JobEventLogConfiguration());
+        if (rdbConfigurationOptional.isPresent()) {
+            RdbConfiguration config = rdbConfigurationOptional.get();
+            jobEventConfigurations.add(new JobEventRdbConfiguration(config.getDriver(), config.getUrl(), config.getUsername(), config.getPassword(), LogLevel.INFO));    
+        }
+        for (CloudJobConfiguration each : cloudJobConfigurations) {
+            JobEventBus.getInstance().register(each.getJobName(), jobEventConfigurations);
+        }
     }
     
     /**
