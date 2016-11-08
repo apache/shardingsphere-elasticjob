@@ -84,7 +84,7 @@ public final class SimpleJobExecutorTest {
     
     @Test
     public void assertExecuteWhenPreviousJobStillRunning() throws JobExecutionEnvironmentException {
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true);
         simpleJobExecutor.execute();
@@ -96,7 +96,7 @@ public final class SimpleJobExecutorTest {
     
     @Test
     public void assertExecuteWhenShardingItemsIsEmpty() throws JobExecutionEnvironmentException {
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         simpleJobExecutor.execute();
         verify(jobFacade).checkJobExecutionEnvironment();

@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 
 public final class TaskInfoDataTest {
     
-    private final ShardingContexts shardingContexts = new ShardingContexts("test_job", 3, "test_param", Collections.<Integer, String>emptyMap());
+    private final ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 3, "test_param", Collections.<Integer, String>emptyMap());
     
     @Test
     public void assertSerializeSimpleJob() {

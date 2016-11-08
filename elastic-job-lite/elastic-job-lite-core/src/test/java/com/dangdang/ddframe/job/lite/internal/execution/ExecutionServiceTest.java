@@ -87,7 +87,7 @@ public final class ExecutionServiceTest {
     
     @Test
     public void assertRegisterJobBeginWhenNotAssignAnyItem() {
-        executionService.registerJobBegin(new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap()));
+        executionService.registerJobBegin(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
         verify(configService, times(0)).load(true);
     }
     
@@ -140,7 +140,7 @@ public final class ExecutionServiceTest {
     public void assertRegisterJobCompletedWhenNotMonitorExecution() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
-        executionService.registerJobCompleted(new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap()));
+        executionService.registerJobCompleted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
         verify(configService).load(true);
         verify(serverService, times(0)).updateServerStatus(ServerStatus.READY);
     }
@@ -457,6 +457,6 @@ public final class ExecutionServiceTest {
         map.put(0, "");
         map.put(1, "");
         map.put(2, "");
-        return new ShardingContexts("test_job", 10, "", map);
+        return new ShardingContexts("fake_task_id", "test_job", 10, "", map);
     }
 }

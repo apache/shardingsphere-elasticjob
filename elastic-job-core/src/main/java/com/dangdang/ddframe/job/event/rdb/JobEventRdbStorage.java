@@ -98,6 +98,7 @@ class JobEventRdbStorage {
         String dbSchema = "CREATE TABLE `" + TABLE_JOB_EXECUTION_LOG + "` ("
                 + "`id` VARCHAR(40) NOT NULL, "
                 + "`job_name` VARCHAR(100) NOT NULL, "
+                + "`task_id` VARCHAR(1000) NOT NULL, "
                 + "`hostname` VARCHAR(255) NOT NULL, "
                 + "`ip` VARCHAR(50) NOT NULL, "
                 + "`sharding_item` INT NOT NULL, "
@@ -159,19 +160,20 @@ class JobEventRdbStorage {
     boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
         if (null == jobExecutionEvent.getCompleteTime()) {
-            String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
             try (
                     Connection conn = dataSource.getConnection();
                     PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
                 preparedStatement.setString(1, jobExecutionEvent.getId());
                 preparedStatement.setString(2, jobExecutionEvent.getJobName());
-                preparedStatement.setString(3, jobExecutionEvent.getHostname());
-                preparedStatement.setString(4, jobExecutionEvent.getIp());
-                preparedStatement.setInt(5, jobExecutionEvent.getShardingItem());
-                preparedStatement.setString(6, jobExecutionEvent.getSource().toString());
-                preparedStatement.setBoolean(7, jobExecutionEvent.isSuccess());
-                preparedStatement.setTimestamp(8, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
+                preparedStatement.setString(3, jobExecutionEvent.getTaskId());
+                preparedStatement.setString(4, jobExecutionEvent.getHostname());
+                preparedStatement.setString(5, jobExecutionEvent.getIp());
+                preparedStatement.setInt(6, jobExecutionEvent.getShardingItem());
+                preparedStatement.setString(7, jobExecutionEvent.getSource().toString());
+                preparedStatement.setBoolean(8, jobExecutionEvent.isSuccess());
+                preparedStatement.setTimestamp(9, new Timestamp(jobExecutionEvent.getStartTime().getTime()));
                 preparedStatement.execute();
                 result = true;
             } catch (final SQLException ex) {
@@ -214,7 +216,7 @@ class JobEventRdbStorage {
     
     boolean addJobStatusTraceEvent(final JobStatusTraceEvent jobStatusTraceEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_TRACE_LOG + "` (`id`, `job_name`, `task_id`, `slave_id`, `execution_type`, `hostname`, `ip`,  `sharding_item`,  " 
+        String sql = "INSERT INTO `" + TABLE_JOB_STATUS_TRACE_LOG + "` (`id`, `job_name`, `task_id`, `slave_id`, `execution_type`, `hostname`, `ip`,  `sharding_item`,  " 
                 + "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
                 Connection conn = dataSource.getConnection();

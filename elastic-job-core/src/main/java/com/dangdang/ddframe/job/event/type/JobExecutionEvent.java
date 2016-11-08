@@ -44,6 +44,8 @@ public class JobExecutionEvent implements JobEvent {
     
     private final String ip = localHostService.getIp();
     
+    private final String taskId;
+    
     private final String jobName;
     
     private final ExecutionSource source;

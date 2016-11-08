@@ -132,14 +132,14 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertRegisterJobBegin() {
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         liteJobFacade.registerJobBegin(shardingContexts);
         verify(executionService).registerJobBegin(shardingContexts);
     }
     
     @Test
     public void assertRegisterJobCompletedWhenFailoverDisabled() {
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class.getCanonicalName())).build());
         liteJobFacade.registerJobCompleted(shardingContexts);
@@ -149,7 +149,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertRegisterJobCompletedWhenFailoverEnabled() {
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         liteJobFacade.registerJobCompleted(shardingContexts);
@@ -159,7 +159,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertGetShardingContextWhenIsFailoverEnableAndFailover() {
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.singletonList(1));
@@ -170,7 +170,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertGetShardingContextWhenIsFailoverEnableAndNotFailover() {
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         when(failoverService.getLocalHostFailoverItems()).thenReturn(Collections.<Integer>emptyList());
@@ -183,7 +183,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertGetShardingContextWhenIsFailoverDisable() {
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap());
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(shardingService.getLocalHostShardingItems()).thenReturn(Lists.newArrayList(0, 1));
@@ -218,13 +218,13 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertBeforeJobExecuted() {
-        liteJobFacade.beforeJobExecuted(new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap()));
+        liteJobFacade.beforeJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
         verify(caller).before();
     }
     
     @Test
     public void assertAfterJobExecuted() {
-        liteJobFacade.afterJobExecuted(new ShardingContexts("test_job", 10, "", Collections.<Integer, String>emptyMap()));
+        liteJobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
         verify(caller).after();
     }
     

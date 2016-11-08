@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -38,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
@@ -69,8 +69,9 @@ public final class ExecutionContextServiceTest {
     public void assertGetShardingContextWhenNotAssignShardingItem() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
                 TestDataflowJob.class.getCanonicalName(), true)).monitorExecution(false).build());
-        ShardingContexts expected = new ShardingContexts("test_job", 3, "", Collections.<Integer, String>emptyMap());
-        assertThat(executionContextService.getJobShardingContext(Collections.<Integer>emptyList()), new ReflectionEquals(expected));
+        ShardingContexts shardingContexts = executionContextService.getJobShardingContext(Collections.<Integer>emptyList());
+        assertTrue(shardingContexts.getTaskId().startsWith("test_job@-@@-@READY@-@"));
+        assertThat(shardingContexts.getShardingTotalCount(), is(3));
         verify(configService).load(false);
     }
     
@@ -81,7 +82,7 @@ public final class ExecutionContextServiceTest {
         Map<Integer, String> map = new HashMap<>(3);
         map.put(0, "A");
         map.put(1, "B");
-        ShardingContexts expected = new ShardingContexts("test_job", 3, "", map);
+        ShardingContexts expected = new ShardingContexts("fake_task_id", "test_job", 3, "", map);
         assertShardingContext(executionContextService.getJobShardingContext(Arrays.asList(0, 1)), expected);
         verify(configService).load(false);
     }
@@ -94,7 +95,7 @@ public final class ExecutionContextServiceTest {
         when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
-        ShardingContexts expected = new ShardingContexts("test_job", 3, "", map);
+        ShardingContexts expected = new ShardingContexts("fake_task_id", "test_job", 3, "", map);
         assertShardingContext(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1)), expected);
         verify(configService).load(false);
         verify(jobNodeStorage).isJobNodeExisted("execution/0/running");

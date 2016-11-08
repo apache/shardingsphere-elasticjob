@@ -37,6 +37,11 @@ public final class ShardingContexts implements Serializable {
     private static final long serialVersionUID = -4585977349142082152L;
     
     /**
+     * 作业任务ID.
+     */
+    private final String taskId;
+    
+    /**
      * 作业名称.
      */
     private final String jobName;

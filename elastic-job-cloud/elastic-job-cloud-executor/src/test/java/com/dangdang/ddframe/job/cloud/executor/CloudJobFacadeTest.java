@@ -58,7 +58,7 @@ public class CloudJobFacadeTest {
     private ShardingContexts getShardingContexts() {
         Map<Integer, String> shardingItemParameters = new HashMap<>(1, 1);
         shardingItemParameters.put(0, "A");
-        return new ShardingContexts("test_job", 3, "", shardingItemParameters);
+        return new ShardingContexts("fake_task_id", "test_job", 3, "", shardingItemParameters);
     }
     
     private Map<String, String> getJobConfigurationMap(final JobType jobType, final boolean streamingProcess) {

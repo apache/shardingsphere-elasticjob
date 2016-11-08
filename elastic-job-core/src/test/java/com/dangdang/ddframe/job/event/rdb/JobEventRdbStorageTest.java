@@ -59,12 +59,12 @@ public class JobEventRdbStorageTest {
     
     @Test
     public void assertAddJobExecutionEvent() throws SQLException {
-        assertTrue(storage.addJobExecutionEvent(new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0)));
+        assertTrue(storage.addJobExecutionEvent(new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0)));
     }
     
     @Test
     public void assertUpdateJobExecutionEventWhenSuccess() throws SQLException {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
         assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
         jobExecutionEvent.executionSuccess();
         assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
@@ -73,7 +73,7 @@ public class JobEventRdbStorageTest {
     
     @Test
     public void assertUpdateJobExecutionEventWhenFailure() throws SQLException {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
         assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
         jobExecutionEvent.executionFailure(new RuntimeException("failure"));
         assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
@@ -82,7 +82,7 @@ public class JobEventRdbStorageTest {
     
     @Test
     public void assertUpdateJobExecutionEventWhenFailureAndMessageExceed() throws SQLException {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
         assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
         StringBuilder failureMsg = new StringBuilder();
         for (int i = 0; i < 600; i++) {

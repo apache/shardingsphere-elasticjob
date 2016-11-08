@@ -62,7 +62,7 @@ public final class DistributeOnceElasticJobListenerTest {
         Map<Integer, String> map = new HashMap<>(2, 1);
         map.put(0, "");
         map.put(1, "");
-        shardingContexts = new ShardingContexts("test_job", 10, "", map);
+        shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", map);
     }
     
     @Test

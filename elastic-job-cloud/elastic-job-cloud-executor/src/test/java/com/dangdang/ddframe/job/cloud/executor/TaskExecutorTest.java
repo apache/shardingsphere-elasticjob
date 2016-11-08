@@ -149,7 +149,7 @@ public final class TaskExecutorTest {
     
     private byte[] serialize(final Map<String, String> jobConfigurationContext) {
         LinkedHashMap<String, Object> result = new LinkedHashMap<>(2, 1);
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 1, "", Collections.singletonMap(1, "a"));
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 1, "", Collections.singletonMap(1, "a"));
         result.put("shardingContext", shardingContexts);
         result.put("jobConfigContext", jobConfigurationContext);
         return SerializationUtils.serialize(result);

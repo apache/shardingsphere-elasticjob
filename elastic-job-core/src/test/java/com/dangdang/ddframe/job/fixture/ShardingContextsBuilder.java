@@ -32,13 +32,13 @@ public final class ShardingContextsBuilder {
     public static ShardingContexts getSingleShardingContexts() {
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
-        return new ShardingContexts(JOB_NAME, 1, "", map);
+        return new ShardingContexts("fake_task_id", JOB_NAME, 1, "", map);
     }
     
     public static ShardingContexts getMultipleShardingContexts() {
         Map<Integer, String> map = new HashMap<>(2, 1);
         map.put(0, "A");
         map.put(1, "B");
-        return new ShardingContexts(JOB_NAME, 2, "", map);
+        return new ShardingContexts("fake_task_id", JOB_NAME, 2, "", map);
     }
 }
