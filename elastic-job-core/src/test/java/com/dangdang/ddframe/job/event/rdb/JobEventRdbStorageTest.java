@@ -19,6 +19,8 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +49,11 @@ public class JobEventRdbStorageTest {
     @Test
     public void assertAddJobExecutionEvent() throws SQLException {
         assertTrue(storage.addJobExecutionEvent(new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0)));
+    }
+    
+    @Test
+    public void assertAddJobStatusTraceEvent() throws SQLException {
+        assertTrue(storage.addJobStatusTraceEvent(new JobStatusTraceEvent("test_job", "fake_task_id", "fake_slave_id", "READY", "0", State.TASK_RUNNING, "message is empty.")));
     }
     
     @Test
@@ -79,4 +86,10 @@ public class JobEventRdbStorageTest {
         assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
         assertThat(jobExecutionEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
     }
+    
+    @Test
+    public void assertFindJobExecutionEvent() throws SQLException {
+        storage.addJobExecutionEvent(new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0));
+    }
+    
 }
