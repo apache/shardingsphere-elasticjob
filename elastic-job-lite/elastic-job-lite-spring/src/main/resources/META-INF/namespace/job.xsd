@@ -44,6 +44,7 @@
                 <xsd:attribute name="overwrite" type="xsd:string" />
                 <xsd:attribute name="executor-service-handler" type="xsd:string" />
                 <xsd:attribute name="job-exception-handler" type="xsd:string" />
+                <xsd:attribute name="event-trace-data-source" type="xsd:string" />
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>

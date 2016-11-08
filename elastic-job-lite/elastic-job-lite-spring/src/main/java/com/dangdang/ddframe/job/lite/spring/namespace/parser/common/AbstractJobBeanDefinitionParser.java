@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.common;
 
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.lite.spring.schedule.SpringJobScheduler;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -37,9 +38,10 @@ import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBe
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_TAG;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_TRACE_DATA_SOURCE_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.FAILOVER_ATTRIBUTE;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_PARAMETER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_SHARDING_STRATEGY_CLASS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.LISTENER_TAG;
@@ -62,14 +64,20 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     
     @Override
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
+        
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
         factory.setInitMethodName("init");
         factory.setDestroyMethodName("shutdown");
         factory.addConstructorArgReference(element.getAttribute(REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgValue(createJobConfiguration(element));
+        factory.addConstructorArgValue(createJobEventConfigs(element));
         factory.addConstructorArgValue(createJobListeners(element));
         return factory.getBeanDefinition();
     }
+    
+    protected abstract Class<? extends AbstractJobConfigurationDto> getJobConfigurationDTO();
+    
+    protected abstract void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory);
     
     private BeanDefinition createJobConfiguration(final Element element) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(getJobConfigurationDTO());
@@ -88,15 +96,22 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         addPropertyValueIfNotEmpty(DESCRIPTION_ATTRIBUTE, "description", element, factory);
         addPropertyValueIfNotEmpty(DISABLED_ATTRIBUTE, "disabled", element, factory);
         addPropertyValueIfNotEmpty(OVERWRITE_ATTRIBUTE, "overwrite", element, factory);
-        addPropertyValueIfNotEmpty(EXECUTOR_SERVICE_HANDLER, "executorServiceHandler", element, factory);
-        addPropertyValueIfNotEmpty(JOB_EXCEPTION_HANDLER, "jobExceptionHandler", element, factory);
+        addPropertyValueIfNotEmpty(EXECUTOR_SERVICE_HANDLER_ATTRIBUTE, "executorServiceHandler", element, factory);
+        addPropertyValueIfNotEmpty(JOB_EXCEPTION_HANDLER_ATTRIBUTE, "jobExceptionHandler", element, factory);
         setPropertiesValue(element, factory);
         return factory.getBeanDefinition();
     }
     
-    protected abstract Class<? extends AbstractJobConfigurationDto> getJobConfigurationDTO();
-    
-    protected abstract void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory);
+    private List<BeanDefinition> createJobEventConfigs(final Element element) {
+        List<BeanDefinition> result = new ManagedList<>();
+        String eventTraceRdbDs = element.getAttribute(EVENT_TRACE_DATA_SOURCE_ATTRIBUTE);
+        if (!Strings.isNullOrEmpty(eventTraceRdbDs)) {
+            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobEventRdbConfiguration.class);
+            factory.addConstructorArgReference(eventTraceRdbDs);
+            result.add(factory.getBeanDefinition());
+        }
+        return result;
+    }
     
     private List<BeanDefinition> createJobListeners(final Element element) {
         Element listenerElement = DomUtils.getChildElementByTagName(element, LISTENER_TAG);

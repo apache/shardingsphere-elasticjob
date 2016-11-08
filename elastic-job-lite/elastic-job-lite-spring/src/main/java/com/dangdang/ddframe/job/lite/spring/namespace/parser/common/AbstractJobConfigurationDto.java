@@ -110,9 +110,6 @@ public abstract class AbstractJobConfigurationDto {
         if (null != overwrite) {
             result.overwrite(overwrite);
         }
-        if (null != overwrite) {
-            result.overwrite(overwrite);
-        }
         return result.build();
     }
     
