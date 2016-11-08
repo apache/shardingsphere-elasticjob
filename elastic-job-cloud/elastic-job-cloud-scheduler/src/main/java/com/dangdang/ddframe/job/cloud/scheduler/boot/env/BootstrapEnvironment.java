@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -113,7 +112,7 @@ public final class BootstrapEnvironment {
         String username = getValue(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME);
         String password = getValue(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD);
         if (!Strings.isNullOrEmpty(driver) && !Strings.isNullOrEmpty(url) && !Strings.isNullOrEmpty(username)) {
-            return Optional.of(new JobEventRdbConfiguration(driver, url, username, password, JobTraceEvent.LogLevel.INFO));
+            return Optional.of(new JobEventRdbConfiguration(driver, url, username, password));
         }
         return Optional.absent();
     }

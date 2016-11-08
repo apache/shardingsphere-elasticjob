@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,18 +39,13 @@ import java.util.UUID;
 @Slf4j
 class JobEventRdbStorage {
     
-    private static final String TABLE_JOB_TRACE_LOG = "JOB_TRACE_LOG";
-    
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     
     private static final String TABLE_JOB_STATUS_TRACE_LOG = "JOB_STATUS_TRACE_LOG";
     
     private final DataSource dataSource;
     
-    private final LogLevel logLevel;
-    
-    JobEventRdbStorage(final String driverClassName, final String url, final String username, final String password, final LogLevel logLevel) throws SQLException {
-        this.logLevel = logLevel;
+    JobEventRdbStorage(final String driverClassName, final String url, final String username, final String password) throws SQLException {
         dataSource = JobEventRdbDataSourceFactory.getDataSource(driverClassName, url, username, password);
         initTables();
     }
@@ -60,11 +53,6 @@ class JobEventRdbStorage {
     private void initTables() throws SQLException {
         try (Connection conn = dataSource.getConnection()) {
             DatabaseMetaData dbMetaData = conn.getMetaData();
-            try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_TRACE_LOG, new String[]{"TABLE"})) {
-                if (!resultSet.next()) {
-                    createJobTraceTable(conn);
-                } 
-            }
             try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
                 if (!resultSet.next()) {
                     createJobExecutionTable(conn);
@@ -75,22 +63,6 @@ class JobEventRdbStorage {
                     createJobStatusTraceTable(conn);
                 }
             }
-        }
-    }
-    
-    private void createJobTraceTable(final Connection conn) throws SQLException {
-        String dbSchema = "CREATE TABLE `" + TABLE_JOB_TRACE_LOG + "` ("
-                + "`id` VARCHAR(40) NOT NULL, "
-                + "`job_name` VARCHAR(100) NOT NULL, "
-                + "`hostname` VARCHAR(255) NOT NULL, "
-                + "`ip` VARCHAR(50) NOT NULL, "
-                + "`log_level` CHAR(5) NOT NULL, "
-                + "`message` VARCHAR(2000) NOT NULL, "
-                + "`failure_cause` VARCHAR(4000) NULL, "
-                + "`creation_time` TIMESTAMP NOT NULL, "
-                + "PRIMARY KEY (`id`));";
-        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
-            preparedStatement.execute();
         }
     }
     
@@ -130,31 +102,6 @@ class JobEventRdbStorage {
         try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
             preparedStatement.execute();
         }
-    }
-    
-    boolean addJobTraceEvent(final JobTraceEvent traceEvent) {
-        boolean result = false;
-        if (needTrace(traceEvent.getLogLevel())) {
-            String sql = "INSERT INTO `" + TABLE_JOB_TRACE_LOG + "` (`id`, `job_name`, `hostname`, `ip`, `log_level`, `message`, `failure_cause`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-            try (
-                    Connection conn = dataSource.getConnection();
-                    PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-                preparedStatement.setString(1, UUID.randomUUID().toString());
-                preparedStatement.setString(2, traceEvent.getJobName());
-                preparedStatement.setString(3, traceEvent.getHostname());
-                preparedStatement.setString(4, traceEvent.getIp());
-                preparedStatement.setString(5, traceEvent.getLogLevel().name());
-                preparedStatement.setString(6, traceEvent.getMessage());
-                preparedStatement.setString(7, truncateString(traceEvent.getFailureCause()));
-                preparedStatement.setTimestamp(8, new Timestamp(traceEvent.getCreationTime().getTime()));
-                preparedStatement.execute();
-                result = true;
-            } catch (final SQLException ex) {
-                // TODO 记录失败直接输出日志,未来可考虑配置化
-                log.error(ex.getMessage());
-            }
-        }
-        return result;
     }
     
     boolean addJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
@@ -239,10 +186,6 @@ class JobEventRdbStorage {
             log.error(ex.getMessage());
         }
         return result;
-    }
-    
-    private boolean needTrace(final LogLevel logLevel) {
-        return logLevel.ordinal() >= this.logLevel.ordinal();
     }
     
     private String truncateString(final String str) {

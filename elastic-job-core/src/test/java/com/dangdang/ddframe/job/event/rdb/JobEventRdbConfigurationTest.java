@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.event.rdb;
 
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -28,12 +27,11 @@ public final class JobEventRdbConfigurationTest {
     
     @Test
     public void assertCreateJobEventListenerSuccess() {
-        assertThat(
-                new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", JobTraceEvent.LogLevel.INFO).createJobEventListener(), instanceOf(JobEventRdbListener.class));
+        assertThat(new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "").createJobEventListener(), instanceOf(JobEventRdbListener.class));
     }
     
     @Test
     public void assertCreateJobEventListenerFailure() {
-        assertNull(new JobEventRdbConfiguration("", "", "", "", JobTraceEvent.LogLevel.INFO).createJobEventListener());
+        assertNull(new JobEventRdbConfiguration("", "", "", "").createJobEventListener());
     }
 }

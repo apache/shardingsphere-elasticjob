@@ -21,8 +21,6 @@ import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,17 +49,10 @@ public final class JobEventRdbListenerTest {
     
     @Before
     public void setUp() throws SQLException, NoSuchFieldException {
-        JobEventRdbListener jobEventRdbListener = new JobEventRdbListener(new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", JobTraceEvent.LogLevel.INFO));
+        JobEventRdbListener jobEventRdbListener = new JobEventRdbListener(new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", ""));
         ReflectionUtils.setFieldValue(jobEventRdbListener, "repository", repository);
         when(jobEventRdbConfiguration.createJobEventListener()).thenReturn(jobEventRdbListener);
         jobEventBus = new JobEventBus(jobEventRdbConfiguration);
-    }
-    
-    @Test
-    public void assertPostJobTraceEvent() {
-        JobTraceEvent jobTraceEvent = new JobTraceEvent(JOB_NAME, LogLevel.INFO, "ok");
-        jobEventBus.post(jobTraceEvent);
-        verify(repository, atMost(1)).addJobTraceEvent(jobTraceEvent);
     }
     
     @Test

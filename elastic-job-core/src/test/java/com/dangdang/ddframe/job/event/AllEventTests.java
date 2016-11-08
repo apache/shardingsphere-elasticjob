@@ -27,7 +27,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        JobTraceEventTest.class, 
         JobExecutionEventTest.class, 
         JobEventBusTest.class, 
         JobEventRdbIdentityTest.class,

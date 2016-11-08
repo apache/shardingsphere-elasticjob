@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.executor;
 import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.cloud.executor.fixture.TestJob;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.SerializationUtils;
@@ -95,8 +94,7 @@ public final class TaskExecutorTest {
     @Test
     public void assertRegisteredWithoutData() {
         ExecutorInfo executorInfo = ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue("test_executor")).setCommand(Protos.CommandInfo.getDefaultInstance())
-                .setData(ByteString.copyFrom(SerializationUtils.serialize(new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:test_executor", "sa", "", JobTraceEvent.LogLevel.INFO))))
-                .build();
+                .setData(ByteString.copyFrom(SerializationUtils.serialize(new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:test_executor", "sa", "")))).build();
         taskExecutor.registered(executorDriver, executorInfo, frameworkInfo, slaveInfo);
     }
     

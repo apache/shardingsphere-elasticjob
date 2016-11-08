@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.event;
 
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 
@@ -30,15 +29,6 @@ import com.google.common.eventbus.Subscribe;
  * @author zhangliang
  */
 public interface JobEventListener extends JobEventIdentity {
-    
-    /**
-     * 作业运行痕迹事件监听执行.
-     * 
-     * @param jobTraceEvent 作业运行痕迹事件
-     */
-    @Subscribe
-    @AllowConcurrentEvents
-    void listen(JobTraceEvent jobTraceEvent);
     
     /**
      * 作业执行事件监听执行.

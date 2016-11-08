@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.event.rdb;
 import com.dangdang.ddframe.job.event.JobEventListener;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 
 import java.sql.SQLException;
 
@@ -34,12 +33,7 @@ public final class JobEventRdbListener extends JobEventRdbIdentity implements Jo
     private final JobEventRdbStorage repository;
     
     public JobEventRdbListener(final JobEventRdbConfiguration config) throws SQLException {
-        repository = new JobEventRdbStorage(config.getDriverClassName(), config.getUrl(), config.getUsername(), config.getPassword(), config.getLogLevel());
-    }
-    
-    @Override
-    public void listen(final JobTraceEvent traceEvent) {
-        repository.addJobTraceEvent(traceEvent);
+        repository = new JobEventRdbStorage(config.getDriverClassName(), config.getUrl(), config.getUsername(), config.getPassword());
     }
     
     @Override

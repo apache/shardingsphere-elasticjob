@@ -19,14 +19,11 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
 
-import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -38,23 +35,7 @@ public class JobEventRdbStorageTest {
     
     @Before
     public void setup() throws SQLException {
-        storage = new JobEventRdbStorage(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
-    }
-    
-    @Test
-    public void assertAddJobTraceEvent() throws SQLException {
-        assertTrue(storage.addJobTraceEvent(new JobTraceEvent("test_job", LogLevel.WARN, "message")));
-    }
-    
-    @Test
-    public void assertAddJobTraceEventWhenFailure() throws SQLException {
-        assertFalse(storage.addJobTraceEvent(new JobTraceEvent("test_job", LogLevel.DEBUG, "message", new Exception("failure"))));
-    }
-    
-    @Test
-    public void assertAddTraceLogWithLogLevel() throws SQLException {
-        JobEventRdbStorage rdbStorage = new JobEventRdbStorage(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_storage", "sa", "", LogLevel.INFO);
-        assertFalse(rdbStorage.addJobTraceEvent(new JobTraceEvent("test_job", LogLevel.DEBUG, "message")));
+        storage = new JobEventRdbStorage(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_storage", "sa", "");
     }
     
     @Test
