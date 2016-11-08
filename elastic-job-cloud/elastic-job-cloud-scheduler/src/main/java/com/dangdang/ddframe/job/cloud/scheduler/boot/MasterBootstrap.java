@@ -30,10 +30,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.util.restful.RestfulServer;
@@ -120,17 +117,11 @@ public final class MasterBootstrap {
     }
     
     private JobEventBus getJobEventBus() {
-        JobEventConfiguration[] jobEventConfigurations;
         Optional<JobEventRdbConfiguration> rdbConfig = env.getRdbConfiguration();
         if (rdbConfig.isPresent()) {
-            jobEventConfigurations = new JobEventConfiguration[2];
-            JobEventRdbConfiguration config = rdbConfig.get();
-            jobEventConfigurations[1] = new JobEventRdbConfiguration(config.getDriverClassName(), config.getUrl(), config.getUsername(), config.getPassword(), LogLevel.INFO);
-        } else {
-            jobEventConfigurations = new JobEventConfiguration[1];
+            return new JobEventBus(rdbConfig.get());
         }
-        jobEventConfigurations[0] = new JobEventLogConfiguration();
-        return new JobEventBus(jobEventConfigurations);
+        return new JobEventBus();
     }
     
     /**

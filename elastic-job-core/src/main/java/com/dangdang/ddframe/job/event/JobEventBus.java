@@ -17,14 +17,12 @@
 
 package com.dangdang.ddframe.job.event;
 
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.util.concurrent.ExecutorServiceObject;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import lombok.Getter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,9 +49,6 @@ public class JobEventBus {
     }
     
     private Collection<JobEventConfiguration> getJobEventConfiguration(final JobEventConfiguration... jobEventConfigs) {
-        if (0 == jobEventConfigs.length) {
-            return Collections.<JobEventConfiguration>singletonList(new JobEventLogConfiguration());
-        }
         Map<String, JobEventConfiguration> result = new HashMap<>(jobEventConfigs.length, 1);
         for (JobEventConfiguration each : jobEventConfigs) {
             result.put(each.getIdentity(), each);
@@ -75,26 +70,8 @@ public class JobEventBus {
      * @param event 作业事件
      */
     public void post(final JobEvent event) {
-        if (!executorServiceObject.isShutdown()) {
+        if (!jobEventConfigs.isEmpty() && !executorServiceObject.isShutdown()) {
             eventBus.post(event);
         }
     }
-    
-//    // TODO 通过JMX暴露
-//    public int getWorkQueueSize() {
-//        Map<String, Integer> result = new HashMap<>();
-//        for (Entry<String, JobEventBusInstance> each : itemMap.entrySet()) {
-//            result.put(each.getKey(), each.getValue().getExecutorServiceObject().getWorkQueueSize());
-//        }
-//        return result;
-//    }
-//    
-//    // TODO 通过JMX暴露
-//    public Map<String, Integer> getActiveThreadCount() {
-//        Map<String, Integer> result = new HashMap<>();
-//        for (Entry<String, JobEventBusInstance> each : itemMap.entrySet()) {
-//            result.put(each.getKey(), each.getValue().getExecutorServiceObject().getActiveThreadCount());
-//        }
-//        return result;
-//    }
 }

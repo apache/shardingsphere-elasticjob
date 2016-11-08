@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.executor;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
@@ -49,7 +48,7 @@ public final class TaskExecutor implements Executor {
     
     private final ExecutorService executorService;
     
-    private JobEventBus jobEventBus;
+    private JobEventBus jobEventBus = new JobEventBus();
     
     public TaskExecutor() {
         executorService = new ExecutorServiceObject("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
@@ -58,8 +57,7 @@ public final class TaskExecutor implements Executor {
     @Override
     public void registered(final ExecutorDriver executorDriver, final Protos.ExecutorInfo executorInfo, final Protos.FrameworkInfo frameworkInfo, final Protos.SlaveInfo slaveInfo) {
         if (!executorInfo.getData().isEmpty()) {
-            JobEventRdbConfiguration jobEventRdbConfig = SerializationUtils.deserialize(executorInfo.getData().toByteArray());
-            jobEventBus = new JobEventBus(new JobEventLogConfiguration(), jobEventRdbConfig);
+            jobEventBus = new JobEventBus(SerializationUtils.<JobEventRdbConfiguration>deserialize(executorInfo.getData().toByteArray()));
         }
     }
     

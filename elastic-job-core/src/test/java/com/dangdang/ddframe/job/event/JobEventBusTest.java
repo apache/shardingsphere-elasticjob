@@ -22,13 +22,13 @@ import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
-import org.junit.Before;
+import com.google.common.eventbus.EventBus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,28 +39,26 @@ public final class JobEventBusTest {
     @Mock
     private JobEventCaller jobEventCaller;
     
-    private JobEventBus jobEventBus;
+    @Mock
+    private EventBus eventBus;
     
-    @Before
-    public void setUp() {
-        jobEventBus = new JobEventBus(new TestJobEventConfiguration(jobEventCaller));
-    }
+    private JobEventBus jobEventBus;
     
     @Test
     public void assertPost() throws InterruptedException {
-        jobEventBus.post(new JobTraceEvent("test_event_bus_job", LogLevel.INFO, "ok"));
+        jobEventBus = new JobEventBus(new TestJobEventConfiguration(jobEventCaller));
         jobEventBus.post(new JobExecutionEvent("test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
-        while (!TestJobEventListener.isExecutionEventCalled() || !TestJobEventListener.isTraceEventCalled()) {
+        while (!TestJobEventListener.isExecutionEventCalled()) {
             Thread.sleep(100L);
         }
-        verify(jobEventCaller, times(2)).call();
+        verify(jobEventCaller).call();
     }
     
-    // TODO
-//    @Test
-//    public void assertGetWorkQueueSize() {
-//        registerEventConfigs();
-//        assertThat(jobEventBus.getWorkQueueSize().size(), is(1));
-//        assertThat(jobEventBus.getWorkQueueSize().get(jobName), is(0));
-//    }
+    @Test
+    public void assertPostWithoutListener() throws NoSuchFieldException {
+        jobEventBus = new JobEventBus();
+        ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
+        jobEventBus.post(new JobExecutionEvent("test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
+        verify(eventBus, times(0)).post(Matchers.<JobEvent>any());
+    }
 }

@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.event.type.JobTraceEvent;
 import com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob;
@@ -40,8 +39,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public final class JavaLiteJobMain {
     
@@ -62,7 +61,7 @@ public final class JavaLiteJobMain {
     
     private static final JobTraceEvent.LogLevel EVENT_RDB_STORAGE_LOG_LEVEL = JobTraceEvent.LogLevel.INFO;
     
-    private static final Collection<JobEventConfiguration> JOB_EVENT_CONFIGS =  Arrays.asList(new JobEventLogConfiguration(),
+    private static final Collection<JobEventConfiguration> JOB_EVENT_CONFIGS =  Collections.<JobEventConfiguration>singletonList(
             new JobEventRdbConfiguration(EVENT_RDB_STORAGE_DRIVER, EVENT_RDB_STORAGE_URL, EVENT_RDB_STORAGE_USERNAME, EVENT_RDB_STORAGE_PASSWORD, EVENT_RDB_STORAGE_LOG_LEVEL));
     
     // CHECKSTYLE:OFF

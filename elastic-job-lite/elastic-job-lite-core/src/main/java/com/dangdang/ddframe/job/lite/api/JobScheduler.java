@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
@@ -66,7 +65,7 @@ public class JobScheduler {
     private final JobFacade jobFacade;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, liteJobConfig, Collections.<JobEventConfiguration>singletonList(new JobEventLogConfiguration()), elasticJobListeners);
+        this(regCenter, liteJobConfig, Collections.<JobEventConfiguration>emptyList(), elasticJobListeners);
     }
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final Collection<JobEventConfiguration> jobEventConfigs, 
