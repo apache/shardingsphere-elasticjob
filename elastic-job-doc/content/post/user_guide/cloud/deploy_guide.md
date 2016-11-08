@@ -47,7 +47,6 @@ url：`job/register`
 |misfire                             |boolean|否      |`false`| 是否开启错过任务重新执行                                                             |
 |beanName                            |String |否      |       | `Spring`容器中配置的`bean`名称                                                      |
 |applicationContext                  |String |否      |       | `Spring`方式配置`Spring`配置文件相对路径以及名称，如：`META-INF\applicationContext.xml`|
-|jobEventConfigs                     |String |否      |       | 作业事件配置，目前可配置`log`和`rdb`监听器，如:`{"log":{},"rdb":{"driverClassName":"com.mysql.jdbc.Driver", "url":"jdbc:mysql://your_host:3306/elastic_job_log", "username":"root", "password":"", "logLevel":"WARN"}}`                                     |
 |scriptCommandLine                   |String |否      |       | `SCRIPT`类型作业命令行执行脚本                                                      |
 |jobProperties                       |String |否      |       | 作业定制化属性，目前支持`job_exception_handler`和`executor_service_handler`，用于扩展异常处理和自定义作业处理线程池 |
 |description                         |String |否      |       | 作业描述信息                                                                       |

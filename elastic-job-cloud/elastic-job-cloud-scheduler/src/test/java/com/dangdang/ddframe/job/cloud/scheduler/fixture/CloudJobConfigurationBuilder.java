@@ -24,9 +24,6 @@ import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -63,30 +60,15 @@ public final class CloudJobConfigurationBuilder {
                 1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT, "springSimpleJob", "applicationContext.xml");
     }
     
-    public static CloudJobConfiguration createSimpleCloudJobConfigurationWithEventConfiguration(final String jobName) {
-        JobEventRdbConfiguration rdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", JobTraceEvent.LogLevel.INFO);
-        JobEventLogConfiguration logEventConfig = new JobEventLogConfiguration();
+    public static CloudJobConfiguration createDataflowCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false)
-                        .jobEventConfiguration(rdbEventConfig, logEventConfig).build(), SimpleJob.class.getCanonicalName()),
+                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false).build(), SimpleJob.class.getCanonicalName(), true),
                 1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
     }
     
-    public static CloudJobConfiguration createDataflowCloudJobConfigurationWithEventConfiguration(final String jobName) {
-        JobEventRdbConfiguration rdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", JobTraceEvent.LogLevel.INFO);
-        JobEventLogConfiguration logEventConfig = new JobEventLogConfiguration();
+    public static CloudJobConfiguration createScriptCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration(
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false)
-                        .jobEventConfiguration(rdbEventConfig, logEventConfig).build(), SimpleJob.class.getCanonicalName(), true),
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
-    }
-    
-    public static CloudJobConfiguration createScriptCloudJobConfigurationWithEventConfiguration(final String jobName) {
-        JobEventRdbConfiguration rdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "", JobTraceEvent.LogLevel.INFO);
-        JobEventLogConfiguration logEventConfig = new JobEventLogConfiguration();
-        return new CloudJobConfiguration(
-                new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false)
-                        .jobEventConfiguration(rdbEventConfig, logEventConfig).build(), "test.sh"),
+                new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false).build(), "test.sh"),
                 1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
     }
 }

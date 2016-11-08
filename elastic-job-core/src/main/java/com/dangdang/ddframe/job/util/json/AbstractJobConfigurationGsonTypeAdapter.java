@@ -24,22 +24,15 @@ import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,7 +56,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         boolean misfire = failover;
         String description = "";
         JobProperties jobProperties = new JobProperties();
-        JobEventConfiguration[] jobEventConfigs = null;
         JobType jobType = null;
         String jobClass = "";
         boolean streamingProcess = false;
@@ -100,9 +92,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 case "jobProperties":
                     jobProperties = getJobProperties(in);
                     break;
-                case "jobEventConfigs":
-                    jobEventConfigs = getJobEventConfigs(in);
-                    break;
                 case "jobType":
                     jobType = JobType.valueOf(in.nextString());
                     break;
@@ -122,7 +111,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         }
         in.endObject();
         JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
-                jobParameter, failover, misfire, description, jobProperties, jobEventConfigs);
+                jobParameter, failover, misfire, description, jobProperties);
         JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, streamingProcess, scriptCommandLine);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
@@ -146,67 +135,16 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         return result;
     }
     
-    private JobEventConfiguration[] getJobEventConfigs(final JsonReader in) throws IOException {
-        List<JobEventConfiguration> result = new ArrayList<>(2);
-        in.beginObject();
-        while (in.hasNext()) {
-            String name = in.nextName();
-            switch (name) {
-                case "log":
-                    in.beginObject();
-                    result.add(new JobEventLogConfiguration());
-                    in.endObject();
-                    break;
-                case "rdb":
-                    String url = "";
-                    String username = "";
-                    String password = "";
-                    String driverClassName = "";
-                    String logLevel = "";
-                    in.beginObject();
-                    while (in.hasNext()) {
-                        switch (in.nextName()) {
-                            case "url":
-                                url = in.nextString();
-                                break;
-                            case "username":
-                                username = in.nextString();
-                                break;
-                            case "password":
-                                password = in.nextString();
-                                break;
-                            case "driverClassName":
-                                driverClassName = in.nextString();
-                                break;
-                            case "logLevel":
-                                logLevel = in.nextString();
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    in.endObject();
-                    result.add(new JobEventRdbConfiguration(driverClassName, url, username, password, LogLevel.valueOf(logLevel.toUpperCase())));
-                    break;
-                default:
-                    break;
-            }
-        }
-        in.endObject();
-        return Iterables.toArray(result, JobEventConfiguration.class);
-    }
-    
     protected abstract void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException;
     
     private JobCoreConfiguration getJobCoreConfiguration(final String jobName, final String cron, final int shardingTotalCount,
                                                          final String shardingItemParameters, final String jobParameter, final boolean failover,
                                                          final boolean misfire, final String description,
-                                                         final JobProperties jobProperties, final JobEventConfiguration[] jobEventConfigs) {
+                                                         final JobProperties jobProperties) {
         return JobCoreConfiguration.newBuilder(jobName, cron, shardingTotalCount)
                 .shardingItemParameters(shardingItemParameters).jobParameter(jobParameter).failover(failover).misfire(misfire).description(description)
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobProperties.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER))
                 .jobProperties(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), jobProperties.get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER))
-                .jobEventConfiguration(jobEventConfigs)
                 .build();
     }
     
@@ -248,7 +186,6 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         out.name("misfire").value(value.getTypeConfig().getCoreConfig().isMisfire());
         out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
         out.name("jobProperties").jsonValue(value.getTypeConfig().getCoreConfig().getJobProperties().json());
-        out.name("jobEventConfigs").jsonValue(GsonFactory.getGson().toJson(value.getTypeConfig().getCoreConfig().getJobEventConfigs()));
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
             DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getTypeConfig();
             out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());

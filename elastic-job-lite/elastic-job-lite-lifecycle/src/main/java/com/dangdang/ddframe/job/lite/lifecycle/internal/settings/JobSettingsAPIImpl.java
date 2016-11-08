@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.settings;
 import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
@@ -29,9 +28,6 @@ import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * 作业配置的实现类.
@@ -78,15 +74,6 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), 
                 liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         result.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
-        Map<String, Object> jobEventConfigs = new LinkedHashMap<>(2, 1);
-        Map<String, JobEventConfiguration> liteEventConfigs = liteJobConfig.getTypeConfig().getCoreConfig().getJobEventConfigs();
-        if (liteEventConfigs.containsKey("log")) {
-            jobEventConfigs.put("log", liteEventConfigs.get("log"));
-        }
-        if (liteEventConfigs.containsKey("rdb")) {
-            jobEventConfigs.put("rdb", liteEventConfigs.get("rdb"));
-        }
-        result.setJobEventConfigs(jobEventConfigs);
     } 
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {

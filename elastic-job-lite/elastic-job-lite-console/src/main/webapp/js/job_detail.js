@@ -33,17 +33,6 @@ function renderSettings() {
         $("#monitorExecution").attr("checked", data.monitorExecution);
         $("#failover").attr("checked", data.failover);
         $("#misfire").attr("checked", data.misfire);
-        $("#jobEventLogConfig").attr("checked", data.jobEventConfigs["log"]);
-        $("#jobEventRdbConfig").attr("checked", data.jobEventConfigs["rdb"]);
-        if (data.jobEventConfigs["rdb"]) {
-            $("#driver").attr("value", data.jobEventConfigs["rdb"]["driverClassName"]);
-            $("#url").attr("value", data.jobEventConfigs["rdb"]["url"]);
-            $("#username").attr("value", data.jobEventConfigs["rdb"]["username"]);
-            $("#password").attr("value", data.jobEventConfigs["rdb"]["password"]);
-            if (data.jobEventConfigs["rdb"]["logLevel"]) {
-                $("#logLevel").val(data.jobEventConfigs["rdb"]["logLevel"]);
-            }    
-        }
         $("#streamingProcess").attr("checked", data.streamingProcess);
         $("#maxTimeDiffSeconds").attr("value", data.maxTimeDiffSeconds);
         $("#monitorPort").attr("value", data.monitorPort);
@@ -54,7 +43,6 @@ function renderSettings() {
         if (!data.monitorExecution) {
             $("#execution_info_tab").addClass("disabled");
         }
-        changeJobEventRdbConfigDiv(data.jobEventConfigs["rdb"]);
         $("#scriptCommandLine").attr("value", data.scriptCommandLine);
     });
 }
@@ -74,8 +62,6 @@ function bindSubmitJobSettingsForm() {
         var monitorExecution = $("#monitorExecution").prop("checked");
         var failover = $("#failover").prop("checked");
         var misfire = $("#misfire").prop("checked");
-        var hasJobEventLogConfig = $("#jobEventLogConfig").prop("checked");
-        var hasJobEventRdbConfig = $("#jobEventRdbConfig").prop("checked");
         var driver = $("#driver").val();
         var url = $("#url").val();
         var username = $("#username").val();
@@ -87,27 +73,7 @@ function bindSubmitJobSettingsForm() {
         var executorServiceHandler = $("#executorServiceHandler").val();
         var jobExceptionHandler = $("#jobExceptionHandler").val();
         var description = $("#description").val();
-        var jobEventConfigs = {"log": hasJobEventLogConfig, "rdb": hasJobEventRdbConfig};
-        if (hasJobEventRdbConfig) {
-            if (driver.length == 0) {
-                alert("数据库驱动不能为空!");
-                return;
-            }
-            if (url.length == 0) {
-                alert("数据库URL不能为空!");
-                return;
-            }
-            if (username.length == 0) {
-                alert("数据库用户名不能为空!");
-                return;
-            }
-            jobEventConfigs["rdb.driverClassName"] = driver;
-            jobEventConfigs["rdb.url"] = url;
-            jobEventConfigs["rdb.username"] = username;
-            jobEventConfigs["rdb.password"] = password;
-            jobEventConfigs["rdb.logLevel"] = logLevel;
-        }
-        var postJson = {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, jobEventConfigs: jobEventConfigs, description: description, scriptCommandLine: scriptCommandLine};
+        var postJson = {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, description: description, scriptCommandLine: scriptCommandLine};
         $.post("job/settings", postJson, function() {
             showSuccessDialog();
             if (monitorExecution) {
@@ -291,12 +257,4 @@ function bindEnableButtons() {
             showSuccessDialog();
         });
     });
-}
-
-function changeJobEventRdbConfigDiv(isChecked) {
-    if (isChecked) {
-        $("#jobEventRdbConfigDiv").show();
-    } else {
-        $("#jobEventRdbConfigDiv").hide();
-    }
 }

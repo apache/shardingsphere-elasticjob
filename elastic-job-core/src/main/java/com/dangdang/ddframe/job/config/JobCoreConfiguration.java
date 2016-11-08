@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.config;
 
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -26,9 +24,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * 作业核心配置.
@@ -56,8 +51,6 @@ public final class JobCoreConfiguration {
     private final String description;
     
     private final JobProperties jobProperties;
-    
-    private final Map<String, JobEventConfiguration> jobEventConfigs;
     
     /**
      * 创建简单作业配置构建器.
@@ -91,8 +84,6 @@ public final class JobCoreConfiguration {
         private String description = "";
         
         private final JobProperties jobProperties = new JobProperties();
-    
-        private final Map<String, JobEventConfiguration> jobEventConfigs = new LinkedHashMap<>(2, 1);
         
         /**
          * 设置分片序列号和个性化参数对照表.
@@ -174,7 +165,7 @@ public final class JobCoreConfiguration {
             }
             return this;
         }
-    
+        
         /**
          * 设置作业属性.
          *
@@ -187,23 +178,6 @@ public final class JobCoreConfiguration {
             jobProperties.put(key, value);
             return this;
         }
-            
-        /**
-         * 设置作业事件配置.
-         *
-         * @param jobEventConfigs 作业事件配置
-         *
-         * @return 作业配置构建器
-         */
-        public Builder jobEventConfiguration(final JobEventConfiguration... jobEventConfigs) {
-            if (null == jobEventConfigs) {
-                return this;
-            }
-            for (JobEventConfiguration each : jobEventConfigs) {
-                this.jobEventConfigs.put(each.getIdentity(), each);
-            }
-            return this;
-        }
         
         /**
          * 构建作业配置对象.
@@ -214,11 +188,7 @@ public final class JobCoreConfiguration {
             Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
             Preconditions.checkArgument(!Strings.isNullOrEmpty(cron), "cron can not be empty.");
             Preconditions.checkArgument(shardingTotalCount > 0, "shardingTotalCount should larger than zero.");
-            if (jobEventConfigs.isEmpty()) {
-                JobEventLogConfiguration jobLogEventConfig = new JobEventLogConfiguration();
-                jobEventConfigs.put(jobLogEventConfig.getIdentity(), jobLogEventConfig);
-            }
-            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties, jobEventConfigs);
+            return new JobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters, jobParameter, failover, misfire, description, jobProperties);
         }
     }
 }

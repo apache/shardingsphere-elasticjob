@@ -17,14 +17,12 @@
 
 package com.dangdang.ddframe.job.cloud.executor;
 
-import com.dangdang.ddframe.job.cloud.executor.fixture.TestJob;
-import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.api.JobType;
+import com.dangdang.ddframe.job.cloud.executor.fixture.TestJob;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
+import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -32,8 +30,8 @@ import java.util.Map;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class JobConfigurationContextTest {
     
@@ -50,33 +48,6 @@ public class JobConfigurationContextTest {
     @Test
     public void assertScriptJobConfigurationContext() throws JobExecutionEnvironmentException {
         assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SCRIPT)).getTypeConfig() instanceof ScriptJobConfiguration);
-    }
-    
-    @Test
-    public void assertSimpleJobConfigurationContextWithLogEvent() throws JobExecutionEnvironmentException {
-        assertTrue(new JobConfigurationContext(buildJobConfigurationContextMap(JobType.SIMPLE)).getTypeConfig().getCoreConfig().getJobEventConfigs().containsKey("log"));
-    }
-    
-    @Test
-    public void assertSimpleJobConfigurationContextWithLogAndRdbEvent() throws JobExecutionEnvironmentException {
-        Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
-        context.put("driverClassName", "org.h2.driver");
-        context.put("url", "jdbc:h2:mem:job_event_storage");
-        context.put("username", "sa");
-        context.put("password", "");
-        context.put("logLevel", LogLevel.INFO.name());
-        context.put("logEvent", "");
-        Map<String, JobEventConfiguration> jobEventConfigs = new JobConfigurationContext(context).getTypeConfig().getCoreConfig().getJobEventConfigs();
-        assertTrue(jobEventConfigs.containsKey("rdb"));
-        assertTrue(jobEventConfigs.containsKey("log"));
-    }
-    
-    @Test
-    public void assertSimpleJobConfigurationContextWithRdbEvenWhichMissingParameters() throws JobExecutionEnvironmentException {
-        Map<String, String> context = buildJobConfigurationContextMap(JobType.SIMPLE);
-        context.put("driverClassName", "org.h2.driver");
-        Map<String, JobEventConfiguration> jobEventConfigs = new JobConfigurationContext(context).getTypeConfig().getCoreConfig().getJobEventConfigs();
-        assertTrue(!jobEventConfigs.containsKey("rdb"));
     }
     
     @Test

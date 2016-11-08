@@ -21,9 +21,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import lombok.RequiredArgsConstructor;
@@ -71,26 +68,6 @@ public final class TaskInfoData {
         }
         result.put("beanName", jobConfig.getBeanName());
         result.put("applicationContext", jobConfig.getApplicationContext());
-        result.putAll(buildJobEventConfiguration());
-        return result;
-    }
-    
-    private Map<String, String> buildJobEventConfiguration() {
-        Map<String, String> result = new LinkedHashMap<>(6, 1);
-        Map<String, JobEventConfiguration> configurations = jobConfig.getTypeConfig().getCoreConfig().getJobEventConfigs();
-        for (JobEventConfiguration each : configurations.values()) {
-            if (each instanceof JobEventRdbConfiguration) {
-                JobEventRdbConfiguration rdbEventConfig = (JobEventRdbConfiguration) each;
-                result.put("driverClassName", rdbEventConfig.getDriverClassName());
-                result.put("url", rdbEventConfig.getUrl());
-                result.put("username", rdbEventConfig.getUsername());
-                result.put("password", rdbEventConfig.getPassword());
-                result.put("logLevel", rdbEventConfig.getLogLevel().name());
-            }
-            if (each instanceof JobEventLogConfiguration) {
-                result.put("logEvent", Boolean.TRUE.toString());
-            }
-        }
         return result;
     }
 }

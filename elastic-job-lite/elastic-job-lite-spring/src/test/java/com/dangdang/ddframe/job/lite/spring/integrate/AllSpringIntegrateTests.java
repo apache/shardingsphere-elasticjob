@@ -24,7 +24,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     JobSpringNamespaceWithoutListenerTest.class,
-    JobSpringNamespaceWithEventTest.class,
     JobSpringNamespaceWithJobPropertiesTest.class,
     JobSpringNamespaceWithListenerTest.class,
     JobSpringNamespaceWithListenerAndJdkDynamicProxyTest.class,

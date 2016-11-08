@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.internal.settings;
 
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
@@ -104,14 +103,12 @@ public class JobSettingsAPIImplTest {
         jobSettings.setStreamingProcess(true);
         jobSettings.setFailover(false);
         jobSettings.setMisfire(true);
-        jobSettings.getJobEventConfigs().put("log", new JobEventLogConfiguration());
         jobSettings.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class.getCanonicalName());
         jobSettings.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());
         jobSettingsAPI.updateJobSettings(jobSettings);
         verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\","
                 + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"streamingProcess\":true,"
                 + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
-                + "\"jobEventConfigs\":{\"log\":{}},"
                 + "\"jobProperties\":{\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","
                 + "\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\"}}");
     }

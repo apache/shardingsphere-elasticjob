@@ -35,19 +35,19 @@ public final class TaskInfoDataTest {
     
     @Test
     public void assertSerializeSimpleJob() {
-        TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createSimpleCloudJobConfigurationWithEventConfiguration("test_job"));
+        TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
         assertSerialize((Map) SerializationUtils.deserialize(actual.serialize()));
     }
     
     @Test
     public void assertSerializeDataflowJob() {
-        TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createDataflowCloudJobConfigurationWithEventConfiguration("test_job"));
+        TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createDataflowCloudJobConfiguration("test_job"));
         assertSerialize((Map) SerializationUtils.deserialize(actual.serialize()));
     }
     
     @Test
     public void assertSerializeScriptJob() {
-        TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createScriptCloudJobConfigurationWithEventConfiguration("test_job"));
+        TaskInfoData actual = new TaskInfoData(shardingContexts, CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("test_job"));
         assertSerialize((Map) SerializationUtils.deserialize(actual.serialize()));
     }
     

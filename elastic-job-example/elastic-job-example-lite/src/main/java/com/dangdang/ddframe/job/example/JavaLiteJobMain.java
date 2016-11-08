@@ -51,6 +51,7 @@ public final class JavaLiteJobMain {
     
     private static final String JOB_NAMESPACE = "elastic-job-example-lite-java";
     
+    // switch to MySQL by yourself
     private static final String EVENT_RDB_STORAGE_DRIVER = "org.h2.Driver";
     
     private static final String EVENT_RDB_STORAGE_URL = "jdbc:h2:mem:job_event_storage";
@@ -62,7 +63,7 @@ public final class JavaLiteJobMain {
     private static final JobTraceEvent.LogLevel EVENT_RDB_STORAGE_LOG_LEVEL = JobTraceEvent.LogLevel.INFO;
     
     private static final Collection<JobEventConfiguration> JOB_EVENT_CONFIGS =  Arrays.asList(new JobEventLogConfiguration(),
-            new JobEventRdbConfiguration("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/elastic-job-cloud-log", "root", "", EVENT_RDB_STORAGE_LOG_LEVEL));
+            new JobEventRdbConfiguration(EVENT_RDB_STORAGE_DRIVER, EVENT_RDB_STORAGE_URL, EVENT_RDB_STORAGE_USERNAME, EVENT_RDB_STORAGE_PASSWORD, EVENT_RDB_STORAGE_LOG_LEVEL));
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
@@ -86,26 +87,21 @@ public final class JavaLiteJobMain {
     }
     
     private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter) {
-        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
-                .jobEventConfiguration(getJobEventConfigurations()).build();
+        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig, JavaSimpleJob.class.getCanonicalName());
-//        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), JOB_EVENT_CONFIGS, new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), JOB_EVENT_CONFIGS, new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
     }
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter) {
-        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
-                .jobEventConfiguration(getJobEventConfigurations()).build();
+        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, JavaDataflowJob.class.getCanonicalName(), true);
-//        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), JOB_EVENT_CONFIGS).init();
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), JOB_EVENT_CONFIGS).init();
     }
     
     private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter) throws IOException {
-        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).jobEventConfiguration(getJobEventConfigurations()).build();
+        JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).build();
         ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
-//        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), JOB_EVENT_CONFIGS).init();
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build()).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), JOB_EVENT_CONFIGS).init();
     }
     
     private static String buildScriptCommandLine() throws IOException {
@@ -115,12 +111,5 @@ public final class JavaLiteJobMain {
         Path result = Paths.get(JavaLiteJobMain.class.getResource("/script/demo.sh").getPath());
         Files.setPosixFilePermissions(result, PosixFilePermissions.fromString("rwxr-xr-x"));
         return result.toString();
-    }
-    
-    private static JobEventConfiguration[] getJobEventConfigurations() {
-        JobEventConfiguration[] result = new JobEventConfiguration[2];
-        result[0] = new JobEventLogConfiguration();
-        result[1] = new JobEventRdbConfiguration(EVENT_RDB_STORAGE_DRIVER, EVENT_RDB_STORAGE_URL, EVENT_RDB_STORAGE_USERNAME, EVENT_RDB_STORAGE_PASSWORD, EVENT_RDB_STORAGE_LOG_LEVEL);
-        return result;
     }
 }

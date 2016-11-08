@@ -66,8 +66,6 @@ public final class JobSettings implements Serializable {
     
     private String description;
     
-    private Map<String, Object> jobEventConfigs = new LinkedHashMap<>(2, 1);
-    
     private Map<String, String> jobProperties = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
     
     private String scriptCommandLine;

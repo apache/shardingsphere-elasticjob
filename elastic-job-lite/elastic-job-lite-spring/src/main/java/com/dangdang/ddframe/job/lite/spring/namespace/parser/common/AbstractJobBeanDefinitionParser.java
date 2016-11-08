@@ -37,13 +37,6 @@ import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBe
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_TAG;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_LOG_TAG;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_RDB_DRIVER_ATTRIBUTE;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_RDB_LOG_LEVEL_ATTRIBUTE;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_RDB_PASSWORD_ATTRIBUTE;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_RDB_TAG;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_RDB_URL_ATTRIBUTE;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_RDB_USERNAME_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.FAILOVER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER;
@@ -97,7 +90,6 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         addPropertyValueIfNotEmpty(OVERWRITE_ATTRIBUTE, "overwrite", element, factory);
         addPropertyValueIfNotEmpty(EXECUTOR_SERVICE_HANDLER, "executorServiceHandler", element, factory);
         addPropertyValueIfNotEmpty(JOB_EXCEPTION_HANDLER, "jobExceptionHandler", element, factory);
-        setEventConfigs(element, factory);
         setPropertiesValue(element, factory);
         return factory.getBeanDefinition();
     }
@@ -123,19 +115,6 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
             result.add(factory.getBeanDefinition());
         }
         return result;
-    }
-    
-    private void setEventConfigs(final Element element, final BeanDefinitionBuilder factory) {
-        Element eventRdbElement = DomUtils.getChildElementByTagName(element, EVENT_RDB_TAG);
-        if (null != eventRdbElement) {
-            factory.addPropertyValue("driverClassName", eventRdbElement.getAttribute(EVENT_RDB_DRIVER_ATTRIBUTE));
-            factory.addPropertyValue("url", eventRdbElement.getAttribute(EVENT_RDB_URL_ATTRIBUTE));
-            factory.addPropertyValue("username", eventRdbElement.getAttribute(EVENT_RDB_USERNAME_ATTRIBUTE));
-            factory.addPropertyValue("password", eventRdbElement.getAttribute(EVENT_RDB_PASSWORD_ATTRIBUTE));
-            factory.addPropertyValue("logLevel", eventRdbElement.getAttribute(EVENT_RDB_LOG_LEVEL_ATTRIBUTE));
-        }
-        factory.addPropertyValue("logEvent", DomUtils.getChildElementByTagName(element, EVENT_LOG_TAG) != null);
-        
     }
     
     private void addPropertyValueIfNotEmpty(final String attributeName, final String propertyName, final Element element, final BeanDefinitionBuilder factory) {

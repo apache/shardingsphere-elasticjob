@@ -21,9 +21,6 @@ import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration.Builder;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
-import com.dangdang.ddframe.job.event.type.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -70,18 +67,6 @@ public abstract class AbstractJobConfigurationDto {
     
     private String jobExceptionHandler;
     
-    private Boolean logEvent;
-    
-    private String driverClassName;
-    
-    private String url;
-    
-    private String username;
-    
-    private String password;
-    
-    private String logLevel;
-    
     public LiteJobConfiguration toLiteJobConfiguration() {
         JobCoreConfiguration jobCoreConfig = buildJobCoreConfiguration();
         return buildLiteJobConfiguration(jobCoreConfig);
@@ -103,18 +88,8 @@ public abstract class AbstractJobConfigurationDto {
         if (null != jobExceptionHandler) {
             jobCoreConfigBuilder.jobProperties(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), jobExceptionHandler);
         }
-        buildEventConfiguration(jobCoreConfigBuilder);
         jobCoreConfigBuilder.description(description);
         return jobCoreConfigBuilder.build();
-    }
-    
-    private void buildEventConfiguration(final Builder jobCoreConfigBuilder) {
-        if (null != logEvent) {
-            jobCoreConfigBuilder.jobEventConfiguration(new JobEventLogConfiguration());    
-        }
-        if (null != driverClassName && null != url && null !=  username && null != password && null != logLevel) {
-            jobCoreConfigBuilder.jobEventConfiguration(new JobEventRdbConfiguration(driverClassName, url, username, password, LogLevel.valueOf(logLevel)));
-        }
     }
     
     private LiteJobConfiguration buildLiteJobConfiguration(final JobCoreConfiguration jobCoreConfig) {

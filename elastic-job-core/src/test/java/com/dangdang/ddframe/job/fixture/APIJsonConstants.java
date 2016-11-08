@@ -29,31 +29,30 @@ public final class APIJsonConstants {
     // CHECKSTYLE:OFF
     private static final String SIMPLE_JOB_JSON =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.fixture.job.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"0\\u003dA,1\\u003dB,2\\u003dC\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,"
-            + "\"description\":\"desc\",\"jobProperties\":%s,\"jobEventConfigs\":%s}";
+            + "\"description\":\"desc\",\"jobProperties\":%s}";
     // CHECKSTYLE:ON
     
     private static final String DATAFLOW_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.fixture.job.TestDataflowJob\",\"jobType\":\"DATAFLOW\","
             + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":%s,\"jobEventConfigs\":%s,\"streamingProcess\":true}";
+            + "\"jobProperties\":%s,\"streamingProcess\":true}";
     
     private static final String SCRIPT_JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.script.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":%s,\"jobEventConfigs\":%s,\"scriptCommandLine\":\"test.sh\"}";
+            + "\"jobProperties\":%s,\"scriptCommandLine\":\"test.sh\"}";
     
     public static String getJobPropertiesJson(final String jobExceptionHandler) {
         return String.format(JOB_PROPS_JSON, jobExceptionHandler);
     }
     
     public static String getSimpleJobJson(final String jobExceptionHandler) {
-        return String.format(SIMPLE_JOB_JSON, getJobPropertiesJson(jobExceptionHandler), 
-                "{\"log\":{},\"rdb\":{\"driverClassName\":\"org.h2.Driver\",\"url\":\"jdbc:h2:mem:job_event_storage\",\"username\":\"sa\",\"password\":\"\",\"logLevel\":\"INFO\"}}");
+        return String.format(SIMPLE_JOB_JSON, getJobPropertiesJson(jobExceptionHandler));
     }
     
     public static String getDataflowJobJson(final String jobExceptionHandler) {
-        return String.format(DATAFLOW_JOB_JSON, getJobPropertiesJson(jobExceptionHandler), "{\"log\":{}}");
+        return String.format(DATAFLOW_JOB_JSON, getJobPropertiesJson(jobExceptionHandler));
     }
     
     public static String getScriptJobJson(final String jobExceptionHandler) {
-        return String.format(SCRIPT_JOB_JSON, getJobPropertiesJson(jobExceptionHandler), "{\"log\":{}}");
+        return String.format(SCRIPT_JOB_JSON, getJobPropertiesJson(jobExceptionHandler));
     }
 }

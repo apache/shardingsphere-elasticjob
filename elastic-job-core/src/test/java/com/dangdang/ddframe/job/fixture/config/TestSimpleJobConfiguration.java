@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.executor.handler.JobProperties;
 import com.dangdang.ddframe.job.fixture.ShardingContextsBuilder;
 import com.dangdang.ddframe.job.fixture.handler.ThrowJobExceptionHandler;
@@ -35,12 +34,9 @@ public final class TestSimpleJobConfiguration implements JobRootConfiguration {
     
     private String executorServiceHandlerClassName;
     
-    private JobEventConfiguration[] jobEventConfigs;
-    
-    public TestSimpleJobConfiguration(final String jobExceptionHandlerClassName, final String executorServiceHandlerClassName, final JobEventConfiguration... jobEventConfigs) {
+    public TestSimpleJobConfiguration(final String jobExceptionHandlerClassName, final String executorServiceHandlerClassName) {
         this.jobExceptionHandlerClassName = jobExceptionHandlerClassName;
         this.executorServiceHandlerClassName = executorServiceHandlerClassName;
-        this.jobEventConfigs = jobEventConfigs;
     }
     
     @Override
@@ -55,7 +51,6 @@ public final class TestSimpleJobConfiguration implements JobRootConfiguration {
         if (null != executorServiceHandlerClassName) {
             builder.jobProperties(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), executorServiceHandlerClassName);
         }
-        builder.jobEventConfiguration(jobEventConfigs);
         return new SimpleJobConfiguration(builder.build(), TestSimpleJob.class.getCanonicalName());
     }
 }
