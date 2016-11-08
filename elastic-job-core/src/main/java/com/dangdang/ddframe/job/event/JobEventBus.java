@@ -20,11 +20,7 @@ package com.dangdang.ddframe.job.event;
 import com.dangdang.ddframe.job.util.concurrent.ExecutorServiceObject;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
-import lombok.Getter;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 运行痕迹事件总线.
@@ -32,35 +28,38 @@ import java.util.Map;
  * @author zhangliang
  * @author caohao
  */
+@Slf4j
 public class JobEventBus {
     
-    private final Collection<JobEventConfiguration> jobEventConfigs;
+    private final JobEventConfiguration jobEventConfig;
     
-    @Getter
     private final ExecutorServiceObject executorServiceObject;
     
     private final EventBus eventBus;
     
-    public JobEventBus(final JobEventConfiguration... jobEventConfigs) {
-        this.jobEventConfigs = getJobEventConfiguration(jobEventConfigs);
+    private boolean isRegistered;
+    
+    public JobEventBus() {
+        jobEventConfig = null;
+        executorServiceObject = null;
+        eventBus = null;
+    }
+    
+    public JobEventBus(final JobEventConfiguration jobEventConfig) {
+        this.jobEventConfig = jobEventConfig;
         executorServiceObject = new ExecutorServiceObject("job-event", Runtime.getRuntime().availableProcessors() * 2);
         eventBus = new AsyncEventBus(executorServiceObject.createExecutorService());
         register();
     }
     
-    private Collection<JobEventConfiguration> getJobEventConfiguration(final JobEventConfiguration... jobEventConfigs) {
-        Map<String, JobEventConfiguration> result = new HashMap<>(jobEventConfigs.length, 1);
-        for (JobEventConfiguration each : jobEventConfigs) {
-            result.put(each.getIdentity(), each);
-        }
-        return result.values();
-    }
-    
     private void register() {
-        for (JobEventConfiguration each : jobEventConfigs) {
-            if (null != each) {
-                eventBus.register(each.createJobEventListener());
-            }
+        try {
+            eventBus.register(jobEventConfig.createJobEventListener());
+            isRegistered = true;
+            // CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            // CHECKSTYLE:ON
+            log.error("Elastic job: create JobEventRdbListener failure, error is: ", ex);
         }
     }
     
@@ -70,7 +69,7 @@ public class JobEventBus {
      * @param event 作业事件
      */
     public void post(final JobEvent event) {
-        if (!jobEventConfigs.isEmpty() && !executorServiceObject.isShutdown()) {
+        if (isRegistered && !executorServiceObject.isShutdown()) {
             eventBus.post(event);
         }
     }

@@ -70,7 +70,10 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         factory.setDestroyMethodName("shutdown");
         factory.addConstructorArgReference(element.getAttribute(REGISTRY_CENTER_REF_ATTRIBUTE));
         factory.addConstructorArgValue(createJobConfiguration(element));
-        factory.addConstructorArgValue(createJobEventConfigs(element));
+        BeanDefinition jobEventConfig = createJobEventConfig(element);
+        if (null != jobEventConfig) {
+            factory.addConstructorArgValue(jobEventConfig);
+        }
         factory.addConstructorArgValue(createJobListeners(element));
         return factory.getBeanDefinition();
     }
@@ -102,15 +105,14 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         return factory.getBeanDefinition();
     }
     
-    private List<BeanDefinition> createJobEventConfigs(final Element element) {
-        List<BeanDefinition> result = new ManagedList<>();
+    private BeanDefinition createJobEventConfig(final Element element) {
         String eventTraceRdbDs = element.getAttribute(EVENT_TRACE_DATA_SOURCE_ATTRIBUTE);
-        if (!Strings.isNullOrEmpty(eventTraceRdbDs)) {
-            BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobEventRdbConfiguration.class);
-            factory.addConstructorArgReference(eventTraceRdbDs);
-            result.add(factory.getBeanDefinition());
+        if (Strings.isNullOrEmpty(eventTraceRdbDs)) {
+            return null;
         }
-        return result;
+        BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobEventRdbConfiguration.class);
+        factory.addConstructorArgReference(eventTraceRdbDs);
+        return factory.getBeanDefinition();
     }
     
     private List<BeanDefinition> createJobListeners(final Element element) {

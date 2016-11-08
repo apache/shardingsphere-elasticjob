@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobEventListener;
+import com.dangdang.ddframe.job.event.JobEventListenerConfigurationException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,12 +43,11 @@ public class JobEventRdbConfiguration extends JobEventRdbIdentity implements Job
     private final DataSource dataSource;
     
     @Override
-    public JobEventListener createJobEventListener() {
+    public JobEventListener createJobEventListener() throws JobEventListenerConfigurationException {
         try {
             return new JobEventRdbListener(dataSource);
         } catch (final SQLException ex) {
-            log.error("Elastic job: create JobEventRdbListener failure, error is: ", ex);
+            throw new JobEventListenerConfigurationException(ex);
         }
-        return null;
     }
 }

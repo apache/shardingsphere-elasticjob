@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.event;
 import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
 import com.google.common.eventbus.EventBus;
@@ -57,6 +58,14 @@ public final class JobEventBusTest {
     @Test
     public void assertPostWithoutListener() throws NoSuchFieldException {
         jobEventBus = new JobEventBus();
+        ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
+        jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
+        verify(eventBus, times(0)).post(Matchers.<JobEvent>any());
+    }
+    
+    @Test
+    public void assertPostWithListenerInvalid() throws NoSuchFieldException {
+        jobEventBus = new JobEventBus(new JobEventRdbConfiguration(null));
         ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
         jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
         verify(eventBus, times(0)).post(Matchers.<JobEvent>any());

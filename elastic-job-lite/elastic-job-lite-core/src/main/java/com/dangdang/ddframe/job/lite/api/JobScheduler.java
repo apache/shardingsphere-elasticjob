@@ -44,8 +44,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -65,12 +63,14 @@ public class JobScheduler {
     private final JobFacade jobFacade;
     
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, liteJobConfig, Collections.<JobEventConfiguration>emptyList(), elasticJobListeners);
+        JobEventBus jobEventBus = new JobEventBus();
+        jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
+        jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
     }
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final Collection<JobEventConfiguration> jobEventConfigs, 
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventConfiguration jobEventConfig, 
                         final ElasticJobListener... elasticJobListeners) {
-        JobEventBus jobEventBus = new JobEventBus(jobEventConfigs.toArray(new JobEventConfiguration[jobEventConfigs.size()]));
+        JobEventBus jobEventBus = new JobEventBus(jobEventConfig);
         jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
         jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
     }

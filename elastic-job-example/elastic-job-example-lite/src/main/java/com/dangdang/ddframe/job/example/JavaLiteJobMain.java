@@ -40,8 +40,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Collection;
-import java.util.Collections;
 
 public final class JavaLiteJobMain {
     
@@ -67,10 +65,10 @@ public final class JavaLiteJobMain {
     // CHECKSTYLE:ON
         setUpEmbedZookeeperServer();
         CoordinatorRegistryCenter regCenter = setUpRegistryCenter();
-        Collection<JobEventConfiguration> jobEventConfigs = Collections.<JobEventConfiguration>singletonList(new JobEventRdbConfiguration(setUpEventTraceDataSource()));
-        setUpSimpleJob(regCenter, jobEventConfigs);
-        setUpDataflowJob(regCenter, jobEventConfigs);
-        setUpScriptJob(regCenter, jobEventConfigs);
+        JobEventConfiguration jobEventConfig = new JobEventRdbConfiguration(setUpEventTraceDataSource());
+        setUpSimpleJob(regCenter, jobEventConfig);
+        setUpDataflowJob(regCenter, jobEventConfig);
+        setUpScriptJob(regCenter, jobEventConfig);
     }
     
     private static void setUpEmbedZookeeperServer() throws Exception {
@@ -93,22 +91,22 @@ public final class JavaLiteJobMain {
         return result;
     }
     
-    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final Collection<JobEventConfiguration> jobEventConfigs) {
+    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig, JavaSimpleJob.class.getCanonicalName());
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfigs, new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfig, new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
     }
     
-    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final Collection<JobEventConfiguration> jobEventConfigs) {
+    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, JavaDataflowJob.class.getCanonicalName(), true);
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), jobEventConfigs).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), jobEventConfig).init();
     }
     
-    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final Collection<JobEventConfiguration> jobEventConfigs) throws IOException {
+    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) throws IOException {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).build();
         ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), jobEventConfigs).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), jobEventConfig).init();
     }
     
     private static String buildScriptCommandLine() throws IOException {

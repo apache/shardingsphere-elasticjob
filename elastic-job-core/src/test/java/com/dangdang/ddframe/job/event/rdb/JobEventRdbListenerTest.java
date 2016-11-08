@@ -16,8 +16,9 @@
  */
 
 package com.dangdang.ddframe.job.event.rdb;
-
+        
 import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.JobEventListenerConfigurationException;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
@@ -49,7 +50,7 @@ public final class JobEventRdbListenerTest {
     private JobEventBus jobEventBus;
     
     @Before
-    public void setUp() throws SQLException, NoSuchFieldException {
+    public void setUp() throws JobEventListenerConfigurationException, SQLException, NoSuchFieldException {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");

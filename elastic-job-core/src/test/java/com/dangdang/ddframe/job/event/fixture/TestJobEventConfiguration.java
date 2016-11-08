@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.event.fixture;
 
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.JobEventListener;
+import com.dangdang.ddframe.job.event.JobEventListenerConfigurationException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class TestJobEventConfiguration extends TestJobEventIdentity implements J
     private final JobEventCaller jobEventCaller;
     
     @Override
-    public JobEventListener createJobEventListener() {
+    public JobEventListener createJobEventListener() throws JobEventListenerConfigurationException {
         return new TestJobEventListener(jobEventCaller);
     }
 }

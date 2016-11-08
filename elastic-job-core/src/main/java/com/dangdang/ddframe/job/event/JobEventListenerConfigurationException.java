@@ -18,17 +18,15 @@
 package com.dangdang.ddframe.job.event;
 
 /**
- * 作业事件配置标识接口.
- *
- * @author caohao
+ * 作业事件监听器配置异常.
+ * 
+ * @author zhangliang
  */
-public interface JobEventConfiguration extends JobEventIdentity {
+public class JobEventListenerConfigurationException extends Exception {
     
-    /**
-     * 创建作业事件监听器.
-     * 
-     * @return 作业事件监听器.
-     * @throws JobEventListenerConfigurationException 作业事件监听器配置异常
-     */
-    JobEventListener createJobEventListener() throws JobEventListenerConfigurationException;
+    private static final long serialVersionUID = 4069519372148227761L;
+    
+    public JobEventListenerConfigurationException(final Exception ex) {
+        super(ex);
+    }
 }

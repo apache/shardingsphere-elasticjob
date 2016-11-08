@@ -26,7 +26,6 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -38,9 +37,13 @@ public class SpringJobScheduler extends JobScheduler implements ApplicationConte
     
     private ApplicationContext applicationContext;
     
-    public SpringJobScheduler(final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, final Collection<JobEventConfiguration> jobEventConfigs, 
-                              final ElasticJobListener[]elasticJobListeners) {
-        super(regCenter, jobConfigDto.toLiteJobConfiguration(), jobEventConfigs, getTargetElasticJobListeners(elasticJobListeners));
+    public SpringJobScheduler(final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, final ElasticJobListener[]elasticJobListeners) {
+        super(regCenter, jobConfigDto.toLiteJobConfiguration(), getTargetElasticJobListeners(elasticJobListeners));
+    }
+    
+    public SpringJobScheduler(final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, 
+                              final JobEventConfiguration jobEventConfig, final ElasticJobListener[]elasticJobListeners) {
+        super(regCenter, jobConfigDto.toLiteJobConfiguration(), jobEventConfig, getTargetElasticJobListeners(elasticJobListeners));
     }
     
     private static ElasticJobListener[] getTargetElasticJobListeners(final ElasticJobListener[] elasticJobListeners) {
