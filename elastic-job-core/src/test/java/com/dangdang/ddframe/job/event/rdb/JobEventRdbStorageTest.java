@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.event.rdb;
 
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +36,12 @@ public class JobEventRdbStorageTest {
     
     @Before
     public void setup() throws SQLException {
-        storage = new JobEventRdbStorage(org.h2.Driver.class.getName(), "jdbc:h2:mem:job_event_storage", "sa", "");
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(org.h2.Driver.class.getName());
+        dataSource.setUrl("jdbc:h2:mem:job_event_storage");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("");
+        storage = new JobEventRdbStorage(dataSource);
     }
     
     @Test

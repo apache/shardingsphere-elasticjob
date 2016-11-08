@@ -28,6 +28,7 @@ import com.dangdang.ddframe.job.util.concurrent.ExecutorServiceObject;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Executor;
 import org.apache.mesos.ExecutorDriver;
@@ -57,7 +58,13 @@ public final class TaskExecutor implements Executor {
     @Override
     public void registered(final ExecutorDriver executorDriver, final Protos.ExecutorInfo executorInfo, final Protos.FrameworkInfo frameworkInfo, final Protos.SlaveInfo slaveInfo) {
         if (!executorInfo.getData().isEmpty()) {
-            jobEventBus = new JobEventBus(SerializationUtils.<JobEventRdbConfiguration>deserialize(executorInfo.getData().toByteArray()));
+            Map<String, String> data = SerializationUtils.deserialize(executorInfo.getData().toByteArray());
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setDriverClassName(data.get("event_trace_rdb_driver"));
+            dataSource.setUrl(data.get("event_trace_rdb_url"));
+            dataSource.setPassword(data.get("event_trace_rdb_password"));
+            dataSource.setUsername(data.get("event_trace_rdb_username"));
+            jobEventBus = new JobEventBus(new JobEventRdbConfiguration(dataSource));
         }
     }
     

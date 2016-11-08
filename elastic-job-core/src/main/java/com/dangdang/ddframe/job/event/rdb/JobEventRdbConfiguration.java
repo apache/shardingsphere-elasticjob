@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.io.Serializable;
 import java.sql.SQLException;
 
@@ -38,18 +39,12 @@ public class JobEventRdbConfiguration extends JobEventRdbIdentity implements Job
     
     private static final long serialVersionUID = 3344410699286435226L;
     
-    private final String driverClassName;
-    
-    private final String url;
-    
-    private final String username;
-    
-    private final String password;
+    private final DataSource dataSource;
     
     @Override
     public JobEventListener createJobEventListener() {
         try {
-            return new JobEventRdbListener(this);
+            return new JobEventRdbListener(dataSource);
         } catch (final SQLException ex) {
             log.error("Elastic job: create JobEventRdbListener failure, error is: ", ex);
         }

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.event.rdb;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -27,11 +28,16 @@ public final class JobEventRdbConfigurationTest {
     
     @Test
     public void assertCreateJobEventListenerSuccess() {
-        assertThat(new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_storage", "sa", "").createJobEventListener(), instanceOf(JobEventRdbListener.class));
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(org.h2.Driver.class.getName());
+        dataSource.setUrl("jdbc:h2:mem:job_event_storage");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("");
+        assertThat(new JobEventRdbConfiguration(dataSource).createJobEventListener(), instanceOf(JobEventRdbListener.class));
     }
     
     @Test
     public void assertCreateJobEventListenerFailure() {
-        assertNull(new JobEventRdbConfiguration("", "", "", "").createJobEventListener());
+        assertNull(new JobEventRdbConfiguration(new BasicDataSource()).createJobEventListener());
     }
 }

@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.event;
 
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfigurationTest;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbDataSourceFactoryTest;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbIdentityTest;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbListenerTest;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbStorageTest;
@@ -32,8 +31,7 @@ import org.junit.runners.Suite;
         JobEventRdbIdentityTest.class,
         JobEventRdbConfigurationTest.class, 
         JobEventRdbListenerTest.class, 
-        JobEventRdbStorageTest.class, 
-        JobEventRdbDataSourceFactoryTest.class
+        JobEventRdbStorageTest.class
     })
 public final class AllEventTests {
 }

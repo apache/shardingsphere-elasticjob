@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.cloud.executor;
 
 import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.cloud.executor.fixture.TestJob;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.SerializationUtils;
@@ -93,8 +92,15 @@ public final class TaskExecutorTest {
     
     @Test
     public void assertRegisteredWithoutData() {
+        // CHECKSTYLE:OFF
+        HashMap<String, String> data = new HashMap<>(4, 1);
+        // CHECKSTYLE:ON
+        data.put("event_trace_rdb_driver", "org.h2.Driver");
+        data.put("event_trace_rdb_url", "jdbc:h2:mem:test_executor");
+        data.put("event_trace_rdb_username", "sa");
+        data.put("event_trace_rdb_password", "");
         ExecutorInfo executorInfo = ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue("test_executor")).setCommand(Protos.CommandInfo.getDefaultInstance())
-                .setData(ByteString.copyFrom(SerializationUtils.serialize(new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:test_executor", "sa", "")))).build();
+                .setData(ByteString.copyFrom(SerializationUtils.serialize(data))).build();
         taskExecutor.registered(executorDriver, executorInfo, frameworkInfo, slaveInfo);
     }
     
@@ -146,7 +152,9 @@ public final class TaskExecutorTest {
     }
     
     private byte[] serialize(final Map<String, String> jobConfigurationContext) {
+        // CHECKSTYLE:OFF
         LinkedHashMap<String, Object> result = new LinkedHashMap<>(2, 1);
+        // CHECKSTYLE:ON
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 1, "", Collections.singletonMap(1, "a"));
         result.put("shardingContext", shardingContexts);
         result.put("jobConfigContext", jobConfigurationContext);

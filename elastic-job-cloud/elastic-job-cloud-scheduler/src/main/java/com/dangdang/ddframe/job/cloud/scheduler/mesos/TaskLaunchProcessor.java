@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -68,6 +67,8 @@ public final class TaskLaunchProcessor implements Runnable {
     private final FacadeService facadeService;
     
     private final JobEventBus jobEventBus;
+    
+    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
     
     /**
      * 线程关闭.
@@ -141,10 +142,9 @@ public final class TaskLaunchProcessor implements Runnable {
         Protos.Resource.Builder cpus = buildResource("cpus", jobConfig.getCpuCount());
         Protos.Resource.Builder mem = buildResource("mem", jobConfig.getMemoryMB());
         Protos.ExecutorInfo.Builder executorInfoBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL())))
-                .setCommand(command).setData(ByteString.copyFrom(SerializationUtils.serialize(BootstrapEnvironment.getInstance().getRdbConfiguration()))).addResources(cpus).addResources(mem);
-        Optional<JobEventRdbConfiguration> rdbConfig = BootstrapEnvironment.getInstance().getRdbConfiguration();
-        if (rdbConfig.isPresent()) {
-            executorInfoBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(rdbConfig.get()))).build();
+                .setCommand(command).addResources(cpus).addResources(mem);
+        if (env.getJobEventRdbConfiguration().isPresent()) {
+            executorInfoBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(env.getJobEventRdbConfigurationMap()))).build();
         }
         return Protos.TaskInfo.newBuilder()
                 .setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())

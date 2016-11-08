@@ -45,8 +45,8 @@ class JobEventRdbStorage {
     
     private final DataSource dataSource;
     
-    JobEventRdbStorage(final String driverClassName, final String url, final String username, final String password) throws SQLException {
-        dataSource = JobEventRdbDataSourceFactory.getDataSource(driverClassName, url, username, password);
+    JobEventRdbStorage(final DataSource dataSource) throws SQLException {
+        this.dataSource = dataSource;
         initTables();
     }
     

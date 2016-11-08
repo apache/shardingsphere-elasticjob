@@ -32,7 +32,9 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import org.apache.commons.dbcp.BasicDataSource;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,24 +53,24 @@ public final class JavaLiteJobMain {
     
     // switch to MySQL by yourself
     private static final String EVENT_RDB_STORAGE_DRIVER = "org.h2.Driver";
+//    private static final String EVENT_RDB_STORAGE_DRIVER = "com.mysql.jdbc.Driver";
     
     private static final String EVENT_RDB_STORAGE_URL = "jdbc:h2:mem:job_event_storage";
+//    private static final String EVENT_RDB_STORAGE_URL = "jdbc:mysql://localhost:3306/elastic-job-cloud-log";
     
     private static final String EVENT_RDB_STORAGE_USERNAME = "sa";
     
     private static final String EVENT_RDB_STORAGE_PASSWORD = "";
-    
-    private static final Collection<JobEventConfiguration> JOB_EVENT_CONFIGS =  Collections.<JobEventConfiguration>singletonList(
-            new JobEventRdbConfiguration(EVENT_RDB_STORAGE_DRIVER, EVENT_RDB_STORAGE_URL, EVENT_RDB_STORAGE_USERNAME, EVENT_RDB_STORAGE_PASSWORD));
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON
         setUpEmbedZookeeperServer();
         CoordinatorRegistryCenter regCenter = setUpRegistryCenter();
-        setUpSimpleJob(regCenter);
-        setUpDataflowJob(regCenter);
-        setUpScriptJob(regCenter);
+        Collection<JobEventConfiguration> jobEventConfigs = Collections.<JobEventConfiguration>singletonList(new JobEventRdbConfiguration(setUpEventTraceDataSource()));
+        setUpSimpleJob(regCenter, jobEventConfigs);
+        setUpDataflowJob(regCenter, jobEventConfigs);
+        setUpScriptJob(regCenter, jobEventConfigs);
     }
     
     private static void setUpEmbedZookeeperServer() throws Exception {
@@ -82,22 +84,31 @@ public final class JavaLiteJobMain {
         return result;
     }
     
-    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter) {
+    private static DataSource setUpEventTraceDataSource() {
+        BasicDataSource result = new BasicDataSource();
+        result.setDriverClassName(EVENT_RDB_STORAGE_DRIVER);
+        result.setUrl(EVENT_RDB_STORAGE_URL);
+        result.setUsername(EVENT_RDB_STORAGE_USERNAME);
+        result.setPassword(EVENT_RDB_STORAGE_PASSWORD);
+        return result;
+    }
+    
+    private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final Collection<JobEventConfiguration> jobEventConfigs) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig, JavaSimpleJob.class.getCanonicalName());
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), JOB_EVENT_CONFIGS, new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfigs, new SimpleListener(), new SimpleDistributeListener(1000L, 2000L)).init();
     }
     
-    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter) {
+    private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final Collection<JobEventConfiguration> jobEventConfigs) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaDataflowElasticJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(coreConfig, JavaDataflowJob.class.getCanonicalName(), true);
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), JOB_EVENT_CONFIGS).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(dataflowJobConfig).build(), jobEventConfigs).init();
     }
     
-    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter) throws IOException {
+    private static void setUpScriptJob(final CoordinatorRegistryCenter regCenter, final Collection<JobEventConfiguration> jobEventConfigs) throws IOException {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("scriptElasticJob", "0/5 * * * * ?", 3).build();
         ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(coreConfig, buildScriptCommandLine());
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), JOB_EVENT_CONFIGS).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(scriptJobConfig).build(), jobEventConfigs).init();
     }
     
     private static String buildScriptCommandLine() throws IOException {

@@ -117,7 +117,7 @@ public final class MasterBootstrap {
     }
     
     private JobEventBus getJobEventBus() {
-        Optional<JobEventRdbConfiguration> rdbConfig = env.getRdbConfiguration();
+        Optional<JobEventRdbConfiguration> rdbConfig = env.getJobEventRdbConfiguration();
         if (rdbConfig.isPresent()) {
             return new JobEventBus(rdbConfig.get());
         }
