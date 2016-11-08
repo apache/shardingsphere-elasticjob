@@ -134,7 +134,7 @@ public final class TaskLaunchProcessor implements Runnable {
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         int shardingItem = taskContext.getMetaInfo().getShardingItem();
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
-        ShardingContexts shardingContexts = new ShardingContexts(taskAssignmentResult.getTaskId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
+        ShardingContexts shardingContexts = new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
                 jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);
         Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true)
                 .setCache(BootstrapEnvironment.getInstance().getFrameworkConfiguration().isAppCacheEnable()).build();
