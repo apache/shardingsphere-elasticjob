@@ -1,16 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job</artifactId>
-    <version>1.0.7-SNAPSHOT</version>
+    <version>2.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Elastic-Job - distributed scheduled job solution</description>
     
     <modules>
         <module>elastic-job-core</module>
-        <module>elastic-job-spring</module>
-        <module>elastic-job-console</module>
+        <module>elastic-job-lite</module>
+        <module>elastic-job-cloud</module>
     </modules>
     
     <properties>
@@ -21,7 +22,7 @@
         
         <lombok.version>1.16.4</lombok.version>
         <guava.version>18.0</guava.version>
-        <commons-beanutils.version>1.9.2</commons-beanutils.version>
+        <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.2.1</quartz.version>
         <curator.version>2.10.0</curator.version>
         <springframework.version>4.1.1.RELEASE</springframework.version>
@@ -32,9 +33,16 @@
         <freemarker.version>2.3.20</freemarker.version>
         <sitemesh.version>2.4.2</sitemesh.version>
         <commons-codec.version>1.10</commons-codec.version>
-        
+        <commons-exec.version>1.3</commons-exec.version>
+        <gson.version>2.6.1</gson.version>
         <javaee-web-api.version>7.0</javaee-web-api.version>
-        
+        <mesos.version>0.28.1</mesos.version>
+        <fenzo.version>0.11.1</fenzo.version>
+        <jersey.version>1.19</jersey.version>
+        <jetty-all-server.version>8.1.19.v20160209</jetty-all-server.version>
+        <commons-dbcp.version>1.4</commons-dbcp.version>
+        <mysql-connector-java.version>5.1.30</mysql-connector-java.version>
+        <h2.version>1.4.184</h2.version>
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
         <mockito.version>1.10.19</mockito.version>
@@ -46,9 +54,9 @@
         <maven-surefire-report-plugin.version>2.18.1</maven-surefire-report-plugin.version>
         <maven-site-plugin.version>3.4</maven-site-plugin.version>
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
+        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <maven-enforcer-plugin.version>1.4</maven-enforcer-plugin.version>
         <maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
-        <maven-plugin-plugin.version>3.4</maven-plugin-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
@@ -60,6 +68,7 @@
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
     
@@ -76,9 +85,9 @@
                 <version>${guava.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>${commons-beanutils.version}</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -181,14 +190,63 @@
                 <artifactId>commons-codec</artifactId>
                 <version>${commons-codec.version}</version>
             </dependency>
-            
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-exec</artifactId>
+                <version>${commons-exec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.mesos</groupId>
+                <artifactId>mesos</artifactId>
+                <version>${mesos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.fenzo</groupId>
+                <artifactId>fenzo-core</artifactId>
+                <version>${fenzo.version}</version>
+            </dependency>
             <dependency>
                 <groupId>javax</groupId>
                 <artifactId>javaee-web-api</artifactId>
                 <version>${javaee-web-api.version}</version>
                 <scope>provided</scope>
             </dependency>
-            
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-servlet</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-json</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty.aggregate</groupId>
+                <artifactId>jetty-all-server</artifactId>
+                <version>${jetty-all-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>${commons-dbcp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -259,7 +317,7 @@
                     <configuration>
                         <argLine>-XX:-UseSplitVerifier</argLine>
                         <excludes>
-                            <exclude>com.dangdang.ddframe.job.integrate.**</exclude>
+                            <exclude>com.dangdang.ddframe.job.lite.integrate.**</exclude>
                         </excludes>
                     </configuration>
                 </plugin>
@@ -418,7 +476,7 @@
                         <excludes>
                             <exclude>com/dangdang/**/*Test.class</exclude>
                             <exclude>com/dangdang/**/Test*.class</exclude>
-                            <exclude>com/dangdang/ddframe/job/console/**/*.class</exclude>
+                            <exclude>com/dangdang/ddframe/job/lite/console/**/*.class</exclude>
                         </excludes>
                     </instrumentation>
                 </configuration>
@@ -455,16 +513,6 @@
                 <version>${maven-project-info-reports-plugin.version}</version>
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <charset>${project.build.sourceEncoding}</charset>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <docencoding>${project.build.sourceEncoding}</docencoding>
                 </configuration>
             </plugin>
             <plugin>

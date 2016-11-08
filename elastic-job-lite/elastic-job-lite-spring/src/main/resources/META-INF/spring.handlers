@@ -1,0 +1,2 @@
+http\://www.dangdang.com/schema/ddframe/reg=com.dangdang.ddframe.reg.spring.namespace.RegNamespaceHandler
+http\://www.dangdang.com/schema/ddframe/job=com.dangdang.ddframe.job.lite.spring.namespace.JobNamespaceHandler

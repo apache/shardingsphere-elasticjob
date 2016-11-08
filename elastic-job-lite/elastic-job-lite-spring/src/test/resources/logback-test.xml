@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="log.context.name" value="elastic-job" />
+    <property name="log.charset" value="UTF-8" />
+    <property name="log.pattern" value="[%-5level] %date --%thread-- [%logger] %msg %n" />
+    
+    <contextName>${log.context.name}</contextName>
+    
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="${log.charset}">
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+    
+    <root>
+        <level value="WARN" />
+        <appender-ref ref="STDOUT" />
+    </root>
+    
+    <logger name="org.apache.zookeeper" level="ERROR" />
+    <logger name="org.apache.curator" level="ERROR" />
+</configuration>
