@@ -144,7 +144,7 @@ public abstract class AbstractElasticJobExecutor {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
         if (1 == items.size()) {
             int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
-            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, item);
+            JobExecutionEvent jobExecutionEvent =  new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, item);
             process(shardingContexts, item, jobExecutionEvent);
             return;
         }
@@ -171,7 +171,7 @@ public abstract class AbstractElasticJobExecutor {
     }
     
     private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent jobExecutionEvent) {
-        jobFacade.postJobEvent(jobExecutionEvent);
+        jobFacade.postJobExecutionEvent(jobExecutionEvent);
         log.trace("Job '{}' executing, item is: '{}'.", jobName, item);
         try {
             process(new ShardingContext(shardingContexts, item));
@@ -183,7 +183,7 @@ public abstract class AbstractElasticJobExecutor {
             jobExecutionEvent.executionFailure(ex);
             jobExceptionHandler.handleException(jobName, ex);
         } finally {
-            jobFacade.postJobEvent(jobExecutionEvent);
+            jobFacade.postJobExecutionEvent(jobExecutionEvent);
         }
     }
     

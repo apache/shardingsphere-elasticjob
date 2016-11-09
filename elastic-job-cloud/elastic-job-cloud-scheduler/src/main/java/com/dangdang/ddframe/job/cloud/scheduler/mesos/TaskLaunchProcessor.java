@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
@@ -90,7 +91,7 @@ public final class TaskLaunchProcessor implements Runnable {
                     TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
                     facadeService.addRunning(taskContext);
                     jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(),
-                            taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()),
+                            taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()), Source.CLOUD_SCHEDULER, 
                             State.TASK_STAGING, String.format("task info is: %s", taskInfo)));
                 }
                 facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<TaskInfo, TaskContext>() {

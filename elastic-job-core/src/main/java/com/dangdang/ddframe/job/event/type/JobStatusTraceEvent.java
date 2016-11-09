@@ -35,6 +35,8 @@ public class JobStatusTraceEvent implements JobEvent {
     
     private final String shardingItem;
     
+    private final Source source;
+    
     private final State state;
     
     private final String message;
@@ -43,5 +45,9 @@ public class JobStatusTraceEvent implements JobEvent {
     
     public enum State {
         TASK_STAGING, TASK_RUNNING, TASK_FINISHED, TASK_KILLED, TASK_LOST, TASK_FAILED, TASK_ERROR
+    }
+    
+    public enum Source {
+        CLOUD_SCHEDULER, CLOUD_EXECUTOR, LITE_EXECUTOR
     }
 }

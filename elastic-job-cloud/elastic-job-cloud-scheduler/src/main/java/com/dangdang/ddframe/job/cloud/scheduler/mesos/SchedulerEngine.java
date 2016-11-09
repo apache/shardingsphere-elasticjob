@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.netflix.fenzo.TaskScheduler;
 import lombok.RequiredArgsConstructor;
@@ -81,8 +82,8 @@ public final class SchedulerEngine implements Scheduler {
         TaskContext taskContext = TaskContext.from(taskId);
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
         jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
-                taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()), 
-                State.valueOf(taskStatus.getState().name()), String.format("source is: %s, message is: %s.", taskStatus.getSource(), taskStatus.getMessage())));
+                taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()),
+                Source.CLOUD_SCHEDULER, State.valueOf(taskStatus.getState().name()), String.format("source is: %s, message is: %s.", taskStatus.getSource(), taskStatus.getMessage())));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
                 if ("BEGIN".equals(taskStatus.getMessage())) {

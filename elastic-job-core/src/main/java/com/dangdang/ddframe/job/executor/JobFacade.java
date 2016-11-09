@@ -18,7 +18,8 @@
 package com.dangdang.ddframe.job.executor;
 
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
-import com.dangdang.ddframe.job.event.JobEvent;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 
 import java.util.Collection;
@@ -130,9 +131,18 @@ public interface JobFacade {
     void afterJobExecuted(ShardingContexts shardingContexts);
     
     /**
-     * 发布事件.
+     * 发布执行事件.
      *
-     * @param jobEvent 作业事件
+     * @param jobExecutionEvent 作业执行事件
      */
-    void postJobEvent(JobEvent jobEvent);
+    void postJobExecutionEvent(JobExecutionEvent jobExecutionEvent);
+    
+    /**
+     * 发布作业状态追踪事件.
+     *
+     * @param taskId 作业Id
+     * @param state 作业执行状态
+     * @param message 作业执行消息
+     */
+    void postJobStatusTraceEvent(String taskId, JobStatusTraceEvent.State state, String message);
 }

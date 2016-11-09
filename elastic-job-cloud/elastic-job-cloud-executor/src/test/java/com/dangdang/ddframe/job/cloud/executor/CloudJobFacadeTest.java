@@ -152,7 +152,7 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertPostJobEvent() {
-        jobFacade.postJobEvent(null);
+        jobFacade.postJobExecutionEvent(null);
         verify(eventBus).post(null);
     }
 }
