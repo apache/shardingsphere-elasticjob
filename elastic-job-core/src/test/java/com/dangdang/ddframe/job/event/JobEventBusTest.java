@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.event;
 
 import com.dangdang.ddframe.job.event.fixture.JobEventCaller;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventConfiguration;
+import com.dangdang.ddframe.job.event.fixture.TestJobEventFailureConfiguration;
 import com.dangdang.ddframe.job.event.fixture.TestJobEventListener;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
 import com.google.common.eventbus.EventBus;
@@ -31,6 +31,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -46,8 +48,15 @@ public final class JobEventBusTest {
     private JobEventBus jobEventBus;
     
     @Test
-    public void assertPost() throws InterruptedException {
+    public void assertRegisterFailure() throws NoSuchFieldException {
+        jobEventBus = new JobEventBus(new TestJobEventFailureConfiguration());
+        assertIsRegistered(false);
+    }
+    
+    @Test
+    public void assertPost() throws InterruptedException, NoSuchFieldException {
         jobEventBus = new JobEventBus(new TestJobEventConfiguration(jobEventCaller));
+        assertIsRegistered(true);
         jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
         while (!TestJobEventListener.isExecutionEventCalled()) {
             Thread.sleep(100L);
@@ -58,16 +67,13 @@ public final class JobEventBusTest {
     @Test
     public void assertPostWithoutListener() throws NoSuchFieldException {
         jobEventBus = new JobEventBus();
+        assertIsRegistered(false);
         ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
         jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
         verify(eventBus, times(0)).post(Matchers.<JobEvent>any());
     }
     
-    @Test
-    public void assertPostWithListenerInvalid() throws NoSuchFieldException {
-        jobEventBus = new JobEventBus(new JobEventRdbConfiguration(null));
-        ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
-        jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
-        verify(eventBus, times(0)).post(Matchers.<JobEvent>any());
+    private void assertIsRegistered(final boolean actual) throws NoSuchFieldException {
+        assertThat((boolean) ReflectionUtils.getFieldValue(jobEventBus, JobEventBus.class.getDeclaredField("isRegistered")), is(actual));
     }
 }
