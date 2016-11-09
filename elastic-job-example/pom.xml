@@ -12,7 +12,7 @@
         <module>elastic-job-example-cloud</module>
         <module>elastic-job-example-lite</module>
     </modules>
-
+    
     <properties>
         <java.version>1.7</java.version>
         <elastic-job.version>2.0.2-SNAPSHOT</elastic-job.version>
