@@ -10,12 +10,22 @@ weight=1
 ## 2.0.2-SNAPSHOT
 
 ### 缺陷修正
+
 1. [ISSUE #151](https://github.com/dangdangdotcom/elastic-job/issues/151) Elastic-Job事件追踪-基于关系型数据库的事件追踪不支持oracle数据库
 1. [ISSUE #152](https://github.com/dangdangdotcom/elastic-job/issues/152) job自定义异常处理器无效，总是被DefaultJobExceptionHandler处理
+
+### 功能提升
+
+1. [ISSUE #159](https://github.com/dangdangdotcom/elastic-job/issues/159) 提供从Spring 3.1.0.REELASE至Spring 4任何版本的支持
+
+### 结构调整
+
+1. [ISSUE #153](https://github.com/dangdangdotcom/elastic-job/issues/153) 事件追踪配置集中化
 
 ## 2.0.1
 
 ### 缺陷修正
+
 1. [ISSUE #141](https://github.com/dangdangdotcom/elastic-job/issues/141) 删除reg模块从zk读取信息功能，使reg命名空间的placeholder完全可用
 1. [ISSUE #143](https://github.com/dangdangdotcom/elastic-job/issues/143) elastic-job-cloud-scheduler内存泄漏问题
 1. [ISSUE #145](https://github.com/dangdangdotcom/elastic-job/issues/145) 修改作业日志的数据库连接后日志还是会写入老的数据库
@@ -32,6 +42,7 @@ weight=1
 1. 重构原Elastic-Job至Elastic-Job-Lite
 
 ### 缺陷修正
+
 1. [ISSUE #119](https://github.com/dangdangdotcom/elastic-job/issues/119) spring容器关闭时，quartz未正常关闭 
 1. [ISSUE #123](https://github.com/dangdangdotcom/elastic-job/issues/123) 单机跑定时任务，zk断开后重连，没有触发leader选举 
 1. [ISSUE #127](https://github.com/dangdangdotcom/elastic-job/issues/127) Spring方式配置作业id无法使用占位符

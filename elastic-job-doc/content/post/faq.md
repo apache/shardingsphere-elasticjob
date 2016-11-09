@@ -79,11 +79,11 @@ weight=400
 
 ***
 
-### 7. 使用`Spring`占位符出错?
+### 7. 使用`Spring`版本有何限制?
 
 回答：
 
-`Elastic-Job`的`Spring`命名空间以及占位符仅支持`Spring 4`及其以上版本。低版本的`Spring`不支持这些功能。
+`Elastic-Job`的`Spring`版本支持从`3.1.0.RELEASE`至`4`的任何版本。`Spring 5`由于仅支持`JDK 8`及其以上版本，因此目前并不支持。`Spring 3.1.0`之前的版本对占位符的使用与目前不同，因此不再支持。`Elastic-Job`并未包含`Spring`的`maven`依赖，请自行添加您需要的版本。
 
 ***
 

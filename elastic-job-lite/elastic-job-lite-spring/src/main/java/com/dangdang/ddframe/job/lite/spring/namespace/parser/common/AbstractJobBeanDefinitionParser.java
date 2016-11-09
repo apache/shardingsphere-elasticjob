@@ -38,7 +38,7 @@ import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBe
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_COMPLETED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_STARTED_TIMEOUT_MILLISECONDS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.DISTRIBUTED_LISTENER_TAG;
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_TRACE_DATA_SOURCE_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.FAILOVER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER_ATTRIBUTE;
@@ -64,7 +64,6 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     
     @Override
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
-        
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
         factory.setInitMethodName("init");
         factory.setDestroyMethodName("shutdown");
@@ -106,12 +105,12 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     }
     
     private BeanDefinition createJobEventConfig(final Element element) {
-        String eventTraceRdbDs = element.getAttribute(EVENT_TRACE_DATA_SOURCE_ATTRIBUTE);
-        if (Strings.isNullOrEmpty(eventTraceRdbDs)) {
+        String eventTraceDataSourceName = element.getAttribute(EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE);
+        if (Strings.isNullOrEmpty(eventTraceDataSourceName)) {
             return null;
         }
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobEventRdbConfiguration.class);
-        factory.addConstructorArgReference(eventTraceRdbDs);
+        factory.addConstructorArgReference(eventTraceDataSourceName);
         return factory.getBeanDefinition();
     }
     

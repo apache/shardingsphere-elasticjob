@@ -56,10 +56,8 @@ public class JobEventBus {
         try {
             eventBus.register(jobEventConfig.createJobEventListener());
             isRegistered = true;
-            // CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-            log.error("Elastic job: create JobEventRdbListener failure, error is: ", ex);
+        } catch (final JobEventListenerConfigurationException ex) {
+            log.error("Elastic job: create JobEventListener failure, error is: ", ex);
         }
     }
     
