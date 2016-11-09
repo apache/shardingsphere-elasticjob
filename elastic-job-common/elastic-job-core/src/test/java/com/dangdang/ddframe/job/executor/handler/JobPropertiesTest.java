@@ -17,16 +17,16 @@
 
 package com.dangdang.ddframe.job.executor.handler;
 
-import com.dangdang.ddframe.job.fixture.APIJsonConstants;
-import com.dangdang.ddframe.job.fixture.handler.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
+import com.dangdang.ddframe.job.fixture.APIJsonConstants;
+import com.dangdang.ddframe.job.fixture.handler.IgnoreJobExceptionHandler;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;

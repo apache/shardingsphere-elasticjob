@@ -9,7 +9,7 @@
     <description>Elastic-Job - distributed scheduled job solution</description>
     
     <modules>
-        <module>elastic-job-core</module>
+        <module>elastic-job-common</module>
         <module>elastic-job-lite</module>
         <module>elastic-job-cloud</module>
     </modules>

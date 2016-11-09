@@ -15,29 +15,30 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.config.dataflow;
+package com.dangdang.ddframe.job.config.script;
 
+import com.dangdang.ddframe.job.api.JobType;
+import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.api.JobType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 数据流作业配置信息.
+ * 脚本作业配置.
  * 
  * @author caohao
  * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter
-public final class DataflowJobConfiguration implements JobTypeConfiguration {
+public final class ScriptJobConfiguration implements JobTypeConfiguration {
     
     private final JobCoreConfiguration coreConfig;
     
-    private final JobType jobType = JobType.DATAFLOW;
+    private final JobType jobType = JobType.SCRIPT;
     
-    private final String jobClass;
+    private final String jobClass = ScriptJob.class.getCanonicalName();
     
-    private final boolean streamingProcess;
+    private final String scriptCommandLine;
 }
