@@ -18,6 +18,10 @@ weight=1
 
 1. [ISSUE #159](https://github.com/dangdangdotcom/elastic-job/issues/159) 提供从Spring 3.1.0.REELASE至Spring 4任何版本的支持
 
+### 结构调整
+
+1. [ISSUE #153](https://github.com/dangdangdotcom/elastic-job/issues/153) 事件追踪配置集中化
+
 ## 2.0.1
 
 ### 缺陷修正
