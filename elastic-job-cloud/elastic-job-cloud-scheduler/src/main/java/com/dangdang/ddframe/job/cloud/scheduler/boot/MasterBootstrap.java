@@ -33,7 +33,7 @@ import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.ddframe.job.util.restful.RestfulServer;
+import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.google.common.base.Optional;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VirtualMachineLease;

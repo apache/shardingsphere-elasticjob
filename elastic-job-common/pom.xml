@@ -12,5 +12,6 @@
     
     <modules>
         <module>elastic-job-common-core</module>
+        <module>elastic-job-common-restful</module>
     </modules>
 </project>

@@ -15,11 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.restful;
+package com.dangdang.ddframe.job.restful;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public final class RestfulExceptionTest {

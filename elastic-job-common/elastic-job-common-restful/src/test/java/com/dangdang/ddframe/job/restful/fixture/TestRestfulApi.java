@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.restful.fixture;
+package com.dangdang.ddframe.job.restful.fixture;
 
 import com.google.common.collect.Maps;
 import lombok.Setter;

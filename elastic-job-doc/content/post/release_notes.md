@@ -11,8 +11,9 @@ weight=1
 
 ### 缺陷修正
 
-1. [ISSUE #151](https://github.com/dangdangdotcom/elastic-job/issues/151) Elastic-Job事件追踪-基于关系型数据库的事件追踪不支持oracle数据库
+1. [ISSUE #151](https://github.com/dangdangdotcom/elastic-job/issues/151) 基于关系型数据库的事件追踪缺乏对MySQL之外数据库的支持
 1. [ISSUE #152](https://github.com/dangdangdotcom/elastic-job/issues/152) job自定义异常处理器无效，总是被DefaultJobExceptionHandler处理
+1. [ISSUE #161](https://github.com/dangdangdotcom/elastic-job/issues/161) Elastic Job Lite部署至某些版本的Tomcat无法启动
 
 ### 功能提升
 
@@ -21,7 +22,7 @@ weight=1
 ### 结构调整
 
 1. [ISSUE #153](https://github.com/dangdangdotcom/elastic-job/issues/153) 事件追踪配置集中化
-1. [ISSUE #160](https://github.com/dangdangdotcom/elastic-job/issues/160) 调整maven模块结构，提供elastic-job-common及其二级模块
+1. [ISSUE #160](https://github.com/dangdangdotcom/elastic-job/issues/160) 调整maven模块结构，提供elastic-job-common及其二级模块，原elastic-job-core模块迁移至elastic-job-common-core
 
 ## 2.0.1
 

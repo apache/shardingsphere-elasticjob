@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.restful;
+package com.dangdang.ddframe.job.restful;
 
 import com.google.common.base.Joiner;
 import com.sun.jersey.api.core.PackagesResourceConfig;

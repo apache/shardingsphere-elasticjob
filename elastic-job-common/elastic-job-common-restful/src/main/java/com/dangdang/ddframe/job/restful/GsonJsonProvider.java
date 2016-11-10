@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.restful;
+package com.dangdang.ddframe.job.restful;
 
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 

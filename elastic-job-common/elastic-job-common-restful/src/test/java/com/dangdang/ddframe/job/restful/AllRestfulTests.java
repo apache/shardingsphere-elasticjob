@@ -15,18 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.restful;
+package com.dangdang.ddframe.job.restful;
 
-/**
- * REST API异常.
- *
- * @author zhangliang
- */
-public final class RestfulException extends RuntimeException {
-    
-    private static final long serialVersionUID = -7594937349408972960L;
-    
-    public RestfulException(final Throwable cause) {
-        super(cause);
-    }
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({
+        RestfulServerTest.class, 
+        RestfulExceptionTest.class 
+    })
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AllRestfulTests {
 }

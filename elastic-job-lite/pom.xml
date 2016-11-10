@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <artifactId>elastic-job-lite</artifactId>
     <name>${project.artifactId}</name>
-
+    
     <modules>
         <module>elastic-job-lite-core</module>
         <module>elastic-job-lite-lifecycle</module>

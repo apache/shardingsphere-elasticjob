@@ -15,27 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.util.restful;
+package com.dangdang.ddframe.job.restful;
 
-import com.dangdang.ddframe.job.util.restful.fixture.Caller;
-import com.dangdang.ddframe.job.util.restful.fixture.TestRestfulApi;
+import com.dangdang.ddframe.job.restful.fixture.Caller;
+import com.dangdang.ddframe.job.restful.fixture.TestRestfulApi;
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.io.ByteArrayBuffer;
+import org.hamcrest.core.Is;
+import org.hamcrest.core.StringStartsWith;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.ws.rs.core.MediaType;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.StringStartsWith.startsWith;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class RestfulServerTest {
@@ -59,25 +57,25 @@ public final class RestfulServerTest {
     
     @Before
     public void setUp() throws Exception {
-        caller = mock(Caller.class);
+        caller = Mockito.mock(Caller.class);
         TestRestfulApi.setCaller(caller);
     }
     
     @Test
     public void assertCallSuccess() throws Exception {
         ContentExchange actual = sentRequest("{\"string\":\"test\",\"integer\":1}");
-        assertThat(actual.getResponseStatus(), is(200));
-        assertThat(actual.getResponseContent(), is("{\"string\":\"test_processed\",\"integer\":\"1_processed\"}"));
-        verify(caller).call("test");
-        verify(caller).call(1);
+        Assert.assertThat(actual.getResponseStatus(), Is.is(200));
+        Assert.assertThat(actual.getResponseContent(), Is.is("{\"string\":\"test_processed\",\"integer\":\"1_processed\"}"));
+        Mockito.verify(caller).call("test");
+        Mockito.verify(caller).call(1);
     }
     
     @Test
     public void assertCallFailure() throws Exception {
         ContentExchange actual = sentRequest("{\"string\":\"test\",\"integer\":\"invalid_number\"}");
-        assertThat(actual.getResponseStatus(), is(500));
-        assertThat(actual.getResponseContent(), startsWith("java.lang.NumberFormatException"));
-        verify(caller).call("test");
+        Assert.assertThat(actual.getResponseStatus(), Is.is(500));
+        Assert.assertThat(actual.getResponseContent(), StringStartsWith.startsWith("java.lang.NumberFormatException"));
+        Mockito.verify(caller).call("test");
     }
     
     private static ContentExchange sentRequest(final String content) throws Exception {
