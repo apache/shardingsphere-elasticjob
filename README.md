@@ -132,7 +132,7 @@ public class MyElasticJob implements SimpleJob {
 ### Add maven dependency
 
 ```xml
-<!-- import elastic-job lite core -->
+<!-- import elastic-job cloud executor -->
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-cloud-executor</artifactId>
