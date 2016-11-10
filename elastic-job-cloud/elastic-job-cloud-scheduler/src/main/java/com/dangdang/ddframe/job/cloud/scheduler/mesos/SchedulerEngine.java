@@ -97,12 +97,13 @@ public final class SchedulerEngine implements Scheduler {
                 unAssignTask(taskId);
                 break;
             case TASK_KILLED:
+            case TASK_FAILED:
+                log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);
                 facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
                 break;
             case TASK_LOST:
-            case TASK_FAILED:
             case TASK_ERROR:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);
