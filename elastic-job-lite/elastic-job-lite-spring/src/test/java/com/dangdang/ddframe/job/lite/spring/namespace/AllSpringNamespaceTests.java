@@ -31,5 +31,5 @@ import com.dangdang.ddframe.job.lite.spring.namespace.parser.simple.SimpleJobCon
     DataflowJobConfigurationDtoTest.class,
     ScriptJobConfigurationDtoTest.class
     })
-public class AllSpringNamespaceTests {
+public final class AllSpringNamespaceTests {
 }

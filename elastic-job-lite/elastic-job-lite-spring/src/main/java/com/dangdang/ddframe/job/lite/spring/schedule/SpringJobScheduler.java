@@ -17,33 +17,34 @@
 
 package com.dangdang.ddframe.job.lite.spring.schedule;
 
+import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
 import com.dangdang.ddframe.job.lite.spring.util.AopTargetUtils;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-
-import java.util.Properties;
+import com.google.common.base.Optional;
 
 /**
  * 基于Spring的作业启动器.
  *
  * @author caohao
+ * @author zhangliang
  */
-public class SpringJobScheduler extends JobScheduler implements ApplicationContextAware {
+public class SpringJobScheduler extends JobScheduler {
     
-    private ApplicationContext applicationContext;
+    private final ElasticJob elasticJob; 
     
-    public SpringJobScheduler(final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, final ElasticJobListener[]elasticJobListeners) {
+    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, final ElasticJobListener[]elasticJobListeners) {
         super(regCenter, jobConfigDto.toLiteJobConfiguration(), getTargetElasticJobListeners(elasticJobListeners));
+        this.elasticJob = elasticJob;
     }
     
-    public SpringJobScheduler(final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, 
+    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, 
                               final JobEventConfiguration jobEventConfig, final ElasticJobListener[]elasticJobListeners) {
         super(regCenter, jobConfigDto.toLiteJobConfiguration(), jobEventConfig, getTargetElasticJobListeners(elasticJobListeners));
+        this.elasticJob = elasticJob;
     }
     
     private static ElasticJobListener[] getTargetElasticJobListeners(final ElasticJobListener[] elasticJobListeners) {
@@ -55,13 +56,7 @@ public class SpringJobScheduler extends JobScheduler implements ApplicationConte
     }
     
     @Override
-    public void setApplicationContext(final ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-    
-    @Override
-    protected void prepareEnvironments(final Properties props) {
-        SpringJobFactory.setApplicationContext(applicationContext);
-        props.put("org.quartz.scheduler.jobFactory.class", SpringJobFactory.class.getName());
+    protected Optional<ElasticJob> createElasticJobInstance() {
+        return Optional.of(elasticJob);
     }
 }

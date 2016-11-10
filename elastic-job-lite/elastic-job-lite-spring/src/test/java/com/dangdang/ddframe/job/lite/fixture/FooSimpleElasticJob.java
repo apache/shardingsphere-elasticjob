@@ -20,22 +20,14 @@ package com.dangdang.ddframe.job.lite.fixture;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import lombok.Getter;
-import lombok.Setter;
 
 public class FooSimpleElasticJob implements SimpleJob {
     
     @Getter
     private static volatile boolean completed;
     
-    @Getter
-    private static String jobValue;
-    
-    @Setter
-    private String springValue;
-    
     @Override
     public void execute(final ShardingContext shardingContext) {
-        jobValue = springValue;
         completed = true;
     }
     

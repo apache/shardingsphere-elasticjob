@@ -23,12 +23,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    JobSpringNamespaceWithoutListenerTest.class,
-    JobSpringNamespaceWithJobPropertiesTest.class,
-    JobSpringNamespaceWithListenerTest.class,
-    JobSpringNamespaceWithListenerAndJdkDynamicProxyTest.class,
-    JobSpringNamespaceWithListenerAndCglibTest.class,
-    JobSpringNamespaceWithEventTraceRdbTest.class
+        JobSpringNamespaceWithoutListenerTest.class,
+        JobSpringNamespaceWithJobPropertiesTest.class,
+        JobSpringNamespaceWithListenerTest.class,
+        JobSpringNamespaceWithListenerAndJdkDynamicProxyTest.class,
+        JobSpringNamespaceWithListenerAndCglibTest.class,
+        JobSpringNamespaceWithEventTraceRdbTest.class
     })
-public class AllSpringIntegrateTests {
+public final class AllSpringIntegrateTests {
 }

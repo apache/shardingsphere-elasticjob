@@ -29,8 +29,6 @@ import org.junit.Test;
 
 import javax.annotation.Resource;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RequiredArgsConstructor
@@ -67,7 +65,6 @@ public abstract class AbstractJobSpringIntegrateTest extends AbstractZookeeperJU
             sleep(100L);
         }
         assertTrue(FooSimpleElasticJob.isCompleted());
-        assertThat(FooSimpleElasticJob.getJobValue(), is("simple"));
         assertTrue(regCenter.isExisted("/" + simpleJobName + "/execution"));
     }
     

@@ -11,6 +11,7 @@ weight=1
 
 ### 缺陷修正
 
+1. [ISSUE #64](https://github.com/dangdangdotcom/elastic-job/issues/64) Spring命名空间，若注册多个同Class的作业Bean，会导致作业Bean查找不准确
 1. [ISSUE #151](https://github.com/dangdangdotcom/elastic-job/issues/151) 基于关系型数据库的事件追踪缺乏对MySQL之外数据库的支持
 1. [ISSUE #152](https://github.com/dangdangdotcom/elastic-job/issues/152) job自定义异常处理器无效，总是被DefaultJobExceptionHandler处理
 1. [ISSUE #161](https://github.com/dangdangdotcom/elastic-job/issues/161) Lite版本部署至某些版本的Tomcat无法启动
@@ -19,6 +20,7 @@ weight=1
 ### 功能提升
 
 1. [ISSUE #159](https://github.com/dangdangdotcom/elastic-job/issues/159) 提供从Spring 3.1.0.REELASE至Spring 4任何版本的支持
+1. [ISSUE #164](https://github.com/dangdangdotcom/elastic-job/issues/164) 作业Spring命名空间中已声明的JobBean不需要再声明@Component或在Spring xml中定义
 
 ### 结构调整
 

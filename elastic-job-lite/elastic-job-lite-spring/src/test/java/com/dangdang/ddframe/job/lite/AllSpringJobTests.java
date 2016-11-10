@@ -29,5 +29,5 @@ import com.dangdang.ddframe.job.lite.spring.namespace.AllSpringNamespaceTests;
         AllSpringIntegrateTests.class, 
         AllSpringNamespaceTests.class
     })
-public class AllSpringJobTests {
+public final class AllSpringJobTests {
 }

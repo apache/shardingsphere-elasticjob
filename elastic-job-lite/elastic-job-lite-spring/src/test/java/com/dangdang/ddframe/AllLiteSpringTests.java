@@ -24,5 +24,5 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses(AllSpringJobTests.class)
-public class AllLiteSpringTests {
+public final class AllLiteSpringTests {
 }

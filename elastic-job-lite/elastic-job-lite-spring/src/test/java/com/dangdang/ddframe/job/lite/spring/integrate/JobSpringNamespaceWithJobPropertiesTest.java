@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.spring.integrate;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(locations = "classpath:META-INF/job/withJobProperties.xml")
-public class JobSpringNamespaceWithJobPropertiesTest extends AbstractJobSpringIntegrateTest {
+public final class JobSpringNamespaceWithJobPropertiesTest extends AbstractJobSpringIntegrateTest {
     
     public JobSpringNamespaceWithJobPropertiesTest() {
         super("simpleElasticJob_namespace_job_properties", "dataflowElasticJob_namespace_job_properties");

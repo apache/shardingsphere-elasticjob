@@ -21,13 +21,11 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.example.fixture.entity.Foo;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-@Component
 public class SpringDataflowJob implements DataflowJob<Foo> {
     
     @Resource

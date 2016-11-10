@@ -17,10 +17,10 @@
     <context:property-placeholder location="classpath:conf/*.properties" />
     
     <bean id="elasticJobLog" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:mem:job_event_storage"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
+        <property name="driverClassName" value="${event.rdb.driver}"/>
+        <property name="url" value="${event.rdb.url}"/>
+        <property name="username" value="${event.rdb.username}"/>
+        <property name="password" value="${event.rdb.password}"/>
     </bean>
     
     <reg:zookeeper id="regCenter" server-lists="${serverLists}" namespace="${namespace}" base-sleep-time-milliseconds="${baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${maxSleepTimeMilliseconds}" max-retries="${maxRetries}" />
