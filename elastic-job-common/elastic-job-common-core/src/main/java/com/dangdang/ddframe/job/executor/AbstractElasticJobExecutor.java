@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.executor;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.handler.ExecutorServiceHandler;
@@ -172,16 +173,19 @@ public abstract class AbstractElasticJobExecutor {
     
     private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent jobExecutionEvent) {
         jobFacade.postJobExecutionEvent(jobExecutionEvent);
+        jobFacade.postJobStatusTraceEvent(jobExecutionEvent.getTaskId(), State.TASK_RUNNING, "");
         log.trace("Job '{}' executing, item is: '{}'.", jobName, item);
         try {
             process(new ShardingContext(shardingContexts, item));
             jobExecutionEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
+            jobFacade.postJobStatusTraceEvent(jobExecutionEvent.getTaskId(), State.TASK_FINISHED, "");
             // CHECKSTYLE:OFF
         } catch (final Throwable ex) {
             // CHECKSTYLE:ON
             jobExecutionEvent.executionFailure(ex);
             jobExceptionHandler.handleException(jobName, ex);
+            jobFacade.postJobStatusTraceEvent(jobExecutionEvent.getTaskId(), State.TASK_FAILED, "");
         } finally {
             jobFacade.postJobExecutionEvent(jobExecutionEvent);
         }

@@ -11,6 +11,6 @@
     <name>${project.artifactId}</name>
     
     <modules>
-        <module>elastic-job-core</module>
+        <module>elastic-job-common-core</module>
     </modules>
 </project>

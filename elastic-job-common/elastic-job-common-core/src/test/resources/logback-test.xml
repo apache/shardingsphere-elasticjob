@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="log.context.name" value="elastic-job-core-test" />
+    <property name="log.context.name" value="elastic-job-common-core-test" />
     <property name="log.charset" value="UTF-8" />
     <property name="log.pattern" value="[%-5level] %date --%thread-- [%logger] %msg %n" />
     

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.fixture;
+package com.dangdang.ddframe.job.fixture.context;
 
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.google.common.base.Joiner;

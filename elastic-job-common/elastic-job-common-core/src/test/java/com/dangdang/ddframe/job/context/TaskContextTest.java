@@ -15,9 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.context;
+package com.dangdang.ddframe.job.context;
 
-import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
+import com.dangdang.ddframe.job.fixture.context.TaskNode;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -45,7 +46,7 @@ public final class TaskContextTest {
     @Test
     public void assertTaskContextFrom() {
         TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
-        assertThat(actual.getId(), is(TaskNode.builder().build().getTaskNodeValue()));
+        assertThat(actual.getId(), Is.is(TaskNode.builder().build().getTaskNodeValue()));
         assertThat(actual.getMetaInfo().getJobName(), is("test_job"));
         assertThat(actual.getMetaInfo().getShardingItem(), is(0));
         assertThat(actual.getType(), is(ExecutionType.READY));

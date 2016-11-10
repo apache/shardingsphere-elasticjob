@@ -21,6 +21,7 @@ weight=1
 ### 结构调整
 
 1. [ISSUE #153](https://github.com/dangdangdotcom/elastic-job/issues/153) 事件追踪配置集中化
+1. [ISSUE #160](https://github.com/dangdangdotcom/elastic-job/issues/160) 调整maven模块结构，提供elastic-job-common及其二级模块
 
 ## 2.0.1
 

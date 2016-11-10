@@ -28,7 +28,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <artifactId>elastic-job-core</artifactId>
+                <artifactId>elastic-job-common-core</artifactId>
                 <groupId>com.dangdang</groupId>
                 <version>${elastic-job.version}</version>
             </dependency>

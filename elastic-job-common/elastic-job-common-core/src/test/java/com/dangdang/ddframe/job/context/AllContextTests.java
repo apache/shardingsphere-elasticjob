@@ -15,22 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.context;
+package com.dangdang.ddframe.job.context;
 
-/**
- * 执行类型.
- *
- * @author zhangliang
- */
-public enum ExecutionType {
-    
-    /**
-     * 准备执行的任务.
-     */
-    READY,
-    
-    /**
-     * 失效转移的任务.
-     */
-    FAILOVER
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        TaskContextTest.class
+})
+public final class AllContextTests {
 }

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.context;
+package com.dangdang.ddframe.job.context;
 
 import com.dangdang.ddframe.job.util.digest.Encryption;
 import com.google.common.base.Joiner;
