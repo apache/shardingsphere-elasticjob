@@ -82,7 +82,8 @@ public class ShardingService {
         jobNodeStorage.createJobNodeIfNeeded(ShardingNode.NECESSARY);
     }
     
-    /**判断是否需要重分片.
+    /**
+     * 判断是否需要重分片.
      * 
      * @return 是否需要重分片
      */
@@ -92,8 +93,12 @@ public class ShardingService {
     
     /**
      * 如果需要分片且当前节点为主节点, 则作业分片.
+     * 如果当前无可用节点则不分片.
      */
     public void shardingIfNecessary() {
+        if (serverService.getAvailableServers().isEmpty()) {
+            return;
+        }
         if (!isNeedSharding()) {
             return;
         }

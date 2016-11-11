@@ -104,13 +104,22 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingWhenUnnecessary() {
+        when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("mockedIP"));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(false);
         shardingService.shardingIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
     }
     
     @Test
+    public void assertShardingWithoutAvailableServers() {
+        when(serverService.getAvailableServers()).thenReturn(Collections.<String>emptyList());
+        shardingService.shardingIfNecessary();
+        verify(jobNodeStorage, times(0)).isJobNodeExisted("leader/sharding/necessary");
+    }
+    
+    @Test
     public void assertShardingWhenIsNotLeaderAndIsShardingProcessing() {
+        when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("mockedIP"));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true, true, false, false);
         when(leaderElectionService.isLeader()).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/processing")).thenReturn(true, false);
@@ -121,6 +130,7 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingNecessaryWhenMonitorExecutionEnabled() {
+        when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("mockedIP"));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
@@ -140,6 +150,7 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingNecessaryWhenMonitorExecutionDisabled() throws Exception {
+        when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("mockedIP"));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
