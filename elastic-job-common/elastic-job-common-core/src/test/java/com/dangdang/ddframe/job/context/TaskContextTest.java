@@ -70,6 +70,13 @@ public final class TaskContextTest {
     }
     
     @Test
+    public void assertMetaInfoFromWithTaskId() {
+        TaskContext.MetaInfo actual = TaskContext.MetaInfo.from("test_job@-@1@-@READY@-@unassigned-slave@-@0");
+        assertThat(actual.getJobName(), is("test_job"));
+        assertThat(actual.getShardingItems().get(0), is(1));
+    }
+    
+    @Test
     public void assertGetIdForUnassignedSlave() {
         assertThat(TaskContext.getIdForUnassignedSlave("test_job@-@0@-@READY@-@slave-S0@-@0"), is("test_job@-@0@-@READY@-@unassigned-slave@-@0"));
     }

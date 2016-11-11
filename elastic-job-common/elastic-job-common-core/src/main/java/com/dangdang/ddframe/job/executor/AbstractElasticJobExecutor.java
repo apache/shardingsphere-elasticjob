@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
+import com.dangdang.ddframe.job.exception.ExceptionUtil;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.handler.ExecutorServiceHandler;
@@ -31,8 +32,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -196,15 +195,11 @@ public abstract class AbstractElasticJobExecutor {
             jobExecutionEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
             // CHECKSTYLE:OFF
-        } catch (final Throwable ex) {
+        } catch (final Throwable cause) {
             // CHECKSTYLE:ON
-            jobExecutionEvent.executionFailure(ex);
-            StringWriter errorMessage = new StringWriter();
-            try (PrintWriter writer = new PrintWriter(errorMessage)) {
-                ex.printStackTrace(writer);
-            }
-            itemErrorMessages.put(item, errorMessage.toString());
-            jobExceptionHandler.handleException(jobName, ex);
+            jobExecutionEvent.executionFailure(cause);
+            itemErrorMessages.put(item, ExceptionUtil.transform(cause));
+            jobExceptionHandler.handleException(jobName, cause);
         } finally {
             jobFacade.postJobExecutionEvent(jobExecutionEvent);
         }

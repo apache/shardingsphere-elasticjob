@@ -18,12 +18,11 @@
 package com.dangdang.ddframe.job.event.type;
 
 import com.dangdang.ddframe.job.event.JobEvent;
+import com.dangdang.ddframe.job.exception.ExceptionUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.UUID;
 
@@ -84,14 +83,7 @@ public class JobExecutionEvent implements JobEvent {
      * @return 失败原因
      */
     public String getFailureCause() {
-        if (null == failureCause) {
-            return "";
-        }
-        StringWriter result = new StringWriter();
-        try (PrintWriter writer = new PrintWriter(result)) {
-            failureCause.printStackTrace(writer);
-        }
-        return result.toString();
+        return ExceptionUtil.transform(failureCause);
     }
     
     /**

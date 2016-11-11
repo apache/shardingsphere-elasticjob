@@ -94,8 +94,8 @@ public class FailoverService {
         Collection<JobContext> result = new ArrayList<>(jobNames.size());
         Set<HashCode> assignedTasks = new HashSet<>(jobNames.size() * 10, 1);
         for (String each : jobNames) {
-            List<String> taskMetaInfoList = regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
-            if (taskMetaInfoList.isEmpty()) {
+            List<String> taskIdList = regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
+            if (taskIdList.isEmpty()) {
                 regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
@@ -104,7 +104,7 @@ public class FailoverService {
                 regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
-            List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskMetaInfoList, assignedTasks);
+            List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIdList, assignedTasks);
             if (!assignedShardingItems.isEmpty()) {
                 if (jobConfig.isPresent()) {
                     result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
@@ -114,9 +114,9 @@ public class FailoverService {
         return result;
     }
     
-    private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskMetaInfoList, final Set<HashCode> assignedTasks) {
-        List<Integer> result = new ArrayList<>(taskMetaInfoList.size());
-        for (String each : taskMetaInfoList) {
+    private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskIdList, final Set<HashCode> assignedTasks) {
+        List<Integer> result = new ArrayList<>(taskIdList.size());
+        for (String each : taskIdList) {
             TaskContext.MetaInfo metaInfo = TaskContext.MetaInfo.from(each);
             if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItems().get(0)).hash()) && !runningService.isTaskRunning(metaInfo)) {
                 result.add(metaInfo.getShardingItems().get(0));

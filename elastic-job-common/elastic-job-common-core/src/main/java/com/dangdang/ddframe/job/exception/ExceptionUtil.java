@@ -17,16 +17,24 @@
 
 package com.dangdang.ddframe.job.exception;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class
-    })
-public final class AllExceptionTests {
+/**
+ * 异常处理工具类.
+ *
+ * @author caohao
+ */
+public class ExceptionUtil {
+    
+    public static String transform(final Throwable cause) {
+        if (null == cause) {
+            return "";
+        }
+        StringWriter result = new StringWriter();
+        try (PrintWriter writer = new PrintWriter(result)) {
+            cause.printStackTrace(writer);
+        }
+        return result.toString();
+    }
 }

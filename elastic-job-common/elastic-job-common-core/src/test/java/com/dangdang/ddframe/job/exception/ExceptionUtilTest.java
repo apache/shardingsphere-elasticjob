@@ -17,16 +17,26 @@
 
 package com.dangdang.ddframe.job.exception;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class
-    })
-public final class AllExceptionTests {
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class ExceptionUtilTest {
+    
+    @Test
+    public void assertTransformWithError() {
+        assertTrue(ExceptionUtil.transform(new Error("Error")).startsWith("java.lang.Error"));
+    }
+    
+    @Test
+    public void assertTransformWithException() {
+        assertTrue(ExceptionUtil.transform(new Exception("Exception")).startsWith("java.lang.Exception"));
+    }
+    
+    @Test
+    public void assertTransformWithNull() {
+        assertThat(ExceptionUtil.transform(null), is(""));
+    }
 }
