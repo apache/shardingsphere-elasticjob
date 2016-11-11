@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Before;
@@ -63,18 +62,8 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertPersistServerOnlineWhenOverwriteDisabled() {
-        serverService.persistServerOnline(JobConfigurationUtil.createSimpleLiteJobConfiguration(false));
-        verify(jobNodeStorage).fillJobNode("servers/mockedIP/hostName", "mockedHostName");
-        verify(localHostService, times(3)).getIp();
-        verify(localHostService).getHostName();
-        verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/status", ServerStatus.READY);
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/shutdown");
-    }
-    
-    @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
-        serverService.persistServerOnline(JobConfigurationUtil.createSimpleLiteJobConfiguration(true, true));
+        serverService.persistServerOnline(false);
         verify(jobNodeStorage).fillJobNode("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
@@ -85,7 +74,7 @@ public final class ServerServiceTest {
     
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
-        serverService.persistServerOnline(JobConfigurationUtil.createSimpleLiteJobConfiguration(true));
+        serverService.persistServerOnline(true);
         verify(jobNodeStorage).fillJobNode("servers/mockedIP/hostName", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
@@ -231,5 +220,13 @@ public final class ServerServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/shutdown");
         verify(jobNodeStorage).getJobNodeData("servers/mockedIP/status");
+    }
+    
+    @Test
+    public void assertIsLocalhostServerEnabled() {
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/disabled")).thenReturn(false);
+        assertTrue(serverService.isLocalhostServerEnabled());
+        verify(localHostService).getIp();
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/disabled");
     }
 }

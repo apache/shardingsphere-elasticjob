@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.listener;
 
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
@@ -59,7 +58,7 @@ public class ListenerManagerTest {
     @Mock
     private GuaranteeListenerManager guaranteeListenerManager;
     
-    private final ListenerManager listenerManager = new ListenerManager(null, JobConfigurationUtil.createSimpleLiteJobConfiguration(), Collections.<ElasticJobListener>emptyList());
+    private final ListenerManager listenerManager = new ListenerManager(null, "test_job", Collections.<ElasticJobListener>emptyList());
     
     @Before
     public void setUp() throws NoSuchFieldException {

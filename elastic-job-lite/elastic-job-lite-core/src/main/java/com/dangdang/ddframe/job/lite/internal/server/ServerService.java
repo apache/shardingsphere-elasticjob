@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
@@ -53,24 +52,17 @@ public class ServerService {
     /**
      * 持久化作业服务器上线相关信息.
      * 
-     * @param liteJobConfig 作业配置
+     * @param enabled 作业是否启用
      */
-    public void persistServerOnline(final LiteJobConfiguration liteJobConfig) {
+    public void persistServerOnline(final boolean enabled) {
         jobNodeStorage.fillJobNode(ServerNode.getHostNameNode(localHostService.getIp()), localHostService.getHostName());
-        persistDisabled(liteJobConfig);
+        if (enabled) {
+            jobNodeStorage.removeJobNodeIfExisted(ServerNode.getDisabledNode(localHostService.getIp()));
+        } else {
+            jobNodeStorage.fillJobNode(ServerNode.getDisabledNode(localHostService.getIp()), "");
+        }
         jobNodeStorage.fillEphemeralJobNode(ServerNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
         jobNodeStorage.removeJobNodeIfExisted(ServerNode.getShutdownNode(localHostService.getIp()));
-    }
-    
-    private void persistDisabled(final LiteJobConfiguration liteJobConfig) {
-        if (!liteJobConfig.isOverwrite()) {
-            return;
-        }
-        if (liteJobConfig.isDisabled()) {
-            jobNodeStorage.fillJobNode(ServerNode.getDisabledNode(localHostService.getIp()), "");
-        } else {
-            jobNodeStorage.removeJobNodeIfExisted(ServerNode.getDisabledNode(localHostService.getIp()));
-        }
     }
     
     /**
@@ -165,5 +157,14 @@ public class ServerService {
     public boolean isLocalhostServerReady() {
         String ip = localHostService.getIp();
         return isAvailableServer(ip) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(ServerNode.getStatusNode(ip)));
+    }
+    
+    /**
+     * 判断当前服务器是否是启用状态.
+     *
+     * @return 当前服务器是否是启用状态
+     */
+    public boolean isLocalhostServerEnabled() {
+        return !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(localHostService.getIp()));
     }
 }

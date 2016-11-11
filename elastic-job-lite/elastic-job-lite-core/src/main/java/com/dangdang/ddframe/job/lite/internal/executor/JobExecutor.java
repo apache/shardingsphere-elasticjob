@@ -37,7 +37,6 @@ import java.util.List;
 @Slf4j
 public class JobExecutor {
     
-    @Getter
     private final LiteJobConfiguration liteJobConfig;
     
     private final CoordinatorRegistryCenter regCenter;
@@ -50,7 +49,7 @@ public class JobExecutor {
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
-        schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig, elasticJobListenerList);
+        schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig.getJobName(), elasticJobListenerList);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {

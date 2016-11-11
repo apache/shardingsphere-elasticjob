@@ -67,7 +67,6 @@ public final class JobSchedulerTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "jobExecutor", jobExecutor);
         when(jobExecutor.getSchedulerFacade()).thenReturn(schedulerFacade);
-        when(jobExecutor.getLiteJobConfig()).thenReturn(liteJobConfig);
     }
     
     @Test

@@ -17,6 +17,7 @@ weight=1
 1. [ISSUE #152](https://github.com/dangdangdotcom/elastic-job/issues/152) job自定义异常处理器无效，总是被DefaultJobExceptionHandler处理
 1. [ISSUE #156](https://github.com/dangdangdotcom/elastic-job/issues/156) 作业事件追踪整体调用链路数据采集
 1. [ISSUE #161](https://github.com/dangdangdotcom/elastic-job/issues/161) Lite版本部署至某些版本的Tomcat无法启动
+1. [ISSUE #163](https://github.com/dangdangdotcom/elastic-job/issues/163) 任务设置disable＝true后，启动项目还是会自动执行任务
 
 ### 功能提升
 
