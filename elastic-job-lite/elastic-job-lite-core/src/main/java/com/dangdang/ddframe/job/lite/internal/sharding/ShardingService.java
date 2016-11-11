@@ -96,7 +96,8 @@ public class ShardingService {
      * 如果当前无可用节点则不分片.
      */
     public void shardingIfNecessary() {
-        if (serverService.getAvailableServers().isEmpty()) {
+        List<String> availableShardingServers = serverService.getAvailableShardingServers();
+        if (availableShardingServers.isEmpty()) {
             return;
         }
         if (!isNeedSharding()) {
@@ -115,7 +116,7 @@ public class ShardingService {
         clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
         JobShardingStrategyOption option = new JobShardingStrategyOption(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(serverService.getAvailableServers(), option)));
+        jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(availableShardingServers, option)));
         log.debug("Job '{}' sharding complete.", jobName);
     }
     

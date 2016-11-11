@@ -123,6 +123,27 @@ public class ServerService {
     }
     
     /**
+     * 获取可分片的作业服务器列表.
+     *
+     * @return 可分片的作业服务器列表
+     */
+    public List<String> getAvailableShardingServers() {
+        List<String> servers = getAllServers();
+        List<String> result = new ArrayList<>(servers.size());
+        for (String each : servers) {
+            if (isAvailableShardingServer(each)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+    
+    private boolean isAvailableShardingServer(final String ip) {
+        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) 
+                && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip));
+    }
+    
+    /**
      * 获取可用的作业服务器列表.
      * 
      * @return 可用的作业服务器列表

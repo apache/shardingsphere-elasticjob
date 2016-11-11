@@ -16,6 +16,7 @@ weight=1
 1. [ISSUE #151](https://github.com/dangdangdotcom/elastic-job/issues/151) 基于关系型数据库的事件追踪缺乏对MySQL之外数据库的支持
 1. [ISSUE #152](https://github.com/dangdangdotcom/elastic-job/issues/152) job自定义异常处理器无效，总是被DefaultJobExceptionHandler处理
 1. [ISSUE #156](https://github.com/dangdangdotcom/elastic-job/issues/156) 作业事件追踪整体调用链路数据采集
+1. [ISSUE #158](https://github.com/dangdangdotcom/elastic-job/issues/158) 作业在暂停时错过分片时机将不会再分片
 1. [ISSUE #161](https://github.com/dangdangdotcom/elastic-job/issues/161) Lite版本部署至某些版本的Tomcat无法启动
 1. [ISSUE #163](https://github.com/dangdangdotcom/elastic-job/issues/163) 任务设置disable＝true后，启动项目还是会自动执行任务
 1. [ISSUE #165](https://github.com/dangdangdotcom/elastic-job/issues/165) 所有服务节点都disable时会导致分片线程死锁

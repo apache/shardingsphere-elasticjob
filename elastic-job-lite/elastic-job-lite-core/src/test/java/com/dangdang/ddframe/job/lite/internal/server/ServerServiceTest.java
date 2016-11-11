@@ -127,8 +127,8 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertGetAvailableServers() {
-        when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3"));
+    public void assertGetAvailableShardingServers() {
+        when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3", "host4"));
         when(jobNodeStorage.isJobNodeExisted("servers/host0/status")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("servers/host0/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/host1/status")).thenReturn(true);
@@ -136,6 +136,33 @@ public final class ServerServiceTest {
         when(jobNodeStorage.isJobNodeExisted("servers/host2/status")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/host3/status")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("servers/host3/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/host4/status")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/host4/paused")).thenReturn(true);
+        assertThat(serverService.getAvailableShardingServers(), is(Arrays.asList("host0", "host3", "host4")));
+        verify(jobNodeStorage).getJobNodeChildrenKeys("servers");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host0/status");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host0/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host1/status");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host1/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host2/status");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host3/status");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host3/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host4/status");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host4/disabled");
+    }
+    
+    @Test
+    public void assertGetAvailableServers() {
+        when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3", "host4"));
+        when(jobNodeStorage.isJobNodeExisted("servers/host0/status")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/host0/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/host1/status")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/host1/disabled")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/host2/status")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/host3/status")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/host3/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/host4/status")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/host4/paused")).thenReturn(true);
         assertThat(serverService.getAvailableServers(), is(Arrays.asList("host0", "host3")));
         verify(jobNodeStorage).getJobNodeChildrenKeys("servers");
         verify(jobNodeStorage).isJobNodeExisted("servers/host0/status");
@@ -145,6 +172,8 @@ public final class ServerServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("servers/host2/status");
         verify(jobNodeStorage).isJobNodeExisted("servers/host3/status");
         verify(jobNodeStorage).isJobNodeExisted("servers/host3/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host4/status");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host4/paused");
     }
     
     @Test
