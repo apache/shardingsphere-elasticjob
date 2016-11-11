@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler
 import com.dangdang.ddframe.job.executor.type.DataflowJobExecutorTest;
 import com.dangdang.ddframe.job.executor.type.ScriptJobExecutorTest;
 import com.dangdang.ddframe.job.executor.type.SimpleJobExecutorTest;
+import com.dangdang.ddframe.job.executor.type.WrongJobExecutorTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -33,7 +34,8 @@ import org.junit.runners.Suite.SuiteClasses;
         ExecutorServiceHandlerRegistryTest.class, 
         JobPropertiesTest.class,
         DefaultJobExceptionHandlerTest.class, 
-        SimpleJobExecutorTest.class, 
+        SimpleJobExecutorTest.class,
+        WrongJobExecutorTest.class,
         DataflowJobExecutorTest.class, 
         ScriptJobExecutorTest.class
     })

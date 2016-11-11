@@ -118,8 +118,8 @@ public class FailoverService {
         List<Integer> result = new ArrayList<>(taskMetaInfoList.size());
         for (String each : taskMetaInfoList) {
             TaskContext.MetaInfo metaInfo = TaskContext.MetaInfo.from(each);
-            if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItem()).hash()) && !runningService.isTaskRunning(metaInfo)) {
-                result.add(metaInfo.getShardingItem());
+            if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItems().get(0)).hash()) && !runningService.isTaskRunning(metaInfo)) {
+                result.add(metaInfo.getShardingItems().get(0));
             }
         }
         return result;

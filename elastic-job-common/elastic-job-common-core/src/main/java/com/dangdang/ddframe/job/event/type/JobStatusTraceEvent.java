@@ -1,5 +1,6 @@
 package com.dangdang.ddframe.job.event.type;
 
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.event.JobEvent;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.Getter;
@@ -31,9 +32,9 @@ public class JobStatusTraceEvent implements JobEvent {
     
     private final String slaveId;
     
-    private final String executionType;
+    private final ExecutionType executionType;
     
-    private final String shardingItem;
+    private final String shardingItems;
     
     private final Source source;
     

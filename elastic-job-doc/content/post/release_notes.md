@@ -15,8 +15,8 @@ weight=1
 1. [ISSUE #115](https://github.com/dangdangdotcom/elastic-job/issues/115) console新增注册中心，没有连接成功，后台一直反复连接并报错
 1. [ISSUE #151](https://github.com/dangdangdotcom/elastic-job/issues/151) 基于关系型数据库的事件追踪缺乏对MySQL之外数据库的支持
 1. [ISSUE #152](https://github.com/dangdangdotcom/elastic-job/issues/152) job自定义异常处理器无效，总是被DefaultJobExceptionHandler处理
+1. [ISSUE #156](https://github.com/dangdangdotcom/elastic-job/issues/156) 作业事件追踪整体调用链路数据采集
 1. [ISSUE #161](https://github.com/dangdangdotcom/elastic-job/issues/161) Lite版本部署至某些版本的Tomcat无法启动
-1. [ISSUE #162](https://github.com/dangdangdotcom/elastic-job/issues/162) Cloud版本的失效转移仅在TASK_LOST和TASK_ERROR时生效
 
 ### 功能提升
 

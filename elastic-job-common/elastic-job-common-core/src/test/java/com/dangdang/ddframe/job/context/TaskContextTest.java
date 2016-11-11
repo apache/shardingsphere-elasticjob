@@ -18,9 +18,12 @@
 package com.dangdang.ddframe.job.context;
 
 import com.dangdang.ddframe.job.fixture.context.TaskNode;
+import com.google.common.collect.Lists;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
@@ -29,17 +32,23 @@ public final class TaskContextTest {
     
     @Test
     public void assertNew() {
-        TaskContext actual = new TaskContext("test_job", 0, ExecutionType.READY, "slave-S0");
+        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY, "slave-S0");
         assertThat(actual.getMetaInfo().getJobName(), is("test_job"));
-        assertThat(actual.getMetaInfo().getShardingItem(), is(0));
+        assertThat(actual.getMetaInfo().getShardingItems().get(0), is(0));
         assertThat(actual.getType(), is(ExecutionType.READY));
         assertThat(actual.getSlaveId(), is("slave-S0"));
         assertThat(actual.getId(), startsWith(TaskNode.builder().build().getTaskNodeValue().substring(0, TaskNode.builder().build().getTaskNodeValue().length() - 1)));
     }
     
     @Test
+    public void assertNewWithoutSlaveId() {
+        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY);
+        assertThat(actual.getSlaveId(), is("unassigned-slave"));
+    }
+    
+    @Test
     public void assertGetMetaInfo() {
-        TaskContext actual = new TaskContext("test_job", 0, ExecutionType.READY, "slave-S0");
+        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY, "slave-S0");
         assertThat(actual.getMetaInfo().toString(), is("test_job@-@0"));
     }
     
@@ -48,7 +57,7 @@ public final class TaskContextTest {
         TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
         assertThat(actual.getId(), Is.is(TaskNode.builder().build().getTaskNodeValue()));
         assertThat(actual.getMetaInfo().getJobName(), is("test_job"));
-        assertThat(actual.getMetaInfo().getShardingItem(), is(0));
+        assertThat(actual.getMetaInfo().getShardingItems().get(0), is(0));
         assertThat(actual.getType(), is(ExecutionType.READY));
         assertThat(actual.getSlaveId(), is("slave-S0"));
     }
@@ -57,7 +66,7 @@ public final class TaskContextTest {
     public void assertMetaInfoFrom() {
         TaskContext.MetaInfo actual = TaskContext.MetaInfo.from("test_job@-@1");
         assertThat(actual.getJobName(), is("test_job"));
-        assertThat(actual.getShardingItem(), is(1));
+        assertThat(actual.getShardingItems().get(0), is(1));
     }
     
     @Test
@@ -75,5 +84,21 @@ public final class TaskContextTest {
     public void assertGetExecutorId() {
         TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
         assertThat(actual.getExecutorId("app"), is("d2a57dc1d883fd21fb9951699df71cc7@-@slave-S0"));
+    }
+    
+    @Test
+    public void assertSetSlaveId() {
+        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY, "slave-S0");
+        assertThat(actual.getSlaveId(), is("slave-S0"));
+        actual.setSlaveId("slave-S1");
+        assertThat(actual.getSlaveId(), is("slave-S1"));
+    }
+    
+    @Test
+    public void assertSetIdle() {
+        TaskContext actual = new TaskContext("test_job", Lists.newArrayList(0), ExecutionType.READY, "slave-S0");
+        assertFalse(actual.isIdle());
+        actual.setIdle(true);
+        assertTrue(actual.isIdle());
     }
 }

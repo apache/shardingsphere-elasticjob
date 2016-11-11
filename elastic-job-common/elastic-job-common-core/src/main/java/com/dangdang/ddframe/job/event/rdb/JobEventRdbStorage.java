@@ -91,10 +91,9 @@ class JobEventRdbStorage {
                 + "`job_name` VARCHAR(100) NOT NULL, "
                 + "`task_id` VARCHAR(1000) NOT NULL, "
                 + "`slave_id` VARCHAR(1000) NOT NULL, "
+                + "`source` VARCHAR(50) NOT NULL, "
                 + "`execution_type` VARCHAR(20) NOT NULL, "
-                + "`hostname` VARCHAR(255) NOT NULL, "
-                + "`ip` VARCHAR(50) NOT NULL, "
-                + "`sharding_item` INT NOT NULL, "
+                + "`sharding_item` VARCHAR(255) NOT NULL, "
                 + "`state` VARCHAR(20) NOT NULL, "
                 + "`message` VARCHAR(4000) NULL, "
                 + "`creation_time` TIMESTAMP NULL, "
@@ -163,8 +162,8 @@ class JobEventRdbStorage {
     
     boolean addJobStatusTraceEvent(final JobStatusTraceEvent jobStatusTraceEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_STATUS_TRACE_LOG + "` (`id`, `job_name`, `task_id`, `slave_id`, `execution_type`, `hostname`, `ip`,  `sharding_item`,  " 
-                + "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO `" + TABLE_JOB_STATUS_TRACE_LOG + "` (`id`, `job_name`, `task_id`, `slave_id`, `source`, `execution_type`, `sharding_item`,  " 
+                + "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -172,13 +171,12 @@ class JobEventRdbStorage {
             preparedStatement.setString(2, jobStatusTraceEvent.getJobName());
             preparedStatement.setString(3, jobStatusTraceEvent.getTaskId());
             preparedStatement.setString(4, jobStatusTraceEvent.getSlaveId());
-            preparedStatement.setString(5, jobStatusTraceEvent.getExecutionType());
-            preparedStatement.setString(6, jobStatusTraceEvent.getHostname());
-            preparedStatement.setString(7, jobStatusTraceEvent.getIp());
-            preparedStatement.setString(8, jobStatusTraceEvent.getShardingItem());
-            preparedStatement.setString(9, jobStatusTraceEvent.getState().toString());
-            preparedStatement.setString(10, truncateString(jobStatusTraceEvent.getMessage()));
-            preparedStatement.setTimestamp(11, new Timestamp(jobStatusTraceEvent.getCreationTime().getTime()));
+            preparedStatement.setString(5, jobStatusTraceEvent.getSource().toString());
+            preparedStatement.setString(6, jobStatusTraceEvent.getExecutionType().name());
+            preparedStatement.setString(7, jobStatusTraceEvent.getShardingItems());
+            preparedStatement.setString(8, jobStatusTraceEvent.getState().toString());
+            preparedStatement.setString(9, truncateString(jobStatusTraceEvent.getMessage()));
+            preparedStatement.setTimestamp(10, new Timestamp(jobStatusTraceEvent.getCreationTime().getTime()));
             preparedStatement.execute();
             result = true;
         } catch (final SQLException ex) {

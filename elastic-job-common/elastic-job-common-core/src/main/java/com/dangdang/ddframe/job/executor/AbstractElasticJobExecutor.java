@@ -31,7 +31,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -55,12 +59,15 @@ public abstract class AbstractElasticJobExecutor {
     
     private final JobExceptionHandler jobExceptionHandler;
     
+    private final Map<Integer, String> itemErrorMessages;
+    
     protected AbstractElasticJobExecutor(final JobFacade jobFacade) {
         this.jobFacade = jobFacade;
         jobRootConfig = jobFacade.loadJobRootConfiguration(true);
         jobName = jobRootConfig.getTypeConfig().getCoreConfig().getJobName();
         executorService = ExecutorServiceHandlerRegistry.getExecutorServiceHandler(jobName, (ExecutorServiceHandler) getHandler(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         jobExceptionHandler = (JobExceptionHandler) getHandler(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER);
+        itemErrorMessages = new ConcurrentHashMap<>(jobRootConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 1);
     }
     
     private Object getHandler(final JobProperties.JobPropertiesEnum jobPropertiesEnum) {
@@ -133,11 +140,18 @@ public abstract class AbstractElasticJobExecutor {
             return;
         }
         jobFacade.registerJobBegin(shardingContexts);
+        String taskId = shardingContexts.getTaskId();
+        jobFacade.postJobStatusTraceEvent(taskId, State.TASK_RUNNING, "");
         try {
             process(shardingContexts, executionSource);
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             jobFacade.registerJobCompleted(shardingContexts);
+            if (itemErrorMessages.isEmpty()) {
+                jobFacade.postJobStatusTraceEvent(taskId, State.TASK_FINISHED, "");
+            } else {
+                jobFacade.postJobStatusTraceEvent(taskId, State.TASK_ERROR, itemErrorMessages.toString());
+            }
         }
     }
     
@@ -152,6 +166,9 @@ public abstract class AbstractElasticJobExecutor {
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
             final JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, each);
+            if (executorService.isShutdown()) {
+                return;
+            }
             executorService.submit(new Runnable() {
                 
                 @Override
@@ -173,19 +190,21 @@ public abstract class AbstractElasticJobExecutor {
     
     private void process(final ShardingContexts shardingContexts, final int item, final JobExecutionEvent jobExecutionEvent) {
         jobFacade.postJobExecutionEvent(jobExecutionEvent);
-        jobFacade.postJobStatusTraceEvent(jobExecutionEvent.getTaskId(), State.TASK_RUNNING, "");
         log.trace("Job '{}' executing, item is: '{}'.", jobName, item);
         try {
             process(new ShardingContext(shardingContexts, item));
             jobExecutionEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
-            jobFacade.postJobStatusTraceEvent(jobExecutionEvent.getTaskId(), State.TASK_FINISHED, "");
             // CHECKSTYLE:OFF
         } catch (final Throwable ex) {
             // CHECKSTYLE:ON
             jobExecutionEvent.executionFailure(ex);
+            StringWriter errorMessage = new StringWriter();
+            try (PrintWriter writer = new PrintWriter(errorMessage)) {
+                ex.printStackTrace(writer);
+            }
+            itemErrorMessages.put(item, errorMessage.toString());
             jobExceptionHandler.handleException(jobName, ex);
-            jobFacade.postJobStatusTraceEvent(jobExecutionEvent.getTaskId(), State.TASK_FAILED, "");
         } finally {
             jobFacade.postJobExecutionEvent(jobExecutionEvent);
         }

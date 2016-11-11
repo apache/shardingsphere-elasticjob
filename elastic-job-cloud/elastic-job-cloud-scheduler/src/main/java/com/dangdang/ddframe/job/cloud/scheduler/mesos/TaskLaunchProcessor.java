@@ -91,8 +91,8 @@ public final class TaskLaunchProcessor implements Runnable {
                     TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
                     facadeService.addRunning(taskContext);
                     jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(),
-                            taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()), Source.CLOUD_SCHEDULER, 
-                            State.TASK_STAGING, String.format("task info is: %s", taskInfo)));
+                            taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), Source.CLOUD_SCHEDULER, 
+                            State.TASK_STAGING, ""));
                 }
                 facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<TaskInfo, TaskContext>() {
                     
@@ -133,7 +133,7 @@ public final class TaskLaunchProcessor implements Runnable {
         CloudJobConfiguration jobConfig = jobConfigOptional.get();
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
-        int shardingItem = taskContext.getMetaInfo().getShardingItem();
+        int shardingItem = taskContext.getMetaInfo().getShardingItems().get(0);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
         ShardingContexts shardingContexts = new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
                 jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);

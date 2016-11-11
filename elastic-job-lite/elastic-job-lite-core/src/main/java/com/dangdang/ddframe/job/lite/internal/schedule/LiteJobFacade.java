@@ -18,8 +18,11 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
@@ -172,7 +175,9 @@ public class LiteJobFacade implements JobFacade {
     
     @Override
     public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
-        
+        TaskContext taskContext = TaskContext.from(taskId);
+        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(),
+                taskContext.getSlaveId(), taskContext.getType(), taskContext.getMetaInfo().getShardingItems().toString(), Source.LITE_EXECUTOR, state, message);
+        jobEventBus.post(jobStatusTraceEvent);
     }
-    
 }

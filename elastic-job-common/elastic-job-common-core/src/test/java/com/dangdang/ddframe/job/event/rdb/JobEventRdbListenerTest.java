@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.event.rdb;
         
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventListenerConfigurationException;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
@@ -72,7 +73,7 @@ public final class JobEventRdbListenerTest {
     
     @Test
     public void assertPostJobStatusTraceEvent() {
-        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", "READY", "0", Source.LITE_EXECUTOR, State.TASK_RUNNING, "message is empty.");
+        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(JOB_NAME, "fake_task_id", "fake_slave_id", ExecutionType.READY, "0", Source.LITE_EXECUTOR, State.TASK_RUNNING, "message is empty.");
         jobEventBus.post(jobStatusTraceEvent);
         verify(repository, atMost(1)).addJobStatusTraceEvent(jobStatusTraceEvent);
     }

@@ -82,8 +82,8 @@ public final class SchedulerEngine implements Scheduler {
         TaskContext taskContext = TaskContext.from(taskId);
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
         jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
-                taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()),
-                Source.CLOUD_SCHEDULER, State.valueOf(taskStatus.getState().name()), String.format("source is: %s, message is: %s.", taskStatus.getSource(), taskStatus.getMessage())));
+                taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()),
+                Source.CLOUD_SCHEDULER, State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
                 if ("BEGIN".equals(taskStatus.getMessage())) {
@@ -97,13 +97,13 @@ public final class SchedulerEngine implements Scheduler {
                 unAssignTask(taskId);
                 break;
             case TASK_KILLED:
-            case TASK_FAILED:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);
                 facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
                 break;
             case TASK_LOST:
+            case TASK_FAILED:
             case TASK_ERROR:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);

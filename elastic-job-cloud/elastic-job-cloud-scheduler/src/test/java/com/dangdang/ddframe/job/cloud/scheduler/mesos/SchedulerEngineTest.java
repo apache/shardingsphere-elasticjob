@@ -168,6 +168,7 @@ public final class SchedulerEngineTest {
         when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
         schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue()))
                 .setState(Protos.TaskState.TASK_FAILED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
         verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");

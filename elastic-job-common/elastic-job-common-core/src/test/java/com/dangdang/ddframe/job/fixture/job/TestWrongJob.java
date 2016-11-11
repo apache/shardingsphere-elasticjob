@@ -15,24 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.monitor;
+package com.dangdang.ddframe.job.fixture.job;
 
-import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
-import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
-import org.junit.Test;
-import org.junit.Ignore;
-import java.io.IOException;
+import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.simple.SimpleJob;
+import lombok.RequiredArgsConstructor;
 
-
-public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
+@RequiredArgsConstructor
+public final class TestWrongJob implements SimpleJob {
     
-    public MonitorServiceDisableTest() {
-        super(TestSimpleJob.class, -1);
-    }
-    
-    @Test(expected = IOException.class)
-    @Ignore
-    public void assertMonitorWithDumpCommand() throws IOException {
-        SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, 9000);
+    @Override
+    public void execute(final ShardingContext shardingContext) {
+        throw new RuntimeException("WrongJobException");
     }
 }

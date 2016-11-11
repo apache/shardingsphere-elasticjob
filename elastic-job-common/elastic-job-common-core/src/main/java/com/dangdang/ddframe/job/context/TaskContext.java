@@ -18,14 +18,18 @@
 package com.dangdang.ddframe.job.context;
 
 import com.dangdang.ddframe.job.util.digest.Encryption;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -54,12 +58,12 @@ public final class TaskContext {
     @Setter
     private boolean idle;
     
-    public TaskContext(final String jobName, final int shardingItem, final ExecutionType type) {
-        this(jobName, shardingItem, type, UNASSIGNED_SLAVE_ID);
+    public TaskContext(final String jobName, final List<Integer> shardingItems, final ExecutionType type) {
+        this(jobName, shardingItems, type, UNASSIGNED_SLAVE_ID);
     }
     
-    public TaskContext(final String jobName, final int shardingItem, final ExecutionType type, final String slaveId) {
-        metaInfo = new MetaInfo(jobName, shardingItem);
+    public TaskContext(final String jobName, final List<Integer> shardingItems, final ExecutionType type, final String slaveId) {
+        metaInfo = new MetaInfo(jobName, shardingItems);
         this.type = type;
         this.slaveId = slaveId;
         id = Joiner.on(DELIMITER).join(metaInfo, type, slaveId, UUID.randomUUID().toString());
@@ -81,7 +85,7 @@ public final class TaskContext {
     public static TaskContext from(final String id) {
         String[] result = id.split(DELIMITER);
         Preconditions.checkState(5 == result.length);
-        return new TaskContext(id, new MetaInfo(result[0], Integer.parseInt(result[1])), ExecutionType.valueOf(result[2]), result[3]);
+        return new TaskContext(id, MetaInfo.from(result[0] + DELIMITER + result[1]), ExecutionType.valueOf(result[2]), result[3]);
     }
     
     /**
@@ -133,7 +137,7 @@ public final class TaskContext {
         
         private final String jobName;
         
-        private final int shardingItem;
+        private final List<Integer> shardingItems;
         
         /**
          * 根据任务元信息字符串获取元信息对象.
@@ -144,12 +148,17 @@ public final class TaskContext {
         public static MetaInfo from(final String value) {
             String[] result = value.split(DELIMITER);
             Preconditions.checkState(2 == result.length || 5 == result.length);
-            return new MetaInfo(result[0], Integer.parseInt(result[1]));
+            return new MetaInfo(result[0], Lists.transform(Splitter.on(",").splitToList(result[1]), new Function<String, Integer>() {
+                @Override
+                public Integer apply(final String input) {
+                    return Integer.parseInt(input);
+                }
+            }));
         }
         
         @Override
         public String toString() {
-            return Joiner.on(DELIMITER).join(jobName, shardingItem);
+            return Joiner.on(DELIMITER).join(jobName, Joiner.on(",").join(shardingItems));
         }
     }
 }
