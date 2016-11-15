@@ -31,6 +31,7 @@ import java.sql.SQLException;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 
@@ -55,8 +56,18 @@ public class JobEventRdbStorageTest {
     
     @Test
     public void assertAddJobStatusTraceEvent() throws SQLException {
-        assertTrue(storage.addJobStatusTraceEvent(new JobStatusTraceEvent("test_job", "fake_task_id", "fake_slave_id", ExecutionType.READY, "0", 
-                Source.LITE_EXECUTOR, State.TASK_RUNNING, "message is empty.")));
+        assertTrue(storage.addJobStatusTraceEvent(new JobStatusTraceEvent("test_job", "fake_task_id", "fake_slave_id", Source.LITE_EXECUTOR, ExecutionType.READY, "0", 
+                State.TASK_RUNNING, "message is empty.")));
+    }
+    
+    @Test
+    public void assertAddJobStatusTraceEventWithOriginalTaskId() throws SQLException {
+        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent("test_job", "fake_failover_task_id", "fake_slave_id", Source.LITE_EXECUTOR, ExecutionType.FAILOVER, "0",
+                State.TASK_STAGING, "message is empty.");
+        jobStatusTraceEvent.setOriginalTaskId("original_fake_failover_task_id");
+        assertThat(storage.getJobStatusTraceEvents("fake_failover_task_id").size(), is(0));
+        storage.addJobStatusTraceEvent(jobStatusTraceEvent);
+        assertThat(storage.getJobStatusTraceEvents("fake_failover_task_id").size(), is(1));
     }
     
     @Test

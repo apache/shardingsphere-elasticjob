@@ -220,4 +220,16 @@ public final class FacadeServiceTest {
         facadeService.stop();
         verify(runningService).clear();
     }
+    
+    @Test
+    public void assertGetFailoverTaskId() {
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        TaskContext taskContext = TaskContext.from(taskNode.getTaskNodeValue());
+        facadeService.recordFailoverTask(taskContext);
+        verify(failoverService).add(taskContext);
+        facadeService.getFailoverTaskId(taskContext.getMetaInfo());
+        when(facadeService.getFailoverTaskId(taskContext.getMetaInfo())).thenReturn(Optional.of(taskNode.getTaskNodePath()));
+        verify(failoverService).getTaskId(taskContext.getMetaInfo());
+    }
 }

@@ -21,10 +21,11 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
@@ -134,5 +135,20 @@ public class FailoverService {
         for (TaskContext.MetaInfo each : metaInfoList) {
             regCenter.remove(FailoverNode.getFailoverTaskNodePath(each.toString()));
         }
+    }
+    
+    /**
+     * 从失效转移队列中查找任务.
+     *
+     * @param metaInfo 任务元信息
+     * @return 失效转移任务Id
+     */
+    public Optional<String> getTaskId(final MetaInfo metaInfo) {
+        String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(metaInfo.toString());
+        Optional<String> result = Optional.absent();
+        if (regCenter.isExisted(failoverTaskNodePath)) {
+            result = Optional.of(regCenter.get(failoverTaskNodePath));
+        }
+        return result;
     }
 }

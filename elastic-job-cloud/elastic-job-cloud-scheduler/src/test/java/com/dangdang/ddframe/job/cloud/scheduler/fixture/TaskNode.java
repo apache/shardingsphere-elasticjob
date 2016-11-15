@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.fixture;
 
 import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
 import com.google.common.base.Joiner;
 import lombok.Builder;
 
@@ -40,5 +41,9 @@ public final class TaskNode {
     
     public String getTaskNodeValue() {
         return Joiner.on("@-@").join(getTaskNodePath(), null == type ? ExecutionType.READY : type, null == slaveId ? "slave-S0" : slaveId, null == uuid ? "0" : uuid);
+    }
+    
+    public MetaInfo getMetaInfo() {
+        return MetaInfo.from(Joiner.on("@-@").join("test_job" , 0));
     }
 }

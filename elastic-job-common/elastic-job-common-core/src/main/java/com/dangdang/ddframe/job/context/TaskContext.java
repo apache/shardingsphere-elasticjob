@@ -58,12 +58,12 @@ public final class TaskContext {
     @Setter
     private boolean idle;
     
-    public TaskContext(final String jobName, final List<Integer> shardingItems, final ExecutionType type) {
-        this(jobName, shardingItems, type, UNASSIGNED_SLAVE_ID);
+    public TaskContext(final String jobName, final List<Integer> shardingItem, final ExecutionType type) {
+        this(jobName, shardingItem, type, UNASSIGNED_SLAVE_ID);
     }
     
-    public TaskContext(final String jobName, final List<Integer> shardingItems, final ExecutionType type, final String slaveId) {
-        metaInfo = new MetaInfo(jobName, shardingItems);
+    public TaskContext(final String jobName, final List<Integer> shardingItem, final ExecutionType type, final String slaveId) {
+        metaInfo = new MetaInfo(jobName, shardingItem);
         this.type = type;
         this.slaveId = slaveId;
         id = Joiner.on(DELIMITER).join(metaInfo, type, slaveId, UUID.randomUUID().toString());
@@ -158,7 +158,7 @@ public final class TaskContext {
         
         @Override
         public String toString() {
-            return Joiner.on(DELIMITER).join(jobName, Joiner.on(",").join(shardingItems));
+            return Joiner.on(DELIMITER).join(jobName, shardingItems.size() == 1 ? shardingItems.get(0) : Joiner.on(",").join(shardingItems));
         }
     }
 }

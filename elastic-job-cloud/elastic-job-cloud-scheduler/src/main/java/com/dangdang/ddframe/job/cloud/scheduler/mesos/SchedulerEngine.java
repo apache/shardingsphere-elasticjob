@@ -81,9 +81,9 @@ public final class SchedulerEngine implements Scheduler {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
-        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
-                taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()),
-                Source.CLOUD_SCHEDULER, State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
+        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(),
+                Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()),
+                State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
                 if ("BEGIN".equals(taskStatus.getMessage())) {

@@ -166,4 +166,16 @@ public final class FailoverServiceTest {
         verify(regCenter).remove("/state/failover/test_job/" + jobNodePath1);
         verify(regCenter).remove("/state/failover/test_job/" + jobNodePath2);
     }
+    
+    @Test
+    public void assertGetTaskId() {
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
+        when(regCenter.isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
+        when(regCenter.get("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(taskNode.getTaskNodeValue());
+        assertThat(failoverService.getTaskId(taskNode.getMetaInfo()).get(), is(taskNode.getTaskNodeValue()));
+        verify(regCenter).isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath());
+    }
+    
 }
