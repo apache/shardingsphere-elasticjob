@@ -176,8 +176,7 @@ public class LiteJobFacade implements JobFacade {
     @Override
     public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
         TaskContext taskContext = TaskContext.from(taskId);
-        JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(),
-                taskContext.getSlaveId(), Source.LITE_EXECUTOR, taskContext.getType(), taskContext.getMetaInfo().getShardingItems().toString(), state, message);
-        jobEventBus.post(jobStatusTraceEvent);
+        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(),
+                taskContext.getSlaveId(), Source.LITE_EXECUTOR, taskContext.getType(), taskContext.getMetaInfo().getShardingItems().toString(), state, message));
     }
 }

@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
-import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
@@ -91,18 +90,8 @@ public final class TaskLaunchProcessor implements Runnable {
                 taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
                 for (Protos.TaskInfo taskInfo : taskInfoList) {
                     TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
-                    MetaInfo metaInfo = taskContext.getMetaInfo();
                     facadeService.addRunning(taskContext);
-                    JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
-                            Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(metaInfo.getShardingItems()), 
-                            State.TASK_STAGING, "");
-                    if (ExecutionType.FAILOVER == taskContext.getType()) {
-                        Optional<String> taskContextOptional = facadeService.getFailoverTaskId(metaInfo);
-                        if (taskContextOptional.isPresent()) {
-                            jobStatusTraceEvent.setOriginalTaskId(taskContextOptional.get());
-                        }
-                    }
-                    jobEventBus.post(jobStatusTraceEvent);
+                    jobEventBus.post(createJobStatusTraceEvent(taskContext));
                 }
                 facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<TaskInfo, TaskContext>() {
                     
@@ -170,6 +159,19 @@ public final class TaskLaunchProcessor implements Runnable {
     
     private Protos.Resource.Builder buildResource(final String type, final double resourceValue) {
         return Protos.Resource.newBuilder().setName(type).setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(resourceValue));
+    }
+    
+    private JobStatusTraceEvent createJobStatusTraceEvent(final TaskContext taskContext) {
+        TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
+        JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
+                Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(metaInfo.getShardingItems()), State.TASK_STAGING, "");
+        if (ExecutionType.FAILOVER == taskContext.getType()) {
+            Optional<String> taskContextOptional = facadeService.getFailoverTaskId(metaInfo);
+            if (taskContextOptional.isPresent()) {
+                result.setOriginalTaskId(taskContextOptional.get());
+            }
+        }
+        return result;
     }
     
     private List<Protos.OfferID> getOfferIDs(final List<VirtualMachineLease> leasesUsed) {
