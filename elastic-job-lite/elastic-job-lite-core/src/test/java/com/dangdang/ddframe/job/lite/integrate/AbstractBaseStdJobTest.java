@@ -212,7 +212,7 @@ public abstract class AbstractBaseStdJobTest {
         if (disabled) {
             assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
             while (null != regCenter.get("/" + jobName + "/leader/election/host")) {
-                BlockUtils.sleep(100L);
+                BlockUtils.waitingShortTime();
             }
         } else {
             assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
