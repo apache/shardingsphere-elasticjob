@@ -170,6 +170,10 @@ class JobEventRdbStorage {
     
     boolean addJobStatusTraceEvent(final JobStatusTraceEvent jobStatusTraceEvent) {
         // TODO 判断是否staging,是的话获取oriTaskID
+        String originalTaskId = jobStatusTraceEvent.getOriginalTaskId();
+        if (State.TASK_STAGING != jobStatusTraceEvent.getState()) {
+            originalTaskId = getOriginalTaskId(jobStatusTraceEvent.getTaskId());
+        }
         boolean result = false;
         String sql = "INSERT INTO `" + TABLE_JOB_STATUS_TRACE_LOG + "` (`id`, `job_name`, `original_task_id`, `task_id`, `slave_id`, `source`, `execution_type`, `sharding_item`,  " 
                 + "`state`, `message`, `creation_time`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -178,7 +182,7 @@ class JobEventRdbStorage {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, UUID.randomUUID().toString());
             preparedStatement.setString(2, jobStatusTraceEvent.getJobName());
-            preparedStatement.setString(3, jobStatusTraceEvent.getOriginalTaskId());
+            preparedStatement.setString(3, originalTaskId);
             preparedStatement.setString(4, jobStatusTraceEvent.getTaskId());
             preparedStatement.setString(5, jobStatusTraceEvent.getSlaveId());
             preparedStatement.setString(6, jobStatusTraceEvent.getSource().toString());
@@ -189,6 +193,24 @@ class JobEventRdbStorage {
             preparedStatement.setTimestamp(11, new Timestamp(jobStatusTraceEvent.getCreationTime().getTime()));
             preparedStatement.execute();
             result = true;
+        } catch (final SQLException ex) {
+            // TODO 记录失败直接输出日志,未来可考虑配置化
+            log.error(ex.getMessage());
+        }
+        return result;
+    }
+    
+    private String getOriginalTaskId(final String taskId) {
+        String sql = String.format("SELECT original_task_id FROM %s WHERE task_id = '%s' and state='" + State.TASK_STAGING + "'", TABLE_JOB_STATUS_TRACE_LOG, taskId);
+        String result = "";
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                ResultSet resultSet = preparedStatement.executeQuery()
+        ) {
+            while (resultSet.next()) {
+                return resultSet.getString("original_task_id");
+            }
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error(ex.getMessage());

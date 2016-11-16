@@ -17,6 +17,9 @@
 
 package com.dangdang.ddframe.job.exception;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -25,6 +28,7 @@ import java.io.StringWriter;
  *
  * @author caohao
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExceptionUtil {
     
     public static String transform(final Throwable cause) {

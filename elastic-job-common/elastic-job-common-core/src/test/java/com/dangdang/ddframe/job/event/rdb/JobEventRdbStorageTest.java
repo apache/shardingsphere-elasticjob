@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -61,13 +62,29 @@ public class JobEventRdbStorageTest {
     }
     
     @Test
-    public void assertAddJobStatusTraceEventWithOriginalTaskId() throws SQLException {
+    public void assertAddJobStatusTraceEventWhenFailoverWithTaskStagingState() throws SQLException {
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent("test_job", "fake_failover_task_id", "fake_slave_id", Source.LITE_EXECUTOR, ExecutionType.FAILOVER, "0",
                 State.TASK_STAGING, "message is empty.");
         jobStatusTraceEvent.setOriginalTaskId("original_fake_failover_task_id");
         assertThat(storage.getJobStatusTraceEvents("fake_failover_task_id").size(), is(0));
         storage.addJobStatusTraceEvent(jobStatusTraceEvent);
         assertThat(storage.getJobStatusTraceEvents("fake_failover_task_id").size(), is(1));
+    }
+    
+    @Test
+    public void assertAddJobStatusTraceEventWhenFailoverWithTaskFailedState() throws SQLException {
+        JobStatusTraceEvent stagingJobStatusTraceEvent = new JobStatusTraceEvent("test_job", "fake_failed_failover_task_id", "fake_slave_id", Source.LITE_EXECUTOR, ExecutionType.FAILOVER, "0",
+                State.TASK_STAGING, "message is empty.");
+        stagingJobStatusTraceEvent.setOriginalTaskId("original_fake_failed_failover_task_id");
+        storage.addJobStatusTraceEvent(stagingJobStatusTraceEvent);
+        JobStatusTraceEvent failedJobStatusTraceEvent = new JobStatusTraceEvent("test_job", "fake_failed_failover_task_id", "fake_slave_id", Source.LITE_EXECUTOR, ExecutionType.FAILOVER, "0",
+                State.TASK_FAILED, "message is empty.");
+        storage.addJobStatusTraceEvent(failedJobStatusTraceEvent);
+        List<JobStatusTraceEvent> jobStatusTraceEvents = storage.getJobStatusTraceEvents("fake_failed_failover_task_id");
+        assertThat(jobStatusTraceEvents.size(), is(2));
+        for (JobStatusTraceEvent jobStatusTraceEvent : jobStatusTraceEvents) {
+            assertThat(jobStatusTraceEvent.getOriginalTaskId(), is("original_fake_failed_failover_task_id"));
+        }
     }
     
     @Test
