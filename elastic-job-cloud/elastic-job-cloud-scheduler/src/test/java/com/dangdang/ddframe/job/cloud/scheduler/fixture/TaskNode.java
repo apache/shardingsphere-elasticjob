@@ -44,6 +44,6 @@ public final class TaskNode {
     }
     
     public MetaInfo getMetaInfo() {
-        return MetaInfo.from(Joiner.on("@-@").join("test_job" , 0));
+        return MetaInfo.from(Joiner.on("@-@").join("test_job", 0));
     }
 }

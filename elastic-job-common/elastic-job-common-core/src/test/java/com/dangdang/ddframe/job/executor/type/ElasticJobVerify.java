@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.executor.type;
 
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -42,6 +43,7 @@ final class ElasticJobVerify {
             throw new RuntimeException(ex);
         }
         verify(jobFacade).getShardingContexts();
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), JobStatusTraceEvent.State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade).cleanPreviousExecutionInfo();
         verify(jobFacade).beforeJobExecuted(shardingContexts);

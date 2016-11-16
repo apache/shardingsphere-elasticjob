@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.executor.type;
 
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
@@ -89,8 +90,9 @@ public final class SimpleJobExecutorTest {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true);
         simpleJobExecutor.execute();
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format("Previous job %s, shardingItems %s is still running,"
-                + " misfired job will start after previous job completed.", "test_job", shardingContexts.getShardingItemParameters().keySet()));
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, 
+                "Previous job 'test_job' - shardingItems '[]' is still running, misfired job will start after previous job completed.");
         verify(jobFacade).checkJobExecutionEnvironment();
         verify(jobFacade).getShardingContexts();
         verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
@@ -102,6 +104,8 @@ public final class SimpleJobExecutorTest {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         simpleJobExecutor.execute();
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, "Sharding item for job 'test_job' is empty.");
         verify(jobFacade).checkJobExecutionEnvironment();
         verify(jobFacade).getShardingContexts();
         verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
@@ -124,6 +128,15 @@ public final class SimpleJobExecutorTest {
         try {
             simpleJobExecutor.execute();
         } finally {
+            verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+            verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_RUNNING, "");
+            String errorMessage;
+            if (1 == shardingContexts.getShardingItemParameters().size()) {
+                errorMessage = "{0=java.lang.RuntimeException\n}";
+            } else {
+                errorMessage = "{0=java.lang.RuntimeException\n, 1=java.lang.RuntimeException\n}";
+            }
+            verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, errorMessage);
             verify(jobFacade).checkJobExecutionEnvironment();
             verify(jobFacade).getShardingContexts();
             verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
@@ -146,6 +159,8 @@ public final class SimpleJobExecutorTest {
     private void assertExecuteWhenRunOnceSuccess(final ShardingContexts shardingContexts) {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         simpleJobExecutor.execute();
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, "");
         ElasticJobVerify.verifyForIsNotMisfire(jobFacade, shardingContexts);
         verify(jobCaller, times(shardingContexts.getShardingTotalCount())).execute();
     }
@@ -180,7 +195,8 @@ public final class SimpleJobExecutorTest {
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true, false);
         when(jobFacade.isNeedSharding()).thenReturn(false);
         simpleJobExecutor.execute();
-        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "");
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), JobStatusTraceEvent.State.TASK_STAGING, "Job 'test_job' execute begin.");
+        verify(jobFacade, times(2)).postJobStatusTraceEvent(shardingContexts.getTaskId(), JobStatusTraceEvent.State.TASK_RUNNING, "");
         verify(jobFacade).checkJobExecutionEnvironment();
         verify(jobFacade).getShardingContexts();
         verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());

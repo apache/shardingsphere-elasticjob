@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -147,18 +148,20 @@ public final class TaskContext {
          */
         public static MetaInfo from(final String value) {
             String[] result = value.split(DELIMITER);
-            Preconditions.checkState(2 == result.length || 5 == result.length);
-            return new MetaInfo(result[0], Lists.transform(Splitter.on(",").splitToList(result[1]), new Function<String, Integer>() {
-                @Override
-                public Integer apply(final String input) {
-                    return Integer.parseInt(input);
-                }
-            }));
+            Preconditions.checkState(1 == result.length || 2 == result.length || 5 == result.length);
+            return new MetaInfo(result[0], 1 == result.length || "".equals(result[1]) ? Collections.<Integer>emptyList() : Lists.transform(Splitter.on(",").splitToList(result[1]), 
+                    new Function<String, Integer>() {
+                        
+                        @Override
+                        public Integer apply(final String input) {
+                            return Integer.parseInt(input);
+                        }
+                    }));
         }
         
         @Override
         public String toString() {
-            return Joiner.on(DELIMITER).join(jobName, shardingItems.size() == 1 ? shardingItems.get(0) : Joiner.on(",").join(shardingItems));
+            return Joiner.on(DELIMITER).join(jobName, Joiner.on(",").join(shardingItems));
         }
     }
 }

@@ -36,6 +36,8 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,6 +47,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
+@Slf4j
 public class LiteJobFacade implements JobFacade {
     
     private final ConfigurationService configService;
@@ -178,5 +181,8 @@ public class LiteJobFacade implements JobFacade {
         TaskContext taskContext = TaskContext.from(taskId);
         jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(),
                 taskContext.getSlaveId(), Source.LITE_EXECUTOR, taskContext.getType(), taskContext.getMetaInfo().getShardingItems().toString(), state, message));
+        if (!Strings.isNullOrEmpty(message)) {
+            log.trace(message);
+        }
     }
 }
