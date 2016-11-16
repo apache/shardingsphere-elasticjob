@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.executor.type;
 
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
@@ -88,6 +89,8 @@ public final class SimpleJobExecutorTest {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true);
         simpleJobExecutor.execute();
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format("Previous job %s, shardingItems %s is still running,"
+                + " misfired job will start after previous job completed.", "test_job", shardingContexts.getShardingItemParameters().keySet()));
         verify(jobFacade).checkJobExecutionEnvironment();
         verify(jobFacade).getShardingContexts();
         verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
@@ -177,6 +180,7 @@ public final class SimpleJobExecutorTest {
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true, false);
         when(jobFacade.isNeedSharding()).thenReturn(false);
         simpleJobExecutor.execute();
+        verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "");
         verify(jobFacade).checkJobExecutionEnvironment();
         verify(jobFacade).getShardingContexts();
         verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
