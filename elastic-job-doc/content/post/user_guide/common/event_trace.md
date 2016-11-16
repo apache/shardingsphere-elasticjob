@@ -24,11 +24,13 @@ weight=30
 | ----------------- |:------------|:--------|:------------------------------------------------------------------------------------------------|
 |id                 |VARCHAR(40)  |`是`     | 主键                                                                                             |
 |job_name           |VARCHAR(100) |`是`     | 作业名称                                                                                          |
+|task_id            |VARCHAR(1000)|`是`     | 任务名称                                                                                          |
 |hostname           |VARCHAR(255) |`是`     | 主机名称                                                                                          |
+|ip                 |VARCHAR(50)  |`是`     | 主机IP                                                                                          |
 |sharding_item      |INT          |`是`     | 分片项                                                                                            |
 |execution_source   |VARCHAR(20)  |`是`     | 作业执行来源。可选值为`NORMAL_TRIGGER`, `MISFIRE`, `FAILOVER`                                       |
-|is_success         |BIT          |`是`     | 是否执行成功                                                                                       |
 |failure_cause      |VARCHAR(2000)|否       | 执行失败原因                                                                                       |
+|is_success         |BIT          |`是`     | 是否执行成功                                                                                       |
 |start_time         |TIMESTAMP    |`是`     | 作业开始执行时间                                                                                   |
 |complete_time      |TIMESTAMP    |否       | 作业结束执行时间                                                                                   |
 
@@ -41,16 +43,21 @@ weight=30
 
 ***
 
-`JOB_TRACE_LOG`字段含义
+`JOB_STATUS_TRACE_LOG`字段含义
 
-| 字段名称           | 字段类型     | 是否必填 | 描述                                                                                             |
-| ----------------- |:------------|:--------|:------------------------------------------------------------------------------------------------|
-|id                 |VARCHAR(40)  |`是`     | 主键                                                                                             |
-|job_name           |VARCHAR(100) |`是`     | 作业名称                                                                                          |
-|hostname           |VARCHAR(255) |`是`     | 主机名称                                                                                          |
-|log_level          |CHAR(5)      |`是`     | 日志级别。可选值为`TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`                                        |
-|message            |VARCHAR(2000)|`是`     | 相关信息                                                                                          |
-|failure_cause      |VARCHAR(2000)|否       | 执行失败原因                                                                                       |
-|creation_time      |TIMESTAMP    |`是`     | 记录创建时间                                                                                       |
+| 字段名称           | 字段类型     | 是否必填 | 描述                                                                                                                       |
+| ----------------- |:------------|:--------|:--------------------------------------------------------------------------------------------------------------------------|
+|id                 |VARCHAR(40)  |`是`     | 主键                                                                                                                       |
+|job_name           |VARCHAR(100) |`是`     | 作业名称                                                                                                                    |
+|hostname           |VARCHAR(255) |`是`     | 主机名称                                                                                                                    |
+|original_task_id   |VARCHAR(1000)|`是`     | 原任务名称                                                                                                                  |
+|task_id            |VARCHAR(1000)|`是`     | 任务名称                                                                                                                    |
+|slave_id           |VARCHAR(1000)|`是`     | slave名称                                                                                                                  |
+|source             |VARCHAR(50)  |`是`     | 任务执行源..可选值为`CLOUD_SCHEDULER`, `CLOUD_EXECUTOR`, `LITE_EXECUTOR`                                                     |
+|execution_type     |VARCHAR(20)  |`是`     | 任务执行类型.可选值为`NORMAL_TRIGGER`, `MISFIRE`, `FAILOVER`                                                                 |
+|sharding_item      |VARCHAR(255) |`是`     | 分片项                                                                                                                     |
+|state              |VARCHAR(20)  |`是`     | 任务执行状态.可选值为`TASK_STAGING`, `TASK_RUNNING`, `TASK_FINISHED`, `TASK_KILLED`, `TASK_LOST`, `TASK_FAILED`, `TASK_ERROR`|
+|message            |VARCHAR(2000)|`是`     | 相关信息                                                                                                                    |
+|creation_time      |TIMESTAMP    |`是`     | 记录创建时间                                                                                                                |
 
-`JOB_TRACE_LOG`记录作业运行痕迹表，可作为运行日志查看，原理同log框架，只能写入比配置日志级别更高的数据。
+`JOB_STATUS_TRACE_LOG`记录作业运行痕迹表，可作为运行日志查看，原理同log框架，只能写入比配置日志级别更高的数据。
