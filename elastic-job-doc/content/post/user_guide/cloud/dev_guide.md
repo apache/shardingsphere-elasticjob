@@ -124,9 +124,9 @@ public class JobDemo {
 ## 其他功能
 
 ### 1. 作业事件追踪
-`elastic-job`在配置中提供了`JobEventConfiguration`，目前支持数据库方式配置。
+作业事件追踪目前支持数据库方式配置。
 
-更多信息请参见[Elastic-Job事件追踪](../../common/event_trace/)及[]。
+更多信息请参见[Elastic-Job事件追踪](../../common/event_trace/)。
 
 ### 2. 异常处理
 
