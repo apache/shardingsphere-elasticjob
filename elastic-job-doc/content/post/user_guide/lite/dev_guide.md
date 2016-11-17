@@ -162,15 +162,13 @@ echo sharding execution context is $*
     <job:script id="scriptElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" script-command-line="/your/file/path/demo.sh" />
     
     <!-- 配置带监听的简单作业-->
-    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
+    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
         <job:listener class="xx.MySimpleJobListener"/>
         <job:distributed-listener class="xx.MyOnceSimpleJobListener" started-timeout-milliseconds="1000" completed-timeout-milliseconds="2000" />
     </job:simple>
     
-    <!-- 配置带数据库和日志作业事件监听的简单作业-->
-    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C">
-        <job:event-log />
-        <job:event-rdb driver="org.h2.Driver" url="jdbc:h2:mem:job_event_bus" username="sa" password=""  log-level="INFO" />
+    <!-- 配置带作业数据库事件追踪的简单作业-->
+    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" event-trace-rdb-data-source="yourDataSource">
     </job:simple>
 </beans>
 ```
@@ -196,6 +194,7 @@ echo sharding execution context is $*
 |disabled                            |boolean|否      |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
 |overwrite                           |boolean|否      |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
 |jobProperties                       |String |否      |     | 作业定制化属性，目前支持`job_exception_handler`和`executor_service_handler`，用于扩展异常处理和自定义作业处理线程池 |
+|event-trace-rdb-data-source         |String |否      |     | 作业事件追踪的数据源`Bean`引用|
 
 #### job:dataflow命名空间属性详细说明
 
@@ -230,22 +229,6 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 |class                           |String |`是`   |              | 前置后置任务分布式监听实现类，需继承`AbstractDistributeOnceElasticJobListener`类                      |
 |started-timeout-milliseconds    |long   |`否`   |Long.MAX_VALUE| 最后一个作业执行前的执行方法的超时时间<br />单位：毫秒|
 |completed-timeout-milliseconds  |long   |`否`   |Long.MAX_VALUE| 最后一个作业执行后的执行方法的超时时间<br />单位：毫秒|
-
-#### job:event-log命名空间详细说明
-
-`job:event-log`必须配置为`job:bean`的子元素，表示以日志文件的形式记录作业事件
-
-#### job:event-rdb命名空间属性详细说明
-
-`job:event-rdb`必须配置为`job:bean`的子元素，表示以数据库的形式记录作业事件
-
-| 属性名                          | 类型  |是否必填|缺省值         | 描述                                                                                      |
-| ------------------------------ |:------|:------|:-------------|:-----------------------------------------------------------------------------------------|
-|driver                          |String |`是`   |              | 数据库驱动类名                                                                             |
-|url                             |String |`是`   |              | 数据库URL地址                                                                              |
-|username                        |String |`是`   |              | 数据库用户名                                                                               |
-|password                        |String |`是`   |              | 数据库用户名                                                                               |
-|log-level                       |Enum   |`是`   |              | 日志级别，可配置为`TRACE`,`DEBUG`,`INFO`,`WARN`,`ERROR`。<br />默认为`INFO`                  |
 
 #### reg:bean命名空间属性详细说明
 
@@ -292,23 +275,18 @@ public class JobDemo {
 ## 其他功能
 
 ### 1. 作业事件追踪
-`elastic-job`在配置中提供了`JobEventConfiguration`，目前支持数据库和日志文件两种方式配置，默认为日志文件方式。
+`elastic-job`在配置中提供了`JobEventConfiguration`，目前支持数据库方式配置。
 
 ```java
-    // 定义日志文件事件溯源配置
-    JobEventConfiguration jobLogEventConfig = new JobEventLogConfiguration();
-    
-    // 定义数据库日志文件事件溯源配置
-    JobEventConfiguration jobRdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_bus", "sa", "", LogLevel.INFO);
-    
-    // 定义SIMPLE作业类型，使用日志文件方式
-    SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, SimpleDemoJob.class.getCanonicalName()).jobEventConfiguration(jobLogEventConfig);
-    
-    // 定义DATAFLOW作业类型，使用数据库方式
-    DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName()).jobEventConfiguration(jobRdbEventConfig);
-    
-    // 定义SCRIPT类型配置，使用日志文件和数据库方式
-    ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(scriptCoreConfig, "test.sh").jobEventConfiguration(jobLogEventConfig, jobRdbEventConfig);
+    // 初始化数据源
+    DataSource dataSource = ...;
+    // 定义日志数据库事件溯源配置
+    JobEventConfiguration jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
+    // 初始化注册中心
+    CoordinatorRegistryCenter regCenter = ...;
+    // 初始化作业配置
+    LiteJobConfiguration liteJobConfig = ...;
+    new JobScheduler(regCenter, liteJobConfig, jobEventRdbConfig).init(); 
 ```
 
 更多信息请参见[Elastic-Job事件追踪](../../common/event_trace/)。

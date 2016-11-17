@@ -124,26 +124,9 @@ public class JobDemo {
 ## 其他功能
 
 ### 1. 作业事件追踪
-`elastic-job`在配置中提供了`JobEventConfiguration`，目前支持数据库和日志文件两种方式配置，默认为日志文件方式。
+`elastic-job`在配置中提供了`JobEventConfiguration`，目前支持数据库方式配置。
 
-```java
-    // 定义日志文件事件溯源配置
-    JobEventConfiguration jobLogEventConfig = new JobEventLogConfiguration();
-    
-    // 定义数据库日志文件事件溯源配置
-    JobEventConfiguration jobRdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_bus", "sa", "", LogLevel.INFO);
-    
-    // 定义SIMPLE作业类型，使用日志文件方式
-    SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, SimpleDemoJob.class.getCanonicalName()).jobEventConfiguration(jobLogEventConfig);
-    
-    // 定义DATAFLOW作业类型，使用数据库方式
-    DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName()).jobEventConfiguration(jobRdbEventConfig);
-    
-    // 定义SCRIPT类型配置，使用日志文件和数据库方式
-    ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(scriptCoreConfig, "test.sh").jobEventConfiguration(jobLogEventConfig, jobRdbEventConfig);
-```
-
-更多信息请参见[Elastic-Job事件追踪](../../common/event_trace/)。
+更多信息请参见[Elastic-Job事件追踪](../../common/event_trace/)及[]。
 
 ### 2. 异常处理
 
