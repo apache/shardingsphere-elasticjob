@@ -49,7 +49,7 @@ public final class TaskExecutor implements Executor {
     
     private final ExecutorService executorService;
     
-    private JobEventBus jobEventBus = new JobEventBus();
+    private volatile JobEventBus jobEventBus = new JobEventBus();
     
     public TaskExecutor() {
         executorService = new ExecutorServiceObject("cloud-task-executor", Runtime.getRuntime().availableProcessors() * 100).createExecutorService();
