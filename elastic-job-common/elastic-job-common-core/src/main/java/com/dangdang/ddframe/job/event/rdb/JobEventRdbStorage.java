@@ -243,10 +243,13 @@ class JobEventRdbStorage {
         ) {
             if (resultSet.next()) {
                 return resultSet.getString("original_task_id");
+            } else {
+                System.out.println("-----------getOriginalTaskId()");
             }
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error(ex.getMessage());
+            System.out.println("-----------getOriginalTaskId() Exception");
         }
         return result;
     }

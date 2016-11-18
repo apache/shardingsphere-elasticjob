@@ -7,7 +7,7 @@ weight=1
 
 # Release Notes
 
-## 2.0.2-SNAPSHOT
+## 2.0.2
 
 ### 缺陷修正
 
