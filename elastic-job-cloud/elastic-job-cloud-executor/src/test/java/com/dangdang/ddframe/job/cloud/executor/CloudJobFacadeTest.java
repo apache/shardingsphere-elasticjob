@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.cloud.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
+import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.api.JobType;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -151,7 +151,7 @@ public class CloudJobFacadeTest {
     }
     
     @Test
-    public void assertPostJobEvent() {
+    public void assertPostJobExecutionEvent() {
         jobFacade.postJobExecutionEvent(null);
         verify(eventBus).post(null);
     }

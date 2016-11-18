@@ -50,7 +50,7 @@ class JobEventRdbStorage {
     
     private static final String TABLE_JOB_STATUS_TRACE_LOG = "JOB_STATUS_TRACE_LOG";
     
-    private static final String TASK_ID_INDEX = "TASK_ID_INDEX";
+    private static final String TASK_ID_STATE_INDEX = "TASK_ID_STATE_INDEX";
     
     private final DataSource dataSource;
     
@@ -82,7 +82,7 @@ class JobEventRdbStorage {
                 createJobStatusTraceTable(conn);
             }
         }
-        createTaskIdIndexIfNeeded(conn, TABLE_JOB_STATUS_TRACE_LOG, TASK_ID_INDEX);
+        createTaskIdIndexIfNeeded(conn, TABLE_JOB_STATUS_TRACE_LOG, TASK_ID_STATE_INDEX);
     }
     
     private void createTaskIdIndexIfNeeded(final Connection conn, final String tableName, final String indexName) throws SQLException {
@@ -95,7 +95,7 @@ class JobEventRdbStorage {
                 }
             }
             if (!hasTaskIdIndex) {
-                createTaskIdIndex(conn, tableName);
+                createTaskIdAndStateIndex(conn, tableName);
             }
         }
     }
@@ -138,8 +138,8 @@ class JobEventRdbStorage {
         }
     }
     
-    private void createTaskIdIndex(final Connection conn, final String tableName) throws SQLException {
-        String sql = "CREATE INDEX " + TASK_ID_INDEX + " ON " + tableName + " (`task_id`);";
+    private void createTaskIdAndStateIndex(final Connection conn, final String tableName) throws SQLException {
+        String sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`, `state`);";
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.execute();
         }
