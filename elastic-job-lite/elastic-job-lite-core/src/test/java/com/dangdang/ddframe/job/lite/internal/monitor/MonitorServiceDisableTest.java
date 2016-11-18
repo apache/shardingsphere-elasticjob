@@ -20,9 +20,7 @@ package com.dangdang.ddframe.job.lite.internal.monitor;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
 import org.junit.Test;
-import org.junit.Ignore;
 import java.io.IOException;
-
 
 public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
     
@@ -31,7 +29,6 @@ public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {
     }
     
     @Test(expected = IOException.class)
-    @Ignore
     public void assertMonitorWithDumpCommand() throws IOException {
         SocketUtils.sendCommand(MonitorService.DUMP_COMMAND, 9000);
     }

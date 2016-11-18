@@ -54,7 +54,7 @@ public final class JavaLiteJobMain {
 //    private static final String EVENT_RDB_STORAGE_DRIVER = "com.mysql.jdbc.Driver";
     
     private static final String EVENT_RDB_STORAGE_URL = "jdbc:h2:mem:job_event_storage";
-//    private static final String EVENT_RDB_STORAGE_URL = "jdbc:mysql://localhost:3306/elastic-job-cloud-log";
+//    private static final String EVENT_RDB_STORAGE_URL = "jdbc:mysql://localhost:3306/elastic_job_log";
     
     private static final String EVENT_RDB_STORAGE_USERNAME = "sa";
     

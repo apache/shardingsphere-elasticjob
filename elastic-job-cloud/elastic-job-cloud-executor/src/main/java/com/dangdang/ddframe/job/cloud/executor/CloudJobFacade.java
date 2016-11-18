@@ -115,7 +115,7 @@ public class CloudJobFacade implements JobFacade {
     @Override
     public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
         TaskContext taskContext = TaskContext.from(taskId);
-        jobEventBus.post(new JobStatusTraceEvent(taskContext.getId(), taskContext.getMetaInfo().getJobName(),
-                taskContext.getSlaveId(), Source.CLOUD_EXECUTOR, taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
+        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
+                Source.CLOUD_EXECUTOR, taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
     }
 }
