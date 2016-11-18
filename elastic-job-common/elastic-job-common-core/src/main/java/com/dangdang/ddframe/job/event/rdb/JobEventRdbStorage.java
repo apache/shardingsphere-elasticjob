@@ -234,7 +234,7 @@ class JobEventRdbStorage {
     }
     
     private String getOriginalTaskId(final String taskId) {
-        String sql = String.format("SELECT original_task_id FROM %s WHERE task_id = '%s' and state='" + State.TASK_STAGING + "'", TABLE_JOB_STATUS_TRACE_LOG, taskId);
+        String sql = String.format("SELECT original_task_id FROM %s WHERE task_id = '%s' and state='%s'", TABLE_JOB_STATUS_TRACE_LOG, taskId, State.TASK_STAGING);
         String result = "";
         try (
                 Connection conn = dataSource.getConnection();
