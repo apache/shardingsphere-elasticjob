@@ -131,10 +131,11 @@ public final class SimpleJobExecutorTest {
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_RUNNING, "");
             String errorMessage;
+            String lineSeparator = System.getProperty("line.separator");
             if (1 == shardingContexts.getShardingItemParameters().size()) {
-                errorMessage = "{0=java.lang.RuntimeException\n}";
+                errorMessage = "{0=java.lang.RuntimeException" + lineSeparator + "}";
             } else {
-                errorMessage = "{0=java.lang.RuntimeException\n, 1=java.lang.RuntimeException\n}";
+                errorMessage = "{0=java.lang.RuntimeException" + lineSeparator + ", 1=java.lang.RuntimeException" + lineSeparator + "}";
             }
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, errorMessage);
             verify(jobFacade).checkJobExecutionEnvironment();
