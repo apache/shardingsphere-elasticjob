@@ -41,12 +41,13 @@ url：`job/register`
 |memoryMB                            |double |`是`    |       | 单片作业所需要的内存`MB`，最小值为`32`                                                |
 |appURL                              |String |`是`    |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
 |bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`。                                                      |
-|sharding-item-parameters            |String |否      |       | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从`0`开始，不可大于或等于作业分片总数<br />如：<br/>`0=a,1=b,2=c`|
-|job-parameter                       |String |否      |       | 作业自定义参数<br />作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
+|shardingItemParameters              |String |否      |       | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从`0`开始，不可大于或等于作业分片总数<br />如：<br/>`0=a,1=b,2=c`|
+|jobParameter                        |String |否      |       | 作业自定义参数<br />作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
 |failover                            |boolean|否      |`false`| 是否开启失效转移                                                                    |
 |misfire                             |boolean|否      |`false`| 是否开启错过任务重新执行                                                             |
 |beanName                            |String |否      |       | `Spring`容器中配置的`bean`名称                                                      |
 |applicationContext                  |String |否      |       | `Spring`方式配置`Spring`配置文件相对路径以及名称，如：`META-INF\applicationContext.xml`|
+|streamingProcess                    |boolean|否      |`false`| `DATAFLOW`类型作业，是否流式处理数据<br />如果流式处理数据, 则`fetchData`不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
 |scriptCommandLine                   |String |否      |       | `SCRIPT`类型作业命令行执行脚本                                                      |
 |jobProperties                       |String |否      |       | 作业定制化属性，目前支持`job_exception_handler`和`executor_service_handler`，用于扩展异常处理和自定义作业处理线程池 |
 |description                         |String |否      |       | 作业描述信息                                                                       |
