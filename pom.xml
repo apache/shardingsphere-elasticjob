@@ -19,7 +19,7 @@
         <maven.version.range>[3.0.4,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
-
+        
         <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
         
         <lombok.version>1.16.4</lombok.version>

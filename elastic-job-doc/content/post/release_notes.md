@@ -7,6 +7,12 @@ weight=1
 
 # Release Notes
 
+## 2.0.3-SNAPSHOT
+
+### 缺陷修正
+
+1. [ISSUE #177](https://github.com/dangdangdotcom/elastic-job/issues/177) 2.0.2版本Spring命名空间的job:script空指针
+
 ## 2.0.2
 
 ### 缺陷修正

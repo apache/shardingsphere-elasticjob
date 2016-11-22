@@ -57,6 +57,6 @@ public class SpringJobScheduler extends JobScheduler {
     
     @Override
     protected Optional<ElasticJob> createElasticJobInstance() {
-        return Optional.of(elasticJob);
+        return Optional.fromNullable(elasticJob);
     }
 }
