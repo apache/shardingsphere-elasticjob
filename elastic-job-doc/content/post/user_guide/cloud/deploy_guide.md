@@ -100,3 +100,19 @@ url：`job/deregister`
 ```shell
 curl -l -H "Content-type: application/json" -X DELETE -d 'foo_job' http://elastic_job_cloud_host:8899/job/deregister
 ```
+
+### 触发一次作业
+
+url：`job/trigger`
+
+方法：`POST`
+
+参数类型：`application/json`
+
+参数：作业名称
+
+说明：即事件驱动，通过调用`API`而非定时的触发作业。目前仅对`Transient`作业类型生效。
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 'foo_job' http://elastic_job_cloud_host:8899/job/trigger
+```

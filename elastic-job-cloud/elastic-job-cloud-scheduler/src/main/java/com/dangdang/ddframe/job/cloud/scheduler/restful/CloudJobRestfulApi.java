@@ -19,11 +19,16 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
+import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
+import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.apache.mesos.SchedulerDriver;
 
@@ -50,11 +55,17 @@ public final class CloudJobRestfulApi {
     
     private final LifecycleService lifecycleService;
     
+    private final ConfigurationService configService;
+    
+    private final ReadyService readyService;
+    
     public CloudJobRestfulApi() {
         Preconditions.checkNotNull(schedulerDriver);
         Preconditions.checkNotNull(regCenter);
         producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         lifecycleService = new LifecycleService(schedulerDriver);
+        configService = new ConfigurationService(regCenter);
+        readyService = new ReadyService(regCenter);
     }
     
     /**
@@ -104,5 +115,21 @@ public final class CloudJobRestfulApi {
     public void deregister(final String jobName) {
         producerManager.deregister(jobName);
         lifecycleService.killJob(jobName);
+    }
+    
+    /**
+     * 触发一次作业.
+     *
+     * @param jobName 作业名称
+     */
+    @POST
+    @Path("/trigger")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void trigger(final String jobName) {
+        Optional<CloudJobConfiguration> config = configService.load(jobName);
+        if (config.isPresent() && JobExecutionType.DAEMON == config.get().getJobExecutionType()) {
+            throw new JobSystemException("Daemon job '%s' cannot support trigger.", jobName);
+        }
+        readyService.addTransient(jobName);
     }
 }

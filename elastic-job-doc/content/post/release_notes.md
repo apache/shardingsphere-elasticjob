@@ -13,6 +13,10 @@ weight=1
 
 1. [ISSUE #177](https://github.com/dangdangdotcom/elastic-job/issues/177) 2.0.2版本Spring命名空间的job:script空指针
 
+### 新功能
+
+1. [ISSUE #178](https://github.com/dangdangdotcom/elastic-job/issues/178) 事件驱动触发作业
+
 ## 2.0.2
 
 ### 缺陷修正
