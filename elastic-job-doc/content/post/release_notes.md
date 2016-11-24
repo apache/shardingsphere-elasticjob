@@ -17,6 +17,10 @@ weight=1
 
 1. [ISSUE #178](https://github.com/dangdangdotcom/elastic-job/issues/178) 事件驱动触发作业
 
+### 功能提升
+
+1. [ISSUE #179](https://github.com/dangdangdotcom/elastic-job/issues/179) Transient的Script类型作业优化，无需Java的Executor支持
+
 ## 2.0.2
 
 ### 缺陷修正

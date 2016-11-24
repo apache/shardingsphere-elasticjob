@@ -54,6 +54,8 @@ url：`job/register`
 
 注册的作业可用`Java`和`Spring`两种启动方式，作业启动在[开发指南](../dev_guide/)中有说明，这里只举例说明两种方式如何注册。
 
+使用`Transient`的`Script`类型作业可直接将`shell`上传至`appURL`，而无需打成`java`包。如果只有单个`shell`文件可无需压缩。如是复杂`shell`或`python`等应用，仍可上传`tar`包，支持各种常见压缩格式。
+
 **Java启动方式作业注册**
 
 ```shell

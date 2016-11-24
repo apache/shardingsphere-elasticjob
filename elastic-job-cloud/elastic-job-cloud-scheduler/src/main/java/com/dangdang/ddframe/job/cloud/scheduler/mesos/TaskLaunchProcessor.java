@@ -17,8 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
+import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
@@ -28,7 +30,9 @@ import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.protobuf.ByteString;
@@ -38,6 +42,7 @@ import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
@@ -130,35 +135,64 @@ public final class TaskLaunchProcessor implements Runnable {
         }
         taskContext.setSlaveId(slaveID.getValue());
         CloudJobConfiguration jobConfig = jobConfigOptional.get();
+        ShardingContexts shardingContexts = getShardingContexts(taskContext, jobConfig);
+        boolean useDefaultExecutor = JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
+        Protos.CommandInfo.URI uri = buildURI(jobConfig.getAppURL(), useDefaultExecutor);
+        Protos.CommandInfo command = buildCommand(uri, jobConfig.getBootstrapScript(), shardingContexts, useDefaultExecutor);
+        return buildTaskInfo(taskContext, jobConfig, shardingContexts, slaveID, command, useDefaultExecutor);
+    }
+    
+    private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudJobConfiguration jobConfig) {
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         int shardingItem = taskContext.getMetaInfo().getShardingItems().get(0);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
-        ShardingContexts shardingContexts = new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
+        return new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
                 jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);
-        Protos.CommandInfo.URI uri = Protos.CommandInfo.URI.newBuilder().setValue(jobConfig.getAppURL()).setExtract(true)
-                .setCache(BootstrapEnvironment.getInstance().getFrameworkConfiguration().isAppCacheEnable()).build();
-        Protos.CommandInfo command = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true).setValue(jobConfig.getBootstrapScript()).build();
-        Protos.Resource.Builder cpus = buildResource("cpus", jobConfig.getCpuCount());
-        Protos.Resource.Builder mem = buildResource("mem", jobConfig.getMemoryMB());
-        Protos.ExecutorInfo.Builder executorInfoBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL())))
-                .setCommand(command).addResources(cpus).addResources(mem);
-        if (env.getJobEventRdbConfiguration().isPresent()) {
-            executorInfoBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(env.getJobEventRdbConfigurationMap()))).build();
-        }
-        return Protos.TaskInfo.newBuilder()
-                .setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
-                .setName(taskContext.getTaskName())
-                .setSlaveId(slaveID)
-                .addResources(cpus)
-                .addResources(mem)
-                .setExecutor(executorInfoBuilder.build())
-                .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()))
-                .build();
     }
     
-    private Protos.Resource.Builder buildResource(final String type, final double resourceValue) {
-        return Protos.Resource.newBuilder().setName(type).setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(resourceValue));
+    private Protos.CommandInfo.URI buildURI(final String appURL, final boolean useDefaultExecutor) {
+        Protos.CommandInfo.URI.Builder result = Protos.CommandInfo.URI.newBuilder().setValue(appURL).setCache(BootstrapEnvironment.getInstance().getFrameworkConfiguration().isAppCacheEnable());
+        if (useDefaultExecutor && !SupportedExtractionType.isExtraction(appURL)) {
+            result.setExecutable(true);
+        } else {
+            result.setExtract(true);
+        }
+        return result.build();
+    }
+    
+    private Protos.CommandInfo buildCommand(final Protos.CommandInfo.URI uri, final String bootstrapScript, final ShardingContexts shardingContexts, final boolean useDefaultExecutor) {
+        Protos.CommandInfo.Builder result = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true);
+        if (useDefaultExecutor) {
+            CommandLine commandLine = CommandLine.parse(bootstrapScript);
+            commandLine.addArgument(GsonFactory.getGson().toJson(shardingContexts), false);
+            result.setValue(Joiner.on(" ").join(commandLine.getExecutable(), Joiner.on(" ").join(commandLine.getArguments())));
+        } else {
+            result.setValue(bootstrapScript);
+        }
+        return result.build();
+    }
+    
+    private Protos.TaskInfo buildTaskInfo(final TaskContext taskContext, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts, 
+                                          final Protos.SlaveID slaveID, final Protos.CommandInfo command, final boolean useDefaultExecutor) {
+        Protos.Resource cpus = buildResource("cpus", jobConfig.getCpuCount());
+        Protos.Resource mem = buildResource("mem", jobConfig.getMemoryMB());
+        Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
+                .setName(taskContext.getTaskName()).setSlaveId(slaveID).addResources(cpus).addResources(mem)
+                .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()));
+        if (useDefaultExecutor) {
+            return result.setCommand(command).build();
+        }
+        Protos.ExecutorInfo.Builder executorBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL())))
+                .setCommand(command).addResources(cpus).addResources(mem);
+        if (env.getJobEventRdbConfiguration().isPresent()) {
+            executorBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(env.getJobEventRdbConfigurationMap()))).build();
+        }
+        return result.setExecutor(executorBuilder.build()).build();
+    }
+    
+    private Protos.Resource buildResource(final String type, final double resourceValue) {
+        return Protos.Resource.newBuilder().setName(type).setType(Protos.Value.Type.SCALAR).setScalar(Protos.Value.Scalar.newBuilder().setValue(resourceValue)).build();
     }
     
     private JobStatusTraceEvent createJobStatusTraceEvent(final TaskContext taskContext) {
