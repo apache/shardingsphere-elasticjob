@@ -35,7 +35,7 @@ import com.google.common.base.Optional;
  */
 public class SpringJobScheduler extends JobScheduler {
     
-    private final ElasticJob elasticJob; 
+    private final ElasticJob elasticJob;
     
     public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, final ElasticJobListener[]elasticJobListeners) {
         super(regCenter, jobConfigDto.toLiteJobConfiguration(), getTargetElasticJobListeners(elasticJobListeners));
@@ -48,14 +48,14 @@ public class SpringJobScheduler extends JobScheduler {
         this.elasticJob = elasticJob;
     }
 
-    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener[] elasticJobListeners) {
-        super(regCenter, liteJobConfig, getTargetElasticJobListeners(elasticJobListeners));
+    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig, final ElasticJobListener[] elasticJobListeners) {
+        super(regCenter, jobConfig, getTargetElasticJobListeners(elasticJobListeners));
         this.elasticJob = elasticJob;
     }
 
-    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig,
+    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig, 
                               final JobEventConfiguration jobEventConfig, final ElasticJobListener[] elasticJobListeners) {
-        super(regCenter, liteJobConfig, jobEventConfig, getTargetElasticJobListeners(elasticJobListeners));
+        super(regCenter, jobConfig, jobEventConfig, getTargetElasticJobListeners(elasticJobListeners));
         this.elasticJob = elasticJob;
     }
 

@@ -20,6 +20,7 @@ weight=1
 ### 功能提升
 
 1. [ISSUE #179](https://github.com/dangdangdotcom/elastic-job/issues/179) Transient的Script类型作业优化，无需Java的Executor支持
+1. [ISSUE #182](https://github.com/dangdangdotcom/elastic-job/issues/182) 增加对spring boot的支持
 
 ## 2.0.2
 
