@@ -37,7 +37,7 @@ public class SpringJobScheduler extends JobScheduler {
     
     private final ElasticJob elasticJob;
     
-    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, final ElasticJobListener[]elasticJobListeners) {
+    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, final ElasticJobListener[] elasticJobListeners) {
         super(regCenter, jobConfigDto.toLiteJobConfiguration(), getTargetElasticJobListeners(elasticJobListeners));
         this.elasticJob = elasticJob;
     }
@@ -47,18 +47,18 @@ public class SpringJobScheduler extends JobScheduler {
         super(regCenter, jobConfigDto.toLiteJobConfiguration(), jobEventConfig, getTargetElasticJobListeners(elasticJobListeners));
         this.elasticJob = elasticJob;
     }
-
+    
     public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig, final ElasticJobListener[] elasticJobListeners) {
         super(regCenter, jobConfig, getTargetElasticJobListeners(elasticJobListeners));
         this.elasticJob = elasticJob;
     }
-
+    
     public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig, 
                               final JobEventConfiguration jobEventConfig, final ElasticJobListener[] elasticJobListeners) {
         super(regCenter, jobConfig, jobEventConfig, getTargetElasticJobListeners(elasticJobListeners));
         this.elasticJob = elasticJob;
     }
-
+    
     private static ElasticJobListener[] getTargetElasticJobListeners(final ElasticJobListener[] elasticJobListeners) {
         final ElasticJobListener[] result = new ElasticJobListener[elasticJobListeners.length];
         for (int i = 0; i < elasticJobListeners.length; i++) {
@@ -66,7 +66,7 @@ public class SpringJobScheduler extends JobScheduler {
         }
         return result;
     }
-
+    
     @Override
     protected Optional<ElasticJob> createElasticJobInstance() {
         return Optional.fromNullable(elasticJob);
