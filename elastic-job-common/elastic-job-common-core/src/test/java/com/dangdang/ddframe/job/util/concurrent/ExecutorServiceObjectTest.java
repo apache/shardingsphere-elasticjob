@@ -33,10 +33,10 @@ public final class ExecutorServiceObjectTest {
     @Test
     public void assertCreateExecutorService() {
         executorServiceObject = new ExecutorServiceObject("executor-service-test", 1);
-        ExecutorService executorService = executorServiceObject.createExecutorService();
         assertThat(executorServiceObject.getActiveThreadCount(), is(0));
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));
         assertFalse(executorServiceObject.isShutdown());
+        ExecutorService executorService = executorServiceObject.createExecutorService();
         executorService.submit(new FooTask());
         BlockUtils.waitingShortTime();
         assertThat(executorServiceObject.getActiveThreadCount(), is(1));

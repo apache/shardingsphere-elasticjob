@@ -15,46 +15,47 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.example;
+package com.dangdang.ddframe.job.lite.integrate;
 
+import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
+import com.google.common.base.Joiner;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
 
 import java.io.File;
 import java.io.IOException;
 
-/**
- * 内存版的内嵌Zookeeper.
- * 
- * <p>
- *     仅用于运行Elastic-Job的例子时无需额外启动Zookeeper. 如有必要, 请使用本地环境可用的Zookeeper代替.
- * </p>
- */
-public final class EmbedZookeeperServer {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+final class EmbedTestingServer {
     
-    private static TestingServer testingServer;
+    private static final int PORT = 3181;
     
-    /**
-     * 内存版的内嵌Zookeeper.
-     * 
-     * @param port Zookeeper的通信端口号
-     */
-    public static void start(final int port) {
+    private static volatile TestingServer testingServer;
+    
+    static String getConnectionString() {
+        return Joiner.on(":").join("localhost", PORT);
+    }
+    
+    static void start() {
+        if (null != testingServer) {
+            return;
+        }
         try {
-            testingServer = new TestingServer(port, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
-        // CHECKSTYLE:OFF
+            testingServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
+            // CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        // CHECKSTYLE:ON
-            ex.printStackTrace();
+            // CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
         } finally {
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(1000L);
                         testingServer.close();
-                    } catch (final InterruptedException | IOException ex) {
-                        ex.printStackTrace();
+                    } catch (final IOException ex) {
+                        RegExceptionHandler.handleException(ex);
                     }
                 }
             });

@@ -38,24 +38,18 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
-import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.curator.test.TestingServer;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -64,11 +58,7 @@ import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractBaseStdJobTest {
     
-    private static final int PORT = 3181;
-    
-    private static volatile TestingServer testingServer;
-    
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(Joiner.on(":").join("localhost", PORT), "zkRegTestCenter");
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
     @Getter(value = AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
@@ -145,34 +135,9 @@ public abstract class AbstractBaseStdJobTest {
     
     @BeforeClass
     public static void init() {
-        startEmbedTestingServer();
+        EmbedTestingServer.start();
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         regCenter.init();
-    }
-    
-    private static void startEmbedTestingServer() {
-        if (null != testingServer) {
-            return;
-        }
-        try {
-            testingServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
-            // CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-            RegExceptionHandler.handleException(ex);
-        } finally {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                
-                @Override
-                public void run() {
-                    try {
-                        testingServer.close();
-                    } catch (final IOException ex) {
-                        RegExceptionHandler.handleException(ex);
-                    }
-                }
-            });
-        }
     }
     
     @Before
