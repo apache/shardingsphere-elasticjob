@@ -12,5 +12,5 @@
                         ">
     <context:property-placeholder location="classpath:conf/job/conf.properties" />
     <reg:zookeeper id="regCenter" server-lists="${regCenter.serverLists}" namespace="${regCenter.namespace}" base-sleep-time-milliseconds="${regCenter.baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${regCenter.maxSleepTimeMilliseconds}" max-retries="${regCenter.maxRetries}" />
-    <bean id="foo" class="com.dangdang.ddframe.job.lite.fixture.service.FooServiceImpl" />
+    <bean id="foo" class="com.dangdang.ddframe.job.lite.spring.fixture.service.FooServiceImpl" />
 </beans>

@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.example.job.dataflow.SpringDataflowJob;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.spring.schedule.SpringJobScheduler;
+import com.dangdang.ddframe.job.lite.spring.api.SpringJobScheduler;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
