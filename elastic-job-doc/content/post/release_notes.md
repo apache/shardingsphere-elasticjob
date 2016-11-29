@@ -12,6 +12,7 @@ weight=1
 ### 缺陷修正
 
 1. [ISSUE #177](https://github.com/dangdangdotcom/elastic-job/issues/177) 2.0.2版本Spring命名空间的job:script空指针
+1. [ISSUE #185](https://github.com/dangdangdotcom/elastic-job/issues/185) Executor多占用分片资源导致资源浪费问题
 
 ### 新功能
 

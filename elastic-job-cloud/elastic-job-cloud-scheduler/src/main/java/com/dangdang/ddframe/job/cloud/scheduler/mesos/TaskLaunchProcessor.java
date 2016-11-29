@@ -65,6 +65,10 @@ public final class TaskLaunchProcessor implements Runnable {
     
     private static volatile boolean shutdown;
     
+    private static final double EXECUTOR_DEFAULT_CPU_RESOURCE = 0.1d;
+    
+    private static final double EXECUTOR_DEFAULT_MEMORY_RESOURCE = 32d;
+    
     private final LeasesQueue leasesQueue;
     
     private final SchedulerDriver schedulerDriver;
@@ -175,16 +179,14 @@ public final class TaskLaunchProcessor implements Runnable {
     
     private Protos.TaskInfo buildTaskInfo(final TaskContext taskContext, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts, 
                                           final Protos.SlaveID slaveID, final Protos.CommandInfo command, final boolean useDefaultExecutor) {
-        Protos.Resource cpus = buildResource("cpus", jobConfig.getCpuCount());
-        Protos.Resource mem = buildResource("mem", jobConfig.getMemoryMB());
         Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
-                .setName(taskContext.getTaskName()).setSlaveId(slaveID).addResources(cpus).addResources(mem)
+                .setName(taskContext.getTaskName()).setSlaveId(slaveID).addResources(buildResource("cpus", jobConfig.getCpuCount())).addResources(buildResource("mem", jobConfig.getMemoryMB()))
                 .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()));
         if (useDefaultExecutor) {
             return result.setCommand(command).build();
         }
         Protos.ExecutorInfo.Builder executorBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL())))
-                .setCommand(command).addResources(cpus).addResources(mem);
+                .setCommand(command).addResources(buildResource("cpus", EXECUTOR_DEFAULT_CPU_RESOURCE)).addResources(buildResource("mem", EXECUTOR_DEFAULT_MEMORY_RESOURCE));
         if (env.getJobEventRdbConfiguration().isPresent()) {
             executorBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(env.getJobEventRdbConfigurationMap()))).build();
         }
