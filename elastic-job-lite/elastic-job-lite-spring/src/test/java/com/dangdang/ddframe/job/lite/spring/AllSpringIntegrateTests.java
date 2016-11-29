@@ -15,21 +15,20 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.namespace;
+package com.dangdang.ddframe.job.lite.spring;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow.DataflowJobConfigurationDtoTest;
-import com.dangdang.ddframe.job.lite.spring.namespace.parser.script.ScriptJobConfigurationDtoTest;
-import com.dangdang.ddframe.job.lite.spring.namespace.parser.simple.SimpleJobConfigurationDtoTest;
-
 @RunWith(Suite.class)
 @SuiteClasses({
-    SimpleJobConfigurationDtoTest.class, 
-    DataflowJobConfigurationDtoTest.class,
-    ScriptJobConfigurationDtoTest.class
+        JobSpringNamespaceWithoutListenerTest.class,
+        JobSpringNamespaceWithJobPropertiesTest.class,
+        JobSpringNamespaceWithListenerTest.class,
+        JobSpringNamespaceWithListenerAndJdkDynamicProxyTest.class,
+        JobSpringNamespaceWithListenerAndCglibTest.class,
+        JobSpringNamespaceWithEventTraceRdbTest.class
     })
-public final class AllSpringNamespaceTests {
+public final class AllSpringIntegrateTests {
 }

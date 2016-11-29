@@ -26,6 +26,7 @@ weight=1
 ### 结构调整
 
 1. [ISSUE #184](https://github.com/dangdangdotcom/elastic-job/issues/184) ExecutorServiceHandler接口方法调整，增加jobName区分用来区分不同作业线程名
+1. [ISSUE #186](https://github.com/dangdangdotcom/elastic-job/issues/186) 去除Spring命名空间DTO相关代码，简化SpringJobScheduler使用
 
 ## 2.0.2
 

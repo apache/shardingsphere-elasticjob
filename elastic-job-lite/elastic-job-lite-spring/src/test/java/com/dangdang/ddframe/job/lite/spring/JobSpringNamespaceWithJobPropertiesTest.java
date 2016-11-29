@@ -15,18 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.namespace.constants;
+package com.dangdang.ddframe.job.lite.spring;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.test.context.ContextConfiguration;
 
-/**
- * 数据流作业属性解析标签.
- *
- * @author caohao
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DataflowJobBeanDefinitionParserTag {
+@ContextConfiguration(locations = "classpath:META-INF/job/withJobProperties.xml")
+public final class JobSpringNamespaceWithJobPropertiesTest extends AbstractJobSpringIntegrateTest {
     
-    public static final String STREAMING_PROCESS_ATTRIBUTE = "streaming-process";
+    public JobSpringNamespaceWithJobPropertiesTest() {
+        super("simpleElasticJob_namespace_job_properties", "dataflowElasticJob_namespace_job_properties");
+    }
 }

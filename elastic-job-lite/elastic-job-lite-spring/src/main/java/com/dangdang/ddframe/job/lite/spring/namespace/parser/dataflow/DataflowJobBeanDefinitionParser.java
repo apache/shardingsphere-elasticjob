@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import com.dangdang.ddframe.job.lite.spring.namespace.constants.DataflowJobBeanDefinitionParserTag;
+import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobBeanDefinitionParser;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.w3c.dom.Element;
 
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.parser.common.BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow.DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE;
 
 /**
  * 数据流作业的命名空间解析器.
@@ -32,13 +34,11 @@ import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBe
 public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
     
     @Override
-    protected Class<DataflowJobConfigurationDto> getJobConfigurationDTO() {
-        return DataflowJobConfigurationDto.class;
-    }
-    
-    @Override
-    protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
-        factory.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
-        factory.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
+    protected BeanDefinition getJobTypeConfigurationBeanDefinition(final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
+        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(DataflowJobConfiguration.class);
+        result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
+        result.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(STREAMING_PROCESS_ATTRIBUTE));
+        return result.getBeanDefinition();
     }
 }

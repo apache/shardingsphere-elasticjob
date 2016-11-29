@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.integrate;
+package com.dangdang.ddframe.job.lite.spring;
 
 import com.dangdang.ddframe.job.lite.fixture.DataflowElasticJob;
 import com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob;

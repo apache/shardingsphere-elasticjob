@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.namespace.constants;
+package com.dangdang.ddframe.job.lite.spring.namespace.parser.common;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

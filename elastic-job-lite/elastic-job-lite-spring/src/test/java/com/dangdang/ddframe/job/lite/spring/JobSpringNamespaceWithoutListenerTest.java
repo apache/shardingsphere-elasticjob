@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,14 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.integrate;
+package com.dangdang.ddframe.job.lite.spring;
 
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(locations = "classpath:META-INF/job/withEventTraceRdb.xml")
-public final class JobSpringNamespaceWithEventTraceRdbTest extends AbstractJobSpringIntegrateTest {
+@ContextConfiguration(locations = "classpath:META-INF/job/withoutListener.xml")
+public final class JobSpringNamespaceWithoutListenerTest extends AbstractJobSpringIntegrateTest {
     
-    public JobSpringNamespaceWithEventTraceRdbTest() {
-        super("simpleElasticJob_namespace_event_trace_rdb", "dataflowElasticJob_namespace_event_trace_rdb");
+    public JobSpringNamespaceWithoutListenerTest() {
+        super("simpleElasticJob_namespace", "dataflowElasticJob_namespace");
     }
 }

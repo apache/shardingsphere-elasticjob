@@ -17,11 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.spring.namespace.parser.simple;
 
+import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobBeanDefinitionParser;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.w3c.dom.Element;
 
-import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE;
+import static com.dangdang.ddframe.job.lite.spring.namespace.parser.common.BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE;
 
 /**
  * 简单作业的命名空间解析器.
@@ -31,12 +33,10 @@ import static com.dangdang.ddframe.job.lite.spring.namespace.constants.BaseJobBe
 public final class SimpleJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
     
     @Override
-    protected Class<SimpleJobConfigurationDto> getJobConfigurationDTO() {
-        return SimpleJobConfigurationDto.class;
-    }
-    
-    @Override
-    protected void setPropertiesValue(final Element element, final BeanDefinitionBuilder factory) {
-        factory.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
+    protected BeanDefinition getJobTypeConfigurationBeanDefinition(final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
+        BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(SimpleJobConfiguration.class);
+        result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
+        result.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
+        return result.getBeanDefinition();
     }
 }

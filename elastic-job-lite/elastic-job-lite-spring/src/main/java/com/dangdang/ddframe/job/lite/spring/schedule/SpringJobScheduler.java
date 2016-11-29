@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.spring.namespace.parser.common.AbstractJobConfigurationDto;
 import com.dangdang.ddframe.job.lite.spring.util.AopTargetUtils;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
@@ -37,24 +36,13 @@ public class SpringJobScheduler extends JobScheduler {
     
     private final ElasticJob elasticJob;
     
-    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, final ElasticJobListener[] elasticJobListeners) {
-        super(regCenter, jobConfigDto.toLiteJobConfiguration(), getTargetElasticJobListeners(elasticJobListeners));
-        this.elasticJob = elasticJob;
-    }
-    
-    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final AbstractJobConfigurationDto jobConfigDto, 
-                              final JobEventConfiguration jobEventConfig, final ElasticJobListener[]elasticJobListeners) {
-        super(regCenter, jobConfigDto.toLiteJobConfiguration(), jobEventConfig, getTargetElasticJobListeners(elasticJobListeners));
-        this.elasticJob = elasticJob;
-    }
-    
-    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig, final ElasticJobListener[] elasticJobListeners) {
+    public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig, final ElasticJobListener... elasticJobListeners) {
         super(regCenter, jobConfig, getTargetElasticJobListeners(elasticJobListeners));
         this.elasticJob = elasticJob;
     }
     
     public SpringJobScheduler(final ElasticJob elasticJob, final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration jobConfig, 
-                              final JobEventConfiguration jobEventConfig, final ElasticJobListener[] elasticJobListeners) {
+                              final JobEventConfiguration jobEventConfig, final ElasticJobListener... elasticJobListeners) {
         super(regCenter, jobConfig, jobEventConfig, getTargetElasticJobListeners(elasticJobListeners));
         this.elasticJob = elasticJob;
     }

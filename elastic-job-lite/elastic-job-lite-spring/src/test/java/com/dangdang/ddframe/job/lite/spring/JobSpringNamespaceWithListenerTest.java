@@ -15,14 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.integrate;
+package com.dangdang.ddframe.job.lite.spring;
 
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(locations = "classpath:META-INF/job/withoutListener.xml")
-public final class JobSpringNamespaceWithoutListenerTest extends AbstractJobSpringIntegrateTest {
+@ContextConfiguration(locations = "classpath:META-INF/job/withListener.xml")
+public final class JobSpringNamespaceWithListenerTest extends AbstractJobSpringIntegrateTest {
     
-    public JobSpringNamespaceWithoutListenerTest() {
-        super("simpleElasticJob_namespace", "dataflowElasticJob_namespace");
+    public JobSpringNamespaceWithListenerTest() {
+        super("simpleElasticJob_namespace_listener", "dataflowElasticJob_namespace_listener");
     }
 }

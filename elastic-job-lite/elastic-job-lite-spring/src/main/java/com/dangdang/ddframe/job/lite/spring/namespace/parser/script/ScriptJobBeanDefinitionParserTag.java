@@ -15,14 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.integrate;
+package com.dangdang.ddframe.job.lite.spring.namespace.parser.script;
 
-import org.springframework.test.context.ContextConfiguration;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@ContextConfiguration(locations = "classpath:META-INF/job/withListenerAndJdkDynamicProxy.xml")
-public final class JobSpringNamespaceWithListenerAndJdkDynamicProxyTest extends AbstractJobSpringIntegrateTest {
+/**
+ * 脚本作业属性解析标签.
+ *
+ * @author caohao
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class ScriptJobBeanDefinitionParserTag {
     
-    public JobSpringNamespaceWithListenerAndJdkDynamicProxyTest() {
-        super("simpleElasticJob_namespace_listener_jdk_proxy", "dataflowElasticJob_namespace_listener_jdk_proxy");
-    }
+    public static final String SCRIPT_COMMAND_LINE_ATTRIBUTE = "script-command-line";
 }

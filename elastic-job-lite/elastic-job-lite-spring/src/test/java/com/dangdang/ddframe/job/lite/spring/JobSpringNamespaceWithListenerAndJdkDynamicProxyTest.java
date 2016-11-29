@@ -15,14 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.integrate;
+package com.dangdang.ddframe.job.lite.spring;
 
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration(locations = "classpath:META-INF/job/withListenerAndCglib.xml")
-public final class JobSpringNamespaceWithListenerAndCglibTest extends AbstractJobSpringIntegrateTest {
+@ContextConfiguration(locations = "classpath:META-INF/job/withListenerAndJdkDynamicProxy.xml")
+public final class JobSpringNamespaceWithListenerAndJdkDynamicProxyTest extends AbstractJobSpringIntegrateTest {
     
-    public JobSpringNamespaceWithListenerAndCglibTest() {
-        super("simpleElasticJob_namespace_listener_cglib", "dataflowElasticJob_namespace_listener_cglib");
+    public JobSpringNamespaceWithListenerAndJdkDynamicProxyTest() {
+        super("simpleElasticJob_namespace_listener_jdk_proxy", "dataflowElasticJob_namespace_listener_jdk_proxy");
     }
 }

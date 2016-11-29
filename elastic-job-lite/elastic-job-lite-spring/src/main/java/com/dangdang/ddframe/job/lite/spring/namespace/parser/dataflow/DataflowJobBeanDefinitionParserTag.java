@@ -15,20 +15,18 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.integrate;
+package com.dangdang.ddframe.job.lite.spring.namespace.parser.dataflow;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobSpringNamespaceWithoutListenerTest.class,
-        JobSpringNamespaceWithJobPropertiesTest.class,
-        JobSpringNamespaceWithListenerTest.class,
-        JobSpringNamespaceWithListenerAndJdkDynamicProxyTest.class,
-        JobSpringNamespaceWithListenerAndCglibTest.class,
-        JobSpringNamespaceWithEventTraceRdbTest.class
-    })
-public final class AllSpringIntegrateTests {
+/**
+ * 数据流作业属性解析标签.
+ *
+ * @author caohao
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class DataflowJobBeanDefinitionParserTag {
+    
+    public static final String STREAMING_PROCESS_ATTRIBUTE = "streaming-process";
 }

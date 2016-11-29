@@ -17,17 +17,14 @@
 
 package com.dangdang.ddframe.job.lite;
 
+import com.dangdang.ddframe.job.lite.spring.AllSpringIntegrateTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.dangdang.ddframe.job.lite.spring.integrate.AllSpringIntegrateTests;
-import com.dangdang.ddframe.job.lite.spring.namespace.AllSpringNamespaceTests;
-
 @RunWith(Suite.class)
 @SuiteClasses({
-        AllSpringIntegrateTests.class, 
-        AllSpringNamespaceTests.class
+        AllSpringIntegrateTests.class 
     })
 public final class AllSpringJobTests {
 }

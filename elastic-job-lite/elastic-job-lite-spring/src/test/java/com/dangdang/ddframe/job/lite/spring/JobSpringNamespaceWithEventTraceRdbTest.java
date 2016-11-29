@@ -15,18 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.namespace.constants;
+package com.dangdang.ddframe.job.lite.spring;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.test.context.ContextConfiguration;
 
-/**
- * 脚本作业属性解析标签.
- *
- * @author caohao
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ScriptJobBeanDefinitionParserTag {
+@ContextConfiguration(locations = "classpath:META-INF/job/withEventTraceRdb.xml")
+public final class JobSpringNamespaceWithEventTraceRdbTest extends AbstractJobSpringIntegrateTest {
     
-    public static final String SCRIPT_COMMAND_LINE_ATTRIBUTE = "script-command-line";
+    public JobSpringNamespaceWithEventTraceRdbTest() {
+        super("simpleElasticJob_namespace_event_trace_rdb", "dataflowElasticJob_namespace_event_trace_rdb");
+    }
 }
