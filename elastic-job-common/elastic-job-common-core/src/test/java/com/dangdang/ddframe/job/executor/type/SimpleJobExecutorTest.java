@@ -68,7 +68,7 @@ public final class SimpleJobExecutorTest {
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration("ErrorHandler", Object.class.getName()));
         SimpleJobExecutor simpleJobExecutor = new SimpleJobExecutor(new TestSimpleJob(jobCaller), jobFacade);
         assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("executorService")), 
-                instanceOf(new DefaultExecutorServiceHandler().createExecutorService().getClass()));
+                instanceOf(new DefaultExecutorServiceHandler().createExecutorService("test_job").getClass()));
         assertThat(ReflectionUtils.getFieldValue(simpleJobExecutor, AbstractElasticJobExecutor.class.getDeclaredField("jobExceptionHandler")),
                 instanceOf(DefaultJobExceptionHandler.class));
     }
@@ -131,10 +131,11 @@ public final class SimpleJobExecutorTest {
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_RUNNING, "");
             String errorMessage;
+            String lineSeparator = System.getProperty("line.separator");
             if (1 == shardingContexts.getShardingItemParameters().size()) {
-                errorMessage = "{0=java.lang.RuntimeException\n}";
+                errorMessage = "{0=java.lang.RuntimeException" + lineSeparator + "}";
             } else {
-                errorMessage = "{0=java.lang.RuntimeException\n, 1=java.lang.RuntimeException\n}";
+                errorMessage = "{0=java.lang.RuntimeException" + lineSeparator + ", 1=java.lang.RuntimeException" + lineSeparator + "}";
             }
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, errorMessage);
             verify(jobFacade).checkJobExecutionEnvironment();

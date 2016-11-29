@@ -174,7 +174,7 @@ public final class BootstrapEnvironment {
         APP_CACHE_ENABLE("app_cache_enable", "false", true),
         
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true),
-    
+        
         EVENT_TRACE_RDB_DRIVER("event_trace_rdb_driver", "", false),
         
         EVENT_TRACE_RDB_URL("event_trace_rdb_url", "", false),

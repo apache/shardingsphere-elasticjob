@@ -7,6 +7,25 @@ weight=1
 
 # Release Notes
 
+## 2.0.3-SNAPSHOT
+
+### 缺陷修正
+
+1. [ISSUE #177](https://github.com/dangdangdotcom/elastic-job/issues/177) 2.0.2版本Spring命名空间的job:script空指针
+
+### 新功能
+
+1. [ISSUE #178](https://github.com/dangdangdotcom/elastic-job/issues/178) 事件驱动触发作业
+
+### 功能提升
+
+1. [ISSUE #179](https://github.com/dangdangdotcom/elastic-job/issues/179) Transient的Script类型作业优化，无需Java的Executor支持
+1. [ISSUE #182](https://github.com/dangdangdotcom/elastic-job/issues/182) 增加对spring boot的支持
+
+### 结构调整
+
+1. [ISSUE #184](https://github.com/dangdangdotcom/elastic-job/issues/184) ExecutorServiceHandler接口方法调整，增加jobName区分用来区分不同作业线程名
+
 ## 2.0.2
 
 ### 缺陷修正

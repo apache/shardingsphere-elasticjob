@@ -9,6 +9,11 @@
             <outputDirectory>bin</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>
+        <fileSet>
+            <directory>src/main/resources/script</directory>
+            <outputDirectory>script</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
     </fileSets>
     
     <dependencySets>

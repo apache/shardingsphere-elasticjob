@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
 public class SimpleExecutorServiceHandler implements ExecutorServiceHandler {
     
     @Override
-    public ExecutorService createExecutorService() {
+    public ExecutorService createExecutorService(final String jobName) {
         return Executors.newFixedThreadPool(1);
     }
 }

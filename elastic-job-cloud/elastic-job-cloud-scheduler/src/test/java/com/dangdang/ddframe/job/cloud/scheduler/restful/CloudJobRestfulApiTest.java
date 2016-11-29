@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
-import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
@@ -30,7 +30,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
@@ -48,9 +47,6 @@ public final class CloudJobRestfulApiTest {
     private static RestfulServer server;
     
     private static CoordinatorRegistryCenter regCenter;
-    
-    @Mock
-    private LifecycleService lifecycleService;
     
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -95,6 +91,18 @@ public final class CloudJobRestfulApiTest {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job"), is(204));
         verify(regCenter).get("/config/test_job");
+    }
+    
+    @Test
+    public void assertTriggerWithDaemonJob() throws Exception {
+        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson(JobExecutionType.DAEMON));
+        assertThat(sentRequest("http://127.0.0.1:19000/job/trigger", "POST", "test_job"), is(500));
+    }
+    
+    @Test
+    public void assertTriggerWithTransientJob() throws Exception {
+        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        assertThat(sentRequest("http://127.0.0.1:19000/job/trigger", "POST", "test_job"), is(204));
     }
     
     private static int sentRequest(final String url, final String method, final String content) throws Exception {

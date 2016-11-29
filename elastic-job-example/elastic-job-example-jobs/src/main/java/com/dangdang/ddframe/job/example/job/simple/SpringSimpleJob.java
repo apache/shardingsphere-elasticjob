@@ -34,7 +34,6 @@ public class SpringSimpleJob implements SimpleJob {
     @Override
     public void execute(final ShardingContext shardingContext) {
         System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s", Thread.currentThread().getId(), new Date(), shardingContext, "simple job"));
-        System.out.println(shardingContext.getShardingParameter());
         List<Foo> data = fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
         for (Foo each : data) {
             fooRepository.setCompleted(each.getId());
