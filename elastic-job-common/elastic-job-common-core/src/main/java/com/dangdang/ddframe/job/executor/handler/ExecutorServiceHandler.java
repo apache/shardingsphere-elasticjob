@@ -31,7 +31,9 @@ public interface ExecutorServiceHandler {
     /**
      * 创建线程池服务对象.
      * 
+     * @param jobName 作业名
+     * 
      * @return 线程池服务对象
      */
-    ExecutorService createExecutorService();
+    ExecutorService createExecutorService(final String jobName);
 }

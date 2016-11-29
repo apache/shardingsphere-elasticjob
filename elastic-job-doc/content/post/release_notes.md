@@ -22,6 +22,10 @@ weight=1
 1. [ISSUE #179](https://github.com/dangdangdotcom/elastic-job/issues/179) Transient的Script类型作业优化，无需Java的Executor支持
 1. [ISSUE #182](https://github.com/dangdangdotcom/elastic-job/issues/182) 增加对spring boot的支持
 
+### 结构调整
+
+1. [ISSUE #184](https://github.com/dangdangdotcom/elastic-job/issues/184) ExecutorServiceHandler接口方法调整，增加jobName区分用来区分不同作业线程名
+
 ## 2.0.2
 
 ### 缺陷修正
