@@ -12,6 +12,7 @@ weight=1
 ### 缺陷修正
 
 1. [ISSUE #177](https://github.com/dangdangdotcom/elastic-job/issues/177) 2.0.2版本Spring命名空间的job:script空指针
+1. [ISSUE #185](https://github.com/dangdangdotcom/elastic-job/issues/185) Executor多占用分片资源导致资源浪费问题
 
 ### 新功能
 
@@ -25,6 +26,7 @@ weight=1
 ### 结构调整
 
 1. [ISSUE #184](https://github.com/dangdangdotcom/elastic-job/issues/184) ExecutorServiceHandler接口方法调整，增加jobName区分用来区分不同作业线程名
+1. [ISSUE #186](https://github.com/dangdangdotcom/elastic-job/issues/186) 去除Spring命名空间DTO相关代码，简化SpringJobScheduler使用
 
 ## 2.0.2
 
