@@ -7,7 +7,12 @@ weight=1
 
 # Release Notes
 
-## 2.0.3-SNAPSHOT
+## 2.0.4-SNAPSHOT
+
+### 功能提升
+1. [ISSUE #187](https://github.com/dangdangdotcom/elastic-job/issues/187) ShardingContext中增加taskId属性，供业务方使用 
+
+## 2.0.3
 
 ### 缺陷修正
 

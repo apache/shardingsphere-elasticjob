@@ -31,10 +31,10 @@ curl -l -H "Content-type: application/json" -X DELETE -d 'foo_job' http://elasti
 1. Java启动方式作业注册:
 
 curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple","jobType":"SIMPLE","jobClass":"com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0,"jobExecutionType":"TRANSIENT",
-"appURL":"http://localhost:8080/elastic-job-example-cloud-2.0.3-SNAPSHOT.tar.gz","failover":false,"misfire":true,"jobParameter":"java_simple","bootstrapScript":"bin/start.sh"}' http://localhost:8899/job/register
+"appURL":"http://localhost:8080/elastic-job-example-cloud-2.0.3.tar.gz","failover":false,"misfire":true,"jobParameter":"java_simple","bootstrapScript":"bin/start.sh"}' http://localhost:8899/job/register
 
 curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow","jobType":"DATAFLOW","jobClass":"com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0,"jobExecutionType":"TRANSIENT",
-"appURL":"http://localhost:8080/elastic-job-example-cloud-2.0.3-SNAPSHOT.tar.gz","failover":false,"misfire":true,"jobParameter":"java_dataflow","bootstrapScript":"bin/start.sh"}' http://localhost:8899/job/register
+"appURL":"http://localhost:8080/elastic-job-example-cloud-2.0.3.tar.gz","failover":false,"misfire":true,"jobParameter":"java_dataflow","bootstrapScript":"bin/start.sh"}' http://localhost:8899/job/register
 
 curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_script","jobType":"SCRIPT","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0,"jobExecutionType":"TRANSIENT",
 "appURL":"http://localhost:8080/demo.sh","failover":false,"misfire":true,"jobParameter":"script","bootstrapScript":"./demo.sh"}' http://localhost:8899/job/register
@@ -42,7 +42,7 @@ curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_scr
 2. Spring启动方式作业注册:
 
 curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_simple_spring","jobType":"SIMPLE","jobClass":"com.dangdang.ddframe.job.example.job.simple.SpringSimpleJob","beanName":"springSimpleJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0,"jobExecutionType":"TRANSIENT",
-"appURL":"http://localhost:8080/elastic-job-example-cloud-2.0.3-SNAPSHOT.tar.gz","failover":false,"misfire":true,"jobParameter":"java_simple","bootstrapScript":"bin/start.sh"}' http://localhost:8899/job/register
+"appURL":"http://localhost:8080/elastic-job-example-cloud-2.0.3.tar.gz","failover":false,"misfire":true,"jobParameter":"java_simple","bootstrapScript":"bin/start.sh"}' http://localhost:8899/job/register
 
 curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"test_job_dataflow_spring","jobType":"DATAFLOW","jobClass":"com.dangdang.ddframe.job.example.job.dataflow.SpringDataflowJob","beanName":"springDataflowJob","applicationContext":"classpath:META-INF/applicationContext.xml","cron":"0/10 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0,"jobExecutionType":"TRANSIENT",
-"appURL":"http://localhost:8080/elastic-job-example-cloud-2.0.3-SNAPSHOT.tar.gz","failover":false,"misfire":true,"jobParameter":"java_simple","bootstrapScript":"bin/start.sh"}' http://localhost:8899/job/register
+"appURL":"http://localhost:8080/elastic-job-example-cloud-2.0.3.tar.gz","failover":false,"misfire":true,"jobParameter":"java_simple","bootstrapScript":"bin/start.sh"}' http://localhost:8899/job/register
