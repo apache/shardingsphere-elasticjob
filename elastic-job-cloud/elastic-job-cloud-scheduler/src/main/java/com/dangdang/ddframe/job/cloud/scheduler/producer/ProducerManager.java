@@ -59,6 +59,7 @@ public class ProducerManager {
      * 启动作业调度器.
      */
     public void startup() {
+        transientProducerScheduler.start();
         for (CloudJobConfiguration each : configService.loadAll()) {
             schedule(each);
         }

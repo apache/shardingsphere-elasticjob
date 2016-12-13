@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.reg.zookeeper;
+package com.dangdang.ddframe.job.cloud.scheduler.fixture;
 
 import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import com.google.common.base.Joiner;
@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class EmbedTestingServer {
+public final class EmbedTestingServer {
     
     private static final int PORT = 3181;
     

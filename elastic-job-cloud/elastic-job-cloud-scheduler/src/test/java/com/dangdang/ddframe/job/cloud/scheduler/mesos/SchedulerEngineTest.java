@@ -17,14 +17,16 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.container.AbstractFrameworkContainer;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.functions.Action2;
 import org.apache.mesos.Protos;
@@ -52,7 +54,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class SchedulerEngineTest {
     
-    private LeasesQueue leasesQueue = new LeasesQueue();
+    private final LeasesQueue leasesQueue = new LeasesQueue();
     
     @Mock
     private TaskScheduler taskScheduler;
@@ -60,20 +62,26 @@ public final class SchedulerEngineTest {
     @Mock
     private FacadeService facadeService;
     
+    @Mock
+    private CoordinatorRegistryCenter registryCenter;
+    
+    @Mock
+    private AbstractFrameworkContainer container;
+    
     private SchedulerEngine schedulerEngine;
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService, new JobEventBus());
+        FrameworkIDHolder.setRegCenter(registryCenter);
+        schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService, new JobEventBus(), container);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
         new RunningService().clear();
     }
     
     @Test
     public void assertRegistered() {
-        schedulerEngine.registered(null, null, null);
-        verify(facadeService).start();
-        verify(taskScheduler).expireAllLeases();
+        schedulerEngine.registered(null, Protos.FrameworkID.newBuilder().setValue("1").build(), null);
+        verify(container).resume();
     }
     
     @Test
@@ -212,7 +220,7 @@ public final class SchedulerEngineTest {
     @Test
     public void assertDisconnected() {
         schedulerEngine.disconnected(null);
-        verify(facadeService).stop();
+        verify(container).pause();
     }
     
     @Test

@@ -18,133 +18,51 @@
 package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsProcessor;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
-import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.container.AbstractFrameworkContainer;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.ddframe.job.restful.RestfulServer;
-import com.google.common.base.Optional;
-import com.netflix.fenzo.TaskScheduler;
-import com.netflix.fenzo.VirtualMachineLease;
-import com.netflix.fenzo.functions.Action1;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.recipes.cache.TreeCache;
-import org.apache.mesos.MesosSchedulerDriver;
-import org.apache.mesos.Protos;
-import org.apache.mesos.SchedulerDriver;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Mesos框架启动器.
  *
  * @author zhangliang
+ * @author gaohongtao
  */
 @Slf4j
 public final class MasterBootstrap {
     
-    private final BootstrapEnvironment env;
+    private final AbstractFrameworkContainer frameworkContainer;
     
-    private final CoordinatorRegistryCenter regCenter;
-    
-    private final SchedulerDriver schedulerDriver;
-    
-    private final RestfulServer restfulServer;
+    private final CountDownLatch latch = new CountDownLatch(1);
     
     public MasterBootstrap() {
-        env = BootstrapEnvironment.getInstance();
-        regCenter = getRegistryCenter();
-        LeasesQueue leasesQueue = new LeasesQueue();
-        final FacadeService facadeService = new FacadeService(regCenter);
-        TaskScheduler taskScheduler = getTaskScheduler();
-        JobEventBus jobEventBus = getJobEventBus();
-        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus);
-        restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
-        CloudJobRestfulApi.init(schedulerDriver, regCenter);
-        initConfigurationListener();
-        final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
-        producerManager.startup();
-        new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus), "task-launch-processor-" + Thread.currentThread().getId()).start();
-        new Thread(new StatisticsProcessor(), "statistics-processor-" + Thread.currentThread().getId()).start();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            
+        frameworkContainer = AbstractFrameworkContainer.newFrameworkContainer(getRegistryCenter());
+        Runtime.getRuntime().addShutdownHook(new Thread("shutdown-hook") {
+        
             @Override
             public void run() {
-                facadeService.stop();
-                producerManager.shutdown();
+                frameworkContainer.shutdown();
+                latch.countDown();
             }
         });
     }
     
     private CoordinatorRegistryCenter getRegistryCenter() {
-        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(env.getZookeeperConfiguration());
+        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(BootstrapEnvironment.getInstance().getZookeeperConfiguration());
         result.init();
         return result;
     }
     
-    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus) {
-        MesosConfiguration mesosConfig = env.getMesosConfiguration();
-        Protos.FrameworkInfo frameworkInfo = 
-                Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus), frameworkInfo, mesosConfig.getUrl());
-    }
-    
-    private TaskScheduler getTaskScheduler() {
-        return new TaskScheduler.Builder()
-                .withLeaseOfferExpirySecs(1000000000L)
-                .withLeaseRejectAction(new Action1<VirtualMachineLease>() {
-                    
-                    @Override
-                    public void call(final VirtualMachineLease lease) {
-                        log.warn("Declining offer on '{}'", lease.hostname());
-                        schedulerDriver.declineOffer(lease.getOffer().getId());
-                    }
-                }).build();
-    }
-    
-    private void initConfigurationListener() {
-        regCenter.addCacheData(ConfigurationNode.ROOT);
-        ((TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT)).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
-    }
-    
-    private JobEventBus getJobEventBus() {
-        Optional<JobEventRdbConfiguration> rdbConfig = env.getJobEventRdbConfiguration();
-        if (rdbConfig.isPresent()) {
-            return new JobEventBus(rdbConfig.get());
-        }
-        return new JobEventBus();
-    }
-    
     /**
-     * 以守护进程方式启动.
-     * 
-     * @return 框架运行状态
-     * @throws Exception 运行时异常
+     * 启动.
+     *
+     * @throws Exception 启动异常
      */
-    public Protos.Status runAsDaemon() throws Exception {
-        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName());
-        return schedulerDriver.run();
-    }
-    
-    /**
-     * 停止运行.
-     * 
-     * @param status 框架运行状态
-     * @return 是否正常停止
-     * @throws Exception 运行时异常
-     */
-    public boolean stop(final Protos.Status status) throws Exception {
-        schedulerDriver.stop();
-        restfulServer.stop();
-        return Protos.Status.DRIVER_STOPPED == status;
+    public void run() throws Exception {
+        frameworkContainer.start();
+        latch.await();
     }
 }

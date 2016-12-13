@@ -15,21 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.mesos;
+package com.dangdang.ddframe.job.cloud.scheduler.container;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-        SupportedExtractionTypeTest.class, 
-        LeasesQueueTest.class, 
-        JobTaskRequestTest.class, 
-        TaskInfoDataTest.class, 
-        FacadeServiceTest.class, 
-        SchedulerEngineTest.class,
-        LaunchingTasksTest.class,
-        FrameworkIDHolderTest.class
-    })
-public final class AllMesosTests {
+@Suite.SuiteClasses(FrameworkContainerFactoryTest.class)
+public class AllContainerTests {
 }

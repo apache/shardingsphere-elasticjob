@@ -15,21 +15,26 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.mesos;
+package com.dangdang.ddframe.job.reg.base;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        SupportedExtractionTypeTest.class, 
-        LeasesQueueTest.class, 
-        JobTaskRequestTest.class, 
-        TaskInfoDataTest.class, 
-        FacadeServiceTest.class, 
-        SchedulerEngineTest.class,
-        LaunchingTasksTest.class,
-        FrameworkIDHolderTest.class
-    })
-public final class AllMesosTests {
+/**
+ * 选举候选人.
+ * 保证{@link #startLeadership()}与{@link #stopLeadership()}方法在同一个线程内交替运行,
+ * 且不会出现并发执行的情况.
+ * 
+ * @author gaohongtao
+ */
+public interface ElectionCandidate {
+    
+    /**
+     * 开始领导状态.
+     * @throws Exception 抛出异常后,将调用{@link #stopLeadership()}进行清理
+     */
+    void startLeadership() throws Exception;
+    
+    /**
+     * 终止领导状态.
+     * 实现该方法时不应该抛出任何异常
+     */
+    void stopLeadership();
 }

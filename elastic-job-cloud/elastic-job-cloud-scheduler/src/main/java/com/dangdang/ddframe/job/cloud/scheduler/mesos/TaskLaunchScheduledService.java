@@ -25,27 +25,23 @@ import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
-import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
-import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Protos;
-import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.ArrayList;
@@ -53,17 +49,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 任务启动处理器.
- *
+ * 任务提交调度服务.
+ * 
  * @author zhangliang
+ * @author gaohongtao
  */
 @RequiredArgsConstructor
-@Slf4j
-public final class TaskLaunchProcessor implements Runnable {
-    
-    private static volatile boolean shutdown;
+public class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private static final double EXECUTOR_DEFAULT_CPU_RESOURCE = 0.1d;
     
@@ -81,39 +76,40 @@ public final class TaskLaunchProcessor implements Runnable {
     
     private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
     
-    /**
-     * 线程关闭.
-     */
-    public static void shutdown() {
-        shutdown = true;
+    @Override
+    protected String serviceName() {
+        return "task-launch-processor";
     }
     
     @Override
-    public void run() {
-        while (!shutdown) {
-            LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
-            Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), leasesQueue.drainTo()).getResultMap().values();
-            for (VMAssignmentResult each: vmAssignmentResults) {
-                List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
-                List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
-                taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
-                for (Protos.TaskInfo taskInfo : taskInfoList) {
-                    TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
-                    facadeService.addRunning(taskContext);
-                    jobEventBus.post(createJobStatusTraceEvent(taskContext));
-                }
-                facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<TaskInfo, TaskContext>() {
-                    
-                    @Override
-                    public TaskContext apply(final Protos.TaskInfo input) {
-                        return TaskContext.from(input.getTaskId().getValue());
-                    }
-                }));
-                schedulerDriver.launchTasks(getOfferIDs(leasesUsed), taskInfoList);
+    protected Scheduler scheduler() {
+        return Scheduler.newFixedDelaySchedule(1000, 100, TimeUnit.MILLISECONDS);
+    }
+    
+    @Override
+    protected void runOneIteration() throws Exception {
+        LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
+        Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), leasesQueue.drainTo()).getResultMap().values();
+        for (VMAssignmentResult each: vmAssignmentResults) {
+            List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
+            List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
+            taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
+            for (Protos.TaskInfo taskInfo : taskInfoList) {
+                TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
+                facadeService.addRunning(taskContext);
+                jobEventBus.post(createJobStatusTraceEvent(taskContext));
             }
-            BlockUtils.waitingShortTime();
+            facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
+            
+                @Override
+                public TaskContext apply(final Protos.TaskInfo input) {
+                    return TaskContext.from(input.getTaskId().getValue());
+                }
+            }));
+            schedulerDriver.launchTasks(getOfferIDs(leasesUsed), taskInfoList);
         }
     }
+    
     
     private List<Protos.TaskInfo> getTaskInfoList(final Collection<String> integrityViolationJobs, final VMAssignmentResult vmAssignmentResult, final String hostname, final Protos.SlaveID slaveId) {
         List<Protos.TaskInfo> result = new ArrayList<>(vmAssignmentResult.getTasksAssigned().size());
@@ -177,7 +173,7 @@ public final class TaskLaunchProcessor implements Runnable {
         return result.build();
     }
     
-    private Protos.TaskInfo buildTaskInfo(final TaskContext taskContext, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts, 
+    private Protos.TaskInfo buildTaskInfo(final TaskContext taskContext, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,
                                           final Protos.SlaveID slaveID, final Protos.CommandInfo command, final boolean useDefaultExecutor) {
         Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName()).setSlaveId(slaveID).addResources(buildResource("cpus", jobConfig.getCpuCount())).addResources(buildResource("mem", jobConfig.getMemoryMB()))
@@ -200,7 +196,7 @@ public final class TaskLaunchProcessor implements Runnable {
     private JobStatusTraceEvent createJobStatusTraceEvent(final TaskContext taskContext) {
         TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
         JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
-                Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(metaInfo.getShardingItems()), State.TASK_STAGING, "");
+                JobStatusTraceEvent.Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
         if (ExecutionType.FAILOVER == taskContext.getType()) {
             Optional<String> taskContextOptional = facadeService.getFailoverTaskId(metaInfo);
             if (taskContextOptional.isPresent()) {

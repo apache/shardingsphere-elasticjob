@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler;
 
-import org.apache.mesos.Protos;
-
 import com.dangdang.ddframe.job.cloud.scheduler.boot.MasterBootstrap;
 
 /**
@@ -29,8 +27,6 @@ public final class MasterMain {
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON
-        MasterBootstrap bootstrap = new MasterBootstrap();
-        Protos.Status status = bootstrap.runAsDaemon();
-        System.exit(bootstrap.stop(status) ? 0 : -1);
+        new MasterBootstrap().run();
     }
 }

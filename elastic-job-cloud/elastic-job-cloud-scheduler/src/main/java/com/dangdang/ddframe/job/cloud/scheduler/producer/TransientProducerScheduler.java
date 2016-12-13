@@ -51,11 +51,14 @@ class TransientProducerScheduler {
     
     private final ReadyService readyService;
     
-    private final Scheduler scheduler;
+    private Scheduler scheduler;
     
     TransientProducerScheduler(final ReadyService readyService) {
         repository = new TransientProducerRepository();
         this.readyService = readyService;
+    }
+    
+    void start() {
         scheduler = getScheduler();
         try {
             scheduler.start();
@@ -127,12 +130,13 @@ class TransientProducerScheduler {
     
     void shutdown() {
         try {
-            if (!scheduler.isShutdown()) {
+            if (null != scheduler && !scheduler.isShutdown()) {
                 scheduler.shutdown();
             }
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
+        repository.removeAll();
     }
     
     @Setter

@@ -51,10 +51,10 @@ public final class CloudJobRestfulApiTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         ReflectionUtils.setFieldValue(ProducerManagerFactory.class, ProducerManagerFactory.class.getDeclaredField("instance"), null);
-        SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         regCenter = mock(CoordinatorRegistryCenter.class);
         server = new RestfulServer(19000);
-        CloudJobRestfulApi.init(schedulerDriver, regCenter);
+        CloudJobRestfulApi.init(regCenter);
+        CloudJobRestfulApi.start(mock(SchedulerDriver.class));
         server.start(CloudJobRestfulApi.class.getPackage().getName());
     }
     
@@ -62,6 +62,7 @@ public final class CloudJobRestfulApiTest {
     public static void tearDown() throws Exception {
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
         server.stop();
+        CloudJobRestfulApi.stop();
     }
     
     @Test

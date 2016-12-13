@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.reg;
 
 import com.dangdang.ddframe.job.reg.exception.RegExceptionHandlerTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfigurationTest;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionServiceTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenterForAuthTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenterInitFailureTest;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenterMiscellaneousTest;
@@ -38,7 +39,8 @@ import org.junit.runners.Suite.SuiteClasses;
         ZookeeperRegistryCenterQueryWithCacheTest.class, 
         ZookeeperRegistryCenterQueryWithoutCacheTest.class, 
         ZookeeperRegistryCenterModifyTest.class, 
-        ZookeeperRegistryCenterMiscellaneousTest.class, 
+        ZookeeperRegistryCenterMiscellaneousTest.class,
+        ZookeeperElectionServiceTest.class,
         RegExceptionHandlerTest.class, 
         ZookeeperRegistryCenterInitFailureTest.class
     })

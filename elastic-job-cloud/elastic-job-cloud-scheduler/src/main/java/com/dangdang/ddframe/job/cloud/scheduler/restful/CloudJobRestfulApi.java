@@ -51,7 +51,7 @@ public final class CloudJobRestfulApi {
     
     private static CoordinatorRegistryCenter regCenter;
     
-    private final ProducerManager producerManager;
+    private static ProducerManager producerManager;
     
     private final LifecycleService lifecycleService;
     
@@ -62,7 +62,6 @@ public final class CloudJobRestfulApi {
     public CloudJobRestfulApi() {
         Preconditions.checkNotNull(schedulerDriver);
         Preconditions.checkNotNull(regCenter);
-        producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         lifecycleService = new LifecycleService(schedulerDriver);
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
@@ -71,13 +70,29 @@ public final class CloudJobRestfulApi {
     /**
      * 初始化.
      * 
-     * @param schedulerDriver Mesos控制器
      * @param regCenter 注册中心
      */
-    public static void init(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
-        CloudJobRestfulApi.schedulerDriver = schedulerDriver;
+    public static void init(final CoordinatorRegistryCenter regCenter) {
         CloudJobRestfulApi.regCenter = regCenter;
         GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
+    }
+    
+    /**
+     * 启动服务.
+     * 
+     * @param schedulerDriver Mesos控制器
+     */
+    public static void start(final SchedulerDriver schedulerDriver) {
+        CloudJobRestfulApi.schedulerDriver = schedulerDriver;
+        producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
+        producerManager.startup();
+    }
+    
+    /**
+     * 停止服务.
+     */
+    public static void stop() {
+        producerManager.shutdown();
     }
     
     /**

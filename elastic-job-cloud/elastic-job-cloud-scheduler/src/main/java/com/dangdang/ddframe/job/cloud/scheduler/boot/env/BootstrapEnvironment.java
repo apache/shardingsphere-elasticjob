@@ -100,7 +100,8 @@ public final class BootstrapEnvironment {
      * @return Mesos框架配置对象
      */
     public FrameworkConfiguration getFrameworkConfiguration() {
-        return new FrameworkConfiguration(Boolean.valueOf(getValue(EnvironmentArgument.APP_CACHE_ENABLE)), Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
+        return new FrameworkConfiguration(FrameworkMode.valueOf(getValue(EnvironmentArgument.MODE)), Boolean.
+                valueOf(getValue(EnvironmentArgument.APP_CACHE_ENABLE)), Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
     }
     
     /**
@@ -151,11 +152,14 @@ public final class BootstrapEnvironment {
     /**
      * 环境参数.
      * 
-     * @author zhangliang 
+     * @author zhangliang
+     * @author gaohongtao
      */
     @RequiredArgsConstructor
     @Getter
     public enum EnvironmentArgument {
+        
+        MODE("mode", "STANDALONE", false),
         
         HOSTNAME("hostname", "", true),
         

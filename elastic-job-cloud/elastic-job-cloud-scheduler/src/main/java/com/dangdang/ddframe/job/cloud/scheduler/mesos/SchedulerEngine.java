@@ -17,12 +17,15 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
+import com.dangdang.ddframe.job.cloud.scheduler.container.AbstractFrameworkContainer;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.netflix.fenzo.TaskScheduler;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
@@ -38,6 +41,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Slf4j
+@Getter(AccessLevel.PACKAGE)
 public final class SchedulerEngine implements Scheduler {
     
     private final LeasesQueue leasesQueue;
@@ -48,11 +52,13 @@ public final class SchedulerEngine implements Scheduler {
     
     private final JobEventBus jobEventBus;
     
+    private final AbstractFrameworkContainer container;
+    
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
         log.info("call registered");
-        facadeService.start();
-        taskScheduler.expireAllLeases();
+        FrameworkIDHolder.save(frameworkID);
+        container.resume();
     }
     
     @Override
@@ -130,7 +136,7 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void disconnected(final SchedulerDriver schedulerDriver) {
         log.warn("call disconnected");
-        facadeService.stop();
+        container.pause();
     }
     
     @Override

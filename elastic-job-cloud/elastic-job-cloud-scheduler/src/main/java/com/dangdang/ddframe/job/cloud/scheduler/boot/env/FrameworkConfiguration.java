@@ -24,10 +24,13 @@ import lombok.RequiredArgsConstructor;
  * Mesos框架配置项.
  *
  * @author zhangliang
+ * @author gaohongtao
  */
 @RequiredArgsConstructor
 @Getter
 public final class FrameworkConfiguration {
+    
+    private final FrameworkMode mode;
     
     private final boolean appCacheEnable;
     

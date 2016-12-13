@@ -18,35 +18,34 @@
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
-import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
-import lombok.RequiredArgsConstructor;
+import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 任务统计信息处理器.
- *
+ * 
  * @author zhangliang
+ * @author gaohongtao
  */
-@RequiredArgsConstructor
 @Slf4j
-public final class StatisticsProcessor implements Runnable {
-    
-    private static volatile boolean shutdown;
+public class StatisticsScheduledService extends AbstractScheduledService {
     
     private final RunningService runningService = new RunningService();
     
-    /**
-     * 线程关闭.
-     */
-    public static void shutdown() {
-        shutdown = true;
+    @Override
+    protected String serviceName() {
+        return "statistics-processor";
     }
     
     @Override
-    public void run() {
-        while (!shutdown) {
-            log.debug("All running tasks are: " + runningService.getAllRunningTasks());
-            BlockUtils.sleep(10000L);
-        }
+    protected void runOneIteration() throws Exception {
+        log.debug("Elastic job: All running tasks are: " + runningService.getAllRunningTasks());
+    }
+    
+    @Override
+    protected Scheduler scheduler() {
+        return Scheduler.newFixedDelaySchedule(1, 10, TimeUnit.SECONDS);
     }
 }
