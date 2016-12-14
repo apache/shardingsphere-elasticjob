@@ -17,16 +17,55 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.MasterBootstrap;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.framework.AbstractFramework;
+import com.dangdang.ddframe.job.cloud.scheduler.framework.Frameworks;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsScheduledService;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 启动入口.
  */
 public final class MasterMain {
     
+    private final CountDownLatch latch = new CountDownLatch(1);
+    
+    private final AbstractFramework framework;
+    
+    private final StatisticsScheduledService statisticsScheduledService;
+    
+    private MasterMain() {
+        framework = Frameworks.newFramework(getRegistryCenter());
+        statisticsScheduledService = new StatisticsScheduledService();
+        Runtime.getRuntime().addShutdownHook(new Thread("stop-hook") {
+        
+            @Override
+            public void run() {
+                framework.stop();
+                statisticsScheduledService.stopAsync();
+                latch.countDown();
+            }
+        });
+    }
+    
+    private CoordinatorRegistryCenter getRegistryCenter() {
+        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(BootstrapEnvironment.getInstance().getZookeeperConfiguration());
+        result.init();
+        return result;
+    }
+    
+    private void run() throws Exception {
+        framework.start();
+        statisticsScheduledService.startAsync();
+        latch.await();
+    }
+    
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON
-        new MasterBootstrap().run();
+        new MasterMain().run();
     }
 }

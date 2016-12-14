@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.api.JobType;
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.framework.MesosSchedulerContext;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
-import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
@@ -35,7 +35,6 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
-import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
 import lombok.RequiredArgsConstructor;
@@ -64,15 +63,9 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private static final double EXECUTOR_DEFAULT_MEMORY_RESOURCE = 32d;
     
-    private final LeasesQueue leasesQueue;
+    private final MesosSchedulerContext context;
     
     private final SchedulerDriver schedulerDriver;
-    
-    private final TaskScheduler taskScheduler;
-    
-    private final FacadeService facadeService;
-    
-    private final JobEventBus jobEventBus;
     
     private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
     
@@ -88,18 +81,18 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
     
     @Override
     protected void runOneIteration() throws Exception {
-        LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
-        Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), leasesQueue.drainTo()).getResultMap().values();
+        LaunchingTasks launchingTasks = new LaunchingTasks(context.getFacadeService().getEligibleJobContext());
+        Collection<VMAssignmentResult> vmAssignmentResults = context.getTaskScheduler().scheduleOnce(launchingTasks.getPendingTasks(), context.getLeasesQueue().drainTo()).getResultMap().values();
         for (VMAssignmentResult each: vmAssignmentResults) {
             List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
             List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
             taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
             for (Protos.TaskInfo taskInfo : taskInfoList) {
                 TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
-                facadeService.addRunning(taskContext);
-                jobEventBus.post(createJobStatusTraceEvent(taskContext));
+                context.getFacadeService().addRunning(taskContext);
+                context.getJobEventBus().post(createJobStatusTraceEvent(taskContext));
             }
-            facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
+            context.getFacadeService().removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
             
                 @Override
                 public TaskContext apply(final Protos.TaskInfo input) {
@@ -115,12 +108,12 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         List<Protos.TaskInfo> result = new ArrayList<>(vmAssignmentResult.getTasksAssigned().size());
         for (TaskAssignmentResult each: vmAssignmentResult.getTasksAssigned()) {
             TaskContext taskContext = TaskContext.from(each.getTaskId());
-            if (!integrityViolationJobs.contains(taskContext.getMetaInfo().getJobName()) && !facadeService.isRunning(taskContext)) {
+            if (!integrityViolationJobs.contains(taskContext.getMetaInfo().getJobName()) && !context.getFacadeService().isRunning(taskContext)) {
                 Protos.TaskInfo taskInfo = getTaskInfo(slaveId, each);
                 if (null != taskInfo) {
                     result.add(taskInfo);
-                    facadeService.addMapping(taskInfo.getTaskId().getValue(), hostname);
-                    taskScheduler.getTaskAssigner().call(each.getRequest(), hostname);
+                    context.getFacadeService().addMapping(taskInfo.getTaskId().getValue(), hostname);
+                    context.getTaskScheduler().getTaskAssigner().call(each.getRequest(), hostname);
                 }
             }
         }
@@ -129,7 +122,7 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private Protos.TaskInfo getTaskInfo(final Protos.SlaveID slaveID, final TaskAssignmentResult taskAssignmentResult) {
         TaskContext taskContext = TaskContext.from(taskAssignmentResult.getTaskId());
-        Optional<CloudJobConfiguration> jobConfigOptional = facadeService.load(taskContext.getMetaInfo().getJobName());
+        Optional<CloudJobConfiguration> jobConfigOptional = context.getFacadeService().load(taskContext.getMetaInfo().getJobName());
         if (!jobConfigOptional.isPresent()) {
             return null;
         }
@@ -198,7 +191,7 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
                 JobStatusTraceEvent.Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
         if (ExecutionType.FAILOVER == taskContext.getType()) {
-            Optional<String> taskContextOptional = facadeService.getFailoverTaskId(metaInfo);
+            Optional<String> taskContextOptional = context.getFacadeService().getFailoverTaskId(metaInfo);
             if (taskContextOptional.isPresent()) {
                 result.setOriginalTaskId(taskContextOptional.get());
             }

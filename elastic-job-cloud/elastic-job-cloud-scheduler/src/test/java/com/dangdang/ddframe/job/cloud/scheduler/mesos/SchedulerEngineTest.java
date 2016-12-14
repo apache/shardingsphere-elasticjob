@@ -17,10 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.container.AbstractFrameworkContainer;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
+import com.dangdang.ddframe.job.cloud.scheduler.framework.MesosSchedulerContext;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.ExecutionType;
@@ -36,7 +36,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,22 +65,25 @@ public final class SchedulerEngineTest {
     private CoordinatorRegistryCenter registryCenter;
     
     @Mock
-    private AbstractFrameworkContainer container;
+    private MesosSchedulerContext context;
     
     private SchedulerEngine schedulerEngine;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         FrameworkIDHolder.setRegCenter(registryCenter);
-        schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService, new JobEventBus(), container);
-        ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
+        when(context.getFacadeService()).thenReturn(facadeService);
+        when(context.getLeasesQueue()).thenReturn(leasesQueue);
+        when(context.getTaskScheduler()).thenReturn(taskScheduler);
+        when(context.getJobEventBus()).thenReturn(new JobEventBus());
+        schedulerEngine = new SchedulerEngine(context);
         new RunningService().clear();
     }
     
     @Test
     public void assertRegistered() {
         schedulerEngine.registered(null, Protos.FrameworkID.newBuilder().setValue("1").build(), null);
-        verify(container).resume();
+        verify(context).doRegistered();
     }
     
     @Test
@@ -220,7 +222,7 @@ public final class SchedulerEngineTest {
     @Test
     public void assertDisconnected() {
         schedulerEngine.disconnected(null);
-        verify(container).pause();
+        verify(context).doDisconnect();
     }
     
     @Test

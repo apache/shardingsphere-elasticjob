@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
+package com.dangdang.ddframe.job.cloud.scheduler.env;
 
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
@@ -100,8 +100,7 @@ public final class BootstrapEnvironment {
      * @return Mesos框架配置对象
      */
     public FrameworkConfiguration getFrameworkConfiguration() {
-        return new FrameworkConfiguration(FrameworkMode.valueOf(getValue(EnvironmentArgument.MODE)), Boolean.
-                valueOf(getValue(EnvironmentArgument.APP_CACHE_ENABLE)), Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
+        return new FrameworkConfiguration(Boolean.valueOf(getValue(EnvironmentArgument.APP_CACHE_ENABLE)), Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
     }
     
     /**
@@ -158,8 +157,6 @@ public final class BootstrapEnvironment {
     @RequiredArgsConstructor
     @Getter
     public enum EnvironmentArgument {
-        
-        MODE("mode", "STANDALONE", false),
         
         HOSTNAME("hostname", "", true),
         

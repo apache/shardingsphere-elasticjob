@@ -15,14 +15,22 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.boot;
+package com.dangdang.ddframe.job.cloud.scheduler.env;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironmentTest;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses(BootstrapEnvironmentTest.class)
-public final class AllBootTests {
+/**
+ * Mesos框架配置项.
+ *
+ * @author zhangliang
+ * @author gaohongtao
+ */
+@RequiredArgsConstructor
+@Getter
+public final class FrameworkConfiguration {
+    
+    private final boolean appCacheEnable;
+    
+    private final int jobStateQueueSize;
 }

@@ -15,9 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
+package com.dangdang.ddframe.job.cloud.scheduler.env;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment.EnvironmentArgument;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.google.common.base.Optional;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThat;
 
 public final class BootstrapEnvironmentTest {
     
-    private BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getInstance();
+    private final BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getInstance();
     
     @Test(expected = IllegalStateException.class)
     public void assertGetMesosConfigurationWithoutRequiredProperties() throws NoSuchFieldException {

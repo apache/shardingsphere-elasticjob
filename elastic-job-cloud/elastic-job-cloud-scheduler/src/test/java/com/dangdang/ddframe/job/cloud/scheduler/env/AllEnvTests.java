@@ -15,24 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
+package com.dangdang.ddframe.job.cloud.scheduler.env;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/**
- * Mesos框架配置项.
- *
- * @author zhangliang
- * @author gaohongtao
- */
-@RequiredArgsConstructor
-@Getter
-public final class FrameworkConfiguration {
-    
-    private final FrameworkMode mode;
-    
-    private final boolean appCacheEnable;
-    
-    private final int jobStateQueueSize;
+@RunWith(Suite.class)
+@Suite.SuiteClasses(BootstrapEnvironmentTest.class)
+public final class AllEnvTests {
 }
