@@ -29,7 +29,6 @@ import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import org.apache.mesos.SchedulerDriver;
 
 import javax.ws.rs.Consumes;
@@ -60,8 +59,6 @@ public final class CloudJobRestfulApi {
     private final ReadyService readyService;
     
     public CloudJobRestfulApi() {
-        Preconditions.checkNotNull(schedulerDriver);
-        Preconditions.checkNotNull(regCenter);
         producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         lifecycleService = new LifecycleService(schedulerDriver);
         configService = new ConfigurationService(regCenter);
