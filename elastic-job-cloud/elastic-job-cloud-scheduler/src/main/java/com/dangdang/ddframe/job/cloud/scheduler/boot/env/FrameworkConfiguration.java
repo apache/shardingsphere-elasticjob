@@ -15,22 +15,22 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.mesos;
+package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
-import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDServiceTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        SupportedExtractionTypeTest.class, 
-        LeasesQueueTest.class, 
-        JobTaskRequestTest.class, 
-        TaskInfoDataTest.class, 
-        FacadeServiceTest.class, 
-        SchedulerEngineTest.class,
-        LaunchingTasksTest.class,
-        FrameworkIDServiceTest.class
-    })
-public final class AllMesosTests {
+/**
+ * Mesos框架配置项.
+ *
+ * @author zhangliang
+ * @author gaohongtao
+ */
+@RequiredArgsConstructor
+@Getter
+public final class FrameworkConfiguration {
+    
+    private final boolean appCacheEnable;
+    
+    private final int jobStateQueueSize;
 }

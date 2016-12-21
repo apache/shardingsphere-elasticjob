@@ -30,6 +30,7 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.SchedulerDriver;
 
 import javax.ws.rs.Consumes;
@@ -45,6 +46,7 @@ import javax.ws.rs.core.MediaType;
  * @author zhangliang
  */
 @Path("/job")
+@Slf4j
 public final class CloudJobRestfulApi {
     
     private static SchedulerDriver schedulerDriver;
@@ -83,6 +85,7 @@ public final class CloudJobRestfulApi {
      * @param schedulerDriver Mesos控制器
      */
     public static void start(final SchedulerDriver schedulerDriver) {
+        log.info("Elastic Job: Start REST Api");
         CloudJobRestfulApi.schedulerDriver = schedulerDriver;
         producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         producerManager.startup();
@@ -92,6 +95,7 @@ public final class CloudJobRestfulApi {
      * 停止服务.
      */
     public static void stop() {
+        log.info("Elastic Job: Stop REST Api");
         producerManager.shutdown();
     }
     

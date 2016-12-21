@@ -15,12 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.mesos;
+package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Strings;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Protos;
 
 /**
@@ -28,13 +27,10 @@ import org.apache.mesos.Protos;
  * 
  * @author gaohongtao
  */
-@NoArgsConstructor
-public class FrameworkIDHolder {
+@RequiredArgsConstructor
+public class FrameworkIDService {
     
-    static final String FRAMEWORK_ID_NODE = "/framework_id";
-    
-    @Setter
-    private static CoordinatorRegistryCenter regCenter;
+    private final CoordinatorRegistryCenter regCenter;
     
     /**
      * 向FrameworkInfo构建器提供FrameworkI值.
@@ -42,8 +38,8 @@ public class FrameworkIDHolder {
      * @param builder FrameworkInfo构建器
      * @return FrameworkInfo构建器
      */
-    public static Protos.FrameworkInfo.Builder supply(final Protos.FrameworkInfo.Builder builder) {
-        String frameworkId = regCenter.getDirectly(FRAMEWORK_ID_NODE);
+    public Protos.FrameworkInfo.Builder supply(final Protos.FrameworkInfo.Builder builder) {
+        String frameworkId = regCenter.getDirectly(FrameworkIDNode.FRAMEWORK_ID_NODE);
         if (!Strings.isNullOrEmpty(frameworkId)) {
             builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkId));
         }
@@ -55,12 +51,9 @@ public class FrameworkIDHolder {
      * 
      * @param id Framework的ID
      */
-    static void save(final Protos.FrameworkID id) {
-        if (null == regCenter) {
-            return;
-        }
-        if (!regCenter.isExisted(FRAMEWORK_ID_NODE)) {
-            regCenter.persist(FRAMEWORK_ID_NODE, id.getValue());
+    public void save(final Protos.FrameworkID id) {
+        if (!regCenter.isExisted(FrameworkIDNode.FRAMEWORK_ID_NODE)) {
+            regCenter.persist(FrameworkIDNode.FRAMEWORK_ID_NODE, id.getValue());
         }
     }
 }

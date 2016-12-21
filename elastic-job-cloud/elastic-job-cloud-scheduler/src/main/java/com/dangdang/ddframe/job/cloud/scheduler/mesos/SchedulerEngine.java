@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.framework.MesosSchedulerContext;
+import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
 import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
-import lombok.AccessLevel;
-import lombok.Getter;
+import com.netflix.fenzo.TaskScheduler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
@@ -39,37 +39,45 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Slf4j
-@Getter(AccessLevel.PACKAGE)
 public final class SchedulerEngine implements Scheduler {
     
-    private final MesosSchedulerContext context;
+    private final LeasesQueue leasesQueue;
+    
+    private final TaskScheduler taskScheduler;
+    
+    private final FacadeService facadeService;
+    
+    private final JobEventBus jobEventBus;
+    
+    private final FrameworkIDService frameworkIDService;
     
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
         log.info("call registered");
-        FrameworkIDHolder.save(frameworkID);
-        context.doRegistered();
+        frameworkIDService.save(frameworkID);
+        facadeService.start();
+        taskScheduler.expireAllLeases();
     }
     
     @Override
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
         log.info("call reregistered");
-        context.getFacadeService().start();
-        context.getTaskScheduler().expireAllLeases();
+        facadeService.start();
+        taskScheduler.expireAllLeases();
     }
     
     @Override
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
         for (Protos.Offer offer: offers) {
             log.trace("Adding offer {} from host {}", offer.getId(), offer.getHostname());
-            context.getLeasesQueue().offer(offer);
+            leasesQueue.offer(offer);
         }
     }
     
     @Override
     public void offerRescinded(final SchedulerDriver schedulerDriver, final Protos.OfferID offerID) {
         log.trace("call offerRescinded: {}", offerID);
-        context.getTaskScheduler().expireLease(offerID.getValue());
+        taskScheduler.expireLease(offerID.getValue());
     }
     
     @Override
@@ -77,33 +85,33 @@ public final class SchedulerEngine implements Scheduler {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
-        context.getJobEventBus().post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), Source.CLOUD_SCHEDULER, 
+        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), Source.CLOUD_SCHEDULER, 
                 taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
                 if ("BEGIN".equals(taskStatus.getMessage())) {
-                    context.getFacadeService().updateDaemonStatus(taskContext, false);
+                    facadeService.updateDaemonStatus(taskContext, false);
                 } else if ("COMPLETE".equals(taskStatus.getMessage())) {
-                    context.getFacadeService().updateDaemonStatus(taskContext, true);
+                    facadeService.updateDaemonStatus(taskContext, true);
                 }
                 break;
             case TASK_FINISHED:
-                context.getFacadeService().removeRunning(taskContext);
+                facadeService.removeRunning(taskContext);
                 unAssignTask(taskId);
                 break;
             case TASK_KILLED:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
-                context.getFacadeService().removeRunning(taskContext);
-                context.getFacadeService().addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
+                facadeService.removeRunning(taskContext);
+                facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
                 break;
             case TASK_LOST:
             case TASK_FAILED:
             case TASK_ERROR:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
-                context.getFacadeService().removeRunning(taskContext);
-                context.getFacadeService().recordFailoverTask(taskContext);
-                context.getFacadeService().addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
+                facadeService.removeRunning(taskContext);
+                facadeService.recordFailoverTask(taskContext);
+                facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
                 break;
             default:
@@ -112,9 +120,9 @@ public final class SchedulerEngine implements Scheduler {
     }
     
     private void unAssignTask(final String taskId) {
-        String hostname = context.getFacadeService().popMapping(taskId);
+        String hostname = facadeService.popMapping(taskId);
         if (null != hostname) {
-            context.getTaskScheduler().getTaskUnAssigner().call(TaskContext.getIdForUnassignedSlave(taskId), hostname);
+            taskScheduler.getTaskUnAssigner().call(TaskContext.getIdForUnassignedSlave(taskId), hostname);
         }
     }
     
@@ -126,13 +134,13 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void disconnected(final SchedulerDriver schedulerDriver) {
         log.warn("call disconnected");
-        context.doDisconnect();
+        facadeService.stop();
     }
     
     @Override
     public void slaveLost(final SchedulerDriver schedulerDriver, final Protos.SlaveID slaveID) {
         log.warn("call slaveLost slaveID is: {}", slaveID);
-        context.getTaskScheduler().expireAllLeasesByVMId(slaveID.getValue());
+        taskScheduler.expireAllLeasesByVMId(slaveID.getValue());
     }
     
     @Override

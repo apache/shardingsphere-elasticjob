@@ -15,12 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.env;
+package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(BootstrapEnvironmentTest.class)
-public final class AllEnvTests {
+@Suite.SuiteClasses(FrameworkIDServiceTest.class)
+public class AllHATests {
 }

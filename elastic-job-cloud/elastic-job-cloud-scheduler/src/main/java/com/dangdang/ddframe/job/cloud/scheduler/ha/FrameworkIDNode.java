@@ -15,22 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.env;
+package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * Mesos框架配置项.
- *
- * @author zhangliang
+ * 保存FrameworkID的节点.
+ * 
  * @author gaohongtao
  */
-@RequiredArgsConstructor
-@Getter
-public final class FrameworkConfiguration {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+class FrameworkIDNode {
     
-    private final boolean appCacheEnable;
-    
-    private final int jobStateQueueSize;
+    /**
+     * FrameworkID节点.
+     */
+    static final String FRAMEWORK_ID_NODE = "/framework_id";
 }

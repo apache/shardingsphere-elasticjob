@@ -15,22 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.mesos;
+package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
-import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDServiceTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-        SupportedExtractionTypeTest.class, 
-        LeasesQueueTest.class, 
-        JobTaskRequestTest.class, 
-        TaskInfoDataTest.class, 
-        FacadeServiceTest.class, 
-        SchedulerEngineTest.class,
-        LaunchingTasksTest.class,
-        FrameworkIDServiceTest.class
-    })
-public final class AllMesosTests {
+@Suite.SuiteClasses(BootstrapEnvironmentTest.class)
+public final class AllEnvTests {
 }

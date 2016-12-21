@@ -15,9 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.framework;
+package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
-import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.boot.MasterBootstrap;
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionService;
@@ -26,65 +27,52 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 
 /**
- * 高可用框架.
+ * 高可用服务.
  * 
  * @author gaohongtao
  */
 @Slf4j
-final class HAFramework extends AbstractFramework {
+public final class HAService {
     
     private static final LocalHostService LOCAL_HOST_SERVICE = new LocalHostService();
     
     private static final String ELECTION_NODE = "/ha";
     
-    private static HAFramework instance;
+    private final ZookeeperElectionService electionService;
     
-    private ZookeeperElectionService electionService;
+    public HAService(final CoordinatorRegistryCenter registryCenter) {
+        electionService = ZookeeperElectionService.builder()
+                .identity(String.format("%s:%d", LOCAL_HOST_SERVICE.getHostName(), BootstrapEnvironment.getInstance().getRestfulServerConfiguration().getPort()))
+                .client((CuratorFramework) registryCenter.getRawClient()).electionPath(ELECTION_NODE)
+                .electionCandidate(new ElectionCandidate() {
     
-    private HAFramework(final CoordinatorRegistryCenter regCenter) {
-        super(regCenter);
+                    private final MasterBootstrap masterBootstrap = new MasterBootstrap();
+    
+                    @Override
+                    public void startLeadership() throws Exception {
+                        masterBootstrap.start();
+                    }
+    
+                    @Override
+                    public void stopLeadership() {
+                        masterBootstrap.stop();
+                    }
+                }).build();
     }
     
     /**
-     * 工厂方法.
-     * 
-     * @param regCenter 协调注册中心
-     * @return HA框架
+     * 启动高可用服务.
      */
-    public static HAFramework getInstance(final CoordinatorRegistryCenter regCenter) {
-        if (null != instance) {
-            return instance;
-        }
-        return instance = new HAFramework(regCenter);
-    }
-    
-    @Override
-    public void start() throws Exception {
-        electionService = ZookeeperElectionService.builder()
-                .identity(String.format("%s:%d", LOCAL_HOST_SERVICE.getHostName(), BootstrapEnvironment.getInstance().getRestfulServerConfiguration().getPort()))
-                .client((CuratorFramework) getRegCenter().getRawClient()).electionPath(ELECTION_NODE)
-                .electionCandidate(new ElectionCandidate() {
-                    @Override
-                    public void startLeadership() throws Exception {
-                        getDelegate().start();
-                    }
-                
-                    @Override
-                    public void stopLeadership() {
-                        getDelegate().stop();
-                    }
-                }).build();
+    public void start() {
         electionService.startLeadership();
         log.info("Elastic job: The framework {} leader", electionService.isLeader() ? "is" : "is not");
     }
     
-    @Override
+    /**
+     * 关闭高可用服务.
+     */
     public void stop() {
         log.info("Elastic job: HA container stop");
         electionService.close();
-    }
-    
-    static synchronized void interrupt() {
-        instance.electionService.abdicateLeadership();
     }
 }

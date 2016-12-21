@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.restful;
 import com.google.common.base.Joiner;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -29,6 +30,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
  *
  * @author zhangliang
  */
+@Slf4j
 public final class RestfulServer {
     
     private final Server server;
@@ -44,6 +46,7 @@ public final class RestfulServer {
      * @throws Exception 启动服务器异常
      */
     public void start(final String packages) throws Exception {
+        log.info("Elastic Job: Start RESTful server");
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
@@ -62,11 +65,17 @@ public final class RestfulServer {
     }
     
     /**
-     * 停止内嵌的RESTful服务器.
+     * 安静停止内嵌的RESTful服务器.
      * 
-     * @throws Exception 停止服务器异常
      */
-    public void stop() throws Exception {
-        server.stop();
+    public void stop() {
+        log.info("Elastic Job: Stop RESTful server");
+        try {
+            server.stop();
+            // CHECKSTYLE:OFF
+        } catch (final Exception e) {
+            // CHECKSTYLE:ON
+            log.error("Elastic Job: Stop RESTful server error", e);
+        }
     }
 }

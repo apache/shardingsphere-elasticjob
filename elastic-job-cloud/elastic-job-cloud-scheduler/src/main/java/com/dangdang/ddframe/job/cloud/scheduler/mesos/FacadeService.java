@@ -30,6 +30,7 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +42,7 @@ import java.util.List;
  *
  * @author zhangliang
  */
+@Slf4j
 public class FacadeService {
     
     private final ConfigurationService configService;
@@ -62,6 +64,7 @@ public class FacadeService {
      * 框架启动.
      */
     public void start() {
+        log.info("Elastic Job: Start facade service");
         runningService.clear();
     }
     
@@ -224,6 +227,7 @@ public class FacadeService {
      * 框架停止.
      */
     public void stop() {
+        log.info("Elastic Job: Stop facade service");
         // TODO 停止作业调度
         runningService.clear();
     }

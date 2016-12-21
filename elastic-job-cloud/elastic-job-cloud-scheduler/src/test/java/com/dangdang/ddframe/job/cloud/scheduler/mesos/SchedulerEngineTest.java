@@ -17,16 +17,15 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
+import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
-import com.dangdang.ddframe.job.cloud.scheduler.framework.MesosSchedulerContext;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
-import com.dangdang.ddframe.job.context.ExecutionType;
-import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.functions.Action2;
 import org.apache.mesos.Protos;
@@ -36,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,28 +62,23 @@ public final class SchedulerEngineTest {
     private FacadeService facadeService;
     
     @Mock
-    private CoordinatorRegistryCenter registryCenter;
-    
-    @Mock
-    private MesosSchedulerContext context;
+    private FrameworkIDService frameworkIDService;
     
     private SchedulerEngine schedulerEngine;
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        FrameworkIDHolder.setRegCenter(registryCenter);
-        when(context.getFacadeService()).thenReturn(facadeService);
-        when(context.getLeasesQueue()).thenReturn(leasesQueue);
-        when(context.getTaskScheduler()).thenReturn(taskScheduler);
-        when(context.getJobEventBus()).thenReturn(new JobEventBus());
-        schedulerEngine = new SchedulerEngine(context);
+        schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService, new JobEventBus(), frameworkIDService);
+        ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
         new RunningService().clear();
     }
     
     @Test
     public void assertRegistered() {
-        schedulerEngine.registered(null, Protos.FrameworkID.newBuilder().setValue("1").build(), null);
-        verify(context).doRegistered();
+        schedulerEngine.registered(null, null, null);
+        verify(facadeService).start();
+        verify(taskScheduler).expireAllLeases();
+        verify(frameworkIDService).save(null);
     }
     
     @Test
@@ -144,7 +139,7 @@ public final class SchedulerEngineTest {
     
     @Test
     public void assertFinishedStatusUpdate() {
-        @SuppressWarnings("unchecked") 
+        @SuppressWarnings("unchecked")
         Action2<String, String> taskUnAssigner = mock(Action2.class);
         when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
         TaskNode taskNode = TaskNode.builder().build();
@@ -222,7 +217,7 @@ public final class SchedulerEngineTest {
     @Test
     public void assertDisconnected() {
         schedulerEngine.disconnected(null);
-        verify(context).doDisconnect();
+        verify(facadeService).stop();
     }
     
     @Test

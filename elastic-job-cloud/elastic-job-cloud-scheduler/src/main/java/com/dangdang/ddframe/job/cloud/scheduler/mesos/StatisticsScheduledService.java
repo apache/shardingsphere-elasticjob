@@ -48,4 +48,14 @@ public class StatisticsScheduledService extends AbstractScheduledService {
     protected Scheduler scheduler() {
         return Scheduler.newFixedDelaySchedule(1, 10, TimeUnit.SECONDS);
     }
+    
+    @Override
+    protected void startUp() throws Exception {
+        log.info("Elastic Job: Start {}", serviceName());
+    }
+    
+    @Override
+    protected void shutDown() throws Exception {
+        log.info("Elastic Job: Stop {}", serviceName());
+    }
 }
