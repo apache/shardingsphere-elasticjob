@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
@@ -41,8 +40,8 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
     
     private final ReadyService readyService;
     
-    public CloudJobConfigurationListener(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
-        producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
+    public CloudJobConfigurationListener(final SchedulerDriver schedulerDriver, final ProducerManager producerManager, final CoordinatorRegistryCenter regCenter) {
+        this.producerManager = producerManager;
         readyService = new ReadyService(regCenter);
     }
     

@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
-import org.apache.mesos.Protos;
 
 /**
  * FrameworkID 的保存器.
@@ -33,17 +33,16 @@ public class FrameworkIDService {
     private final CoordinatorRegistryCenter regCenter;
     
     /**
-     * 向FrameworkInfo构建器提供FrameworkI值.
+     * 获取FrameworkID,返回值是一个可选的结果.
      * 
-     * @param builder FrameworkInfo构建器
-     * @return FrameworkInfo构建器
+     * @return 获取FrameworkID的可选结果
      */
-    public Protos.FrameworkInfo.Builder supply(final Protos.FrameworkInfo.Builder builder) {
-        String frameworkId = regCenter.getDirectly(FrameworkIDNode.FRAMEWORK_ID_NODE);
-        if (!Strings.isNullOrEmpty(frameworkId)) {
-            builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkId));
+    public Optional<String> fetch() {
+        String frameworkId = regCenter.getDirectly(HANode.FRAMEWORK_ID_NODE);
+        if (Strings.isNullOrEmpty(frameworkId)) {
+            return Optional.absent();
         }
-        return builder;
+        return Optional.of(frameworkId);
     }
     
     /**
@@ -51,9 +50,9 @@ public class FrameworkIDService {
      * 
      * @param id Framework的ID
      */
-    public void save(final Protos.FrameworkID id) {
-        if (!regCenter.isExisted(FrameworkIDNode.FRAMEWORK_ID_NODE)) {
-            regCenter.persist(FrameworkIDNode.FRAMEWORK_ID_NODE, id.getValue());
+    public void save(final String id) {
+        if (!regCenter.isExisted(HANode.FRAMEWORK_ID_NODE)) {
+            regCenter.persist(HANode.FRAMEWORK_ID_NODE, id);
         }
     }
 }

@@ -54,7 +54,7 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
         log.info("call registered");
-        frameworkIDService.save(frameworkID);
+        frameworkIDService.save(frameworkID.getValue());
         facadeService.start();
         taskScheduler.expireAllLeases();
     }

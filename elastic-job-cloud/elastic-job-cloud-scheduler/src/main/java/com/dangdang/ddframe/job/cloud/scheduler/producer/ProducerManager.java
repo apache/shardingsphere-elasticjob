@@ -27,6 +27,7 @@ import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.SchedulerDriver;
 
 /**
@@ -35,6 +36,7 @@ import org.apache.mesos.SchedulerDriver;
  * @author caohao
  * @author zhangliang
  */
+@Slf4j
 public class ProducerManager {
     
     private final ConfigurationService configService;
@@ -47,7 +49,7 @@ public class ProducerManager {
     
     private final LifecycleService lifecycleService;
     
-    ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
+    public ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService();
@@ -59,6 +61,7 @@ public class ProducerManager {
      * 启动作业调度器.
      */
     public void startup() {
+        log.info("Start producer manager");
         transientProducerScheduler.start();
         for (CloudJobConfiguration each : configService.loadAll()) {
             schedule(each);
@@ -145,6 +148,7 @@ public class ProducerManager {
      * 关闭作业调度器.
      */
     public void shutdown() {
+        log.info("Stop producer manager");
         transientProducerScheduler.shutdown();
     }
 }

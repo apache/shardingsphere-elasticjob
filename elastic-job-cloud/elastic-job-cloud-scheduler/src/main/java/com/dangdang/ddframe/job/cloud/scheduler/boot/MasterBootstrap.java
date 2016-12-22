@@ -21,12 +21,13 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchScheduledService;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
@@ -69,6 +70,8 @@ public final class MasterBootstrap {
     
     private SchedulerDriver schedulerDriver;
     
+    private ProducerManager producerManager;
+    
     private CloudJobConfigurationListener cloudJobConfigurationListener;
     
     private Service taskLaunchScheduledService;
@@ -83,7 +86,7 @@ public final class MasterBootstrap {
         frameworkIDService = new FrameworkIDService(regCenter);
         CloudJobRestfulApi.init(regCenter);
         Runtime.getRuntime().addShutdownHook(new Thread("master-bootstrap-shutdown-hook") {
-        
+            
             @Override
             public void run() {
                 facadeService.stop();
@@ -107,9 +110,11 @@ public final class MasterBootstrap {
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus);
-        CloudJobRestfulApi.start(schedulerDriver);
+        producerManager = new ProducerManager(schedulerDriver, regCenter);
+        producerManager.startup();
+        CloudJobRestfulApi.setContext(schedulerDriver, producerManager);
         log.info("Elastic Job: Add configuration listener");
-        cloudJobConfigurationListener =  new CloudJobConfigurationListener(schedulerDriver, regCenter);
+        cloudJobConfigurationListener =  new CloudJobConfigurationListener(schedulerDriver, producerManager, regCenter);
         getCache().getListenable().addListener(cloudJobConfigurationListener, Executors.newSingleThreadExecutor());
         taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus).startAsync();
         statisticsScheduledService = new StatisticsScheduledService().startAsync();
@@ -117,10 +122,14 @@ public final class MasterBootstrap {
         schedulerDriver.start();
     }
     
-    
     private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
-        Protos.FrameworkInfo frameworkInfo = frameworkIDService.supply(Protos.FrameworkInfo.newBuilder()).setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME)
+        Optional<String> frameworkIDOptional = frameworkIDService.fetch();
+        Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
+        if (frameworkIDOptional.isPresent()) {
+            builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkIDOptional.get()).build());
+        }
+        Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME)
                         .setHostname(mesosConfig.getHostname()).setFailoverTimeout(ONE_WEEK_TIMEOUT).build();
         return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, frameworkIDService), frameworkInfo, mesosConfig.getUrl());
     }
@@ -159,7 +168,6 @@ public final class MasterBootstrap {
      * 停止运行.
      */
     public synchronized void stop() {
-        CloudJobRestfulApi.stop();
         if (null != taskLaunchScheduledService) {
             taskLaunchScheduledService.stopAsync();
         }
@@ -170,6 +178,9 @@ public final class MasterBootstrap {
         if (null != cloudJobConfigurationListener) {
             log.info("Elastic Job: Remove configuration listener");
             getCache().getListenable().removeListener(cloudJobConfigurationListener);
+        }
+        if (null != producerManager) {
+            producerManager.shutdown();
         }
         if (null != schedulerDriver) {
             schedulerDriver.stop(true);

@@ -17,19 +17,25 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 /**
- * 保存FrameworkID的节点.
+ * 保存HA相关数据节点.
  * 
  * @author gaohongtao
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-class FrameworkIDNode {
+public class HANode {
     
     /**
-     * FrameworkID节点.
+     * HA根节点.
      */
-    static final String FRAMEWORK_ID_NODE = "/framework_id";
+    public static final String ROOT = "/ha";
+    
+    /**
+     * FrameworkID保存的节点.
+     */
+    public static final String FRAMEWORK_ID_NODE = ROOT + "/framework_id";
+    
+    /**
+     * 选举节点.
+     */
+    public static final String ELECTION_NODE = ROOT + "/election";
 }

@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.apache.mesos.Protos;
+import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -26,6 +26,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,20 +44,20 @@ public class FrameworkIDServiceTest {
     }
     
     @Test
-    public void assertSupply() throws Exception {
-        when(registryCenter.getDirectly(FrameworkIDNode.FRAMEWORK_ID_NODE)).thenReturn("1");
-        Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder().setUser("test").setName("name");
-        frameworkIDService.supply(builder);
-        assertThat(builder.build().getId().getValue(), is("1"));
-        verify(registryCenter).getDirectly(FrameworkIDNode.FRAMEWORK_ID_NODE);
+    public void assertFetch() throws Exception {
+        when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("1");
+        Optional<String> frameworkIDOptional = frameworkIDService.fetch();
+        assertTrue(frameworkIDOptional.isPresent());
+        assertThat(frameworkIDOptional.get(), is("1"));
+        verify(registryCenter).getDirectly(HANode.FRAMEWORK_ID_NODE);
     }
     
     @Test
     public void assertSave() throws Exception {
-        when(registryCenter.isExisted(FrameworkIDNode.FRAMEWORK_ID_NODE)).thenReturn(false);
-        frameworkIDService.save(Protos.FrameworkID.newBuilder().setValue("1").build());
-        verify(registryCenter).isExisted(FrameworkIDNode.FRAMEWORK_ID_NODE);
-        verify(registryCenter).persist(FrameworkIDNode.FRAMEWORK_ID_NODE, "1");
+        when(registryCenter.isExisted(HANode.FRAMEWORK_ID_NODE)).thenReturn(false);
+        frameworkIDService.save("1");
+        verify(registryCenter).isExisted(HANode.FRAMEWORK_ID_NODE);
+        verify(registryCenter).persist(HANode.FRAMEWORK_ID_NODE, "1");
     }
     
 }

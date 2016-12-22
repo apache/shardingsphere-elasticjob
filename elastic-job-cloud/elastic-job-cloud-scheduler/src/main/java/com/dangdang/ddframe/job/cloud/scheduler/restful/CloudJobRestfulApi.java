@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -80,23 +79,14 @@ public final class CloudJobRestfulApi {
     }
     
     /**
-     * 启动服务.
+     * 设置运行环境.
      * 
-     * @param schedulerDriver Mesos控制器
+     * @param schedulerDriver mesos调度器驱动
+     * @param producerManager 生产管理器
      */
-    public static void start(final SchedulerDriver schedulerDriver) {
-        log.info("Elastic Job: Start REST Api");
+    public static void setContext(final SchedulerDriver schedulerDriver, final ProducerManager producerManager) {
         CloudJobRestfulApi.schedulerDriver = schedulerDriver;
-        producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
-        producerManager.startup();
-    }
-    
-    /**
-     * 停止服务.
-     */
-    public static void stop() {
-        log.info("Elastic Job: Stop REST Api");
-        producerManager.shutdown();
+        CloudJobRestfulApi.producerManager = producerManager;
     }
     
     /**

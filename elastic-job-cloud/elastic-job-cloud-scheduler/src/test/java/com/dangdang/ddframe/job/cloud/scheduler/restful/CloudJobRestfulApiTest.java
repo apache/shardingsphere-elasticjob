@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
 import org.apache.mesos.SchedulerDriver;
@@ -31,7 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
 
 import javax.ws.rs.core.MediaType;
 
@@ -50,11 +49,13 @@ public final class CloudJobRestfulApiTest {
     
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ReflectionUtils.setFieldValue(ProducerManagerFactory.class, ProducerManagerFactory.class.getDeclaredField("instance"), null);
         regCenter = mock(CoordinatorRegistryCenter.class);
         server = new RestfulServer(19000);
         CloudJobRestfulApi.init(regCenter);
-        CloudJobRestfulApi.start(mock(SchedulerDriver.class));
+        SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
+        ProducerManager producerManager = new ProducerManager(schedulerDriver, regCenter);
+        producerManager.startup();
+        CloudJobRestfulApi.setContext(schedulerDriver, producerManager);
         server.start(CloudJobRestfulApi.class.getPackage().getName());
     }
     
@@ -62,7 +63,6 @@ public final class CloudJobRestfulApiTest {
     public static void tearDown() throws Exception {
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
         server.stop();
-        CloudJobRestfulApi.stop();
     }
     
     @Test

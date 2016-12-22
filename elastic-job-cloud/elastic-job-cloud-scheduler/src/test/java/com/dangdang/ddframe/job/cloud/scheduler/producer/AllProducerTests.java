@@ -25,8 +25,7 @@ import org.junit.runners.Suite;
         ProducerJobTest.class, 
         TransientProducerRepositoryTest.class, 
         TransientProducerSchedulerTest.class, 
-        ProducerManagerTest.class, 
-        ProducerManagerFactoryTest.class
+        ProducerManagerTest.class
     })
 public final class AllProducerTests {
 }
