@@ -344,7 +344,7 @@ public final class CloudJobRestfulApi {
     @Path("/getTaskRunningResultStatisticsWeekly")
     @Consumes(MediaType.APPLICATION_JSON)
     public TaskRunningResultStatistics getTaskRunningResultStatisticsWeekly() {
-        return statisticManager.getTaskRunningResultStatisticsOfWeekly();
+        return statisticManager.getTaskRunningResultStatisticsWeekly();
     }
     
     /**
@@ -389,10 +389,10 @@ public final class CloudJobRestfulApi {
      * @return 一周以来任务运行统计数据集合
      */
     @GET
-    @Path("/findTaskRunningStatisticsOfWeekly")
+    @Path("/findTaskRunningStatisticsWeekly")
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<TaskRunningStatistics> findTaskRunningStatisticsOfWeekly() {
-        return statisticManager.findTaskRunningStatisticsOfWeekly();
+    public List<TaskRunningStatistics> findTaskRunningStatisticsWeekly() {
+        return statisticManager.findTaskRunningStatisticsWeekly();
     }
     
     /**

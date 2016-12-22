@@ -145,7 +145,7 @@ public class StatisticManager {
      * 
      * @return 任务运行结果统计数据对象
      */
-    public TaskRunningResultStatistics getTaskRunningResultStatisticsOfWeekly() {
+    public TaskRunningResultStatistics getTaskRunningResultStatisticsWeekly() {
         if (null == rdbRepository) {
             return new TaskRunningResultStatistics(0, 0, StatisticUnit.DAY, new Date());
         }
@@ -208,7 +208,7 @@ public class StatisticManager {
      * 
      * @return 运行中的任务统计数据对象集合
      */
-    public List<TaskRunningStatistics> findTaskRunningStatisticsOfWeekly() {
+    public List<TaskRunningStatistics> findTaskRunningStatisticsWeekly() {
         if (null == rdbRepository) {
             return Collections.emptyList();
         }
