@@ -57,7 +57,7 @@ public final class JobEventBusTest {
     public void assertPost() throws InterruptedException, NoSuchFieldException {
         jobEventBus = new JobEventBus(new TestJobEventConfiguration(jobEventCaller));
         assertIsRegistered(true);
-        jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", 0, ExecutionSource.NORMAL_TRIGGER));
         while (!TestJobEventListener.isExecutionEventCalled()) {
             Thread.sleep(100L);
         }
@@ -69,7 +69,7 @@ public final class JobEventBusTest {
         jobEventBus = new JobEventBus();
         assertIsRegistered(false);
         ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
-        jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
+        jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", 0, ExecutionSource.NORMAL_TRIGGER));
         verify(eventBus, times(0)).post(Matchers.<JobEvent>any());
     }
     

@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
@@ -29,16 +30,24 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.functions.Action1;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
@@ -51,6 +60,8 @@ import org.apache.mesos.SchedulerDriver;
  */
 @Slf4j
 public final class MasterBootstrap {
+    
+    private static final String WEBAPP_PATH = "webapp/";
     
     private final BootstrapEnvironment env;
     
@@ -67,9 +78,11 @@ public final class MasterBootstrap {
         final FacadeService facadeService = new FacadeService(regCenter);
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
-        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus);
+        final StatisticManager statisticManager = StatisticManager.getInstance(regCenter, getRdbDataSource());
+        statisticManager.startup();
+        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus, statisticManager);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
-        CloudJobRestfulApi.init(schedulerDriver, regCenter);
+        CloudJobRestfulApi.init(schedulerDriver, regCenter, getRdbDataSource());
         initConfigurationListener();
         final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         producerManager.startup();
@@ -81,6 +94,7 @@ public final class MasterBootstrap {
             public void run() {
                 facadeService.stop();
                 producerManager.shutdown();
+                statisticManager.shutdown();
             }
         });
     }
@@ -91,11 +105,12 @@ public final class MasterBootstrap {
         return result;
     }
     
-    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus) {
+    private SchedulerDriver getSchedulerDriver(
+            final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus, final StatisticManager statisticManager) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Protos.FrameworkInfo frameworkInfo = 
                 Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus), frameworkInfo, mesosConfig.getUrl());
+        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     
     private TaskScheduler getTaskScheduler() {
@@ -131,7 +146,7 @@ public final class MasterBootstrap {
      * @throws Exception 运行时异常
      */
     public Protos.Status runAsDaemon() throws Exception {
-        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName());
+        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), WEBAPP_PATH);
         return schedulerDriver.run();
     }
     
@@ -146,5 +161,22 @@ public final class MasterBootstrap {
         schedulerDriver.stop();
         restfulServer.stop();
         return Protos.Status.DRIVER_STOPPED == status;
+    }
+    
+    private Optional<? extends DataSource> getRdbDataSource() {
+        Map<String, String> rdbConfigs = env.getJobEventRdbConfigurationMap();
+        String driver = rdbConfigs.get(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey());
+        String url = rdbConfigs.get(EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey());
+        String username = rdbConfigs.get(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey());
+        String password = rdbConfigs.get(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey());
+        if (!Strings.isNullOrEmpty(driver) && !Strings.isNullOrEmpty(url) && !Strings.isNullOrEmpty(username)) {
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setDriverClassName(driver);
+            dataSource.setUrl(url);
+            dataSource.setUsername(username);
+            dataSource.setPassword(password);
+            return Optional.of(dataSource);
+        }
+        return Optional.absent();
     }
 }

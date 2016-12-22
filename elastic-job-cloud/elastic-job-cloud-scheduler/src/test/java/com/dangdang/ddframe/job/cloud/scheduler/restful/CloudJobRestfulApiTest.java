@@ -19,27 +19,44 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
+import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
+import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+
 import org.apache.mesos.SchedulerDriver;
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.io.ByteArrayBuffer;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
+import javax.sql.DataSource;
 import javax.ws.rs.core.MediaType;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobRestfulApiTest {
@@ -54,7 +71,8 @@ public final class CloudJobRestfulApiTest {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         regCenter = mock(CoordinatorRegistryCenter.class);
         server = new RestfulServer(19000);
-        CloudJobRestfulApi.init(schedulerDriver, regCenter);
+        Optional<? extends DataSource> dataSource = Optional.absent();
+        CloudJobRestfulApi.init(schedulerDriver, regCenter, dataSource);
         server.start(CloudJobRestfulApi.class.getPackage().getName());
     }
     
@@ -62,6 +80,11 @@ public final class CloudJobRestfulApiTest {
     public static void tearDown() throws Exception {
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
         server.stop();
+    }
+    
+    @Before
+    public void setUp() {
+        reset(regCenter);
     }
     
     @Test
@@ -105,6 +128,71 @@ public final class CloudJobRestfulApiTest {
         assertThat(sentRequest("http://127.0.0.1:19000/job/trigger", "POST", "test_job"), is(204));
     }
     
+    @Test
+    public void assertDetail() throws Exception {
+        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/detail?jobName=test_job"), is(CloudJsonConstants.getJobJson()));
+        verify(regCenter).get("/config/test_job");
+        reset(regCenter);
+    }
+    
+    @Test
+    public void assertDetailWithNotExistedJob() throws Exception {
+        assertThat(sentRequest("http://127.0.0.1:19000/job/detail?jobName=notExistedJobName", "GET", ""), is(500));
+    }
+    
+    @Test
+    public void assertFindAllJobs() throws Exception {
+        when(regCenter.isExisted("/config")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/config")).thenReturn(Lists.newArrayList("test_job"));
+        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findAllJobs"), is("[" + CloudJsonConstants.getJobJson() + "]"));
+        verify(regCenter).isExisted("/config");
+        verify(regCenter).getChildrenKeys("/config");
+        verify(regCenter).get("/config/test_job");
+    }
+    
+    @Test
+    public void assertFindAllRunningTasks() throws Exception {
+        RunningService runningService = new RunningService();
+        TaskContext actualTaskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
+        runningService.add(actualTaskContext);
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findAllRunningTasks"), is(GsonFactory.getGson().toJson(Lists.newArrayList(actualTaskContext))));
+    }
+    
+    @Test
+    public void assertFindAllReadyTasks() throws Exception {
+        when(regCenter.isExisted("/state/ready")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Lists.newArrayList("test_job"));
+        when(regCenter.get("/state/ready/test_job")).thenReturn("1");
+        Map<String, String> expectedMap = new HashMap<>();
+        expectedMap.put("jobName", "test_job");
+        expectedMap.put("times", "1");
+        @SuppressWarnings("unchecked")
+        Collection<Map<String, String>> expectedResult = Lists.newArrayList(expectedMap);
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findAllReadyTasks"), is(GsonFactory.getGson().toJson(expectedResult)));
+        verify(regCenter).isExisted("/state/ready");
+        verify(regCenter).getChildrenKeys("/state/ready");
+        verify(regCenter).get("/state/ready/test_job");
+    }
+    
+    @Test
+    public void assertFindAllFailoverTasks() throws Exception {
+        when(regCenter.isExisted("/state/failover")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/state/failover")).thenReturn(Lists.newArrayList("test_job"));
+        when(regCenter.getChildrenKeys("/state/failover/test_job")).thenReturn(Lists.newArrayList("test_job@-@0"));
+        String actualOriginalTaskId = UUID.randomUUID().toString();
+        when(regCenter.get("/state/failover/test_job/test_job@-@0")).thenReturn(actualOriginalTaskId);
+        String expectedOriginalTaskId = actualOriginalTaskId;
+        FailoverTaskInfo expectedFailoverTask = new FailoverTaskInfo(MetaInfo.from("test_job@-@0"), expectedOriginalTaskId);
+        Collection<FailoverTaskInfo> expectedResult = Lists.newArrayList(expectedFailoverTask);
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findAllFailoverTasks"), is(GsonFactory.getGson().toJson(expectedResult)));
+        verify(regCenter).isExisted("/state/failover");
+        verify(regCenter).getChildrenKeys("/state/failover");
+        verify(regCenter).getChildrenKeys("/state/failover/test_job");
+        verify(regCenter).get("/state/failover/test_job/test_job@-@0");
+    }
+    
     private static int sentRequest(final String url, final String method, final String content) throws Exception {
         HttpClient httpClient = new HttpClient();
         try {
@@ -118,6 +206,23 @@ public final class CloudJobRestfulApiTest {
             httpClient.send(contentExchange);
             contentExchange.waitForDone();
             return contentExchange.getResponseStatus();
+        } finally {
+            httpClient.stop();
+        }
+    }
+    
+    private static String sentGetRequest(final String url) throws Exception {
+        HttpClient httpClient = new HttpClient();
+        try {
+            httpClient.start();
+            ContentExchange contentExchange = new ContentExchange();
+            contentExchange.setMethod("GET");
+            contentExchange.setRequestContentType(MediaType.APPLICATION_JSON);
+            httpClient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
+            contentExchange.setURL(url);
+            httpClient.send(contentExchange);
+            contentExchange.waitForDone();
+            return contentExchange.getResponseContent();
         } finally {
             httpClient.stop();
         }
