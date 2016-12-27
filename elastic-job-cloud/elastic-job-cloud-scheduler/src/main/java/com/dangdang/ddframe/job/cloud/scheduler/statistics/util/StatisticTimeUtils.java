@@ -22,12 +22,16 @@ import java.util.Date;
 
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 统计时间工具类.
  *
  * @author liguangyun
  */
-public class StatisticTimeUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class StatisticTimeUtils {
     
     /**
      * 获取以interval为时间间隔单位的统计时间.
@@ -54,12 +58,12 @@ public class StatisticTimeUtils {
         switch (interval) {
             case DAY:
                 calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.HOUR, 0);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
                 calendar.add(Calendar.DATE, offset);
                 break;
             case HOUR:
                 calendar.set(Calendar.MINUTE, 0);
-                calendar.add(Calendar.HOUR, offset);
+                calendar.add(Calendar.HOUR_OF_DAY, offset);
                 break;
             case MINUTE:
             default:

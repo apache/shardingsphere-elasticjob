@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.statistics;
+package com.dangdang.ddframe.job.exception;
 
 /**
  * 作业统计异常.

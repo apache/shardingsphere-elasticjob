@@ -25,8 +25,16 @@ import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
+import com.dangdang.ddframe.job.statistics.type.JobExecutionTypeStatistics;
+import com.dangdang.ddframe.job.statistics.type.JobTypeStatistics;
+import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -43,17 +51,20 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
-import javax.sql.DataSource;
 import javax.ws.rs.core.MediaType;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -65,14 +76,17 @@ public final class CloudJobRestfulApiTest {
     
     private static CoordinatorRegistryCenter regCenter;
     
+    private static Optional<JobEventRdbSearch> jobEventRdbSearch;
+    
+    @SuppressWarnings("unchecked")
     @BeforeClass
     public static void setUpClass() throws Exception {
         ReflectionUtils.setFieldValue(ProducerManagerFactory.class, ProducerManagerFactory.class.getDeclaredField("instance"), null);
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         regCenter = mock(CoordinatorRegistryCenter.class);
+        jobEventRdbSearch = mock(Optional.class);
+        CloudJobRestfulApi.init(schedulerDriver, regCenter, jobEventRdbSearch);
         server = new RestfulServer(19000);
-        Optional<? extends DataSource> dataSource = Optional.absent();
-        CloudJobRestfulApi.init(schedulerDriver, regCenter, dataSource);
         server.start(CloudJobRestfulApi.class.getPackage().getName());
     }
     
@@ -82,9 +96,11 @@ public final class CloudJobRestfulApiTest {
         server.stop();
     }
     
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         reset(regCenter);
+        reset(jobEventRdbSearch);
     }
     
     @Test
@@ -133,7 +149,6 @@ public final class CloudJobRestfulApiTest {
         when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/detail?jobName=test_job"), is(CloudJsonConstants.getJobJson()));
         verify(regCenter).get("/config/test_job");
-        reset(regCenter);
     }
     
     @Test
@@ -191,6 +206,97 @@ public final class CloudJobRestfulApiTest {
         verify(regCenter).getChildrenKeys("/state/failover");
         verify(regCenter).getChildrenKeys("/state/failover/test_job");
         verify(regCenter).get("/state/failover/test_job/test_job@-@0");
+    }
+    
+    @Test
+    public void assertFindJobExecutionEventsWhenNotConfigRDB() throws Exception {
+        when(jobEventRdbSearch.isPresent()).thenReturn(false);
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findJobExecutionEvents"), is(GsonFactory.getGson().toJson(new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList()))));
+        verify(jobEventRdbSearch).isPresent();
+    }
+    
+    @Test
+    public void assertFindJobExecutionEvents() throws Exception {
+        when(jobEventRdbSearch.isPresent()).thenReturn(true);
+        JobEventRdbSearch mockJobEventRdbSearch = mock(JobEventRdbSearch.class);
+        when(jobEventRdbSearch.get()).thenReturn(mockJobEventRdbSearch);
+        when(mockJobEventRdbSearch.findJobExecutionEvents(any(Condition.class))).thenReturn(new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList()));
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findJobExecutionEvents?" + buildFindJobEventsQueryParameter()), 
+                is(GsonFactory.getGson().toJson(new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList()))));
+        verify(jobEventRdbSearch).isPresent();
+        verify(jobEventRdbSearch).get();
+        verify(mockJobEventRdbSearch).findJobExecutionEvents(any(Condition.class));
+    }
+    
+    @Test
+    public void assertFindJobStatusTraceEventsWhenNotConfigRDB() throws Exception {
+        when(jobEventRdbSearch.isPresent()).thenReturn(false);
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findJobStatusTraceEvents"), 
+                is(GsonFactory.getGson().toJson(new Result<JobStatusTraceEvent>(0, Collections.<JobStatusTraceEvent>emptyList()))));
+        verify(jobEventRdbSearch).isPresent();
+    }
+    
+    @Test
+    public void assertFindJobStatusTraceEvents() throws Exception {
+        when(jobEventRdbSearch.isPresent()).thenReturn(true);
+        JobEventRdbSearch mockJobEventRdbSearch = mock(JobEventRdbSearch.class);
+        when(jobEventRdbSearch.get()).thenReturn(mockJobEventRdbSearch);
+        when(mockJobEventRdbSearch.findJobStatusTraceEvents(any(Condition.class))).thenReturn(new Result<JobStatusTraceEvent>(0, Collections.<JobStatusTraceEvent>emptyList()));
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findJobStatusTraceEvents?" + buildFindJobEventsQueryParameter()), 
+                is(GsonFactory.getGson().toJson(new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList()))));
+        verify(jobEventRdbSearch).isPresent();
+        verify(jobEventRdbSearch).get();
+        verify(mockJobEventRdbSearch).findJobStatusTraceEvents(any(Condition.class));
+    }
+    
+    private String buildFindJobEventsQueryParameter() throws UnsupportedEncodingException {
+        return "pageSize=10&pageNumber=1&sortName=jobName&sortOrder=DESC&jobName=test_job"
+                + "&startTime=" + URLEncoder.encode("2016-12-26 10:00:00", "UTF-8") + "&endTime=" + URLEncoder.encode("2016-12-26 10:00:00", "UTF-8");
+    }
+    
+    @Test
+    public void assertGetTaskRunningResultStatisticsWeekly() throws Exception {
+        String result = sentGetRequest("http://127.0.0.1:19000/job/getTaskRunningResultStatisticsWeekly");
+        TaskRunningResultStatistics taskRunningResultStatistics = GsonFactory.getGson().fromJson(result, TaskRunningResultStatistics.class);
+        assertThat(taskRunningResultStatistics.getSuccessCount(), is(0));
+        assertThat(taskRunningResultStatistics.getFailedCount(), is(0));
+    }
+    
+    @Test
+    public void assertGetTaskRunningResultStatisticsSinceOnline() throws Exception {
+        String result = sentGetRequest("http://127.0.0.1:19000/job/getTaskRunningResultStatisticsSinceOnline");
+        TaskRunningResultStatistics taskRunningResultStatistics = GsonFactory.getGson().fromJson(result, TaskRunningResultStatistics.class);
+        assertThat(taskRunningResultStatistics.getSuccessCount(), is(0));
+        assertThat(taskRunningResultStatistics.getFailedCount(), is(0));
+    }
+    
+    @Test
+    public void assertGetJobTypeStatistics() throws Exception {
+        String result = sentGetRequest("http://127.0.0.1:19000/job/getJobTypeStatistics");
+        JobTypeStatistics jobTypeStatistics = GsonFactory.getGson().fromJson(result, JobTypeStatistics.class);
+        assertThat(jobTypeStatistics.getSimpleJobCount(), is(0));
+        assertThat(jobTypeStatistics.getDataflowJobCount(), is(0));
+        assertThat(jobTypeStatistics.getScriptJobCount(), is(0));
+    }
+    
+    @Test
+    public void assertGetJobExecutionTypeStatistics() throws Exception {
+        String result = sentGetRequest("http://127.0.0.1:19000/job/getJobExecutionTypeStatistics");
+        JobExecutionTypeStatistics jobExecutionTypeStatistics = GsonFactory.getGson().fromJson(result, JobExecutionTypeStatistics.class);
+        assertThat(jobExecutionTypeStatistics.getDaemonJobCount(), is(0));
+        assertThat(jobExecutionTypeStatistics.getTransientJobCount(), is(0));
+    }
+    
+    @Test
+    public void assertFindTaskRunningStatisticsWeekly() throws Exception {
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findTaskRunningStatisticsWeekly"), 
+                is(GsonFactory.getGson().toJson(Collections.emptyList())));
+    }
+    
+    @Test
+    public void assertFindJobRegisterStatisticsSinceOnline() throws Exception {
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/findJobRegisterStatisticsSinceOnline"), 
+                is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     private static int sentRequest(final String url, final String method, final String content) throws Exception {

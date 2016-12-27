@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.event;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfigurationTest;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbIdentityTest;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbListenerTest;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearchTest;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbStorageTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -31,7 +32,8 @@ import org.junit.runners.Suite;
         JobEventRdbIdentityTest.class,
         JobEventRdbConfigurationTest.class, 
         JobEventRdbListenerTest.class, 
-        JobEventRdbStorageTest.class
+        JobEventRdbStorageTest.class,
+        JobEventRdbSearchTest.class
     })
 public final class AllEventTests {
 }

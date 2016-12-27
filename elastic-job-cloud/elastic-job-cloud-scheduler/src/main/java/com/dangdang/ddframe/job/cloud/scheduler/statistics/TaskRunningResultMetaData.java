@@ -19,14 +19,11 @@ package com.dangdang.ddframe.job.cloud.scheduler.statistics;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * 统计元数据.
  *
  * @author liguangyun
  */
-@RequiredArgsConstructor
 public class TaskRunningResultMetaData {
     
     private final AtomicInteger successCount;
@@ -80,7 +77,7 @@ public class TaskRunningResultMetaData {
     /**
      * 重置成功数、失败数.
      */
-    public synchronized void reset() {
+    public void reset() {
         successCount.set(0);
         failedCount.set(0);
     }

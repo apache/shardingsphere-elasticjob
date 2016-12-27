@@ -59,7 +59,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticManager {
     
-    private static StatisticManager instance; 
+    private static volatile StatisticManager instance; 
     
     private final ConfigurationService configurationService;
     
@@ -175,7 +175,7 @@ public class StatisticManager {
         int dataflowJobCnt = 0;
         for (CloudJobConfiguration each : configurationService.loadAll()) {
             if (JobType.SCRIPT.equals(each.getTypeConfig().getJobType())) {
-                dataflowJobCnt++;
+                scriptJobCnt++;
             } else if (JobType.SIMPLE.equals(each.getTypeConfig().getJobType())) {
                 simpleJobCnt++;
             } else if (JobType.DATAFLOW.equals(each.getTypeConfig().getJobType())) {

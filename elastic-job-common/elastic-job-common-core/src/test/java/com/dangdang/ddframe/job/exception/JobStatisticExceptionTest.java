@@ -17,17 +17,16 @@
 
 package com.dangdang.ddframe.job.exception;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class,
-        JobStatisticExceptionTest.class
-    })
-public final class AllExceptionTests {
+import org.junit.Test;
+
+public class JobStatisticExceptionTest {
+    
+    @Test
+    public void assertGetCause() {
+        assertThat(new JobStatisticException(new RuntimeException()).getCause(), instanceOf(RuntimeException.class));
+    }
+
 }

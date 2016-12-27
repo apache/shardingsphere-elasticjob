@@ -15,19 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.statistics;
 
+import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepositoryTest;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class,
-        JobStatisticExceptionTest.class
+    StatisticRdbRepositoryTest.class, 
     })
-public final class AllExceptionTests {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class AllStatisticsTests {
 }

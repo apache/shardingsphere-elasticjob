@@ -57,7 +57,7 @@ public class JobEventRdbSearch {
     private static final String TABLE_JOB_STATUS_TRACE_LOG = "JOB_STATUS_TRACE_LOG";
     
     private static final List<String> FIELDS_JOB_EXECUTION_LOG = 
-            Lists.newArrayList("id", "job_name", "task_id", "hostname", "ip", "sharding_item", "execution_source", "failure_cause", "is_success", "start_time", "complete_time");
+            Lists.newArrayList("id", "hostname", "ip", "task_id", "job_name", "execution_source", "sharding_item", "start_time", "complete_time", "is_success", "failure_cause");
     
     private static final List<String> FIELDS_JOB_STATUS_TRACE_LOG = 
             Lists.newArrayList("id", "job_name", "original_task_id", "task_id", "slave_id", "source", "execution_type", "sharding_item", "state", "message", "creation_time");
@@ -93,9 +93,10 @@ public class JobEventRdbSearch {
                 ) {
             while (resultSet.next()) {
                 JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getString(5), Integer.valueOf(resultSet.getString(6)), JobExecutionEvent.ExecutionSource.valueOf(resultSet.getString(7)), 
-                        new JobExecutionEventThrowable(null, resultSet.getString(8)), resultSet.getBoolean(9), 
-                        new Date(resultSet.getDate(10).getTime()), new Date(resultSet.getDate(11).getTime()));
+                        resultSet.getString(5), JobExecutionEvent.ExecutionSource.valueOf(resultSet.getString(6)), Integer.valueOf(resultSet.getString(7)), 
+                        new Date(resultSet.getTimestamp(8).getTime()), resultSet.getTimestamp(9) == null ? null : new Date(resultSet.getTimestamp(9).getTime()), 
+                        resultSet.getBoolean(10), new JobExecutionEventThrowable(null, resultSet.getString(11)) 
+                        );
                 result.add(jobExecutionEvent);
             }
         } catch (final SQLException ex) {
@@ -115,7 +116,7 @@ public class JobEventRdbSearch {
             while (resultSet.next()) {
                 JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                         resultSet.getString(5), Source.valueOf(resultSet.getString(6)), ExecutionType.valueOf(resultSet.getString(7)), resultSet.getString(8),
-                        State.valueOf(resultSet.getString(9)), resultSet.getString(10), new Date(resultSet.getDate(11).getTime()));
+                        State.valueOf(resultSet.getString(9)), resultSet.getString(10), new Date(resultSet.getTimestamp(11).getTime()));
                 result.add(jobStatusTraceEvent);
             }
         } catch (final SQLException ex) {
@@ -194,7 +195,7 @@ public class JobEventRdbSearch {
         if (condition.getFields() != null && !condition.getFields().isEmpty()) {
             for (String each : condition.getFields().keySet()) {
                 String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, each);
-                if (tableFields.contains(lowerUnderscore)) {
+                if (condition.getFields().get(each) != null && tableFields.contains(lowerUnderscore)) {
                     sqlBuilder.append(" AND ").append(lowerUnderscore).append("=?");
                 }
             }
@@ -213,7 +214,7 @@ public class JobEventRdbSearch {
         if (condition.getFields() != null && !condition.getFields().isEmpty()) {
             for (String each : condition.getFields().keySet()) {
                 String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, each);
-                if (tableFields.contains(lowerUnderscore)) {
+                if (condition.getFields().get(each) != null && tableFields.contains(lowerUnderscore)) {
                     preparedStatement.setString(index++, String.valueOf(condition.getFields().get(each)));
                 }
             }
@@ -227,14 +228,13 @@ public class JobEventRdbSearch {
     }
     
     private String getTableTimeField(final String tableName) {
-        switch (tableName) {
-            case TABLE_JOB_EXECUTION_LOG:
-                return "start_time";
-            case TABLE_JOB_STATUS_TRACE_LOG:
-                return "creation_time";
-            default:
-                return "";
+        String result = "";
+        if (TABLE_JOB_EXECUTION_LOG.equals(tableName)) {
+            result = "start_time";
+        } else if (TABLE_JOB_STATUS_TRACE_LOG.equals(tableName)) {
+            result = "creation_time";
         }
+        return result;
     }
     
     private String buildOrder(final Collection<String> tableFields, final String sortName, final String sortOrder) {
@@ -247,19 +247,15 @@ public class JobEventRdbSearch {
         }
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(" ORDER BY ").append(lowerUnderscore);
-        if (Strings.isNullOrEmpty(sortOrder)) {
-            sqlBuilder.append(" ASC");
-        } else {
-            switch (sortOrder.toUpperCase()) {
-                case "ASC":
-                    sqlBuilder.append(" ASC");
-                    break;
-                case "DESC":
-                    sqlBuilder.append(" DESC");
-                    break;
-                default :
-                    sqlBuilder.append(" ASC");
-            }
+        switch (sortOrder.toUpperCase()) {
+            case "ASC":
+                sqlBuilder.append(" ASC");
+                break;
+            case "DESC":
+                sqlBuilder.append(" DESC");
+                break;
+            default :
+                sqlBuilder.append(" ASC");
         }
         return sqlBuilder.toString();
     }

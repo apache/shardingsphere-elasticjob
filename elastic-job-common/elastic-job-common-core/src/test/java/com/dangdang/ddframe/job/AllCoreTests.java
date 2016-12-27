@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.event.AllEventTests;
 import com.dangdang.ddframe.job.exception.AllExceptionTests;
 import com.dangdang.ddframe.job.executor.AllExecutorTests;
 import com.dangdang.ddframe.job.reg.AllRegTests;
+import com.dangdang.ddframe.job.statistics.AllStatisticsTests;
 import com.dangdang.ddframe.job.util.AllUtilTests;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -40,7 +41,8 @@ import org.junit.runners.Suite.SuiteClasses;
         AllExecutorTests.class, 
         AllEventTests.class, 
         AllExceptionTests.class, 
-        AllUtilTests.class
+        AllUtilTests.class,
+        AllStatisticsTests.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllCoreTests {

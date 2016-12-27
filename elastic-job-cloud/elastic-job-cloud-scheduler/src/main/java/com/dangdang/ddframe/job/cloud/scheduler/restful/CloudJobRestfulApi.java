@@ -87,7 +87,7 @@ public final class CloudJobRestfulApi {
     
     private static CoordinatorRegistryCenter regCenter;
     
-    private static Optional<? extends DataSource> dataSource;
+    private static Optional<JobEventRdbSearch> jobEventRdbSearch;
     
     private static final SimpleDateFormat DATETIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
@@ -112,6 +112,7 @@ public final class CloudJobRestfulApi {
         readyService = new ReadyService(regCenter);
         runningService = new RunningService();
         failoverService = new FailoverService(regCenter);
+        Optional<? extends DataSource> dataSource = Optional.absent();
         statisticManager = StatisticManager.getInstance(regCenter, dataSource);
     }
     
@@ -121,10 +122,10 @@ public final class CloudJobRestfulApi {
      * @param schedulerDriver Mesos控制器
      * @param regCenter 注册中心
      */
-    public static void init(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter, final Optional<? extends DataSource> dataSource) {
+    public static void init(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter, final Optional<JobEventRdbSearch> jobEventRdbSearch) {
         CloudJobRestfulApi.schedulerDriver = schedulerDriver;
         CloudJobRestfulApi.regCenter = regCenter;
-        CloudJobRestfulApi.dataSource = dataSource;
+        CloudJobRestfulApi.jobEventRdbSearch = jobEventRdbSearch;
         GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
     }
     
@@ -270,7 +271,7 @@ public final class CloudJobRestfulApi {
     @Path("/findJobExecutionEvents")
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo info) {
-        if (!dataSource.isPresent()) {
+        if (!jobEventRdbSearch.isPresent()) {
             return new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList());
         }
         int pageSize = Integer.parseInt(info.getQueryParameters().getFirst("pageSize"));
@@ -290,7 +291,7 @@ public final class CloudJobRestfulApi {
         } catch (final ParseException ex) {
             throw new JobSystemException(ex);
         }
-        return new JobEventRdbSearch(dataSource.get()).findJobExecutionEvents(new Condition(pageSize, pageNumber, sortName, sortOrder, startTime, endTime, fields));
+        return jobEventRdbSearch.get().findJobExecutionEvents(new Condition(pageSize, pageNumber, sortName, sortOrder, startTime, endTime, fields));
     }
     
     /**
@@ -302,7 +303,7 @@ public final class CloudJobRestfulApi {
     @Path("/findJobStatusTraceEvents")
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo info) {
-        if (!dataSource.isPresent()) {
+        if (!jobEventRdbSearch.isPresent()) {
             return new Result<JobStatusTraceEvent>(0, Collections.<JobStatusTraceEvent>emptyList());
         }
         int pageSize = Integer.parseInt(info.getQueryParameters().getFirst("pageSize"));
@@ -322,7 +323,7 @@ public final class CloudJobRestfulApi {
         } catch (final ParseException ex) {
             throw new JobSystemException(ex);
         }
-        return new JobEventRdbSearch(dataSource.get()).findJobStatusTraceEvents(new Condition(pageSize, pageNumber, sortName, sortOrder, startTime, endTime, fields));
+        return jobEventRdbSearch.get().findJobStatusTraceEvents(new Condition(pageSize, pageNumber, sortName, sortOrder, startTime, endTime, fields));
     }
     
     private Map<String, Object> getQueryParameters(final UriInfo info, final String[] params) {

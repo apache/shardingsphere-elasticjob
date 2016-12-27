@@ -33,6 +33,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
@@ -78,11 +79,16 @@ public final class MasterBootstrap {
         final FacadeService facadeService = new FacadeService(regCenter);
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
-        final StatisticManager statisticManager = StatisticManager.getInstance(regCenter, getRdbDataSource());
+        Optional<? extends DataSource> dataSource = getRdbDataSource();
+        final StatisticManager statisticManager = StatisticManager.getInstance(regCenter, dataSource);
         statisticManager.startup();
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus, statisticManager);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
-        CloudJobRestfulApi.init(schedulerDriver, regCenter, getRdbDataSource());
+        Optional<JobEventRdbSearch> jobEventRdbSearch = Optional.absent();
+        if (dataSource.isPresent()) {
+            jobEventRdbSearch = Optional.of(new JobEventRdbSearch(dataSource.get()));
+        }
+        CloudJobRestfulApi.init(schedulerDriver, regCenter, jobEventRdbSearch);
         initConfigurationListener();
         final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         producerManager.startup();

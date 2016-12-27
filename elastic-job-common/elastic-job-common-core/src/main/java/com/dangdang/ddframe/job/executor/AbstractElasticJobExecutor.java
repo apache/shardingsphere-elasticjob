@@ -155,13 +155,13 @@ public abstract class AbstractElasticJobExecutor {
         Collection<Integer> items = shardingContexts.getShardingItemParameters().keySet();
         if (1 == items.size()) {
             int item = shardingContexts.getShardingItemParameters().keySet().iterator().next();
-            JobExecutionEvent jobExecutionEvent =  new JobExecutionEvent(shardingContexts.getTaskId(), jobName, item, executionSource);
+            JobExecutionEvent jobExecutionEvent =  new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, item);
             process(shardingContexts, item, jobExecutionEvent);
             return;
         }
         final CountDownLatch latch = new CountDownLatch(items.size());
         for (final int each : items) {
-            final JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, each, executionSource);
+            final JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, each);
             if (executorService.isShutdown()) {
                 return;
             }

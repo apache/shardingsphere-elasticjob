@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.quartz.CronScheduleBuilder;
-import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -37,7 +36,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.JobRegisterStatistics;
 import com.dangdang.ddframe.job.statistics.type.TaskRunningStatistics;
 import com.google.common.base.Optional;
 
@@ -55,11 +53,13 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class TaskRunningStatisticJob extends AbstractStatisticJob implements Job {
+public class TaskRunningStatisticJob extends AbstractStatisticJob {
     
     private RunningService runningService;
     
     private StatisticRdbRepository repository;
+    
+    private final Interval execInterval = Interval.MINUTE;
     
     /**
      * 构造函数.
@@ -79,7 +79,7 @@ public class TaskRunningStatisticJob extends AbstractStatisticJob implements Job
     public Trigger buildTrigger() {
         return TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerName())
-                .withSchedule(CronScheduleBuilder.cronSchedule(Interval.MINUTE.getCron())
+                .withSchedule(CronScheduleBuilder.cronSchedule(execInterval.getCron())
                 .withMisfireHandlingInstructionDoNothing()).build();
     }
     
@@ -112,12 +112,12 @@ public class TaskRunningStatisticJob extends AbstractStatisticJob implements Job
     }
     
     private void fillBlankIfNeeded(final TaskRunningStatistics latestOne) {
-        List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), Interval.HOUR);
+        List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), execInterval);
         if (!blankDateRange.isEmpty()) {
             log.info("Fill blank range of taskRunningStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
         }
         for (Date each : blankDateRange) {
-            repository.add(new JobRegisterStatistics(latestOne.getRunningCount(), each));
+            repository.add(new TaskRunningStatistics(latestOne.getRunningCount(), each));
         }
     }
 }

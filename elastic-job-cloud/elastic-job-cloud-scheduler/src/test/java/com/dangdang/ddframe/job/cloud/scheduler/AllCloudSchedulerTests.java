@@ -25,6 +25,8 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.AllMesosTests;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.AllProducerTests;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.AllRestfulTests;
 import com.dangdang.ddframe.job.cloud.scheduler.state.AllStateTests;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.AllStatisticTests;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -37,7 +39,8 @@ import org.junit.runners.Suite;
         AllProducerTests.class, 
         AllLifecycleTests.class, 
         AllRestfulTests.class, 
-        AllMesosTests.class
+        AllMesosTests.class, 
+        AllStatisticTests.class
     })
 public final class AllCloudSchedulerTests {
 }

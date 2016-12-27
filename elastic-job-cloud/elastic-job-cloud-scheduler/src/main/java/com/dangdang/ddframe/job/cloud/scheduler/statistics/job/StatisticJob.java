@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.statistics.job;
 
 import java.util.Map;
 
+import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
 
@@ -27,7 +28,7 @@ import org.quartz.Trigger;
  *
  * @author liguangyun
  */
-public interface StatisticJob {
+public interface StatisticJob extends Job {
     
     /**
      * 构建JobDetail.

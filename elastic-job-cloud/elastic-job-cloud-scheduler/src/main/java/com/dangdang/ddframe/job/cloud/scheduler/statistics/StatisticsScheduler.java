@@ -28,7 +28,7 @@ import org.quartz.plugins.management.ShutdownHookPlugin;
 import org.quartz.simpl.SimpleThreadPool;
 
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.StatisticJob;
-import com.dangdang.ddframe.job.statistics.JobStatisticException;
+import com.dangdang.ddframe.job.exception.JobStatisticException;
 
 /**
  * 统计作业调度器.

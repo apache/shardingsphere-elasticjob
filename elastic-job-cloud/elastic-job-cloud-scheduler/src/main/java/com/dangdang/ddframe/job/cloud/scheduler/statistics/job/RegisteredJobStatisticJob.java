@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.quartz.CronScheduleBuilder;
-import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -52,11 +51,13 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class RegisteredJobStatisticJob extends AbstractStatisticJob implements Job {
+public class RegisteredJobStatisticJob extends AbstractStatisticJob {
     
     private ConfigurationService configurationService;
     
     private StatisticRdbRepository repository;
+    
+    private final Interval execInterval = Interval.DAY;
     
     @Override
     public JobDetail buildJobDetail() {
@@ -67,7 +68,7 @@ public class RegisteredJobStatisticJob extends AbstractStatisticJob implements J
     public Trigger buildTrigger() {
         return TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerName())
-                .withSchedule(CronScheduleBuilder.cronSchedule(Interval.DAY.getCron())
+                .withSchedule(CronScheduleBuilder.cronSchedule(execInterval.getCron())
                 .withMisfireHandlingInstructionDoNothing()).build();
     }
     
@@ -91,7 +92,7 @@ public class RegisteredJobStatisticJob extends AbstractStatisticJob implements J
     }
     
     private void fillBlankIfNeeded(final JobRegisterStatistics latestOne) {
-        List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), Interval.HOUR);
+        List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), execInterval);
         if (!blankDateRange.isEmpty()) {
             log.info("Fill blank range of jobRegisterStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
         }

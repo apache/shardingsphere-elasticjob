@@ -42,25 +42,25 @@ public class JobExecutionEvent implements JobEvent {
     
     private String id = UUID.randomUUID().toString();
     
-    private final String jobName;
-    
-    private final String taskId;
-    
     private String hostname = localHostService.getHostName();
     
     private String ip = localHostService.getIp();
     
-    private final int shardingItem;
+    private final String taskId;
+    
+    private final String jobName;
     
     private final ExecutionSource source;
     
-    private JobExecutionEventThrowable failureCause;
-    
-    private boolean success;
+    private final int shardingItem;
     
     private Date startTime = new Date();
     
     private Date completeTime;
+    
+    private boolean success;
+    
+    private JobExecutionEventThrowable failureCause;
     
     /**
      * 作业执行成功.

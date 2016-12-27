@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.quartz.CronScheduleBuilder;
-import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -53,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class TaskRunningResultStatisticJob extends AbstractStatisticJob implements Job {
+public class TaskRunningResultStatisticJob extends AbstractStatisticJob {
     
     private StatisticUnit statisticUnit;
     
