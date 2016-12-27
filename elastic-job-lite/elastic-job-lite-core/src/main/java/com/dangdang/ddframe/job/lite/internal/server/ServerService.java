@@ -188,4 +188,14 @@ public class ServerService {
     public boolean isLocalhostServerEnabled() {
         return !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(localHostService.getIp()));
     }
+    
+    /**
+     * 判断作业服务器是否含有status节点
+     * 
+     * @param ip 作业服务器IP
+     * @return 是否含有status节点
+     */
+    public boolean isHasStatusNode(String ip) {
+    	return this.jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip));
+    }
 }
