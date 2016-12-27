@@ -17,16 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.unitils.util.ReflectionUtils;
-
-import java.util.Arrays;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -34,6 +24,17 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.unitils.util.ReflectionUtils;
+
+import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 
 public final class ServerServiceTest {
     
@@ -257,5 +258,12 @@ public final class ServerServiceTest {
         assertTrue(serverService.isLocalhostServerEnabled());
         verify(localHostService).getIp();
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/disabled");
+    }
+    
+    @Test
+    public void assertIsHasStatusNode() {
+        when(jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode("IP"))).thenReturn(true);
+        serverService.isHasStatusNode("IP");
+        verify(jobNodeStorage).isJobNodeExisted(ServerNode.getStatusNode("IP"));
     }
 }

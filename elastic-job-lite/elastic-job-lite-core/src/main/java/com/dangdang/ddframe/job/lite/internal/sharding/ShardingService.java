@@ -154,6 +154,21 @@ public class ShardingService {
         return ShardingItems.toItemList(jobNodeStorage.getJobNodeDataDirectly(ShardingNode.getShardingNode(ip)));
     }
     
+    /**
+     * 查询是否存在不在运行状态并且含有分片节点的作业服务器
+     * 
+     * @return 是否存在不在运行状态并且含有分片节点的作业服务器
+     */
+    public boolean isNoRunningButContainShardingNode() {
+        for (String each : this.serverService.getAllServers()) {
+            if (this.jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode(each)) 
+        		&& !this.serverService.isHasStatusNode(each)) {
+        	return true;
+            }
+        }
+        return false;
+    }
+    
     @RequiredArgsConstructor
     class PersistShardingInfoTransactionExecutionCallback implements TransactionExecutionCallback {
         
