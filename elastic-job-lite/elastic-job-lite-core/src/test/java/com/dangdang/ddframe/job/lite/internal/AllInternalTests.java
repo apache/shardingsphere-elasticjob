@@ -38,6 +38,7 @@ import com.dangdang.ddframe.job.lite.internal.listener.JobListenerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorServiceDisableTest;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorServiceEnableTest;
+import com.dangdang.ddframe.job.lite.internal.reconcile.ReconcileWorkerTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistryTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleControllerTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListenerTest;
@@ -92,7 +93,8 @@ import org.junit.runners.Suite.SuiteClasses;
     GuaranteeServiceTest.class, 
     SchedulerFacadeTest.class,
     LiteJobFacadeTest.class, 
-    JobExecutorTest.class
+    JobExecutorTest.class,
+    ReconcileWorkerTest.class
     })
 public final class AllInternalTests {
 }
