@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.statistics.type;
+package com.dangdang.ddframe.job.statistics.type.job;
 
 import java.util.Date;
 
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * 运行中的任务统计数据.
+ * 运行中的作业统计数据.
  *
  * @author liguangyun
  */
@@ -33,7 +33,7 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @ToString(of = {"runningCount", "statisticsTime"})
-public class TaskRunningStatistics {
+public class JobRunningStatistics {
     
     private long id;
     

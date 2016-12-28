@@ -15,25 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.statistics.type;
+package com.dangdang.ddframe.job.statistics;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.RequiredArgsConstructor;
 
 /**
- * 作业类型统计数据.
+ * 统计时间间隔.
  *
  * @author liguangyun
  */
 @Getter
-@AllArgsConstructor
-@ToString
-public class JobTypeStatistics {
+@RequiredArgsConstructor
+public enum StatisticInterval {
     
-    private int scriptJobCount;
+    MINUTE("0 * * * * ?"),
     
-    private int simpleJobCount;
+    HOUR("0 0 * * * ?"), 
     
-    private int dataflowJobCount;
+    DAY("0 0 0 * * ?");
+    
+    private final String cron;
 }

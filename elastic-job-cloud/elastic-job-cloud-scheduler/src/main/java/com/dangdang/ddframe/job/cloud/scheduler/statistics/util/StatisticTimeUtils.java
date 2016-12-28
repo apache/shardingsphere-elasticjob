@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.statistics.util;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -39,7 +39,7 @@ public final class StatisticTimeUtils {
      * @param interval 时间间隔
      * @return 时间对象
      */
-    public static Date getCurrentStatisticTime(final Interval interval) {
+    public static Date getCurrentStatisticTime(final StatisticInterval interval) {
         return getStatisticTime(interval, 0);
     }
     
@@ -51,7 +51,7 @@ public final class StatisticTimeUtils {
      * @param offset 时间偏移量
      * @return 时间对象
      */
-    public static Date getStatisticTime(final Interval interval, final int offset) {
+    public static Date getStatisticTime(final StatisticInterval interval, final int offset) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MILLISECOND, 0);
         calendar.set(Calendar.SECOND, 0);

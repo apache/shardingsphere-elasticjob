@@ -25,22 +25,22 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 
 public class StatisticTimeUtilsTest {
     
     @Test
     public void assertGetCurrentStatisticTime() {
-        assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(Interval.MINUTE), Interval.MINUTE), is(getTimeStr(getNow(), Interval.MINUTE)));
-        assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(Interval.HOUR), Interval.HOUR), is(getTimeStr(getNow(), Interval.HOUR)));
-        assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(Interval.DAY), Interval.DAY), is(getTimeStr(getNow(), Interval.DAY)));
+        assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(StatisticInterval.MINUTE), StatisticInterval.MINUTE), is(getTimeStr(getNow(), StatisticInterval.MINUTE)));
+        assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(StatisticInterval.HOUR), StatisticInterval.HOUR), is(getTimeStr(getNow(), StatisticInterval.HOUR)));
+        assertThat(getTimeStr(StatisticTimeUtils.getCurrentStatisticTime(StatisticInterval.DAY), StatisticInterval.DAY), is(getTimeStr(getNow(), StatisticInterval.DAY)));
     }
     
     @Test
     public void assertGetStatisticTime() {
-        assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(Interval.MINUTE, -1), Interval.MINUTE), is(getTimeStr(getLastMinute(), Interval.MINUTE)));
-        assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(Interval.HOUR, -1), Interval.HOUR), is(getTimeStr(getLastHour(), Interval.HOUR)));
-        assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(Interval.DAY, -1), Interval.DAY), is(getTimeStr(getYesterday(), Interval.DAY)));
+        assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -1), StatisticInterval.MINUTE), is(getTimeStr(getLastMinute(), StatisticInterval.MINUTE)));
+        assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(StatisticInterval.HOUR, -1), StatisticInterval.HOUR), is(getTimeStr(getLastHour(), StatisticInterval.HOUR)));
+        assertThat(getTimeStr(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -1), StatisticInterval.DAY), is(getTimeStr(getYesterday(), StatisticInterval.DAY)));
     }
     
     private Date getNow() {
@@ -59,7 +59,7 @@ public class StatisticTimeUtilsTest {
         return new Date(getNow().getTime() - 24 * 60 * 60 * 1000);
     }
     
-    private String getTimeStr(final Date time, final Interval interval) {
+    private String getTimeStr(final Date time, final StatisticInterval interval) {
         switch (interval) {
             case DAY:
                 return new SimpleDateFormat("yyyy-MM-dd").format(time) + " :00:00:00";

@@ -30,12 +30,11 @@ import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.TaskRunningResultMetaData;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics.StatisticUnit;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
 import com.google.common.base.Optional;
 
 import lombok.AllArgsConstructor;
@@ -54,7 +53,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TaskRunningResultStatisticJob extends AbstractStatisticJob {
     
-    private StatisticUnit statisticUnit;
+    private StatisticInterval statisticInterval;
     
     private TaskRunningResultMetaData sharedData;
     
@@ -62,23 +61,23 @@ public class TaskRunningResultStatisticJob extends AbstractStatisticJob {
     
     @Override
     public JobDetail buildJobDetail() {
-        JobDetail result = JobBuilder.newJob(this.getClass()).withIdentity(getJobName() + "_" + statisticUnit).build();
-        result.getJobDataMap().put("statisticUnit", statisticUnit);
+        JobDetail result = JobBuilder.newJob(this.getClass()).withIdentity(getJobName() + "_" + statisticInterval).build();
+        result.getJobDataMap().put("statisticUnit", statisticInterval);
         return result;
     }
     
     @Override
     public Trigger buildTrigger() {
         return TriggerBuilder.newTrigger()
-                .withIdentity(getTriggerName() + "_" + statisticUnit)
-                .withSchedule(CronScheduleBuilder.cronSchedule(Interval.valueOf(statisticUnit.name()).getCron())
+                .withIdentity(getTriggerName() + "_" + statisticInterval)
+                .withSchedule(CronScheduleBuilder.cronSchedule(statisticInterval.getCron())
                 .withMisfireHandlingInstructionDoNothing()).build();
     }
     
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> result = new HashMap<>(3);
-        result.put("statisticUnit", statisticUnit);
+        result.put("statisticInterval", statisticInterval);
         result.put("sharedData", sharedData);
         result.put("repository", repository);
         return result;
@@ -86,25 +85,25 @@ public class TaskRunningResultStatisticJob extends AbstractStatisticJob {
     
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        Optional<TaskRunningResultStatistics> latestOne = repository.findLatestTaskRunningResultStatistics(statisticUnit);
+        Optional<TaskRunningResultStatistics> latestOne = repository.findLatestTaskRunningResultStatistics(statisticInterval);
         if (latestOne.isPresent()) {
             fillBlankIfNeeded(latestOne.get());
         }
         TaskRunningResultStatistics taskRunningResultStatistics = new TaskRunningResultStatistics(
-                sharedData.getSuccessCount(), sharedData.getFailedCount(), statisticUnit,
-                StatisticTimeUtils.getCurrentStatisticTime(Interval.valueOf(statisticUnit.name())));
+                sharedData.getSuccessCount(), sharedData.getFailedCount(), statisticInterval,
+                StatisticTimeUtils.getCurrentStatisticTime(statisticInterval));
         log.info("Add taskRunningResultStatistics, info is:{}", taskRunningResultStatistics);
         repository.add(taskRunningResultStatistics);
         sharedData.reset();
     }
     
     private void fillBlankIfNeeded(final TaskRunningResultStatistics latestOne) {
-        List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), Interval.valueOf(statisticUnit.name()));
+        List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), statisticInterval);
         if (!blankDateRange.isEmpty()) {
             log.info("Fill blank range of taskRunningResultStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
         }
         for (Date each : blankDateRange) {
-            repository.add(new TaskRunningResultStatistics(latestOne.getSuccessCount(), latestOne.getFailedCount(), statisticUnit, each));
+            repository.add(new TaskRunningResultStatistics(latestOne.getSuccessCount(), latestOne.getFailedCount(), statisticInterval, each));
         }
     }
 }

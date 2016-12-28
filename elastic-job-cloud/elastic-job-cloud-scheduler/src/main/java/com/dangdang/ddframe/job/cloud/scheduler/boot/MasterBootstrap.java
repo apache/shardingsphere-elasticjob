@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
@@ -38,17 +37,11 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.functions.Action1;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
@@ -79,15 +72,14 @@ public final class MasterBootstrap {
         final FacadeService facadeService = new FacadeService(regCenter);
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
-        Optional<? extends DataSource> dataSource = getRdbDataSource();
-        final StatisticManager statisticManager = StatisticManager.getInstance(regCenter, dataSource);
+        Optional<JobEventRdbSearch> jobEventRdbSearch = Optional.absent();
+        if (env.getJobEventRdbConfiguration().isPresent()) {
+            jobEventRdbSearch = Optional.of(new JobEventRdbSearch(env.getJobEventRdbConfiguration().get().getDataSource()));
+        }
+        final StatisticManager statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         statisticManager.startup();
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus, statisticManager);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
-        Optional<JobEventRdbSearch> jobEventRdbSearch = Optional.absent();
-        if (dataSource.isPresent()) {
-            jobEventRdbSearch = Optional.of(new JobEventRdbSearch(dataSource.get()));
-        }
         CloudJobRestfulApi.init(schedulerDriver, regCenter, jobEventRdbSearch);
         initConfigurationListener();
         final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
@@ -167,22 +159,5 @@ public final class MasterBootstrap {
         schedulerDriver.stop();
         restfulServer.stop();
         return Protos.Status.DRIVER_STOPPED == status;
-    }
-    
-    private Optional<? extends DataSource> getRdbDataSource() {
-        Map<String, String> rdbConfigs = env.getJobEventRdbConfigurationMap();
-        String driver = rdbConfigs.get(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey());
-        String url = rdbConfigs.get(EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey());
-        String username = rdbConfigs.get(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey());
-        String password = rdbConfigs.get(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey());
-        if (!Strings.isNullOrEmpty(driver) && !Strings.isNullOrEmpty(url) && !Strings.isNullOrEmpty(username)) {
-            BasicDataSource dataSource = new BasicDataSource();
-            dataSource.setDriverClassName(driver);
-            dataSource.setUrl(url);
-            dataSource.setUsername(username);
-            dataSource.setPassword(password);
-            return Optional.of(dataSource);
-        }
-        return Optional.absent();
     }
 }

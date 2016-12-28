@@ -27,8 +27,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
-import javax.sql.DataSource;
-
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,12 +38,14 @@ import org.unitils.util.ReflectionUtils;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.JobRegisterStatistics;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics.StatisticUnit;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
@@ -55,7 +56,7 @@ public class StatisticManagerTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private Optional<DataSource> dataSource;
+    private Optional<JobEventRdbConfiguration> jobEventRdbConfiguration;
     
     @Mock
     private StatisticRdbRepository rdbRepository;
@@ -69,14 +70,18 @@ public class StatisticManagerTest {
     private StatisticManager statisticManager;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
+    public void setUp() {
+        statisticManager = StatisticManager.getInstance(regCenter, jobEventRdbConfiguration);
+    }
+    
+    @After
+    public void tearDown() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(StatisticManager.class, StatisticManager.class.getDeclaredField("instance"), null);
-        statisticManager = StatisticManager.getInstance(regCenter, dataSource);
     }
     
     @Test
     public void assertGetInstance() {
-        assertThat(statisticManager, is(StatisticManager.getInstance(regCenter, dataSource)));
+        assertThat(statisticManager, is(StatisticManager.getInstance(regCenter, jobEventRdbConfiguration)));
     }
     
     @Test
@@ -116,13 +121,13 @@ public class StatisticManagerTest {
     @Test
     public void assertTaskRunningResultStatisticsWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.getSummedTaskRunningResultStatistics(any(Date.class), any(StatisticUnit.class)))
-            .thenReturn(new TaskRunningResultStatistics(10, 10, StatisticUnit.DAY, new Date()));
+        when(rdbRepository.getSummedTaskRunningResultStatistics(any(Date.class), any(StatisticInterval.class)))
+            .thenReturn(new TaskRunningResultStatistics(10, 10, StatisticInterval.DAY, new Date()));
         assertThat(statisticManager.getTaskRunningResultStatisticsWeekly().getSuccessCount(), is(10));
         assertThat(statisticManager.getTaskRunningResultStatisticsWeekly().getFailedCount(), is(10));
         assertThat(statisticManager.getTaskRunningResultStatisticsSinceOnline().getSuccessCount(), is(10));
         assertThat(statisticManager.getTaskRunningResultStatisticsSinceOnline().getFailedCount(), is(10));
-        verify(rdbRepository, times(4)).getSummedTaskRunningResultStatistics(any(Date.class), any(StatisticUnit.class));
+        verify(rdbRepository, times(4)).getSummedTaskRunningResultStatistics(any(Date.class), any(StatisticInterval.class));
     }
     
     @Test
@@ -162,6 +167,21 @@ public class StatisticManagerTest {
             .thenReturn(Lists.newArrayList(new TaskRunningStatistics(10, new Date())));
         assertThat(statisticManager.findTaskRunningStatisticsWeekly().size(), is(1));
         verify(rdbRepository).findTaskRunningStatistics(any(Date.class));
+    }
+    
+    @Test
+    public void assertFindJobRunningStatisticsWhenRDBRepositoryIsNull() throws NoSuchFieldException {
+        ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
+        assertTrue(statisticManager.findJobRunningStatisticsWeekly().isEmpty());
+    }
+    
+    @Test
+    public void assertFindJobRunningStatisticsWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
+        ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
+        when(rdbRepository.findJobRunningStatistics(any(Date.class)))
+            .thenReturn(Lists.newArrayList(new JobRunningStatistics(10, new Date())));
+        assertThat(statisticManager.findJobRunningStatisticsWeekly().size(), is(1));
+        verify(rdbRepository).findJobRunningStatistics(any(Date.class));
     }
     
     @Test

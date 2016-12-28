@@ -36,10 +36,10 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.JobRegisterStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
@@ -72,7 +72,7 @@ public class RegisteredJobStatisticJobTest {
         Trigger trigger = registeredJobStatisticJob.buildTrigger();
         scheduler.scheduleJob(registeredJobStatisticJob.buildJobDetail(), trigger);
         assertThat(trigger.getKey().getName(), is(RegisteredJobStatisticJob.class.getSimpleName() + "Trigger"));
-        assertThat(trigger.getNextFireTime(), is(StatisticTimeUtils.getStatisticTime(Interval.DAY, 1)));
+        assertThat(trigger.getNextFireTime(), is(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, 1)));
     }
     
     @Test
@@ -95,7 +95,7 @@ public class RegisteredJobStatisticJobTest {
     
     @Test
     public void assertExecute() throws SchedulerException {
-        Optional<JobRegisterStatistics> latestOne = Optional.of(new JobRegisterStatistics(0, StatisticTimeUtils.getStatisticTime(Interval.DAY, -3)));
+        Optional<JobRegisterStatistics> latestOne = Optional.of(new JobRegisterStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -3)));
         when(repository.findLatestJobRegisterStatistics()).thenReturn(latestOne);
         when(repository.add(any(JobRegisterStatistics.class))).thenReturn(true);
         when(configurationService.loadAll()).thenReturn(Lists.newArrayList(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));

@@ -30,11 +30,12 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.dangdang.ddframe.job.statistics.type.JobRegisterStatistics;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningStatistics;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
+import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics.StatisticUnit;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,6 +50,8 @@ public class StatisticRdbRepository {
     private static final String TABLE_TASK_RUNNING_RESULT_STATISTICS = "TASK_RUNNING_RESULT_STATISTICS";
     
     private static final String TABLE_TASK_RUNNING_STATISTICS = "TASK_RUNNING_STATISTICS";
+
+    private static final String TABLE_JOB_RUNNING_STATISTICS = "JOB_RUNNING_STATISTICS";
     
     private static final String TABLE_JOB_REGISTER_STATISTICS = "JOB_REGISTER_STATISTICS";
     
@@ -68,13 +71,14 @@ public class StatisticRdbRepository {
         try (Connection conn = dataSource.getConnection()) {
             createTaskRunningResultTableIfNeeded(conn);
             createTaskRunningTableIfNeeded(conn);
+            createJobRunningTableIfNeeded(conn);
             createJobRegisterTableIfNeeded(conn);
         }
     }
     
     private void createTaskRunningResultTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        for (StatisticUnit each : StatisticUnit.values()) {
+        for (StatisticInterval each : StatisticInterval.values()) {
             try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + each, new String[]{"TABLE"});) {
                 if (!resultSet.next()) {
                     createTaskRunningResultTable(conn, each);
@@ -83,8 +87,8 @@ public class StatisticRdbRepository {
         }
     }
     
-    private void createTaskRunningResultTable(final Connection conn, final StatisticUnit unit) throws SQLException {
-        String dbSchema = "CREATE TABLE `" + TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + unit + "` ("
+    private void createTaskRunningResultTable(final Connection conn, final StatisticInterval statisticInterval) throws SQLException {
+        String dbSchema = "CREATE TABLE `" + TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + statisticInterval + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
                 + "`success_count` INT(11),"
                 + "`failed_count` INT(11),"
@@ -107,6 +111,27 @@ public class StatisticRdbRepository {
     
     private void createTaskRunningTable(final Connection conn) throws SQLException {
         String dbSchema = "CREATE TABLE `" + TABLE_TASK_RUNNING_STATISTICS + "` ("
+                + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
+                + "`running_count` INT(11),"
+                + "`statistics_time` TIMESTAMP DEFAULT 0 NOT NULL,"
+                + "`creation_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                + "PRIMARY KEY (`id`));";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
+            preparedStatement.execute();
+        }
+    }
+    
+    private void createJobRunningTableIfNeeded(final Connection conn) throws SQLException {
+        DatabaseMetaData dbMetaData = conn.getMetaData();
+        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_RUNNING_STATISTICS, new String[]{"TABLE"});) {
+            if (!resultSet.next()) {
+                createJobRunningTable(conn);
+            }
+        }
+    }
+    
+    private void createJobRunningTable(final Connection conn) throws SQLException {
+        String dbSchema = "CREATE TABLE `" + TABLE_JOB_RUNNING_STATISTICS + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
                 + "`running_count` INT(11),"
                 + "`statistics_time` TIMESTAMP DEFAULT 0 NOT NULL,"
@@ -146,7 +171,7 @@ public class StatisticRdbRepository {
      */
     public boolean add(final TaskRunningResultStatistics taskRunningResultStatistics) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + taskRunningResultStatistics.getStatisticUnit()
+        String sql = "INSERT INTO `" + TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + taskRunningResultStatistics.getStatisticInterval()
                 + "` (`success_count`, `failed_count`, `statistics_time`) VALUES (?, ?, ?);";
         try (
                 Connection conn = dataSource.getConnection();
@@ -187,6 +212,30 @@ public class StatisticRdbRepository {
     }
     
     /**
+     * 添加运行中的作业统计数据.
+     * 
+     * @param taskRunningStatistics 运行中的任务统计数据对象
+     * @return 
+     * @return
+     */
+    public boolean add(final JobRunningStatistics jobRunningStatistics) {
+        boolean result = false;
+        String sql = "INSERT INTO `" + TABLE_JOB_RUNNING_STATISTICS + "` (`running_count`, `statistics_time`) VALUES (?, ?);";
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setInt(1, jobRunningStatistics.getRunningCount());
+            preparedStatement.setTimestamp(2, new Timestamp(jobRunningStatistics.getStatisticsTime().getTime()));
+            preparedStatement.execute();
+            result = true;
+        } catch (final SQLException ex) {
+            // TODO 记录失败直接输出日志,未来可考虑配置化
+            log.error("Insert jobRunningStatistics to DB error:", ex);
+        }
+        return result;
+    }
+    
+    /**
      * 添加作业注册统计数据.
      * 
      * @param jobRegisterStatistics 作业注册统计数据对象
@@ -213,14 +262,14 @@ public class StatisticRdbRepository {
      * 获取任务运行结果统计数据集合.
      * 
      * @param from 统计开始时间
-     * @param statisticUnit 统计单位
+     * @param statisticInterval 统计时间间隔
      * @return 任务运行结果统计数据集合
      */
-    public List<TaskRunningResultStatistics> findTaskRunningResultStatistics(final Date from, final StatisticUnit statisticUnit) {
+    public List<TaskRunningResultStatistics> findTaskRunningResultStatistics(final Date from, final StatisticInterval statisticInterval) {
         List<TaskRunningResultStatistics> result = new LinkedList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
-                TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + statisticUnit, formatter.format(from));
+                TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + statisticInterval, formatter.format(from));
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -228,7 +277,7 @@ public class StatisticRdbRepository {
                 ) {
             while (resultSet.next()) {
                 TaskRunningResultStatistics taskRunningResultStatistics = new TaskRunningResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3), 
-                        statisticUnit, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
+                        statisticInterval, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
                 result.add(taskRunningResultStatistics);
             }
         } catch (final SQLException ex) {
@@ -242,21 +291,21 @@ public class StatisticRdbRepository {
      * 获取合计后的任务运行结果统计数据.
      * 
      * @param from 统计开始时间
-     * @param statisticUnit 统计单位
+     * @param statisticInterval 统计时间间隔
      * @return 合计后的任务运行结果统计数据对象
      */
-    public TaskRunningResultStatistics getSummedTaskRunningResultStatistics(final Date from, final StatisticUnit statisticUnit) {
-        TaskRunningResultStatistics result = new TaskRunningResultStatistics(0, 0, statisticUnit, new Date());
+    public TaskRunningResultStatistics getSummedTaskRunningResultStatistics(final Date from, final StatisticInterval statisticInterval) {
+        TaskRunningResultStatistics result = new TaskRunningResultStatistics(0, 0, statisticInterval, new Date());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = String.format("SELECT sum(success_count), sum(failed_count) FROM %s WHERE statistics_time >= '%s'", 
-                TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + statisticUnit, formatter.format(from));
+                TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + statisticInterval, formatter.format(from));
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 ) {
             while (resultSet.next()) {
-                result = new TaskRunningResultStatistics(resultSet.getInt(1), resultSet.getInt(2), statisticUnit, new Date());
+                result = new TaskRunningResultStatistics(resultSet.getInt(1), resultSet.getInt(2), statisticInterval, new Date());
             }
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
@@ -268,13 +317,13 @@ public class StatisticRdbRepository {
     /**
      * 获取最近一条任务运行结果统计数据.
      * 
-     * @param statisticUnit 统计单位
+     * @param statisticInterval 统计时间间隔
      * @return 任务运行结果统计数据对象
      */
-    public Optional<TaskRunningResultStatistics> findLatestTaskRunningResultStatistics(final StatisticUnit statisticUnit) {
+    public Optional<TaskRunningResultStatistics> findLatestTaskRunningResultStatistics(final StatisticInterval statisticInterval) {
         TaskRunningResultStatistics result = null;
         String sql = String.format("SELECT id, success_count, failed_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
-                TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + statisticUnit);
+                TABLE_TASK_RUNNING_RESULT_STATISTICS + "_" + statisticInterval);
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -282,7 +331,7 @@ public class StatisticRdbRepository {
                 ) {
             while (resultSet.next()) {
                 result = new TaskRunningResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3), 
-                        statisticUnit, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
+                        statisticInterval, new Date(resultSet.getTimestamp(4).getTime()), new Date(resultSet.getTimestamp(5).getTime()));
             }
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
@@ -320,9 +369,37 @@ public class StatisticRdbRepository {
     }
     
     /**
+     * 获取运行中的任务统计数据集合.
+     * 
+     * @param from 统计开始时间
+     * @return 运行中的任务统计数据集合
+     */
+    public List<JobRunningStatistics> findJobRunningStatistics(final Date from) {
+        List<JobRunningStatistics> result = new LinkedList<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s WHERE statistics_time >= '%s' order by id ASC", 
+                TABLE_JOB_RUNNING_STATISTICS, formatter.format(from));
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                ) {
+            while (resultSet.next()) {
+                JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
+                        new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
+                result.add(jobRunningStatistics);
+            }
+        } catch (final SQLException ex) {
+            // TODO 记录失败直接输出日志,未来可考虑配置化
+            log.error("Fetch jobRunningStatistics from DB error:", ex);
+        }
+        return result;
+    }
+    
+    /**
      * 获取最近一条运行中的任务统计数据.
      * 
-     * @param statisticUnit 统计单位
+     * @param statisticUnit 统计时间间隔
      * @return 运行中的任务统计数据对象
      */
     public Optional<TaskRunningStatistics> findLatestTaskRunningStatistics() {
@@ -341,6 +418,32 @@ public class StatisticRdbRepository {
         } catch (final SQLException ex) {
             // TODO 记录失败直接输出日志,未来可考虑配置化
             log.error("Fetch latest taskRunningStatistics from DB error:", ex);
+        }
+        return Optional.fromNullable(result);
+    }
+    
+    /**
+     * 获取最近一条运行中的任务统计数据.
+     * 
+     * @param statisticUnit 统计时间间隔
+     * @return 运行中的任务统计数据对象
+     */
+    public Optional<JobRunningStatistics> findLatestJobRunningStatistics() {
+        JobRunningStatistics result = null;
+        String sql = String.format("SELECT id, running_count, statistics_time, creation_time FROM %s order by id DESC LIMIT 1", 
+                TABLE_JOB_RUNNING_STATISTICS);
+        try (
+                Connection conn = dataSource.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                ) {
+            while (resultSet.next()) {
+                result = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
+                        new Date(resultSet.getTimestamp(3).getTime()), new Date(resultSet.getTimestamp(4).getTime()));
+            }
+        } catch (final SQLException ex) {
+            // TODO 记录失败直接输出日志,未来可考虑配置化
+            log.error("Fetch latest jobRunningStatistics from DB error:", ex);
         }
         return Optional.fromNullable(result);
     }

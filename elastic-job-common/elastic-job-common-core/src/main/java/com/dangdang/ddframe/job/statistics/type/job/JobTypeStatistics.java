@@ -15,45 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.statistics.type;
-
-import java.util.Date;
+package com.dangdang.ddframe.job.statistics.type.job;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * 任务运行结果统计数据.
+ * 作业类型统计数据.
  *
  * @author liguangyun
  */
 @Getter
 @AllArgsConstructor
-@RequiredArgsConstructor
-@ToString(of = {"successCount", "failedCount", "statisticUnit", "statisticsTime"})
-public class TaskRunningResultStatistics {
+public class JobTypeStatistics {
     
-    private long id;
+    private int scriptJobCount;
     
-    private final int successCount;
+    private int simpleJobCount;
     
-    private final int failedCount;
-    
-    private final StatisticUnit statisticUnit;
-    
-    private final Date statisticsTime;
-
-    private Date creationTime;
-    
-    /**
-     * 统计单位.
-     *
-     * @author liguangyun
-     */
-    public enum StatisticUnit {
-        
-        MINUTE, HOUR, DAY
-    }
+    private int dataflowJobCount;
 }

@@ -29,23 +29,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import org.quartz.impl.StdSchedulerFactory;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.TaskRunningResultMetaData;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics.StatisticUnit;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
 import com.google.common.base.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskRunningResultStatisticJobTest {
     
-    private StatisticUnit statisticUnit = StatisticUnit.MINUTE;
+    private StatisticInterval statisticInterval = StatisticInterval.MINUTE;
     
     private TaskRunningResultMetaData sharedData;
     
@@ -58,30 +55,28 @@ public class TaskRunningResultStatisticJobTest {
     public void setUp() {
         taskRunningResultStatisticJob = new TaskRunningResultStatisticJob();
         sharedData = new TaskRunningResultMetaData();
-        taskRunningResultStatisticJob.setStatisticUnit(statisticUnit);
+        taskRunningResultStatisticJob.setStatisticInterval(statisticInterval);
         taskRunningResultStatisticJob.setSharedData(sharedData);
         taskRunningResultStatisticJob.setRepository(repository);
     }
     
     @Test
     public void assertBuildJobDetail() {
-        assertThat(taskRunningResultStatisticJob.buildJobDetail().getKey().getName(), is(TaskRunningResultStatisticJob.class.getSimpleName() + "_" + statisticUnit));
+        assertThat(taskRunningResultStatisticJob.buildJobDetail().getKey().getName(), is(TaskRunningResultStatisticJob.class.getSimpleName() + "_" + statisticInterval));
     }
     
     @Test
     public void assertBuildTrigger() throws SchedulerException {
-        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-        for (StatisticUnit each : StatisticUnit.values()) {
-            taskRunningResultStatisticJob.setStatisticUnit(each);
+        for (StatisticInterval each : StatisticInterval.values()) {
+            taskRunningResultStatisticJob.setStatisticInterval(each);
             Trigger trigger = taskRunningResultStatisticJob.buildTrigger();
-            scheduler.scheduleJob(taskRunningResultStatisticJob.buildJobDetail(), trigger);
             assertThat(trigger.getKey().getName(), is(TaskRunningResultStatisticJob.class.getSimpleName() + "Trigger" + "_" + each));
-            assertThat(trigger.getNextFireTime(), is(StatisticTimeUtils.getStatisticTime(Interval.valueOf(each.name()), 1)));
         }
     }
     
     @Test
     public void assertGetDataMap() throws SchedulerException {
+        assertThat((StatisticInterval) taskRunningResultStatisticJob.getDataMap().get("statisticInterval"), is(statisticInterval));
         assertThat((TaskRunningResultMetaData) taskRunningResultStatisticJob.getDataMap().get("sharedData"), is(sharedData));
         assertThat((StatisticRdbRepository) taskRunningResultStatisticJob.getDataMap().get("repository"), is(repository));
     }
@@ -89,8 +84,8 @@ public class TaskRunningResultStatisticJobTest {
     @Test
     public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
         Optional<TaskRunningResultStatistics> latestOne = Optional.absent();
-        for (StatisticUnit each : StatisticUnit.values()) {
-            taskRunningResultStatisticJob.setStatisticUnit(each);
+        for (StatisticInterval each : StatisticInterval.values()) {
+            taskRunningResultStatisticJob.setStatisticInterval(each);
             when(repository.findLatestTaskRunningResultStatistics(each)).thenReturn(latestOne);
             when(repository.add(any(TaskRunningResultStatistics.class))).thenReturn(true);
             taskRunningResultStatisticJob.execute(null);
@@ -101,14 +96,14 @@ public class TaskRunningResultStatisticJobTest {
     
     @Test
     public void assertExecute() throws SchedulerException {
-        for (StatisticUnit each : StatisticUnit.values()) {
-            taskRunningResultStatisticJob.setStatisticUnit(each);
-            Optional<TaskRunningResultStatistics> latestOne = Optional.of(new TaskRunningResultStatistics(0, 0, each, StatisticTimeUtils.getStatisticTime(Interval.valueOf(each.name()), -3)));
+        for (StatisticInterval each : StatisticInterval.values()) {
+            taskRunningResultStatisticJob.setStatisticInterval(each);
+            Optional<TaskRunningResultStatistics> latestOne = Optional.of(new TaskRunningResultStatistics(0, 0, each, StatisticTimeUtils.getStatisticTime(each, -3)));
             when(repository.findLatestTaskRunningResultStatistics(each)).thenReturn(latestOne);
             when(repository.add(any(TaskRunningResultStatistics.class))).thenReturn(true);
             taskRunningResultStatisticJob.execute(null);
             verify(repository).findLatestTaskRunningResultStatistics(each);
         }
-        verify(repository, times(StatisticUnit.values().length * 3)).add(any(TaskRunningResultStatistics.class));
+        verify(repository, times(StatisticInterval.values().length * 3)).add(any(TaskRunningResultStatistics.class));
     }
 }

@@ -26,24 +26,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.JobRunningStatisticJob;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.RegisteredJobStatisticJob;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.TaskRunningResultStatisticJob;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.TaskRunningStatisticJob;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.JobExecutionTypeStatistics;
-import com.dangdang.ddframe.job.statistics.type.JobRegisterStatistics;
-import com.dangdang.ddframe.job.statistics.type.JobTypeStatistics;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningResultStatistics.StatisticUnit;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobExecutionTypeStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobTypeStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
 
 import lombok.AccessLevel;
@@ -63,11 +63,11 @@ public class StatisticManager {
     
     private final ConfigurationService configurationService;
     
-    private final Optional<? extends DataSource> dataSource;
+    private final Optional<JobEventRdbConfiguration> jobEventRdbConfiguration;
     
     private final StatisticsScheduler scheduler;
     
-    private final Map<StatisticUnit, TaskRunningResultMetaData> statisticDatas;
+    private final Map<StatisticInterval, TaskRunningResultMetaData> statisticDatas;
     
     private StatisticRdbRepository rdbRepository;
     
@@ -76,15 +76,15 @@ public class StatisticManager {
      *
      * @return 调度管理器对象
      */
-    public static StatisticManager getInstance(final CoordinatorRegistryCenter regCenter, final Optional<? extends DataSource> dataSource) {
+    public static StatisticManager getInstance(final CoordinatorRegistryCenter regCenter, final Optional<JobEventRdbConfiguration> jobEventRdbConfiguration) {
         if (null == instance) {
             synchronized (StatisticManager.class) {
                 if (null == instance) {
-                    Map<StatisticUnit, TaskRunningResultMetaData> statisticDatas = new HashMap<>();
-                    statisticDatas.put(StatisticUnit.MINUTE, new TaskRunningResultMetaData());
-                    statisticDatas.put(StatisticUnit.HOUR, new TaskRunningResultMetaData());
-                    statisticDatas.put(StatisticUnit.DAY, new TaskRunningResultMetaData());
-                    instance = new StatisticManager(new ConfigurationService(regCenter), dataSource, new StatisticsScheduler(), statisticDatas);
+                    Map<StatisticInterval, TaskRunningResultMetaData> statisticDatas = new HashMap<>();
+                    statisticDatas.put(StatisticInterval.MINUTE, new TaskRunningResultMetaData());
+                    statisticDatas.put(StatisticInterval.HOUR, new TaskRunningResultMetaData());
+                    statisticDatas.put(StatisticInterval.DAY, new TaskRunningResultMetaData());
+                    instance = new StatisticManager(new ConfigurationService(regCenter), jobEventRdbConfiguration, new StatisticsScheduler(), statisticDatas);
                     init();
                 }
             }
@@ -93,9 +93,9 @@ public class StatisticManager {
     }
     
     private static void init() {
-        if (instance.dataSource.isPresent()) {
+        if (instance.jobEventRdbConfiguration.isPresent()) {
             try {
-                instance.rdbRepository = new StatisticRdbRepository(instance.dataSource.get());
+                instance.rdbRepository = new StatisticRdbRepository(instance.jobEventRdbConfiguration.get().getDataSource());
             } catch (final SQLException ex) {
                 log.error("Init StatisticRdbRepository error:", ex);
             }
@@ -107,10 +107,10 @@ public class StatisticManager {
      */
     public void startup() {
         if (null != rdbRepository) {
-            scheduler.register(new TaskRunningResultStatisticJob(StatisticUnit.MINUTE, statisticDatas.get(StatisticUnit.MINUTE), rdbRepository));
-            scheduler.register(new TaskRunningResultStatisticJob(StatisticUnit.HOUR, statisticDatas.get(StatisticUnit.HOUR), rdbRepository));
-            scheduler.register(new TaskRunningResultStatisticJob(StatisticUnit.DAY, statisticDatas.get(StatisticUnit.DAY), rdbRepository));
-            scheduler.register(new TaskRunningStatisticJob(rdbRepository));
+            scheduler.register(new TaskRunningResultStatisticJob(StatisticInterval.MINUTE, statisticDatas.get(StatisticInterval.MINUTE), rdbRepository));
+            scheduler.register(new TaskRunningResultStatisticJob(StatisticInterval.HOUR, statisticDatas.get(StatisticInterval.HOUR), rdbRepository));
+            scheduler.register(new TaskRunningResultStatisticJob(StatisticInterval.DAY, statisticDatas.get(StatisticInterval.DAY), rdbRepository));
+            scheduler.register(new JobRunningStatisticJob(rdbRepository));
             scheduler.register(new RegisteredJobStatisticJob(configurationService, rdbRepository));
         }
     }
@@ -126,18 +126,18 @@ public class StatisticManager {
      * 任务运行成功.
      */
     public void taskRunSuccessfully() {
-        statisticDatas.get(StatisticUnit.MINUTE).incrementAndGetSuccessCount();
-        statisticDatas.get(StatisticUnit.HOUR).incrementAndGetSuccessCount();
-        statisticDatas.get(StatisticUnit.DAY).incrementAndGetSuccessCount();
+        statisticDatas.get(StatisticInterval.MINUTE).incrementAndGetSuccessCount();
+        statisticDatas.get(StatisticInterval.HOUR).incrementAndGetSuccessCount();
+        statisticDatas.get(StatisticInterval.DAY).incrementAndGetSuccessCount();
     }
     
     /**
      * 作业运行失败.
      */
     public void taskRunFailed() {
-        statisticDatas.get(StatisticUnit.MINUTE).incrementAndGetFailedCount();
-        statisticDatas.get(StatisticUnit.HOUR).incrementAndGetFailedCount();
-        statisticDatas.get(StatisticUnit.DAY).incrementAndGetFailedCount();
+        statisticDatas.get(StatisticInterval.MINUTE).incrementAndGetFailedCount();
+        statisticDatas.get(StatisticInterval.HOUR).incrementAndGetFailedCount();
+        statisticDatas.get(StatisticInterval.DAY).incrementAndGetFailedCount();
     }
     
     /**
@@ -147,9 +147,9 @@ public class StatisticManager {
      */
     public TaskRunningResultStatistics getTaskRunningResultStatisticsWeekly() {
         if (null == rdbRepository) {
-            return new TaskRunningResultStatistics(0, 0, StatisticUnit.DAY, new Date());
+            return new TaskRunningResultStatistics(0, 0, StatisticInterval.DAY, new Date());
         }
-        return rdbRepository.getSummedTaskRunningResultStatistics(StatisticTimeUtils.getStatisticTime(Interval.DAY, -7), StatisticUnit.DAY);
+        return rdbRepository.getSummedTaskRunningResultStatistics(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -7), StatisticInterval.DAY);
     }
     
     /**
@@ -159,9 +159,9 @@ public class StatisticManager {
      */
     public TaskRunningResultStatistics getTaskRunningResultStatisticsSinceOnline() {
         if (null == rdbRepository) {
-            return new TaskRunningResultStatistics(0, 0, StatisticUnit.DAY, new Date());
+            return new TaskRunningResultStatistics(0, 0, StatisticInterval.DAY, new Date());
         }
-        return rdbRepository.getSummedTaskRunningResultStatistics(getOnlineDate(), StatisticUnit.DAY);
+        return rdbRepository.getSummedTaskRunningResultStatistics(getOnlineDate(), StatisticInterval.DAY);
     }
     
     /**
@@ -212,7 +212,19 @@ public class StatisticManager {
         if (null == rdbRepository) {
             return Collections.emptyList();
         }
-        return rdbRepository.findTaskRunningStatistics(StatisticTimeUtils.getStatisticTime(Interval.DAY, -7));
+        return rdbRepository.findTaskRunningStatistics(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -7));
+    }
+    
+    /**
+     * 获取最近一周的运行中的作业统计数据集合.
+     * 
+     * @return 运行中的任务统计数据对象集合
+     */
+    public List<JobRunningStatistics> findJobRunningStatisticsWeekly() {
+        if (null == rdbRepository) {
+            return Collections.emptyList();
+        }
+        return rdbRepository.findJobRunningStatistics(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -7));
     }
     
     /**

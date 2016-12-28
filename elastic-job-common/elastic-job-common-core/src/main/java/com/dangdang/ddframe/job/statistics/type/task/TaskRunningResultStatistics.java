@@ -15,9 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.statistics.type;
+package com.dangdang.ddframe.job.statistics.type.task;
 
 import java.util.Date;
+
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,19 +27,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
- * 作业注册到Cloud平台统计数据.
+ * 任务运行结果统计数据.
  *
  * @author liguangyun
  */
 @Getter
-@RequiredArgsConstructor
 @AllArgsConstructor
-@ToString(of = {"registeredCount", "statisticsTime"})
-public class JobRegisterStatistics {
+@RequiredArgsConstructor
+@ToString(of = {"successCount", "failedCount", "statisticInterval", "statisticsTime"})
+public class TaskRunningResultStatistics {
     
     private long id;
     
-    private final int registeredCount;
+    private final int successCount;
+    
+    private final int failedCount;
+    
+    private final StatisticInterval statisticInterval;
     
     private final Date statisticsTime;
     

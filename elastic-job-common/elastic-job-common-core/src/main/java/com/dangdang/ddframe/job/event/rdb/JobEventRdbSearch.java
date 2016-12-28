@@ -192,10 +192,10 @@ public class JobEventRdbSearch {
     private String buildWhere(final String tableName, final Collection<String> tableFields, final Condition condition) {
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(" WHERE 1=1");
-        if (condition.getFields() != null && !condition.getFields().isEmpty()) {
+        if (null != condition.getFields() && !condition.getFields().isEmpty()) {
             for (String each : condition.getFields().keySet()) {
                 String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, each);
-                if (condition.getFields().get(each) != null && tableFields.contains(lowerUnderscore)) {
+                if (null != condition.getFields().get(each) && tableFields.contains(lowerUnderscore)) {
                     sqlBuilder.append(" AND ").append(lowerUnderscore).append("=?");
                 }
             }
@@ -211,10 +211,10 @@ public class JobEventRdbSearch {
     
     private void setBindValue(final PreparedStatement preparedStatement, final Collection<String> tableFields, final Condition condition) throws SQLException {
         int index = 1;
-        if (condition.getFields() != null && !condition.getFields().isEmpty()) {
+        if (null != condition.getFields() && !condition.getFields().isEmpty()) {
             for (String each : condition.getFields().keySet()) {
                 String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, each);
-                if (condition.getFields().get(each) != null && tableFields.contains(lowerUnderscore)) {
+                if (null != condition.getFields().get(each) && tableFields.contains(lowerUnderscore)) {
                     preparedStatement.setString(index++, String.valueOf(condition.getFields().get(each)));
                 }
             }

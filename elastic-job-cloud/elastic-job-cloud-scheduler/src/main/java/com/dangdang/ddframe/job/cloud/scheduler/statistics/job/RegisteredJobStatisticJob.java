@@ -31,10 +31,10 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.JobRegisterStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
 import com.google.common.base.Optional;
 
 import lombok.AllArgsConstructor;
@@ -57,7 +57,7 @@ public class RegisteredJobStatisticJob extends AbstractStatisticJob {
     
     private StatisticRdbRepository repository;
     
-    private final Interval execInterval = Interval.DAY;
+    private final StatisticInterval execInterval = StatisticInterval.DAY;
     
     @Override
     public JobDetail buildJobDetail() {
@@ -86,7 +86,7 @@ public class RegisteredJobStatisticJob extends AbstractStatisticJob {
         if (latestOne.isPresent()) {
             fillBlankIfNeeded(latestOne.get());
         }
-        JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(configurationService.loadAll().size(), StatisticTimeUtils.getCurrentStatisticTime(Interval.HOUR));
+        JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(configurationService.loadAll().size(), StatisticTimeUtils.getCurrentStatisticTime(execInterval));
         log.info("Add jobRegisterStatistics, info is:{}", jobRegisterStatistics);
         repository.add(jobRegisterStatistics);
     }

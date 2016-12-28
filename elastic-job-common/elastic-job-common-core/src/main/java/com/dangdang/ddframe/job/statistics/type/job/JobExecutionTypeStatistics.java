@@ -15,25 +15,21 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.statistics;
+package com.dangdang.ddframe.job.statistics.type.job;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
- * 时间间隔.
+ * 作业执行类型统计数据.
  *
  * @author liguangyun
  */
 @Getter
-@RequiredArgsConstructor
-public enum Interval {
+@AllArgsConstructor
+public class JobExecutionTypeStatistics {
     
-    MINUTE("0 * * * * ?"),
+    private int transientJobCount;
     
-    HOUR("0 0 * * * ?"), 
-    
-    DAY("0 0 0 * * ?");
-    
-    private final String cron;
+    private int daemonJobCount;
 }

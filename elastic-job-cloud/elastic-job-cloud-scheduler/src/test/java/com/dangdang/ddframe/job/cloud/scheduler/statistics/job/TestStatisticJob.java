@@ -28,7 +28,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 
 public class TestStatisticJob extends AbstractStatisticJob {
     
@@ -41,7 +41,7 @@ public class TestStatisticJob extends AbstractStatisticJob {
     public Trigger buildTrigger() {
         return TriggerBuilder.newTrigger()
                 .withIdentity(getTriggerName())
-                .withSchedule(CronScheduleBuilder.cronSchedule(Interval.MINUTE.getCron())
+                .withSchedule(CronScheduleBuilder.cronSchedule(StatisticInterval.MINUTE.getCron())
                 .withMisfireHandlingInstructionDoNothing()).build();
     }
     

@@ -15,21 +15,31 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.statistics.type;
+package com.dangdang.ddframe.job.statistics.type.task;
+
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
- * 作业执行类型统计数据.
+ * 运行中的任务统计数据.
  *
  * @author liguangyun
  */
 @Getter
+@RequiredArgsConstructor
 @AllArgsConstructor
-public class JobExecutionTypeStatistics {
+@ToString(of = {"runningCount", "statisticsTime"})
+public class TaskRunningStatistics {
     
-    private int transientJobCount;
+    private long id;
     
-    private int daemonJobCount;
+    private final int runningCount;
+    
+    private final Date statisticsTime;
+    
+    private Date creationTime;
 }

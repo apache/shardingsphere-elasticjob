@@ -25,8 +25,8 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 
 public class BaseStatisticJobTest {
     
@@ -49,7 +49,7 @@ public class BaseStatisticJobTest {
     
     @Test
     public void assertFindBlankStatisticTimes() {
-        for (Interval each : Interval.values()) {
+        for (StatisticInterval each : StatisticInterval.values()) {
             int num = -2;
             for (Date eachTime : testStatisticJob.findBlankStatisticTimes(StatisticTimeUtils.getStatisticTime(each, num - 1), each)) {
                 assertThat(eachTime.getTime(), is(StatisticTimeUtils.getStatisticTime(each, num++).getTime()));

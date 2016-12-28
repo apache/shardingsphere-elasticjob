@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 
 /**
  * 统计作业抽象类.
@@ -40,7 +40,7 @@ abstract class AbstractStatisticJob implements StatisticJob {
         return this.getClass().getSimpleName() + "Trigger";
     }
     
-    List<Date> findBlankStatisticTimes(final Date latestStatisticTime, final Interval statisticInterval) {
+    List<Date> findBlankStatisticTimes(final Date latestStatisticTime, final StatisticInterval statisticInterval) {
         List<Date> result = new ArrayList<>();
         int previousInterval = -1;
         Date previousTime = StatisticTimeUtils.getStatisticTime(statisticInterval, previousInterval);

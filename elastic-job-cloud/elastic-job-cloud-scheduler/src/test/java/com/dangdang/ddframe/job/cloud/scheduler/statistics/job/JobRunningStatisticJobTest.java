@@ -43,15 +43,16 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.Interval;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.TaskRunningStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TaskRunningStatisticJobTest {
+public class JobRunningStatisticJobTest {
     
     @Mock
     private RunningService runningService;
@@ -59,59 +60,68 @@ public class TaskRunningStatisticJobTest {
     @Mock
     private StatisticRdbRepository repository;
     
-    private TaskRunningStatisticJob taskRunningStatisticJob;
+    private JobRunningStatisticJob jobRunningStatisticJob;
     
     @Before
     public void setUp() {
-        taskRunningStatisticJob = new TaskRunningStatisticJob();
-        taskRunningStatisticJob.setRunningService(runningService);
-        taskRunningStatisticJob.setRepository(repository);
+        jobRunningStatisticJob = new JobRunningStatisticJob();
+        jobRunningStatisticJob.setRunningService(runningService);
+        jobRunningStatisticJob.setRepository(repository);
     }
     
     @Test
     public void assertBuildJobDetail() {
-        assertThat(taskRunningStatisticJob.buildJobDetail().getKey().getName(), is(TaskRunningStatisticJob.class.getSimpleName()));
+        assertThat(jobRunningStatisticJob.buildJobDetail().getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName()));
     }
     
     @Test
     public void assertBuildTrigger() throws SchedulerException {
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-        Trigger trigger = taskRunningStatisticJob.buildTrigger();
-        scheduler.scheduleJob(taskRunningStatisticJob.buildJobDetail(), trigger);
-        assertThat(trigger.getKey().getName(), is(TaskRunningStatisticJob.class.getSimpleName() + "Trigger"));
-        assertThat(trigger.getNextFireTime(), is(StatisticTimeUtils.getStatisticTime(Interval.MINUTE, 1)));
+        Trigger trigger = jobRunningStatisticJob.buildTrigger();
+        scheduler.scheduleJob(jobRunningStatisticJob.buildJobDetail(), trigger);
+        assertThat(trigger.getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
+        assertThat(trigger.getNextFireTime(), is(StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, 1)));
     }
     
     @Test
     public void assertGetDataMap() throws SchedulerException {
-        assertThat((RunningService) taskRunningStatisticJob.getDataMap().get("runningService"), is(runningService));
-        assertThat((StatisticRdbRepository) taskRunningStatisticJob.getDataMap().get("repository"), is(repository));
+        assertThat((RunningService) jobRunningStatisticJob.getDataMap().get("runningService"), is(runningService));
+        assertThat((StatisticRdbRepository) jobRunningStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
     @Test
     public void assertExecuteWhenRepositoryIsEmpty() throws SchedulerException {
-        Optional<TaskRunningStatistics> latestOne = Optional.absent();
-        when(repository.findLatestTaskRunningStatistics()).thenReturn(latestOne);
+        Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.absent();
+        Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.absent();
+        when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
+        when(repository.findLatestTaskRunningStatistics()).thenReturn(latestTaskRunningStatistics);
+        when(repository.add(any(JobRunningStatistics.class))).thenReturn(true);
         when(repository.add(any(TaskRunningStatistics.class))).thenReturn(true);
         when(runningService.getAllRunningTasks()).thenReturn(Collections.<String, Set<TaskContext>>emptyMap());
-        taskRunningStatisticJob.execute(null);
-        verify(repository).findLatestTaskRunningStatistics();
+        jobRunningStatisticJob.execute(null);
+        verify(repository).findLatestJobRunningStatistics();
+        verify(repository).add(any(JobRunningStatistics.class));
         verify(repository).add(any(TaskRunningStatistics.class));
         verify(runningService).getAllRunningTasks();
     }
     
     @Test
     public void assertExecute() throws SchedulerException {
-        Optional<TaskRunningStatistics> latestOne = Optional.of(new TaskRunningStatistics(0, StatisticTimeUtils.getStatisticTime(Interval.MINUTE, -3)));
-        when(repository.findLatestTaskRunningStatistics()).thenReturn(latestOne);
+        Optional<JobRunningStatistics> latestJobRunningStatistics = Optional.of(new JobRunningStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -3)));
+        Optional<TaskRunningStatistics> latestTaskRunningStatistics = Optional.of(new TaskRunningStatistics(0, StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, -3)));
+        when(repository.findLatestJobRunningStatistics()).thenReturn(latestJobRunningStatistics);
+        when(repository.findLatestTaskRunningStatistics()).thenReturn(latestTaskRunningStatistics);
+        when(repository.add(any(JobRunningStatistics.class))).thenReturn(true);
         when(repository.add(any(TaskRunningStatistics.class))).thenReturn(true);
         Map<String, Set<TaskContext>> jobMap = new HashMap<>(1);
-        Set<TaskContext> taskSet = new HashSet<>(1);
-        taskSet.add(TaskContext.from(TaskNode.builder().jobName("test_job").build().getTaskNodeValue()));
-        jobMap.put("test_job", taskSet);
+        Set<TaskContext> jobSet = new HashSet<>(1);
+        jobSet.add(TaskContext.from(TaskNode.builder().jobName("test_job").build().getTaskNodeValue()));
+        jobMap.put("test_job", jobSet);
         when(runningService.getAllRunningTasks()).thenReturn(jobMap);
-        taskRunningStatisticJob.execute(null);
+        jobRunningStatisticJob.execute(null);
+        verify(repository).findLatestJobRunningStatistics();
         verify(repository).findLatestTaskRunningStatistics();
+        verify(repository, times(3)).add(any(JobRunningStatistics.class));
         verify(repository, times(3)).add(any(TaskRunningStatistics.class));
         verify(runningService).getAllRunningTasks();
     }
