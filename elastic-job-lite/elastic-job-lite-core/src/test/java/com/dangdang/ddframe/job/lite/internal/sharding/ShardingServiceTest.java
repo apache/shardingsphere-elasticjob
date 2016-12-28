@@ -113,9 +113,13 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingWithoutAvailableServers() {
+        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
         when(serverService.getAvailableShardingServers()).thenReturn(Collections.<String>emptyList());
         shardingService.shardingIfNecessary();
         verify(serverService).getAvailableShardingServers();
+        verify(serverService).getAllServers();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/sharding");
         verify(jobNodeStorage, times(0)).isJobNodeExisted("leader/sharding/necessary");
     }
     
