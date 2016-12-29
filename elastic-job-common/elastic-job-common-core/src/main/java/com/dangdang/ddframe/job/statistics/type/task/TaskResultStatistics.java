@@ -35,7 +35,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @ToString(of = {"successCount", "failedCount", "statisticInterval", "statisticsTime"})
-public class TaskRunningResultStatistics {
+public class TaskResultStatistics {
     
     private long id;
     

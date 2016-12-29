@@ -30,11 +30,11 @@ import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.TaskRunningResultMetaData;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.TaskResultMetaData;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.google.common.base.Optional;
 
 import lombok.AllArgsConstructor;
@@ -51,11 +51,11 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class TaskRunningResultStatisticJob extends AbstractStatisticJob {
+public class TaskResultStatisticJob extends AbstractStatisticJob {
     
     private StatisticInterval statisticInterval;
     
-    private TaskRunningResultMetaData sharedData;
+    private TaskResultMetaData sharedData;
     
     private StatisticRdbRepository repository;
     
@@ -85,25 +85,25 @@ public class TaskRunningResultStatisticJob extends AbstractStatisticJob {
     
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        Optional<TaskRunningResultStatistics> latestOne = repository.findLatestTaskRunningResultStatistics(statisticInterval);
+        Optional<TaskResultStatistics> latestOne = repository.findLatestTaskResultStatistics(statisticInterval);
         if (latestOne.isPresent()) {
             fillBlankIfNeeded(latestOne.get());
         }
-        TaskRunningResultStatistics taskRunningResultStatistics = new TaskRunningResultStatistics(
+        TaskResultStatistics taskResultStatistics = new TaskResultStatistics(
                 sharedData.getSuccessCount(), sharedData.getFailedCount(), statisticInterval,
                 StatisticTimeUtils.getCurrentStatisticTime(statisticInterval));
-        log.info("Add taskRunningResultStatistics, info is:{}", taskRunningResultStatistics);
-        repository.add(taskRunningResultStatistics);
+        log.info("Add taskResultStatistics, info is:{}", taskResultStatistics);
+        repository.add(taskResultStatistics);
         sharedData.reset();
     }
     
-    private void fillBlankIfNeeded(final TaskRunningResultStatistics latestOne) {
+    private void fillBlankIfNeeded(final TaskResultStatistics latestOne) {
         List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), statisticInterval);
         if (!blankDateRange.isEmpty()) {
-            log.info("Fill blank range of taskRunningResultStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
+            log.info("Fill blank range of taskResultStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
         }
         for (Date each : blankDateRange) {
-            repository.add(new TaskRunningResultStatistics(latestOne.getSuccessCount(), latestOne.getFailedCount(), statisticInterval, each));
+            repository.add(new TaskResultStatistics(latestOne.getSuccessCount(), latestOne.getFailedCount(), statisticInterval, each));
         }
     }
 }

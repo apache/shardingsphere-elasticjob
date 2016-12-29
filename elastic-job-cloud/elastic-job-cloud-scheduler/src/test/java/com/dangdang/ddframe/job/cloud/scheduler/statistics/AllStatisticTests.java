@@ -23,7 +23,7 @@ import org.junit.runners.Suite;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.BaseStatisticJobTest;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.JobRunningStatisticJobTest;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.RegisteredJobStatisticJobTest;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.TaskRunningResultStatisticJobTest;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.TaskResultStatisticJobTest;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtilsTest;
 
 @RunWith(Suite.class)
@@ -31,10 +31,10 @@ import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUti
         StatisticManagerTest.class, 
         StatisticsSchedulerTest.class, 
         BaseStatisticJobTest.class, 
-        TaskRunningResultMetaDataTest.class, 
+        TaskResultMetaDataTest.class, 
         StatisticTimeUtilsTest.class, 
         RegisteredJobStatisticJobTest.class, 
-        TaskRunningResultStatisticJobTest.class, 
+        TaskResultStatisticJobTest.class, 
         JobRunningStatisticJobTest.class
     })
 public final class AllStatisticTests {

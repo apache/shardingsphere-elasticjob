@@ -39,11 +39,12 @@ import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.type.job.JobExecutionTypeStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobTypeStatistics;
-import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
@@ -70,6 +71,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -189,9 +191,9 @@ public final class CloudJobRestfulApi {
      * @param jobName 作业名称
      */
     @GET
-    @Path("/detail")
+    @Path("/jobs/{jobName}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public CloudJobConfiguration detail(@QueryParam("jobName") final String jobName) {
+    public CloudJobConfiguration detail(@PathParam("jobName") final String jobName) {
         Optional<CloudJobConfiguration> config = configService.load(jobName);
         if (config.isPresent()) {
             return config.get();
@@ -205,7 +207,7 @@ public final class CloudJobRestfulApi {
      * @return 全部作业
      */
     @GET
-    @Path("/allJobs")
+    @Path("/jobs")
     @Consumes(MediaType.APPLICATION_JSON)
     public Collection<CloudJobConfiguration> findAllJobs() {
         return configService.loadAll();
@@ -217,9 +219,9 @@ public final class CloudJobRestfulApi {
      * @return 运行中的全部任务
      */
     @GET
-    @Path("/task/runningTasks")
+    @Path("tasks/runnings")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Collection<TaskContext> findAllRunningTasks() {
+    public Collection<?> findAllRunningTasks() {
         List<TaskContext> result = new LinkedList<>();
         for (Set<TaskContext> each : runningService.getAllRunningTasks().values()) {
             result.addAll(each);
@@ -233,7 +235,7 @@ public final class CloudJobRestfulApi {
      * @return 待运行的全部任务
      */
     @GET
-    @Path("/task/readyTasks")
+    @Path("tasks/readys")
     @Consumes(MediaType.APPLICATION_JSON)
     public Collection<Map<String, String>> findAllReadyTasks() {
         Map<String, Integer> readyTasks = readyService.getAllReadyTasks();
@@ -253,7 +255,7 @@ public final class CloudJobRestfulApi {
      * @return 失效转移的全部任务
      */
     @GET
-    @Path("/task/failoverTasks")
+    @Path("tasks/failovers")
     @Consumes(MediaType.APPLICATION_JSON)
     public Collection<FailoverTaskInfo> findAllFailoverTasks() {
         List<FailoverTaskInfo> result = new LinkedList<>();
@@ -264,13 +266,13 @@ public final class CloudJobRestfulApi {
     }
     
     /**
-     * 检索作业运行执行轨迹.
+     * 检索作业运行轨迹.
      * 
-     * @return 作业运行执行轨迹结果
+     * @return 作业运行轨迹结果
      * @throws ParseException 
      */
     @GET
-    @Path("/event/executionEvents")
+    @Path("events/executions")
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo info) throws ParseException {
         if (!jobEventRdbSearch.isPresent()) {
@@ -282,11 +284,11 @@ public final class CloudJobRestfulApi {
     /**
      * 检索作业运行状态轨迹.
      * 
-     * @return 作业状态轨迹检索结果
+     * @return 作业运行轨迹结果
      * @throws ParseException 
      */
     @GET
-    @Path("/event/statusTraceEvents")
+    @Path("events/statusTraces")
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo info) throws ParseException {
         if (!jobEventRdbSearch.isPresent()) {
@@ -296,10 +298,16 @@ public final class CloudJobRestfulApi {
     }
     
     private Condition buildCondition(final UriInfo info, final String[] params) throws ParseException {
-        int pageSize = Integer.parseInt(info.getQueryParameters().getFirst("pageSize"));
-        int pageNumber = Integer.parseInt(info.getQueryParameters().getFirst("pageNumber"));
-        String sortName = info.getQueryParameters().getFirst("sortName");
-        String sortOrder = info.getQueryParameters().getFirst("sortOrder");
+        int perPage = 10;
+        int page = 1;
+        if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst("per_page"))) {
+            perPage = Integer.parseInt(info.getQueryParameters().getFirst("per_page"));
+        }
+        if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst("page"))) {
+            page = Integer.parseInt(info.getQueryParameters().getFirst("page"));
+        }
+        String sort = info.getQueryParameters().getFirst("sort");
+        String order = info.getQueryParameters().getFirst("order");
         Date startTime = null;
         Date endTime = null;
         Map<String, Object> fields = getQueryParameters(info, params);
@@ -309,7 +317,7 @@ public final class CloudJobRestfulApi {
         if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst("endTime"))) {
             endTime = DATETIME_FORMATTER.parse(info.getQueryParameters().getFirst("endTime"));
         }
-        return new Condition(pageSize, pageNumber, sortName, sortOrder, startTime, endTime, fields);
+        return new Condition(perPage, page, sort, order, startTime, endTime, fields);
     }
     
     private Map<String, Object> getQueryParameters(final UriInfo info, final String[] params) {
@@ -323,27 +331,37 @@ public final class CloudJobRestfulApi {
     }
     
     /**
-     * 获取一周以来任务运行结果统计数据.
+     * 获取任务运行结果统计数据.
      * 
-     * @return 一周以来任务运行结果统计数据
+     * @return 任务运行结果统计数据
      */
     @GET
-    @Path("/statistics/task/runningResult/weekly")
+    @Path("/statistics/tasks/results")
     @Consumes(MediaType.APPLICATION_JSON)
-    public TaskRunningResultStatistics getTaskRunningResultStatisticsWeekly() {
-        return statisticManager.getTaskRunningResultStatisticsWeekly();
+    public TaskResultStatistics getTaskResultStatistics(@QueryParam("since") final String since) {
+        if ("lastWeek".equals(since)) {
+            return statisticManager.getTaskResultStatisticsWeekly();
+        } else if ("online".equals(since)) {
+            return statisticManager.getTaskResultStatisticsSinceOnline();
+        } else {
+            return new TaskResultStatistics(0, 0, StatisticInterval.DAY, new Date());
+        }
     }
-    
+
     /**
-     * 获取自上线以来任务运行结果统计数据.
+     * 获取任务运行统计数据集合.
      * 
-     * @return 自上线以来任务运行结果统计数据
+     * @return 任务运行统计数据集合
      */
     @GET
-    @Path("/statistics/task/runningResult/sinceOnline")
+    @Path("/statistics/tasks/runnings")
     @Consumes(MediaType.APPLICATION_JSON)
-    public TaskRunningResultStatistics getTaskRunningResultStatisticsSinceOnline() {
-        return statisticManager.getTaskRunningResultStatisticsSinceOnline();
+    public List<TaskRunningStatistics> findTaskRunningStatistics(@QueryParam("since") final String since) {
+        if ("lastWeek".equals(since)) {
+            return statisticManager.findTaskRunningStatisticsWeekly();
+        } else {
+            return Collections.emptyList();
+        }
     }
     
     /**
@@ -352,7 +370,7 @@ public final class CloudJobRestfulApi {
      * @return 作业类型统计数据
      */
     @GET
-    @Path("/statistics/job/type/current")
+    @Path("/statistics/jobs/type")
     @Consumes(MediaType.APPLICATION_JSON)
     public JobTypeStatistics getJobTypeStatistics() {
         return statisticManager.getJobTypeStatistics();
@@ -364,22 +382,10 @@ public final class CloudJobRestfulApi {
      * @return 作业执行类型统计数据
      */
     @GET
-    @Path("/statistics/job/executionType/current")
+    @Path("/statistics/jobs/executionType")
     @Consumes(MediaType.APPLICATION_JSON)
     public JobExecutionTypeStatistics getJobExecutionTypeStatistics() {
         return statisticManager.getJobExecutionTypeStatistics();
-    }
-    
-    /**
-     * 获取一周以来任务运行统计数据集合.
-     * 
-     * @return 一周以来任务运行统计数据集合
-     */
-    @GET
-    @Path("/statistics/task/running/weekly")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public List<TaskRunningStatistics> findTaskRunningStatisticsWeekly() {
-        return statisticManager.findTaskRunningStatisticsWeekly();
     }
     
     /**
@@ -388,10 +394,14 @@ public final class CloudJobRestfulApi {
      * @return 一周以来任务运行统计数据集合
      */
     @GET
-    @Path("/statistics/job/running/weekly")
+    @Path("/statistics/jobs/runnings")
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<JobRunningStatistics> findJobRunningStatisticsWeekly() {
-        return statisticManager.findJobRunningStatisticsWeekly();
+    public List<JobRunningStatistics> findJobRunningStatistics(@QueryParam("since") final String since) {
+        if ("lastWeek".equals(since)) {
+            return statisticManager.findJobRunningStatisticsWeekly();
+        } else {
+            return Collections.emptyList();
+        }
     }
     
     /**
@@ -400,9 +410,9 @@ public final class CloudJobRestfulApi {
      * @return 自上线以来作业注册统计数据集合
      */
     @GET
-    @Path("/statistics/job/register/sinceOnline")
+    @Path("/statistics/jobs/registers")
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<JobRegisterStatistics> findJobRegisterStatisticsSinceOnline() {
+    public List<JobRegisterStatistics> findJobRegisterStatistics() {
         return statisticManager.findJobRegisterStatisticsSinceOnline();
     }
 }

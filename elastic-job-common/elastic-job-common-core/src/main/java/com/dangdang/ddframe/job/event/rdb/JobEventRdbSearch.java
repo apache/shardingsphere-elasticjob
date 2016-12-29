@@ -160,8 +160,8 @@ public class JobEventRdbSearch {
         StringBuilder sqlBuilder = new StringBuilder();
         String selectSql = buildSelect(tableName, tableFields);
         String whereSql = buildWhere(tableName, tableFields, condition);
-        String orderSql = buildOrder(tableFields, condition.getSortName(), condition.getSortOrder());
-        String limitSql = buildLimit(condition.getPageNumber(), condition.getPageSize());
+        String orderSql = buildOrder(tableFields, condition.getSort(), condition.getOrder());
+        String limitSql = buildLimit(condition.getPage(), condition.getPerPage());
         sqlBuilder.append(selectSql).append(whereSql).append(orderSql).append(limitSql);
         return sqlBuilder.toString();
     }
@@ -276,13 +276,13 @@ public class JobEventRdbSearch {
         
         private static final int DEFAULT_PAGE_SIZE = 10;
         
-        private final int pageSize;
+        private final int perPage;
         
-        private final int pageNumber;
+        private final int page;
         
-        private final String sortName;
+        private final String sort;
         
-        private final String sortOrder;
+        private final String order;
         
         private final Date startTime;
         

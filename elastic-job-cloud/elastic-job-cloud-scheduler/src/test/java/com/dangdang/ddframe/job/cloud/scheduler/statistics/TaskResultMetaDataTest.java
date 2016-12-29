@@ -23,13 +23,13 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TaskRunningResultMetaDataTest {
+public class TaskResultMetaDataTest {
     
-    private TaskRunningResultMetaData metaData;
+    private TaskResultMetaData metaData;
     
     @Before
     public void setUp() {
-        metaData = new TaskRunningResultMetaData();
+        metaData = new TaskResultMetaData();
     }
     
     @Test

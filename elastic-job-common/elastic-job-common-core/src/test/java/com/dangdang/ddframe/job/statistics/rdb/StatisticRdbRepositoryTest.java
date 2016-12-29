@@ -32,7 +32,7 @@ import org.junit.Test;
 import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
-import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
 
@@ -51,9 +51,9 @@ public class StatisticRdbRepositoryTest {
     }
     
     @Test
-    public void assertAddTaskRunningResultStatistics() {
+    public void assertAddTaskResultStatistics() {
         for (StatisticInterval each : StatisticInterval.values()) {
-            assertTrue(repository.add(new TaskRunningResultStatistics(100, 0, each, new Date())));
+            assertTrue(repository.add(new TaskResultStatistics(100, 0, each, new Date())));
         }
     }
     
@@ -73,57 +73,57 @@ public class StatisticRdbRepositoryTest {
     }
     
     @Test
-    public void assertFindTaskRunningResultStatisticsWhenTableIsEmpty() {
-        assertThat(repository.findTaskRunningResultStatistics(new Date(), StatisticInterval.MINUTE).size(), is(0));
-        assertThat(repository.findTaskRunningResultStatistics(new Date(), StatisticInterval.HOUR).size(), is(0));
-        assertThat(repository.findTaskRunningResultStatistics(new Date(), StatisticInterval.DAY).size(), is(0));
+    public void assertFindTaskResultStatisticsWhenTableIsEmpty() {
+        assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.MINUTE).size(), is(0));
+        assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.HOUR).size(), is(0));
+        assertThat(repository.findTaskResultStatistics(new Date(), StatisticInterval.DAY).size(), is(0));
     }
     
     @Test
-    public void assertFindTaskRunningResultStatisticsWithDifferentFromDate() {
+    public void assertFindTaskResultStatisticsWithDifferentFromDate() {
         Date now = new Date();
         Date yesterday = getYesterday();
         for (StatisticInterval each : StatisticInterval.values()) {
-            assertTrue(repository.add(new TaskRunningResultStatistics(100, 0, each, yesterday)));
-            assertTrue(repository.add(new TaskRunningResultStatistics(100, 0, each, now)));
-            assertThat(repository.findTaskRunningResultStatistics(yesterday, each).size(), is(2));
-            assertThat(repository.findTaskRunningResultStatistics(now, each).size(), is(1));
+            assertTrue(repository.add(new TaskResultStatistics(100, 0, each, yesterday)));
+            assertTrue(repository.add(new TaskResultStatistics(100, 0, each, now)));
+            assertThat(repository.findTaskResultStatistics(yesterday, each).size(), is(2));
+            assertThat(repository.findTaskResultStatistics(now, each).size(), is(1));
         }
     }
     
     @Test
-    public void assertGetSummedTaskRunningResultStatisticsWhenTableIsEmpty() {
+    public void assertGetSummedTaskResultStatisticsWhenTableIsEmpty() {
         for (StatisticInterval each : StatisticInterval.values()) {
-            TaskRunningResultStatistics po = repository.getSummedTaskRunningResultStatistics(new Date(), each);
+            TaskResultStatistics po = repository.getSummedTaskResultStatistics(new Date(), each);
             assertThat(po.getSuccessCount(), is(0));
             assertThat(po.getFailedCount(), is(0));
         }
     }
     
     @Test
-    public void assertGetSummedTaskRunningResultStatistics() {
+    public void assertGetSummedTaskResultStatistics() {
         for (StatisticInterval each : StatisticInterval.values()) {
-            repository.add(new TaskRunningResultStatistics(100, 2, each, new Date()));
-            repository.add(new TaskRunningResultStatistics(200, 5, each, new Date()));
-            TaskRunningResultStatistics po = repository.getSummedTaskRunningResultStatistics(new Date(), each);
+            repository.add(new TaskResultStatistics(100, 2, each, new Date()));
+            repository.add(new TaskResultStatistics(200, 5, each, new Date()));
+            TaskResultStatistics po = repository.getSummedTaskResultStatistics(new Date(), each);
             assertThat(po.getSuccessCount(), is(300));
             assertThat(po.getFailedCount(), is(7));
         }
     }
     
     @Test
-    public void assertFindLatestTaskRunningResultStatisticsWhenTableIsEmpty() {
+    public void assertFindLatestTaskResultStatisticsWhenTableIsEmpty() {
         for (StatisticInterval each : StatisticInterval.values()) {
-            assertFalse(repository.findLatestTaskRunningResultStatistics(each).isPresent());
+            assertFalse(repository.findLatestTaskResultStatistics(each).isPresent());
         }
     }
     
     @Test
-    public void assertFindLatestTaskRunningResultStatistics() {
+    public void assertFindLatestTaskResultStatistics() {
         for (StatisticInterval each : StatisticInterval.values()) {
-            repository.add(new TaskRunningResultStatistics(100, 2, each, new Date()));
-            repository.add(new TaskRunningResultStatistics(200, 5, each, new Date()));
-            Optional<TaskRunningResultStatistics> po = repository.findLatestTaskRunningResultStatistics(each);
+            repository.add(new TaskResultStatistics(100, 2, each, new Date()));
+            repository.add(new TaskResultStatistics(200, 5, each, new Date()));
+            Optional<TaskResultStatistics> po = repository.findLatestTaskResultStatistics(each);
             assertThat(po.get().getSuccessCount(), is(200));
             assertThat(po.get().getFailedCount(), is(5));
         }

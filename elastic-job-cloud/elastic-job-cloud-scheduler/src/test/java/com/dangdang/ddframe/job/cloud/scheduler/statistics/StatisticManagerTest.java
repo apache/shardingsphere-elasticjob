@@ -44,7 +44,7 @@ import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
 import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
-import com.dangdang.ddframe.job.statistics.type.task.TaskRunningResultStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -110,24 +110,24 @@ public class StatisticManagerTest {
     }
     
     @Test
-    public void assertTaskRunningResultStatisticsWhenRDBRepositoryIsNull() throws NoSuchFieldException {
+    public void assertTaskResultStatisticsWhenRDBRepositoryIsNull() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
-        assertThat(statisticManager.getTaskRunningResultStatisticsWeekly().getSuccessCount(), is(0));
-        assertThat(statisticManager.getTaskRunningResultStatisticsWeekly().getFailedCount(), is(0));
-        assertThat(statisticManager.getTaskRunningResultStatisticsSinceOnline().getSuccessCount(), is(0));
-        assertThat(statisticManager.getTaskRunningResultStatisticsSinceOnline().getFailedCount(), is(0));
+        assertThat(statisticManager.getTaskResultStatisticsWeekly().getSuccessCount(), is(0));
+        assertThat(statisticManager.getTaskResultStatisticsWeekly().getFailedCount(), is(0));
+        assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getSuccessCount(), is(0));
+        assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getFailedCount(), is(0));
     }
     
     @Test
-    public void assertTaskRunningResultStatisticsWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
+    public void assertTaskResultStatisticsWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
-        when(rdbRepository.getSummedTaskRunningResultStatistics(any(Date.class), any(StatisticInterval.class)))
-            .thenReturn(new TaskRunningResultStatistics(10, 10, StatisticInterval.DAY, new Date()));
-        assertThat(statisticManager.getTaskRunningResultStatisticsWeekly().getSuccessCount(), is(10));
-        assertThat(statisticManager.getTaskRunningResultStatisticsWeekly().getFailedCount(), is(10));
-        assertThat(statisticManager.getTaskRunningResultStatisticsSinceOnline().getSuccessCount(), is(10));
-        assertThat(statisticManager.getTaskRunningResultStatisticsSinceOnline().getFailedCount(), is(10));
-        verify(rdbRepository, times(4)).getSummedTaskRunningResultStatistics(any(Date.class), any(StatisticInterval.class));
+        when(rdbRepository.getSummedTaskResultStatistics(any(Date.class), any(StatisticInterval.class)))
+            .thenReturn(new TaskResultStatistics(10, 10, StatisticInterval.DAY, new Date()));
+        assertThat(statisticManager.getTaskResultStatisticsWeekly().getSuccessCount(), is(10));
+        assertThat(statisticManager.getTaskResultStatisticsWeekly().getFailedCount(), is(10));
+        assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getSuccessCount(), is(10));
+        assertThat(statisticManager.getTaskResultStatisticsSinceOnline().getFailedCount(), is(10));
+        verify(rdbRepository, times(4)).getSummedTaskResultStatistics(any(Date.class), any(StatisticInterval.class));
     }
     
     @Test

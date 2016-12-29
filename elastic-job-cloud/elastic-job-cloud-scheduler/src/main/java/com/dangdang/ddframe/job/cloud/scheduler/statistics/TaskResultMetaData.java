@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author liguangyun
  */
-public class TaskRunningResultMetaData {
+public class TaskResultMetaData {
     
     private final AtomicInteger successCount;
     
@@ -33,7 +33,7 @@ public class TaskRunningResultMetaData {
     /**
      * 构造函数.
      */
-    public TaskRunningResultMetaData() {
+    public TaskResultMetaData() {
         successCount = new AtomicInteger(0);
         failedCount = new AtomicInteger(0);
     }

@@ -15,23 +15,29 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.statistics.type.job;
+package com.dangdang.ddframe.job.cloud.scheduler.state;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.Map;
+
+import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
+import com.dangdang.ddframe.job.context.TaskContext;
+
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * 作业类型统计数据.
+ * 任务信息.
  *
  * @author liguangyun
  */
+@RequiredArgsConstructor
 @Getter
-@AllArgsConstructor
-public class JobTypeStatistics {
+public class TaskInfo {
     
-    private int scriptJobCount;
+    private final List<TaskContext> running;
     
-    private int simpleJobCount;
+    private final List<Map<String, String>> ready;
     
-    private int dataflowJobCount;
+    private final List<FailoverTaskInfo> failover;
 }
