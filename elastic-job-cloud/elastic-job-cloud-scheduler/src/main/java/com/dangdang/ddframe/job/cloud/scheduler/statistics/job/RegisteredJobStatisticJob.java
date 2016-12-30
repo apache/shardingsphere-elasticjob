@@ -86,15 +86,16 @@ public class RegisteredJobStatisticJob extends AbstractStatisticJob {
         if (latestOne.isPresent()) {
             fillBlankIfNeeded(latestOne.get());
         }
-        JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(configurationService.loadAll().size(), StatisticTimeUtils.getCurrentStatisticTime(execInterval));
-        log.info("Add jobRegisterStatistics, info is:{}", jobRegisterStatistics);
+        int registeredCount = configurationService.loadAll().size();
+        JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(registeredCount, StatisticTimeUtils.getCurrentStatisticTime(execInterval));
+        log.debug("Add jobRegisterStatistics, registeredCount is:{}", registeredCount);
         repository.add(jobRegisterStatistics);
     }
     
     private void fillBlankIfNeeded(final JobRegisterStatistics latestOne) {
         List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), execInterval);
         if (!blankDateRange.isEmpty()) {
-            log.info("Fill blank range of jobRegisterStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
+            log.debug("Fill blank range of jobRegisterStatistics, range is:{}", blankDateRange);
         }
         for (Date each : blankDateRange) {
             repository.add(new JobRegisterStatistics(latestOne.getRegisteredCount(), each));

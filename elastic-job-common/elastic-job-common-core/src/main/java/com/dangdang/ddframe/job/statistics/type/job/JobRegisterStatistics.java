@@ -22,7 +22,6 @@ import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * 作业注册到Cloud平台统计数据.
@@ -32,7 +31,6 @@ import lombok.ToString;
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
-@ToString(of = {"registeredCount", "statisticsTime"})
 public class JobRegisterStatistics {
     
     private long id;

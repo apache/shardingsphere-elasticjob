@@ -92,7 +92,8 @@ public class TaskResultStatisticJob extends AbstractStatisticJob {
         TaskResultStatistics taskResultStatistics = new TaskResultStatistics(
                 sharedData.getSuccessCount(), sharedData.getFailedCount(), statisticInterval,
                 StatisticTimeUtils.getCurrentStatisticTime(statisticInterval));
-        log.info("Add taskResultStatistics, info is:{}", taskResultStatistics);
+        log.debug("Add taskResultStatistics, statisticInterval is:{}, successCount is:{}, failedCount is:{}", 
+                statisticInterval, sharedData.getSuccessCount(), sharedData.getFailedCount());
         repository.add(taskResultStatistics);
         sharedData.reset();
     }
@@ -100,7 +101,7 @@ public class TaskResultStatisticJob extends AbstractStatisticJob {
     private void fillBlankIfNeeded(final TaskResultStatistics latestOne) {
         List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), statisticInterval);
         if (!blankDateRange.isEmpty()) {
-            log.info("Fill blank range of taskResultStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
+            log.debug("Fill blank range of taskResultStatistics, range is:{}", blankDateRange);
         }
         for (Date each : blankDateRange) {
             repository.add(new TaskResultStatistics(latestOne.getSuccessCount(), latestOne.getFailedCount(), statisticInterval, each));

@@ -105,7 +105,7 @@ public class JobRunningStatisticJob extends AbstractStatisticJob {
             fillBlankIfNeeded(latestOne.get());
         }
         JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(getJobRunningCount(allRunnintTasks), StatisticTimeUtils.getCurrentStatisticTime(execInterval));
-        log.info("Add jobRunningStatistics, info is:{}", jobRunningStatistics);
+        log.debug("Add jobRunningStatistics, runningCount is:{}", getJobRunningCount(allRunnintTasks));
         repository.add(jobRunningStatistics);
     }
     
@@ -115,7 +115,7 @@ public class JobRunningStatisticJob extends AbstractStatisticJob {
             fillBlankIfNeeded(latestOne.get());
         }
         TaskRunningStatistics taskRunningStatistics = new TaskRunningStatistics(getTaskRunningCount(allRunnintTasks), StatisticTimeUtils.getCurrentStatisticTime(execInterval));
-        log.info("Add taskRunningStatistics, info is:{}", taskRunningStatistics);
+        log.debug("Add taskRunningStatistics, runningCount is:{}", getTaskRunningCount(allRunnintTasks));
         repository.add(taskRunningStatistics);
     }
     
@@ -134,7 +134,7 @@ public class JobRunningStatisticJob extends AbstractStatisticJob {
     private void fillBlankIfNeeded(final JobRunningStatistics latestOne) {
         List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), execInterval);
         if (!blankDateRange.isEmpty()) {
-            log.info("Fill blank range of jobRunningStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
+            log.debug("Fill blank range of jobRunningStatistics, range is:{}", blankDateRange);
         }
         for (Date each : blankDateRange) {
             repository.add(new JobRunningStatistics(latestOne.getRunningCount(), each));
@@ -144,7 +144,7 @@ public class JobRunningStatisticJob extends AbstractStatisticJob {
     private void fillBlankIfNeeded(final TaskRunningStatistics latestOne) {
         List<Date> blankDateRange = findBlankStatisticTimes(latestOne.getStatisticsTime(), execInterval);
         if (!blankDateRange.isEmpty()) {
-            log.info("Fill blank range of taskRunningStatistics, info is:{}, range is:{}", latestOne, blankDateRange);
+            log.debug("Fill blank range of taskRunningStatistics, range is:{}", blankDateRange);
         }
         for (Date each : blankDateRange) {
             repository.add(new TaskRunningStatistics(latestOne.getRunningCount(), each));
