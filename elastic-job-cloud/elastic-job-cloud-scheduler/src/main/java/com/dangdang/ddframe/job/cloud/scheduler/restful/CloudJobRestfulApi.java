@@ -48,9 +48,9 @@ import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-
 import org.apache.mesos.SchedulerDriver;
+
+import com.google.common.base.Strings;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
