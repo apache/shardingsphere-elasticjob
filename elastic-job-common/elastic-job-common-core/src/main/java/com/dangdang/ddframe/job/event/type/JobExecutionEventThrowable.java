@@ -15,19 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.event.type;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class,
-        JobStatisticExceptionTest.class
-    })
-public final class AllExceptionTests {
+/**
+ * 作业执行事件Throwable.
+ *
+ * @author liguangyun
+ */
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Getter
+@ToString(of = "plainText")
+public class JobExecutionEventThrowable {
+    
+    private final Throwable throwable;
+    
+    private String plainText;
 }

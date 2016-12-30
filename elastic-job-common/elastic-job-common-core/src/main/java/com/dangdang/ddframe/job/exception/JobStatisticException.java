@@ -17,17 +17,16 @@
 
 package com.dangdang.ddframe.job.exception;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class,
-        JobStatisticExceptionTest.class
-    })
-public final class AllExceptionTests {
+/**
+ * 作业统计异常.
+ * 
+ * @author liguangyun
+ */
+public class JobStatisticException extends RuntimeException {
+    
+    private static final long serialVersionUID = -2502533914008085601L;
+    
+    public JobStatisticException(final Exception ex) {
+        super(ex);
+    }
 }

@@ -15,19 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class,
-        JobStatisticExceptionTest.class
-    })
-public final class AllExceptionTests {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+/**
+ * 待失效转移任务节点信息.
+ *
+ * @author liguangyun
+ */
+@RequiredArgsConstructor
+@Getter
+public final class FailoverTaskInfo {
+    
+    private final MetaInfo taskInfo;
+    
+    private final String originalTaskId;
 }

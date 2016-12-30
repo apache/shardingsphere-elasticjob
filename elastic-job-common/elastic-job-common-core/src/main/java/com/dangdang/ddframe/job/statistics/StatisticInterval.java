@@ -15,19 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.statistics;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class,
-        JobStatisticExceptionTest.class
-    })
-public final class AllExceptionTests {
+/**
+ * 统计时间间隔.
+ *
+ * @author liguangyun
+ */
+@Getter
+@RequiredArgsConstructor
+public enum StatisticInterval {
+    
+    MINUTE("0 * * * * ?"),
+    
+    HOUR("0 0 * * * ?"), 
+    
+    DAY("0 0 0 * * ?");
+    
+    private final String cron;
 }

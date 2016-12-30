@@ -15,19 +15,31 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.statistics.type.task;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.Date;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class,
-        JobStatisticExceptionTest.class
-    })
-public final class AllExceptionTests {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+/**
+ * 运行中的任务统计数据.
+ *
+ * @author liguangyun
+ */
+@Getter
+@RequiredArgsConstructor
+@AllArgsConstructor
+@ToString(of = {"runningCount", "statisticsTime"})
+public class TaskRunningStatistics {
+    
+    private long id;
+    
+    private final int runningCount;
+    
+    private final Date statisticsTime;
+    
+    private Date creationTime;
 }

@@ -15,19 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.exception;
+package com.dangdang.ddframe.job.statistics.type.job;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-        JobConfigurationExceptionTest.class, 
-        JobExecutionEnvironmentExceptionTest.class, 
-        JobSystemExceptionTest.class,
-        ExceptionUtilTest.class,
-        JobStatisticExceptionTest.class
-    })
-public final class AllExceptionTests {
+/**
+ * 作业类型统计数据.
+ *
+ * @author liguangyun
+ */
+@Getter
+@AllArgsConstructor
+public class JobTypeStatistics {
+    
+    private int scriptJobCount;
+    
+    private int simpleJobCount;
+    
+    private int dataflowJobCount;
 }

@@ -20,6 +20,8 @@ package com.dangdang.ddframe.job.event.type;
 import com.dangdang.ddframe.job.event.JobEvent;
 import com.dangdang.ddframe.job.exception.ExceptionUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -32,16 +34,17 @@ import java.util.UUID;
  * @author zhangliang
  */
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 public class JobExecutionEvent implements JobEvent {
     
     private static LocalHostService localHostService = new LocalHostService();
     
-    private final String id = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString();
     
-    private final String hostname = localHostService.getHostName();
+    private String hostname = localHostService.getHostName();
     
-    private final String ip = localHostService.getIp();
+    private String ip = localHostService.getIp();
     
     private final String taskId;
     
@@ -51,13 +54,13 @@ public class JobExecutionEvent implements JobEvent {
     
     private final int shardingItem;
     
-    private final Date startTime = new Date();
+    private Date startTime = new Date();
     
     private Date completeTime;
     
     private boolean success;
     
-    private Throwable failureCause;
+    private JobExecutionEventThrowable failureCause;
     
     /**
      * 作业执行成功.
@@ -75,7 +78,7 @@ public class JobExecutionEvent implements JobEvent {
     public void executionFailure(final Throwable failureCause) {
         completeTime = new Date();
         success = false;
-        this.failureCause = failureCause;
+        this.failureCause = new JobExecutionEventThrowable(failureCause);
     }
     
     /**
@@ -83,7 +86,7 @@ public class JobExecutionEvent implements JobEvent {
      * @return 失败原因
      */
     public String getFailureCause() {
-        return ExceptionUtil.transform(failureCause);
+        return ExceptionUtil.transform(failureCause == null ? null : failureCause.getThrowable());
     }
     
     /**
