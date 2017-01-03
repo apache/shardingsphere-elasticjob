@@ -68,6 +68,8 @@ public final class MasterBootstrap {
     
     private final FacadeService facadeService;
     
+    private final StatisticManager statisticManager;
+    
     private final RestfulServer restfulServer;
     
     private final FrameworkIDService frameworkIDService;
@@ -90,17 +92,15 @@ public final class MasterBootstrap {
         if (env.getJobEventRdbConfiguration().isPresent()) {
             jobEventRdbSearch = Optional.of(new JobEventRdbSearch(env.getJobEventRdbConfiguration().get().getDataSource()));
         }
-        final StatisticManager statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
-        statisticManager.startup();
+        statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         frameworkIDService = new FrameworkIDService(regCenter);
-        CloudJobRestfulApi.init(regCenter);
+        CloudJobRestfulApi.init(regCenter, jobEventRdbSearch);
         Runtime.getRuntime().addShutdownHook(new Thread("master-bootstrap-shutdown-hook") {
             
             @Override
             public void run() {
                 facadeService.stop();
-                statisticManager.shutdown();
             }
         });
     }
@@ -120,7 +120,7 @@ public final class MasterBootstrap {
         LeasesQueue leasesQueue = new LeasesQueue();
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
-        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus);
+        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, jobEventBus);
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         producerManager.startup();
         CloudJobRestfulApi.setContext(schedulerDriver, producerManager);
@@ -129,12 +129,12 @@ public final class MasterBootstrap {
         getCache().getListenable().addListener(cloudJobConfigurationListener, Executors.newSingleThreadExecutor());
         taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus).startAsync();
         statisticsScheduledService = new StatisticsScheduledService().startAsync();
+        statisticManager.startup();
         restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), WEBAPP_PATH);
         schedulerDriver.start();
     }
     
-    private SchedulerDriver getSchedulerDriver(
-            final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus, final StatisticManager statisticManager) {
+    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final JobEventBus jobEventBus) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Optional<String> frameworkIDOptional = frameworkIDService.fetch();
         Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
@@ -187,6 +187,7 @@ public final class MasterBootstrap {
             statisticsScheduledService.stopAsync();
         }
         restfulServer.stop();
+        statisticManager.shutdown();
         if (null != cloudJobConfigurationListener) {
             log.info("Elastic Job: Remove configuration listener");
             getCache().getListenable().removeListener(cloudJobConfigurationListener);

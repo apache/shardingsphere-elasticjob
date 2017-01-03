@@ -63,7 +63,7 @@ public final class RestfulServer {
      * 
      * @param packages RESTful实现类所在包
      * @param webappRootPath Webapp资源根路径
-     * @throws Exception
+     * @throws Exception 启动服务器异常
      */
     public void start(final String packages, final String webappRootPath) throws Exception {
         log.info("Elastic Job: Start RESTful server");

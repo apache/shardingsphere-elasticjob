@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.AllBootTests;
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.AllEnvTests;
 import com.dangdang.ddframe.job.cloud.scheduler.config.AllConfigTests;
 import com.dangdang.ddframe.job.cloud.scheduler.context.AllContextTests;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.AllHATests;
@@ -32,7 +32,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        AllBootTests.class, 
+        AllEnvTests.class, 
         AllContextTests.class, 
         AllConfigTests.class, 
         AllStateTests.class, 

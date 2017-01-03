@@ -67,7 +67,7 @@ public class StatisticManager {
     
     private final StatisticsScheduler scheduler;
     
-    private final Map<StatisticInterval, TaskResultMetaData> statisticDatas;
+    private final Map<StatisticInterval, TaskResultMetaData> statisticData;
     
     private StatisticRdbRepository rdbRepository;
     
@@ -80,11 +80,11 @@ public class StatisticManager {
         if (null == instance) {
             synchronized (StatisticManager.class) {
                 if (null == instance) {
-                    Map<StatisticInterval, TaskResultMetaData> statisticDatas = new HashMap<>();
-                    statisticDatas.put(StatisticInterval.MINUTE, new TaskResultMetaData());
-                    statisticDatas.put(StatisticInterval.HOUR, new TaskResultMetaData());
-                    statisticDatas.put(StatisticInterval.DAY, new TaskResultMetaData());
-                    instance = new StatisticManager(new ConfigurationService(regCenter), jobEventRdbConfiguration, new StatisticsScheduler(), statisticDatas);
+                    Map<StatisticInterval, TaskResultMetaData> statisticData = new HashMap<>();
+                    statisticData.put(StatisticInterval.MINUTE, new TaskResultMetaData());
+                    statisticData.put(StatisticInterval.HOUR, new TaskResultMetaData());
+                    statisticData.put(StatisticInterval.DAY, new TaskResultMetaData());
+                    instance = new StatisticManager(new ConfigurationService(regCenter), jobEventRdbConfiguration, new StatisticsScheduler(), statisticData);
                     init();
                 }
             }
@@ -107,9 +107,10 @@ public class StatisticManager {
      */
     public void startup() {
         if (null != rdbRepository) {
-            scheduler.register(new TaskResultStatisticJob(StatisticInterval.MINUTE, statisticDatas.get(StatisticInterval.MINUTE), rdbRepository));
-            scheduler.register(new TaskResultStatisticJob(StatisticInterval.HOUR, statisticDatas.get(StatisticInterval.HOUR), rdbRepository));
-            scheduler.register(new TaskResultStatisticJob(StatisticInterval.DAY, statisticDatas.get(StatisticInterval.DAY), rdbRepository));
+            scheduler.start();
+            scheduler.register(new TaskResultStatisticJob(StatisticInterval.MINUTE, statisticData.get(StatisticInterval.MINUTE), rdbRepository));
+            scheduler.register(new TaskResultStatisticJob(StatisticInterval.HOUR, statisticData.get(StatisticInterval.HOUR), rdbRepository));
+            scheduler.register(new TaskResultStatisticJob(StatisticInterval.DAY, statisticData.get(StatisticInterval.DAY), rdbRepository));
             scheduler.register(new JobRunningStatisticJob(rdbRepository));
             scheduler.register(new RegisteredJobStatisticJob(configurationService, rdbRepository));
         }
@@ -126,18 +127,18 @@ public class StatisticManager {
      * 任务运行成功.
      */
     public void taskRunSuccessfully() {
-        statisticDatas.get(StatisticInterval.MINUTE).incrementAndGetSuccessCount();
-        statisticDatas.get(StatisticInterval.HOUR).incrementAndGetSuccessCount();
-        statisticDatas.get(StatisticInterval.DAY).incrementAndGetSuccessCount();
+        statisticData.get(StatisticInterval.MINUTE).incrementAndGetSuccessCount();
+        statisticData.get(StatisticInterval.HOUR).incrementAndGetSuccessCount();
+        statisticData.get(StatisticInterval.DAY).incrementAndGetSuccessCount();
     }
     
     /**
      * 作业运行失败.
      */
     public void taskRunFailed() {
-        statisticDatas.get(StatisticInterval.MINUTE).incrementAndGetFailedCount();
-        statisticDatas.get(StatisticInterval.HOUR).incrementAndGetFailedCount();
-        statisticDatas.get(StatisticInterval.DAY).incrementAndGetFailedCount();
+        statisticData.get(StatisticInterval.MINUTE).incrementAndGetFailedCount();
+        statisticData.get(StatisticInterval.HOUR).incrementAndGetFailedCount();
+        statisticData.get(StatisticInterval.DAY).incrementAndGetFailedCount();
     }
     
     /**
