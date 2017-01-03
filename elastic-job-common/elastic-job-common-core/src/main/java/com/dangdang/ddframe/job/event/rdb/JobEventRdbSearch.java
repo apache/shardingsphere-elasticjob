@@ -260,10 +260,10 @@ public class JobEventRdbSearch {
         return sqlBuilder.toString();
     }
     
-    private String buildLimit(final int pageNumber, final int pageSize) {
+    private String buildLimit(final int page, final int perPage) {
         StringBuilder sqlBuilder = new StringBuilder();
-        if (pageNumber > 0 && pageSize > 0) {
-            sqlBuilder.append(" LIMIT ").append((pageNumber - 1) * pageSize).append(",").append(pageSize);
+        if (page > 0 && perPage > 0) {
+            sqlBuilder.append(" LIMIT ").append((page - 1) * perPage).append(",").append(perPage);
         } else {
             sqlBuilder.append(" LIMIT ").append(Condition.DEFAULT_PAGE_SIZE);
         }
