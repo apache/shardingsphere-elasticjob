@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
@@ -50,6 +51,8 @@ public final class SchedulerEngine implements Scheduler {
     private final JobEventBus jobEventBus;
     
     private final FrameworkIDService frameworkIDService;
+    
+    private final StatisticManager statisticManager;
     
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
@@ -98,6 +101,7 @@ public final class SchedulerEngine implements Scheduler {
             case TASK_FINISHED:
                 facadeService.removeRunning(taskContext);
                 unAssignTask(taskId);
+                statisticManager.taskRunSuccessfully();
                 break;
             case TASK_KILLED:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
@@ -113,6 +117,7 @@ public final class SchedulerEngine implements Scheduler {
                 facadeService.recordFailoverTask(taskContext);
                 facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
+                statisticManager.taskRunFailed();
                 break;
             default:
                 break;

@@ -20,8 +20,10 @@ package com.dangdang.ddframe.job.event.type;
 import com.dangdang.ddframe.job.event.JobEvent;
 import com.dangdang.ddframe.job.exception.ExceptionUtil;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.UUID;
@@ -32,16 +34,17 @@ import java.util.UUID;
  * @author zhangliang
  */
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 public class JobExecutionEvent implements JobEvent {
     
     private static LocalHostService localHostService = new LocalHostService();
     
-    private final String id = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString();
     
-    private final String hostname = localHostService.getHostName();
+    private String hostname = localHostService.getHostName();
     
-    private final String ip = localHostService.getIp();
+    private String ip = localHostService.getIp();
     
     private final String taskId;
     
@@ -51,39 +54,49 @@ public class JobExecutionEvent implements JobEvent {
     
     private final int shardingItem;
     
-    private final Date startTime = new Date();
+    private Date startTime = new Date();
     
+    @Setter
     private Date completeTime;
     
+    @Setter
     private boolean success;
     
-    private Throwable failureCause;
+    @Setter
+    private JobExecutionEventThrowable failureCause;
     
     /**
      * 作业执行成功.
+     * 
+     * @return 作业执行事件
      */
-    public void executionSuccess() {
-        completeTime = new Date();
-        success = true;
+    public JobExecutionEvent executionSuccess() {
+        JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, taskId, jobName, source, shardingItem, startTime, completeTime, success, failureCause);
+        result.setCompleteTime(new Date());
+        result.setSuccess(true);
+        return result;
     }
     
     /**
      * 作业执行失败.
      * 
      * @param failureCause 失败原因
+     * @return 作业执行事件
      */
-    public void executionFailure(final Throwable failureCause) {
-        completeTime = new Date();
-        success = false;
-        this.failureCause = failureCause;
+    public JobExecutionEvent executionFailure(final Throwable failureCause) {
+        JobExecutionEvent result = new JobExecutionEvent(id, hostname, ip, taskId, jobName, source, shardingItem, startTime, completeTime, success, new JobExecutionEventThrowable(failureCause));
+        result.setCompleteTime(new Date());
+        result.setSuccess(false);
+        return result;
     }
     
     /**
      * 获取失败原因.
+     * 
      * @return 失败原因
      */
     public String getFailureCause() {
-        return ExceptionUtil.transform(failureCause);
+        return ExceptionUtil.transform(failureCause == null ? null : failureCause.getThrowable());
     }
     
     /**

@@ -30,7 +30,7 @@ import org.junit.Test;
 import java.sql.SQLException;
 import java.util.List;
 
-import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -89,38 +89,53 @@ public class JobEventRdbStorageTest {
     
     @Test
     public void assertUpdateJobExecutionEventWhenSuccess() throws SQLException {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
-        assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
-        jobExecutionEvent.executionSuccess();
-        assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
-        assertNotNull(jobExecutionEvent.getCompleteTime());
+        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        assertTrue(storage.addJobExecutionEvent(startEvent));
+        JobExecutionEvent successEvent = startEvent.executionSuccess();
+        assertTrue(storage.addJobExecutionEvent(successEvent));
     }
     
     @Test
     public void assertUpdateJobExecutionEventWhenFailure() throws SQLException {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
-        assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
-        jobExecutionEvent.executionFailure(new RuntimeException("failure"));
-        assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
-        assertThat(jobExecutionEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        assertTrue(storage.addJobExecutionEvent(startEvent));
+        JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
+        assertTrue(storage.addJobExecutionEvent(failureEvent));
+        assertThat(failureEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+    }
+    
+    @Test
+    public void assertUpdateJobExecutionEventWhenSuccessAndConflict() throws SQLException {
+        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent successEvent = startEvent.executionSuccess();
+        assertTrue(storage.addJobExecutionEvent(successEvent));
+        assertFalse(storage.addJobExecutionEvent(startEvent));
+    }
+    
+    @Test
+    public void assertUpdateJobExecutionEventWhenFailureAndConflict() throws SQLException {
+        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
+        assertTrue(storage.addJobExecutionEvent(failureEvent));
+        assertThat(failureEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+        assertFalse(storage.addJobExecutionEvent(startEvent));
     }
     
     @Test
     public void assertUpdateJobExecutionEventWhenFailureAndMessageExceed() throws SQLException {
-        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
-        assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
+        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        assertTrue(storage.addJobExecutionEvent(startEvent));
         StringBuilder failureMsg = new StringBuilder();
         for (int i = 0; i < 600; i++) {
             failureMsg.append(i);
         }
-        jobExecutionEvent.executionFailure(new RuntimeException("failure" + failureMsg.toString()));
-        assertTrue(storage.addJobExecutionEvent(jobExecutionEvent));
-        assertThat(jobExecutionEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+        JobExecutionEvent failEvent = startEvent.executionFailure(new RuntimeException("failure" + failureMsg.toString()));
+        assertTrue(storage.addJobExecutionEvent(failEvent));
+        assertThat(failEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
     }
     
     @Test
     public void assertFindJobExecutionEvent() throws SQLException {
         storage.addJobExecutionEvent(new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0));
     }
-    
 }

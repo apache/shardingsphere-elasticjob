@@ -26,7 +26,8 @@ import org.junit.runners.Suite.SuiteClasses;
         JobConfigurationExceptionTest.class, 
         JobExecutionEnvironmentExceptionTest.class, 
         JobSystemExceptionTest.class,
-        ExceptionUtilTest.class
+        ExceptionUtilTest.class,
+        JobStatisticExceptionTest.class
     })
 public final class AllExceptionTests {
 }

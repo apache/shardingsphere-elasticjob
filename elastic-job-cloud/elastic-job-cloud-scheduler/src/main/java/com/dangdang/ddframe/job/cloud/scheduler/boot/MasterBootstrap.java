@@ -29,8 +29,10 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsScheduledService
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
@@ -55,6 +57,8 @@ import java.util.concurrent.Executors;
  */
 @Slf4j
 public final class MasterBootstrap {
+    
+    private static final String WEBAPP_PATH = "webapp/";
     
     private static final double ONE_WEEK_TIMEOUT = 60 * 60 * 24 * 7;
     
@@ -82,6 +86,12 @@ public final class MasterBootstrap {
         env = BootstrapEnvironment.getInstance();
         regCenter = getRegistryCenter();
         facadeService = new FacadeService(regCenter);
+        Optional<JobEventRdbSearch> jobEventRdbSearch = Optional.absent();
+        if (env.getJobEventRdbConfiguration().isPresent()) {
+            jobEventRdbSearch = Optional.of(new JobEventRdbSearch(env.getJobEventRdbConfiguration().get().getDataSource()));
+        }
+        final StatisticManager statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
+        statisticManager.startup();
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         frameworkIDService = new FrameworkIDService(regCenter);
         CloudJobRestfulApi.init(regCenter);
@@ -90,6 +100,7 @@ public final class MasterBootstrap {
             @Override
             public void run() {
                 facadeService.stop();
+                statisticManager.shutdown();
             }
         });
     }
@@ -118,11 +129,12 @@ public final class MasterBootstrap {
         getCache().getListenable().addListener(cloudJobConfigurationListener, Executors.newSingleThreadExecutor());
         taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus).startAsync();
         statisticsScheduledService = new StatisticsScheduledService().startAsync();
-        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName());
+        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), WEBAPP_PATH);
         schedulerDriver.start();
     }
     
-    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus) {
+    private SchedulerDriver getSchedulerDriver(
+            final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus, final StatisticManager statisticManager) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Optional<String> frameworkIDOptional = frameworkIDService.fetch();
         Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
@@ -131,7 +143,7 @@ public final class MasterBootstrap {
         }
         Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME)
                         .setHostname(mesosConfig.getHostname()).setFailoverTimeout(ONE_WEEK_TIMEOUT).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, frameworkIDService), frameworkInfo, mesosConfig.getUrl());
+        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     
     private TaskScheduler getTaskScheduler() {
