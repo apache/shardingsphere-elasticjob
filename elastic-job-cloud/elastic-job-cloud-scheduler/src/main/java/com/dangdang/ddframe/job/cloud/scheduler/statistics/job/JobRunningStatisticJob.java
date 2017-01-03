@@ -17,20 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.statistics.job;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.quartz.CronScheduleBuilder;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
 import com.dangdang.ddframe.job.context.TaskContext;
@@ -39,11 +25,22 @@ import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
 import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
-
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 运行中的任务统计作业.
@@ -52,7 +49,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Slf4j
 public class JobRunningStatisticJob extends AbstractStatisticJob {
     

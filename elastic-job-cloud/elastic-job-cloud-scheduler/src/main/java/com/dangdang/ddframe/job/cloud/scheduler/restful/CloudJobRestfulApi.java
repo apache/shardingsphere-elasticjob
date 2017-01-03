@@ -48,22 +48,8 @@ import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
-import org.apache.mesos.SchedulerDriver;
-
 import com.google.common.base.Strings;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import org.apache.mesos.SchedulerDriver;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -76,6 +62,18 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * 作业云的REST API.
@@ -221,7 +219,7 @@ public final class CloudJobRestfulApi {
     @GET
     @Path("tasks/runnings")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Collection<?> findAllRunningTasks() {
+    public Collection<TaskContext> findAllRunningTasks() {
         List<TaskContext> result = new LinkedList<>();
         for (Set<TaskContext> each : runningService.getAllRunningTasks().values()) {
             result.addAll(each);
@@ -276,7 +274,7 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo info) throws ParseException {
         if (!jobEventRdbSearch.isPresent()) {
-            return new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList());
+            return new Result<>(0, Collections.<JobExecutionEvent>emptyList());
         }
         return jobEventRdbSearch.get().findJobExecutionEvents(buildCondition(info, new String[]{"jobName", "taskId", "ip", "isSuccess"}));
     }
@@ -292,7 +290,7 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo info) throws ParseException {
         if (!jobEventRdbSearch.isPresent()) {
-            return new Result<JobStatusTraceEvent>(0, Collections.<JobStatusTraceEvent>emptyList());
+            return new Result<>(0, Collections.<JobStatusTraceEvent>emptyList());
         }
         return jobEventRdbSearch.get().findJobStatusTraceEvents(buildCondition(info, new String[]{"jobName", "taskId", "slaveId", "source", "executionType", "state"}));
     }
@@ -321,7 +319,7 @@ public final class CloudJobRestfulApi {
     }
     
     private Map<String, Object> getQueryParameters(final UriInfo info, final String[] params) {
-        final Map<String, Object> result = new HashMap<String, Object>();
+        final Map<String, Object> result = new HashMap<>();
         for (String each : params) {
             if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst(each))) {
                 result.put(each, info.getQueryParameters().getFirst(each));
