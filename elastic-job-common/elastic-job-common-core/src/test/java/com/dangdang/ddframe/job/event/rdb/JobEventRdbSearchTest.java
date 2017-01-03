@@ -17,26 +17,25 @@
 
 package com.dangdang.ddframe.job.event.rdb;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.dbcp.BasicDataSource;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.dangdang.ddframe.job.context.ExecutionType;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
-import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
-import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
-import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class JobEventRdbSearchTest {
     
@@ -58,11 +57,11 @@ public class JobEventRdbSearchTest {
     
     private static void initStorage() {
         for (int i = 1; i <= 500; i++) {
-            JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job_" + i, ExecutionSource.NORMAL_TRIGGER, 0);
-            storage.addJobExecutionEvent(jobExecutionEvent);
+            JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job_" + i, ExecutionSource.NORMAL_TRIGGER, 0);
+            storage.addJobExecutionEvent(startEvent);
             if (i % 2 == 0) {
-                jobExecutionEvent.executionSuccess();
-                storage.addJobExecutionEvent(jobExecutionEvent);
+                JobExecutionEvent successEvent = startEvent.executionSuccess();
+                storage.addJobExecutionEvent(successEvent);
             }
             storage.addJobStatusTraceEvent(
                     new JobStatusTraceEvent("test_job_" + i, "fake_failed_failover_task_id", "fake_slave_id", 
@@ -119,7 +118,7 @@ public class JobEventRdbSearchTest {
     @Test
     public void assertFindJobExecutionEventsWithTime() {
         Date now = new Date();
-        Date justNow = new Date(now.getTime() - 1 * 1000);
+        Date justNow = new Date(now.getTime() - 10000 * 1000);
         Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new Condition(10, 1, null, null, justNow, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));
@@ -140,7 +139,7 @@ public class JobEventRdbSearchTest {
     @Test
     public void assertFindJobExecutionEventsWithFields() {
         Map<String, Object> fields = new HashMap<>();
-        fields.put("isSuccess", true);
+        fields.put("isSuccess", "1");
         Result<JobExecutionEvent> result = repository.findJobExecutionEvents(new Condition(10, 1, null, null, null, null, fields));
         assertThat(result.getTotal(), is(250));
         assertThat(result.getRows().size(), is(10));
@@ -209,7 +208,7 @@ public class JobEventRdbSearchTest {
     @Test
     public void assertFindJobStatusTraceEventsWithTime() {
         Date now = new Date();
-        Date justNow = new Date(now.getTime() - 1 * 1000);
+        Date justNow = new Date(now.getTime() - 10000 * 1000);
         Result<JobStatusTraceEvent> result = repository.findJobStatusTraceEvents(new Condition(10, 1, null, null, justNow, null, null));
         assertThat(result.getTotal(), is(500));
         assertThat(result.getRows().size(), is(10));

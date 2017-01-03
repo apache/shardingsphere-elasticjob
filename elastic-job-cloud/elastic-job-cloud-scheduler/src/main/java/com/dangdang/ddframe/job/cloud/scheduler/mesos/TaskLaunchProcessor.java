@@ -156,7 +156,7 @@ public final class TaskLaunchProcessor implements Runnable {
     }
     
     private Protos.CommandInfo.URI buildURI(final String appURL, final boolean useDefaultExecutor) {
-        Protos.CommandInfo.URI.Builder result = Protos.CommandInfo.URI.newBuilder().setValue(appURL).setCache(BootstrapEnvironment.getInstance().getFrameworkConfiguration().isAppCacheEnable());
+        Protos.CommandInfo.URI.Builder result = Protos.CommandInfo.URI.newBuilder().setValue(appURL).setCache(env.getFrameworkConfiguration().isAppCacheEnable());
         if (useDefaultExecutor && !SupportedExtractionType.isExtraction(appURL)) {
             result.setExecutable(true);
         } else {

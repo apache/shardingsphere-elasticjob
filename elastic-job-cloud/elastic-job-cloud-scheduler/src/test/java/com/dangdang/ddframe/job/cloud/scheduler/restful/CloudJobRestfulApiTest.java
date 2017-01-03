@@ -41,7 +41,6 @@ import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-
 import org.apache.mesos.SchedulerDriver;
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
@@ -55,6 +54,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import javax.ws.rs.core.MediaType;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -63,14 +69,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class CloudJobRestfulApiTest {
@@ -199,10 +197,9 @@ public final class CloudJobRestfulApiTest {
         when(regCenter.isExisted("/state/failover")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/failover")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.getChildrenKeys("/state/failover/test_job")).thenReturn(Lists.newArrayList("test_job@-@0"));
-        String actualOriginalTaskId = UUID.randomUUID().toString();
-        when(regCenter.get("/state/failover/test_job/test_job@-@0")).thenReturn(actualOriginalTaskId);
-        String expectedOriginalTaskId = actualOriginalTaskId;
-        FailoverTaskInfo expectedFailoverTask = new FailoverTaskInfo(MetaInfo.from("test_job@-@0"), expectedOriginalTaskId);
+        String originalTaskId = UUID.randomUUID().toString();
+        when(regCenter.get("/state/failover/test_job/test_job@-@0")).thenReturn(originalTaskId);
+        FailoverTaskInfo expectedFailoverTask = new FailoverTaskInfo(MetaInfo.from("test_job@-@0"), originalTaskId);
         Collection<FailoverTaskInfo> expectedResult = Lists.newArrayList(expectedFailoverTask);
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/tasks/failovers"), is(GsonFactory.getGson().toJson(expectedResult)));
         verify(regCenter).isExisted("/state/failover");
@@ -214,7 +211,7 @@ public final class CloudJobRestfulApiTest {
     @Test
     public void assertFindJobExecutionEventsWhenNotConfigRDB() throws Exception {
         when(jobEventRdbSearch.isPresent()).thenReturn(false);
-        assertThat(sentGetRequest("http://127.0.0.1:19000/job/events/executions"), is(GsonFactory.getGson().toJson(new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList()))));
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/events/executions"), is(GsonFactory.getGson().toJson(new Result<>(0, Collections.<JobExecutionEvent>emptyList()))));
         verify(jobEventRdbSearch).isPresent();
     }
     
@@ -224,9 +221,9 @@ public final class CloudJobRestfulApiTest {
         JobEventRdbSearch mockJobEventRdbSearch = mock(JobEventRdbSearch.class);
         when(jobEventRdbSearch.get()).thenReturn(mockJobEventRdbSearch);
         JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        when(mockJobEventRdbSearch.findJobExecutionEvents(any(Condition.class))).thenReturn(new Result<JobExecutionEvent>(0, Lists.newArrayList(jobExecutionEvent)));
+        when(mockJobEventRdbSearch.findJobExecutionEvents(any(Condition.class))).thenReturn(new Result<>(0, Lists.newArrayList(jobExecutionEvent)));
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/events/executions?" + buildFindJobEventsQueryParameter()), 
-                is(GsonFactory.getGson().toJson(new Result<JobExecutionEvent>(0, Lists.newArrayList(jobExecutionEvent)))));
+                is(GsonFactory.getGson().toJson(new Result<>(0, Lists.newArrayList(jobExecutionEvent)))));
         verify(jobEventRdbSearch).isPresent();
         verify(jobEventRdbSearch).get();
         verify(mockJobEventRdbSearch).findJobExecutionEvents(any(Condition.class));
@@ -235,7 +232,7 @@ public final class CloudJobRestfulApiTest {
     @Test
     public void assertFindJobStatusTraceEventEventsWhenNotConfigRDB() throws Exception {
         when(jobEventRdbSearch.isPresent()).thenReturn(false);
-        assertThat(sentGetRequest("http://127.0.0.1:19000/job/events/statusTraces"), is(GsonFactory.getGson().toJson(new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList()))));
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/events/statusTraces"), is(GsonFactory.getGson().toJson(new Result<>(0, Collections.<JobExecutionEvent>emptyList()))));
         verify(jobEventRdbSearch).isPresent();
     }
     
@@ -246,9 +243,9 @@ public final class CloudJobRestfulApiTest {
         when(jobEventRdbSearch.get()).thenReturn(mockJobEventRdbSearch);
         JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(
                 "test-job", "fake_task_id", "fake_slave_id",  Source.LITE_EXECUTOR, ExecutionType.READY, "0", State.TASK_RUNNING, "message is empty.");
-        when(mockJobEventRdbSearch.findJobStatusTraceEvents(any(Condition.class))).thenReturn(new Result<JobStatusTraceEvent>(0, Lists.newArrayList(jobStatusTraceEvent)));
+        when(mockJobEventRdbSearch.findJobStatusTraceEvents(any(Condition.class))).thenReturn(new Result<>(0, Lists.newArrayList(jobStatusTraceEvent)));
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/events/statusTraces?" + buildFindJobEventsQueryParameter()), 
-                is(GsonFactory.getGson().toJson(new Result<JobStatusTraceEvent>(0, Lists.newArrayList(jobStatusTraceEvent)))));
+                is(GsonFactory.getGson().toJson(new Result<>(0, Lists.newArrayList(jobStatusTraceEvent)))));
         verify(jobEventRdbSearch).isPresent();
         verify(jobEventRdbSearch).get();
         verify(mockJobEventRdbSearch).findJobStatusTraceEvents(any(Condition.class));
@@ -257,6 +254,14 @@ public final class CloudJobRestfulApiTest {
     private String buildFindJobEventsQueryParameter() throws UnsupportedEncodingException {
         return "pageSize=10&pageNumber=1&sortName=jobName&sortOrder=DESC&jobName=test_job"
                 + "&startTime=" + URLEncoder.encode("2016-12-26 10:00:00", "UTF-8") + "&endTime=" + URLEncoder.encode("2016-12-26 10:00:00", "UTF-8");
+    }
+    
+    @Test
+    public void assertGetTaskResultStatistics() throws Exception {
+        String result = sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/results");
+        TaskResultStatistics taskResultStatistics = GsonFactory.getGson().fromJson(result, TaskResultStatistics.class);
+        assertThat(taskResultStatistics.getSuccessCount(), is(0));
+        assertThat(taskResultStatistics.getFailedCount(), is(0));
     }
     
     @Test
@@ -292,9 +297,22 @@ public final class CloudJobRestfulApiTest {
         assertThat(jobExecutionTypeStatistics.getTransientJobCount(), is(0));
     }
     
+    
+    @Test
+    public void assertFindTaskRunningStatistics() throws Exception {
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/runnings"),
+                is(GsonFactory.getGson().toJson(Collections.emptyList())));
+    }
+    
     @Test
     public void assertFindTaskRunningStatisticsWeekly() throws Exception {
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/runnings?since=lastWeek"), 
+                is(GsonFactory.getGson().toJson(Collections.emptyList())));
+    }
+    
+    @Test
+    public void assertFindJobRunningStatistics() throws Exception {
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/statistics/jobs/runnings"),
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     

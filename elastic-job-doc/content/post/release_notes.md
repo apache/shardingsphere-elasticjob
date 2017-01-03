@@ -12,10 +12,17 @@ weight=1
 ### 缺陷修正
 
 1. [ISSUE #189](https://github.com/dangdangdotcom/elastic-job/issues/189) 管理后台执行失效操作，但任务还在执行
+1. [ISSUE #204](https://github.com/dangdangdotcom/elastic-job/issues/204) 异步事件执行消息顺序不一致导致数据库数据不准确 
+
+### 新功能
+
+1. [ISSUE #203](https://github.com/dangdangdotcom/elastic-job/issues/203) cloud类型作业增加运行统计，并提供REST API查询
 
 ### 功能提升
 
 1. [ISSUE #187](https://github.com/dangdangdotcom/elastic-job/issues/187) ShardingContext中增加taskId属性，供业务方使用 
+
+1. [ISSUE #20](https://github.com/dangdangdotcom/elastic-job/issues/20) 运维界面任务列表显示增加cron表达式
 
 ## 2.0.3
 

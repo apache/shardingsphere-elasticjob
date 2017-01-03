@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 
 import com.dangdang.ddframe.job.context.TaskContext;
-import lombok.Getter;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,7 +36,6 @@ public class RunningService {
     private static final int TASK_INITIAL_SIZE = 1024;
     
     // TODO 使用JMX导出
-    @Getter
     private static final ConcurrentHashMap<String, Set<TaskContext>> RUNNING_TASKS = new ConcurrentHashMap<>(TASK_INITIAL_SIZE);
     
     private static final ConcurrentHashMap<String, String> TASK_HOSTNAME_MAPPER = new ConcurrentHashMap<>(TASK_INITIAL_SIZE);
