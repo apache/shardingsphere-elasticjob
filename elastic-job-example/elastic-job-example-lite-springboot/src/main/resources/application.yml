@@ -15,4 +15,4 @@ dataflowJob:
 
 spring:
   profiles:
-    active: prod
+    active: dev
