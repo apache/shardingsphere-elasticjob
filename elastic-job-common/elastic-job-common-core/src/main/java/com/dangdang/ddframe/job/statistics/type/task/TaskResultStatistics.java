@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * 任务运行结果统计数据.
@@ -34,7 +33,6 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @RequiredArgsConstructor
-@ToString(of = {"successCount", "failedCount", "statisticInterval", "statisticsTime"})
 public class TaskResultStatistics {
     
     private long id;

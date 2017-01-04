@@ -22,7 +22,6 @@ import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * 运行中的作业统计数据.
@@ -32,7 +31,6 @@ import lombok.ToString;
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
-@ToString(of = {"runningCount", "statisticsTime"})
 public class JobRunningStatistics {
     
     private long id;
