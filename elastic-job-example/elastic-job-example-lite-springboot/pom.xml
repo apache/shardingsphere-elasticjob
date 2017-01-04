@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <version>1.4.2.RELEASE</version>
+            <version>${springboot.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
