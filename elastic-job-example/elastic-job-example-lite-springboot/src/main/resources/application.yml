@@ -1,12 +1,7 @@
+
 regCenter:
   serverList: localhost:6181
   namespace: elastic-job-lite-springboot
-
-jobEventConfig:
-  url: jdbc:h2:mem:job_event_storage
-  driverClassName: org.h2.Driver
-  username: sa
-  password:
   
 simpleJob:
   cron: 0/5 * * * * ?
@@ -17,3 +12,7 @@ dataflowJob:
   cron: 0/5 * * * * ?
   shardingTotalCount: 3
   shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+
+spring:
+  profiles:
+    active: prod
