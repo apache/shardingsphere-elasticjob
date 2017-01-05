@@ -1,0 +1,13 @@
+.form-group.toolbar label {
+    float: left;
+    width: 90px;
+    height: 52px;
+    padding-left: 20px;
+    text-align: center;
+}
+.form-group.toolbar span {
+    float: left;
+    width: 40px;
+    height: 52px;
+    text-align: center;
+}

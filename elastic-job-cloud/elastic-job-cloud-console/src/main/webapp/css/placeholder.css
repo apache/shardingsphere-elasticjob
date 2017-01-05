@@ -1,0 +1,14 @@
+.form-horizontal :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:#DCDCDC; opacity:1; 
+}
+.form-horizontal ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:  #DCDCDC;opacity:1;
+}
+.form-horizontal ::-webkit-input-placeholder{color: #DCDCDC;}
+
+.form-horizontal input:-ms-input-placeholder{
+    color: #DCDCDC;opacity:1;
+}
+.form-horizontal input::-webkit-input-placeholder{
+    color: #DCDCDC;opacity:1;
+}
