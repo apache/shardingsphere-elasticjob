@@ -91,40 +91,46 @@ public class JobRunningStatisticJob extends AbstractStatisticJob {
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
         Map<String, Set<TaskContext>> allRunnintTasks = runningService.getAllRunningTasks();
-        statisticJob(allRunnintTasks);
-        statisticTask(allRunnintTasks);
+        statisticJob(getJobRunningCount(allRunnintTasks));
+        statisticTask(getTaskRunningCount(allRunnintTasks));
     }
     
-    private void statisticJob(final Map<String, Set<TaskContext>> allRunnintTasks) {
+    private void statisticJob(final int runningCount) {
         Optional<JobRunningStatistics> latestOne = repository.findLatestJobRunningStatistics();
         if (latestOne.isPresent()) {
             fillBlankIfNeeded(latestOne.get());
         }
-        JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(getJobRunningCount(allRunnintTasks), StatisticTimeUtils.getCurrentStatisticTime(execInterval));
-        log.debug("Add jobRunningStatistics, runningCount is:{}", getJobRunningCount(allRunnintTasks));
+        JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(runningCount, StatisticTimeUtils.getCurrentStatisticTime(execInterval));
+        log.debug("Add jobRunningStatistics, runningCount is:{}", runningCount);
         repository.add(jobRunningStatistics);
     }
     
-    private void statisticTask(final Map<String, Set<TaskContext>> allRunnintTasks) {
+    private void statisticTask(final int runningCount) {
         Optional<TaskRunningStatistics> latestOne = repository.findLatestTaskRunningStatistics();
         if (latestOne.isPresent()) {
             fillBlankIfNeeded(latestOne.get());
         }
-        TaskRunningStatistics taskRunningStatistics = new TaskRunningStatistics(getTaskRunningCount(allRunnintTasks), StatisticTimeUtils.getCurrentStatisticTime(execInterval));
-        log.debug("Add taskRunningStatistics, runningCount is:{}", getTaskRunningCount(allRunnintTasks));
+        TaskRunningStatistics taskRunningStatistics = new TaskRunningStatistics(runningCount, StatisticTimeUtils.getCurrentStatisticTime(execInterval));
+        log.debug("Add taskRunningStatistics, runningCount is:{}", runningCount);
         repository.add(taskRunningStatistics);
     }
     
     private int getJobRunningCount(final Map<String, Set<TaskContext>> allRunnintTasks) {
-        return allRunnintTasks.keySet().size();
+        int result = 0;
+        for (String each : allRunnintTasks.keySet()) {
+            if (!allRunnintTasks.get(each).isEmpty()) {
+                result++;
+            }
+        }
+        return result;
     }
     
     private int getTaskRunningCount(final Map<String, Set<TaskContext>> allRunnintTasks) {
-        int runningCount = 0;
+        int result = 0;
         for (String each : allRunnintTasks.keySet()) {
-            runningCount += allRunnintTasks.get(each).size();
+            result += allRunnintTasks.get(each).size();
         }
-        return runningCount;
+        return result;
     }
     
     private void fillBlankIfNeeded(final JobRunningStatistics latestOne) {

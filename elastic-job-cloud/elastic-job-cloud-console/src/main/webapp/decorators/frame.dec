@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Job Console</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="plugins/font-awesome-4.5.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="plugins/AdminLTE/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="plugins/AdminLTE/css/skins/_all-skins.min.css">
+    <!-- common -->
+    <link rel="stylesheet" href="css/common.css">
+    <!-- bootstrap-table -->
+    <link rel="stylesheet" href="plugins/bootstrap-table/bootstrap-table.min.css">
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+    <!-- jQuery 2.1.4 -->
+    <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <!-- Bootstrap 3.3.5 -->
+    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="plugins/AdminLTE/js/app.min.js"></script>
+    <!-- bootstrap-table -->
+    <script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="plugins/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+    </head>
+    <body class="hold-transition skin-purple sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+        <!-- Logo -->
+        <a href="" class="logo">
+        <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Elastic Job Cloud Console</b></span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+        </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+                <li class="header">主菜单</li>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-edit"></i>
+                            <span>作业</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+            <ul class="treeview-menu">
+                <li><a href="job_overview"><i class="fa fa-circle-o"></i>定义</a></li>
+                <li><a href="job_status"><i class="fa fa-circle-o"></i>状态</a></li>
+            </ul>
+                </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-dashboard"></i> <span>作业历史</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+              <ul class="treeview-menu" style="display: none;">
+                    <li><a href="job_exec_detail"><i class="fa fa-circle-o"></i> 运行轨迹查询</a></li>
+                    <li><a href="job_exec_status"><i class="fa fa-circle-o"></i> 运行状态查询</a></li>
+                    <li><a href="job_dashboard"><i class="fa fa-circle-o"></i> 历史dashboard</a></li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+    </aside>
+    <!-- Content Wrapper. Contains page content -->
+            ${body}
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0.0
+        </div>
+            <strong>Copyright &copy; 1999-2016 <a href="http://www.dangdang.com">当当网</a>.</strong> All rights reserved.
+    </footer>
+    <div class="control-sidebar-bg"></div>
+    </div><!-- ./wrapper -->
+    </body>
+</html>
