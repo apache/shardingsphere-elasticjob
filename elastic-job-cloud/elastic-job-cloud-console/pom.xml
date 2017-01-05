@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.dangdang</groupId>
-        <artifactId>elastic-job</artifactId>
+        <artifactId>elastic-job-cloud</artifactId>
         <version>2.0.4-SNAPSHOT</version>
     </parent>
     <artifactId>elastic-job-cloud-console</artifactId>
