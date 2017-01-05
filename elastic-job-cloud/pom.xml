@@ -13,5 +13,6 @@
     <modules>
         <module>elastic-job-cloud-executor</module>
         <module>elastic-job-cloud-scheduler</module>
+        <module>elastic-job-cloud-console</module>
     </modules>
 </project>
