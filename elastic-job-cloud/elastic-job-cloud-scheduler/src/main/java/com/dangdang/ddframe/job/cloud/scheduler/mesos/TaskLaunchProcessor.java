@@ -31,10 +31,8 @@ import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
 import com.netflix.fenzo.TaskScheduler;
@@ -45,14 +43,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.OfferID;
 import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 任务启动处理器.
@@ -93,23 +94,24 @@ public final class TaskLaunchProcessor implements Runnable {
         while (!shutdown) {
             LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
             Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), leasesQueue.drainTo()).getResultMap().values();
+            List<TaskContext> taskContextsList = new LinkedList<>();
+            Map<List<Protos.OfferID>, List<Protos.TaskInfo>> offerIdTaskInfoMap = new HashMap<>();
             for (VMAssignmentResult each: vmAssignmentResults) {
                 List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
                 List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
                 taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
                 for (Protos.TaskInfo taskInfo : taskInfoList) {
-                    TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
-                    facadeService.addRunning(taskContext);
-                    jobEventBus.post(createJobStatusTraceEvent(taskContext));
+                    taskContextsList.add(TaskContext.from(taskInfo.getTaskId().getValue()));
                 }
-                facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<TaskInfo, TaskContext>() {
-                    
-                    @Override
-                    public TaskContext apply(final Protos.TaskInfo input) {
-                        return TaskContext.from(input.getTaskId().getValue());
-                    }
-                }));
-                schedulerDriver.launchTasks(getOfferIDs(leasesUsed), taskInfoList);
+                offerIdTaskInfoMap.put(getOfferIDs(leasesUsed), taskInfoList);
+            }
+            for (TaskContext each : taskContextsList) {
+                facadeService.addRunning(each);
+                jobEventBus.post(createJobStatusTraceEvent(each));
+            }
+            facadeService.removeLaunchTasksFromQueue(taskContextsList);
+            for (Entry<List<OfferID>, List<TaskInfo>> each : offerIdTaskInfoMap.entrySet()) {
+                schedulerDriver.launchTasks(each.getKey(), each.getValue());
             }
             BlockUtils.waitingShortTime();
         }
