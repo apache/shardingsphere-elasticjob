@@ -75,6 +75,7 @@ public final class BootstrapEnvironmentTest {
     @Test
     public void assertGetFrameworkConfiguration() {
         FrameworkConfiguration frameworkConfig = bootstrapEnvironment.getFrameworkConfiguration();
+        assertThat(frameworkConfig.isAppCacheEnable(), is(false));
         assertThat(frameworkConfig.getJobStateQueueSize(), is(10000));
     }
     
