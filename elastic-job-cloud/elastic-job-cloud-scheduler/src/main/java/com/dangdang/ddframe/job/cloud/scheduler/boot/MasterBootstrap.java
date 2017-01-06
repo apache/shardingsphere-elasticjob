@@ -33,7 +33,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
@@ -91,14 +90,10 @@ public final class MasterBootstrap {
         env = BootstrapEnvironment.getInstance();
         regCenter = getRegistryCenter();
         facadeService = new FacadeService(regCenter);
-        Optional<JobEventRdbSearch> jobEventRdbSearch = Optional.absent();
-        if (env.getJobEventRdbConfiguration().isPresent()) {
-            jobEventRdbSearch = Optional.of(new JobEventRdbSearch(env.getJobEventRdbConfiguration().get().getDataSource()));
-        }
         statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         frameworkIDService = new FrameworkIDService(regCenter);
-        CloudJobRestfulApi.init(regCenter, jobEventRdbSearch);
+        CloudJobRestfulApi.init(regCenter);
     }
     
     private CoordinatorRegistryCenter getRegistryCenter() {

@@ -230,8 +230,6 @@ public class FacadeService {
      * @param taskContext 任务运行时上下文 
      */
     public void updateDaemonTask(final TaskContext taskContext) {
-        configService.load(taskContext.getMetaInfo().getJobName());
-        
         runningService.updateDaemonTask(taskContext);
     }
     

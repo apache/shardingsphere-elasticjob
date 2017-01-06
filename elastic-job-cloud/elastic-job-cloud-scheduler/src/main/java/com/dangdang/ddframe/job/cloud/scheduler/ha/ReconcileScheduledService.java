@@ -72,7 +72,7 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
                                       final long retryIntervalUnit, final long maxPostTimes) {
         this.facadeService = facadeService;
         this.scheduler = scheduler;
-        this.reconcileInterval = reconcileInterval == 0 ? 20 * 1000 : reconcileInterval;
+        this.reconcileInterval = reconcileInterval == 0 ? 10 * 60 * 1000 : reconcileInterval;
         this.retryIntervalUnit = retryIntervalUnit == 0 ? 40 * 1000 : retryIntervalUnit;
         this.maxPostTimes = maxPostTimes == 0 ? 3 : maxPostTimes;
     }

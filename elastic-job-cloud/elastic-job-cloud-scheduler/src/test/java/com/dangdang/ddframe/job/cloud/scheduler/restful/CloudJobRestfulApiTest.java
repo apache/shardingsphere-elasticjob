@@ -50,6 +50,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
 
 import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
@@ -65,6 +66,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -82,7 +84,7 @@ public final class CloudJobRestfulApiTest {
         regCenter = mock(CoordinatorRegistryCenter.class);
         jobEventRdbSearch = mock(JobEventRdbSearch.class);
         server = new RestfulServer(19000);
-        CloudJobRestfulApi.init(regCenter, jobEventRdbSearch);
+        CloudJobRestfulApi.init(regCenter);
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         ProducerManager producerManager = new ProducerManager(schedulerDriver, regCenter);
         producerManager.startup();
