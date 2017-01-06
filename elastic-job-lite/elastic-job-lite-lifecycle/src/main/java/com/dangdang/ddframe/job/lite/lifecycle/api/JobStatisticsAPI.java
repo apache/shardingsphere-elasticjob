@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.api;
 
-import java.util.Collection;
-
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
+
+import java.util.Collection;
 
 /**
  * 作业状态展示的API.
@@ -29,25 +29,33 @@ import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
  * @author zhangliang
  */
 public interface JobStatisticsAPI {
-    
+
+    /**
+     * 获取作业简明信息.
+     *
+     * @param jobName 作业名称
+     * @return 作业简明信息.
+     */
+    JobBriefInfo getJobsBriefInfo(String jobName);
+
     /**
      * 获取所有作业简明信息.
-     * 
+     *
      * @return 作业简明信息集合.
      */
     Collection<JobBriefInfo> getAllJobsBriefInfo();
-    
+
     /**
      * 获取执行作业的服务器.
-     * 
+     *
      * @param jobName 作业名称
      * @return 作业的服务器集合
      */
     Collection<ServerInfo> getServers(String jobName);
-    
+
     /**
      * 获取作业运行时信息.
-     * 
+     *
      * @param jobName 作业名称
      * @return 作业运行时信息集合
      */

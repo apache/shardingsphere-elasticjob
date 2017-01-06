@@ -27,11 +27,7 @@ import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 作业状态展示的实现类.
@@ -40,32 +36,46 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
-    
+
     private final CoordinatorRegistryCenter regCenter;
-    
+
+    /**
+     * 获取作业简明信息.
+     *
+     * @param jobName 作业名称
+     * @return 作业简明信息.
+     */
+    @Override
+    public JobBriefInfo getJobsBriefInfo(String jobName) {
+        JobNodePath jobNodePath = new JobNodePath(jobName);
+        JobBriefInfo jobBriefInfo = new JobBriefInfo();
+        jobBriefInfo.setJobName(jobName);
+        String liteJobConfigJson = regCenter.get(jobNodePath.getConfigNodePath());
+        if (null == liteJobConfigJson) {
+            return null;
+        }
+        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(liteJobConfigJson);
+        jobBriefInfo.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
+        jobBriefInfo.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
+        jobBriefInfo.setStatus(getJobStatus(jobName));
+        jobBriefInfo.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
+        return jobBriefInfo;
+    }
+
     @Override
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {
         List<String> jobNames = regCenter.getChildrenKeys("/");
         List<JobBriefInfo> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
-            JobNodePath jobNodePath = new JobNodePath(each);
-            JobBriefInfo jobBriefInfo = new JobBriefInfo();
-            jobBriefInfo.setJobName(each);
-            String liteJobConfigJson = regCenter.get(jobNodePath.getConfigNodePath());
-            if (null == liteJobConfigJson) {
-                continue;
+            JobBriefInfo jobBriefInfo = getJobsBriefInfo(each);
+            if (jobBriefInfo != null) {
+                result.add(jobBriefInfo);
             }
-            LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(liteJobConfigJson);
-            jobBriefInfo.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
-            jobBriefInfo.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
-            jobBriefInfo.setStatus(getJobStatus(each));
-            jobBriefInfo.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
-            result.add(jobBriefInfo);
         }
         Collections.sort(result);
         return result;
     }
-    
+
     private JobBriefInfo.JobStatus getJobStatus(final String jobName) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
@@ -92,7 +102,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         }
         return JobBriefInfo.JobStatus.getJobStatus(okCount, crashedCount, disabledCount, servers.size());
     }
-    
+
     @Override
     public Collection<ServerInfo> getServers(final String jobName) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
@@ -103,7 +113,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         }
         return result;
     }
-    
+
     private ServerInfo getJobServer(final String jobName, final String serverIp) {
         ServerInfo result = new ServerInfo();
         JobNodePath jobNodePath = new JobNodePath(jobName);
@@ -114,7 +124,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         result.setStatus(getServerStatus(jobName, serverIp));
         return result;
     }
-    
+
     private ServerInfo.ServerStatus getServerStatus(final String jobName, final String serverIp) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
@@ -123,7 +133,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         boolean shutdown = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
         return ServerInfo.ServerStatus.getServerStatus(status, disabled, paused, shutdown);
     }
-    
+
     @Override
     public Collection<ExecutionInfo> getExecutionInfo(final String jobName) {
         String executionRootPath = new JobNodePath(jobName).getExecutionNodePath();
@@ -138,7 +148,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         Collections.sort(result);
         return result;
     }
-    
+
     private ExecutionInfo getExecutionInfo(final String jobName, final String item) {
         ExecutionInfo result = new ExecutionInfo();
         result.setItem(Integer.parseInt(item));
