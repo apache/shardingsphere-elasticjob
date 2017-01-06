@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
@@ -49,22 +50,9 @@ import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.mesos.SchedulerDriver;
 
 import com.google.common.base.Strings;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import org.apache.mesos.SchedulerDriver;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -77,6 +65,18 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * 作业云的REST API.
@@ -92,7 +92,7 @@ public final class CloudJobRestfulApi {
     
     private static CoordinatorRegistryCenter regCenter;
     
-    private static Optional<JobEventRdbSearch> jobEventRdbSearch;
+    private static JobEventRdbSearch jobEventRdbSearch;
     
     private static final SimpleDateFormat DATETIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
@@ -127,10 +127,14 @@ public final class CloudJobRestfulApi {
      * 
      * @param regCenter 注册中心
      */
-    public static void init(final CoordinatorRegistryCenter regCenter, final Optional<JobEventRdbSearch> jobEventRdbSearch) {
+    public static void init(final CoordinatorRegistryCenter regCenter) {
         CloudJobRestfulApi.regCenter = regCenter;
-        CloudJobRestfulApi.jobEventRdbSearch = jobEventRdbSearch;
         GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
+        if (BootstrapEnvironment.getInstance().getJobEventRdbConfiguration().isPresent()) {
+            jobEventRdbSearch = new JobEventRdbSearch(BootstrapEnvironment.getInstance().getJobEventRdbConfiguration().get().getDataSource());
+        } else {
+            jobEventRdbSearch = null;
+        }
     }
     
     /**
@@ -231,9 +235,9 @@ public final class CloudJobRestfulApi {
      * @return 运行中的全部任务
      */
     @GET
-    @Path("tasks/runnings")
+    @Path("tasks/running")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Collection<?> findAllRunningTasks() {
+    public Collection<TaskContext> findAllRunningTasks() {
         List<TaskContext> result = new LinkedList<>();
         for (Set<TaskContext> each : runningService.getAllRunningTasks().values()) {
             result.addAll(each);
@@ -247,7 +251,7 @@ public final class CloudJobRestfulApi {
      * @return 待运行的全部任务
      */
     @GET
-    @Path("tasks/readys")
+    @Path("tasks/ready")
     @Consumes(MediaType.APPLICATION_JSON)
     public Collection<Map<String, String>> findAllReadyTasks() {
         Map<String, Integer> readyTasks = readyService.getAllReadyTasks();
@@ -267,7 +271,7 @@ public final class CloudJobRestfulApi {
      * @return 失效转移的全部任务
      */
     @GET
-    @Path("tasks/failovers")
+    @Path("tasks/failover")
     @Consumes(MediaType.APPLICATION_JSON)
     public Collection<FailoverTaskInfo> findAllFailoverTasks() {
         List<FailoverTaskInfo> result = new LinkedList<>();
@@ -287,10 +291,10 @@ public final class CloudJobRestfulApi {
     @Path("events/executions")
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo info) throws ParseException {
-        if (!jobEventRdbSearch.isPresent()) {
-            return new Result<JobExecutionEvent>(0, Collections.<JobExecutionEvent>emptyList());
+        if (!isRdbConfigured()) {
+            return new Result<>(0, Collections.<JobExecutionEvent>emptyList());
         }
-        return jobEventRdbSearch.get().findJobExecutionEvents(buildCondition(info, new String[]{"jobName", "taskId", "ip", "isSuccess"}));
+        return jobEventRdbSearch.findJobExecutionEvents(buildCondition(info, new String[]{"jobName", "taskId", "ip", "isSuccess"}));
     }
     
     /**
@@ -303,10 +307,14 @@ public final class CloudJobRestfulApi {
     @Path("events/statusTraces")
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo info) throws ParseException {
-        if (!jobEventRdbSearch.isPresent()) {
-            return new Result<JobStatusTraceEvent>(0, Collections.<JobStatusTraceEvent>emptyList());
+        if (!isRdbConfigured()) {
+            return new Result<>(0, Collections.<JobStatusTraceEvent>emptyList());
         }
-        return jobEventRdbSearch.get().findJobStatusTraceEvents(buildCondition(info, new String[]{"jobName", "taskId", "slaveId", "source", "executionType", "state"}));
+        return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(info, new String[]{"jobName", "taskId", "slaveId", "source", "executionType", "state"}));
+    }
+    
+    private boolean isRdbConfigured() {
+        return null != jobEventRdbSearch;
     }
     
     private Condition buildCondition(final UriInfo info, final String[] params) throws ParseException {
@@ -333,7 +341,7 @@ public final class CloudJobRestfulApi {
     }
     
     private Map<String, Object> getQueryParameters(final UriInfo info, final String[] params) {
-        final Map<String, Object> result = new HashMap<String, Object>();
+        final Map<String, Object> result = new HashMap<>();
         for (String each : params) {
             if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst(each))) {
                 result.put(each, info.getQueryParameters().getFirst(each));
@@ -366,7 +374,7 @@ public final class CloudJobRestfulApi {
      * @return 任务运行统计数据集合
      */
     @GET
-    @Path("/statistics/tasks/runnings")
+    @Path("/statistics/tasks/running")
     @Consumes(MediaType.APPLICATION_JSON)
     public List<TaskRunningStatistics> findTaskRunningStatistics(@QueryParam("since") final String since) {
         if ("lastWeek".equals(since)) {
@@ -406,7 +414,7 @@ public final class CloudJobRestfulApi {
      * @return 一周以来任务运行统计数据集合
      */
     @GET
-    @Path("/statistics/jobs/runnings")
+    @Path("/statistics/jobs/running")
     @Consumes(MediaType.APPLICATION_JSON)
     public List<JobRunningStatistics> findJobRunningStatistics(@QueryParam("since") final String since) {
         if ("lastWeek".equals(since)) {
@@ -422,7 +430,7 @@ public final class CloudJobRestfulApi {
      * @return 自上线以来作业注册统计数据集合
      */
     @GET
-    @Path("/statistics/jobs/registers")
+    @Path("/statistics/jobs/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public List<JobRegisterStatistics> findJobRegisterStatistics() {
         return statisticManager.findJobRegisterStatisticsSinceOnline();

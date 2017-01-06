@@ -12,7 +12,8 @@ weight=1
 ### 缺陷修正
 
 1. [ISSUE #189](https://github.com/dangdangdotcom/elastic-job/issues/189) 管理后台执行失效操作，但任务还在执行
-1. [ISSUE #204](https://github.com/dangdangdotcom/elastic-job/issues/204) 异步事件执行消息顺序不一致导致数据库数据不准确 
+1. [ISSUE #204](https://github.com/dangdangdotcom/elastic-job/issues/204) 异步事件执行消息顺序不一致导致数据库数据不准确
+1. [ISSUE #209](https://github.com/dangdangdotcom/elastic-job/issues/209) cloud作业资源分配算法改进
 
 ### 新功能
 

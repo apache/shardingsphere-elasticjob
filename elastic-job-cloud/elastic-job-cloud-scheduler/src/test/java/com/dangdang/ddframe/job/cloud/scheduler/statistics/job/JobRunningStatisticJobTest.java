@@ -36,10 +36,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import org.quartz.impl.StdSchedulerFactory;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
@@ -76,11 +74,8 @@ public class JobRunningStatisticJobTest {
     
     @Test
     public void assertBuildTrigger() throws SchedulerException {
-        Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         Trigger trigger = jobRunningStatisticJob.buildTrigger();
-        scheduler.scheduleJob(jobRunningStatisticJob.buildJobDetail(), trigger);
         assertThat(trigger.getKey().getName(), is(JobRunningStatisticJob.class.getSimpleName() + "Trigger"));
-        assertThat(trigger.getNextFireTime(), is(StatisticTimeUtils.getStatisticTime(StatisticInterval.MINUTE, 1)));
     }
     
     @Test

@@ -92,7 +92,7 @@ public class StatisticRdbRepository {
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
                 + "`success_count` INT(11),"
                 + "`failed_count` INT(11),"
-                + "`statistics_time` TIMESTAMP DEFAULT 0 NOT NULL,"
+                + "`statistics_time` TIMESTAMP DEFAULT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "PRIMARY KEY (`id`));";
         try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
@@ -113,7 +113,7 @@ public class StatisticRdbRepository {
         String dbSchema = "CREATE TABLE `" + TABLE_TASK_RUNNING_STATISTICS + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
                 + "`running_count` INT(11),"
-                + "`statistics_time` TIMESTAMP DEFAULT 0 NOT NULL,"
+                + "`statistics_time` TIMESTAMP DEFAULT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "PRIMARY KEY (`id`));";
         try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
@@ -134,7 +134,7 @@ public class StatisticRdbRepository {
         String dbSchema = "CREATE TABLE `" + TABLE_JOB_RUNNING_STATISTICS + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
                 + "`running_count` INT(11),"
-                + "`statistics_time` TIMESTAMP DEFAULT 0 NOT NULL,"
+                + "`statistics_time` TIMESTAMP DEFAULT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "PRIMARY KEY (`id`));";
         try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
@@ -155,7 +155,7 @@ public class StatisticRdbRepository {
         String dbSchema = "CREATE TABLE `" + TABLE_JOB_REGISTER_STATISTICS + "` ("
                 + "`id` BIGINT NOT NULL AUTO_INCREMENT, "
                 + "`registered_count` INT(11),"
-                + "`statistics_time` TIMESTAMP DEFAULT 0 NOT NULL,"
+                + "`statistics_time` TIMESTAMP DEFAULT NULL,"
                 + "`creation_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "PRIMARY KEY (`id`));";
         try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {

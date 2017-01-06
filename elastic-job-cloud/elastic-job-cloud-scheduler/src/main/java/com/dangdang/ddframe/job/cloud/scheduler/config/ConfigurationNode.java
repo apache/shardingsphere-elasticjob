@@ -17,11 +17,15 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * 作业配置节点路径.
  *
  * @author zhangliang
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConfigurationNode {
     
     public static final String ROOT =  "/config";
