@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +33,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class StatisticsScheduledService extends AbstractScheduledService {
     
-    private final RunningService runningService = new RunningService();
+    private final RunningService runningService;
+    
+    public StatisticsScheduledService(final CoordinatorRegistryCenter registryCenter) {
+        runningService = new RunningService(registryCenter);
+    }
     
     @Override
     protected String serviceName() {

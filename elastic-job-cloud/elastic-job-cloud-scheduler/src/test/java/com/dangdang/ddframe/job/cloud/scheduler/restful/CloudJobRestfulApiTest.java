@@ -60,6 +60,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -133,7 +134,7 @@ public final class CloudJobRestfulApiTest {
     public void assertDeregister() throws Exception {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job"), is(204));
-        verify(regCenter).get("/config/test_job");
+        verify(regCenter, times(2)).get("/config/test_job");
     }
     
     @Test
@@ -173,7 +174,7 @@ public final class CloudJobRestfulApiTest {
     
     @Test
     public void assertFindAllRunningTasks() throws Exception {
-        RunningService runningService = new RunningService();
+        RunningService runningService = new RunningService(regCenter);
         TaskContext actualTaskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
         runningService.add(actualTaskContext);
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/tasks/runnings"), is(GsonFactory.getGson().toJson(Lists.newArrayList(actualTaskContext))));

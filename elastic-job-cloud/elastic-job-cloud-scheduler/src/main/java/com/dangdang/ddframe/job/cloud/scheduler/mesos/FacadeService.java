@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 为Mesos提供的门面服务.
@@ -56,7 +57,7 @@ public class FacadeService {
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
-        runningService = new RunningService();
+        runningService = new RunningService(regCenter);
         failoverService = new FailoverService(regCenter);
     }
     
@@ -65,7 +66,7 @@ public class FacadeService {
      */
     public void start() {
         log.info("Elastic Job: Start facade service");
-        runningService.clear();
+        runningService.start();
     }
     
     /**
@@ -221,6 +222,26 @@ public class FacadeService {
      */
     public String popMapping(final String taskId) {
         return runningService.popMapping(taskId);
+    }
+    
+    /**
+     * 更新常驻作业任务状态.
+     *
+     * @param taskContext 任务运行时上下文 
+     */
+    public void updateDaemonTask(final TaskContext taskContext) {
+        configService.load(taskContext.getMetaInfo().getJobName());
+        
+        runningService.updateDaemonTask(taskContext);
+    }
+    
+    /**
+     * 获取所有运行中的常驻任务.
+     * 
+     * @return 运行中任务集合
+     */
+    public Set<TaskContext> getAllRunningDaemonTask() {
+        return runningService.getAllRunningDaemonTasks();
     }
     
     /**

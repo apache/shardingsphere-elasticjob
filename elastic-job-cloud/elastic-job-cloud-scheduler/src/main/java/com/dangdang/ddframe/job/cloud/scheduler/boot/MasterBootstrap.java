@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
+import com.dangdang.ddframe.job.cloud.scheduler.ha.ReconcileScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchScheduledService;
@@ -84,6 +85,8 @@ public final class MasterBootstrap {
     
     private Service statisticsScheduledService;
     
+    private Service reconcileScheduledService;
+    
     public MasterBootstrap() {
         env = BootstrapEnvironment.getInstance();
         regCenter = getRegistryCenter();
@@ -96,13 +99,6 @@ public final class MasterBootstrap {
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         frameworkIDService = new FrameworkIDService(regCenter);
         CloudJobRestfulApi.init(regCenter, jobEventRdbSearch);
-        Runtime.getRuntime().addShutdownHook(new Thread("master-bootstrap-shutdown-hook") {
-            
-            @Override
-            public void run() {
-                facadeService.stop();
-            }
-        });
     }
     
     private CoordinatorRegistryCenter getRegistryCenter() {
@@ -128,7 +124,8 @@ public final class MasterBootstrap {
         cloudJobConfigurationListener =  new CloudJobConfigurationListener(schedulerDriver, producerManager, regCenter);
         getCache().getListenable().addListener(cloudJobConfigurationListener, Executors.newSingleThreadExecutor());
         taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus).startAsync();
-        statisticsScheduledService = new StatisticsScheduledService().startAsync();
+        statisticsScheduledService = new StatisticsScheduledService(regCenter).startAsync();
+        reconcileScheduledService =  ReconcileScheduledService.builder().facadeService(facadeService).scheduler(schedulerDriver).build().startAsync();
         statisticManager.startup();
         restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), WEBAPP_PATH);
         schedulerDriver.start();
@@ -185,6 +182,9 @@ public final class MasterBootstrap {
         }
         if (null != statisticsScheduledService) {
             statisticsScheduledService.stopAsync();
+        }
+        if (null != reconcileScheduledService) {
+            reconcileScheduledService.stopAsync();
         }
         restfulServer.stop();
         statisticManager.shutdown();

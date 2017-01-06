@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.lifecycle;
 
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import lombok.RequiredArgsConstructor;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
@@ -27,16 +28,12 @@ import org.apache.mesos.SchedulerDriver;
  *
  * @author zhangliang
  */
+@RequiredArgsConstructor
 public class LifecycleService {
     
     private final SchedulerDriver schedulerDriver;
     
     private final RunningService runningService;
-    
-    public LifecycleService(final SchedulerDriver schedulerDriver) {
-        this.schedulerDriver = schedulerDriver;
-        runningService = new RunningService();
-    }
     
     /**
      * 停止作业.

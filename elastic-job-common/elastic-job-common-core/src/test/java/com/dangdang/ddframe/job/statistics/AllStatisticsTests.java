@@ -26,7 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    StatisticRdbRepositoryTest.class, 
+    StatisticRdbRepositoryTest.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllStatisticsTests {

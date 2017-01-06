@@ -113,10 +113,10 @@ public final class CloudJobRestfulApi {
     public CloudJobRestfulApi() {
         Preconditions.checkNotNull(schedulerDriver);
         Preconditions.checkNotNull(regCenter);
-        lifecycleService = new LifecycleService(schedulerDriver);
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
-        runningService = new RunningService();
+        runningService = new RunningService(regCenter);
+        lifecycleService = new LifecycleService(schedulerDriver, runningService);
         failoverService = new FailoverService(regCenter);
         Optional<JobEventRdbConfiguration> jobEventRdbConfiguration = Optional.absent();
         statisticManager = StatisticManager.getInstance(regCenter, jobEventRdbConfiguration);

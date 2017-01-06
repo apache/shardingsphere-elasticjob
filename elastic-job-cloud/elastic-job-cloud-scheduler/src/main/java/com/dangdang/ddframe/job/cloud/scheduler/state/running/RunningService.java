@@ -17,11 +17,23 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +44,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @author zhangliang
  */
+@RequiredArgsConstructor
 public class RunningService {
     
     private static final int TASK_INITIAL_SIZE = 1024;
@@ -42,6 +55,35 @@ public class RunningService {
     
     private static final ConcurrentHashMap<String, String> TASK_HOSTNAME_MAPPER = new ConcurrentHashMap<>(TASK_INITIAL_SIZE);
     
+    private final CoordinatorRegistryCenter regCenter;
+    
+    private final ConfigurationService configurationService;
+    
+    public RunningService(final CoordinatorRegistryCenter regCenter) {
+        this.regCenter = regCenter;
+        this.configurationService = new ConfigurationService(regCenter);
+    }
+    
+    /**
+     * 启动任务运行队列.
+     */
+    public void start() {
+        clear();
+        List<String> jobKeys = regCenter.getChildrenKeys(RunningNode.ROOT);
+        for (String each : jobKeys) {
+            if (!configurationService.load(each).isPresent()) {
+                remove(each);
+                continue;
+            }
+            RUNNING_TASKS.put(each, Sets.newCopyOnWriteArraySet(Lists.transform(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(each)), new Function<String, TaskContext>() {
+                @Override
+                public TaskContext apply(final String input) {
+                    return TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(TaskContext.MetaInfo.from(input).toString())));
+                }
+            })));
+        }
+    }
+    
     /**
      * 将任务运行时上下文放入运行时队列.
      * 
@@ -49,6 +91,22 @@ public class RunningService {
      */
     public void add(final TaskContext taskContext) {
         getRunningTasks(taskContext.getMetaInfo().getJobName()).add(taskContext);
+        if (!isDaemon(taskContext)) {
+            return;
+        }
+        String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString());
+        if (!regCenter.isExisted(runningTaskNodePath)) {
+            regCenter.persist(runningTaskNodePath, taskContext.getId());
+        }
+    }
+    
+    private boolean isDaemon(final TaskContext taskContext) {
+        return isDaemon(taskContext.getMetaInfo().getJobName());
+    }
+    
+    private boolean isDaemon(final String jobName) {
+        Optional<CloudJobConfiguration> cloudJobConfigurationOptional = configurationService.load(jobName);
+        return cloudJobConfigurationOptional.isPresent() && JobExecutionType.DAEMON == cloudJobConfigurationOptional.get().getJobExecutionType();
     }
     
     /**
@@ -57,14 +115,43 @@ public class RunningService {
      * @param isIdle 是否闲置
      */
     public void updateIdle(final TaskContext taskContext, final boolean isIdle) {
-        Collection<TaskContext> runningTasks = getRunningTasks(taskContext.getMetaInfo().getJobName());
         synchronized (RUNNING_TASKS) {
-            for (TaskContext each : runningTasks) {
-                if (each.equals(taskContext)) {
-                    each.setIdle(isIdle);
-                }
+            Optional<TaskContext> taskContextOptional = findTask(taskContext);
+            if (taskContextOptional.isPresent()) {
+                taskContextOptional.get().setIdle(isIdle);
+                taskContextOptional.get().updateTime();
+            } else {
+                add(taskContext);
             }
         }
+    }
+    
+    /**
+     * 更新任务时间.
+     *
+     * @param taskContext 任务运行时上下文
+     */
+    public void updateDaemonTask(final TaskContext taskContext) {
+        if (!isDaemon(taskContext)) {
+            return;
+        }
+        synchronized (RUNNING_TASKS) {
+            Optional<TaskContext> taskContextOptional = findTask(taskContext);
+            if (taskContextOptional.isPresent()) {
+                taskContextOptional.get().updateTime();
+            } else {
+                add(taskContext);
+            }
+        }
+    }
+    
+    private Optional<TaskContext> findTask(final TaskContext taskContext) {
+        return Iterators.tryFind(getRunningTasks(taskContext.getMetaInfo().getJobName()).iterator(), new Predicate<TaskContext>() {
+            @Override
+            public boolean apply(final TaskContext input) {
+                return input.equals(taskContext);
+            }
+        });
     }
     
     /**
@@ -74,8 +161,12 @@ public class RunningService {
      */
     public void remove(final String jobName) {
         RUNNING_TASKS.remove(jobName);
+        if (!isDaemonOrAbsent(jobName)) {
+            return;
+        }
+        regCenter.remove(RunningNode.getRunningJobNodePath(jobName));
     }
-    
+        
     /**
      * 将任务从运行时队列删除.
      * 
@@ -83,6 +174,23 @@ public class RunningService {
      */
     public void remove(final TaskContext taskContext) {
         getRunningTasks(taskContext.getMetaInfo().getJobName()).remove(taskContext);
+        if (!isDaemonOrAbsent(taskContext)) {
+            return;
+        }
+        regCenter.remove(RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString()));
+        String jobRootNode = RunningNode.getRunningJobNodePath(taskContext.getMetaInfo().getJobName());
+        if (regCenter.isExisted(jobRootNode) && regCenter.getChildrenKeys(jobRootNode).isEmpty()) {
+            regCenter.remove(jobRootNode);
+        }
+    }
+    
+    private boolean isDaemonOrAbsent(final TaskContext taskContext) {
+        return isDaemonOrAbsent(taskContext.getMetaInfo().getJobName());
+    }
+    
+    private boolean isDaemonOrAbsent(final String jobName) {
+        Optional<CloudJobConfiguration> cloudJobConfigurationOptional = configurationService.load(jobName);
+        return !cloudJobConfigurationOptional.isPresent() || JobExecutionType.DAEMON == cloudJobConfigurationOptional.get().getJobExecutionType();
     }
     
     /**
@@ -130,6 +238,28 @@ public class RunningService {
     public Map<String, Set<TaskContext>> getAllRunningTasks() {
         Map<String, Set<TaskContext>> result = new HashMap<>(RUNNING_TASKS.size(), 1);
         result.putAll(RUNNING_TASKS);
+        return result;
+    }
+    
+    /**
+     * 获取所有的运行中的常驻作业.
+     * 
+     * @return 运行中常驻作业集合
+     */
+    public Set<TaskContext> getAllRunningDaemonTasks() {
+        List<String> jobKeys = regCenter.getChildrenKeys(RunningNode.ROOT);
+        for (String each : jobKeys) {
+            if (!RUNNING_TASKS.containsKey(each)) {
+                remove(each);
+            }
+        }
+        Set<TaskContext> result = Sets.newHashSet();
+        for (Map.Entry<String, Set<TaskContext>> each : RUNNING_TASKS.entrySet()) {
+            if (!isDaemonOrAbsent(each.getKey())) {
+                continue;
+            }
+            result.addAll(each.getValue());
+        }
         return result;
     }
     

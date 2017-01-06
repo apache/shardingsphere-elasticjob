@@ -81,7 +81,7 @@ public final class FacadeServiceTest {
     @Test
     public void assertStart() {
         facadeService.start();
-        verify(runningService).clear();
+        verify(runningService).start();
     }
     
     @Test

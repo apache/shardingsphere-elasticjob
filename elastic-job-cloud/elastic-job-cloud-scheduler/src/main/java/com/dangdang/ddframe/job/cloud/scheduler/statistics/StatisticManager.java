@@ -59,7 +59,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatisticManager {
     
-    private static volatile StatisticManager instance; 
+    private static volatile StatisticManager instance;
+    
+    private final CoordinatorRegistryCenter registryCenter;
     
     private final ConfigurationService configurationService;
     
@@ -70,6 +72,15 @@ public class StatisticManager {
     private final Map<StatisticInterval, TaskResultMetaData> statisticData;
     
     private StatisticRdbRepository rdbRepository;
+    
+    private StatisticManager(final CoordinatorRegistryCenter registryCenter, final Optional<JobEventRdbConfiguration> jobEventRdbConfiguration,
+                             final StatisticsScheduler scheduler, final Map<StatisticInterval, TaskResultMetaData> statisticData) {
+        this.registryCenter = registryCenter;
+        this.configurationService = new ConfigurationService(registryCenter);
+        this.jobEventRdbConfiguration = jobEventRdbConfiguration;
+        this.scheduler = scheduler;
+        this.statisticData = statisticData;
+    }
     
     /**
      * 获取统计作业调度管理器.
@@ -84,7 +95,7 @@ public class StatisticManager {
                     statisticData.put(StatisticInterval.MINUTE, new TaskResultMetaData());
                     statisticData.put(StatisticInterval.HOUR, new TaskResultMetaData());
                     statisticData.put(StatisticInterval.DAY, new TaskResultMetaData());
-                    instance = new StatisticManager(new ConfigurationService(regCenter), jobEventRdbConfiguration, new StatisticsScheduler(), statisticData);
+                    instance = new StatisticManager(regCenter, jobEventRdbConfiguration, new StatisticsScheduler(), statisticData);
                     init();
                 }
             }
@@ -111,7 +122,7 @@ public class StatisticManager {
             scheduler.register(new TaskResultStatisticJob(StatisticInterval.MINUTE, statisticData.get(StatisticInterval.MINUTE), rdbRepository));
             scheduler.register(new TaskResultStatisticJob(StatisticInterval.HOUR, statisticData.get(StatisticInterval.HOUR), rdbRepository));
             scheduler.register(new TaskResultStatisticJob(StatisticInterval.DAY, statisticData.get(StatisticInterval.DAY), rdbRepository));
-            scheduler.register(new JobRunningStatisticJob(rdbRepository));
+            scheduler.register(new JobRunningStatisticJob(registryCenter, rdbRepository));
             scheduler.register(new RegisteredJobStatisticJob(configurationService, rdbRepository));
         }
     }

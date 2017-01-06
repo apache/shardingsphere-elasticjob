@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -64,10 +65,11 @@ public class JobRunningStatisticJob extends AbstractStatisticJob {
     
     /**
      * 构造函数.
+     * @param registryCenter 注册中心
      * @param rdbRepository 基于rdb的数据仓库对象
      */
-    public JobRunningStatisticJob(final StatisticRdbRepository rdbRepository) {
-        runningService = new RunningService();
+    public JobRunningStatisticJob(final CoordinatorRegistryCenter registryCenter, final StatisticRdbRepository rdbRepository) {
+        runningService = new RunningService(registryCenter);
         this.repository = rdbRepository;
     }
     

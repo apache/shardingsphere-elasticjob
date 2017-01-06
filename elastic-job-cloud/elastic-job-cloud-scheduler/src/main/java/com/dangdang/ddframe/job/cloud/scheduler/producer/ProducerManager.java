@@ -52,9 +52,9 @@ public class ProducerManager {
     public ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
-        runningService = new RunningService();
+        runningService = new RunningService(regCenter);
         transientProducerScheduler = new TransientProducerScheduler(readyService);
-        lifecycleService = new LifecycleService(schedulerDriver);
+        lifecycleService = new LifecycleService(schedulerDriver, runningService);
     }
     
     /**
