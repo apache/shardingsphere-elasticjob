@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,6 +78,8 @@ public class StatisticManagerTest {
     @After
     public void tearDown() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(StatisticManager.class, StatisticManager.class.getDeclaredField("instance"), null);
+        reset(configurationService);
+        reset(rdbRepository);
     }
     
     @Test
@@ -85,13 +88,13 @@ public class StatisticManagerTest {
     }
     
     @Test
-    public void assertStartupWhenRDBRepositoryIsNull() throws NoSuchFieldException {
+    public void assertStartupWhenRdbIsNotConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
         statisticManager.startup();
     }
     
     @Test
-    public void assertStartupWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
+    public void assertStartupWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         statisticManager.startup();
     }
@@ -110,7 +113,7 @@ public class StatisticManagerTest {
     }
     
     @Test
-    public void assertTaskResultStatisticsWhenRDBRepositoryIsNull() throws NoSuchFieldException {
+    public void assertTaskResultStatisticsWhenRdbIsNotConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
         assertThat(statisticManager.getTaskResultStatisticsWeekly().getSuccessCount(), is(0));
         assertThat(statisticManager.getTaskResultStatisticsWeekly().getFailedCount(), is(0));
@@ -119,7 +122,7 @@ public class StatisticManagerTest {
     }
     
     @Test
-    public void assertTaskResultStatisticsWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
+    public void assertTaskResultStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.getSummedTaskResultStatistics(any(Date.class), any(StatisticInterval.class)))
             .thenReturn(new TaskResultStatistics(10, 10, StatisticInterval.DAY, new Date()));
@@ -155,13 +158,13 @@ public class StatisticManagerTest {
     }
     
     @Test
-    public void assertFindTaskRunningStatisticsWhenRDBRepositoryIsNull() throws NoSuchFieldException {
+    public void assertFindTaskRunningStatisticsWhenRdbIsNotConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
         assertTrue(statisticManager.findTaskRunningStatisticsWeekly().isEmpty());
     }
     
     @Test
-    public void assertFindTaskRunningStatisticsWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
+    public void assertFindTaskRunningStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.findTaskRunningStatistics(any(Date.class)))
             .thenReturn(Lists.newArrayList(new TaskRunningStatistics(10, new Date())));
@@ -170,13 +173,13 @@ public class StatisticManagerTest {
     }
     
     @Test
-    public void assertFindJobRunningStatisticsWhenRDBRepositoryIsNull() throws NoSuchFieldException {
+    public void assertFindJobRunningStatisticsWhenRdbIsNotConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
         assertTrue(statisticManager.findJobRunningStatisticsWeekly().isEmpty());
     }
     
     @Test
-    public void assertFindJobRunningStatisticsWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
+    public void assertFindJobRunningStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.findJobRunningStatistics(any(Date.class)))
             .thenReturn(Lists.newArrayList(new JobRunningStatistics(10, new Date())));
@@ -185,17 +188,55 @@ public class StatisticManagerTest {
     }
     
     @Test
-    public void assertFindJobRegisterStatisticsWhenRDBRepositoryIsNull() throws NoSuchFieldException {
+    public void assertFindJobRegisterStatisticsWhenRdbIsNotConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
         assertTrue(statisticManager.findJobRegisterStatisticsSinceOnline().isEmpty());
     }
     
     @Test
-    public void assertFindJobRegisterStatisticsWhenRDBRepositoryIsNotNull() throws NoSuchFieldException {
+    public void assertFindJobRegisterStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
         when(rdbRepository.findJobRegisterStatistics(any(Date.class)))
             .thenReturn(Lists.newArrayList(new JobRegisterStatistics(10, new Date())));
         assertThat(statisticManager.findJobRegisterStatisticsSinceOnline().size(), is(1));
         verify(rdbRepository).findJobRegisterStatistics(any(Date.class));
+    }
+    
+    @Test
+    public void assertFindLatestTaskResultStatisticsWhenRdbIsNotConfigured() throws NoSuchFieldException {
+        ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
+        for (StatisticInterval each : StatisticInterval.values()) {
+            TaskResultStatistics actual = statisticManager.findLatestTaskResultStatistics(each);
+            assertThat(actual.getSuccessCount(), is(0));
+            assertThat(actual.getFailedCount(), is(0));
+        }
+    }
+    
+    @Test
+    public void assertFindLatestTaskResultStatisticsWhenRdbIsConfigured() throws NoSuchFieldException {
+        ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
+        for (StatisticInterval each : StatisticInterval.values()) {
+            when(rdbRepository.findLatestTaskResultStatistics(each))
+                .thenReturn(Optional.of(new TaskResultStatistics(10, 5, each, new Date())));
+            TaskResultStatistics actual = statisticManager.findLatestTaskResultStatistics(each);
+            assertThat(actual.getSuccessCount(), is(10));
+            assertThat(actual.getFailedCount(), is(5));
+        }
+        verify(rdbRepository, times(StatisticInterval.values().length)).findLatestTaskResultStatistics(any(StatisticInterval.class));
+    }
+    
+    @Test
+    public void assertFindTaskResultStatisticsDailyWhenRdbIsNotConfigured() throws NoSuchFieldException {
+        ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", null);
+        assertTrue(statisticManager.findTaskResultStatisticsDaily().isEmpty());
+    }
+    
+    @Test
+    public void assertFindTaskResultStatisticsDailyWhenRdbIsConfigured() throws NoSuchFieldException {
+        ReflectionUtils.setFieldValue(statisticManager, "rdbRepository", rdbRepository);
+        when(rdbRepository.findTaskResultStatistics(any(Date.class), any(StatisticInterval.class)))
+            .thenReturn(Lists.newArrayList(new TaskResultStatistics(10, 5, StatisticInterval.MINUTE, new Date())));
+        assertThat(statisticManager.findTaskResultStatisticsDaily().size(), is(1));
+        verify(rdbRepository).findTaskResultStatistics(any(Date.class), any(StatisticInterval.class));
     }
 }

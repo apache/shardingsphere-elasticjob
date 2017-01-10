@@ -140,13 +140,17 @@ public class StatisticManager {
         statisticDatas.get(StatisticInterval.DAY).incrementAndGetFailedCount();
     }
     
+    private boolean isRdbConfigured() {
+        return null != rdbRepository;
+    }
+    
     /**
      * 获取最近一周的任务运行结果统计数据.
      * 
      * @return 任务运行结果统计数据对象
      */
     public TaskResultStatistics getTaskResultStatisticsWeekly() {
-        if (null == rdbRepository) {
+        if (!isRdbConfigured()) {
             return new TaskResultStatistics(0, 0, StatisticInterval.DAY, new Date());
         }
         return rdbRepository.getSummedTaskResultStatistics(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -7), StatisticInterval.DAY);
@@ -158,10 +162,37 @@ public class StatisticManager {
      * @return 任务运行结果统计数据对象
      */
     public TaskResultStatistics getTaskResultStatisticsSinceOnline() {
-        if (null == rdbRepository) {
+        if (!isRdbConfigured()) {
             return new TaskResultStatistics(0, 0, StatisticInterval.DAY, new Date());
         }
         return rdbRepository.getSummedTaskResultStatistics(getOnlineDate(), StatisticInterval.DAY);
+    }
+    
+    /**
+     * 获取最近一个统计周期的任务运行结果统计数据.
+     * 
+     * @return 任务运行结果统计数据对象
+     */
+    public TaskResultStatistics findLatestTaskResultStatistics(final StatisticInterval statisticInterval) {
+        if (isRdbConfigured()) {
+            Optional<TaskResultStatistics> result = rdbRepository.findLatestTaskResultStatistics(statisticInterval);
+            if (result.isPresent()) {
+                return result.get();
+            }
+        }
+        return new TaskResultStatistics(0, 0, statisticInterval, new Date());
+    }
+    
+    /**
+     * 获取最近一天的任务运行结果统计数据集合.
+     * 
+     * @return 任务运行结果统计数据对象集合
+     */
+    public List<TaskResultStatistics> findTaskResultStatisticsDaily() {
+        if (!isRdbConfigured()) {
+            return Collections.emptyList();
+        }
+        return rdbRepository.findTaskResultStatistics(StatisticTimeUtils.getStatisticTime(StatisticInterval.HOUR, -24), StatisticInterval.MINUTE);
     }
     
     /**
@@ -209,7 +240,7 @@ public class StatisticManager {
      * @return 运行中的任务统计数据对象集合
      */
     public List<TaskRunningStatistics> findTaskRunningStatisticsWeekly() {
-        if (null == rdbRepository) {
+        if (!isRdbConfigured()) {
             return Collections.emptyList();
         }
         return rdbRepository.findTaskRunningStatistics(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -7));
@@ -221,7 +252,7 @@ public class StatisticManager {
      * @return 运行中的任务统计数据对象集合
      */
     public List<JobRunningStatistics> findJobRunningStatisticsWeekly() {
-        if (null == rdbRepository) {
+        if (!isRdbConfigured()) {
             return Collections.emptyList();
         }
         return rdbRepository.findJobRunningStatistics(StatisticTimeUtils.getStatisticTime(StatisticInterval.DAY, -7));
@@ -233,7 +264,7 @@ public class StatisticManager {
      * @return 运行中的任务统计数据对象集合
      */
     public List<JobRegisterStatistics> findJobRegisterStatisticsSinceOnline() {
-        if (null == rdbRepository) {
+        if (!isRdbConfigured()) {
             return Collections.emptyList();
         }
         return rdbRepository.findJobRegisterStatistics(getOnlineDate());
