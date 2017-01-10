@@ -57,6 +57,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -245,23 +246,30 @@ public final class CloudJobRestfulApiTest {
     
     @Test
     public void assertGetTaskResultStatistics() throws Exception {
-        String result = sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/results");
-        TaskResultStatistics taskResultStatistics = GsonFactory.getGson().fromJson(result, TaskResultStatistics.class);
-        assertThat(taskResultStatistics.getSuccessCount(), is(0));
-        assertThat(taskResultStatistics.getFailedCount(), is(0));
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/results"),
+                is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     @Test
-    public void assertGetTaskResultStatisticsWeekly() throws Exception {
-        String result = sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/results?since=lastWeek");
-        TaskResultStatistics taskResultStatistics = GsonFactory.getGson().fromJson(result, TaskResultStatistics.class);
-        assertThat(taskResultStatistics.getSuccessCount(), is(0));
-        assertThat(taskResultStatistics.getFailedCount(), is(0));
+    public void assertGetTaskResultStatisticsWithSinceParameter() throws Exception {
+        assertThat(sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/results?since=last24hours"), 
+                is(GsonFactory.getGson().toJson(Collections.emptyList())));
     }
     
     @Test
-    public void assertGetTaskResultStatisticsSinceOnline() throws Exception {
-        String result = sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/results?since=online");
+    public void assertGetTaskResultStatisticsWithPathParameter() throws Exception {
+        String[] paramters = {"online", "lastWeek", "lastHour", "lastMinute"};
+        for (String each : paramters) {
+            String result = sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/results/" + each);
+            TaskResultStatistics taskResultStatistics = GsonFactory.getGson().fromJson(result, TaskResultStatistics.class);
+            assertThat(taskResultStatistics.getSuccessCount(), is(0));
+            assertThat(taskResultStatistics.getFailedCount(), is(0));
+        }
+    }
+    
+    @Test
+    public void assertGetTaskResultStatisticsWithErrorPathParameter() throws Exception {
+        String result = sentGetRequest("http://127.0.0.1:19000/job/statistics/tasks/results/errorPath");
         TaskResultStatistics taskResultStatistics = GsonFactory.getGson().fromJson(result, TaskResultStatistics.class);
         assertThat(taskResultStatistics.getSuccessCount(), is(0));
         assertThat(taskResultStatistics.getFailedCount(), is(0));
