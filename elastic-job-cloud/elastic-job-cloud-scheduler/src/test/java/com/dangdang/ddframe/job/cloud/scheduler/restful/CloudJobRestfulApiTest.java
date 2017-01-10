@@ -39,6 +39,7 @@ import com.dangdang.ddframe.job.statistics.type.job.JobExecutionTypeStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobTypeStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.apache.mesos.SchedulerDriver;
 import org.eclipse.jetty.client.ContentExchange;
@@ -87,7 +88,7 @@ public final class CloudJobRestfulApiTest {
         jobEventRdbSearch = mock(JobEventRdbSearch.class);
         CloudJobRestfulApi.init(schedulerDriver, regCenter);
         server = new RestfulServer(19000);
-        server.start(CloudJobRestfulApi.class.getPackage().getName());
+        server.start(CloudJobRestfulApi.class.getPackage().getName(), Optional.of("console"));
     }
     
     @AfterClass
