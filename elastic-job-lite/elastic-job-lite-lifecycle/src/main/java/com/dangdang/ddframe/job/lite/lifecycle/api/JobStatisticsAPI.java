@@ -29,22 +29,22 @@ import java.util.Collection;
  * @author zhangliang
  */
 public interface JobStatisticsAPI {
-
+    
     /**
      * 获取作业简明信息.
      *
      * @param jobName 作业名称
      * @return 作业简明信息.
      */
-    JobBriefInfo getJobsBriefInfo(String jobName);
-
+    JobBriefInfo getJobBriefInfo(String jobName);
+    
     /**
      * 获取所有作业简明信息.
      *
      * @return 作业简明信息集合.
      */
     Collection<JobBriefInfo> getAllJobsBriefInfo();
-
+    
     /**
      * 获取执行作业的服务器.
      *
@@ -52,7 +52,7 @@ public interface JobStatisticsAPI {
      * @return 作业的服务器集合
      */
     Collection<ServerInfo> getServers(String jobName);
-
+    
     /**
      * 获取作业运行时信息.
      *

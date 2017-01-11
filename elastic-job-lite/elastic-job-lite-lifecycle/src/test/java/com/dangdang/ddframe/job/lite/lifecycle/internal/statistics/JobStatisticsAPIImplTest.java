@@ -37,40 +37,40 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public final class JobStatisticsAPIImplTest {
-
+    
     private JobStatisticsAPI jobStatisticsAPI;
-
+    
     @Mock
     private CoordinatorRegistryCenter regCenter;
-
+    
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         jobStatisticsAPI = new JobStatisticsAPIImpl(regCenter);
     }
-
+    
     @Test
     public void assertGetAllJobsBriefInfoWithoutNamespace() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         assertThat(jobStatisticsAPI.getAllJobsBriefInfo().size(), is(0));
     }
-
+    
     @Test
-    public void assertGetJobsBriefInfo() {
+    public void assertGetJobBriefInfo() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.get("/test_job/servers/ip1/status")).thenReturn("RUNNING");
         when(regCenter.get("/test_job/servers/ip2/status")).thenReturn("READY");
         when(regCenter.isExisted("/test_job/servers/ip2/disabled")).thenReturn(true);
-        JobBriefInfo jobBrief = jobStatisticsAPI.getJobsBriefInfo("test_job");
+        JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getJobName(), is("test_job"));
         assertThat(jobBrief.getDescription(), is("desc"));
         assertThat(jobBrief.getCron(), is("0/1 * * * * ?"));
         assertThat(jobBrief.getJobType(), is("SIMPLE"));
         assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.DISABLED));
     }
-
+    
     @Test
     public void assertGetAllJobsBriefInfo() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
@@ -102,7 +102,7 @@ public final class JobStatisticsAPIImplTest {
             }
         }
     }
-
+    
     @Test
     public void assertGetServers() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
@@ -130,13 +130,13 @@ public final class JobStatisticsAPIImplTest {
             }
         }
     }
-
+    
     @Test
     public void assertGetExecutionInfoWithoutMonitorExecution() {
         when(regCenter.isExisted("/test_job/execution")).thenReturn(false);
         assertTrue(jobStatisticsAPI.getExecutionInfo("test_job").isEmpty());
     }
-
+    
     @Test
     public void assertGetExecutionInfoWithMonitorExecution() {
         when(regCenter.isExisted("/test_job/execution")).thenReturn(true);
