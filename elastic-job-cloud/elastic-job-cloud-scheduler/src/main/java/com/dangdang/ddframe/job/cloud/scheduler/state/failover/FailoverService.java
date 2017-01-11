@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.ExecutionType;
@@ -75,12 +74,9 @@ public class FailoverService {
             log.warn("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
-        Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getMetaInfo().getJobName());
-        if (!jobConfig.isPresent() || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
-            return;
-        }
         String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo().toString());
         if (!regCenter.isExisted(failoverTaskNodePath) && !runningService.isTaskRunning(taskContext.getMetaInfo())) {
+            // TODO Daemon类型作业增加存储是否立即失效转移
             regCenter.persist(failoverTaskNodePath, taskContext.getId());
         }
     }
@@ -185,9 +181,9 @@ public class FailoverService {
         List<String> failOverTasks = regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(jobName));
         List<FailoverTaskInfo> result = new ArrayList<>(failOverTasks.size());
         for (String each : failOverTasks) {
-            String orginalTaskId = regCenter.get(FailoverNode.getFailoverTaskNodePath(each));
-            if (!Strings.isNullOrEmpty(orginalTaskId)) {
-                result.add(new FailoverTaskInfo(MetaInfo.from(each), orginalTaskId));
+            String originalTaskId = regCenter.get(FailoverNode.getFailoverTaskNodePath(each));
+            if (!Strings.isNullOrEmpty(originalTaskId)) {
+                result.add(new FailoverTaskInfo(MetaInfo.from(each), originalTaskId));
             }
         }
         return result;
