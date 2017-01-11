@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
+import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
@@ -32,6 +33,7 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Optional;
 import lombok.Setter;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -44,8 +46,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -60,19 +60,28 @@ public class JobScheduler {
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
     
+    private final String jobName;
+    
     private final JobExecutor jobExecutor;
     
     private final JobFacade jobFacade;
     
+    private final JobRegistry jobRegistry;
+    
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
-        this(regCenter, liteJobConfig, Collections.<JobEventConfiguration>emptyList(), elasticJobListeners);
+        this(regCenter, liteJobConfig, new JobEventBus(), elasticJobListeners);
     }
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final Collection<JobEventConfiguration> jobEventConfigs, 
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventConfiguration jobEventConfig, 
                         final ElasticJobListener... elasticJobListeners) {
-        JobEventBus jobEventBus = new JobEventBus(jobEventConfigs.toArray(new JobEventConfiguration[jobEventConfigs.size()]));
+        this(regCenter, liteJobConfig, new JobEventBus(jobEventConfig), elasticJobListeners);
+    }
+    
+    private JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
+        jobName = liteJobConfig.getJobName();
         jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
-        jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
+        jobFacade = new LiteJobFacade(regCenter, jobName, Arrays.asList(elasticJobListeners), jobEventBus);
+        jobRegistry = JobRegistry.getInstance();
     }
     
     /**
@@ -80,56 +89,64 @@ public class JobScheduler {
      */
     public void init() {
         jobExecutor.init();
-        JobDetail jobDetail = JobBuilder.newJob(LiteJob.class).withIdentity(jobExecutor.getLiteJobConfig().getJobName()).build();
-        try {
-            if (!jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass().equals(ScriptJob.class.getCanonicalName())) {
-                jobDetail.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass()).newInstance());
-            }
-        } catch (final ReflectiveOperationException ex) {
-            throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobExecutor.getLiteJobConfig().getTypeConfig().getJobClass());
-        }
-        jobDetail.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
-        JobScheduleController jobScheduleController;
-        try {
-            jobScheduleController = new JobScheduleController(initializeScheduler(jobDetail.getKey().toString()), jobDetail, 
-                    jobExecutor.getSchedulerFacade(), jobExecutor.getLiteJobConfig().getJobName());
-            jobScheduleController.scheduleJob(jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig().getCoreConfig().getCron());
-        } catch (final SchedulerException ex) {
-            throw new JobSystemException(ex);
-        }
-        JobRegistry.getInstance().addJobScheduleController(jobExecutor.getLiteJobConfig().getJobName(), jobScheduleController);
+        JobTypeConfiguration jobTypeConfig = jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig();
+        JobScheduleController jobScheduleController = new JobScheduleController(
+                createScheduler(jobTypeConfig.getCoreConfig().isMisfire()), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
+        jobScheduleController.scheduleJob(jobTypeConfig.getCoreConfig().getCron());
+        jobRegistry.addJobScheduleController(jobName, jobScheduleController);
     }
     
-    private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
-        StdSchedulerFactory factory = new StdSchedulerFactory();
-        factory.initialize(getBaseQuartzProperties(jobName));
-        Scheduler result = factory.getScheduler();
-        result.getListenerManager().addTriggerListener(jobExecutor.getSchedulerFacade().newJobTriggerListener());
+    private JobDetail createJobDetail(final String jobClass) {
+        JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(jobName).build();
+        result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
+        Optional<ElasticJob> elasticJobInstance = createElasticJobInstance();
+        if (elasticJobInstance.isPresent()) {
+            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance.get());
+        } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
+            try {
+                result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
+            } catch (final ReflectiveOperationException ex) {
+                throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobClass);
+            }
+        }
         return result;
     }
     
-    private Properties getBaseQuartzProperties(final String jobName) {
+    protected Optional<ElasticJob> createElasticJobInstance() {
+        return Optional.absent();
+    }
+    
+    private Scheduler createScheduler(final boolean isMisfire) {
+        Scheduler result;
+        try {
+            StdSchedulerFactory factory = new StdSchedulerFactory();
+            factory.initialize(getBaseQuartzProperties(isMisfire));
+            result = factory.getScheduler();
+            result.getListenerManager().addTriggerListener(jobExecutor.getSchedulerFacade().newJobTriggerListener());
+        } catch (final SchedulerException ex) {
+            throw new JobSystemException(ex);
+        }
+        return result;
+    }
+    
+    private Properties getBaseQuartzProperties(final boolean isMisfire) {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", jobName);
-        if (!jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig().getCoreConfig().isMisfire()) {
+        if (!isMisfire) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
         result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
         result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
-        prepareEnvironments(result);
         return result;
-    }
-    
-    protected void prepareEnvironments(final Properties props) {
     }
     
     /**
      * 停止作业调度.
      */
     public void shutdown() {
-        JobRegistry.getInstance().getJobScheduleController(jobExecutor.getLiteJobConfig().getJobName()).shutdown();
+        jobRegistry.getJobScheduleController(jobName).shutdown();
     }
     
     /**

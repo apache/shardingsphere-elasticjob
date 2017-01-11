@@ -19,8 +19,12 @@ package com.dangdang.ddframe.job.cloud.executor;
 
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEvent;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -104,7 +108,14 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void postJobEvent(final JobEvent jobEvent) {
-        jobEventBus.post(jobEvent);
+    public void postJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
+        jobEventBus.post(jobExecutionEvent);
+    }
+    
+    @Override
+    public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
+        TaskContext taskContext = TaskContext.from(taskId);
+        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
+                Source.CLOUD_EXECUTOR, taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
     }
 }

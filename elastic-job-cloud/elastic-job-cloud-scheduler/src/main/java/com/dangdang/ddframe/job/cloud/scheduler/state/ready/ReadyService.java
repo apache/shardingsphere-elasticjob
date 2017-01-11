@@ -21,24 +21,28 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 待运行作业队列服务.
  *
  * @author zhangliang
+ * @author liguangyun
  */
 @Slf4j
 public class ReadyService {
@@ -160,5 +164,25 @@ public class ReadyService {
                 regCenter.persist(readyJobNode, Integer.toString(times - 1));
             }
         }
+    }
+    
+    /**
+     * 获取待运行的全部任务.
+     * 
+     * @return 待运行的全部任务
+     */
+    public Map<String, Integer> getAllReadyTasks() {
+        if (!regCenter.isExisted(ReadyNode.ROOT)) {
+            return Collections.emptyMap();
+        }
+        List<String> jobNames = regCenter.getChildrenKeys(ReadyNode.ROOT);
+        Map<String, Integer> result = new HashMap<>(jobNames.size(), 1);
+        for (String each : jobNames) {
+            String times = regCenter.get(ReadyNode.getReadyJobNodePath(each));
+            if (!Strings.isNullOrEmpty(times)) {
+                result.put(each, Integer.parseInt(times));
+            }
+        }
+        return result;
     }
 }

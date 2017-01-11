@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.lifecycle;
 
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;

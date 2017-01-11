@@ -29,16 +29,18 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.ddframe.job.util.restful.RestfulServer;
+import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.google.common.base.Optional;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.functions.Action1;
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
@@ -51,6 +53,8 @@ import org.apache.mesos.SchedulerDriver;
  */
 @Slf4j
 public final class MasterBootstrap {
+    
+    private static final String CONSOLE_PATH = "console";
     
     private final BootstrapEnvironment env;
     
@@ -67,7 +71,9 @@ public final class MasterBootstrap {
         final FacadeService facadeService = new FacadeService(regCenter);
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
-        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus);
+        final StatisticManager statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
+        statisticManager.startup();
+        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus, statisticManager);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         CloudJobRestfulApi.init(schedulerDriver, regCenter);
         initConfigurationListener();
@@ -81,6 +87,7 @@ public final class MasterBootstrap {
             public void run() {
                 facadeService.stop();
                 producerManager.shutdown();
+                statisticManager.shutdown();
             }
         });
     }
@@ -91,11 +98,12 @@ public final class MasterBootstrap {
         return result;
     }
     
-    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus) {
+    private SchedulerDriver getSchedulerDriver(
+            final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus, final StatisticManager statisticManager) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Protos.FrameworkInfo frameworkInfo = 
                 Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus), frameworkInfo, mesosConfig.getUrl());
+        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     
     private TaskScheduler getTaskScheduler() {
@@ -117,7 +125,7 @@ public final class MasterBootstrap {
     }
     
     private JobEventBus getJobEventBus() {
-        Optional<JobEventRdbConfiguration> rdbConfig = env.getRdbConfiguration();
+        Optional<JobEventRdbConfiguration> rdbConfig = env.getJobEventRdbConfiguration();
         if (rdbConfig.isPresent()) {
             return new JobEventBus(rdbConfig.get());
         }
@@ -131,7 +139,7 @@ public final class MasterBootstrap {
      * @throws Exception 运行时异常
      */
     public Protos.Status runAsDaemon() throws Exception {
-        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName());
+        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
         return schedulerDriver.run();
     }
     

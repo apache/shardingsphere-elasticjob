@@ -104,23 +104,40 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingWhenUnnecessary() {
+        when(serverService.getAvailableShardingServers()).thenReturn(Collections.singletonList("mockedIP"));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(false);
         shardingService.shardingIfNecessary();
+        verify(serverService).getAvailableShardingServers();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
     }
     
     @Test
+    public void assertShardingWithoutAvailableServers() {
+        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
+        when(serverService.getAvailableShardingServers()).thenReturn(Collections.<String>emptyList());
+        shardingService.shardingIfNecessary();
+        verify(serverService).getAvailableShardingServers();
+        verify(serverService).getAllServers();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/sharding");
+        verify(jobNodeStorage, times(0)).isJobNodeExisted("leader/sharding/necessary");
+    }
+    
+    @Test
     public void assertShardingWhenIsNotLeaderAndIsShardingProcessing() {
+        when(serverService.getAvailableShardingServers()).thenReturn(Collections.singletonList("mockedIP"));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true, true, false, false);
         when(leaderElectionService.isLeader()).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/processing")).thenReturn(true, false);
         shardingService.shardingIfNecessary();
+        verify(serverService).getAvailableShardingServers();
         verify(jobNodeStorage, times(4)).isJobNodeExisted("leader/sharding/necessary");
         verify(jobNodeStorage, times(2)).isJobNodeExisted("leader/sharding/processing");
     }
     
     @Test
     public void assertShardingNecessaryWhenMonitorExecutionEnabled() {
+        when(serverService.getAvailableShardingServers()).thenReturn(Collections.singletonList("mockedIP"));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
@@ -128,6 +145,7 @@ public final class ShardingServiceTest {
         when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
         when(executionService.hasRunningItems()).thenReturn(true, false);
         shardingService.shardingIfNecessary();
+        verify(serverService).getAvailableShardingServers();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
         verify(leaderElectionService).isLeader();
         verify(configService).load(false);
@@ -140,12 +158,14 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingNecessaryWhenMonitorExecutionDisabled() throws Exception {
+        when(serverService.getAvailableShardingServers()).thenReturn(Collections.singletonList("mockedIP"));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
         when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
         shardingService.shardingIfNecessary();
+        verify(serverService).getAvailableShardingServers();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
         verify(leaderElectionService).isLeader();
         verify(configService).load(false);

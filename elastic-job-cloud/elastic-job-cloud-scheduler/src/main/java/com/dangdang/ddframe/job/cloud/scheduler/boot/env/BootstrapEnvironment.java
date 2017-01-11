@@ -25,9 +25,11 @@ import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -102,19 +104,40 @@ public final class BootstrapEnvironment {
     }
     
     /**
-     * 获取RDB关系型数据库配置对象.
+     * 获取作业数据库事件配置.
      *
-     * @return RDB关系型数据库配置对象
+     * @return 作业数据库事件配置
      */
-    public Optional<JobEventRdbConfiguration> getRdbConfiguration() {
+    public Optional<JobEventRdbConfiguration> getJobEventRdbConfiguration() {
         String driver = getValue(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER);
         String url = getValue(EnvironmentArgument.EVENT_TRACE_RDB_URL);
         String username = getValue(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME);
         String password = getValue(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD);
         if (!Strings.isNullOrEmpty(driver) && !Strings.isNullOrEmpty(url) && !Strings.isNullOrEmpty(username)) {
-            return Optional.of(new JobEventRdbConfiguration(driver, url, username, password));
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setDriverClassName(driver);
+            dataSource.setUrl(url);
+            dataSource.setUsername(username);
+            dataSource.setPassword(password);
+            return Optional.of(new JobEventRdbConfiguration(dataSource));
         }
         return Optional.absent();
+    }
+    
+    /**
+     * 获取作业数据库事件配置Map.
+     *
+     * @return 作业数据库事件配置Map
+     */
+    // CHECKSTYLE:OFF
+    public HashMap<String, String> getJobEventRdbConfigurationMap() {
+        HashMap<String, String> result = new HashMap<>(4, 1);
+        // CHECKSTYLE:ON
+        result.put(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey(), getValue(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER));
+        result.put(EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey(), getValue(EnvironmentArgument.EVENT_TRACE_RDB_URL));
+        result.put(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey(), getValue(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME));
+        result.put(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey(), getValue(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD));
+        return result;
     }
     
     private String getValue(final EnvironmentArgument environmentArgument) {
@@ -152,15 +175,13 @@ public final class BootstrapEnvironment {
         
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true),
         
-        EVENT_TRACE_RDB_URL("event_trace_rdb_url", "", false),
-        
         EVENT_TRACE_RDB_DRIVER("event_trace_rdb_driver", "", false),
+        
+        EVENT_TRACE_RDB_URL("event_trace_rdb_url", "", false),
         
         EVENT_TRACE_RDB_USERNAME("event_trace_rdb_username", "", false),
         
-        EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false),
-        
-        EVENT_TRACE_RDB_LOG_LEVEL("event_trace_rdb_log_level", "INFO", true);
+        EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false);
         
         private final String key;
         

@@ -18,13 +18,19 @@
 package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.google.common.base.Optional;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 
+import java.util.Map;
 import java.util.Properties;
 
+import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public final class BootstrapEnvironmentTest {
@@ -69,6 +75,42 @@ public final class BootstrapEnvironmentTest {
     @Test
     public void assertGetFrameworkConfiguration() {
         FrameworkConfiguration frameworkConfig = bootstrapEnvironment.getFrameworkConfiguration();
+        assertThat(frameworkConfig.isAppCacheEnable(), is(false));
         assertThat(frameworkConfig.getJobStateQueueSize(), is(10000));
     }
+    
+    @Test
+    public void assertGetEventTraceRdbConfiguration() throws NoSuchFieldException {
+        Properties properties = new Properties();
+        properties.setProperty(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey(), "org.h2.Driver");
+        properties.setProperty(EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey(), "jdbc:h2:mem:job_event_trace");
+        properties.setProperty(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey(), "sa");
+        properties.setProperty(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey(), "password");
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
+        Optional<JobEventRdbConfiguration> jobEventRdbConfiguration = bootstrapEnvironment.getJobEventRdbConfiguration();
+        if (jobEventRdbConfiguration.isPresent()) {
+            assertThat(jobEventRdbConfiguration.get().getDataSource(), instanceOf(BasicDataSource.class));
+        }
+    }
+    
+    @Test
+    public void assertWithoutEventTraceRdbConfiguration() throws NoSuchFieldException {
+        assertFalse(bootstrapEnvironment.getJobEventRdbConfiguration().isPresent());
+    }
+    
+    @Test
+    public void assertGetEventTraceRdbConfigurationMap() throws NoSuchFieldException {
+        Properties properties = new Properties();
+        properties.setProperty(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey(), "org.h2.Driver");
+        properties.setProperty(EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey(), "jdbc:h2:mem:job_event_trace");
+        properties.setProperty(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey(), "sa");
+        properties.setProperty(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey(), "password");
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
+        Map<String, String> jobEventRdbConfigurationMap = bootstrapEnvironment.getJobEventRdbConfigurationMap();
+        assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_DRIVER.getKey()), is("org.h2.Driver"));
+        assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey()), is("jdbc:h2:mem:job_event_trace"));
+        assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey()), is("sa"));
+        assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey()), is("password"));
+    }
+    
 }

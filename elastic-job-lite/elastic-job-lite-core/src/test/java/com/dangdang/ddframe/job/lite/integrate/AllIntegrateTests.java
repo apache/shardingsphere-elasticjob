@@ -33,16 +33,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    DisabledJobTest.class, 
-    SimpleElasticJobTest.class, 
-    OneOffDataflowElasticJobTest.class, 
-    StreamingDataflowElasticJobTest.class, 
-    StreamingDataflowElasticJobForNotMonitorTest.class, 
-    StreamingDataflowElasticJobForMultipleThreadsTest.class, 
-    StreamingDataflowElasticJobForExecuteFailureTest.class, 
-    StreamingDataflowElasticJobForExecuteThrowsExceptionTest.class, 
-    StreamingDataflowElasticJobForPausedTest.class,
-    ScriptElasticJobTest.class
+        DisabledJobTest.class, 
+        SimpleElasticJobTest.class, 
+        OneOffDataflowElasticJobTest.class, 
+        StreamingDataflowElasticJobTest.class, 
+        StreamingDataflowElasticJobForNotMonitorTest.class, 
+        StreamingDataflowElasticJobForMultipleThreadsTest.class, 
+        StreamingDataflowElasticJobForExecuteFailureTest.class, 
+        StreamingDataflowElasticJobForExecuteThrowsExceptionTest.class, 
+        StreamingDataflowElasticJobForPausedTest.class,
+        ScriptElasticJobTest.class
     })
 public final class AllIntegrateTests {
 }

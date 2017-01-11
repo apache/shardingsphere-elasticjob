@@ -21,12 +21,14 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,7 @@ import org.unitils.util.ReflectionUtils;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -244,5 +247,50 @@ public final class ReadyServiceTest {
         verify(regCenter).remove("/state/ready/test_job_1");
         verify(regCenter, times(0)).persist("/state/ready/test_job_1", "0");
         verify(regCenter, times(0)).remove("/state/ready/test_job_2");
+    }
+    
+    @Test
+    public void assertGetAllTasksWithoutRootNode() {
+        when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(false);
+        assertTrue(readyService.getAllReadyTasks().isEmpty());
+        verify(regCenter).isExisted(ReadyNode.ROOT);
+        verify(regCenter, times(0)).getChildrenKeys((String) any());
+        verify(regCenter, times(0)).get((String) any());
+    }
+    
+    @Test
+    public void assertGetAllTasksWhenRootNodeHasNoChild() {
+        when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(true);
+        when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(Collections.<String>emptyList());
+        assertTrue(readyService.getAllReadyTasks().isEmpty());
+        verify(regCenter).isExisted(ReadyNode.ROOT);
+        verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
+        verify(regCenter, times(0)).get((String) any());
+    }
+    
+    @Test
+    public void assertGetAllTasksWhenNodeIsEmpty() {
+        when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(true);
+        when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(Lists.newArrayList("test_job"));
+        when(regCenter.get(ReadyNode.getReadyJobNodePath("test_job"))).thenReturn("");
+        assertTrue(readyService.getAllReadyTasks().isEmpty());
+        verify(regCenter).isExisted(ReadyNode.ROOT);
+        verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
+        verify(regCenter).get(ReadyNode.getReadyJobNodePath("test_job"));
+    }
+    
+    @Test
+    public void assertGetAllTasksWithRootNode() {
+        when(regCenter.isExisted(ReadyNode.ROOT)).thenReturn(true);
+        when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(Lists.newArrayList("test_job_1", "test_job_2"));
+        when(regCenter.get(ReadyNode.getReadyJobNodePath("test_job_1"))).thenReturn("1");
+        when(regCenter.get(ReadyNode.getReadyJobNodePath("test_job_2"))).thenReturn("5");
+        Map<String, Integer> result = readyService.getAllReadyTasks();
+        assertThat(result.size(), is(2));
+        assertThat(result.get("test_job_1"), is(1));
+        assertThat(result.get("test_job_2"), is(5));
+        verify(regCenter).isExisted(ReadyNode.ROOT);
+        verify(regCenter).getChildrenKeys(ReadyNode.ROOT);
+        verify(regCenter, times(2)).get((String) any());
     }
 }

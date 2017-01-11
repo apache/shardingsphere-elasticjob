@@ -17,9 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.netflix.fenzo.TaskScheduler;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,8 @@ public final class SchedulerEngine implements Scheduler {
     private final FacadeService facadeService;
     
     private final JobEventBus jobEventBus;
+    
+    private final StatisticManager statisticManager;
     
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
@@ -80,9 +84,8 @@ public final class SchedulerEngine implements Scheduler {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
-        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
-                taskContext.getType().name(), String.valueOf(taskContext.getMetaInfo().getShardingItem()), 
-                State.valueOf(taskStatus.getState().name()), String.format("source is: %s, message is: %s.", taskStatus.getSource(), taskStatus.getMessage())));
+        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), Source.CLOUD_SCHEDULER, 
+                taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
                 if ("BEGIN".equals(taskStatus.getMessage())) {
@@ -94,8 +97,10 @@ public final class SchedulerEngine implements Scheduler {
             case TASK_FINISHED:
                 facadeService.removeRunning(taskContext);
                 unAssignTask(taskId);
+                statisticManager.taskRunSuccessfully();
                 break;
             case TASK_KILLED:
+                log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);
                 facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
@@ -108,6 +113,7 @@ public final class SchedulerEngine implements Scheduler {
                 facadeService.recordFailoverTask(taskContext);
                 facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
+                statisticManager.taskRunFailed();
                 break;
             default:
                 break;

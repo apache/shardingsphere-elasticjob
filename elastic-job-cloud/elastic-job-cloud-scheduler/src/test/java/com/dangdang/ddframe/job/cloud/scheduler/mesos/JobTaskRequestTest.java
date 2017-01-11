@@ -17,12 +17,13 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.netflix.fenzo.TaskRequest;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
@@ -33,7 +34,7 @@ import static org.junit.Assert.assertThat;
 public final class JobTaskRequestTest {
     
     private JobTaskRequest jobTaskRequest = 
-            new JobTaskRequest(new TaskContext("test_job", 0, ExecutionType.READY, "unassigned-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
+            new JobTaskRequest(new TaskContext("test_job", Arrays.asList(0), ExecutionType.READY, "unassigned-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
     
     @Test
     public void assertGetId() {

@@ -18,8 +18,12 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEvent;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -32,6 +36,8 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +47,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
+@Slf4j
 public class LiteJobFacade implements JobFacade {
     
     private final ConfigurationService configService;
@@ -165,7 +172,17 @@ public class LiteJobFacade implements JobFacade {
     }
     
     @Override
-    public void postJobEvent(final JobEvent jobEvent) {
-        jobEventBus.post(jobEvent);
+    public void postJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
+        jobEventBus.post(jobExecutionEvent);
+    }
+    
+    @Override
+    public void postJobStatusTraceEvent(final String taskId, final State state, final String message) {
+        TaskContext taskContext = TaskContext.from(taskId);
+        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(),
+                taskContext.getSlaveId(), Source.LITE_EXECUTOR, taskContext.getType(), taskContext.getMetaInfo().getShardingItems().toString(), state, message));
+        if (!Strings.isNullOrEmpty(message)) {
+            log.trace(message);
+        }
     }
 }

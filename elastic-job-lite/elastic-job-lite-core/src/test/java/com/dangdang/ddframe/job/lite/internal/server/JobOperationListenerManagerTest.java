@@ -17,8 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
@@ -60,11 +58,9 @@ public final class JobOperationListenerManagerTest {
     @Mock
     private JobScheduleController jobScheduleController;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
-    
     private String ip = new LocalHostService().getIp();
     
-    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, liteJobConfig);
+    private final JobOperationListenerManager jobOperationListenerManager = new JobOperationListenerManager(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -93,9 +89,11 @@ public final class JobOperationListenerManagerTest {
     public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsNotPausedManually() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(serverService.isLocalhostServerEnabled()).thenReturn(true);
         when(serverService.isJobPausedManually()).thenReturn(false);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
-        verify(serverService).persistServerOnline(liteJobConfig);
+        verify(serverService).isLocalhostServerEnabled();
+        verify(serverService).persistServerOnline(true);
         verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
         verify(jobScheduleController).resumeJob();
     }
@@ -104,9 +102,11 @@ public final class JobOperationListenerManagerTest {
     public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsPausedManually() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(serverService.isLocalhostServerEnabled()).thenReturn(true);
         when(serverService.isJobPausedManually()).thenReturn(true);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
-        verify(serverService).persistServerOnline(liteJobConfig);
+        verify(serverService).isLocalhostServerEnabled();
+        verify(serverService).persistServerOnline(true);
         verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
         verify(jobScheduleController, times(0)).resumeJob();
     }

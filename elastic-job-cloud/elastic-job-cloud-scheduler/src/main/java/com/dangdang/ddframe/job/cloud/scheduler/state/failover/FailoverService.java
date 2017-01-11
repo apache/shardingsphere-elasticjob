@@ -21,13 +21,15 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +37,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -94,8 +98,8 @@ public class FailoverService {
         Collection<JobContext> result = new ArrayList<>(jobNames.size());
         Set<HashCode> assignedTasks = new HashSet<>(jobNames.size() * 10, 1);
         for (String each : jobNames) {
-            List<String> taskMetaInfoList = regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
-            if (taskMetaInfoList.isEmpty()) {
+            List<String> taskIdList = regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(each));
+            if (taskIdList.isEmpty()) {
                 regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
@@ -104,7 +108,7 @@ public class FailoverService {
                 regCenter.remove(FailoverNode.getFailoverJobNodePath(each));
                 continue;
             }
-            List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskMetaInfoList, assignedTasks);
+            List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIdList, assignedTasks);
             if (!assignedShardingItems.isEmpty()) {
                 if (jobConfig.isPresent()) {
                     result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
@@ -114,12 +118,12 @@ public class FailoverService {
         return result;
     }
     
-    private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskMetaInfoList, final Set<HashCode> assignedTasks) {
-        List<Integer> result = new ArrayList<>(taskMetaInfoList.size());
-        for (String each : taskMetaInfoList) {
+    private List<Integer> getAssignedShardingItems(final String jobName, final List<String> taskIdList, final Set<HashCode> assignedTasks) {
+        List<Integer> result = new ArrayList<>(taskIdList.size());
+        for (String each : taskIdList) {
             TaskContext.MetaInfo metaInfo = TaskContext.MetaInfo.from(each);
-            if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItem()).hash()) && !runningService.isTaskRunning(metaInfo)) {
-                result.add(metaInfo.getShardingItem());
+            if (assignedTasks.add(Hashing.md5().newHasher().putString(jobName, Charsets.UTF_8).putInt(metaInfo.getShardingItems().get(0)).hash()) && !runningService.isTaskRunning(metaInfo)) {
+                result.add(metaInfo.getShardingItems().get(0));
             }
         }
         return result;
@@ -134,5 +138,58 @@ public class FailoverService {
         for (TaskContext.MetaInfo each : metaInfoList) {
             regCenter.remove(FailoverNode.getFailoverTaskNodePath(each.toString()));
         }
+    }
+    
+    /**
+     * 从失效转移队列中查找任务.
+     *
+     * @param metaInfo 任务元信息
+     * @return 失效转移任务Id
+     */
+    public Optional<String> getTaskId(final MetaInfo metaInfo) {
+        String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(metaInfo.toString());
+        Optional<String> result = Optional.absent();
+        if (regCenter.isExisted(failoverTaskNodePath)) {
+            result = Optional.of(regCenter.get(failoverTaskNodePath));
+        }
+        return result;
+    }
+    
+    /**
+     * 获取待失效转移的全部任务.
+     * 
+     * @return 待失效转移的全部任务
+     */
+    public Map<String, Collection<FailoverTaskInfo>> getAllFailoverTasks() {
+        if (!regCenter.isExisted(FailoverNode.ROOT)) {
+            return Collections.emptyMap();
+        }
+        List<String> jobNames = regCenter.getChildrenKeys(FailoverNode.ROOT);
+        Map<String, Collection<FailoverTaskInfo>> result = new HashMap<>(jobNames.size(), 1);
+        for (String each : jobNames) {
+            Collection<FailoverTaskInfo> failoverTasks = getFailoverTasks(each);
+            if (!failoverTasks.isEmpty()) {
+                result.put(each, failoverTasks);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * 获取待失效转移的任务集合.
+     *
+     * @param jobName 作业名称
+     * @return 待失效转移的任务集合
+     */
+    private Collection<FailoverTaskInfo> getFailoverTasks(final String jobName) {
+        List<String> failOverTasks = regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(jobName));
+        List<FailoverTaskInfo> result = new ArrayList<>(failOverTasks.size());
+        for (String each : failOverTasks) {
+            String orginalTaskId = regCenter.get(FailoverNode.getFailoverTaskNodePath(each));
+            if (!Strings.isNullOrEmpty(orginalTaskId)) {
+                result.add(new FailoverTaskInfo(MetaInfo.from(each), orginalTaskId));
+            }
+        }
+        return result;
     }
 }

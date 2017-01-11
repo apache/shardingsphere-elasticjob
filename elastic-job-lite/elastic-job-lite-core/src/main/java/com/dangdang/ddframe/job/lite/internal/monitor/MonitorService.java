@@ -70,10 +70,10 @@ public class MonitorService {
             return;
         }
         try {
-            //JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.INFO, String.format("Monitor service is running, the port is: '%s'.", port)));
+            log.info("Elastic job: Monitor service is running, the port is '{}'", port);
             openSocketForMonitor(port);
         } catch (final IOException ex) {
-            //JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket initialize failure.", ex));
+            log.error("Elastic job: Monitor service listen failure, error is: ", ex);
         }
     }
     
@@ -87,7 +87,7 @@ public class MonitorService {
                     try {
                         process(serverSocket.accept());
                     } catch (final IOException ex) {
-                        //JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket initialize failure.", ex));
+                        log.error("Elastic job: Monitor service open socket for monitor failure, error is: ", ex);
                     }
                 }
             }
@@ -142,7 +142,7 @@ public class MonitorService {
             try {
                 serverSocket.close();
             } catch (final IOException ex) {
-                //JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket close failure.", ex));
+                log.error("Elastic job: Monitor service close failure, error is: ", ex);
             }
         }
     }

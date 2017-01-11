@@ -19,9 +19,9 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
@@ -219,5 +219,17 @@ public final class FacadeServiceTest {
     public void assertStop() {
         facadeService.stop();
         verify(runningService).clear();
+    }
+    
+    @Test
+    public void assertGetFailoverTaskId() {
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        TaskContext taskContext = TaskContext.from(taskNode.getTaskNodeValue());
+        facadeService.recordFailoverTask(taskContext);
+        verify(failoverService).add(taskContext);
+        facadeService.getFailoverTaskId(taskContext.getMetaInfo());
+        when(facadeService.getFailoverTaskId(taskContext.getMetaInfo())).thenReturn(Optional.of(taskNode.getTaskNodePath()));
+        verify(failoverService).getTaskId(taskContext.getMetaInfo());
     }
 }

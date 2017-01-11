@@ -267,8 +267,8 @@ public class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertPostJobEvent() {
-        liteJobFacade.postJobEvent(null);
+    public void assertPostJobExecutionEvent() {
+        liteJobFacade.postJobExecutionEvent(null);
         verify(eventBus).post(null);
     }
 }

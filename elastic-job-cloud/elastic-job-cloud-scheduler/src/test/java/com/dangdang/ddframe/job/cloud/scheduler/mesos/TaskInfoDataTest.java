@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
+import org.apache.commons.lang3.SerializationUtils;
 import org.junit.Test;
-import org.springframework.util.SerializationUtils;
 
 import java.util.Collections;
 import java.util.Map;

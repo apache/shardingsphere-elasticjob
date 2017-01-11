@@ -51,15 +51,14 @@ public class SchedulerFacade {
     
     private final ListenerManager listenerManager;
     
-    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
-        String jobName = liteJobConfig.getJobName();
+    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         configService = new ConfigurationService(regCenter, jobName);
         leaderElectionService = new LeaderElectionService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         monitorService = new MonitorService(regCenter, jobName);
-        listenerManager = new ListenerManager(regCenter, liteJobConfig, elasticJobListeners);
+        listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
     }
     
     /**
@@ -78,7 +77,7 @@ public class SchedulerFacade {
         listenerManager.startAllListeners();
         leaderElectionService.leaderForceElection();
         configService.persist(liteJobConfig);
-        serverService.persistServerOnline(liteJobConfig);
+        serverService.persistServerOnline(!liteJobConfig.isDisabled());
         serverService.clearJobPausedStatus();
         shardingService.setReshardingFlag();
         monitorService.listen();

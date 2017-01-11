@@ -19,12 +19,13 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -155,6 +156,16 @@ public class FacadeService {
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
         return configService.load(jobName);
+    }
+    
+    /**
+     * 根据作业元信息获取失效转移作业Id.
+     *
+     * @param metaInfo 作业元信息
+     * @return 失效转移作业Id
+     */
+    public Optional<String> getFailoverTaskId(final MetaInfo metaInfo) {
+        return failoverService.getTaskId(metaInfo);
     }
     
     /**

@@ -47,11 +47,6 @@ public final class JobConfigurationUtil {
                 TestSimpleJob.class.getCanonicalName())).overwrite(overwrite).build();
     }
     
-    public static LiteJobConfiguration createSimpleLiteJobConfiguration(final boolean disabled, final boolean overwrite) {
-        return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName()))
-                .disabled(disabled).overwrite(overwrite).build();
-    }
-    
     public static LiteJobConfiguration createDataflowLiteJobConfiguration() {
         return LiteJobConfiguration.newBuilder(
                 new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), DataflowJob.class.getCanonicalName(), false)).build();

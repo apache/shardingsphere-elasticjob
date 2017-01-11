@@ -17,13 +17,14 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.context.ExecutionType;
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.cloud.scheduler.context.TaskContext;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.functions.Action2;
@@ -60,11 +61,14 @@ public final class SchedulerEngineTest {
     @Mock
     private FacadeService facadeService;
     
+    @Mock
+    private StatisticManager statisticManager;
+    
     private SchedulerEngine schedulerEngine;
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService, new JobEventBus());
+        schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService, new JobEventBus(), statisticManager);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
         new RunningService().clear();
     }
@@ -143,6 +147,7 @@ public final class SchedulerEngineTest {
                 .setState(Protos.TaskState.TASK_FINISHED).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
+        verify(statisticManager).taskRunSuccessfully();
     }
     
     @Test
@@ -172,6 +177,7 @@ public final class SchedulerEngineTest {
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
         verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
+        verify(statisticManager).taskRunFailed();
     }
     
     @Test
@@ -187,6 +193,7 @@ public final class SchedulerEngineTest {
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
         verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
+        verify(statisticManager).taskRunFailed();
     }
     
     @Test
@@ -202,6 +209,7 @@ public final class SchedulerEngineTest {
         verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(facadeService).addDaemonJobToReadyQueue("test_job");
         verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
+        verify(statisticManager).taskRunFailed();
     }
     
     @Test
