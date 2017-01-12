@@ -17,6 +17,15 @@
 
 package com.dangdang.ddframe.job.statistics.rdb;
 
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
+import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
+import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
+import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
+import com.google.common.base.Optional;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -27,17 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.sql.DataSource;
-
-import com.dangdang.ddframe.job.statistics.StatisticInterval;
-import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
-import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
-import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
-import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
-import com.google.common.base.Optional;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 统计信息数据仓库，基于数据库.
@@ -59,6 +57,7 @@ public class StatisticRdbRepository {
     
     /**
      * 构造函数.
+     * 
      * @param dataSource 数据源
      * @throws SQLException
      */
@@ -167,7 +166,7 @@ public class StatisticRdbRepository {
      * 添加任务运行结果统计数据.
      * 
      * @param taskResultStatistics 任务运行结果统计数据对象
-     * @return
+     * @return 添加操作是否成功
      */
     public boolean add(final TaskResultStatistics taskResultStatistics) {
         boolean result = false;
@@ -193,7 +192,7 @@ public class StatisticRdbRepository {
      * 添加运行中的任务统计数据.
      * 
      * @param taskRunningStatistics 运行中的任务统计数据对象
-     * @return
+     * @return 添加操作是否成功
      */
     public boolean add(final TaskRunningStatistics taskRunningStatistics) {
         boolean result = false;
@@ -217,8 +216,7 @@ public class StatisticRdbRepository {
      * 添加运行中的作业统计数据.
      * 
      * @param jobRunningStatistics 运行中的作业统计数据对象
-     * @return 
-     * @return
+     * @return 添加操作是否成功
      */
     public boolean add(final JobRunningStatistics jobRunningStatistics) {
         boolean result = false;
@@ -242,7 +240,7 @@ public class StatisticRdbRepository {
      * 添加作业注册统计数据.
      * 
      * @param jobRegisterStatistics 作业注册统计数据对象
-     * @return
+     * @return 添加操作是否成功
      */
     public boolean add(final JobRegisterStatistics jobRegisterStatistics) {
         boolean result = false;
@@ -403,7 +401,6 @@ public class StatisticRdbRepository {
     /**
      * 获取最近一条运行中的任务统计数据.
      * 
-     * @param statisticUnit 统计时间间隔
      * @return 运行中的任务统计数据对象
      */
     public Optional<TaskRunningStatistics> findLatestTaskRunningStatistics() {
@@ -429,7 +426,6 @@ public class StatisticRdbRepository {
     /**
      * 获取最近一条运行中的任务统计数据.
      * 
-     * @param statisticUnit 统计时间间隔
      * @return 运行中的任务统计数据对象
      */
     public Optional<JobRunningStatistics> findLatestJobRunningStatistics() {
