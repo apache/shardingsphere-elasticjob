@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="css/add_job.css">
     <link rel="stylesheet" type="text/css" href="css/placeholder.css">
     <script src="plugins/BootstrapValidator/js/bootstrapValidator.js"></script>
+    <script src="plugins/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
     <script src="js/job_edit_base.js"></script>
     <script src="js/modify_job.js"></script>
     </head>
@@ -160,25 +161,25 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label for="bootstrapScript" class="col-sm-6 control-label"><i>*</i>启动脚本</label>
-                                <div class="col-sm-6">
-                                    <input type="text" placeholder="bin/start.sh" id="bootstrapScript" name="bootstrapScript" class="form-control" data-toggle="tooltip" data-placement="bottom" title="启动脚本，如：bin\start.sh。"/>
-                                </div>
+                                <label for="beanName" class="col-sm-6 control-label">beanName</label>
+                                    <div class="col-sm-6">
+                                         <input type="text" placeholder="yourBeanName" id="beanName" name="beanName" class="form-control" data-toggle="tooltip" data-placement="bottom" title="Spring容器中配置的bean名称" />
+                                    </div>
                             </div>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label for="beanName" class="col-sm-6 control-label">beanName</label>
-                                <div class="col-sm-6">
-                                    <input type="text" placeholder="yourBeanName" id="beanName" name="beanName" class="form-control" data-toggle="tooltip" data-placement="bottom" title="Spring容器中配置的bean名称" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
                                 <label for="shardingTotalCount" class="col-sm-6 control-label" ><i>*</i>作业分片总数</label>
                                 <div class="col-sm-6">
                                     <input type="number" min=1 max=100  value=1 id="shardingTotalCount" name="shardingTotalCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业分片总数"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" id="bootstrapScriptDiv">
+                            <div class="form-group">
+                                <label for="bootstrapScript" class="col-sm-6 control-label"><i>*</i>启动脚本</label>
+                                <div class="col-sm-6">
+                                    <input type="text" placeholder="bin/start.sh" id="bootstrapScript" name="bootstrapScript" class="form-control" data-toggle="tooltip" data-placement="bottom" title="启动脚本，如：bin\start.sh。"/>
                                 </div>
                             </div>
                         </div>

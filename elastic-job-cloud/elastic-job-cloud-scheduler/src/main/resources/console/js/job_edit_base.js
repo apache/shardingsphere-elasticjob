@@ -180,14 +180,17 @@ function dataControl(){
             $("#scriptCommandLine").attr("disabled","disabled");
             $("#streamingProcess").hide();
             $("#streamingProcess_box").hide();
+            $("#bootstrapScriptDiv").hide();
         }else if(jobType =='DATAFLOW'){ 
             $("#streamingProcess").show();
             $("#streamingProcess_box").show();
             $("#scriptCommandLine").attr("disabled","disabled");
+            $("#bootstrapScriptDiv").hide();
         }else if(jobType =='SCRIPT'){
             $("#scriptCommandLine").removeAttr("disabled"); 
             $("#streamingProcess").hide();
             $("#streamingProcess_box").hide();
+            $("#bootstrapScriptDiv").show();
         }
     });
 }

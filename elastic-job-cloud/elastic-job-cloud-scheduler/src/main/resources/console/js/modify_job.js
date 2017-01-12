@@ -27,6 +27,12 @@ function getJobResult() {
         url:"/job/jobs/"+getJobName(),
         async: false,
         success:function(result){
+            if(result.jobType == "SCRIPT"){
+                $("#bootstrapScriptDiv").show();
+            }
+            else{
+                $("#bootstrapScriptDiv").hide();
+            }
             showJobSettingInfo(result);
         }
     });
