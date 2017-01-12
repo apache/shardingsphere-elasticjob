@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -32,10 +33,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public final class JobStatisticsAPIImplTest {
@@ -55,6 +53,22 @@ public final class JobStatisticsAPIImplTest {
     public void assertGetAllJobsBriefInfoWithoutNamespace() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         assertThat(jobStatisticsAPI.getAllJobsBriefInfo().size(), is(0));
+    }
+    
+    @Test
+    public void assertGetJobBriefInfo() {
+        when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
+        when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
+        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
+        when(regCenter.get("/test_job/servers/ip1/status")).thenReturn("RUNNING");
+        when(regCenter.get("/test_job/servers/ip2/status")).thenReturn("READY");
+        when(regCenter.isExisted("/test_job/servers/ip2/disabled")).thenReturn(true);
+        JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
+        assertThat(jobBrief.getJobName(), is("test_job"));
+        assertThat(jobBrief.getDescription(), is("desc"));
+        assertThat(jobBrief.getCron(), is("0/1 * * * * ?"));
+        assertThat(jobBrief.getJobType(), is("SIMPLE"));
+        assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.DISABLED));
     }
     
     @Test

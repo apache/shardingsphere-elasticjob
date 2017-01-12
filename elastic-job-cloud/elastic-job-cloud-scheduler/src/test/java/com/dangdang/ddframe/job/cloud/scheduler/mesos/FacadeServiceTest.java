@@ -19,14 +19,15 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
@@ -145,7 +146,6 @@ public final class FacadeServiceTest {
         when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(failoverService, times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test
@@ -154,7 +154,14 @@ public final class FacadeServiceTest {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createOtherCloudJobConfiguration("test_job")));
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(failoverService, times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
+    }
+    
+    @Test
+    public void assertRecordFailoverTaskWhenIsFailoverDisabledAndIsDaemonJob() {
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(failoverService).add(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test
@@ -164,7 +171,6 @@ public final class FacadeServiceTest {
         TaskContext taskContext = TaskContext.from(taskNode.getTaskNodeValue());
         facadeService.recordFailoverTask(taskContext);
         verify(failoverService).add(taskContext);
-        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test

@@ -54,7 +54,7 @@ import org.apache.mesos.SchedulerDriver;
 @Slf4j
 public final class MasterBootstrap {
     
-    private static final String WEBAPP_PATH = "webapp/";
+    private static final String CONSOLE_PATH = "console";
     
     private final BootstrapEnvironment env;
     
@@ -139,7 +139,7 @@ public final class MasterBootstrap {
      * @throws Exception 运行时异常
      */
     public Protos.Status runAsDaemon() throws Exception {
-        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), WEBAPP_PATH);
+        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
         return schedulerDriver.run();
     }
     
