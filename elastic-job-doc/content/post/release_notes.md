@@ -18,12 +18,11 @@ weight=1
 ### 新功能
 
 1. [ISSUE #203](https://github.com/dangdangdotcom/elastic-job/issues/203) cloud类型作业增加运行统计，并提供REST API查询
+1. [ISSUE #215](https://github.com/dangdangdotcom/elastic-job/issues/215) cloud版本运维管理界面
 
 ### 功能提升
 
 1. [ISSUE #187](https://github.com/dangdangdotcom/elastic-job/issues/187) ShardingContext中增加taskId属性，供业务方使用 
-
-1. [ISSUE #20](https://github.com/dangdangdotcom/elastic-job/issues/20) 运维界面任务列表显示增加cron表达式
 
 ## 2.0.3
 
