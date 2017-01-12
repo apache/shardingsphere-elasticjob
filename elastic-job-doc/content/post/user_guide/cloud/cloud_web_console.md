@@ -24,20 +24,20 @@ weight=21
 
 * 作业定义
 
-![作业定义](../../../../../img/console/cloud/job/job_def.png)
-![作业注册](../../../../../img/console/cloud/job/job_reg.png)
-![作业详情](../../../../../img/console/cloud/job/job_detail.png)
-![作业修改](../../../../../img/console/cloud/job/job_update.png)
-![作业删除](../../../../../img/console/cloud/job/job_remove.png)
+![作业定义](../../../../img/console/cloud/job/job_def.png)
+![作业注册](../../../../img/console/cloud/job/job_reg.png)
+![作业详情](../../../../img/console/cloud/job/job_detail.png)
+![作业修改](../../../../img/console/cloud/job/job_update.png)
+![作业删除](../../../../img/console/cloud/job/job_remove.png)
 
 * 作业状态
 
-![待运行作业状态](../../../../../img/console/cloud/status/job_ready.png)
-![运行中作业状态](../../../../../img/console/cloud/status/job_running.png)
-![待失效转移任务状态](../../../../../img/console/cloud/status/job_failover.png)
+![待运行作业状态](../../../../img/console/cloud/status/job_ready.png)
+![运行中作业状态](../../../../img/console/cloud/status/job_running.png)
+![待失效转移任务状态](../../../../img/console/cloud/status/job_failover.png)
 
 * 作业历史
 
-![运行轨迹查询](../../../../../img/console/cloud/history/job_status_trace.png)
-![执行状态查询](../../../../../img/console/cloud/history/job_execution.png)
-![历史dashboard](../../../../../img/console/cloud/history/dashboard.png)
+![运行轨迹查询](../../../../img/console/cloud/history/job_status_trace.png)
+![执行状态查询](../../../../img/console/cloud/history/job_execution.png)
+![历史dashboard](../../../../img/console/cloud/history/dashboard.png)
