@@ -87,7 +87,7 @@ class TransientProducerScheduler {
         return result;
     }
     
-    //TODO 并发优化
+    // TODO 并发优化
     synchronized void register(final CloudJobConfiguration jobConfig) {
         String cron = jobConfig.getTypeConfig().getCoreConfig().getCron();
         JobKey jobKey = buildJobKey(cron);

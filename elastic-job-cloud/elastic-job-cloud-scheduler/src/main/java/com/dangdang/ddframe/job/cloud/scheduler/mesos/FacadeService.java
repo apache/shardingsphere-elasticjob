@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
@@ -42,6 +43,7 @@ import java.util.Set;
  * 为Mesos提供的门面服务.
  *
  * @author zhangliang
+ * @author caohao
  */
 @Slf4j
 public class FacadeService {
@@ -145,11 +147,14 @@ public class FacadeService {
      * @param taskContext 任务上下文
      */
     public void recordFailoverTask(final TaskContext taskContext) {
-        Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getMetaInfo().getJobName());
-        if (jobConfig.isPresent() && jobConfig.get().getTypeConfig().getCoreConfig().isFailover()) {
+        Optional<CloudJobConfiguration> jobConfigOptional = configService.load(taskContext.getMetaInfo().getJobName());
+        if (!jobConfigOptional.isPresent()) {
+            return;
+        }
+        CloudJobConfiguration jobConfig = jobConfigOptional.get();
+        if (jobConfig.getTypeConfig().getCoreConfig().isFailover() || JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
             failoverService.add(taskContext);
         }
-        runningService.remove(taskContext);
     }
     
     /**
@@ -181,7 +186,6 @@ public class FacadeService {
         readyService.addDaemon(jobName);
     }
     
-    
     /**
      * 判断作业是否在运行.
      *
@@ -194,7 +198,7 @@ public class FacadeService {
     
     /**
      * 根据作业执行类型判断作业是否在运行.
-     * 
+     *
      * <p>READY类型的作业为整体, 任意一片运行都视为作业运行. FAILOVER则仅以当前分片运行为运行依据.</p>
      * 
      * @param taskContext 任务运行时上下文

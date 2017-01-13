@@ -45,5 +45,5 @@ public class TaskResultStatistics {
     
     private final Date statisticsTime;
     
-    private Date creationTime;
+    private Date creationTime = new Date();
 }

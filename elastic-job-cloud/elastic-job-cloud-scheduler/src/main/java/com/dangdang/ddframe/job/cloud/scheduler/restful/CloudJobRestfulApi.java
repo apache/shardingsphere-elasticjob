@@ -358,16 +358,36 @@ public final class CloudJobRestfulApi {
     @GET
     @Path("/statistics/tasks/results")
     @Consumes(MediaType.APPLICATION_JSON)
-    public TaskResultStatistics getTaskResultStatistics(@QueryParam("since") final String since) {
-        if ("lastWeek".equals(since)) {
-            return statisticManager.getTaskResultStatisticsWeekly();
-        } else if ("online".equals(since)) {
+    public List<TaskResultStatistics> findTaskResultStatistics(@QueryParam("since") final String since) {
+        if ("last24hours".equals(since)) {
+            return statisticManager.findTaskResultStatisticsDaily();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
+    /**
+     * 获取任务运行结果统计数据.
+     * 
+     * @return 任务运行结果统计数据
+     */
+    @GET
+    @Path("/statistics/tasks/results/{period}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public TaskResultStatistics getTaskResultStatistics(@PathParam("period") final String period) {
+        if ("online".equals(period)) {
             return statisticManager.getTaskResultStatisticsSinceOnline();
+        } else if ("lastWeek".equals(period)) {
+            return statisticManager.getTaskResultStatisticsWeekly();
+        } else if ("lastHour".equals(period)) {
+            return statisticManager.findLatestTaskResultStatistics(StatisticInterval.HOUR);
+        } else if ("lastMinute".equals(period)) {
+            return statisticManager.findLatestTaskResultStatistics(StatisticInterval.MINUTE);
         } else {
             return new TaskResultStatistics(0, 0, StatisticInterval.DAY, new Date());
         }
     }
-
+    
     /**
      * 获取任务运行统计数据集合.
      * 

@@ -18,21 +18,24 @@
 package com.dangdang.ddframe.job.restful;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.util.resource.Resource;
 
 /**
  * REST API的内嵌服务器.
  *
  * @author zhangliang
+ * @author caohao
  */
 @Slf4j
 public final class RestfulServer {
@@ -49,37 +52,28 @@ public final class RestfulServer {
      * @param packages RESTful实现类所在包
      * @throws Exception 启动服务器异常
      */
-    public void start(final String packages) throws Exception {
+    public void start(final String packages, final Optional<String> resourcePath) throws Exception {
         log.info("Elastic Job: Start RESTful server");
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
-        context.addServlet(getServletHolder(packages), "/*");
+        HandlerList handlers = new HandlerList();
+        if (resourcePath.isPresent()) {
+            handlers.addHandler(buildResourceHandler(resourcePath.get()));
+        }
+        handlers.addHandler(buildServletContextHandler(packages));
+        server.setHandler(handlers);
         server.start();
     }
     
-    /**
-     * 启动内嵌的RESTful、Webapp服务器.
-     * 
-     * @param packages RESTful实现类所在包
-     * @param webappRootPath Webapp资源根路径
-     * @throws Exception 启动服务器异常
-     */
-    public void start(final String packages, final String webappRootPath) throws Exception {
-        log.info("Elastic Job: Start RESTful server");
-        ServletContextHandler restApiContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        restApiContext.setContextPath("/");
-        server.setHandler(restApiContext);
-        restApiContext.addServlet(getServletHolder(packages), "/*");
-        WebAppContext webappContext = new WebAppContext();
-        webappContext.setDescriptor(webappRootPath + "/WEB-INF/web.xml");
-        webappContext.setResourceBase(webappRootPath);
-        webappContext.setContextPath("/console");
-        webappContext.setParentLoaderPriority(true);
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] {restApiContext, webappContext});
-        server.setHandler(contexts);
-        server.start();
+    private ServletContextHandler buildServletContextHandler(final String packages) {
+        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        servletContextHandler.setContextPath("/");
+        servletContextHandler.addServlet(getServletHolder(packages), "/*");
+        return servletContextHandler;
+    }
+    
+    private ResourceHandler buildResourceHandler(final String resourcePath) throws Exception {
+        ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setBaseResource(Resource.newClassPathResource(resourcePath));
+        return resourceHandler;
     }
     
     private ServletHolder getServletHolder(final String packages) {

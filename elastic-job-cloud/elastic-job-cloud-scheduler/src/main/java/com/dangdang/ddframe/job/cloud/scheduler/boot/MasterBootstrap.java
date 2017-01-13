@@ -58,7 +58,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 public final class MasterBootstrap {
     
-    private static final String WEBAPP_PATH = "webapp/";
+    private static final String CONSOLE_PATH = "console";
     
     private static final double ONE_WEEK_TIMEOUT = 60 * 60 * 24 * 7;
     
@@ -122,7 +122,7 @@ public final class MasterBootstrap {
         statisticsScheduledService = new StatisticsScheduledService(regCenter).startAsync();
         reconcileScheduledService =  ReconcileScheduledService.builder().facadeService(facadeService).scheduler(schedulerDriver).build().startAsync();
         statisticManager.startup();
-        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), WEBAPP_PATH);
+        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
         schedulerDriver.start();
     }
     
@@ -149,6 +149,11 @@ public final class MasterBootstrap {
                         schedulerDriver.declineOffer(lease.getOffer().getId());
                     }
                 }).build();
+    }
+    
+    private void initConfigurationListener() {
+        regCenter.addCacheData(ConfigurationNode.ROOT);
+        ((TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT)).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
     }
     
     private JobEventBus getJobEventBus() {

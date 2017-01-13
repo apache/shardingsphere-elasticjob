@@ -25,6 +25,8 @@ import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
@@ -43,13 +45,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.OfferID;
+import org.apache.mesos.Protos.TaskInfo;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -101,27 +107,28 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
     @Override
     protected void runOneIteration() throws Exception {
         LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
-        Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), leasesQueue.drainTo()).getResultMap().values();
+        List<VirtualMachineLease> virtualMachineLeases = leasesQueue.drainTo();
+        Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), virtualMachineLeases).getResultMap().values();
+        List<TaskContext> taskContextsList = new LinkedList<>();
+        Map<List<Protos.OfferID>, List<Protos.TaskInfo>> offerIdTaskInfoMap = new HashMap<>();
         for (VMAssignmentResult each: vmAssignmentResults) {
             List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
             List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
             taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
             for (Protos.TaskInfo taskInfo : taskInfoList) {
-                TaskContext taskContext = TaskContext.from(taskInfo.getTaskId().getValue());
-                facadeService.addRunning(taskContext);
-                jobEventBus.post(createJobStatusTraceEvent(taskContext));
+                taskContextsList.add(TaskContext.from(taskInfo.getTaskId().getValue()));
             }
-            facadeService.removeLaunchTasksFromQueue(Lists.transform(taskInfoList, new Function<Protos.TaskInfo, TaskContext>() {
-            
-                @Override
-                public TaskContext apply(final Protos.TaskInfo input) {
-                    return TaskContext.from(input.getTaskId().getValue());
-                }
-            }));
-            schedulerDriver.launchTasks(getOfferIDs(leasesUsed), taskInfoList);
+            offerIdTaskInfoMap.put(getOfferIDs(leasesUsed), taskInfoList);
+        }
+        for (TaskContext each : taskContextsList) {
+            facadeService.addRunning(each);
+            jobEventBus.post(createJobStatusTraceEvent(each));
+        }
+        facadeService.removeLaunchTasksFromQueue(taskContextsList);
+        for (Entry<List<OfferID>, List<TaskInfo>> each : offerIdTaskInfoMap.entrySet()) {
+            schedulerDriver.launchTasks(each.getKey(), each.getValue());
         }
     }
-    
     
     private List<Protos.TaskInfo> getTaskInfoList(final Collection<String> integrityViolationJobs, final VMAssignmentResult vmAssignmentResult, final String hostname, final Protos.SlaveID slaveId) {
         List<Protos.TaskInfo> result = new ArrayList<>(vmAssignmentResult.getTasksAssigned().size());
@@ -208,7 +215,7 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
     private JobStatusTraceEvent createJobStatusTraceEvent(final TaskContext taskContext) {
         TaskContext.MetaInfo metaInfo = taskContext.getMetaInfo();
         JobStatusTraceEvent result = new JobStatusTraceEvent(metaInfo.getJobName(), taskContext.getId(), taskContext.getSlaveId(),
-                JobStatusTraceEvent.Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(metaInfo.getShardingItems()), JobStatusTraceEvent.State.TASK_STAGING, "");
+                Source.CLOUD_SCHEDULER, taskContext.getType(), String.valueOf(metaInfo.getShardingItems()), State.TASK_STAGING, "");
         if (ExecutionType.FAILOVER == taskContext.getType()) {
             Optional<String> taskContextOptional = facadeService.getFailoverTaskId(metaInfo);
             if (taskContextOptional.isPresent()) {

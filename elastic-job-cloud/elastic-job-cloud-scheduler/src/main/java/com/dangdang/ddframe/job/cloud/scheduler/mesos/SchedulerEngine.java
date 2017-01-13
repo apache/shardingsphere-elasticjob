@@ -117,7 +117,6 @@ public final class SchedulerEngine implements Scheduler {
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);
                 facadeService.recordFailoverTask(taskContext);
-                facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
                 statisticManager.taskRunFailed();
                 break;

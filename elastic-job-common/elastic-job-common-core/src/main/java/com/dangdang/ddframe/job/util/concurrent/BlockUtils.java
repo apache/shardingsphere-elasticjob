@@ -27,6 +27,10 @@ public final class BlockUtils {
         sleep(100L);
     }
     
+    public static void waitingSecondsTime() {
+        sleep(10000L);
+    }
+    
     public static void sleep(final long millis) {
         try {
             Thread.sleep(millis);

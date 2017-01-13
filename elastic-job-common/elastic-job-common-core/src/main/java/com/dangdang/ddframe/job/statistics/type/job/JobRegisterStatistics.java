@@ -39,5 +39,5 @@ public class JobRegisterStatistics {
     
     private final Date statisticsTime;
     
-    private Date creationTime;
+    private Date creationTime = new Date();
 }

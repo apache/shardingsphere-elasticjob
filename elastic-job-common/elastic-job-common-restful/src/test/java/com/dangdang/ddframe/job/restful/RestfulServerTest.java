@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.restful;
 
 import com.dangdang.ddframe.job.restful.fixture.Caller;
 import com.dangdang.ddframe.job.restful.fixture.TestRestfulApi;
+import com.google.common.base.Optional;
 import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.io.ByteArrayBuffer;
@@ -47,7 +48,7 @@ public final class RestfulServerTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         server = new RestfulServer(17000);
-        server.start(TestRestfulApi.class.getPackage().getName());
+        server.start(TestRestfulApi.class.getPackage().getName(), Optional.<String>absent());
     }
     
     @AfterClass
