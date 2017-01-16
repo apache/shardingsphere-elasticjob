@@ -58,14 +58,12 @@ public final class SchedulerEngine implements Scheduler {
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
         log.info("call registered");
         frameworkIDService.save(frameworkID.getValue());
-        facadeService.start();
         taskScheduler.expireAllLeases();
     }
     
     @Override
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
         log.info("call reregistered");
-        facadeService.start();
         taskScheduler.expireAllLeases();
     }
     
@@ -140,7 +138,6 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void disconnected(final SchedulerDriver schedulerDriver) {
         log.warn("call disconnected");
-        facadeService.stop();
     }
     
     @Override
@@ -151,7 +148,7 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
-        log.debug("call executorLost slaveID is: {}, executorID is: {}", slaveID, executorID);
+        log.warn("call executorLost slaveID is: {}, executorID is: {}", slaveID, executorID);
     }
     
     @Override

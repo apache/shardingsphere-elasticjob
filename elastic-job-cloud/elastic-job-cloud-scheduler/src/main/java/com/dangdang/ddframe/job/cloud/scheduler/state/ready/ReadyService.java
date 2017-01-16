@@ -95,7 +95,7 @@ public class ReadyService {
             return;
         }
         Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
-        if (!cloudJobConfig.isPresent() || JobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType()) {
+        if (!cloudJobConfig.isPresent() || JobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType() || runningService.isJobRunning(jobName)) {
             return;
         }
         regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");
@@ -141,7 +141,7 @@ public class ReadyService {
                 regCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 continue;
             }
-            if (!runningService.isJobRunning(each) || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
+            if (!runningService.isJobRunning(each)) {
                 result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
             }
         }

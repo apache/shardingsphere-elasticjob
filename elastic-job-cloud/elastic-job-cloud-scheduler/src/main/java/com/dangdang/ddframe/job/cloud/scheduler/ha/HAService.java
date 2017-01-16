@@ -48,7 +48,17 @@ public final class HAService {
                     
                     @Override
                     public void startLeadership() throws Exception {
-                        masterBootstrap.start();
+                        try {
+                            masterBootstrap.start();
+                            //CHECKSTYLE:OFF
+                        } catch (final Exception ex) {
+                            //CHECKSTYLE:ON
+                            if (ex instanceof InterruptedException) {
+                                throw ex;
+                            }
+                            log.error("Elastic job: Starting error", ex);
+                            System.exit(1);
+                        }
                     }
                     
                     @Override

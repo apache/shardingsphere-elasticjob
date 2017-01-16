@@ -55,22 +55,12 @@ public final class ZookeeperElectionService implements AutoCloseable {
         leaderSelector = new LeaderSelector(client, electionPath, getExecutorService(identity), new LeaderSelectorListenerAdapter() {
             
             @Override
-            public void takeLeadership(final CuratorFramework client) throws InterruptedException {
+            public void takeLeadership(final CuratorFramework client) throws Exception {
                 log.info("Elastic job: {} has leadership", identity);
-                
                 try {
-                    try {
-                        electionCandidate.startLeadership();
-                        // CHECKSTYLE:OFF
-                    } catch (final Exception ex) {
-                        // CHECKSTYLE:ON
-                        log.error("Elastic job: {} start leadership error", identity, ex);
-                        throw new InterruptedException();
-                    }
+                    electionCandidate.startLeadership();
                     leaderLatch.await();
                     log.warn("Elastic job: {} lost leadership because of latch down", identity);
-                } catch (final InterruptedException exp) {
-                    log.warn("Elastic job: {} lost leadership because of interrupted exception", identity);
                 } finally {
                     electionCandidate.stopLeadership();
                 }

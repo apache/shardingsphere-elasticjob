@@ -108,10 +108,12 @@ public final class MasterBootstrap {
      * @throws Exception 启动异常
      */
     public void start() throws Exception {
+        facadeService.start();
         LeasesQueue leasesQueue = new LeasesQueue();
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, jobEventBus);
+        schedulerDriver.start();
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         producerManager.startup();
         CloudJobRestfulApi.setContext(schedulerDriver, producerManager);
@@ -149,11 +151,6 @@ public final class MasterBootstrap {
                         schedulerDriver.declineOffer(lease.getOffer().getId());
                     }
                 }).build();
-    }
-    
-    private void initConfigurationListener() {
-        regCenter.addCacheData(ConfigurationNode.ROOT);
-        ((TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT)).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
     }
     
     private JobEventBus getJobEventBus() {
@@ -198,5 +195,6 @@ public final class MasterBootstrap {
         if (null != schedulerDriver) {
             schedulerDriver.stop(true);
         }
+        facadeService.stop();
     }
 }

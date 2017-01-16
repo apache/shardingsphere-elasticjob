@@ -82,7 +82,6 @@ public final class SchedulerEngineTest {
     @Test
     public void assertRegistered() {
         schedulerEngine.registered(null, Protos.FrameworkID.newBuilder().setValue("1").build(), null);
-        verify(facadeService).start();
         verify(taskScheduler).expireAllLeases();
         verify(frameworkIDService).save("1");
     }
@@ -90,7 +89,6 @@ public final class SchedulerEngineTest {
     @Test
     public void assertReregistered() {
         schedulerEngine.reregistered(null, null);
-        verify(facadeService).start();
         verify(taskScheduler).expireAllLeases();
     }
     
@@ -219,12 +217,6 @@ public final class SchedulerEngineTest {
     @Test
     public void assertFrameworkMessage() {
         schedulerEngine.frameworkMessage(null, null, Protos.SlaveID.newBuilder().setValue("slave-S0").build(), new byte[1]);
-    }
-    
-    @Test
-    public void assertDisconnected() {
-        schedulerEngine.disconnected(null);
-        verify(facadeService).stop();
     }
     
     @Test

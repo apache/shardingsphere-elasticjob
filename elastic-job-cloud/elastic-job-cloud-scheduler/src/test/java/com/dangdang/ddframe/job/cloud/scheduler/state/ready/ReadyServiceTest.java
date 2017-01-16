@@ -46,6 +46,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -159,7 +160,16 @@ public final class ReadyServiceTest {
         when(regCenter.isExisted("/state/ready")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("other_job@-@111", "test_job@-@111"));
         readyService.addDaemon("test_job");
-        verify(regCenter, times(0)).persist((String) any(), eq(""));
+        verify(regCenter).persist((String) any(), eq("1"));
+    }
+    
+    @Test
+    public void assertAddRunningDaemon() {
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        when(regCenter.isExisted("/state/ready")).thenReturn(false);
+        when(runningService.isJobRunning("test_job")).thenReturn(true);
+        readyService.addDaemon("test_job");
+        verify(regCenter, never()).persist((String) any(), eq("1"));
     }
     
     @Test
@@ -231,7 +241,7 @@ public final class ReadyServiceTest {
         when(configService.load("not_existed_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         when(configService.load("running_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("running_job", JobExecutionType.DAEMON)));
         when(runningService.isJobRunning("running_job")).thenReturn(true);
-        assertThat(readyService.getAllEligibleJobContexts(Collections.<JobContext>emptyList()).size(), is(1));
+        assertThat(readyService.getAllEligibleJobContexts(Collections.<JobContext>emptyList()).size(), is(0));
         verify(regCenter).isExisted("/state/ready");
         verify(regCenter, times(1)).getChildrenKeys("/state/ready");
         verify(configService).load("not_existed_job");
