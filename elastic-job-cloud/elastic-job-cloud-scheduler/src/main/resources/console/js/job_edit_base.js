@@ -97,6 +97,13 @@ function bootstrapValidator(){
                 validators: {
                 }
             },
+            scriptCommandLine : {
+                validators: {
+                    notEmpty: {
+                        message: 'SCRIPT类型作业命令行执行脚本不能为空'
+                    }
+                }
+            },
             shardingItemParameters: {
                 validators: {
                     regexp: {
@@ -177,17 +184,20 @@ function dataControl(){
     $('#jobType').change(function() {
         var jobType = $('#jobType').val();
         if(jobType =='SIMPLE'){ 
-            $("#scriptCommandLine").attr("disabled","disabled");
+            $("#jobClassModel").show();
+            $("#scriptCommandLine_text").hide();
             $("#streamingProcess").hide();
             $("#streamingProcess_box").hide();
             $("#bootstrapScriptDiv").hide();
-        }else if(jobType =='DATAFLOW'){ 
+        }else if(jobType =='DATAFLOW'){
+            $("#jobClassModel").show();
             $("#streamingProcess").show();
             $("#streamingProcess_box").show();
-            $("#scriptCommandLine").attr("disabled","disabled");
+            $("#scriptCommandLine_text").hide();
             $("#bootstrapScriptDiv").hide();
         }else if(jobType =='SCRIPT'){
-            $("#scriptCommandLine").removeAttr("disabled"); 
+            $("#jobClassModel").hide();
+            $("#scriptCommandLine_text").show(); 
             $("#streamingProcess").hide();
             $("#streamingProcess_box").hide();
             $("#bootstrapScriptDiv").show();
