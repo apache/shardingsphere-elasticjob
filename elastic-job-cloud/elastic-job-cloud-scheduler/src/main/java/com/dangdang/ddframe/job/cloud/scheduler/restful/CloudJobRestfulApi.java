@@ -77,7 +77,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * 作业云的REST API.
+ * 作业云Job的REST API.
  *
  * @author zhangliang
  * @author liguangyun
@@ -128,8 +128,9 @@ public final class CloudJobRestfulApi {
         CloudJobRestfulApi.schedulerDriver = schedulerDriver;
         CloudJobRestfulApi.regCenter = regCenter;
         GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
-        if (BootstrapEnvironment.getInstance().getJobEventRdbConfiguration().isPresent()) {
-            jobEventRdbSearch = new JobEventRdbSearch(BootstrapEnvironment.getInstance().getJobEventRdbConfiguration().get().getDataSource());
+        Optional<JobEventRdbConfiguration> jobEventRdbConfig = BootstrapEnvironment.getInstance().getJobEventRdbConfiguration();
+        if (jobEventRdbConfig.isPresent()) {
+            jobEventRdbSearch = new JobEventRdbSearch(jobEventRdbConfig.get().getDataSource());
         } else {
             jobEventRdbSearch = null;
         }

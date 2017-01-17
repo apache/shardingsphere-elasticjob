@@ -15,15 +15,24 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.restful;
+package com.dangdang.ddframe.job.cloud.scheduler.config.app;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        CloudJobRestfulApiTest.class,
-        CloudAppRestfulApiTest.class
-})
-public final class AllRestfulTests {
+/**
+ * 云作业App配置节点路径.
+ *
+ * @author caohao
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class CloudAppConfigurationNode {
+    
+    public static final String ROOT =  "/config/app";
+    
+    private static final String APP_CONFIG =  ROOT + "/%s";
+    
+    static String getRootNodePath(final String appName) {
+        return String.format(APP_CONFIG, appName);
+    }
 }
