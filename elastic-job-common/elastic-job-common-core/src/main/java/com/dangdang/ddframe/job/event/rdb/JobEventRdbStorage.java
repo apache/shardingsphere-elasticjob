@@ -202,7 +202,6 @@ class JobEventRdbStorage {
             preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
             preparedStatement.setTimestamp(2, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
             preparedStatement.setString(3, jobExecutionEvent.getId());
-            log.info("updateJobExecutionEventWhenSuccess" + jobExecutionEvent.getId() + "," + jobExecutionEvent.getJobName());
             if (0 == preparedStatement.executeUpdate()) {
                 return insertJobExecutionEventWhenSuccess(jobExecutionEvent);
             }
@@ -235,7 +234,6 @@ class JobEventRdbStorage {
             result = true;
         } catch (final SQLException ex) {
             if (isDuplicateRecord(ex)) {
-                log.info("isDuplicateRecord");
                 return updateJobExecutionEventWhenSuccess(jobExecutionEvent);
             }
             // TODO 记录失败直接输出日志,未来可考虑配置化
