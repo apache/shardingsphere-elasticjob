@@ -15,30 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.spring.fixture;
+package com.dangdang.ddframe.job.lite.spring.fixture.job;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
-import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
+import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import lombok.Getter;
 
-import java.util.Collections;
-import java.util.List;
-
-public class DataflowElasticJob implements DataflowJob<String> {
+public class FooSimpleElasticJob implements SimpleJob {
     
     @Getter
     private static volatile boolean completed;
     
     @Override
-    public List<String> fetchData(final ShardingContext shardingContext) {
-        if (completed) {
-            return Collections.emptyList();
-        }
-        return Collections.singletonList("data");
-    }
-    
-    @Override
-    public void processData(final ShardingContext shardingContext, final List<String> data) {
+    public void execute(final ShardingContext shardingContext) {
         completed = true;
     }
     

@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.spring.job;
 
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.spring.fixture.DataflowElasticJob;
-import com.dangdang.ddframe.job.lite.spring.fixture.FooSimpleElasticJob;
+import com.dangdang.ddframe.job.lite.spring.fixture.job.DataflowElasticJob;
+import com.dangdang.ddframe.job.lite.spring.fixture.job.FooSimpleElasticJob;
 import com.dangdang.ddframe.job.lite.spring.test.AbstractZookeeperJUnit4SpringContextTests;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
