@@ -51,7 +51,7 @@ public class CloudJobFacadeTest {
     public CloudJobFacadeTest() {
         MockitoAnnotations.initMocks(this);
         shardingContexts = getShardingContexts();
-        jobConfig = new JobConfigurationContext(getJobConfigurationMap(JobType.SIMPLE, false));
+        jobConfig = new JobConfigurationContext(getJobConfigurationMap(JobType.SIMPLE, false, 1));
         jobFacade = new CloudJobFacade(shardingContexts, jobConfig, eventBus);
     }
     
@@ -61,12 +61,13 @@ public class CloudJobFacadeTest {
         return new ShardingContexts("fake_task_id", "test_job", 3, "", shardingItemParameters);
     }
     
-    private Map<String, String> getJobConfigurationMap(final JobType jobType, final boolean streamingProcess) {
+    private Map<String, String> getJobConfigurationMap(final JobType jobType, final boolean streamingProcess, final int processDataThreadCount) {
         Map<String, String> result = new HashMap<>(10, 1);
         result.put("jobName", "test_job");
         result.put("jobClass", ElasticJob.class.getCanonicalName());
         result.put("jobType", jobType.name());
         result.put("streamingProcess", Boolean.toString(streamingProcess));
+        result.put("processDataThreadCount", String.valueOf(processDataThreadCount));
         return result;
     }
     
@@ -122,12 +123,12 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertIsEligibleForJobRunningWhenIsDataflowJobAndIsNotStreamingProcess() {
-        assertFalse(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, false)), new JobEventBus()).isEligibleForJobRunning());
+        assertFalse(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, false, 1)), new JobEventBus()).isEligibleForJobRunning());
     }
     
     @Test
     public void assertIsEligibleForJobRunningWhenIsDataflowJobAndIsStreamingProcess() {
-        assertTrue(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, true)), new JobEventBus()).isEligibleForJobRunning());
+        assertTrue(new CloudJobFacade(shardingContexts, new JobConfigurationContext(getJobConfigurationMap(JobType.DATAFLOW, true, 1)), new JobEventBus()).isEligibleForJobRunning());
     }
     
     @Test
