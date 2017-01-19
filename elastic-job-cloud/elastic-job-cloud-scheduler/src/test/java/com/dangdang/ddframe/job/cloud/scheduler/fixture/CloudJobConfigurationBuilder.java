@@ -62,7 +62,7 @@ public final class CloudJobConfigurationBuilder {
     
     public static CloudJobConfiguration createDataflowCloudJobConfiguration(final String jobName) {
         return new CloudJobConfiguration(
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false).build(), SimpleJob.class.getCanonicalName(), true),
+                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false).build(), SimpleJob.class.getCanonicalName(), true, 1),
                 1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
     }
     
