@@ -51,12 +51,12 @@ public final class HAService {
                         try {
                             masterBootstrap.start();
                             //CHECKSTYLE:OFF
-                        } catch (final Exception ex) {
+                        } catch (final Throwable throwable) {
                             //CHECKSTYLE:ON
-                            if (ex instanceof InterruptedException) {
-                                throw ex;
+                            if (throwable instanceof InterruptedException) {
+                                throw throwable;
                             }
-                            log.error("Elastic job: Starting error", ex);
+                            log.error("Elastic job: Starting error", throwable);
                             System.exit(1);
                         }
                     }
