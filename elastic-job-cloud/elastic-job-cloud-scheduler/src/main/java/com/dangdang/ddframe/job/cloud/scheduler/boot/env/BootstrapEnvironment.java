@@ -152,7 +152,6 @@ public final class BootstrapEnvironment {
      * 环境参数.
      * 
      * @author zhangliang
-     * @author gaohongtao
      */
     @RequiredArgsConstructor
     @Getter
