@@ -28,6 +28,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsProcessor;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
+import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudAppRestfulApi;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
@@ -76,6 +77,7 @@ public final class MasterBootstrap {
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus, statisticManager);
         restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
         CloudJobRestfulApi.init(schedulerDriver, regCenter);
+        CloudAppRestfulApi.init(regCenter);
         initConfigurationListener();
         final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
         producerManager.startup();
