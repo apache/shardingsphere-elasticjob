@@ -68,7 +68,7 @@ public final class ExecutionContextServiceTest {
     @Test
     public void assertGetShardingContextWhenNotAssignShardingItem() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
-                TestDataflowJob.class.getCanonicalName(), true)).monitorExecution(false).build());
+                TestDataflowJob.class.getCanonicalName(), true, 1)).monitorExecution(false).build());
         ShardingContexts shardingContexts = executionContextService.getJobShardingContext(Collections.<Integer>emptyList());
         assertTrue(shardingContexts.getTaskId().startsWith("test_job@-@@-@READY@-@"));
         assertThat(shardingContexts.getShardingTotalCount(), is(3));
@@ -78,7 +78,7 @@ public final class ExecutionContextServiceTest {
     @Test
     public void assertGetShardingContextWhenAssignShardingItems() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3)
-                .shardingItemParameters("0=A,1=B,2=C").build(), TestDataflowJob.class.getCanonicalName(), true)).monitorExecution(false).build());
+                .shardingItemParameters("0=A,1=B,2=C").build(), TestDataflowJob.class.getCanonicalName(), true, 1)).monitorExecution(false).build());
         Map<Integer, String> map = new HashMap<>(3);
         map.put(0, "A");
         map.put(1, "B");
@@ -90,7 +90,7 @@ public final class ExecutionContextServiceTest {
     @Test
     public void assertGetShardingContextWhenHasRunningItems() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3)
-                .shardingItemParameters("0=A,1=B,2=C").build(), TestDataflowJob.class.getCanonicalName(), true)).monitorExecution(true).build());
+                .shardingItemParameters("0=A,1=B,2=C").build(), TestDataflowJob.class.getCanonicalName(), true, 1)).monitorExecution(true).build());
         when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
         Map<Integer, String> map = new HashMap<>(1, 1);

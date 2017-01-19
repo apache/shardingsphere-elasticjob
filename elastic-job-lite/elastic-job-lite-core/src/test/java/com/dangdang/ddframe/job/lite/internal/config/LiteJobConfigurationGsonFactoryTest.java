@@ -67,7 +67,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
     @Test
     public void assertToJsonForDataflowJob() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), 
-                TestDataflowJob.class.getCanonicalName(), true)).build();
+                TestDataflowJob.class.getCanonicalName(), true, 1)).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(dataflowJobJson));
     }
     

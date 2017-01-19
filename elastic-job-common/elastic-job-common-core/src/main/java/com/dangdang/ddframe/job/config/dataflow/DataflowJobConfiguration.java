@@ -40,4 +40,6 @@ public final class DataflowJobConfiguration implements JobTypeConfiguration {
     private final String jobClass;
     
     private final boolean streamingProcess;
+
+    private final int processDataThreadCount;
 }

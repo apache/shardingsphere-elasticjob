@@ -29,4 +29,5 @@ import lombok.NoArgsConstructor;
 public final class DataflowJobBeanDefinitionParserTag {
     
     public static final String STREAMING_PROCESS_ATTRIBUTE = "streaming-process";
+    public static final String PROCESS_DATA_THREAD_COUNT_ATTRIBUTE = "process-data-thread-count";
 }

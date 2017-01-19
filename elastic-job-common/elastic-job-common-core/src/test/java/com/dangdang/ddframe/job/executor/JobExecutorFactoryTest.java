@@ -63,7 +63,7 @@ public final class JobExecutorFactoryTest {
     @Test
     public void assertGetJobExecutorForDataflowJob() {
         when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("fake_task_id", "dataflow_test_job", 10, "", Collections.<Integer, String>emptyMap()));
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false, 1));
         assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade), instanceOf(DataflowJobExecutor.class));
     }
     
@@ -77,7 +77,7 @@ public final class JobExecutorFactoryTest {
     @Test
     public void assertGetJobExecutorTwice() {
         when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("fake_task_id", "twice_test_job", 10, "", Collections.<Integer, String>emptyMap()));
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false, 1));
         AbstractElasticJobExecutor executor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
         AbstractElasticJobExecutor anotherExecutor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
         assertTrue(executor.hashCode() != anotherExecutor.hashCode());

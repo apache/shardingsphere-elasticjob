@@ -61,7 +61,7 @@ public class JobConfigurationContext implements JobRootConfiguration {
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), jobConfigurationMap.get("executorServiceHandler"));
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobConfigurationMap.get("jobExceptionHandler"));
         if (JobType.DATAFLOW.name().equals(jobType)) {
-            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, jobClass, Boolean.valueOf(jobConfigurationMap.get("streamingProcess")));
+            jobTypeConfig = new DataflowJobConfiguration(jobCoreConfig, jobClass, Boolean.valueOf(jobConfigurationMap.get("streamingProcess")), Integer.valueOf(jobConfigurationMap.get("processDataThreadCount")));
         } else if (JobType.SIMPLE.name().equals(jobType)) {
             jobTypeConfig = new SimpleJobConfiguration(jobCoreConfig, jobClass);
         } else if (JobType.SCRIPT.name().equals(jobType)) {

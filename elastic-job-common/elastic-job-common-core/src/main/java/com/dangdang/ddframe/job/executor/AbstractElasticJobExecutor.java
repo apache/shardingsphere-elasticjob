@@ -53,7 +53,8 @@ public abstract class AbstractElasticJobExecutor {
     private final JobRootConfiguration jobRootConfig;
     
     private final String jobName;
-    
+
+    @Getter(AccessLevel.PROTECTED)
     private final ExecutorService executorService;
     
     private final JobExceptionHandler jobExceptionHandler;

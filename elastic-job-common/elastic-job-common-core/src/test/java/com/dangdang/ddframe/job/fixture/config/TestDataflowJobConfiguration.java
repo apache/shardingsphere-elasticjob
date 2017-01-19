@@ -31,11 +31,12 @@ import lombok.RequiredArgsConstructor;
 public final class TestDataflowJobConfiguration implements JobRootConfiguration {
     
     private final boolean streamingProcess;
+    private final int processDataThreadCount;
     
     @Override
     public JobTypeConfiguration getTypeConfig() {
         return new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(ShardingContextsBuilder.JOB_NAME, "0/1 * * * * ?", 3)
                 .jobProperties(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName()).build(), 
-                TestDataflowJob.class.getCanonicalName(), streamingProcess);
+                TestDataflowJob.class.getCanonicalName(), streamingProcess, processDataThreadCount);
     }
 }

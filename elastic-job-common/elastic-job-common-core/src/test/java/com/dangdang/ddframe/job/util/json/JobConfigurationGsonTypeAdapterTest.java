@@ -53,7 +53,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
     
     @Test
     public void assertToDataflowJobJson() {
-        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig())),
+        assertThat(GsonFactory.getGson().toJson(new TestJobRootConfiguration(new TestDataflowJobConfiguration(true, 1).getTypeConfig())),
                 is(APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName())));
     }
     
@@ -76,7 +76,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
     public void assertFromDataflowJobJson() {
         TestJobRootConfiguration actual = GsonFactory.getGson().fromJson(
                 APIJsonConstants.getDataflowJobJson(IgnoreJobExceptionHandler.class.getCanonicalName()), TestJobRootConfiguration.class);
-        TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestDataflowJobConfiguration(true).getTypeConfig());
+        TestJobRootConfiguration expected = new TestJobRootConfiguration(new TestDataflowJobConfiguration(true, 1).getTypeConfig());
         assertThat(GsonFactory.getGson().toJson(actual), is(GsonFactory.getGson().toJson(expected)));
     }
     

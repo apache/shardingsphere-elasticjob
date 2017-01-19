@@ -59,6 +59,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         JobType jobType = null;
         String jobClass = "";
         boolean streamingProcess = false;
+        int processDataThreadCount = 1;
         String scriptCommandLine = "";
         Map<String, Object> customizedValueMap = new HashMap<>(32, 1);
         in.beginObject();
@@ -101,6 +102,9 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 case "streamingProcess":
                     streamingProcess = in.nextBoolean();
                     break;
+                case "processDataThreadCount":
+                    processDataThreadCount = in.nextInt();
+                    break;
                 case "scriptCommandLine":
                     scriptCommandLine = in.nextString();
                     break;
@@ -112,7 +116,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         in.endObject();
         JobCoreConfiguration coreConfig = getJobCoreConfiguration(jobName, cron, shardingTotalCount, shardingItemParameters,
                 jobParameter, failover, misfire, description, jobProperties);
-        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, streamingProcess, scriptCommandLine);
+        JobTypeConfiguration typeConfig = getJobTypeConfiguration(coreConfig, jobType, jobClass, streamingProcess, processDataThreadCount, scriptCommandLine);
         return getJobRootConfiguration(typeConfig, customizedValueMap);
     }
     
@@ -149,7 +153,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
     }
     
     private JobTypeConfiguration getJobTypeConfiguration(
-            final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final boolean streamingProcess, final String scriptCommandLine) {
+            final JobCoreConfiguration coreConfig, final JobType jobType, final String jobClass, final boolean streamingProcess, final int processDataThreadCount, final String scriptCommandLine) {
         JobTypeConfiguration result;
         Preconditions.checkNotNull(jobType, "jobType cannot be null.");
         switch (jobType) {
@@ -159,7 +163,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
                 break;
             case DATAFLOW:
                 Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass cannot be empty.");
-                result = new DataflowJobConfiguration(coreConfig, jobClass, streamingProcess);
+                result = new DataflowJobConfiguration(coreConfig, jobClass, streamingProcess, processDataThreadCount);
                 break;
             case SCRIPT:
                 result = new ScriptJobConfiguration(coreConfig, scriptCommandLine);
@@ -189,6 +193,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
             DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getTypeConfig();
             out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());
+            out.name("processDataThreadCount").value(dataflowJobConfig.getProcessDataThreadCount());
         } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
             out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());
