@@ -15,18 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.app;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.AllCloudAppConfigTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        ConfigurationNodeTest.class,
-        ConfigurationServiceTest.class,
-        CloudJobConfigurationListenerTest.class,
-        AllCloudAppConfigTests.class
+        CloudAppConfigurationNodeTest.class,
+        CloudAppConfigurationServiceTest.class
     })
-public final class AllConfigTests {
+public final class AllCloudAppConfigTests {
 }

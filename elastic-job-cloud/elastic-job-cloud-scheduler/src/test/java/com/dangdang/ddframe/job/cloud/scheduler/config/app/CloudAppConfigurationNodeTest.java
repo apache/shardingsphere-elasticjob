@@ -15,18 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.app;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.AllCloudAppConfigTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        ConfigurationNodeTest.class,
-        ConfigurationServiceTest.class,
-        CloudJobConfigurationListenerTest.class,
-        AllCloudAppConfigTests.class
-    })
-public final class AllConfigTests {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class CloudAppConfigurationNodeTest {
+    
+    @Test
+    public void assertGetRootNodePath() {
+        assertThat(CloudAppConfigurationNode.getRootNodePath("test_job_app"), is("/config/app/test_job_app"));
+    }
 }
