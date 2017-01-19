@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener;
 
+import java.util.List;
+
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
@@ -25,9 +27,8 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
+import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileWorkerListenerManager;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-
-import java.util.List;
 
 /**
  * 作业注册中心的监听器管理者.
@@ -50,6 +51,8 @@ public class ListenerManager {
 
     private final GuaranteeListenerManager guaranteeListenerManager;
     
+    private final ReconcileWorkerListenerManager reconcileWorkerListenerManager;
+    
     public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         electionListenerManager = new ElectionListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
@@ -58,6 +61,7 @@ public class ListenerManager {
         jobOperationListenerManager = new JobOperationListenerManager(regCenter, jobName);
         configurationListenerManager = new ConfigurationListenerManager(regCenter, jobName);
         guaranteeListenerManager = new GuaranteeListenerManager(regCenter, jobName, elasticJobListeners);
+        reconcileWorkerListenerManager = new ReconcileWorkerListenerManager(regCenter, jobName);
     }
     
     /**
@@ -71,6 +75,7 @@ public class ListenerManager {
         jobOperationListenerManager.start();
         configurationListenerManager.start();
         guaranteeListenerManager.start();
+        reconcileWorkerListenerManager.start();
     }
     
     /**

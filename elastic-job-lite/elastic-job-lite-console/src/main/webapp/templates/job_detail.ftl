@@ -50,14 +50,13 @@
                     <div class="col-sm-2">
                         <input type="number" id="monitorPort" name="monitorPort" class="form-control" data-toggle="tooltip" data-placement="bottom" title="抓取作业注册信息监听服务端口。配置为-1表示不启用监听服务。" />
                     </div>
-
-                    <#if jobType == "DATAFLOW">
-                        <label for="streamingProcess" class="col-sm-2 control-label">是否流式处理数据</label>
-                        <div class="col-sm-2">
-                            <input type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 则处理数据完成后作业结束" />
-                        </div>
-                    </#if>
+                    
+                    <label for="reconcileCycleTime" class="col-sm-2 control-label">作业服务器状态修复周期</label>
+                    <div class="col-sm-2">
+                        <input type="number" id="reconcileCycleTime" name="reconcileCycleTime" class="form-control" data-toggle="tooltip" data-placement="bottom" title="修复错误状态的作业服务器扫描修复周期。配置为-1表示不启用修复动作。" />
+                    </div>
                 </div>
+                
                 <div class="form-group">
                     <label for="monitorExecution" class="col-sm-2 control-label">监控作业执行时状态</label>
                     <div class="col-sm-1">
@@ -73,6 +72,15 @@
                     <div class="col-sm-2">
                         <input type="checkbox" id="misfire" name="misfire" data-toggle="tooltip" data-placement="bottom" title="是否开启任务错过重新执行" />
                     </div>
+                </div>
+                
+                <div class="form-group">
+                    <#if jobType == "DATAFLOW">
+                        <label for="streamingProcess" class="col-sm-2 control-label">是否流式处理数据</label>
+                        <div class="col-sm-2">
+                            <input type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="如果流式处理数据, 则fetchData不返回空结果将持续执行作业; 如果非流式处理数据, 则处理数据完成后作业结束" />
+                        </div>
+                    </#if>
                 </div>
                 
                 <div class="form-group">
