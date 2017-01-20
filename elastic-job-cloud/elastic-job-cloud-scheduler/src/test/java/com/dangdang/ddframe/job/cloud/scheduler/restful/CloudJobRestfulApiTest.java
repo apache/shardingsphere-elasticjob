@@ -42,9 +42,6 @@ import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.apache.mesos.SchedulerDriver;
-import org.eclipse.jetty.client.ContentExchange;
-import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.io.ByteArrayBuffer;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -53,16 +50,16 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
-import javax.ws.rs.core.MediaType;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulTestsUtil.sentGetRequest;
+import static com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulTestsUtil.sentRequest;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
@@ -108,6 +105,15 @@ public final class CloudJobRestfulApiTest {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
         verify(regCenter).persist("/config/test_job", CloudJsonConstants.getJobJson());
+        sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
+    }
+    
+    @Test
+    public void assertRegisterWithExistedName() throws Exception {
+        when(regCenter.isExisted("/config/test_job")).thenReturn(false);
+        assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
+        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(500));
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
     }
     
@@ -322,40 +328,5 @@ public final class CloudJobRestfulApiTest {
     public void assertFindJobRegisterStatisticsSinceOnline() throws Exception {
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/statistics/jobs/register"), 
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
-    }
-    
-    private static int sentRequest(final String url, final String method, final String content) throws Exception {
-        HttpClient httpClient = new HttpClient();
-        try {
-            httpClient.start();
-            ContentExchange contentExchange = new ContentExchange();
-            contentExchange.setMethod(method);
-            contentExchange.setRequestContentType(MediaType.APPLICATION_JSON);
-            contentExchange.setRequestContent(new ByteArrayBuffer(content.getBytes("UTF-8")));
-            httpClient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
-            contentExchange.setURL(url);
-            httpClient.send(contentExchange);
-            contentExchange.waitForDone();
-            return contentExchange.getResponseStatus();
-        } finally {
-            httpClient.stop();
-        }
-    }
-    
-    private static String sentGetRequest(final String url) throws Exception {
-        HttpClient httpClient = new HttpClient();
-        try {
-            httpClient.start();
-            ContentExchange contentExchange = new ContentExchange();
-            contentExchange.setMethod("GET");
-            contentExchange.setRequestContentType(MediaType.APPLICATION_JSON);
-            httpClient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
-            contentExchange.setURL(url);
-            httpClient.send(contentExchange);
-            contentExchange.waitForDone();
-            return contentExchange.getResponseContent();
-        } finally {
-            httpClient.stop();
-        }
     }
 }
