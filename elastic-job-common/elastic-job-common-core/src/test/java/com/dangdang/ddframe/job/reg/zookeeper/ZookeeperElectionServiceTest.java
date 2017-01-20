@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 
 public class ZookeeperElectionServiceTest {
     
-    private static final String HOST_AND_PORT = "localhost:9898";
+    private static final String HOST_AND_PORT = "localhost:8899";
     
     private static final String ELECTION_PATH = "/election";
     
@@ -76,7 +76,7 @@ public class ZookeeperElectionServiceTest {
     public void assertContend() throws Exception {
         ElectionCandidate anotherElectionCandidate = mock(ElectionCandidate.class);
         try (CuratorFramework anotherClient = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
-             ZookeeperElectionService anotherService = ZookeeperElectionService.builder().identity("ANOTHER_CLIENT:9898").electionPath(ELECTION_PATH)
+             ZookeeperElectionService anotherService = ZookeeperElectionService.builder().identity("ANOTHER_CLIENT:8899").electionPath(ELECTION_PATH)
                      .client(anotherClient).electionCandidate(anotherElectionCandidate).build()) {
             anotherClient.start();
             anotherClient.blockUntilConnected();
