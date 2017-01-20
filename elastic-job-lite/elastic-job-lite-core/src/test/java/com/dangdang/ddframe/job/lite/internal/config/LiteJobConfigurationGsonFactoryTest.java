@@ -44,23 +44,23 @@ public final class LiteJobConfigurationGsonFactoryTest {
     private String simpleJobJson =  "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":false,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":false,\"maxTimeDiffSeconds\":1000,\"monitorPort\":8888,"
-            + "\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true}";
+            + "\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true,\"reconcileCycleTime\":15}";
     
     private String dataflowJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\",\"jobType\":\"DATAFLOW\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"streamingProcess\":true,"
-            + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";
+            + "\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,\"reconcileCycleTime\":60}";
     
     private String scriptJobJson = "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.api.script.ScriptJob\",\"jobType\":\"SCRIPT\",\"cron\":\"0/1 * * * * ?\","
             + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":false,\"misfire\":true,\"description\":\"\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"scriptCommandLine\":\"test.sh\",\"monitorExecution\":true,\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,"
-            + "\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false}";
+            + "\"jobShardingStrategyClass\":\"\",\"disabled\":false,\"overwrite\":false,\"reconcileCycleTime\":60}";
     
     @Test
     public void assertToJsonForSimpleJob() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).misfire(false).build(), 
                 TestSimpleJob.class.getCanonicalName()))
-                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).build();
+                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).reconcileCycleTime(15L).build();
         assertThat(LiteJobConfigurationGsonFactory.toJson(actual), is(simpleJobJson));
     }
     
@@ -97,6 +97,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
         assertThat(actual.getMonitorPort(), is(8888));
         assertThat(actual.getJobShardingStrategyClass(), is("testClass"));
+        assertThat(actual.getReconcileCycleTime(), is(15L));
         assertTrue(actual.isDisabled());
         assertTrue(actual.isOverwrite());
     }
@@ -124,6 +125,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertThat(actual.getJobShardingStrategyClass(), is(""));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
+        assertThat(actual.getReconcileCycleTime(), is(60L));
         assertTrue(((DataflowJobConfiguration) actual.getTypeConfig()).isStreamingProcess());
     }
     
@@ -150,6 +152,7 @@ public final class LiteJobConfigurationGsonFactoryTest {
         assertThat(actual.getJobShardingStrategyClass(), is(""));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
+        assertThat(actual.getReconcileCycleTime(), is(60L));
         assertThat(((ScriptJobConfiguration) actual.getTypeConfig()).getScriptCommandLine(), is("test.sh"));
     }
 }
