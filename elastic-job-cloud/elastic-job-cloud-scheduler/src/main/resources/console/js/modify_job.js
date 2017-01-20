@@ -1,20 +1,3 @@
-/*
- * Copyright 1999-2015 dangdang.com.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * </p>
- */
-
 $(function() {
     getJobResult();
     bootstrapValidator();
@@ -74,7 +57,6 @@ function getJobName (){
 function showJobSettingInfo(result){
     $("#jobName").attr("value",result.jobName);
     $("#cron").attr("value",result.cron);
-    $("#jobClass").attr("value",result.jobClass);
     $("#jobExecutionType").val(result.jobExecutionType);
     $("#shardingTotalCount").attr("value",result.shardingTotalCount);
     $("#jobParameter").attr("value",result.jobParameter);
@@ -87,18 +69,28 @@ function showJobSettingInfo(result){
     $("#description").val(result.description);
     $("#shardingItemParameters").val(result.shardingItemParameters);
     $("#jobType").val(result.jobType);
-    if(result.jobType =='SIMPLE'){  
-        $("#scriptCommandLine").attr("disabled","disabled");
+    $("#scriptCommandLine").attr("value",result.scriptCommandLine);
+    if(result.jobType =='SIMPLE'){
+        $("#jobClass").attr("value",result.jobClass);
+        $("#jobClassModel").show();
+        $("#scriptCommandLine_text").hide();
         $("#streamingProcess").hide();
         $("#streamingProcess_box").hide();
-    }else if(result.jobType =='DATAFLOW'){  
+        $("#bootstrapScriptDiv").hide();
+    }else if(result.jobType =='DATAFLOW'){
+        $("#jobClass").attr("value",result.jobClass);
+        $("#jobClassModel").show();
         $("#streamingProcess").show();
         $("#streamingProcess_box").show();
-        $("#scriptCommandLine").attr("disabled","disabled");
+        $("#scriptCommandLine_text").hide();
+        $("#bootstrapScriptDiv").hide();
     }else if(result.jobType =='SCRIPT'){
-        $("#scriptCommandLine").removeAttr("disabled"); 
+        $("#jobClass").attr("");
+        $("#jobClassModel").hide();
+        $("#scriptCommandLine_text").show(); 
         $("#streamingProcess").hide();
         $("#streamingProcess_box").hide();
+        $("#bootstrapScriptDiv").show();
     }
     if(result.failover == true){
         $("#failover").prop("checked",true);

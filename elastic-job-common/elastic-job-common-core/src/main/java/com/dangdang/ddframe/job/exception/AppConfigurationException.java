@@ -15,15 +15,22 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.restful;
+package com.dangdang.ddframe.job.exception;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        CloudJobRestfulApiTest.class,
-        CloudAppRestfulApiTest.class
-})
-public final class AllRestfulTests {
+/**
+ * 作业App配置异常.
+ * 
+ * @author caohao
+ */
+public class AppConfigurationException extends RuntimeException {
+    
+    private static final long serialVersionUID = -1466479389299512371L;
+    
+    public AppConfigurationException(final String errorMessage, final Object... args) {
+        super(String.format(errorMessage, args));
+    }
+    
+    public AppConfigurationException(final Throwable cause) {
+        super(cause);
+    }
 }
