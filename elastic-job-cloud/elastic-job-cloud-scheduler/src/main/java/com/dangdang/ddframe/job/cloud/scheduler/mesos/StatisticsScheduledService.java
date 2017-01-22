@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
  * 任务统计信息处理器.
  * 
  * @author zhangliang
- * @author gaohongtao
  */
 @Slf4j
 public class StatisticsScheduledService extends AbstractScheduledService {

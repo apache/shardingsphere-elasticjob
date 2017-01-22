@@ -15,15 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.restful;
+package com.dangdang.ddframe.job.cloud.scheduler.config.app;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        CloudJobRestfulApiTest.class,
-        CloudAppRestfulApiTest.class
-})
-public final class AllRestfulTests {
+        CloudAppConfigurationNodeTest.class,
+        CloudAppConfigurationServiceTest.class
+    })
+public final class AllCloudAppConfigTests {
 }
