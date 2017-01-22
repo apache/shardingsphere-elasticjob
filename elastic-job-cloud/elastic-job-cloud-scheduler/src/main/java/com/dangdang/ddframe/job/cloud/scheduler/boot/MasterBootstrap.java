@@ -124,7 +124,8 @@ public final class MasterBootstrap {
         getCache().getListenable().addListener(cloudJobConfigurationListener, Executors.newSingleThreadExecutor());
         taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus).startAsync();
         statisticsScheduledService = new StatisticsScheduledService(regCenter).startAsync();
-        reconcileScheduledService =  ReconcileScheduledService.builder().facadeService(facadeService).scheduler(schedulerDriver).build().startAsync();
+        reconcileScheduledService =  ReconcileScheduledService.builder().facadeService(facadeService).scheduler(schedulerDriver)
+                .taskScheduler(taskScheduler).statisticManager(statisticManager).build().startAsync();
         statisticManager.startup();
         restfulServer.start(CloudJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
         schedulerDriver.start();

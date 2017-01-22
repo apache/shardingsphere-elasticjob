@@ -18,12 +18,15 @@
 package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.AbstractScheduledService;
+import com.netflix.fenzo.TaskScheduler;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,13 +56,17 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     
     private final SchedulerDriver scheduler;
     
+    private final TaskScheduler taskScheduler;
+    
+    private final StatisticManager statisticManager;
+    
     private final long reconcileInterval;
     
     private final long retryIntervalUnit;
     
     private final long maxPostTimes;
     
-    private long currentReconcileMilliSeconds;
+    private long latestFetchRemainingMilliSeconds;
     
     private long latestReconcileMilliSeconds;
     
@@ -68,12 +75,14 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     private double currentRePostInterval;
     
     @Builder
-    private ReconcileScheduledService(final FacadeService facadeService, final SchedulerDriver scheduler, final long reconcileInterval,
-                                      final long retryIntervalUnit, final long maxPostTimes) {
+    private ReconcileScheduledService(final FacadeService facadeService, final SchedulerDriver scheduler, final TaskScheduler taskScheduler, final StatisticManager statisticManager,
+                                      final long reconcileInterval, final long retryIntervalUnit, final long maxPostTimes) {
         this.facadeService = facadeService;
         this.scheduler = scheduler;
-        this.reconcileInterval = reconcileInterval == 0 ? 10 * 60 * 1000 : reconcileInterval;
-        this.retryIntervalUnit = retryIntervalUnit == 0 ? 40 * 1000 : retryIntervalUnit;
+        this.taskScheduler = taskScheduler;
+        this.statisticManager = statisticManager;
+        this.reconcileInterval = reconcileInterval == 0 ? 30 * 60 * 1000 : reconcileInterval;
+        this.retryIntervalUnit = retryIntervalUnit == 0 ? 5 * 60 * 1000 : retryIntervalUnit;
         this.maxPostTimes = maxPostTimes == 0 ? 3 : maxPostTimes;
     }
     
@@ -92,11 +101,11 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     }
     
     void fetchRemaining() {
-        if (currentReconcileMilliSeconds + reconcileInterval > System.currentTimeMillis()) {
+        if (latestReconcileMilliSeconds + reconcileInterval > System.currentTimeMillis()) {
             return;
         }
         remainingTasks.addAll(filterRunningTask());
-        currentReconcileMilliSeconds = System.currentTimeMillis();
+        latestFetchRemainingMilliSeconds = System.currentTimeMillis();
         if (remainingTasks.isEmpty()) {
             return;
         }
@@ -109,7 +118,7 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
         return Sets.filter(facadeService.getAllRunningDaemonTask(), new Predicate<TaskContext>() {
             @Override
             public boolean apply(final TaskContext input) {
-                return input.getUpdatedTime() < currentReconcileMilliSeconds;
+                return input.getUpdatedTime() < latestFetchRemainingMilliSeconds;
             }
         });
     }
@@ -148,11 +157,15 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
             postReconcile();
             return;
         }
-        log.warn("Elastic Job - Reconcile: Reconcile retrying reaches max times, clear task {}", remainingTasks);
+        log.warn("Elastic Job - Reconcile: Reconcile retrying reaches max times, clear task {}", remainingTasks.size());
         for (TaskContext taskContext : remainingTasks) {
             facadeService.removeRunning(taskContext);
             facadeService.recordFailoverTask(taskContext);
-            facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
+            String hostname = facadeService.popMapping(taskContext.getId());
+            if (!Strings.isNullOrEmpty(hostname)) {
+                taskScheduler.getTaskUnAssigner().call(TaskContext.getIdForUnassignedSlave(taskContext.getId()), hostname);
+            }
+            statisticManager.taskRunFailed();
         }
         remainingTasks.clear();
     }
@@ -165,7 +178,7 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     @Override
     protected void startUp() throws Exception {
         log.info("Elastic Job - Reconcile: Start {}", serviceName());
-        currentReconcileMilliSeconds = System.currentTimeMillis() - reconcileInterval;
+        latestFetchRemainingMilliSeconds = System.currentTimeMillis() - reconcileInterval;
     }
     
     @Override

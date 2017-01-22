@@ -18,9 +18,12 @@
 package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.google.common.collect.Sets;
+import com.netflix.fenzo.TaskScheduler;
+import com.netflix.fenzo.functions.Action2;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 import org.junit.Before;
@@ -38,6 +41,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,6 +56,12 @@ public class ReconcileScheduledServiceTest {
     @Mock
     private SchedulerDriver scheduler;
     
+    @Mock
+    private TaskScheduler taskScheduler;
+    
+    @Mock
+    private StatisticManager statisticManager;
+    
     @Captor
     private ArgumentCaptor<Collection<Protos.TaskStatus>> taskStatusCaptor;
     
@@ -61,7 +71,7 @@ public class ReconcileScheduledServiceTest {
     
     @Before
     public void setUp() throws Exception {
-        serviceBuilder = ReconcileScheduledService.builder().facadeService(facadeService).scheduler(scheduler);
+        serviceBuilder = ReconcileScheduledService.builder().facadeService(facadeService).scheduler(scheduler).taskScheduler(taskScheduler).statisticManager(statisticManager);
         runningTasks = Sets.newHashSet(new TaskContext("daemon1", Arrays.asList(1, 2), ExecutionType.READY), new TaskContext("daemon2", Arrays.asList(1, 2), ExecutionType.READY));
         when(facadeService.getAllRunningDaemonTask()).thenReturn(runningTasks);
     }
@@ -145,8 +155,14 @@ public class ReconcileScheduledServiceTest {
     }
     
     @Test
+    @SuppressWarnings("unchecked")
     public void assertReachLimit() throws Exception {
         ReconcileScheduledService service = serviceBuilder.retryIntervalUnit(10).maxPostTimes(2).build();
+        for (TaskContext each : runningTasks) {
+            when(facadeService.popMapping(each.getId())).thenReturn("mock_hostname");
+        }
+        Action2<String, String> action = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(action);
         service.startUp();
         service.runOneIteration();
         assertThat(service.getRemainingTasks().size(), is(2));
@@ -161,6 +177,10 @@ public class ReconcileScheduledServiceTest {
         verify(scheduler, times(2)).reconcileTasks(taskStatusCaptor.capture());
         assertThat(taskStatusCaptor.getValue().size(), is(0));
         assertTrue(service.getRemainingTasks().isEmpty());
+        for (TaskContext each : runningTasks) {
+            verify(action).call(TaskContext.getIdForUnassignedSlave(each.getId()), "mock_hostname");
+        }
+        verify(statisticManager, times(2)).taskRunFailed();
     }
     
 }
