@@ -129,8 +129,11 @@ $('#jobName').blur(function(){
             success: function (data) {
                 if(null != data){
                     if(!$.isNumeric(data.length)){
-                        $("#jobName-server-check").modal();
-                        $('#confirm').on("click", function(){
+                        $("#jobName-server-check").modal({backdrop: 'static', keyboard: true});
+                        setTimeout(function(){
+                            $("#jobName-server-check").modal("hide")
+                        },1000);
+                        $('#jobName-server-check').on('hidden.bs.modal', function () {
                             $("#jobName").val("");
                             $('#job-settings-form').data('bootstrapValidator').updateStatus('jobName', 'NOT_VALIDATED', null).validateField('jobName');
                         });
@@ -167,9 +170,15 @@ function submitBootstrapValidator(){
             if(beanName.length == 0 && applicationContext.length == 0){
                 bindSubmitJobSettingsForm();
             }else if(null != applicationContext && beanName.length == 0){
-                $("#delete-data—beanName").modal(); 
+                $("#delete-data—beanName").modal();
+                setTimeout(function(){
+                    $("#delete-data—beanName").modal("hide")
+                },2000); 
             }else if(null != beanName && applicationContext.length == 0){
                 $("#delete-data-applicationContext").modal();
+                setTimeout(function(){
+                    $("#delete-data-applicationContext").modal("hide")
+                },2000);
             }else{
                 bindSubmitJobSettingsForm();
             }

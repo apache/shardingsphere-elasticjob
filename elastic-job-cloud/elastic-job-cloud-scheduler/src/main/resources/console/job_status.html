@@ -1,208 +1,104 @@
-<!DOCTYPE html>
-<!--
-  ~ Copyright 1999-2015 dangdang.com.
-  ~ <p>
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  ~ </p>
-  -->
-
-<html>
-    <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Job Console</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Bootstrap 3.3.5 -->
-    <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="plugins/font-awesome-4.5.0/css/font-awesome.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="plugins/AdminLTE/css/AdminLTE.min.css">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins
-         folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="plugins/AdminLTE/css/skins/_all-skins.min.css">
-    <!-- common -->
-    <link rel="stylesheet" href="css/common.css">
-    <!-- bootstrap-table -->
-    <link rel="stylesheet" href="plugins/bootstrap-table/bootstrap-table.min.css">
-    <!-- daterange picker -->
-    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
-    <!-- jQuery 2.1.4 -->
-    <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
-    <!-- Bootstrap 3.3.5 -->
-    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="plugins/AdminLTE/js/app.min.js"></script>
-    <!-- bootstrap-table -->
-    <script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="plugins/bootstrap-table/bootstrap-table-zh-CN.js"></script>
-    </head>
-    <body class="hold-transition skin-purple sidebar-mini">
-    <div class="wrapper">
-        <header class="main-header">
-        <!-- Logo -->
-        <a href="" class="logo">
-        <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>Elastic Job Cloud Console</b></span>
-        </a>
-        <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-static-top" role="navigation">
-        </nav>
-    </header>
-    <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar">
-    <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
-        <!-- sidebar menu: : style can be found in sidebar.less -->
-            <ul class="sidebar-menu">
-                <li class="header">主菜单</li>
-                <li class="treeview active">
-                    <a href="#">
-                        <i class="fa fa-edit"></i>
-                            <span>作业</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-            <ul class="treeview-menu">
-                <li><a href="index.html"><i class="fa fa-circle-o"></i>定义</a></li>
-                <li class="active"><a href="job_status.html"><i class="fa fa-circle-o"></i>状态</a></li>
-            </ul>
-                </li>
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-dashboard"></i> <span>作业历史</span>
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </a>
-              <ul class="treeview-menu">
-                    <li><a href="job_exec_detail.html"><i class="fa fa-circle-o"></i> 运行轨迹查询</a></li>
-                    <li><a href="job_exec_status.html"><i class="fa fa-circle-o"></i> 运行状态查询</a></li>
-                    <li><a href="job_dashboard.html"><i class="fa fa-circle-o"></i> 历史dashboard</a></li>
-                </ul>
-            </li>
-        </ul>
+<div class="content-wrapper" style="min-height:680px;">
+    <section class="content-header">
+        <h1>作业状态信息</h1>
     </section>
-    <!-- /.sidebar -->
-    </aside>
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-        <section class="content-header">
-            <h1>作业状态信息</h1>
-        </section>
-        <section class="content">
-        <div class="row">
-            <div class="box box-info">
-            <div class="box-header with-border">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li id="running_tab" role="presentation" class="active"><a href="#running" aria-controls="running" role="tab" data-toggle="tab">运行任务</a></li>
-                    <li id="ready_tab" role="presentation"><a href="#ready" aria-controls="ready" role="tab" data-toggle="tab">待运行作业</a></li>
-                    <li id="failover_tab" role="presentation"><a href="#failover" aria-controls="failover" role="tab" data-toggle="tab">待失效转移任务</a></li>
-                </ul>
-            </div>
-            <div class="box-body">
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="running">
-                        <table id="running" 
-                            data-show-refresh="true"
-                            data-show-toggle="true"
-                            data-striped="true"
-                            data-toggle="table"
-                            data-url="/job/tasks/running"
-                            data-flat="true"
-                            data-click-to-select="true"
-                            data-row-style="rowStyle"
-                            data-search="true"
-                            data-strict-search="false"
-                            data-query-params="queryParams"
-                            data-query-params-type="notLimit"
-                            data-pagination="true"
-                            data-page-list="[10, 20, 50, 100]"
-                            data-show-columns="true">
-                        <thead>
-                            <tr>
-                                <th data-field="id" data-sortable="true">任务ID</th>
-                                <th data-field="metaInfo.jobName" data-sortable="true">任务名称</th>
-                                <th data-field="slaveId" data-sortable="true">宿主机ID</th>
-                                <th data-field="type" data-sortable="true">执行类型</th>
-                                <th data-field="metaInfo.shardingItems">分片项</th>
-                                </tr>
-                        </thead>
-                        </table>        
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="ready">
-                        <table id="ready" 
-                            data-show-refresh="true"
-                            data-show-toggle="true"
-                            data-striped="true"
-                            data-toggle="table"
-                            data-url="/job/tasks/ready"
-                            data-flat="true"
-                            data-click-to-select="true"
-                            data-row-style="rowStyle"
-                            data-search="true"
-                            data-strict-search="false"
-                            data-query-params="queryParams"
-                            data-query-params-type="notLimit"
-                            data-pagination="true"
-                            data-page-list="[10, 20, 50, 100]"
-                            data-show-columns="true">
-                        <thead>
-                            <tr>
-                                <th data-field="jobName" data-sortable="true">作业名称</th>
-                                <th data-field="times" data-sortable="true">剩余执行次数</th>
+    <section class="content">
+    <div class="row">
+        <div class="box box-info">
+        <div class="box-header with-border">
+            <ul class="nav nav-tabs" role="tablist">
+                <li id="running_tab" role="presentation" class="active"><a href="#running" aria-controls="running" role="tab" data-toggle="tab">运行任务</a></li>
+                <li id="ready_tab" role="presentation"><a href="#ready" aria-controls="ready" role="tab" data-toggle="tab">待运行作业</a></li>
+                <li id="failover_tab" role="presentation"><a href="#failover" aria-controls="failover" role="tab" data-toggle="tab">待失效转移任务</a></li>
+            </ul>
+        </div>
+        <div class="box-body">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="running">
+                    <table id="running" 
+                        data-show-refresh="true"
+                        data-show-toggle="true"
+                        data-striped="true"
+                        data-toggle="table"
+                        data-url="/job/tasks/running"
+                        data-flat="true"
+                        data-click-to-select="true"
+                        data-row-style="rowStyle"
+                        data-search="true"
+                        data-strict-search="false"
+                        data-query-params="queryParams"
+                        data-query-params-type="notLimit"
+                        data-pagination="true"
+                        data-page-list="[10, 20, 50, 100]"
+                        data-show-columns="true">
+                    <thead>
+                        <tr>
+                            <th data-field="id" data-sortable="true">任务ID</th>
+                            <th data-field="metaInfo.jobName" data-sortable="true">任务名称</th>
+                            <th data-field="slaveId" data-sortable="true">宿主机ID</th>
+                            <th data-field="type" data-sortable="true">执行类型</th>
+                            <th data-field="metaInfo.shardingItems">分片项</th>
                             </tr>
-                        </thead>
-                        </table>        
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="failover">
-                        <table id="failover" 
-                            data-show-refresh="true"
-                            data-show-toggle="true"
-                            data-striped="true"
-                            data-toggle="table"
-                            data-url="/job/tasks/failover"
-                            data-flat="true"
-                            data-click-to-select="true"
-                            data-row-style="rowStyle"
-                            data-search="true"
-                            data-strict-search="false"
-                            data-query-params="queryParams"
-                            data-query-params-type="notLimit"
-                            data-pagination="true"
-                            data-page-list="[10, 20, 50, 100]"
-                            data-show-columns="true">
-                        <thead>
-                            <tr>
-                                <th data-field="taskInfo.jobName" data-sortable="true">作业名称</th>
-                                <th data-field="originalTaskId">原任务ID</th>
-                                <th data-field="taskInfo.shardingItems">分片项</th>
-                            </tr>
-                        </thead>
-                        </table>
-                    </div>
+                    </thead>
+                    </table>        
+                </div>
+                <div role="tabpanel" class="tab-pane" id="ready">
+                    <table id="ready" 
+                        data-show-refresh="true"
+                        data-show-toggle="true"
+                        data-striped="true"
+                        data-toggle="table"
+                        data-url="/job/tasks/ready"
+                        data-flat="true"
+                        data-click-to-select="true"
+                        data-row-style="rowStyle"
+                        data-search="true"
+                        data-strict-search="false"
+                        data-query-params="queryParams"
+                        data-query-params-type="notLimit"
+                        data-pagination="true"
+                        data-page-list="[10, 20, 50, 100]"
+                        data-show-columns="true">
+                    <thead>
+                        <tr>
+                            <th data-field="jobName" data-sortable="true">作业名称</th>
+                            <th data-field="times" data-sortable="true">剩余执行次数</th>
+                        </tr>
+                    </thead>
+                    </table>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="failover">
+                    <table id="failover" 
+                        data-show-refresh="true"
+                        data-show-toggle="true"
+                        data-striped="true"
+                        data-toggle="table"
+                        data-url="/job/tasks/failover"
+                        data-flat="true"
+                        data-click-to-select="true"
+                        data-row-style="rowStyle"
+                        data-search="true"
+                        data-strict-search="false"
+                        data-query-params="queryParams"
+                        data-query-params-type="notLimit"
+                        data-pagination="true"
+                        data-page-list="[10, 20, 50, 100]"
+                        data-show-columns="true">
+                    <thead>
+                        <tr>
+                            <th data-field="taskInfo.jobName" data-sortable="true">作业名称</th>
+                            <th data-field="originalTaskId">原任务ID</th>
+                            <th data-field="taskInfo.shardingItems">分片项</th>
+                        </tr>
+                    </thead>
+                    </table>
                 </div>
             </div>
-            </div>
         </div>
-        </section>
+        </div>
     </div>
-    <!-- /.content-wrapper -->
-    <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0.0
-        </div>
-            <strong>Copyright &copy; 1999-2016 <a href="http://www.dangdang.com">当当网</a>.</strong> All rights reserved.
-    </footer>
-    <div class="control-sidebar-bg"></div>
-    </div><!-- ./wrapper -->
-    </body>
-</html>
+    </section>
+</div>
+<!-- bootstrap-table -->
+<script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="plugins/bootstrap-table/bootstrap-table-zh-CN.js"></script>
