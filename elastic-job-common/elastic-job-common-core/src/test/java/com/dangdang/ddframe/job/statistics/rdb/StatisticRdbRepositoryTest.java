@@ -17,24 +17,23 @@
 
 package com.dangdang.ddframe.job.statistics.rdb;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-
-import java.sql.SQLException;
-import java.util.Date;
-
-import org.apache.commons.dbcp.BasicDataSource;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.dangdang.ddframe.job.statistics.StatisticInterval;
 import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.sql.SQLException;
+import java.util.Date;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 public class StatisticRdbRepositoryTest {
     
@@ -103,9 +102,10 @@ public class StatisticRdbRepositoryTest {
     @Test
     public void assertGetSummedTaskResultStatistics() {
         for (StatisticInterval each : StatisticInterval.values()) {
-            repository.add(new TaskResultStatistics(100, 2, each, new Date()));
-            repository.add(new TaskResultStatistics(200, 5, each, new Date()));
-            TaskResultStatistics po = repository.getSummedTaskResultStatistics(new Date(), each);
+            Date date = new Date();
+            repository.add(new TaskResultStatistics(100, 2, each, date));
+            repository.add(new TaskResultStatistics(200, 5, each, date));
+            TaskResultStatistics po = repository.getSummedTaskResultStatistics(date, each);
             assertThat(po.getSuccessCount(), is(300));
             assertThat(po.getFailedCount(), is(7));
         }

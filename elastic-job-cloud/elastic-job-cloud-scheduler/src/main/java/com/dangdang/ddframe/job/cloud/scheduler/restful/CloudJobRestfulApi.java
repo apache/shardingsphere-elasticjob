@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
@@ -42,6 +43,7 @@ import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobTypeStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -110,6 +112,7 @@ public final class CloudJobRestfulApi {
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobRestfulApi.regCenter = regCenter;
         CloudJobRestfulApi.producerManager = producerManager;
+        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
         Optional<JobEventRdbConfiguration> jobEventRdbConfig = BootstrapEnvironment.getInstance().getJobEventRdbConfiguration();
         if (jobEventRdbConfig.isPresent()) {
             jobEventRdbSearch = new JobEventRdbSearch(jobEventRdbConfig.get().getDataSource());

@@ -73,6 +73,7 @@ public final class CloudAppConfigurationGsonFactory {
             double cpuCount = 1.0d;
             double memoryMB = 128.0d;
             boolean appCacheEnable = true;
+            String applicationContext = "";
             int eventTraceSamplingRate = 0;
             in.beginObject();
             while (in.hasNext()) {

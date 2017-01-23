@@ -18,10 +18,12 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.exception.AppConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
 
 import javax.ws.rs.Consumes;
@@ -57,6 +59,7 @@ public final class CloudAppRestfulApi {
      */
     public static void init(final CoordinatorRegistryCenter regCenter) {
         CloudAppRestfulApi.regCenter = regCenter;
+        GsonFactory.registerTypeAdapter(CloudAppConfiguration.class, new CloudAppConfigurationGsonFactory.CloudAppConfigurationGsonTypeAdapter());
     }
     
     /**
@@ -89,6 +92,7 @@ public final class CloudAppRestfulApi {
      * 查询云作业App配置.
      *
      * @param appName 云作业App配置名称
+     * @return 云作业App配置
      */
     @GET
     @Path("/{appName}")

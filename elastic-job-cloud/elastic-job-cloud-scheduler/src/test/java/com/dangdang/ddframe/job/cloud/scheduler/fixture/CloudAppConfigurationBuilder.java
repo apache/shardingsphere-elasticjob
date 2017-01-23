@@ -27,8 +27,4 @@ public final class CloudAppConfigurationBuilder {
     public static CloudAppConfiguration createCloudAppConfiguration(final String appName) {
         return new CloudAppConfiguration(appName, "http://localhost/app.jar", "bin/start.sh");
     }
-    
-    public static CloudAppConfiguration createCloudAppSpringConfiguration(final String appName) {
-        return new CloudAppConfiguration(appName, "http://localhost/app.jar", "bin/start.sh", 1.0d, 128.0d, true, 0);
-    }
 }
