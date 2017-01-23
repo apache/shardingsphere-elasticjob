@@ -38,10 +38,10 @@ public final class HAService {
     
     private final ZookeeperElectionService electionService;
     
-    public HAService(final CoordinatorRegistryCenter registryCenter) {
+    public HAService(final CoordinatorRegistryCenter regCenter) {
         electionService = ZookeeperElectionService.builder()
                 .identity(String.format("%s:%d", LOCAL_HOST_SERVICE.getHostName(), BootstrapEnvironment.getInstance().getRestfulServerConfiguration().getPort()))
-                .client((CuratorFramework) registryCenter.getRawClient()).electionPath(HANode.ELECTION_NODE)
+                .client((CuratorFramework) regCenter.getRawClient()).electionPath(HANode.ELECTION_NODE)
                 .electionCandidate(new ElectionCandidate() {
                     
                     private MasterBootstrap masterBootstrap;
@@ -49,7 +49,7 @@ public final class HAService {
                     @Override
                     public void startLeadership() throws Exception {
                         try {
-                            masterBootstrap = new MasterBootstrap();
+                            masterBootstrap = new MasterBootstrap(regCenter);
                             masterBootstrap.start();
                             //CHECKSTYLE:OFF
                         } catch (final Throwable throwable) {

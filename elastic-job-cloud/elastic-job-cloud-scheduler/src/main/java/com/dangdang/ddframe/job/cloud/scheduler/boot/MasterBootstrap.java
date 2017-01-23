@@ -33,7 +33,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
@@ -58,8 +57,6 @@ public final class MasterBootstrap {
     
     private final BootstrapEnvironment env;
     
-    private final CoordinatorRegistryCenter regCenter;
-    
     private final FacadeService facadeService;
     
     private final SchedulerDriver schedulerDriver;
@@ -78,9 +75,8 @@ public final class MasterBootstrap {
     
     private final RestfulService restfulService;
     
-    public MasterBootstrap() {
+    public MasterBootstrap(final CoordinatorRegistryCenter regCenter) {
         env = BootstrapEnvironment.getInstance();
-        regCenter = initRegCenter();
         facadeService = new FacadeService(regCenter);
         statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         LeasesQueue leasesQueue = new LeasesQueue();
@@ -93,12 +89,6 @@ public final class MasterBootstrap {
         statisticsScheduledService = new StatisticsScheduledService(regCenter);
         taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus);
         restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager);
-    }
-    
-    private CoordinatorRegistryCenter initRegCenter() {
-        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(env.getZookeeperConfiguration());
-        result.init();
-        return result;
     }
     
     private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler,

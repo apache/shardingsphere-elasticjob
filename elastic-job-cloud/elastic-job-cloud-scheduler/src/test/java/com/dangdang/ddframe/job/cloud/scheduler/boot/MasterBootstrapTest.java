@@ -80,9 +80,8 @@ public class MasterBootstrapTest {
         properties.setProperty(BootstrapEnvironment.EnvironmentArgument.HOSTNAME.getKey(), "127.0.0.1");
         System.setProperty("LIBPROCESS_IP", "127.0.0.1");
         ReflectionUtils.setFieldValue(env, "properties", properties);
-        masterBootstrap = new MasterBootstrap();
+        masterBootstrap = new MasterBootstrap(regCenter);
         ReflectionUtils.setFieldValue(masterBootstrap, "env", env);
-        ReflectionUtils.setFieldValue(masterBootstrap, "regCenter", regCenter);
         ReflectionUtils.setFieldValue(masterBootstrap, "facadeService", facadeService);
         ReflectionUtils.setFieldValue(masterBootstrap, "schedulerDriver", schedulerDriver);
         ReflectionUtils.setFieldValue(masterBootstrap, "producerManager", producerManager);
