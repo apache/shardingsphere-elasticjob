@@ -62,6 +62,7 @@
             <xsd:complexContent>
                 <xsd:extension base="base">
                     <xsd:attribute name="streaming-process" type="xsd:string" default="false"/>
+                    <xsd:attribute name="process-data-thread-count" type="xsd:int" default="1"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>

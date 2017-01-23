@@ -49,6 +49,6 @@ public final class JobConfigurationUtil {
     
     public static LiteJobConfiguration createDataflowLiteJobConfiguration() {
         return LiteJobConfiguration.newBuilder(
-                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), DataflowJob.class.getCanonicalName(), false)).build();
+                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), DataflowJob.class.getCanonicalName(), false, 1)).build();
     }
 }

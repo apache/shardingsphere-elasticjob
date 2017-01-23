@@ -59,7 +59,7 @@ public final class DataflowJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNullAndEmpty() {
-        setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
+        setUp(true, 1, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(null);
         when(jobCaller.fetchData(1)).thenReturn(Collections.emptyList());
         dataflowJobExecutor.execute();
@@ -70,7 +70,7 @@ public final class DataflowJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyForUnStreamingProcessAndSingleShardingItem() {
-        setUp(false, ShardingContextsBuilder.getSingleShardingContexts());
+        setUp(false, 1, ShardingContextsBuilder.getSingleShardingContexts());
         doThrow(new IllegalStateException()).when(jobCaller).fetchData(0);
         dataflowJobExecutor.execute();
         verify(jobCaller).fetchData(0);
@@ -79,7 +79,7 @@ public final class DataflowJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyForUnStreamingProcessAndMultipleShardingItems() {
-        setUp(false, ShardingContextsBuilder.getMultipleShardingContexts());
+        setUp(false, 1, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
         when(jobCaller.fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
         doThrow(new IllegalStateException()).when(jobCaller).processData(4);
@@ -95,7 +95,7 @@ public final class DataflowJobExecutorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyForStreamingProcessAndSingleShardingItem() {
-        setUp(true, ShardingContextsBuilder.getSingleShardingContexts());
+        setUp(true, 1, ShardingContextsBuilder.getSingleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Collections.<Object>singletonList(1), Collections.emptyList());
         when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
         dataflowJobExecutor.execute();
@@ -106,7 +106,7 @@ public final class DataflowJobExecutorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyForStreamingProcessAndMultipleShardingItems() {
-        setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
+        setUp(true, 1, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Collections.<Object>singletonList(1), Collections.emptyList());
         when(jobCaller.fetchData(1)).thenReturn(Collections.<Object>singletonList(2), Collections.emptyList());
         when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
@@ -120,7 +120,7 @@ public final class DataflowJobExecutorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndProcessFailureWithExceptionForStreamingProcess() {
-        setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
+        setUp(true, 1, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobCaller.fetchData(0)).thenReturn(Collections.<Object>singletonList(1), Collections.emptyList());
         when(jobCaller.fetchData(1)).thenReturn(Arrays.<Object>asList(2, 3), Collections.emptyList());
         when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
@@ -136,7 +136,7 @@ public final class DataflowJobExecutorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsEligibleForJobRunningForStreamingProcess() {
-        setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
+        setUp(true, 1, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobFacade.isEligibleForJobRunning()).thenReturn(true);
         when(jobCaller.fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2), Collections.emptyList());
         when(jobCaller.fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4), Collections.emptyList());
@@ -152,7 +152,7 @@ public final class DataflowJobExecutorTest {
     
     @Test
     public void assertExecuteWhenFetchDataIsNotEmptyAndIsNotEligibleForJobRunningForStreamingProcess() {
-        setUp(true, ShardingContextsBuilder.getMultipleShardingContexts());
+        setUp(true, 1, ShardingContextsBuilder.getMultipleShardingContexts());
         when(jobFacade.isEligibleForJobRunning()).thenReturn(false);
         when(jobCaller.fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2));
         when(jobCaller.fetchData(1)).thenReturn(Arrays.<Object>asList(3, 4));
@@ -165,10 +165,22 @@ public final class DataflowJobExecutorTest {
         verify(jobCaller).processData(3);
         verify(jobCaller).processData(4);
     }
-    
-    private void setUp(final boolean isStreamingProcess, final ShardingContexts shardingContexts) {
+
+    @Test
+    public void assertExecuteWhenFetchDataIsNotEmptyAndMultiThreadProcessDataForStreamingProcess() {
+        setUp(true, 2, ShardingContextsBuilder.getMultipleShardingContexts());
+        when(jobCaller.fetchData(0)).thenReturn(Arrays.<Object>asList(1, 2, 3, 4));
+        dataflowJobExecutor.execute();
+        verify(jobCaller).fetchData(0);
+        verify(jobCaller).processData(1);
+        verify(jobCaller).processData(2);
+        verify(jobCaller).processData(3);
+        verify(jobCaller).processData(4);
+    }
+
+    private void setUp(final boolean isStreamingProcess, final int processDataThreadCount, final ShardingContexts shardingContexts) {
         this.shardingContexts = shardingContexts;
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(isStreamingProcess));
+        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(isStreamingProcess, processDataThreadCount));
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         dataflowJobExecutor = new DataflowJobExecutor(new TestDataflowJob(jobCaller), jobFacade);
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);

@@ -76,7 +76,7 @@ public class SchedulerFacadeTest {
         MockitoAnnotations.initMocks(this);
         schedulerFacade = new SchedulerFacade(null, "test_job", Collections.<ElasticJobListener>emptyList());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestDataflowJob.class.getCanonicalName(), false)).build());
+                TestDataflowJob.class.getCanonicalName(), false, 1)).build());
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
@@ -95,7 +95,7 @@ public class SchedulerFacadeTest {
     @Test
     public void assertRegisterStartUpInfo() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestDataflowJob.class.getCanonicalName(), false)).build());
+                TestDataflowJob.class.getCanonicalName(), false, 1)).build());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
         verify(listenerManager).startAllListeners();
         verify(leaderElectionService).leaderForceElection();

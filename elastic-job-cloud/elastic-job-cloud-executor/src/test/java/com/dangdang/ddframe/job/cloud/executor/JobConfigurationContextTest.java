@@ -74,6 +74,7 @@ public class JobConfigurationContextTest {
         result.put("jobType", jobType.name());
         if (jobType == JobType.DATAFLOW) {
             result.put("streamingProcess", Boolean.TRUE.toString());
+            result.put("processDataThreadCount", "1");
         } else if (jobType == JobType.SCRIPT) {
             result.put("scriptCommandLine", "echo test");
         }
