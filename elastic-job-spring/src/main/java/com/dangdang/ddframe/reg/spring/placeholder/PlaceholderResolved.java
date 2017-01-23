@@ -17,15 +17,17 @@
 
 package com.dangdang.ddframe.reg.spring.placeholder;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.PropertySources;
 import org.springframework.core.env.PropertySourcesPropertyResolver;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 处理占位符的类.
@@ -55,9 +57,10 @@ public final class PlaceholderResolved {
         for (Entry<String, PropertySourcesPlaceholderConfigurer> entry : placeholderMap.entrySet()) {
             PropertySourcesPropertyResolver propertyResolver;
             try {
-                propertyResolver = new PropertySourcesPropertyResolver(entry.getValue().getAppliedPropertySources());
-            } catch (final IllegalStateException ex) {
-                continue;
+            	PropertySourcesPlaceholderConfigurer propertyConfigurer = entry.getValue();
+                Method method = PropertySourcesPlaceholderConfigurer.class.getMethod("getAppliedPropertySources");
+                PropertySources propertySources = (PropertySources)method.invoke(propertyConfigurer);
+                propertyResolver = new PropertySourcesPropertyResolver(propertySources);
             } catch (final NoSuchMethodError ex) {
                 try {
                     propertyResolver = getPropertyResolverBeforeSpring4(entry.getValue());
@@ -65,7 +68,10 @@ public final class PlaceholderResolved {
                     log.warn("Cannot get placeholder resolver.");
                     return text;
                 }
-            }
+            } catch (final Exception ex) {
+				log.warn("Cannot access field[propertySources] from PropertySourcesPlaceholderConfigurer.");
+                continue;
+            } 
             try {
                 return propertyResolver.resolveRequiredPlaceholders(text);
             } catch (final IllegalArgumentException ex) {
@@ -78,7 +84,11 @@ public final class PlaceholderResolved {
         throw missingException;
     }
     
-    private PropertySourcesPropertyResolver getPropertyResolverBeforeSpring4(final PropertySourcesPlaceholderConfigurer placeholderConfigurer) throws ReflectiveOperationException {
-        return new PropertySourcesPropertyResolver((PropertySources) PropertySourcesPlaceholderConfigurer.class.getField("propertySources").get(placeholderConfigurer));
+    private PropertySourcesPropertyResolver getPropertyResolverBeforeSpring4(final PropertySourcesPlaceholderConfigurer placeholderConfigurer) 
+    				throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException /*throws ReflectiveOperationException*/ {
+    	Field field = PropertySourcesPlaceholderConfigurer.class.getDeclaredField("propertySources");
+    	field.setAccessible(true);
+    	PropertySources propertySources = (PropertySources)field.get(placeholderConfigurer);
+        return new PropertySourcesPropertyResolver(propertySources);
     }
 }
