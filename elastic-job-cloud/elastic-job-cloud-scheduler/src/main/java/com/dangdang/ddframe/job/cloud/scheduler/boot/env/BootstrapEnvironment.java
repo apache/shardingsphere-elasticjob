@@ -38,7 +38,7 @@ import java.util.Properties;
  * @author zhangliang
  */
 @Slf4j
-public final class BootstrapEnvironment {
+public class BootstrapEnvironment {
     
     @Getter
     private static BootstrapEnvironment instance = new BootstrapEnvironment();

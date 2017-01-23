@@ -34,6 +34,11 @@ public final class MesosConfiguration {
      */
     public static final String FRAMEWORK_NAME = "Elastic-Job-Cloud";
     
+    /**
+     * 框架Failover超时时间,默认为1周.
+     */
+    public static final double FRAMEWORK_FAILOVER_TIMEOUT = 60 * 60 * 24 * 7;
+    
     private final String user;
     
     private final String url;

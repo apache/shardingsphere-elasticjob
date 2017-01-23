@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.env.AllEnvTests;
 import com.dangdang.ddframe.job.cloud.scheduler.config.AllConfigTests;
 import com.dangdang.ddframe.job.cloud.scheduler.context.AllContextTests;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.AllHATests;
-import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.AllLifecycleTests;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.AllMesosTests;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.AllProducerTests;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.AllRestfulTests;
@@ -37,7 +36,6 @@ import org.junit.runners.Suite;
         AllConfigTests.class, 
         AllStateTests.class, 
         AllProducerTests.class, 
-        AllLifecycleTests.class, 
         AllRestfulTests.class, 
         AllMesosTests.class,
         AllStatisticTests.class,

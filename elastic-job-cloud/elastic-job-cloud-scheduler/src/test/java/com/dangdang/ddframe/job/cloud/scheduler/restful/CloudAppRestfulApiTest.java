@@ -18,13 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudAppJsonConstants;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.restful.RestfulServer;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -33,35 +27,11 @@ import static com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulTestsUtil.
 import static com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulTestsUtil.sentRequest;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class CloudAppRestfulApiTest {
-    
-    private static RestfulServer server;
-    
-    private static CoordinatorRegistryCenter regCenter;
-    
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        regCenter = mock(CoordinatorRegistryCenter.class);
-        CloudAppRestfulApi.init(regCenter);
-        server = new RestfulServer(19000);
-        server.start(CloudAppRestfulApi.class.getPackage().getName(), Optional.of("console"));
-    }
-    
-    @AfterClass
-    public static void tearDown() throws Exception {
-        server.stop();
-    }
-    
-    @Before
-    public void setUp() {
-        reset(regCenter);
-    }
+public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertRegister() throws Exception {

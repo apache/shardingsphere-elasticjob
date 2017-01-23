@@ -19,32 +19,23 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.Source;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.dangdang.ddframe.job.statistics.type.job.JobExecutionTypeStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobTypeStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import org.apache.mesos.SchedulerDriver;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -63,51 +54,18 @@ import static com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulTestsUtil.
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class CloudJobRestfulApiTest {
-    
-    private static RestfulServer server;
-    
-    private static CoordinatorRegistryCenter regCenter;
-    
-    private static JobEventRdbSearch jobEventRdbSearch;
-    
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        regCenter = mock(CoordinatorRegistryCenter.class);
-        jobEventRdbSearch = mock(JobEventRdbSearch.class);
-        server = new RestfulServer(19000);
-        CloudJobRestfulApi.init(regCenter);
-        SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
-        ProducerManager producerManager = new ProducerManager(schedulerDriver, regCenter);
-        producerManager.startup();
-        CloudJobRestfulApi.setContext(schedulerDriver, producerManager);
-        server.start(CloudJobRestfulApi.class.getPackage().getName(), Optional.of("console"));
-    }
-    
-    @AfterClass
-    public static void tearDown() throws Exception {
-        sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
-        server.stop();
-    }
-    
-    @Before
-    public void setUp() {
-        reset(regCenter);
-        reset(jobEventRdbSearch);
-    }
+public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertRegister() throws Exception {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
-        verify(regCenter).persist("/config/test_job", CloudJsonConstants.getJobJson());
+        verify(regCenter).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
     }
     
@@ -115,7 +73,7 @@ public final class CloudJobRestfulApiTest {
     public void assertRegisterWithExistedName() throws Exception {
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
-        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(500));
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
     }
@@ -127,37 +85,37 @@ public final class CloudJobRestfulApiTest {
     
     @Test
     public void assertUpdate() throws Exception {
-        when(regCenter.isExisted("/config/test_job")).thenReturn(true);
-        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(regCenter.isExisted("/config/job/test_job")).thenReturn(true);
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(sentRequest("http://127.0.0.1:19000/job/update", "PUT", CloudJsonConstants.getJobJson()), is(204));
-        verify(regCenter).update("/config/test_job", CloudJsonConstants.getJobJson());
+        verify(regCenter).update("/config/job/test_job", CloudJsonConstants.getJobJson());
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
     }
     
     @Test
     public void assertDeregister() throws Exception {
-        when(regCenter.isExisted("/config/test_job")).thenReturn(false);
+        when(regCenter.isExisted("/config/job/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job"), is(204));
-        verify(regCenter, times(2)).get("/config/test_job");
+        verify(regCenter, times(2)).get("/config/job/test_job");
     }
     
     @Test
     public void assertTriggerWithDaemonJob() throws Exception {
-        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson(JobExecutionType.DAEMON));
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(JobExecutionType.DAEMON));
         assertThat(sentRequest("http://127.0.0.1:19000/job/trigger", "POST", "test_job"), is(500));
     }
     
     @Test
     public void assertTriggerWithTransientJob() throws Exception {
-        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(sentRequest("http://127.0.0.1:19000/job/trigger", "POST", "test_job"), is(204));
     }
     
     @Test
     public void assertDetail() throws Exception {
-        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/jobs/test_job"), is(CloudJsonConstants.getJobJson()));
-        verify(regCenter).get("/config/test_job");
+        verify(regCenter).get("/config/job/test_job");
     }
     
     @Test
@@ -167,13 +125,13 @@ public final class CloudJobRestfulApiTest {
     
     @Test
     public void assertFindAllJobs() throws Exception {
-        when(regCenter.isExisted("/config")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/config")).thenReturn(Lists.newArrayList("test_job"));
-        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(regCenter.isExisted("/config/job")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/jobs"), is("[" + CloudJsonConstants.getJobJson() + "]"));
-        verify(regCenter).isExisted("/config");
-        verify(regCenter).getChildrenKeys("/config");
-        verify(regCenter).get("/config/test_job");
+        verify(regCenter).isExisted("/config/job");
+        verify(regCenter).getChildrenKeys("/config/job");
+        verify(regCenter).get("/config/job/test_job");
     }
     
     @Test

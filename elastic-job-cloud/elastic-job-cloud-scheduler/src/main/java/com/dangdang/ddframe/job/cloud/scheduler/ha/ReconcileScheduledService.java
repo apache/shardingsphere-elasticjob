@@ -28,8 +28,8 @@ import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.netflix.fenzo.TaskScheduler;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
@@ -45,6 +45,7 @@ import java.util.concurrent.TimeUnit;
  * @author gaohongtao
  */
 @Slf4j
+@RequiredArgsConstructor
 public final class ReconcileScheduledService extends AbstractScheduledService {
     
     private static final double DEFAULT_MULTIPLIER = 1.5;
@@ -60,11 +61,11 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     
     private final StatisticManager statisticManager;
     
-    private final long reconcileInterval;
+    private long reconcileInterval = 30 * 60 * 1000;
     
-    private final long retryIntervalUnit;
+    private long retryIntervalUnit = 5 * 60 * 1000;
     
-    private final long maxPostTimes;
+    private long maxPostTimes = 3;
     
     private long latestFetchRemainingMilliSeconds;
     
@@ -73,18 +74,6 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     private int postTimes;
     
     private double currentRePostInterval;
-    
-    @Builder
-    private ReconcileScheduledService(final FacadeService facadeService, final SchedulerDriver scheduler, final TaskScheduler taskScheduler, final StatisticManager statisticManager,
-                                      final long reconcileInterval, final long retryIntervalUnit, final long maxPostTimes) {
-        this.facadeService = facadeService;
-        this.scheduler = scheduler;
-        this.taskScheduler = taskScheduler;
-        this.statisticManager = statisticManager;
-        this.reconcileInterval = reconcileInterval == 0 ? 30 * 60 * 1000 : reconcileInterval;
-        this.retryIntervalUnit = retryIntervalUnit == 0 ? 5 * 60 * 1000 : retryIntervalUnit;
-        this.maxPostTimes = maxPostTimes == 0 ? 3 : maxPostTimes;
-    }
     
     @Override
     protected String serviceName() {

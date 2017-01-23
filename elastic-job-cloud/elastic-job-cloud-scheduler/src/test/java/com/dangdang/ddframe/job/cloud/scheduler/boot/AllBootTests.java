@@ -15,12 +15,16 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.lifecycle;
+package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironmentTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(LifecycleServiceTest.class)
-public final class AllLifecycleTests {
+@Suite.SuiteClasses({
+        BootstrapEnvironmentTest.class,
+        MasterBootstrapTest.class
+})
+public class AllBootTests {
 }

@@ -19,15 +19,11 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
-import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
-import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
@@ -46,13 +42,10 @@ import com.dangdang.ddframe.job.statistics.type.job.JobRunningStatistics;
 import com.dangdang.ddframe.job.statistics.type.job.JobTypeStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
-import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import lombok.extern.slf4j.Slf4j;
-
 import com.google.common.base.Strings;
-import org.apache.mesos.SchedulerDriver;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -88,36 +81,22 @@ import java.util.Set;
 @Slf4j
 public final class CloudJobRestfulApi {
     
-    private static SchedulerDriver schedulerDriver;
-    
     private static CoordinatorRegistryCenter regCenter;
     
     private static JobEventRdbSearch jobEventRdbSearch;
     
-    private static final SimpleDateFormat DATETIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    
     private static ProducerManager producerManager;
-    
-    private final LifecycleService lifecycleService;
     
     private final ConfigurationService configService;
     
-    private final ReadyService readyService;
-    
-    private final RunningService runningService;
-    
-    private final FailoverService failoverService;
+    private final FacadeService facadeService;
     
     private final StatisticManager statisticManager;
     
     public CloudJobRestfulApi() {
-        Preconditions.checkNotNull(schedulerDriver);
         Preconditions.checkNotNull(regCenter);
         configService = new ConfigurationService(regCenter);
-        readyService = new ReadyService(regCenter);
-        runningService = new RunningService(regCenter);
-        lifecycleService = new LifecycleService(schedulerDriver, runningService);
-        failoverService = new FailoverService(regCenter);
+        facadeService = new FacadeService(regCenter);
         Optional<JobEventRdbConfiguration> jobEventRdbConfiguration = Optional.absent();
         statisticManager = StatisticManager.getInstance(regCenter, jobEventRdbConfiguration);
     }
@@ -126,27 +105,17 @@ public final class CloudJobRestfulApi {
      * 初始化.
      * 
      * @param regCenter 注册中心
+     * @param producerManager 生产管理器
      */
-    public static void init(final CoordinatorRegistryCenter regCenter) {
+    public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudJobRestfulApi.regCenter = regCenter;
-        GsonFactory.registerTypeAdapter(CloudJobConfiguration.class, new CloudJobConfigurationGsonFactory.CloudJobConfigurationGsonTypeAdapter());
+        CloudJobRestfulApi.producerManager = producerManager;
         Optional<JobEventRdbConfiguration> jobEventRdbConfig = BootstrapEnvironment.getInstance().getJobEventRdbConfiguration();
         if (jobEventRdbConfig.isPresent()) {
             jobEventRdbSearch = new JobEventRdbSearch(jobEventRdbConfig.get().getDataSource());
         } else {
             jobEventRdbSearch = null;
         }
-    }
-    
-    /**
-     * 设置运行环境.
-     * 
-     * @param schedulerDriver mesos调度器驱动
-     * @param producerManager 生产管理器
-     */
-    public static void setContext(final SchedulerDriver schedulerDriver, final ProducerManager producerManager) {
-        CloudJobRestfulApi.schedulerDriver = schedulerDriver;
-        CloudJobRestfulApi.producerManager = producerManager;
     }
     
     /**
@@ -183,7 +152,6 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public void deregister(final String jobName) {
         producerManager.deregister(jobName);
-        lifecycleService.killJob(jobName);
     }
     
     /**
@@ -199,7 +167,7 @@ public final class CloudJobRestfulApi {
         if (config.isPresent() && JobExecutionType.DAEMON == config.get().getJobExecutionType()) {
             throw new JobSystemException("Daemon job '%s' cannot support trigger.", jobName);
         }
-        readyService.addTransient(jobName);
+        facadeService.addTransient(jobName);
     }
     
     /**
@@ -240,7 +208,7 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public Collection<TaskContext> findAllRunningTasks() {
         List<TaskContext> result = new LinkedList<>();
-        for (Set<TaskContext> each : runningService.getAllRunningTasks().values()) {
+        for (Set<TaskContext> each : facadeService.getAllRunningTasks().values()) {
             result.addAll(each);
         }
         return result;
@@ -255,7 +223,7 @@ public final class CloudJobRestfulApi {
     @Path("tasks/ready")
     @Consumes(MediaType.APPLICATION_JSON)
     public Collection<Map<String, String>> findAllReadyTasks() {
-        Map<String, Integer> readyTasks = readyService.getAllReadyTasks();
+        Map<String, Integer> readyTasks = facadeService.getAllReadyTasks();
         List<Map<String, String>> result = new ArrayList<>(readyTasks.size());
         for (Entry<String, Integer> each : readyTasks.entrySet()) {
             Map<String, String> oneTask = new HashMap<>(2, 1);
@@ -276,7 +244,7 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public Collection<FailoverTaskInfo> findAllFailoverTasks() {
         List<FailoverTaskInfo> result = new LinkedList<>();
-        for (Collection<FailoverTaskInfo> each : failoverService.getAllFailoverTasks().values()) {
+        for (Collection<FailoverTaskInfo> each : facadeService.getAllFailoverTasks().values()) {
             result.addAll(each);
         }
         return result;
@@ -302,7 +270,7 @@ public final class CloudJobRestfulApi {
      * 检索作业运行状态轨迹.
      * 
      * @return 作业运行轨迹结果
-     * @throws ParseException 
+     * @throws ParseException 转换异常
      */
     @GET
     @Path("events/statusTraces")
@@ -332,11 +300,12 @@ public final class CloudJobRestfulApi {
         Date startTime = null;
         Date endTime = null;
         Map<String, Object> fields = getQueryParameters(info, params);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst("startTime"))) {
-            startTime = DATETIME_FORMATTER.parse(info.getQueryParameters().getFirst("startTime"));
+            startTime = simpleDateFormat.parse(info.getQueryParameters().getFirst("startTime"));
         }
         if (!Strings.isNullOrEmpty(info.getQueryParameters().getFirst("endTime"))) {
-            endTime = DATETIME_FORMATTER.parse(info.getQueryParameters().getFirst("endTime"));
+            endTime = simpleDateFormat.parse(info.getQueryParameters().getFirst("endTime"));
         }
         return new Condition(perPage, page, sort, order, startTime, endTime, fields);
     }

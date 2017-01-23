@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
+import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.ExecutionType;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -64,7 +66,7 @@ public class FacadeService {
     }
     
     /**
-     * 框架启动.
+     * 启动门面服务.
      */
     public void start() {
         log.info("Elastic Job: Start facade service");
@@ -126,7 +128,9 @@ public class FacadeService {
     
     /**
      * 更新常驻作业运行状态.
+     * 
      * @param taskContext 任务运行时上下文
+     * @param isIdle 是否空闲
      */
     public void updateDaemonStatus(final TaskContext taskContext, final boolean isIdle) {
         runningService.updateIdle(taskContext, isIdle);
@@ -155,6 +159,15 @@ public class FacadeService {
         if (jobConfig.getTypeConfig().getCoreConfig().isFailover() || JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
             failoverService.add(taskContext);
         }
+    }
+    
+    /**
+     * 将瞬时作业放入待执行队列.
+     *
+     * @param jobName 作业名称
+     */
+    public void addTransient(final String jobName) {
+        readyService.addTransient(jobName);
     }
     
     /**
@@ -190,7 +203,7 @@ public class FacadeService {
      * 判断作业是否在运行.
      *
      * @param jobName 作业名称
-     * @return 作业是否在运行.
+     * @return 作业是否在运行
      */
     public boolean isRunning(final String jobName) {
         return !runningService.getRunningTasks(jobName).isEmpty();
@@ -202,7 +215,7 @@ public class FacadeService {
      * <p>READY类型的作业为整体, 任意一片运行都视为作业运行. FAILOVER则仅以当前分片运行为运行依据.</p>
      * 
      * @param taskContext 任务运行时上下文
-     * @return 作业是否在运行.
+     * @return 作业是否在运行
      */
     public boolean isRunning(final TaskContext taskContext) {
         return ExecutionType.FAILOVER != taskContext.getType() && !runningService.getRunningTasks(taskContext.getMetaInfo().getJobName()).isEmpty()
@@ -223,6 +236,7 @@ public class FacadeService {
      * 根据任务主键获取主机名称并清除该任务.
      *
      * @param taskId 任务主键
+     * @return 删除任务的主机名称
      */
     public String popMapping(final String taskId) {
         return runningService.popMapping(taskId);
@@ -247,7 +261,34 @@ public class FacadeService {
     }
     
     /**
-     * 框架停止.
+     * 获取待运行的全部任务.
+     *
+     * @return 待运行的全部任务
+     */
+    public Map<String, Integer> getAllReadyTasks() {
+        return readyService.getAllReadyTasks();
+    }
+    
+    /**
+     * 获取所有运行中的任务.
+     *
+     * @return 运行中任务集合
+     */
+    public Map<String, Set<TaskContext>> getAllRunningTasks() {
+        return runningService.getAllRunningTasks();
+    }
+    
+    /**
+     * 获取待失效转移的全部任务.
+     *
+     * @return 待失效转移的全部任务
+     */
+    public Map<String, Collection<FailoverTaskInfo>> getAllFailoverTasks() {
+        return failoverService.getAllFailoverTasks();
+    }
+    
+    /**
+     * 停止门面服务.
      */
     public void stop() {
         log.info("Elastic Job: Stop facade service");

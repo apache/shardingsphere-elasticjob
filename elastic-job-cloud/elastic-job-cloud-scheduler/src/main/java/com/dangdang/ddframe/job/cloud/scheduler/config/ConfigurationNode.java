@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConfigurationNode {
     
-    public static final String ROOT =  "/config";
+    public static final String ROOT =  "/config/job";
     
     private static final String JOB_CONFIG =  ROOT + "/%s";
     

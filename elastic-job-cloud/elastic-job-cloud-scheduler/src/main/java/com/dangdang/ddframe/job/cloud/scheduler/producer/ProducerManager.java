@@ -20,14 +20,15 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
 /**
@@ -47,14 +48,14 @@ public class ProducerManager {
     
     private final TransientProducerScheduler transientProducerScheduler;
     
-    private final LifecycleService lifecycleService;
+    private final SchedulerDriver schedulerDriver;
     
     public ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
+        this.schedulerDriver = schedulerDriver;
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
         transientProducerScheduler = new TransientProducerScheduler(readyService);
-        lifecycleService = new LifecycleService(schedulerDriver, runningService);
     }
     
     /**
@@ -129,7 +130,9 @@ public class ProducerManager {
      * @param jobName 作业名称
      */
     public void unschedule(final String jobName) {
-        lifecycleService.killJob(jobName);
+        for (TaskContext each : runningService.getRunningTasks(jobName)) {
+            schedulerDriver.killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
+        }
         runningService.remove(jobName);
         readyService.remove(Lists.newArrayList(jobName));
     }

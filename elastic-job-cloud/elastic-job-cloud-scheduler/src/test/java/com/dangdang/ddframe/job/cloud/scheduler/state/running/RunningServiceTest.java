@@ -56,8 +56,8 @@ public final class RunningServiceTest {
     
     @Before
     public void setUp() {
-        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson(JobExecutionType.DAEMON));
-        when(regCenter.get("/config/test_job_t")).thenReturn(CloudJsonConstants.getJobJson("test_job_t"));
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(JobExecutionType.DAEMON));
+        when(regCenter.get("/config/job/test_job_t")).thenReturn(CloudJsonConstants.getJobJson("test_job_t"));
         runningService = new RunningService(regCenter);
         taskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
         taskContextT = TaskContext.from(TaskNode.builder().jobName("test_job_t").build().getTaskNodeValue());

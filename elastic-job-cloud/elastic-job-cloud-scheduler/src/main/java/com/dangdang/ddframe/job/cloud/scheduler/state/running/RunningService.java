@@ -127,7 +127,7 @@ public class RunningService {
     }
     
     /**
-     * 更新任务时间.
+     * 更新Daemon任务时间.
      *
      * @param taskContext 任务运行时上下文
      */
@@ -139,8 +139,6 @@ public class RunningService {
             Optional<TaskContext> taskContextOptional = findTask(taskContext);
             if (taskContextOptional.isPresent()) {
                 taskContextOptional.get().updateTime();
-            } else {
-                add(taskContext);
             }
         }
     }
@@ -277,6 +275,7 @@ public class RunningService {
      * 根据任务主键获取主机名称并清除该任务.
      *
      * @param taskId 任务主键
+     * @return 删除任务的主机名称
      */
     public String popMapping(final String taskId) {
         return TASK_HOSTNAME_MAPPER.remove(taskId);

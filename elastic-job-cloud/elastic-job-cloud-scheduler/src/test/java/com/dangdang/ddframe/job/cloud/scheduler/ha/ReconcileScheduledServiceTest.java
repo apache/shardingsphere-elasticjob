@@ -33,6 +33,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -65,20 +66,19 @@ public class ReconcileScheduledServiceTest {
     @Captor
     private ArgumentCaptor<Collection<Protos.TaskStatus>> taskStatusCaptor;
     
-    private ReconcileScheduledService.ReconcileScheduledServiceBuilder serviceBuilder;
+    private ReconcileScheduledService service;
     
     private Set<TaskContext> runningTasks;
     
     @Before
     public void setUp() throws Exception {
-        serviceBuilder = ReconcileScheduledService.builder().facadeService(facadeService).scheduler(scheduler).taskScheduler(taskScheduler).statisticManager(statisticManager);
+        service = new ReconcileScheduledService(facadeService, scheduler, taskScheduler, statisticManager);
         runningTasks = Sets.newHashSet(new TaskContext("daemon1", Arrays.asList(1, 2), ExecutionType.READY), new TaskContext("daemon2", Arrays.asList(1, 2), ExecutionType.READY));
         when(facadeService.getAllRunningDaemonTask()).thenReturn(runningTasks);
     }
     
     @Test
     public void assertFetchEmpty() throws Exception {
-        ReconcileScheduledService service = serviceBuilder.reconcileInterval(0).build();
         service.startUp();
         runningTasks.clear();
         service.fetchRemaining();
@@ -88,7 +88,7 @@ public class ReconcileScheduledServiceTest {
     
     @Test
     public void assertReconcile() throws Exception {
-        ReconcileScheduledService service = serviceBuilder.reconcileInterval(100).build();
+        ReflectionUtils.setFieldValue(service, "reconcileInterval", 100);
         service.startUp();
         service.fetchRemaining();
         verify(scheduler).reconcileTasks(taskStatusCaptor.capture());
@@ -104,7 +104,6 @@ public class ReconcileScheduledServiceTest {
     
     @Test
     public void assertNoRunningDaemonTasks() throws Exception {
-        ReconcileScheduledService service = serviceBuilder.build();
         service.startUp();
         service.runOneIteration();
         assertThat(service.getRemainingTasks().size(), is(2));
@@ -117,7 +116,6 @@ public class ReconcileScheduledServiceTest {
     
     @Test
     public void assertDaemonTasksUpdated() throws Exception {
-        ReconcileScheduledService service = serviceBuilder.build();
         service.startUp();
         service.runOneIteration();
         assertThat(service.getRemainingTasks().size(), is(2));
@@ -133,7 +131,7 @@ public class ReconcileScheduledServiceTest {
     
     @Test
     public void assertRePostReconcile() throws Exception {
-        ReconcileScheduledService service = serviceBuilder.retryIntervalUnit(100).build();
+        ReflectionUtils.setFieldValue(service, "retryIntervalUnit", 100);
         service.startUp();
         service.runOneIteration();
         assertThat(service.getRemainingTasks().size(), is(2));
@@ -157,7 +155,8 @@ public class ReconcileScheduledServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     public void assertReachLimit() throws Exception {
-        ReconcileScheduledService service = serviceBuilder.retryIntervalUnit(10).maxPostTimes(2).build();
+        ReflectionUtils.setFieldValue(service, "retryIntervalUnit", 10);
+        ReflectionUtils.setFieldValue(service, "maxPostTimes", 2);
         for (TaskContext each : runningTasks) {
             when(facadeService.popMapping(each.getId())).thenReturn("mock_hostname");
         }

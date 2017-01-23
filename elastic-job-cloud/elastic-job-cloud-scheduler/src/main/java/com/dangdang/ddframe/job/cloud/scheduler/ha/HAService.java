@@ -44,11 +44,12 @@ public final class HAService {
                 .client((CuratorFramework) registryCenter.getRawClient()).electionPath(HANode.ELECTION_NODE)
                 .electionCandidate(new ElectionCandidate() {
                     
-                    private final MasterBootstrap masterBootstrap = new MasterBootstrap();
+                    private MasterBootstrap masterBootstrap;
                     
                     @Override
                     public void startLeadership() throws Exception {
                         try {
+                            masterBootstrap = new MasterBootstrap();
                             masterBootstrap.start();
                             //CHECKSTYLE:OFF
                         } catch (final Throwable throwable) {
@@ -73,7 +74,7 @@ public final class HAService {
      */
     public void start() {
         electionService.startLeadership();
-        log.info("Elastic job: The framework {} leader", electionService.isLeader() ? "is" : "is not");
+        log.info("Elastic job: The framework {} {} leader", LOCAL_HOST_SERVICE.getIp(), electionService.isLeader() ? "is" : "is not");
     }
     
     /**

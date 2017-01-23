@@ -72,7 +72,7 @@ public final class CloudJobConfigurationListenerTest {
     
     @Test
     public void assertChildEventWhenIsRootConfigPath() throws Exception {
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/config", null, "".getBytes())));
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/config/job", null, "".getBytes())));
         verify(producerManager, times(0)).schedule(Matchers.<CloudJobConfiguration>any());
         verify(producerManager, times(0)).reschedule(Matchers.<CloudJobConfiguration>any());
         verify(producerManager, times(0)).unschedule(Matchers.<String>any());
@@ -80,7 +80,7 @@ public final class CloudJobConfigurationListenerTest {
     
     @Test
     public void assertChildEventWhenStateIsAddAndIsConfigPathAndInvalidData() throws Exception {
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/test_job", null, "".getBytes())));
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/job/test_job", null, "".getBytes())));
         verify(producerManager, times(0)).schedule(Matchers.<CloudJobConfiguration>any());
         verify(producerManager, times(0)).reschedule(Matchers.<CloudJobConfiguration>any());
         verify(producerManager, times(0)).unschedule(Matchers.<String>any());
@@ -88,13 +88,13 @@ public final class CloudJobConfigurationListenerTest {
     
     @Test
     public void assertChildEventWhenStateIsAddAndIsConfigPath() throws Exception {
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson().getBytes())));
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData("/config/job/test_job", null, CloudJsonConstants.getJobJson().getBytes())));
         verify(producerManager).schedule(Matchers.<CloudJobConfiguration>any());
     }
     
     @Test
     public void assertChildEventWhenStateIsUpdateAndIsConfigPathAndTransientJob() throws Exception {
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson().getBytes())));
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/config/job/test_job", null, CloudJsonConstants.getJobJson().getBytes())));
         verify(readyService, times(0)).remove(Collections.singletonList("test_job"));
         verify(producerManager).reschedule(Matchers.<CloudJobConfiguration>any());
     }
@@ -102,7 +102,7 @@ public final class CloudJobConfigurationListenerTest {
     @Test
     public void assertChildEventWhenStateIsUpdateAndIsConfigPathAndDaemonJob() throws Exception {
         cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, 
-                new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson(JobExecutionType.DAEMON).getBytes())));
+                new ChildData("/config/job/test_job", null, CloudJsonConstants.getJobJson(JobExecutionType.DAEMON).getBytes())));
         verify(readyService).remove(Collections.singletonList("test_job"));
         verify(producerManager).reschedule(Matchers.<CloudJobConfiguration>any());
     }
@@ -110,14 +110,14 @@ public final class CloudJobConfigurationListenerTest {
     @Test
     public void assertChildEventWhenStateIsUpdateAndIsConfigPathAndMisfireDisabled() throws Exception {
         cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED,
-                new ChildData("/config/test_job", null, CloudJsonConstants.getJobJson(false).getBytes())));
+                new ChildData("/config/job/test_job", null, CloudJsonConstants.getJobJson(false).getBytes())));
         verify(readyService).setMisfireDisabled("test_job");
         verify(producerManager).reschedule(Matchers.<CloudJobConfiguration>any());
     }
     
     @Test
     public void assertChildEventWhenStateIsRemovedAndIsJobConfigPath() throws Exception {
-        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/config/test_job", null, "".getBytes())));
+        cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/config/job/test_job", null, "".getBytes())));
         verify(producerManager).unschedule("test_job");
     }
 }
