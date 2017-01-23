@@ -38,6 +38,7 @@ import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.functions.Action1;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
@@ -53,9 +54,12 @@ import static com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfigurati
  * @author gaohongtao
  */
 @Slf4j
+@AllArgsConstructor
 public final class MasterBootstrap {
     
     private final BootstrapEnvironment env;
+    
+    private final CoordinatorRegistryCenter regCenter;
     
     private final FacadeService facadeService;
     
@@ -63,13 +67,13 @@ public final class MasterBootstrap {
     
     private final ProducerManager producerManager;
     
+    private final StatisticManager statisticManager;
+    
     private final CloudJobConfigurationListener cloudJobConfigurationListener;
     
     private final Service reconcileScheduledService;
     
     private final Service statisticsScheduledService;
-    
-    private final StatisticManager statisticManager;
     
     private final Service taskLaunchScheduledService;
     
@@ -77,13 +81,14 @@ public final class MasterBootstrap {
     
     public MasterBootstrap(final CoordinatorRegistryCenter regCenter) {
         env = BootstrapEnvironment.getInstance();
+        this.regCenter = regCenter;
         facadeService = new FacadeService(regCenter);
-        statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         LeasesQueue leasesQueue = new LeasesQueue();
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
         producerManager = new ProducerManager(schedulerDriver, regCenter);
+        statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
         reconcileScheduledService = new ReconcileScheduledService(facadeService, schedulerDriver, taskScheduler, statisticManager);
         statisticsScheduledService = new StatisticsScheduledService(regCenter);
@@ -130,9 +135,9 @@ public final class MasterBootstrap {
      */
     public void start() {
         facadeService.start();
-        statisticManager.startup();
         schedulerDriver.start();
         producerManager.startup();
+        statisticManager.startup();
         cloudJobConfigurationListener.start();
         reconcileScheduledService.startAsync();
         statisticsScheduledService.startAsync();
@@ -144,15 +149,15 @@ public final class MasterBootstrap {
      * 停止运行.
      */
     public void stop() {
-        facadeService.stop();
-        statisticManager.shutdown();
-        schedulerDriver.stop(true);
-        producerManager.shutdown();
-        cloudJobConfigurationListener.stop();
-        reconcileScheduledService.stopAsync();
-        statisticsScheduledService.stopAsync();
-        taskLaunchScheduledService.stopAsync();
         restfulService.stop();
+        taskLaunchScheduledService.stopAsync();
+        statisticsScheduledService.stopAsync();
+        reconcileScheduledService.stopAsync();
+        cloudJobConfigurationListener.stop();
+        statisticManager.shutdown();
+        producerManager.shutdown();
+        schedulerDriver.stop(true);
+        facadeService.stop();
     }
     
 }

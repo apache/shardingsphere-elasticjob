@@ -29,13 +29,10 @@ import org.apache.mesos.SchedulerDriver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.unitils.util.ReflectionUtils;
-
-import java.util.Properties;
-
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MasterBootstrapTest {
@@ -75,51 +72,46 @@ public class MasterBootstrapTest {
     private MasterBootstrap masterBootstrap;
     
     @Before
-    public void setUp() throws NoSuchFieldException {
-        Properties properties = new Properties();
-        properties.setProperty(BootstrapEnvironment.EnvironmentArgument.HOSTNAME.getKey(), "127.0.0.1");
-        System.setProperty("LIBPROCESS_IP", "127.0.0.1");
-        ReflectionUtils.setFieldValue(env, "properties", properties);
-        masterBootstrap = new MasterBootstrap(regCenter);
-        ReflectionUtils.setFieldValue(masterBootstrap, "env", env);
-        ReflectionUtils.setFieldValue(masterBootstrap, "facadeService", facadeService);
-        ReflectionUtils.setFieldValue(masterBootstrap, "schedulerDriver", schedulerDriver);
-        ReflectionUtils.setFieldValue(masterBootstrap, "producerManager", producerManager);
-        ReflectionUtils.setFieldValue(masterBootstrap, "cloudJobConfigurationListener", cloudJobConfigurationListener);
-        ReflectionUtils.setFieldValue(masterBootstrap, "reconcileScheduledService", reconcileScheduledService);
-        ReflectionUtils.setFieldValue(masterBootstrap, "statisticsScheduledService", statisticsScheduledService);
-        ReflectionUtils.setFieldValue(masterBootstrap, "statisticManager", statisticManager);
-        ReflectionUtils.setFieldValue(masterBootstrap, "taskLaunchScheduledService", taskLaunchScheduledService);
-        ReflectionUtils.setFieldValue(masterBootstrap, "restfulService", restfulService);
+    public void setUp() throws Exception {
+        masterBootstrap = new MasterBootstrap(env, regCenter, facadeService, schedulerDriver,  
+                producerManager, statisticManager, cloudJobConfigurationListener, reconcileScheduledService, 
+                statisticsScheduledService, taskLaunchScheduledService, restfulService);
     }
     
     @Test
     public void assertStart() {
         masterBootstrap.start();
-        verify(facadeService).start();
-        verify(statisticManager).startup();
-        verify(restfulService).start();
-        verify(schedulerDriver).start();
-        verify(cloudJobConfigurationListener).start();
-        verify(producerManager).startup();
-        verify(reconcileScheduledService).startAsync();
-        verify(statisticsScheduledService).startAsync();
-        verify(statisticManager).startup();
-        verify(taskLaunchScheduledService).startAsync();
-        verify(restfulService).start();
+        InOrder inOrder = getInOrder();
+        inOrder.verify(facadeService).start();
+        inOrder.verify(schedulerDriver).start();
+        inOrder.verify(producerManager).startup();
+        inOrder.verify(statisticManager).startup();
+        inOrder.verify(cloudJobConfigurationListener).start();
+        inOrder.verify(reconcileScheduledService).startAsync();
+        inOrder.verify(statisticsScheduledService).startAsync();
+        inOrder.verify(taskLaunchScheduledService).startAsync();
+        inOrder.verify(restfulService).start();
     }
     
     @Test
     public void assertStop() {
         masterBootstrap.stop();
-        verify(facadeService).stop();
-        verify(restfulService).stop();
-        verify(schedulerDriver).stop(true);
-        verify(reconcileScheduledService).stopAsync();
-        verify(statisticsScheduledService).stopAsync();
-        verify(statisticManager).shutdown();
-        verify(taskLaunchScheduledService).stopAsync();
-        verify(restfulService).stop();
+        InOrder inOrder = getInOrder();
+        inOrder.verify(restfulService).stop();
+        inOrder.verify(taskLaunchScheduledService).stopAsync();
+        inOrder.verify(statisticsScheduledService).stopAsync();
+        inOrder.verify(reconcileScheduledService).stopAsync();
+        inOrder.verify(cloudJobConfigurationListener).stop();
+        inOrder.verify(statisticManager).shutdown();
+        inOrder.verify(producerManager).shutdown();
+        inOrder.verify(schedulerDriver).stop(true);
+        inOrder.verify(facadeService).stop();
     }
+    
+    private InOrder getInOrder() {
+        return Mockito.inOrder(facadeService, schedulerDriver,
+                producerManager, reconcileScheduledService, statisticsScheduledService, statisticManager, cloudJobConfigurationListener,
+                taskLaunchScheduledService, restfulService);
+    } 
 }
     
