@@ -33,6 +33,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
@@ -105,7 +106,8 @@ public final class MasterBootstrap {
             builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkIDOptional.get()).build());
         }
         Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(FRAMEWORK_NAME)
-                .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT).build();
+                .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT)
+                .setWebuiUrl("http://" + Joiner.on(":").join(mesosConfig.getHostname(), env.getRestfulServerConfiguration().getPort())).build();
         return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     
