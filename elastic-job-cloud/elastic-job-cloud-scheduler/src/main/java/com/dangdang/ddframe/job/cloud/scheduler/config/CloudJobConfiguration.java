@@ -33,15 +33,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public final class CloudJobConfiguration implements JobRootConfiguration {
     
+    private final String appName;
+    
     private final JobTypeConfiguration typeConfig;
     
     private final double cpuCount;
     
     private final double memoryMB;
-    
-    private final String appURL;
-    
-    private final String bootstrapScript;
     
     private final JobExecutionType jobExecutionType;
     

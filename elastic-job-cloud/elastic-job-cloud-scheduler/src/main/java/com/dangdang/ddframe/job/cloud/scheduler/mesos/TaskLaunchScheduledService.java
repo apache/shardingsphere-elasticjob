@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
@@ -64,10 +65,6 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Slf4j
 public class TaskLaunchScheduledService extends AbstractScheduledService {
-    
-    private static final double EXECUTOR_DEFAULT_CPU_RESOURCE = 0.1d;
-    
-    private static final double EXECUTOR_DEFAULT_MEMORY_RESOURCE = 32d;
     
     private final LeasesQueue leasesQueue;
     
@@ -149,13 +146,18 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         if (!jobConfigOptional.isPresent()) {
             return null;
         }
-        taskContext.setSlaveId(slaveID.getValue());
         CloudJobConfiguration jobConfig = jobConfigOptional.get();
+        Optional<CloudAppConfiguration> appConfigOptional = facadeService.loadAppConfig(jobConfig.getAppName());
+        if (!appConfigOptional.isPresent()) {
+            return null;
+        }
+        CloudAppConfiguration appConfig = appConfigOptional.get();
+        taskContext.setSlaveId(slaveID.getValue());
         ShardingContexts shardingContexts = getShardingContexts(taskContext, jobConfig);
         boolean useDefaultExecutor = JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
-        Protos.CommandInfo.URI uri = buildURI(jobConfig.getAppURL(), useDefaultExecutor);
-        Protos.CommandInfo command = buildCommand(uri, jobConfig.getBootstrapScript(), shardingContexts, useDefaultExecutor);
-        return buildTaskInfo(taskContext, jobConfig, shardingContexts, slaveID, command, useDefaultExecutor);
+        Protos.CommandInfo.URI uri = buildURI(appConfig, useDefaultExecutor);
+        Protos.CommandInfo command = buildCommand(uri, appConfig.getBootstrapScript(), shardingContexts, useDefaultExecutor);
+        return buildTaskInfo(taskContext, appConfig, jobConfig, shardingContexts, slaveID, command, useDefaultExecutor);
     }
     
     private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudJobConfiguration jobConfig) {
@@ -167,9 +169,9 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
                 jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);
     }
     
-    private Protos.CommandInfo.URI buildURI(final String appURL, final boolean useDefaultExecutor) {
-        Protos.CommandInfo.URI.Builder result = Protos.CommandInfo.URI.newBuilder().setValue(appURL).setCache(env.getFrameworkConfiguration().isAppCacheEnable());
-        if (useDefaultExecutor && !SupportedExtractionType.isExtraction(appURL)) {
+    private Protos.CommandInfo.URI buildURI(final CloudAppConfiguration appConfig, final boolean useDefaultExecutor) {
+        Protos.CommandInfo.URI.Builder result = Protos.CommandInfo.URI.newBuilder().setValue(appConfig.getAppURL()).setCache(appConfig.isAppCacheEnable());
+        if (useDefaultExecutor && !SupportedExtractionType.isExtraction(appConfig.getAppURL())) {
             result.setExecutable(true);
         } else {
             result.setExtract(true);
@@ -189,7 +191,7 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         return result.build();
     }
     
-    private Protos.TaskInfo buildTaskInfo(final TaskContext taskContext, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,
+    private Protos.TaskInfo buildTaskInfo(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,
                                           final Protos.SlaveID slaveID, final Protos.CommandInfo command, final boolean useDefaultExecutor) {
         Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName()).setSlaveId(slaveID).addResources(buildResource("cpus", jobConfig.getCpuCount())).addResources(buildResource("mem", jobConfig.getMemoryMB()))
@@ -197,8 +199,9 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         if (useDefaultExecutor) {
             return result.setCommand(command).build();
         }
-        Protos.ExecutorInfo.Builder executorBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppURL())))
-                .setCommand(command).addResources(buildResource("cpus", EXECUTOR_DEFAULT_CPU_RESOURCE)).addResources(buildResource("mem", EXECUTOR_DEFAULT_MEMORY_RESOURCE));
+        facadeService.loadAppConfig(jobConfig.getAppName());
+        Protos.ExecutorInfo.Builder executorBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppName())))
+                .setCommand(command).addResources(buildResource("cpus", appConfig.getCpuCount())).addResources(buildResource("mem", appConfig.getMemoryMB()));
         if (env.getJobEventRdbConfiguration().isPresent()) {
             executorBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(env.getJobEventRdbConfigurationMap()))).build();
         }

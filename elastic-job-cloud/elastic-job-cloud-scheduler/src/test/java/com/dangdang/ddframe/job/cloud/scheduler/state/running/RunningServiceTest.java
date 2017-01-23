@@ -114,7 +114,7 @@ public final class RunningServiceTest {
     public void assertUpdateDaemonTask() {
         assertThat(taskContext.getUpdatedTime(), is(0L));
         runningService.updateDaemonTask(taskContext);
-        assertThat(taskContext.getUpdatedTime(), is(System.currentTimeMillis()));
+        assertTrue(taskContext.getUpdatedTime() <= System.currentTimeMillis());
         runningService.updateDaemonTask(taskContextT);
         assertThat(taskContextT.getUpdatedTime(), is(0L));
     }

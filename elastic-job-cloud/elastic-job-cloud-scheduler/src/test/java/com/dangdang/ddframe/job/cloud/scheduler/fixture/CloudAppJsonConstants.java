@@ -24,13 +24,9 @@ import lombok.NoArgsConstructor;
 public final class CloudAppJsonConstants {
     
     private static final String APP_JSON = "{\"appName\":\"%s\",\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\"," +
-            "\"cpuCount\":1.0,\"memoryMB\":128.0,\"applicationContext\":\"%s\",\"appCacheEnable\":true,\"eventTraceSamplingRate\":0}";
+            "\"cpuCount\":1.0,\"memoryMB\":128.0,\"appCacheEnable\":true,\"eventTraceSamplingRate\":0}";
     
     public static String getAppJson(final String appName) {
-        return String.format(APP_JSON, appName, "");
-    }
-    
-    public static String getAppSpringJson(final String appName) {
-        return String.format(APP_JSON, appName, "applicationContext.xml");
+        return String.format(APP_JSON, appName);
     }
 }

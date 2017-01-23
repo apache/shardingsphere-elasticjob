@@ -100,7 +100,7 @@ public class BootstrapEnvironment {
      * @return Mesos框架配置对象
      */
     public FrameworkConfiguration getFrameworkConfiguration() {
-        return new FrameworkConfiguration(Boolean.valueOf(getValue(EnvironmentArgument.APP_CACHE_ENABLE)), Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
+        return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
     }
     
     /**
@@ -170,8 +170,6 @@ public class BootstrapEnvironment {
         ZOOKEEPER_DIGEST("zk_digest", "", false),
         
         PORT("http_port", "8899", true),
-        
-        APP_CACHE_ENABLE("app_cache_enable", "false", true),
         
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true),
         

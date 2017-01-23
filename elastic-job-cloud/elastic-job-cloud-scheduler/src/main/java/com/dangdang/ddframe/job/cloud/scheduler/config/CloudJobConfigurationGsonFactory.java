@@ -72,17 +72,14 @@ public final class CloudJobConfigurationGsonFactory {
         @Override
         protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
             switch (jsonName) {
+                case "appName":
+                    customizedValueMap.put("appName", in.nextString());
+                    break;
                 case "cpuCount":
                     customizedValueMap.put("cpuCount", in.nextDouble());
                     break;
                 case "memoryMB":
                     customizedValueMap.put("memoryMB", in.nextDouble());
-                    break;
-                case "appURL":
-                    customizedValueMap.put("appURL", in.nextString());
-                    break;
-                case "bootstrapScript":
-                    customizedValueMap.put("bootstrapScript", in.nextString());
                     break;
                 case "jobExecutionType":
                     customizedValueMap.put("jobExecutionType", in.nextString());
@@ -101,31 +98,27 @@ public final class CloudJobConfigurationGsonFactory {
         
         @Override
         protected CloudJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
+            Preconditions.checkNotNull(customizedValueMap.get("appName"), "appName cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get("cpuCount"), "cpuCount cannot be null.");
             Preconditions.checkArgument((double) customizedValueMap.get("cpuCount") >= 0.001, "cpuCount cannot be less than 0.001");
             Preconditions.checkNotNull(customizedValueMap.get("memoryMB"), "memoryMB cannot be null.");
             Preconditions.checkArgument((double) customizedValueMap.get("memoryMB") >= 1, "memory cannot be less than 1");
-            Preconditions.checkNotNull(customizedValueMap.get("appURL"), "appURL cannot be null.");
-            Preconditions.checkNotNull(customizedValueMap.get("bootstrapScript"), "bootstrapScript cannot be null.");
             Preconditions.checkNotNull(customizedValueMap.get("jobExecutionType"), "jobExecutionType cannot be null.");
             if (customizedValueMap.containsKey("beanName") && customizedValueMap.containsKey("applicationContext")) {
-                return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"),
-                        (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"),
-                        JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), customizedValueMap.get("beanName").toString(),
-                        customizedValueMap.get("applicationContext").toString());
+                return new CloudJobConfiguration((String) customizedValueMap.get("appName"), typeConfig, (double) customizedValueMap.get("cpuCount"), 
+                        (double) customizedValueMap.get("memoryMB"), JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), 
+                        customizedValueMap.get("beanName").toString(), customizedValueMap.get("applicationContext").toString());
             } else {
-                return new CloudJobConfiguration(typeConfig, (double) customizedValueMap.get("cpuCount"), (double) customizedValueMap.get("memoryMB"),
-                        (String) customizedValueMap.get("appURL"), (String) customizedValueMap.get("bootstrapScript"),
-                        JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
+                return new CloudJobConfiguration((String) customizedValueMap.get("appName"), typeConfig, (double) customizedValueMap.get("cpuCount"), 
+                        (double) customizedValueMap.get("memoryMB"), JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
             }
         }
         
         @Override
         protected void writeCustomized(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
+            out.name("appName").value(value.getAppName());
             out.name("cpuCount").value(value.getCpuCount());
             out.name("memoryMB").value(value.getMemoryMB());
-            out.name("appURL").value(value.getAppURL());
-            out.name("bootstrapScript").value(value.getBootstrapScript());
             out.name("jobExecutionType").value(value.getJobExecutionType().name());
             out.name("beanName").value(value.getBeanName());
             out.name("applicationContext").value(value.getApplicationContext());

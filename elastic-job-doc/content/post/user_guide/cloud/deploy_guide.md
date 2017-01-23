@@ -17,7 +17,53 @@ weight=53
 
 ## RESTful API
 
-`Elastic-Job-Cloud`提供作业注册/注销`Restful API`。可通过`curl`操作。
+`Elastic-Job-Cloud`提供APP及作业注册/注销`Restful API`。可通过`curl`操作。
+
+### 注册作业APP
+
+url：`app`
+
+方法：`POST`
+
+参数类型：`application/json`
+
+参数列表：
+
+| 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
+| -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
+|appName                             |String |`是`    |       | 作业名称。为`Elastic-Job-Cloud`的作业唯一标识                                        |
+|appURL                              |String |`是`    |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
+|cpuCount                            |double |`是`    |       | 单片作业所需要的`CPU`数量，最小值为`0.01`                                             |
+|memoryMB                            |double |`是`    |       | 单片作业所需要的内存`MB`，最小值为`32`                                                |
+|bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`。                                                      |
+|appCacheEnable                      |bool   |`是`    | false | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"appName":"foo_app","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' 
+http://elastic_job_cloud_host:8899/app
+```
+
+### 修改作业配置
+
+url：`app`
+
+方法：`PUT`
+
+参数类型：`application/json`
+
+参数列表：
+
+| 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
+| -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
+|appName                             |String |`是`    |       | 作业名称。为`Elastic-Job-Cloud`的作业唯一标识                                        |
+|appCacheEnable                      |bool   |`是`    | false | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
+
+```shell
+curl -l -H "Content-type: application/json" -X PUT -d 
+'{"appName":"foo_app","appCacheEnable":true}' 
+http://elastic_job_cloud_host:8899/app
+```
 
 ### 注册作业
 

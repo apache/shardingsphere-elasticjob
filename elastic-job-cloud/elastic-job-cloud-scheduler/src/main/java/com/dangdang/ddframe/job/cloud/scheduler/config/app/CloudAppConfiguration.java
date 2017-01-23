@@ -43,8 +43,6 @@ public final class CloudAppConfiguration {
     
     private double memoryMB = 128;
     
-    private String applicationContext = "";
-    
     private boolean appCacheEnable = true;
     
     private int eventTraceSamplingRate;

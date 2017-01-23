@@ -31,44 +31,44 @@ import lombok.NoArgsConstructor;
 public final class CloudJobConfigurationBuilder {
     
     public static CloudJobConfiguration createCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(
+        return new CloudJobConfiguration("test_app",
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 10).failover(true).misfire(true).build(), TestSimpleJob.class.getCanonicalName()), 
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
+                1.0d, 128.0d, JobExecutionType.TRANSIENT);
     }
     
     public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final JobExecutionType jobExecutionType) {
-        return new CloudJobConfiguration(
+        return new CloudJobConfiguration("test_app",
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 10).failover(true).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", jobExecutionType);
+                1.0d, 128.0d, jobExecutionType);
     }
     
     public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final boolean misfire) {
-        return new CloudJobConfiguration(
+        return new CloudJobConfiguration("test_app",
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 10).failover(true).misfire(misfire).build(), TestSimpleJob.class.getCanonicalName()),
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
+                1.0d, 128.0d, JobExecutionType.TRANSIENT);
     }
     
     public static CloudJobConfiguration createOtherCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(
+        return new CloudJobConfiguration("test_app",
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
+                1.0d, 128.0d, JobExecutionType.TRANSIENT);
     }
     
     public static CloudJobConfiguration createCloudSpringJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(
+        return new CloudJobConfiguration("test_spring_app",
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 10).failover(true).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT, "springSimpleJob", "applicationContext.xml");
+                1.0d, 128.0d, JobExecutionType.TRANSIENT, "springSimpleJob", "applicationContext.xml");
     }
     
     public static CloudJobConfiguration createDataflowCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(
+        return new CloudJobConfiguration("test_app",
                 new DataflowJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false).build(), SimpleJob.class.getCanonicalName(), true),
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
+                1.0d, 128.0d, JobExecutionType.TRANSIENT);
     }
     
     public static CloudJobConfiguration createScriptCloudJobConfiguration(final String jobName) {
-        return new CloudJobConfiguration(
+        return new CloudJobConfiguration("test_app",
                 new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false).build(), "test.sh"),
-                1.0d, 128.0d,  "http://localhost/app.jar", "bin/start.sh", JobExecutionType.TRANSIENT);
+                1.0d, 128.0d, JobExecutionType.TRANSIENT);
     }
 }

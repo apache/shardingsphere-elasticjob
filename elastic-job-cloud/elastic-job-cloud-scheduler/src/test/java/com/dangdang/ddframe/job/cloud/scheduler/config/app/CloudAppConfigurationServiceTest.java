@@ -61,13 +61,6 @@ public final class CloudAppConfigurationServiceTest {
     }
     
     @Test
-    public void assertAddSpringJob() {
-        CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppSpringConfiguration("test_spring_app");
-        configService.add(appConfig);
-        verify(regCenter).persist("/config/app/test_spring_app", CloudAppJsonConstants.getAppSpringJson("test_spring_app"));
-    }
-    
-    @Test
     public void assertLoadAllWithoutRootNode() {
         when(regCenter.isExisted("/config/app")).thenReturn(false);
         assertTrue(configService.loadAll().isEmpty());

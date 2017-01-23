@@ -73,7 +73,6 @@ public final class CloudAppConfigurationGsonFactory {
             double cpuCount = 1.0d;
             double memoryMB = 128.0d;
             boolean appCacheEnable = true;
-            String applicationContext = "";
             int eventTraceSamplingRate = 0;
             in.beginObject();
             while (in.hasNext()) {
@@ -94,9 +93,6 @@ public final class CloudAppConfigurationGsonFactory {
                     case "memoryMB":
                         memoryMB = in.nextDouble();
                         break;
-                    case "applicationContext":
-                        applicationContext = in.nextString();
-                        break;
                     case "appCacheEnable":
                         appCacheEnable = in.nextBoolean();
                         break;
@@ -108,7 +104,7 @@ public final class CloudAppConfigurationGsonFactory {
                 }
             }
             in.endObject();
-            return new CloudAppConfiguration(appName, appURL, bootstrapScript, cpuCount, memoryMB, applicationContext, appCacheEnable, eventTraceSamplingRate);
+            return new CloudAppConfiguration(appName, appURL, bootstrapScript, cpuCount, memoryMB, appCacheEnable, eventTraceSamplingRate);
         }
     
         @Override
@@ -119,7 +115,6 @@ public final class CloudAppConfigurationGsonFactory {
             out.name("bootstrapScript").value(value.getBootstrapScript());
             out.name("cpuCount").value(value.getCpuCount());
             out.name("memoryMB").value(value.getMemoryMB());
-            out.name("applicationContext").value(value.getApplicationContext());
             out.name("appCacheEnable").value(value.isAppCacheEnable());
             out.name("eventTraceSamplingRate").value(value.getEventTraceSamplingRate());
             out.endObject();

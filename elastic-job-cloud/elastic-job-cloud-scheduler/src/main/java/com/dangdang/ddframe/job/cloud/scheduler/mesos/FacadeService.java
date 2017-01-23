@@ -20,6 +20,8 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
@@ -50,6 +52,8 @@ import java.util.Set;
 @Slf4j
 public class FacadeService {
     
+    private final CloudAppConfigurationService appConfigService;
+    
     private final ConfigurationService configService;
     
     private final ReadyService readyService;
@@ -59,6 +63,7 @@ public class FacadeService {
     private final FailoverService failoverService;
     
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
+        appConfigService = new CloudAppConfigurationService(regCenter);
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
@@ -178,6 +183,16 @@ public class FacadeService {
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
         return configService.load(jobName);
+    }
+    
+    /**
+     * 根据作业APP名称获取云作业配置.
+     *
+     * @param appName 作业APP名称
+     * @return 云作业APP配置
+     */
+    public Optional<CloudAppConfiguration> loadAppConfig(final String appName) {
+        return appConfigService.load(appName);
     }
     
     /**
