@@ -33,10 +33,10 @@ url：`app`
 | -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
 |appName                             |String |`是`    |       | 作业应用名称。为`Elastic-Job-Cloud`的作业应用唯一标识                                 |
 |appURL                              |String |`是`    |       | 作业应用所在路径。必须是可以通过网络访问到的路径                                        |
-|cpuCount                            |double |`是`    |       | 作业应用启动所需要的`CPU`数量                                                        |
-|memoryMB                            |double |`是`    |       | 作业应用启动所需要的内存`MB`                                                         |
-|bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`。                                                      |
-|appCacheEnable                      |bool   |`是`    | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
+|cpuCount                            |double |否      |   1   | 作业应用启动所需要的`CPU`数量                                                        |
+|memoryMB                            |double |否      |  128  | 作业应用启动所需要的内存`MB`                                                         |
+|bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`                                                      |
+|appCacheEnable                      |bool   |否      | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
 
 ```shell
 curl -l -H "Content-type: application/json" -X POST -d 
