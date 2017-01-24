@@ -20,10 +20,14 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.exception.AppConfigurationException;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
@@ -54,6 +58,9 @@ public final class ProducerManagerTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
+    private CloudAppConfigurationService appConfigService;
+    
+    @Mock
     private ConfigurationService configService;
    
     @Mock
@@ -67,6 +74,8 @@ public final class ProducerManagerTest {
     
     private ProducerManager producerManager;
     
+    private final CloudAppConfiguration appConfig = CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app");
+    
     private final CloudJobConfiguration transientJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("transient_test_job");
     
     private final CloudJobConfiguration daemonJobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("daemon_test_job", JobExecutionType.DAEMON);
@@ -74,6 +83,7 @@ public final class ProducerManagerTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         producerManager = new ProducerManager(schedulerDriver, regCenter);
+        ReflectionUtils.setFieldValue(producerManager, "appConfigService", appConfigService);
         ReflectionUtils.setFieldValue(producerManager, "configService", configService);
         ReflectionUtils.setFieldValue(producerManager, "readyService", readyService);
         ReflectionUtils.setFieldValue(producerManager, "runningService", runningService);
@@ -89,14 +99,24 @@ public final class ProducerManagerTest {
         verify(readyService).addDaemon("daemon_test_job");
     }
     
+    
+    @Test(expected = AppConfigurationException.class)
+    public void assertRegisterWithoutApp() {
+        when(appConfigService.load("test_app")).thenReturn(Optional.<CloudAppConfiguration>absent());
+        when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
+        producerManager.register(transientJobConfig);
+    }
+    
     @Test(expected = JobConfigurationException.class)
     public void assertRegisterExisted() {
+        when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
         when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
         producerManager.register(transientJobConfig);
     }
     
     @Test
     public void assertRegisterTransientJob() {
+        when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
         when(configService.load("transient_test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         producerManager.register(transientJobConfig);
         verify(configService).add(transientJobConfig);
@@ -105,6 +125,7 @@ public final class ProducerManagerTest {
     
     @Test
     public void assertRegisterDaemonJob() {
+        when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
         when(configService.load("daemon_test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         producerManager.register(daemonJobConfig);
         verify(configService).add(daemonJobConfig);

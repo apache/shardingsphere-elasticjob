@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudAppJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
@@ -63,14 +64,22 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertRegister() throws Exception {
-        when(regCenter.isExisted("/config/test_job")).thenReturn(false);
+        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(regCenter.isExisted("/config/job/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
         verify(regCenter).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
         sentRequest("http://127.0.0.1:19000/job/deregister", "DELETE", "test_job");
     }
     
     @Test
+    public void assertRegisterWithoutApp() throws Exception {
+        when(regCenter.isExisted("/config/job/test_job")).thenReturn(false);
+        assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(500));
+    }
+    
+    @Test
     public void assertRegisterWithExistedName() throws Exception {
+        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(regCenter.isExisted("/config/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", CloudJsonConstants.getJobJson()), is(204));
         when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
@@ -80,6 +89,7 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertRegisterWithBadRequest() throws Exception {
+        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(sentRequest("http://127.0.0.1:19000/job/register", "POST", "\"{\"jobName\":\"wrong_job\"}"), is(500));
     }
     

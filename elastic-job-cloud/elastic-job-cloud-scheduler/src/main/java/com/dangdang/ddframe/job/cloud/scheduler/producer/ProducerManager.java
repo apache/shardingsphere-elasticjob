@@ -20,9 +20,12 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.exception.AppConfigurationException;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
@@ -40,6 +43,8 @@ import org.apache.mesos.SchedulerDriver;
 @Slf4j
 public class ProducerManager {
     
+    private final CloudAppConfigurationService appConfigService;
+    
     private final ConfigurationService configService;
             
     private final ReadyService readyService;
@@ -52,6 +57,7 @@ public class ProducerManager {
     
     public ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
         this.schedulerDriver = schedulerDriver;
+        appConfigService = new CloudAppConfigurationService(regCenter);
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
@@ -75,9 +81,13 @@ public class ProducerManager {
      * @param jobConfig 作业配置
      */
     public void register(final CloudJobConfiguration jobConfig) {
+        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(jobConfig.getAppName());
+        if (!appConfigFromZk.isPresent()) {
+            throw new AppConfigurationException("Register app '%s' firstly.", jobConfig.getAppName());
+        }
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
         if (jobConfigFromZk.isPresent()) {
-            throw new JobConfigurationException("job '%s' already existed.", jobConfig.getJobName());
+            throw new JobConfigurationException("Job '%s' already existed.", jobConfig.getJobName());
         }
         configService.add(jobConfig);
         schedule(jobConfig);
