@@ -90,11 +90,12 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     }
     
     void fetchRemaining() {
-        if (latestReconcileMilliSeconds + reconcileInterval > System.currentTimeMillis()) {
+        long now = System.currentTimeMillis();
+        if ((latestFetchRemainingMilliSeconds + reconcileInterval) > now) {
             return;
         }
         remainingTasks.addAll(filterRunningTask());
-        latestFetchRemainingMilliSeconds = System.currentTimeMillis();
+        latestFetchRemainingMilliSeconds = now;
         if (remainingTasks.isEmpty()) {
             return;
         }
