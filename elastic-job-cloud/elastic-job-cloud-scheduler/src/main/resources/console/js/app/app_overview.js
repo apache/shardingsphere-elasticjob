@@ -1,6 +1,6 @@
 function viewOperApp(val, row){
     var appName = row.appName;
-    var result = '<button type="button" class="btn btn-success" onClick="detailApp(\'' + appName + '\')">详情</button>'+ ' <button type="button" class="btn btn-info" onClick="getAppResult(\'' + appName + '\')">修改</button>';
+    var result = '<button type="button" class="btn btn-info" onClick="detailApp(\'' + appName + '\')">详情</button>'+ ' <button type="button" class="btn btn-warning" onClick="getAppResult(\'' + appName + '\')">修改</button>';
     return result;
 }
 

@@ -1,5 +1,4 @@
 $(function() {
-    getAppResult();
     bootstrapValidator();
     submitAppBootstrapValidator();
 });

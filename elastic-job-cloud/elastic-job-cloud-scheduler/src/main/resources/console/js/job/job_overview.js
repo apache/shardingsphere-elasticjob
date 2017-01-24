@@ -1,6 +1,6 @@
 function viewOper(val, row){
     var jobName = row.jobName;
-    var result = '<button type="button" class="btn btn-success" onClick="detailJob(\'' + jobName + '\')">详情</button>'+ ' <button type="button" class="btn btn-info" onClick="updateJob(\'' + jobName + '\')">修改</button>'+
+    var result = '<button type="button" class="btn btn-info" onClick="detailJob(\'' + jobName + '\')">详情</button>'+ ' <button type="button" class="btn btn-warning" onClick="updateJob(\'' + jobName + '\')">修改</button>'+
     ' <button type="button" class="btn btn-danger" onClick="deleteJob(\'' + jobName + '\')">删除</button>';
     return result;
 }
@@ -9,7 +9,7 @@ function deleteJob(jobName){
     $("#delete-data").modal({backdrop: 'static', keyboard: true});
     $('#deleteConfirm').on("click", function(){
         $.ajax({
-            url:"/app",
+            url:"/job/deg",
             type:"DELETE",
             contentType: "application/json",
             data:jobName,
