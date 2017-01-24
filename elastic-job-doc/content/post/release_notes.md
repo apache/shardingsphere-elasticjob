@@ -7,6 +7,12 @@ weight=1
 
 # Release Notes
 
+## 2.0.5-SNAPSHOT
+
+### 缺陷修正
+
+1. [ISSUE 222](https://github.com/dangdangdotcom/elastic-job/issues/222) elastic-job-lite-spring的reg配置参数max-retries不起作用
+
 ## 2.0.4
 
 ### 缺陷修正
