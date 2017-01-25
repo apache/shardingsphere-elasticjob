@@ -47,7 +47,7 @@ public final class LaunchingTasksTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private ConfigurationService configService;
+    private ConfigurationService jobConfigService;
     
     @Mock
     private ReadyService readyService;
@@ -65,7 +65,7 @@ public final class LaunchingTasksTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         facadeService = new FacadeService(regCenter);
-        ReflectionUtils.setFieldValue(facadeService, "configService", configService);
+        ReflectionUtils.setFieldValue(facadeService, "jobConfigService", jobConfigService);
         ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
