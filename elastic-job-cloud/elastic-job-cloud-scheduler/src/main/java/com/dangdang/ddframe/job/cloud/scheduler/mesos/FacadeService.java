@@ -196,17 +196,6 @@ public class FacadeService {
     }
     
     /**
-     * 根据作业名称获取云作业应用配置.
-     *
-     * @param jobName 云作业应用名称
-     * @return 云作业应用配置
-     */
-    public Optional<CloudAppConfiguration> loadAppConfigByJobName(final String jobName) {
-        Optional<CloudJobConfiguration> jobConfigurationOptional = jobConfigService.load(jobName);
-        return jobConfigurationOptional.isPresent() ? appConfigService.load(jobConfigurationOptional.get().getAppName()) : Optional.<CloudAppConfiguration>absent();    
-    }
-    
-    /**
      * 根据作业元信息获取失效转移作业Id.
      *
      * @param metaInfo 作业元信息

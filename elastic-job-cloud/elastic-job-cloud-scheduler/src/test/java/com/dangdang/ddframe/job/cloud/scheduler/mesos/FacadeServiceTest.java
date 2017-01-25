@@ -182,22 +182,14 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertLoadAppConfig() {
-        Optional appConfigOptional = Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app"));
+        Optional<CloudAppConfiguration> appConfigOptional = Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app"));
         when(appConfigService.load("test_app")).thenReturn(appConfigOptional);
         assertThat(facadeService.loadAppConfig("test_app"), is(appConfigOptional));
     }
     
     @Test
-    public void assertLoadAppConfigByJobName() {
-        Optional appConfigOptional = Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app"));
-        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
-        when(appConfigService.load("test_app")).thenReturn(appConfigOptional);
-        assertThat(facadeService.loadAppConfigByJobName("test_job"), is(appConfigOptional));
-    }
-    
-    @Test
     public void assertLoadJobConfig() {
-        Optional jobConfigOptional = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
+        Optional<CloudJobConfiguration> jobConfigOptional = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
         when(jobConfigService.load("test_job")).thenReturn(jobConfigOptional);
         assertThat(facadeService.load("test_job"), is(jobConfigOptional));
     }
@@ -206,13 +198,6 @@ public final class FacadeServiceTest {
     public void assertLoadAppConfigWhenAbsent() {
         when(appConfigService.load("test_app")).thenReturn(Optional.<CloudAppConfiguration>absent());
         assertThat(facadeService.loadAppConfig("test_app"), is(Optional.<CloudAppConfiguration>absent()));
-    }
-    
-    @Test
-    public void assertLoadAppConfigByJobNameWhenAbsent() {
-        when(appConfigService.load("test_app")).thenReturn(Optional.<CloudAppConfiguration>absent());
-        when(jobConfigService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
-        assertThat(facadeService.loadAppConfigByJobName("test_job"), is(Optional.<CloudAppConfiguration>absent()));
     }
     
     @Test

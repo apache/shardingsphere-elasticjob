@@ -31,7 +31,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author zhangliang
  */
-public final class LeasesQueue {
+public class LeasesQueue {
     
     private final BlockingQueue<VirtualMachineLease> queue = new LinkedBlockingQueue<>();
     

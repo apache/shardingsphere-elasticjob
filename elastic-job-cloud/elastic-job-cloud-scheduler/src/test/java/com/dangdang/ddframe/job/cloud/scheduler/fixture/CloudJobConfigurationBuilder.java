@@ -73,8 +73,12 @@ public final class CloudJobConfigurationBuilder {
     }
     
     public static CloudJobConfiguration createScriptCloudJobConfiguration(final String jobName) {
+        return createScriptCloudJobConfiguration(jobName, 3);
+    }
+    
+    public static CloudJobConfiguration createScriptCloudJobConfiguration(final String jobName, final int shardingTotalCount) {
         return new CloudJobConfiguration("test_app",
-                new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", 3).failover(false).misfire(false).build(), "test.sh"),
+                new ScriptJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", shardingTotalCount).failover(false).misfire(false).build(), "test.sh"),
                 1.0d, 128.0d, JobExecutionType.TRANSIENT);
     }
 }

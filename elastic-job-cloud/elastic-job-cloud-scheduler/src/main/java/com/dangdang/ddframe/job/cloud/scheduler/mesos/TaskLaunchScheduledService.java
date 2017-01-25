@@ -199,7 +199,6 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         if (useDefaultExecutor) {
             return result.setCommand(command).build();
         }
-        facadeService.loadAppConfig(jobConfig.getAppName());
         Protos.ExecutorInfo.Builder executorBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue(taskContext.getExecutorId(jobConfig.getAppName())))
                 .setCommand(command).addResources(buildResource("cpus", appConfig.getCpuCount())).addResources(buildResource("mem", appConfig.getMemoryMB()));
         if (env.getJobEventRdbConfiguration().isPresent()) {
