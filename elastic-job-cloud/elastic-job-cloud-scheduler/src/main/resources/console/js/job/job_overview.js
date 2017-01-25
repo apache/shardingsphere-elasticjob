@@ -1,6 +1,6 @@
 function viewOper(val, row){
     var jobName = row.jobName;
-    var result = '<button type="button" class="btn btn-success" onClick="detailJob(\'' + jobName + '\')">详情</button>'+ ' <button type="button" class="btn btn-info" onClick="updateJob(\'' + jobName + '\')">修改</button>'+
+    var result = '<button type="button" class="btn btn-info" onClick="detailJob(\'' + jobName + '\')">详情</button>'+ ' <button type="button" class="btn btn-warning" onClick="updateJob(\'' + jobName + '\')">修改</button>'+
     ' <button type="button" class="btn btn-danger" onClick="deleteJob(\'' + jobName + '\')">删除</button>';
     return result;
 }
@@ -9,7 +9,7 @@ function deleteJob(jobName){
     $("#delete-data").modal({backdrop: 'static', keyboard: true});
     $('#deleteConfirm').on("click", function(){
         $.ajax({
-            url:"/job/deregister",
+            url:"/job/deg",
             type:"DELETE",
             contentType: "application/json",
             data:jobName,
@@ -39,7 +39,7 @@ function detailJob(jobName){
 }
     
 $('#add_job').click(function() {
-    $('#addjob_body').load('add_job.html');
+    $('#addjob_body').load('html/job/add_job.html');
     $('#data-add').modal({backdrop: 'static', keyboard: true});
 });
     
@@ -49,7 +49,7 @@ function updateJob(jobName){
         async: false,
         success:function(result){
             if (null != result) {
-                $('#updatejob_body').load('modify_job.html',null,function(){
+                $('#updatejob_body').load('html/job/modify_job.html',null,function(){
                     if(result.jobType == "SCRIPT"){
                         $("#bootstrapScriptDiv").show();
                     }
@@ -60,7 +60,7 @@ function updateJob(jobName){
                     $('#data-update').modal({backdrop: 'static', keyboard: true});
                 });
             }else{
-                alert("展示详情页失败！");
+                alert("数据加载失败！");
             }
         }
     });
@@ -68,6 +68,7 @@ function updateJob(jobName){
     
 function showJobSettingInfo(result){
     $("#jobName").attr("value",result.jobName);
+    $("#appName").attr("value",result.appName);
     $("#cron").attr("value",result.cron);
     $("#jobExecutionType").val(result.jobExecutionType);
     $("#shardingTotalCount").attr("value",result.shardingTotalCount);
@@ -77,7 +78,6 @@ function showJobSettingInfo(result){
     $("#bootstrapScript").attr("value",result.bootstrapScript);
     $("#beanName").attr("value",result.beanName);
     $("#applicationContext").attr("value",result.applicationContext);
-    $("#appURL").attr("value",result.appURL);
     $("#description").val(result.description);
     $("#shardingItemParameters").val(result.shardingItemParameters);
     $("#jobType").val(result.jobType);

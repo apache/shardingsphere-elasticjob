@@ -43,6 +43,36 @@ function bootstrapValidator(){
                     }
                 }
             },
+            appName: {
+                validators: {
+                    notEmpty: {
+                        message: '作业app名称不能为空'
+                    },
+                    stringLength: {
+                        max: 100,
+                        message: '作业app名称长度不能超过100字符大小'
+                    },
+                    regexp: {
+                        regexp: /^([a-zA-Z_][a-zA-Z0-9_]*\.)*[a-zA-Z_][a-zA-Z0-9_]*$/,
+                        message: '作业app名称包含非法字符'
+                    }
+                }
+            },
+            job_appName: {
+                validators: {
+                    notEmpty: {
+                        message: '作业app名称不能为空'
+                    },
+                    stringLength: {
+                        max: 100,
+                        message: '作业app名称长度不能超过100字符大小'
+                    },
+                    regexp: {
+                        regexp: /^([a-zA-Z_][a-zA-Z0-9_]*\.)*[a-zA-Z_][a-zA-Z0-9_]*$/,
+                        message: '作业app名称包含非法字符'
+                    }
+                }
+            },
             cron: {
                 validators: {
                     notEmpty: {
@@ -109,7 +139,7 @@ function bootstrapValidator(){
                     regexp: {
                         regexp: /^(\d+)=([a-zA-Z0-9_\u4e00-\u9fa5]+)(,(\d+)=([a-zA-Z0-9_\u4e00-\u9fa5]+))*$/,
                         message: '作业分片项的格式不正确'
-                    }
+                    },
                 }
             }
         }
@@ -139,6 +169,54 @@ $('#jobName').blur(function(){
                         });
                     }
                 }
+            }
+        });
+    }
+});
+    
+$('#appName').blur(function(){
+    var appName = $('#appName').val();
+    if(appName != ''){
+        $.ajax({
+            url: '/app/' + appName,
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                if(null != data){
+                    if(!$.isNumeric(data.length)){
+                        $("#appName-server-check").modal({backdrop: 'static', keyboard: true});
+                        setTimeout(function(){
+                            $("#appName-server-check").modal("hide")
+                        },1000);
+                        $('#appName-server-check').on('hidden.bs.modal', function () {
+                            $("#appName").val("");
+                            $('#job-settings-form').data('bootstrapValidator').updateStatus('appName', 'NOT_VALIDATED', null).validateField('appName');
+                        });
+                    }
+                }
+            }
+        });
+    }
+});
+
+$('#job_appName').blur(function(){
+    var appName = $('#job_appName').val();
+    if(appName != ''){
+        $.ajax({
+            url: '/app/' + appName,
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+            },
+            error:function(XMLHttpRequest, textStatus, errorThrown){
+                    $("#job-appName-server-check").modal({backdrop: 'static', keyboard: true});
+                    setTimeout(function(){
+                        $("#job-appName-server-check").modal("hide")
+                    },1500);
+                    $('#job-appName-server-check').on('hidden.bs.modal', function () {
+                        $("#job_appName").val("");
+                        $('#job-settings-form').data('bootstrapValidator').updateStatus('job_appName', 'NOT_VALIDATED', null).validateField('job_appName');
+                    });
             }
         });
     }
@@ -189,6 +267,18 @@ function submitBootstrapValidator(){
     });
 }
     
+function submitAppBootstrapValidator(){
+    $("#save_form").on("click", function(){
+        var bootstrapValidator = $("#job-settings-form").data('bootstrapValidator');
+        bootstrapValidator.validate();
+        if(bootstrapValidator.isValid()){
+            bindSubmitAppSettingsForm();
+        }
+    });
+    $("#reset_form").on("click", function(){
+        $('#job-settings-form').data('bootstrapValidator').resetForm();
+    });
+}
 function dataControl(){
     $('#jobType').change(function() {
         var jobType = $('#jobType').val();
@@ -217,6 +307,7 @@ function dataControl(){
 function dataInfo(){
     return {
         "jobName":$("#jobName").val(),
+        "appName":$("#job_appName").val(),
         "jobClass":$("#jobClass").val(),
         "cron":$("#cron").val(),
         "jobType":$("#jobType").val(),
@@ -230,10 +321,25 @@ function dataInfo(){
         "failover":$("#failover").prop("checked"),
         "misfire":$("#misfire").prop("checked"),
         "streamingProcess":$("#streamingProcess").prop("checked"),
-        "appURL":$("#appURL").val(),
         "applicationContext":$("#applicationContext").val(),
         "shardingItemParameters": $("#shardingItemParameters").val(),
         "scriptCommandLine":$("#scriptCommandLine").val(),
         "description":$("#description").val()
+    };
+}
+    
+function dataAppInfo(){
+    var eventTraceSamplingRate = $("#eventTraceSamplingRate").val();
+    if(eventTraceSamplingRate == "" || eventTraceSamplingRate == "undefined"){
+        eventTraceSamplingRate = 0;
+    }
+    return {
+        "appName":$("#appName").val(),
+        "cpuCount":$("#cpuCount").val(),
+        "memoryMB":$("#memoryMB").val(),
+        "bootstrapScript":$("#bootstrapScript").val(),
+        "appCacheEnable":$("#appCacheEnable").prop("checked"),
+        "appURL":$("#appURL").val(),
+        "eventTraceSamplingRate":eventTraceSamplingRate
     };
 }

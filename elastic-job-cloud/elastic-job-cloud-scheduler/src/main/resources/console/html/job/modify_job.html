@@ -7,6 +7,12 @@
                     <input type="text" placeholder="yourJobClass" id="jobClass" name="jobClass" class="form-control" data-toggle="tooltip" data-placement="bottom" title="  作业实现类，需实现ElasticJob接口，脚本型作业不需要配置"/>
                 </div>
             </div>
+             <div class="form-group" >
+                <label for="appName" class="col-sm-2 control-label"><i>*</i>应用名称</label>
+                <div class="col-sm-9">
+                    <input type="text" placeholder="作业所在的应用名称" id="appName" name="appName" class="form-control" data-toggle="tooltip" data-placement="bottom"  title=""/>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group">
@@ -130,14 +136,6 @@
             </div>
             <div class="row">
                 <div class="form-group">
-                    <label for="appURL" class="col-sm-2 control-label"><i>*</i>应用所在路径</label>
-                    <div class="col-sm-9">
-                        <input type="text" placeholder="http://file_host:8080/foo-job.tar.gz"  id="appURL" name="appURL" class="form-control" data-toggle="tooltip" data-placement="bottom" title=" 必须是可以通过网络访问到的路径。"/>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
                     <label for="applicationContext" class="col-sm-2 control-label">Spring配置文件相对路径及名称</label>
                     <div class="col-sm-9">
                         <input type="text" placeholder="META-INF\applicationContext.xml" id="applicationContext" name="applicationContext" class="form-control" data-toggle="tooltip" data-placement="bottom" title="   Spring方式配置Spring配置文件相对路径以及名称，如：META-INF\applicationContext.xml" />
@@ -198,9 +196,7 @@
         </div>
     </div><!-- role -->
 </div><!-- /.box-body -->
-<link rel="stylesheet" type="text/css" href="css/add_job.css">
-<link rel="stylesheet" type="text/css" href="css/placeholder.css">
 <script src="plugins/BootstrapValidator/js/bootstrapValidator.js"></script>
 <script src="plugins/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
-<script src="js/job_edit_base.js"></script>
-<script src="js/modify_job.js"></script>
+<script src="js/common/job_edit_base.js"></script>
+<script src="js/job/modify_job.js"></script>
