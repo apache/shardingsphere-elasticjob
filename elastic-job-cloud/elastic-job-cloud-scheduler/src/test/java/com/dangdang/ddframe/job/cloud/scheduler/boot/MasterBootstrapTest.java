@@ -83,7 +83,6 @@ public class MasterBootstrapTest {
         masterBootstrap.start();
         InOrder inOrder = getInOrder();
         inOrder.verify(facadeService).start();
-        inOrder.verify(schedulerDriver).start();
         inOrder.verify(producerManager).startup();
         inOrder.verify(statisticManager).startup();
         inOrder.verify(cloudJobConfigurationListener).start();
@@ -91,6 +90,7 @@ public class MasterBootstrapTest {
         inOrder.verify(statisticsScheduledService).startAsync();
         inOrder.verify(taskLaunchScheduledService).startAsync();
         inOrder.verify(restfulService).start();
+        inOrder.verify(schedulerDriver).start();
     }
     
     @Test

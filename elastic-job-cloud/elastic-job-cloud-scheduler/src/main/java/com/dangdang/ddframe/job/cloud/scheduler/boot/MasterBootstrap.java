@@ -84,12 +84,12 @@ public final class MasterBootstrap {
         env = BootstrapEnvironment.getInstance();
         this.regCenter = regCenter;
         facadeService = new FacadeService(regCenter);
+        statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         LeasesQueue leasesQueue = new LeasesQueue();
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
         schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
         producerManager = new ProducerManager(schedulerDriver, regCenter);
-        statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
         reconcileScheduledService = new ReconcileScheduledService(facadeService, schedulerDriver, taskScheduler, statisticManager);
         statisticsScheduledService = new StatisticsScheduledService(regCenter);
@@ -137,7 +137,6 @@ public final class MasterBootstrap {
      */
     public void start() {
         facadeService.start();
-        schedulerDriver.start();
         producerManager.startup();
         statisticManager.startup();
         cloudJobConfigurationListener.start();
@@ -145,6 +144,7 @@ public final class MasterBootstrap {
         statisticsScheduledService.startAsync();
         taskLaunchScheduledService.startAsync();
         restfulService.start();
+        schedulerDriver.start();
     }
     
     /**
