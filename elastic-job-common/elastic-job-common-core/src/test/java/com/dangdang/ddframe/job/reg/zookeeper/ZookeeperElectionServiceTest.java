@@ -46,8 +46,7 @@ public class ZookeeperElectionServiceTest {
         client.start();
         client.blockUntilConnected();
         MockitoAnnotations.initMocks(this);
-        service = ZookeeperElectionService.builder().identity(HOST_AND_PORT).electionPath(ELECTION_PATH)
-                .client(client).electionCandidate(electionCandidate).build();
+        service = new ZookeeperElectionService(HOST_AND_PORT, ELECTION_PATH, client, electionCandidate);
         service.startLeadership();
     }
     
@@ -76,8 +75,7 @@ public class ZookeeperElectionServiceTest {
     public void assertContend() throws Exception {
         ElectionCandidate anotherElectionCandidate = mock(ElectionCandidate.class);
         try (CuratorFramework anotherClient = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
-             ZookeeperElectionService anotherService = ZookeeperElectionService.builder().identity("ANOTHER_CLIENT:8899").electionPath(ELECTION_PATH)
-                     .client(anotherClient).electionCandidate(anotherElectionCandidate).build()) {
+             ZookeeperElectionService anotherService = new ZookeeperElectionService("ANOTHER_CLIENT:8899", ELECTION_PATH, anotherClient, anotherElectionCandidate)) {
             anotherClient.start();
             anotherClient.blockUntilConnected();
             anotherService.startLeadership();

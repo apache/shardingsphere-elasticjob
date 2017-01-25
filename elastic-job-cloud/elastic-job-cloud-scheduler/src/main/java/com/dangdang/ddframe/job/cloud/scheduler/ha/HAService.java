@@ -39,34 +39,34 @@ public final class HAService {
     private final ZookeeperElectionService electionService;
     
     public HAService(final CoordinatorRegistryCenter regCenter) {
-        electionService = ZookeeperElectionService.builder()
-                .identity(String.format("%s:%d", LOCAL_HOST_SERVICE.getHostName(), BootstrapEnvironment.getInstance().getRestfulServerConfiguration().getPort()))
-                .client((CuratorFramework) regCenter.getRawClient()).electionPath(HANode.ELECTION_NODE)
-                .electionCandidate(new ElectionCandidate() {
-                    
-                    private MasterBootstrap masterBootstrap;
-                    
-                    @Override
-                    public void startLeadership() throws Exception {
-                        try {
-                            masterBootstrap = new MasterBootstrap(regCenter);
-                            masterBootstrap.start();
-                            //CHECKSTYLE:OFF
-                        } catch (final Throwable throwable) {
-                            //CHECKSTYLE:ON
-                            if (throwable instanceof InterruptedException) {
-                                throw throwable;
-                            }
-                            log.error("Elastic job: Starting error", throwable);
-                            System.exit(1);
-                        }
+        ElectionCandidate electionCandidate = new ElectionCandidate() {
+        
+            private MasterBootstrap masterBootstrap;
+        
+            @Override
+            public void startLeadership() throws Exception {
+                try {
+                    masterBootstrap = new MasterBootstrap(regCenter);
+                    masterBootstrap.start();
+                    //CHECKSTYLE:OFF
+                } catch (final Throwable throwable) {
+                    //CHECKSTYLE:ON
+                    if (throwable instanceof InterruptedException) {
+                        throw throwable;
                     }
-                    
-                    @Override
-                    public void stopLeadership() {
-                        masterBootstrap.stop();
-                    }
-                }).build();
+                    log.error("Elastic job: Starting error", throwable);
+                    System.exit(1);
+                }
+            }
+        
+            @Override
+            public void stopLeadership() {
+                masterBootstrap.stop();
+            }
+        };
+        electionService = new ZookeeperElectionService(
+                String.format("%s:%d", LOCAL_HOST_SERVICE.getHostName(), BootstrapEnvironment.getInstance().getRestfulServerConfiguration().getPort()),
+                HANode.ELECTION_NODE, (CuratorFramework) regCenter.getRawClient(), electionCandidate);
     }
     
     /**

@@ -59,5 +59,4 @@ public class FrameworkIDServiceTest {
         verify(registryCenter).isExisted(HANode.FRAMEWORK_ID_NODE);
         verify(registryCenter).persist(HANode.FRAMEWORK_ID_NODE, "1");
     }
-    
 }

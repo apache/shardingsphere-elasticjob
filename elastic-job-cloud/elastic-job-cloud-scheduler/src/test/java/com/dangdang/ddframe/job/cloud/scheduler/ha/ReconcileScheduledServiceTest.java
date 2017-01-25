@@ -181,5 +181,4 @@ public class ReconcileScheduledServiceTest {
         }
         verify(statisticManager, times(2)).taskRunFailed();
     }
-    
 }

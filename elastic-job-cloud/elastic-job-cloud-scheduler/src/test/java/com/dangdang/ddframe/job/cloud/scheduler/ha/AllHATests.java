@@ -23,6 +23,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         FrameworkIDServiceTest.class,
+        HAServiceTest.class,
         ReconcileScheduledServiceTest.class
     })
 public class AllHATests {
