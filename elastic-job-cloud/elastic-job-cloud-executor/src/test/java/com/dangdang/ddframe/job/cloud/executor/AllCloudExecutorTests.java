@@ -25,9 +25,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        CloudJobFacadeTest.class, 
+        CloudJobFacadeTest.class,
+        DaemonTaskSchedulerTest.class, 
         JobConfigurationContextTest.class,
-        TaskExecutorTest.class
+        TaskExecutorTest.class,
+        TaskExecutorThreadTest.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllCloudExecutorTests {

@@ -45,5 +45,5 @@ public final class CloudAppConfiguration {
     
     private boolean appCacheEnable = true;
     
-    private int eventTraceSamplingRate;
+    private int eventTraceSamplingCount;
 }

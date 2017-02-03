@@ -45,7 +45,7 @@ function showAppSettingInfo(result){
     $("#memoryMB").attr("value",result.memoryMB);
     $("#bootstrapScript").attr("value",result.bootstrapScript);
     $("#appURL").attr("value",result.appURL);
-    $("#eventTraceSamplingRate").val(result.eventTraceSamplingRate);
+    $("#eventTraceSamplingCount").val(result.eventTraceSamplingCount);
     if(result.appCacheEnable == true){
         $("#appCacheEnable").prop("checked",true);
     }else{

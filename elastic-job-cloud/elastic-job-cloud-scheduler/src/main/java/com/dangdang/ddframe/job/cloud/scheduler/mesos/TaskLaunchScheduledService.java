@@ -153,20 +153,20 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         }
         CloudAppConfiguration appConfig = appConfigOptional.get();
         taskContext.setSlaveId(slaveID.getValue());
-        ShardingContexts shardingContexts = getShardingContexts(taskContext, jobConfig);
+        ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig, jobConfig);
         boolean useDefaultExecutor = JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
         Protos.CommandInfo.URI uri = buildURI(appConfig, useDefaultExecutor);
         Protos.CommandInfo command = buildCommand(uri, appConfig.getBootstrapScript(), shardingContexts, useDefaultExecutor);
         return buildTaskInfo(taskContext, appConfig, jobConfig, shardingContexts, slaveID, command, useDefaultExecutor);
     }
     
-    private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudJobConfiguration jobConfig) {
+    private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig) {
         Map<Integer, String> shardingItemParameters = new ShardingItemParameters(jobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
         Map<Integer, String> assignedShardingItemParameters = new HashMap<>(1, 1);
         int shardingItem = taskContext.getMetaInfo().getShardingItems().get(0);
         assignedShardingItemParameters.put(shardingItem, shardingItemParameters.containsKey(shardingItem) ? shardingItemParameters.get(shardingItem) : "");
         return new ShardingContexts(taskContext.getId(), jobConfig.getJobName(), jobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(),
-                jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters);
+                jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters, appConfig.getEventTraceSamplingCount());
     }
     
     private Protos.CommandInfo.URI buildURI(final CloudAppConfiguration appConfig, final boolean useDefaultExecutor) {

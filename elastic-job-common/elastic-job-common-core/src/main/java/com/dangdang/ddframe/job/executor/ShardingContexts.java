@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.executor;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -32,7 +33,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Getter
 @ToString
-public final class ShardingContexts implements Serializable {
+public class ShardingContexts implements Serializable {
     
     private static final long serialVersionUID = -4585977349142082152L;
     
@@ -61,4 +62,31 @@ public final class ShardingContexts implements Serializable {
      * 分配于本作业实例的分片项和参数的Map.
      */
     private final Map<Integer, String> shardingItemParameters;
+    
+    /**
+     * 作业事件采样统计数.
+     */
+    private int jobEventSamplingCount;
+    
+    /**
+     * 当前作业事件采样统计数.
+     */
+    @Setter
+    private int currentJobEventSamplingCount;
+    
+    /**
+     * 是否允许可以发送作业事件.
+     */
+    @Setter
+    private boolean allowSendJobEvent = true;
+    
+    public ShardingContexts(final String taskId, final String jobName, final int shardingTotalCount, final String jobParameter, 
+                            final Map<Integer, String> shardingItemParameters, final int jobEventSamplingCount) {
+        this.taskId = taskId;
+        this.jobName = jobName;
+        this.shardingTotalCount = shardingTotalCount;
+        this.jobParameter = jobParameter;
+        this.shardingItemParameters = shardingItemParameters;
+        this.jobEventSamplingCount = jobEventSamplingCount;
+    }
 }
