@@ -29,7 +29,6 @@ import org.junit.runners.Suite;
         TaskInfoDataTest.class, 
         FacadeServiceTest.class, 
         SchedulerEngineTest.class,
-        StatisticsScheduledServiceTest.class,
         TaskLaunchScheduledServiceTest.class,
         LaunchingTasksTest.class,
         FrameworkIDServiceTest.class

@@ -58,9 +58,6 @@ public class MasterBootstrapTest {
     private Service reconcileScheduledService;
     
     @Mock
-    private Service statisticsScheduledService;
-    
-    @Mock
     private StatisticManager statisticManager;
     
     @Mock
@@ -73,9 +70,9 @@ public class MasterBootstrapTest {
     
     @Before
     public void setUp() throws Exception {
-        masterBootstrap = new MasterBootstrap(env, regCenter, facadeService, schedulerDriver,  
+        masterBootstrap = new MasterBootstrap(env, facadeService, schedulerDriver,  
                 producerManager, statisticManager, cloudJobConfigurationListener, reconcileScheduledService, 
-                statisticsScheduledService, taskLaunchScheduledService, restfulService);
+                taskLaunchScheduledService, restfulService);
     }
     
     @Test
@@ -87,7 +84,6 @@ public class MasterBootstrapTest {
         inOrder.verify(statisticManager).startup();
         inOrder.verify(cloudJobConfigurationListener).start();
         inOrder.verify(reconcileScheduledService).startAsync();
-        inOrder.verify(statisticsScheduledService).startAsync();
         inOrder.verify(taskLaunchScheduledService).startAsync();
         inOrder.verify(restfulService).start();
         inOrder.verify(schedulerDriver).start();
@@ -99,7 +95,6 @@ public class MasterBootstrapTest {
         InOrder inOrder = getInOrder();
         inOrder.verify(restfulService).stop();
         inOrder.verify(taskLaunchScheduledService).stopAsync();
-        inOrder.verify(statisticsScheduledService).stopAsync();
         inOrder.verify(reconcileScheduledService).stopAsync();
         inOrder.verify(cloudJobConfigurationListener).stop();
         inOrder.verify(statisticManager).shutdown();
@@ -110,7 +105,7 @@ public class MasterBootstrapTest {
     
     private InOrder getInOrder() {
         return Mockito.inOrder(facadeService, schedulerDriver,
-                producerManager, reconcileScheduledService, statisticsScheduledService, statisticManager, cloudJobConfigurationListener,
+                producerManager, reconcileScheduledService, statisticManager, cloudJobConfigurationListener,
                 taskLaunchScheduledService, restfulService);
     } 
 }

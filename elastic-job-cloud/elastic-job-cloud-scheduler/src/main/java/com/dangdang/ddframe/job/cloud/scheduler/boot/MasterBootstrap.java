@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.ha.ReconcileScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulService;
@@ -60,8 +59,6 @@ public final class MasterBootstrap {
     
     private final BootstrapEnvironment env;
     
-    private final CoordinatorRegistryCenter regCenter;
-    
     private final FacadeService facadeService;
     
     private final SchedulerDriver schedulerDriver;
@@ -74,15 +71,12 @@ public final class MasterBootstrap {
     
     private final Service reconcileScheduledService;
     
-    private final Service statisticsScheduledService;
-    
     private final Service taskLaunchScheduledService;
     
     private final RestfulService restfulService;
     
     public MasterBootstrap(final CoordinatorRegistryCenter regCenter) {
         env = BootstrapEnvironment.getInstance();
-        this.regCenter = regCenter;
         facadeService = new FacadeService(regCenter);
         statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         LeasesQueue leasesQueue = new LeasesQueue();
@@ -92,7 +86,6 @@ public final class MasterBootstrap {
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
         reconcileScheduledService = new ReconcileScheduledService(facadeService, schedulerDriver, taskScheduler, statisticManager);
-        statisticsScheduledService = new StatisticsScheduledService(regCenter);
         taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus);
         restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager);
     }
@@ -141,7 +134,6 @@ public final class MasterBootstrap {
         statisticManager.startup();
         cloudJobConfigurationListener.start();
         reconcileScheduledService.startAsync();
-        statisticsScheduledService.startAsync();
         taskLaunchScheduledService.startAsync();
         restfulService.start();
         schedulerDriver.start();
@@ -153,7 +145,6 @@ public final class MasterBootstrap {
     public void stop() {
         restfulService.stop();
         taskLaunchScheduledService.stopAsync();
-        statisticsScheduledService.stopAsync();
         reconcileScheduledService.stopAsync();
         cloudJobConfigurationListener.stop();
         statisticManager.shutdown();
