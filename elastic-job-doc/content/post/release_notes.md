@@ -7,15 +7,55 @@ weight=1
 
 # Release Notes
 
-## 2.0.3-SNAPSHOT
+## 2.0.5-SNAPSHOT
+
+### 缺陷修正
+
+1. [ISSUE 222](https://github.com/dangdangdotcom/elastic-job/issues/222) elastic-job-lite-spring的reg配置参数max-retries不起作用
+
+
+### 新功能
+
+1. [ISSUE #217](https://github.com/dangdangdotcom/elastic-job/issues/217) cloud版本增加APP维度配置
+1. [ISSUE #223](https://github.com/dangdangdotcom/elastic-job/issues/223) cloud版本事件追踪采样率
+
+## 2.0.4
+
+### 缺陷修正
+
+1. [ISSUE #189](https://github.com/dangdangdotcom/elastic-job/issues/189) 管理后台执行失效操作，但任务还在执行
+1. [ISSUE #204](https://github.com/dangdangdotcom/elastic-job/issues/204) 异步事件执行消息顺序不一致导致数据库数据不准确
+1. [ISSUE #209](https://github.com/dangdangdotcom/elastic-job/issues/209) cloud作业资源分配算法改进
+
+### 新功能
+
+1. [ISSUE #203](https://github.com/dangdangdotcom/elastic-job/issues/203) cloud类型作业增加运行统计，并提供REST API查询
+1. [ISSUE #215](https://github.com/dangdangdotcom/elastic-job/issues/215) cloud版本运维管理界面
+
+### 功能提升
+
+1. [ISSUE #187](https://github.com/dangdangdotcom/elastic-job/issues/187) ShardingContext中增加taskId属性，供业务方使用 
+
+## 2.0.3
 
 ### 缺陷修正
 
 1. [ISSUE #177](https://github.com/dangdangdotcom/elastic-job/issues/177) 2.0.2版本Spring命名空间的job:script空指针
+1. [ISSUE #185](https://github.com/dangdangdotcom/elastic-job/issues/185) Executor多占用分片资源导致资源浪费问题
 
 ### 新功能
 
 1. [ISSUE #178](https://github.com/dangdangdotcom/elastic-job/issues/178) 事件驱动触发作业
+
+### 功能提升
+
+1. [ISSUE #179](https://github.com/dangdangdotcom/elastic-job/issues/179) Transient的Script类型作业优化，无需Java的Executor支持
+1. [ISSUE #182](https://github.com/dangdangdotcom/elastic-job/issues/182) 增加对spring boot的支持
+
+### 结构调整
+
+1. [ISSUE #184](https://github.com/dangdangdotcom/elastic-job/issues/184) ExecutorServiceHandler接口方法调整，增加jobName区分用来区分不同作业线程名
+1. [ISSUE #186](https://github.com/dangdangdotcom/elastic-job/issues/186) 去除Spring命名空间DTO相关代码，简化SpringJobScheduler使用
 
 ## 2.0.2
 

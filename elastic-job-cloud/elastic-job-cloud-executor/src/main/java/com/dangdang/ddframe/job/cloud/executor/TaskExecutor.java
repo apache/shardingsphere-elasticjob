@@ -36,6 +36,7 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -48,6 +49,8 @@ import java.util.concurrent.ExecutorService;
 public final class TaskExecutor implements Executor {
     
     private final ExecutorService executorService;
+    
+    private final Map<String, ClassPathXmlApplicationContext> applicationContexts = new HashMap<>();
     
     private volatile JobEventBus jobEventBus = new JobEventBus();
     
@@ -116,11 +119,12 @@ public final class TaskExecutor implements Executor {
             JobConfigurationContext jobConfig = new JobConfigurationContext((Map<String, String>) data.get("jobConfigContext"));
             try {
                 ElasticJob elasticJob = getElasticJobInstance(jobConfig);
+                final CloudJobFacade jobFacade = new CloudJobFacade(shardingContexts, jobConfig, jobEventBus);
                 if (jobConfig.isTransient()) {
-                    JobExecutorFactory.getJobExecutor(elasticJob, new CloudJobFacade(shardingContexts, jobConfig, jobEventBus)).execute();
+                    JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
                     executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_FINISHED).build());
                 } else {
-                    new DaemonTaskScheduler(elasticJob, jobConfig, new CloudJobFacade(shardingContexts, jobConfig, jobEventBus), executorDriver, taskInfo.getTaskId()).init();
+                    new DaemonTaskScheduler(elasticJob, jobConfig, jobFacade, executorDriver, taskInfo.getTaskId()).init();
                 }
                 // CHECKSTYLE:OFF
             } catch (final Throwable ex) {
@@ -140,7 +144,15 @@ public final class TaskExecutor implements Executor {
         }
         
         private ElasticJob getElasticJobBean(final JobConfigurationContext jobConfig) {
-            return (ElasticJob) new ClassPathXmlApplicationContext(jobConfig.getApplicationContext()).getBean(jobConfig.getBeanName());
+            String applicationContextFile = jobConfig.getApplicationContext();
+            if (null == applicationContexts.get(applicationContextFile)) {
+                synchronized (applicationContexts) {
+                    if (null == applicationContexts.get(applicationContextFile)) {
+                        applicationContexts.put(applicationContextFile, new ClassPathXmlApplicationContext(applicationContextFile));
+                    }
+                }
+            }
+            return (ElasticJob) applicationContexts.get(applicationContextFile).getBean(jobConfig.getBeanName());
         }
         
         private ElasticJob getElasticJobClass(final JobConfigurationContext jobConfig) {

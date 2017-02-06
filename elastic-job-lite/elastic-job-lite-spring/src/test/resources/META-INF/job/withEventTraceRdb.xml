@@ -9,14 +9,7 @@
                         ">
     <import resource="base.xml"/>
     
-    <bean id="elasticJobLog" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:mem:job_event_storage"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-    </bean>
+    <job:simple id="simpleElasticJob_namespace_event_trace_rdb" class="com.dangdang.ddframe.job.lite.spring.fixture.job.FooSimpleElasticJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" executor-service-handler="com.dangdang.ddframe.job.lite.spring.fixture.handler.SimpleExecutorServiceHandler" event-trace-rdb-data-source="elasticJobLog"/>
     
-    <job:simple id="simpleElasticJob_namespace_event_trace_rdb" class="com.dangdang.ddframe.job.lite.fixture.FooSimpleElasticJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" executor-service-handler="com.dangdang.ddframe.job.lite.fixture.handler.SimpleExecutorServiceHandler" event-trace-rdb-data-source="elasticJobLog"/>
-    
-    <job:dataflow id="dataflowElasticJob_namespace_event_trace_rdb" class="com.dangdang.ddframe.job.lite.fixture.DataflowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述" overwrite="true" job-exception-handler="com.dangdang.ddframe.job.lite.fixture.handler.SimpleJobExceptionHandler" />
+    <job:dataflow id="dataflowElasticJob_namespace_event_trace_rdb" class="com.dangdang.ddframe.job.lite.spring.fixture.job.DataflowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述" overwrite="true" job-exception-handler="com.dangdang.ddframe.job.lite.spring.fixture.handler.SimpleJobExceptionHandler" />
 </beans>

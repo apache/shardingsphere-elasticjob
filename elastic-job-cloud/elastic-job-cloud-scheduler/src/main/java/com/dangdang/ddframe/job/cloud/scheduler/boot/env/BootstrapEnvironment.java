@@ -38,7 +38,7 @@ import java.util.Properties;
  * @author zhangliang
  */
 @Slf4j
-public final class BootstrapEnvironment {
+public class BootstrapEnvironment {
     
     @Getter
     private static BootstrapEnvironment instance = new BootstrapEnvironment();
@@ -100,7 +100,7 @@ public final class BootstrapEnvironment {
      * @return Mesos框架配置对象
      */
     public FrameworkConfiguration getFrameworkConfiguration() {
-        return new FrameworkConfiguration(Boolean.valueOf(getValue(EnvironmentArgument.APP_CACHE_ENABLE)), Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
+        return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
     }
     
     /**
@@ -151,7 +151,7 @@ public final class BootstrapEnvironment {
     /**
      * 环境参数.
      * 
-     * @author zhangliang 
+     * @author zhangliang
      */
     @RequiredArgsConstructor
     @Getter
@@ -171,10 +171,8 @@ public final class BootstrapEnvironment {
         
         PORT("http_port", "8899", true),
         
-        APP_CACHE_ENABLE("app_cache_enable", "false", true),
-        
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true),
-    
+        
         EVENT_TRACE_RDB_DRIVER("event_trace_rdb_driver", "", false),
         
         EVENT_TRACE_RDB_URL("event_trace_rdb_url", "", false),

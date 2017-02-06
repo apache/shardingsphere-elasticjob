@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.reg.zookeeper;
 
+import com.dangdang.ddframe.job.fixture.EmbedTestingServer;
 import com.dangdang.ddframe.job.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,15 +34,16 @@ import static org.junit.Assert.assertTrue;
 
 public final class ZookeeperRegistryCenterQueryWithoutCacheTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = 
+            new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterQueryWithoutCacheTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
         EmbedTestingServer.start();
-        zkConfig.setConnectionTimeoutMilliseconds(30000);
-        zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
+        ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
+        zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         zkRegCenter.init();
         ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
         zkRegCenter.addCacheData("/other");

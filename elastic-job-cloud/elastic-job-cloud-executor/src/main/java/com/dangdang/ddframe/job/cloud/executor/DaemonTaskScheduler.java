@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.JobFacade;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.mesos.ExecutorDriver;
@@ -159,9 +160,20 @@ public final class DaemonTaskScheduler {
         
         @Override
         public void execute(final JobExecutionContext context) throws JobExecutionException {
-            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
-            JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
-            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
+            ShardingContexts shardingContexts = jobFacade.getShardingContexts();
+            int jobEventSamplingCount = shardingContexts.getJobEventSamplingCount();
+            int currentJobEventSamplingCount = shardingContexts.getCurrentJobEventSamplingCount();
+            if (jobEventSamplingCount > 0 && ++currentJobEventSamplingCount < jobEventSamplingCount) {
+                shardingContexts.setCurrentJobEventSamplingCount(currentJobEventSamplingCount);
+                jobFacade.getShardingContexts().setAllowSendJobEvent(false);
+                JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+            } else {
+                jobFacade.getShardingContexts().setAllowSendJobEvent(true);
+                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
+                JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
+                shardingContexts.setCurrentJobEventSamplingCount(0);
+            }
         }
     }
 }

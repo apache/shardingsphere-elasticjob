@@ -17,20 +17,48 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler;
 
-import org.apache.mesos.Protos;
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.ha.HAService;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.MasterBootstrap;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 启动入口.
  */
 public final class MasterMain {
     
+    private final CountDownLatch latch = new CountDownLatch(1);
+    
+    private final HAService haService;
+    
+    private MasterMain() {
+        haService = new HAService(getRegistryCenter());
+        Runtime.getRuntime().addShutdownHook(new Thread("stop-hook") {
+        
+            @Override
+            public void run() {
+                haService.stop();
+                latch.countDown();
+            }
+        });
+    }
+    
+    private CoordinatorRegistryCenter getRegistryCenter() {
+        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(BootstrapEnvironment.getInstance().getZookeeperConfiguration());
+        result.init();
+        return result;
+    }
+    
+    private void run() throws Exception {
+        haService.start();
+        latch.await();
+    }
+    
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON
-        MasterBootstrap bootstrap = new MasterBootstrap();
-        Protos.Status status = bootstrap.runAsDaemon();
-        System.exit(bootstrap.stop(status) ? 0 : -1);
+        new MasterMain().run();
     }
 }

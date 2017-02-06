@@ -31,13 +31,13 @@ public final class CloudJsonConstants {
     
     private static final String JOB_JSON = "{\"jobName\":\"%s\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.scheduler.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":%s,\"description\":\"\","
-            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"cpuCount\":1.0,\"memoryMB\":128.0," 
-            + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"%s\"}";
+            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"appName\":\"test_app\",\"cpuCount\":1.0,\"memoryMB\":128.0," 
+            + "\"jobExecutionType\":\"%s\"}";
     
     private static final String SPRING_JOB_JSON = "{\"jobName\":\"test_spring_job\",\"jobClass\":\"com.dangdang.ddframe.job.cloud.scheduler.fixture.TestSimpleJob\",\"jobType\":\"SIMPLE\","
             + "\"cron\":\"0/30 * * * * ?\",\"shardingTotalCount\":10,\"shardingItemParameters\":\"\",\"jobParameter\":\"\",\"failover\":true,\"misfire\":true,\"description\":\"\","
-            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"cpuCount\":1.0,\"memoryMB\":128.0,"
-            + "\"appURL\":\"http://localhost/app.jar\",\"bootstrapScript\":\"bin/start.sh\",\"jobExecutionType\":\"TRANSIENT\",\"beanName\":\"springSimpleJob\","
+            + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"appName\":\"test_spring_app\",\"cpuCount\":1.0,\"memoryMB\":128.0,"
+            + "\"jobExecutionType\":\"TRANSIENT\",\"beanName\":\"springSimpleJob\","
             + "\"applicationContext\":\"applicationContext.xml\"}";
     
     public static String getJobJson() {

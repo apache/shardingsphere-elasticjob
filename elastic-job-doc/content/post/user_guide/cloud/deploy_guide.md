@@ -17,7 +17,53 @@ weight=53
 
 ## RESTful API
 
-`Elastic-Job-Cloud`提供作业注册/注销`Restful API`。可通过`curl`操作。
+`Elastic-Job-Cloud`提供APP及作业注册/注销`Restful API`。可通过`curl`操作。
+
+### 注册作业App
+
+url：`app`
+
+方法：`POST`
+
+参数类型：`application/json`
+
+参数列表：
+
+| 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
+| -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
+|appName                             |String |`是`    |       | 作业应用名称。为`Elastic-Job-Cloud`的作业应用唯一标识                                 |
+|appURL                              |String |`是`    |       | 作业应用所在路径。必须是可以通过网络访问到的路径                                        |
+|cpuCount                            |double |否      |   1   | 作业应用启动所需要的`CPU`数量                                                        |
+|memoryMB                            |double |否      |  128  | 作业应用启动所需要的内存`MB`                                                         |
+|bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`                                                      |
+|appCacheEnable                      |bool   |否      | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"appName":"foo_app","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' 
+http://elastic_job_cloud_host:8899/app
+```
+
+### 修改作业App配置
+
+url：`app`
+
+方法：`PUT`
+
+参数类型：`application/json`
+
+参数列表：
+
+| 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
+| -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
+|appName                             |String |`是`    |       | 作业应用名称。为`Elastic-Job-Cloud`的作业应用唯一标识                                 |
+|appCacheEnable                      |bool   |`是`    | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
+
+```shell
+curl -l -H "Content-type: application/json" -X PUT -d 
+'{"appName":"foo_app","appCacheEnable":true}' 
+http://elastic_job_cloud_host:8899/app
+```
 
 ### 注册作业
 
@@ -32,13 +78,14 @@ url：`job/register`
 | 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
 | -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
 |jobName                             |String |`是`    |       | 作业名称。为`Elastic-Job-Cloud`的作业唯一标识                                        |
+|appName                             |String |`是`    |       | 作业应用名称。                                                                      |
 |jobClass                            |String |`是`    |       | 作业实现类                                                                         |
 |jobType                             |Enum   |`是`    |       | 作业类型。`SIMPLE`，`DATAFLOW`，`SCRIPT`                                            |
 |jobExecutionType                    |Enum   |`是`    |       | 作业执行类型。`TRANSIENT`为瞬时作业，`DAEMON`为常驻作业                                |
 |cron                                |String |`是`    |       | `cron`表达式，用于配置作业触发时间                                                    |
 |shardingTotalCount                  |int    |`是`    |       | 作业分片总数                                                                       |
-|cpuCount                            |double |`是`    |       | 单片作业所需要的`CPU`数量，最小值为`0.01`                                             |
-|memoryMB                            |double |`是`    |       | 单片作业所需要的内存`MB`，最小值为`32`                                                |
+|cpuCount                            |double |`是`    |       | 单片作业所需要的`CPU`数量，最小值为`0.001`                                            |
+|memoryMB                            |double |`是`    |       | 单片作业所需要的内存`MB`，最小值为`1`                                                 |
 |appURL                              |String |`是`    |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
 |bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`。                                                      |
 |shardingItemParameters              |String |否      |       | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从`0`开始，不可大于或等于作业分片总数<br />如：<br/>`0=a,1=b,2=c`|
@@ -54,11 +101,13 @@ url：`job/register`
 
 注册的作业可用`Java`和`Spring`两种启动方式，作业启动在[开发指南](../dev_guide/)中有说明，这里只举例说明两种方式如何注册。
 
+使用`Transient`的`Script`类型作业可直接将`shell`上传至`appURL`，而无需打成`java`包。如果只有单个`shell`文件可无需压缩。如是复杂`shell`或`python`等应用，仍可上传`tar`包，支持各种常见压缩格式。
+
 **Java启动方式作业注册**
 
 ```shell
 curl -l -H "Content-type: application/json" -X POST -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
+'{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
 http://elastic_job_cloud_host:8899/job/register
 ```
 

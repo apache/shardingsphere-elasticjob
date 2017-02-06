@@ -1,0 +1,39 @@
+.form-group.toolbar label {
+    float: left;
+    width: 90px;
+    height: 52px;
+    padding-left: 20px;
+    text-align: center;
+}
+.form-group.toolbar span {
+    float: left;
+    width: 40px;
+    height: 52px;
+    text-align: center;
+}
+/* add,modif页面的css */
+.form-horizontal label i{
+    padding: 0 7px 0 0;
+    color: #fb4d59;
+    vertical-align: -2px;
+}
+.form-horizontal :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #DCDCDC;
+    opacity: 1;
+}
+.form-horizontal ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #DCDCDC;
+    opacity: 1;
+}
+.form-horizontal ::-webkit-input-placeholder{
+    color: #DCDCDC;
+}
+
+.form-horizontal input:-ms-input-placeholder{
+    color: #DCDCDC;
+    opacity: 1;
+}
+.form-horizontal input::-webkit-input-placeholder{
+    color: #DCDCDC;
+    opacity: 1;
+}

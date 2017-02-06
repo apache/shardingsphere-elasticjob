@@ -18,16 +18,16 @@
 package com.dangdang.ddframe.job.cloud.scheduler.config;
 
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-import org.apache.mesos.SchedulerDriver;
 
 import java.util.Collections;
+import java.util.concurrent.Executors;
 
 /**
  * 云作业配置变更监听.
@@ -35,15 +35,18 @@ import java.util.Collections;
  * @author zhangliang
  * @author caohao
  */
-public final class CloudJobConfigurationListener implements TreeCacheListener {
+public class CloudJobConfigurationListener implements TreeCacheListener {
+    
+    private final CoordinatorRegistryCenter regCenter;
     
     private final ProducerManager producerManager;
     
     private final ReadyService readyService;
     
-    public CloudJobConfigurationListener(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
-        producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
+    public CloudJobConfigurationListener(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
+        this.regCenter = regCenter;
         readyService = new ReadyService(regCenter);
+        this.producerManager = producerManager;
     }
     
     @Override
@@ -84,5 +87,28 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
             // CHECKSTYLE:ON
             return null;
         }
+    }
+    
+    /**
+     * 启动云作业配置变更监听服务.
+     */
+    public void start() {
+        getCache().getListenable().addListener(this, Executors.newSingleThreadExecutor());
+    }
+    
+    /**
+     * 停止云作业配置变更监听服务.
+     */
+    public void stop() {
+        getCache().getListenable().removeListener(this);
+    }
+    
+    private TreeCache getCache() {
+        TreeCache result = (TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT);
+        if (null != result) {
+            return result;
+        }
+        regCenter.addCacheData(ConfigurationNode.ROOT);
+        return (TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT);
     }
 }

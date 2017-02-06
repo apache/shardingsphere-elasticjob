@@ -20,82 +20,88 @@ package com.dangdang.ddframe.job.cloud.scheduler.boot;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationNode;
+import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
+import com.dangdang.ddframe.job.cloud.scheduler.ha.ReconcileScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.StatisticsProcessor;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchProcessor;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManagerFactory;
-import com.dangdang.ddframe.job.cloud.scheduler.restful.CloudJobRestfulApi;
+import com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulService;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import com.dangdang.ddframe.job.restful.RestfulServer;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.functions.Action1;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
+
+import static com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT;
+import static com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration.FRAMEWORK_NAME;
 
 /**
  * Mesos框架启动器.
  *
  * @author zhangliang
+ * @author gaohongtao
  */
 @Slf4j
+@AllArgsConstructor
 public final class MasterBootstrap {
     
     private final BootstrapEnvironment env;
     
-    private final CoordinatorRegistryCenter regCenter;
+    private final FacadeService facadeService;
     
     private final SchedulerDriver schedulerDriver;
     
-    private final RestfulServer restfulServer;
+    private final ProducerManager producerManager;
     
-    public MasterBootstrap() {
+    private final StatisticManager statisticManager;
+    
+    private final CloudJobConfigurationListener cloudJobConfigurationListener;
+    
+    private final Service reconcileScheduledService;
+    
+    private final Service taskLaunchScheduledService;
+    
+    private final RestfulService restfulService;
+    
+    public MasterBootstrap(final CoordinatorRegistryCenter regCenter) {
         env = BootstrapEnvironment.getInstance();
-        regCenter = getRegistryCenter();
+        facadeService = new FacadeService(regCenter);
+        statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
         LeasesQueue leasesQueue = new LeasesQueue();
-        final FacadeService facadeService = new FacadeService(regCenter);
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
-        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, facadeService, jobEventBus);
-        restfulServer = new RestfulServer(env.getRestfulServerConfiguration().getPort());
-        CloudJobRestfulApi.init(schedulerDriver, regCenter);
-        initConfigurationListener();
-        final ProducerManager producerManager = ProducerManagerFactory.getInstance(schedulerDriver, regCenter);
-        producerManager.startup();
-        new Thread(new TaskLaunchProcessor(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus), "task-launch-processor-" + Thread.currentThread().getId()).start();
-        new Thread(new StatisticsProcessor(), "statistics-processor-" + Thread.currentThread().getId()).start();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            
-            @Override
-            public void run() {
-                facadeService.stop();
-                producerManager.shutdown();
-            }
-        });
+        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
+        producerManager = new ProducerManager(schedulerDriver, regCenter);
+        cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
+        reconcileScheduledService = new ReconcileScheduledService(facadeService, schedulerDriver, taskScheduler, statisticManager);
+        taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus);
+        restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager);
     }
     
-    private CoordinatorRegistryCenter getRegistryCenter() {
-        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(env.getZookeeperConfiguration());
-        result.init();
-        return result;
-    }
-    
-    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler, final FacadeService facadeService, final JobEventBus jobEventBus) {
+    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler,
+                                               final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
-        Protos.FrameworkInfo frameworkInfo = 
-                Protos.FrameworkInfo.newBuilder().setUser(mesosConfig.getUser()).setName(MesosConfiguration.FRAMEWORK_NAME).setHostname(mesosConfig.getHostname()).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus), frameworkInfo, mesosConfig.getUrl());
+        Optional<String> frameworkIDOptional = frameworkIDService.fetch();
+        Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
+        if (frameworkIDOptional.isPresent()) {
+            builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkIDOptional.get()).build());
+        }
+        Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(FRAMEWORK_NAME)
+                .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT)
+                .setWebuiUrl("http://" + Joiner.on(":").join(mesosConfig.getHostname(), env.getRestfulServerConfiguration().getPort())).build();
+        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     
     private TaskScheduler getTaskScheduler() {
@@ -111,11 +117,6 @@ public final class MasterBootstrap {
                 }).build();
     }
     
-    private void initConfigurationListener() {
-        regCenter.addCacheData(ConfigurationNode.ROOT);
-        ((TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT)).getListenable().addListener(new CloudJobConfigurationListener(schedulerDriver, regCenter));
-    }
-    
     private JobEventBus getJobEventBus() {
         Optional<JobEventRdbConfiguration> rdbConfig = env.getJobEventRdbConfiguration();
         if (rdbConfig.isPresent()) {
@@ -126,25 +127,30 @@ public final class MasterBootstrap {
     
     /**
      * 以守护进程方式启动.
-     * 
-     * @return 框架运行状态
-     * @throws Exception 运行时异常
      */
-    public Protos.Status runAsDaemon() throws Exception {
-        restfulServer.start(CloudJobRestfulApi.class.getPackage().getName());
-        return schedulerDriver.run();
+    public void start() {
+        facadeService.start();
+        producerManager.startup();
+        statisticManager.startup();
+        cloudJobConfigurationListener.start();
+        reconcileScheduledService.startAsync();
+        taskLaunchScheduledService.startAsync();
+        restfulService.start();
+        schedulerDriver.start();
     }
     
     /**
      * 停止运行.
-     * 
-     * @param status 框架运行状态
-     * @return 是否正常停止
-     * @throws Exception 运行时异常
      */
-    public boolean stop(final Protos.Status status) throws Exception {
-        schedulerDriver.stop();
-        restfulServer.stop();
-        return Protos.Status.DRIVER_STOPPED == status;
+    public void stop() {
+        restfulService.stop();
+        taskLaunchScheduledService.stopAsync();
+        reconcileScheduledService.stopAsync();
+        cloudJobConfigurationListener.stop();
+        statisticManager.shutdown();
+        producerManager.shutdown();
+        schedulerDriver.stop(true);
+        facadeService.stop();
     }
+    
 }

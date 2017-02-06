@@ -36,6 +36,11 @@ public final class ShardingContext {
     private final String jobName;
     
     /**
+     * 作业任务ID.
+     */
+    private final String taskId;
+    
+    /**
      * 分片总数.
      */
     private final int shardingTotalCount;
@@ -58,6 +63,7 @@ public final class ShardingContext {
     
     public ShardingContext(final ShardingContexts shardingContexts, final int shardingItem) {
         jobName = shardingContexts.getJobName();
+        taskId = shardingContexts.getTaskId();
         shardingTotalCount = shardingContexts.getShardingTotalCount();
         jobParameter = shardingContexts.getJobParameter();
         this.shardingItem = shardingItem;

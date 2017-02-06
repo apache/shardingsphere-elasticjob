@@ -26,6 +26,6 @@ public final class ConfigurationNodeTest {
     
     @Test
     public void assertGetRootNodePath() {
-        assertThat(ConfigurationNode.getRootNodePath("test_job"), is("/config/test_job"));
+        assertThat(ConfigurationNode.getRootNodePath("test_job"), is("/config/job/test_job"));
     }
 }

@@ -98,6 +98,7 @@ public class ShardingService {
     public void shardingIfNecessary() {
         List<String> availableShardingServers = serverService.getAvailableShardingServers();
         if (availableShardingServers.isEmpty()) {
+            clearShardingInfo();
             return;
         }
         if (!isNeedSharding()) {

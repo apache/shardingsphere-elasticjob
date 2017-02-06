@@ -15,4 +15,6 @@ weight=50
 
 ## [Elastic-Job-Cloud-Scheduler启动指南](../scheduler_guide/)
 
+## [运维平台](../cloud_web_console/)
+
 ## [其他功能](../other_features/)

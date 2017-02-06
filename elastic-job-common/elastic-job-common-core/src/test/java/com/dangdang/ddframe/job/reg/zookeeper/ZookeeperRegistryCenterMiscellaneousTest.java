@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.reg.zookeeper;
 
+import com.dangdang.ddframe.job.fixture.EmbedTestingServer;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.junit.AfterClass;
@@ -29,15 +30,16 @@ import static org.junit.Assert.assertThat;
 
 public final class ZookeeperRegistryCenterMiscellaneousTest {
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = 
+            new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), ZookeeperRegistryCenterMiscellaneousTest.class.getName());
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
         EmbedTestingServer.start();
-        zkConfig.setConnectionTimeoutMilliseconds(30000);
-        zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
+        ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(30000);
+        zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         zkRegCenter.init();
         zkRegCenter.addCacheData("/test");
     }
@@ -60,7 +62,7 @@ public final class ZookeeperRegistryCenterMiscellaneousTest {
     
     @Test
     public void assertGetZkConfig() {
-        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
-        assertThat(zkRegCenter.getZkConfig(), is(zkConfig));
+        ZookeeperRegistryCenter zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
+        assertThat(zkRegCenter.getZkConfig(), is(ZOOKEEPER_CONFIGURATION));
     }
 }

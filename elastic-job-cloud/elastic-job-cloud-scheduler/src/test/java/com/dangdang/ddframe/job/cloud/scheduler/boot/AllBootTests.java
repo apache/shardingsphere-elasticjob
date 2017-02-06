@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironmentTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironmentTest;
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses(BootstrapEnvironmentTest.class)
-public final class AllBootTests {
+@Suite.SuiteClasses({
+        BootstrapEnvironmentTest.class,
+        MasterBootstrapTest.class
+})
+public class AllBootTests {
 }

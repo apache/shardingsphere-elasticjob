@@ -27,11 +27,7 @@ import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 作业状态展示的实现类.
@@ -44,23 +40,31 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     private final CoordinatorRegistryCenter regCenter;
     
     @Override
+    public JobBriefInfo getJobBriefInfo(final String jobName) {
+        JobNodePath jobNodePath = new JobNodePath(jobName);
+        JobBriefInfo result = new JobBriefInfo();
+        result.setJobName(jobName);
+        String liteJobConfigJson = regCenter.get(jobNodePath.getConfigNodePath());
+        if (null == liteJobConfigJson) {
+            return null;
+        }
+        LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(liteJobConfigJson);
+        result.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
+        result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
+        result.setStatus(getJobStatus(jobName));
+        result.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
+        return result;
+    }
+    
+    @Override
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {
         List<String> jobNames = regCenter.getChildrenKeys("/");
         List<JobBriefInfo> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
-            JobNodePath jobNodePath = new JobNodePath(each);
-            JobBriefInfo jobBriefInfo = new JobBriefInfo();
-            jobBriefInfo.setJobName(each);
-            String liteJobConfigJson = regCenter.get(jobNodePath.getConfigNodePath());
-            if (null == liteJobConfigJson) {
-                continue;
+            JobBriefInfo jobBriefInfo = getJobBriefInfo(each);
+            if (null != jobBriefInfo) {
+                result.add(jobBriefInfo);
             }
-            LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(liteJobConfigJson);
-            jobBriefInfo.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
-            jobBriefInfo.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
-            jobBriefInfo.setStatus(getJobStatus(each));
-            jobBriefInfo.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
-            result.add(jobBriefInfo);
         }
         Collections.sort(result);
         return result;

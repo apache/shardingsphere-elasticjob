@@ -68,4 +68,8 @@ class TransientProducerRepository {
     boolean containsKey(final JobKey jobKey) {
         return cronTasks.containsKey(jobKey);
     }
+    
+    void removeAll() {
+        cronTasks.clear();
+    }
 }
