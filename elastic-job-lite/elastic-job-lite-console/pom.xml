@@ -120,7 +120,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <imageName>esjob-console:1.0</imageName>
+                            <imageName>esjob-console</imageName>
                             <baseImage>tomcat:8.0.39-jre8</baseImage>
                             <maintainer>${user.name}</maintainer>
                             <!--<cmd>["catalina.sh", "run"]</cmd>-->
