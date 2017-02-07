@@ -17,140 +17,100 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
+import com.dangdang.ddframe.job.cloud.scheduler.ha.HANode;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerService;
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
-import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
-import com.dangdang.ddframe.job.cloud.scheduler.ha.ReconcileScheduledService;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.LeasesQueue;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.TaskLaunchScheduledService;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulService;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.Service;
-import com.netflix.fenzo.TaskScheduler;
-import com.netflix.fenzo.VirtualMachineLease;
-import com.netflix.fenzo.functions.Action1;
-import lombok.AllArgsConstructor;
+import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionService;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.mesos.MesosSchedulerDriver;
-import org.apache.mesos.Protos;
-import org.apache.mesos.SchedulerDriver;
+import org.apache.curator.framework.CuratorFramework;
 
-import static com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT;
-import static com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration.FRAMEWORK_NAME;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Mesos框架启动器.
  *
- * @author zhangliang
- * @author gaohongtao
+ * @author gaohongtao 
+ * @author caohao
  */
 @Slf4j
-@AllArgsConstructor
 public final class MasterBootstrap {
     
-    private final BootstrapEnvironment env;
+    private final CountDownLatch latch = new CountDownLatch(1);
     
-    private final FacadeService facadeService;
+    private final CoordinatorRegistryCenter regCenter;
     
-    private final SchedulerDriver schedulerDriver;
+    private final ZookeeperElectionService electionService;
     
-    private final ProducerManager producerManager;
-    
-    private final StatisticManager statisticManager;
-    
-    private final CloudJobConfigurationListener cloudJobConfigurationListener;
-    
-    private final Service reconcileScheduledService;
-    
-    private final Service taskLaunchScheduledService;
-    
-    private final RestfulService restfulService;
-    
-    public MasterBootstrap(final CoordinatorRegistryCenter regCenter) {
-        env = BootstrapEnvironment.getInstance();
-        facadeService = new FacadeService(regCenter);
-        statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
-        LeasesQueue leasesQueue = new LeasesQueue();
-        TaskScheduler taskScheduler = getTaskScheduler();
-        JobEventBus jobEventBus = getJobEventBus();
-        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
-        producerManager = new ProducerManager(schedulerDriver, regCenter);
-        cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
-        reconcileScheduledService = new ReconcileScheduledService(facadeService, schedulerDriver, taskScheduler, statisticManager);
-        taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus);
-        restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager);
+    public MasterBootstrap() {
+        regCenter = getRegistryCenter();
+        electionService = new ZookeeperElectionService(
+                String.format("%s:%d", BootstrapEnvironment.getInstance().getMesosConfiguration().getHostname(), BootstrapEnvironment.getInstance().getRestfulServerConfiguration().getPort()),
+                HANode.ELECTION_NODE, (CuratorFramework) regCenter.getRawClient(), getElectionCandidate());
+        Runtime.getRuntime().addShutdownHook(new Thread("stop-hook") {
+        
+            @Override
+            public void run() {
+                MasterBootstrap.this.stop();
+                latch.countDown();
+            }
+        });
     }
     
-    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler,
-                                               final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
-        MesosConfiguration mesosConfig = env.getMesosConfiguration();
-        Optional<String> frameworkIDOptional = frameworkIDService.fetch();
-        Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
-        if (frameworkIDOptional.isPresent()) {
-            builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkIDOptional.get()).build());
-        }
-        Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(FRAMEWORK_NAME)
-                .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT)
-                .setWebuiUrl("http://" + Joiner.on(":").join(mesosConfig.getHostname(), env.getRestfulServerConfiguration().getPort())).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
+    private CoordinatorRegistryCenter getRegistryCenter() {
+        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(BootstrapEnvironment.getInstance().getZookeeperConfiguration());
+        result.init();
+        return result;
     }
     
-    private TaskScheduler getTaskScheduler() {
-        return new TaskScheduler.Builder()
-                .withLeaseOfferExpirySecs(1000000000L)
-                .withLeaseRejectAction(new Action1<VirtualMachineLease>() {
-                    
-                    @Override
-                    public void call(final VirtualMachineLease lease) {
-                        log.warn("Declining offer on '{}'", lease.hostname());
-                        schedulerDriver.declineOffer(lease.getOffer().getId());
+    private ElectionCandidate getElectionCandidate() {
+        return new ElectionCandidate() {
+            
+                private SchedulerService schedulerService;
+            
+                @Override
+                public void startLeadership() throws Exception {
+                    try {
+                        schedulerService = new SchedulerService(regCenter);
+                        schedulerService.start();
+                        //CHECKSTYLE:OFF
+                    } catch (final Throwable throwable) {
+                        //CHECKSTYLE:ON
+                        if (throwable instanceof InterruptedException) {
+                            throw throwable;
+                        }
+                        log.error("Elastic job: Starting error", throwable);
+                        System.exit(1);
                     }
-                }).build();
-    }
-    
-    private JobEventBus getJobEventBus() {
-        Optional<JobEventRdbConfiguration> rdbConfig = env.getJobEventRdbConfiguration();
-        if (rdbConfig.isPresent()) {
-            return new JobEventBus(rdbConfig.get());
-        }
-        return new JobEventBus();
+                }
+            
+                @Override
+                public void stopLeadership() {
+                    schedulerService.stop();
+                }
+            };
     }
     
     /**
-     * 以守护进程方式启动.
+     * 开始选举,如果是leader,会启动调度服务.
      */
     public void start() {
-        facadeService.start();
-        producerManager.startup();
-        statisticManager.startup();
-        cloudJobConfigurationListener.start();
-        reconcileScheduledService.startAsync();
-        taskLaunchScheduledService.startAsync();
-        restfulService.start();
-        schedulerDriver.start();
+        electionService.startLeadership();
+        log.info("Elastic job: The framework {} {} leader", BootstrapEnvironment.getInstance().getMesosConfiguration().getHostname(), electionService.isLeader() ? "is" : "is not");
+        try {
+            latch.await();
+        } catch (final InterruptedException ex) {
+            log.error("Elastic job: MasterBootstrap start with exception:" + ex);
+        }
     }
     
     /**
-     * 停止运行.
+     * 停止选举及调度服务.
      */
     public void stop() {
-        restfulService.stop();
-        taskLaunchScheduledService.stopAsync();
-        reconcileScheduledService.stopAsync();
-        cloudJobConfigurationListener.stop();
-        statisticManager.shutdown();
-        producerManager.shutdown();
-        schedulerDriver.stop(true);
-        facadeService.stop();
+        log.info("Elastic job: MasterBootstrap stopped.");
+        electionService.close();
     }
-    
 }

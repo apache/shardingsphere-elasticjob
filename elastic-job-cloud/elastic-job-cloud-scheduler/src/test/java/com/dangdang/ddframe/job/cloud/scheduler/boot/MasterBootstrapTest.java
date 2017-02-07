@@ -18,95 +18,62 @@
 package com.dangdang.ddframe.job.cloud.scheduler.boot;
 
 import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
-import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
-import com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulService;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
+import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.EmbedTestingServer;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.util.concurrent.Service;
-import org.apache.mesos.SchedulerDriver;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionService;
+import org.apache.curator.framework.CuratorFramework;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
+
+import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
+
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MasterBootstrapTest {
     
-    private BootstrapEnvironment env = BootstrapEnvironment.getInstance();
+    @Mock
+    private CuratorFramework client;
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private CloudJobConfigurationListener cloudJobConfigurationListener;
+    private ZookeeperElectionService electionService;
     
     @Mock
-    private FacadeService facadeService;
-    
-    @Mock
-    private SchedulerDriver schedulerDriver;
-    
-    @Mock
-    private ProducerManager producerManager;
-    
-    @Mock
-    private Service reconcileScheduledService;
-    
-    @Mock
-    private StatisticManager statisticManager;
-    
-    @Mock
-    private Service taskLaunchScheduledService;
-    
-    @Mock
-    private RestfulService restfulService;
+    private CountDownLatch latch;
     
     private MasterBootstrap masterBootstrap;
     
     @Before
-    public void setUp() throws Exception {
-        masterBootstrap = new MasterBootstrap(env, facadeService, schedulerDriver,  
-                producerManager, statisticManager, cloudJobConfigurationListener, reconcileScheduledService, 
-                taskLaunchScheduledService, restfulService);
+    public void init() throws NoSuchFieldException {
+        EmbedTestingServer.start();
+        Properties properties = new Properties();
+        properties.setProperty(EnvironmentArgument.ZOOKEEPER_SERVERS.getKey(), "localhost:3181");
+        ReflectionUtils.setFieldValue(BootstrapEnvironment.getInstance(), "properties", properties);
+        masterBootstrap = new MasterBootstrap();
+        ReflectionUtils.setFieldValue(masterBootstrap, "regCenter", regCenter);
+        ReflectionUtils.setFieldValue(masterBootstrap, "electionService", electionService);
+        ReflectionUtils.setFieldValue(masterBootstrap, "latch", latch);
     }
     
     @Test
-    public void assertStart() {
+    public void assertStart() throws InterruptedException {
         masterBootstrap.start();
-        InOrder inOrder = getInOrder();
-        inOrder.verify(facadeService).start();
-        inOrder.verify(producerManager).startup();
-        inOrder.verify(statisticManager).startup();
-        inOrder.verify(cloudJobConfigurationListener).start();
-        inOrder.verify(reconcileScheduledService).startAsync();
-        inOrder.verify(taskLaunchScheduledService).startAsync();
-        inOrder.verify(restfulService).start();
-        inOrder.verify(schedulerDriver).start();
+        verify(electionService).startLeadership();
+        verify(latch).await();
     }
     
     @Test
     public void assertStop() {
         masterBootstrap.stop();
-        InOrder inOrder = getInOrder();
-        inOrder.verify(restfulService).stop();
-        inOrder.verify(taskLaunchScheduledService).stopAsync();
-        inOrder.verify(reconcileScheduledService).stopAsync();
-        inOrder.verify(cloudJobConfigurationListener).stop();
-        inOrder.verify(statisticManager).shutdown();
-        inOrder.verify(producerManager).shutdown();
-        inOrder.verify(schedulerDriver).stop(true);
-        inOrder.verify(facadeService).stop();
+        verify(electionService).close();
     }
-    
-    private InOrder getInOrder() {
-        return Mockito.inOrder(facadeService, schedulerDriver,
-                producerManager, reconcileScheduledService, statisticManager, cloudJobConfigurationListener,
-                taskLaunchScheduledService, restfulService);
-    } 
 }
-    
