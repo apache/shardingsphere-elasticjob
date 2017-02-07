@@ -54,7 +54,7 @@ public class FacadeService {
     
     private final CloudAppConfigurationService appConfigService;
     
-    private final ConfigurationService configService;
+    private final ConfigurationService jobConfigService;
     
     private final ReadyService readyService;
     
@@ -64,7 +64,7 @@ public class FacadeService {
     
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
         appConfigService = new CloudAppConfigurationService(regCenter);
-        configService = new ConfigurationService(regCenter);
+        jobConfigService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
         failoverService = new FailoverService(regCenter);
@@ -156,7 +156,7 @@ public class FacadeService {
      * @param taskContext 任务上下文
      */
     public void recordFailoverTask(final TaskContext taskContext) {
-        Optional<CloudJobConfiguration> jobConfigOptional = configService.load(taskContext.getMetaInfo().getJobName());
+        Optional<CloudJobConfiguration> jobConfigOptional = jobConfigService.load(taskContext.getMetaInfo().getJobName());
         if (!jobConfigOptional.isPresent()) {
             return;
         }
@@ -182,14 +182,14 @@ public class FacadeService {
      * @return 云作业配置
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
-        return configService.load(jobName);
+        return jobConfigService.load(jobName);
     }
     
     /**
-     * 根据作业APP名称获取云作业配置.
+     * 根据作业应用名称获取云作业应用配置.
      *
-     * @param appName 作业APP名称
-     * @return 云作业APP配置
+     * @param appName 作业应用名称
+     * @return 云作业应用配置
      */
     public Optional<CloudAppConfiguration> loadAppConfig(final String appName) {
         return appConfigService.load(appName);

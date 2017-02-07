@@ -38,7 +38,7 @@ import java.util.Properties;
  * @author zhangliang
  */
 @Slf4j
-public class BootstrapEnvironment {
+public final class BootstrapEnvironment {
     
     @Getter
     private static BootstrapEnvironment instance = new BootstrapEnvironment();
@@ -157,7 +157,7 @@ public class BootstrapEnvironment {
     @Getter
     public enum EnvironmentArgument {
         
-        HOSTNAME("hostname", "", true),
+        HOSTNAME("hostname", "localhost", true),
         
         MESOS_URL("mesos_url", "zk://localhost:2181/mesos", true),
         

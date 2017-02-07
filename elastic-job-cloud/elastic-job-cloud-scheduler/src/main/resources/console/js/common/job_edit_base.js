@@ -329,9 +329,9 @@ function dataInfo(){
 }
     
 function dataAppInfo(){
-    var eventTraceSamplingRate = $("#eventTraceSamplingRate").val();
-    if(eventTraceSamplingRate == "" || eventTraceSamplingRate == "undefined"){
-        eventTraceSamplingRate = 0;
+    var eventTraceSamplingCount = $("#eventTraceSamplingCount").val();
+    if(eventTraceSamplingCount == "" || eventTraceSamplingCount == "undefined"){
+        eventTraceSamplingCount = 0;
     }
     return {
         "appName":$("#appName").val(),
@@ -340,6 +340,6 @@ function dataAppInfo(){
         "bootstrapScript":$("#bootstrapScript").val(),
         "appCacheEnable":$("#appCacheEnable").prop("checked"),
         "appURL":$("#appURL").val(),
-        "eventTraceSamplingRate":eventTraceSamplingRate
+        "eventTraceSamplingCount":eventTraceSamplingCount
     };
 }

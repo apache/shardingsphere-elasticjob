@@ -13,6 +13,12 @@ weight=1
 
 1. [ISSUE 222](https://github.com/dangdangdotcom/elastic-job/issues/222) elastic-job-lite-spring的reg配置参数max-retries不起作用
 
+
+### 新功能
+
+1. [ISSUE #217](https://github.com/dangdangdotcom/elastic-job/issues/217) cloud版本增加APP维度配置
+1. [ISSUE #223](https://github.com/dangdangdotcom/elastic-job/issues/223) cloud版本事件追踪采样率
+
 ## 2.0.4
 
 ### 缺陷修正

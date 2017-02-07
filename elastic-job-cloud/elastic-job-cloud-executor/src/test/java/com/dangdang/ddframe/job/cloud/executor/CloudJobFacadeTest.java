@@ -20,7 +20,11 @@ package com.dangdang.ddframe.job.cloud.executor;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent.State;
 import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -152,7 +156,13 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertPostJobExecutionEvent() {
-        jobFacade.postJobExecutionEvent(null);
-        verify(eventBus).post(null);
+        JobExecutionEvent jobExecutionEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
+        jobFacade.postJobExecutionEvent(jobExecutionEvent);
+        verify(eventBus).post(jobExecutionEvent);
+    }
+    
+    @Test
+    public void assertPostJobStatusTraceEvent() {
+        jobFacade.postJobStatusTraceEvent(String.format("%s@-@0@-@%s@-@fake_slave_id@-@0", "test_job", ExecutionType.READY), State.TASK_RUNNING, "message is empty.");
     }
 }

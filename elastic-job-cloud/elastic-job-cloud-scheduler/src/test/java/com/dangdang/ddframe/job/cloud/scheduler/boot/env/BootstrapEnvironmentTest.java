@@ -37,20 +37,10 @@ public final class BootstrapEnvironmentTest {
     
     private final BootstrapEnvironment bootstrapEnvironment = BootstrapEnvironment.getInstance();
     
-    @Test(expected = IllegalStateException.class)
-    public void assertGetMesosConfigurationWithoutRequiredProperties() throws NoSuchFieldException {
-        Properties properties = new Properties();
-        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
-        bootstrapEnvironment.getMesosConfiguration();
-    }
-    
     @Test
     public void assertGetMesosConfiguration() throws NoSuchFieldException {
-        Properties properties = new Properties();
-        properties.setProperty(BootstrapEnvironment.EnvironmentArgument.HOSTNAME.getKey(), "127.0.0.1");
-        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
         MesosConfiguration mesosConfig = bootstrapEnvironment.getMesosConfiguration();
-        assertThat(mesosConfig.getHostname(), is("127.0.0.1"));
+        assertThat(mesosConfig.getHostname(), is("localhost"));
         assertThat(mesosConfig.getUser(), is(""));
         assertThat(mesosConfig.getUrl(), is("zk://localhost:2181/mesos"));
     }
@@ -111,5 +101,4 @@ public final class BootstrapEnvironmentTest {
         assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey()), is("sa"));
         assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey()), is("password"));
     }
-    
 }

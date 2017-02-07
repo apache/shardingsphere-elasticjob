@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
@@ -40,14 +39,13 @@ import java.util.concurrent.Executors;
  * @author gaohongtao
  */
 @Slf4j
-public final class ZookeeperElectionService implements AutoCloseable {
+public class ZookeeperElectionService implements AutoCloseable {
     
     private final CountDownLatch leaderLatch = new CountDownLatch(1);
     
     private final LeaderSelector leaderSelector;
     
-    @Builder
-    private ZookeeperElectionService(final String identity, final String electionPath, final CuratorFramework client, final ElectionCandidate electionCandidate) {
+    public ZookeeperElectionService(final String identity, final String electionPath, final CuratorFramework client, final ElectionCandidate electionCandidate) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(identity));
         Preconditions.checkArgument(!Strings.isNullOrEmpty(electionPath));
         Preconditions.checkNotNull(client);
