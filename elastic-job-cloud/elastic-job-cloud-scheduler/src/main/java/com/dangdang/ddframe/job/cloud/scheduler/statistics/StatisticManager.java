@@ -84,7 +84,9 @@ public class StatisticManager {
     
     /**
      * 获取统计作业调度管理器.
-     *
+     * 
+     * @param regCenter 注册中心
+     * @param jobEventRdbConfiguration 作业数据库事件配置
      * @return 调度管理器对象
      */
     public static StatisticManager getInstance(final CoordinatorRegistryCenter regCenter, final Optional<JobEventRdbConfiguration> jobEventRdbConfiguration) {
@@ -183,6 +185,7 @@ public class StatisticManager {
     /**
      * 获取最近一个统计周期的任务运行结果统计数据.
      * 
+     * @param statisticInterval 统计周期
      * @return 任务运行结果统计数据对象
      */
     public TaskResultStatistics findLatestTaskResultStatistics(final StatisticInterval statisticInterval) {
