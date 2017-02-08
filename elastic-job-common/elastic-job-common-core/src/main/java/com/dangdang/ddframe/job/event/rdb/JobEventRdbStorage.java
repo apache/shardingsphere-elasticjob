@@ -114,7 +114,7 @@ class JobEventRdbStorage {
                 + "`execution_source` VARCHAR(20) NOT NULL, "
                 + "`failure_cause` VARCHAR(4000) NULL, "
                 + "`is_success` INT NOT NULL, "
-                + "`start_time` TIMESTAMP NOT NULL, "
+                + "`start_time` TIMESTAMP NULL, "
                 + "`complete_time` TIMESTAMP NULL, "
                 + "PRIMARY KEY (`id`));";
         try (PreparedStatement preparedStatement = conn.prepareStatement(dbSchema)) {
