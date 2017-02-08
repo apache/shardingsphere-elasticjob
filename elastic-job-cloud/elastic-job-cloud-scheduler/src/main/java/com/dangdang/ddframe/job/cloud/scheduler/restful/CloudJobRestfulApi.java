@@ -256,8 +256,9 @@ public final class CloudJobRestfulApi {
     /**
      * 检索作业运行轨迹.
      * 
+     * @param info uri信息
      * @return 作业运行轨迹结果
-     * @throws ParseException 
+     * @throws ParseException
      */
     @GET
     @Path("events/executions")
@@ -272,6 +273,7 @@ public final class CloudJobRestfulApi {
     /**
      * 检索作业运行状态轨迹.
      * 
+     * @param info uri信息
      * @return 作业运行轨迹结果
      * @throws ParseException 转换异常
      */
@@ -326,6 +328,7 @@ public final class CloudJobRestfulApi {
     /**
      * 获取任务运行结果统计数据.
      * 
+     * @param since 起止时间.enum类型,可选值:last24hours
      * @return 任务运行结果统计数据
      */
     @GET
@@ -342,6 +345,7 @@ public final class CloudJobRestfulApi {
     /**
      * 获取任务运行结果统计数据.
      * 
+     * @param period 周期.enum类型,可选值:online、lastWeek、lastHour、lastMinute
      * @return 任务运行结果统计数据
      */
     @GET
@@ -364,6 +368,7 @@ public final class CloudJobRestfulApi {
     /**
      * 获取任务运行统计数据集合.
      * 
+     * @param since 起止时间.enum类型,可选值:lastWeek
      * @return 任务运行统计数据集合
      */
     @GET
@@ -404,6 +409,7 @@ public final class CloudJobRestfulApi {
     /**
      * 获取一周以来作业运行统计数据集合.
      * 
+     * @param since 起止时间.enum类型,可选值:lastWeek
      * @return 一周以来任务运行统计数据集合
      */
     @GET

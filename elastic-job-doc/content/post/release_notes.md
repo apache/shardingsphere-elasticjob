@@ -12,7 +12,7 @@ weight=1
 ### 缺陷修正
 
 1. [ISSUE 222](https://github.com/dangdangdotcom/elastic-job/issues/222) elastic-job-lite-spring的reg配置参数max-retries不起作用
-
+1. [ISSUE 225](https://github.com/dangdangdotcom/elastic-job/issues/225) JOB_EXECUTION_LOG表start_time时间记录不正确
 
 ### 新功能
 
