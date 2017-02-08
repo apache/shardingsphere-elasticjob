@@ -97,6 +97,7 @@ public final class RunningServiceTest {
     
     @Test
     public void assertAddWithData() {
+        when(regCenter.get("/config/job/other_job")).thenReturn(CloudJsonConstants.getJobJson("other_job"));
         TaskNode taskNode = TaskNode.builder().jobName("other_job").build();
         runningService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         assertThat(runningService.getRunningTasks("other_job").size(), is(1));

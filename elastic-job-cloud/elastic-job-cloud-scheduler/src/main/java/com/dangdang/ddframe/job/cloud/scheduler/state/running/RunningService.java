@@ -90,6 +90,9 @@ public class RunningService {
      * @param taskContext 任务运行时上下文
      */
     public void add(final TaskContext taskContext) {
+        if (!configurationService.load(taskContext.getMetaInfo().getJobName()).isPresent()) {
+            return;
+        }
         getRunningTasks(taskContext.getMetaInfo().getJobName()).add(taskContext);
         if (!isDaemon(taskContext)) {
             return;

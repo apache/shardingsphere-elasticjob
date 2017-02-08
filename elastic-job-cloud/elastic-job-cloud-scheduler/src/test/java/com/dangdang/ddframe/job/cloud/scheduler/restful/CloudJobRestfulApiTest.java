@@ -148,6 +148,7 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     public void assertFindAllRunningTasks() throws Exception {
         RunningService runningService = new RunningService(regCenter);
         TaskContext actualTaskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
+        when(regCenter.get("/config/job/" + actualTaskContext.getMetaInfo().getJobName())).thenReturn(CloudJsonConstants.getJobJson());
         runningService.add(actualTaskContext);
         assertThat(sentGetRequest("http://127.0.0.1:19000/job/tasks/running"), is(GsonFactory.getGson().toJson(Lists.newArrayList(actualTaskContext))));
     }

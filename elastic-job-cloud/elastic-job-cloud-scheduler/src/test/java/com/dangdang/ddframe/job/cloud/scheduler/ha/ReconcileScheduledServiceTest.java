@@ -89,6 +89,7 @@ public class ReconcileScheduledServiceTest {
     @Test
     public void assertReconcile() throws Exception {
         ReflectionUtils.setFieldValue(service, "reconcileInterval", 100);
+        ReflectionUtils.setFieldValue(service, "launchTaskTimeThreshold", -10);
         service.startUp();
         service.fetchRemaining();
         verify(scheduler).reconcileTasks(taskStatusCaptor.capture());
@@ -104,6 +105,7 @@ public class ReconcileScheduledServiceTest {
     
     @Test
     public void assertNoRunningDaemonTasks() throws Exception {
+        ReflectionUtils.setFieldValue(service, "launchTaskTimeThreshold", -10);
         service.startUp();
         service.runOneIteration();
         assertThat(service.getRemainingTasks().size(), is(2));
@@ -116,6 +118,7 @@ public class ReconcileScheduledServiceTest {
     
     @Test
     public void assertDaemonTasksUpdated() throws Exception {
+        ReflectionUtils.setFieldValue(service, "launchTaskTimeThreshold", -10);
         service.startUp();
         service.runOneIteration();
         assertThat(service.getRemainingTasks().size(), is(2));
@@ -132,6 +135,7 @@ public class ReconcileScheduledServiceTest {
     @Test
     public void assertRePostReconcile() throws Exception {
         ReflectionUtils.setFieldValue(service, "retryIntervalUnit", 100);
+        ReflectionUtils.setFieldValue(service, "launchTaskTimeThreshold", -10);
         service.startUp();
         service.runOneIteration();
         assertThat(service.getRemainingTasks().size(), is(2));
@@ -155,8 +159,9 @@ public class ReconcileScheduledServiceTest {
     @Test
     @SuppressWarnings("unchecked")
     public void assertReachLimit() throws Exception {
+        ReflectionUtils.setFieldValue(service, "launchTaskTimeThreshold", -10);
         ReflectionUtils.setFieldValue(service, "retryIntervalUnit", 10);
-        ReflectionUtils.setFieldValue(service, "maxPostTimes", 2);
+        ReflectionUtils.setFieldValue(service, "reconcileThreshold", 2);
         for (TaskContext each : runningTasks) {
             when(facadeService.popMapping(each.getId())).thenReturn("mock_hostname");
         }

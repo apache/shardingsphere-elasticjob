@@ -100,27 +100,33 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
     
     @Override
     protected void runOneIteration() throws Exception {
-        LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
-        List<VirtualMachineLease> virtualMachineLeases = leasesQueue.drainTo();
-        Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), virtualMachineLeases).getResultMap().values();
-        List<TaskContext> taskContextsList = new LinkedList<>();
-        Map<List<Protos.OfferID>, List<Protos.TaskInfo>> offerIdTaskInfoMap = new HashMap<>();
-        for (VMAssignmentResult each: vmAssignmentResults) {
-            List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
-            List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
-            taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
-            for (Protos.TaskInfo taskInfo : taskInfoList) {
-                taskContextsList.add(TaskContext.from(taskInfo.getTaskId().getValue()));
+        try {
+            LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
+            List<VirtualMachineLease> virtualMachineLeases = leasesQueue.drainTo();
+            Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), virtualMachineLeases).getResultMap().values();
+            List<TaskContext> taskContextsList = new LinkedList<>();
+            Map<List<Protos.OfferID>, List<Protos.TaskInfo>> offerIdTaskInfoMap = new HashMap<>();
+            for (VMAssignmentResult each: vmAssignmentResults) {
+                List<VirtualMachineLease> leasesUsed = each.getLeasesUsed();
+                List<Protos.TaskInfo> taskInfoList = new ArrayList<>(each.getTasksAssigned().size() * 10);
+                taskInfoList.addAll(getTaskInfoList(launchingTasks.getIntegrityViolationJobs(vmAssignmentResults), each, leasesUsed.get(0).hostname(), leasesUsed.get(0).getOffer().getSlaveId()));
+                for (Protos.TaskInfo taskInfo : taskInfoList) {
+                    taskContextsList.add(TaskContext.from(taskInfo.getTaskId().getValue()));
+                }
+                offerIdTaskInfoMap.put(getOfferIDs(leasesUsed), taskInfoList);
             }
-            offerIdTaskInfoMap.put(getOfferIDs(leasesUsed), taskInfoList);
-        }
-        for (TaskContext each : taskContextsList) {
-            facadeService.addRunning(each);
-            jobEventBus.post(createJobStatusTraceEvent(each));
-        }
-        facadeService.removeLaunchTasksFromQueue(taskContextsList);
-        for (Entry<List<OfferID>, List<TaskInfo>> each : offerIdTaskInfoMap.entrySet()) {
-            schedulerDriver.launchTasks(each.getKey(), each.getValue());
+            for (TaskContext each : taskContextsList) {
+                facadeService.addRunning(each);
+                jobEventBus.post(createJobStatusTraceEvent(each));
+            }
+            facadeService.removeLaunchTasksFromQueue(taskContextsList);
+            for (Entry<List<OfferID>, List<TaskInfo>> each : offerIdTaskInfoMap.entrySet()) {
+                schedulerDriver.launchTasks(each.getKey(), each.getValue());
+            }
+            //CHECKSTYLE:OFF
+        } catch (Throwable throwable) {
+            //CHECKSTYLE:ON
+            log.error("Launch task error", throwable);
         }
     }
     

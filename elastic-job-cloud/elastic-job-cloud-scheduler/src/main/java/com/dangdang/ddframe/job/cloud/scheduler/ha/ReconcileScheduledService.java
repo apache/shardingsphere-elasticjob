@@ -65,7 +65,9 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     
     private long retryIntervalUnit = 5 * 60 * 1000;
     
-    private long maxPostTimes = 3;
+    private long reconcileThreshold = 3;
+    
+    private long launchTaskTimeThreshold = 60 * 1000;
     
     private long latestFetchRemainingMilliSeconds;
     
@@ -82,10 +84,16 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     
     @Override
     protected void runOneIteration() throws Exception {
-        if (remainingTasks.isEmpty()) {
-            fetchRemaining();
-        } else {
-            processRemaining();
+        try {
+            if (remainingTasks.isEmpty()) {
+                fetchRemaining();
+            } else {
+                processRemaining();
+            }
+            //CHECKSTYLE:OFF
+        } catch (final Throwable throwable) {
+            //CHECKSTYLE:ON
+            log.error("Run Reconcile error", throwable);
         }
     }
     
@@ -108,7 +116,11 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
         return Sets.filter(facadeService.getAllRunningDaemonTask(), new Predicate<TaskContext>() {
             @Override
             public boolean apply(final TaskContext input) {
-                return input.getUpdatedTime() < latestFetchRemainingMilliSeconds;
+                if (input.getUpdatedTime() > 0) {
+                    return input.getUpdatedTime() < latestFetchRemainingMilliSeconds;
+                } else {
+                    return System.currentTimeMillis() - input.getCreateTime() > launchTaskTimeThreshold;
+                }
             }
         });
     }
@@ -143,7 +155,7 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
             log.debug("Elastic Job - Reconcile: Next trigger time : {}", new Date(nextTriggerReconcileMilliSeconds));
             return;
         }
-        if (postTimes < maxPostTimes) {
+        if (postTimes < reconcileThreshold) {
             postReconcile();
             return;
         }
@@ -162,7 +174,7 @@ public final class ReconcileScheduledService extends AbstractScheduledService {
     
     @Override
     protected Scheduler scheduler() {
-        return Scheduler.newFixedDelaySchedule(10, 20, TimeUnit.SECONDS);
+        return Scheduler.newFixedDelaySchedule(10, 10, TimeUnit.SECONDS);
     }
     
     @Override
