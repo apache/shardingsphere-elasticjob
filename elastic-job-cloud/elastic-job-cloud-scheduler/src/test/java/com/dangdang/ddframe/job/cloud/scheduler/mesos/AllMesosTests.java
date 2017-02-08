@@ -30,6 +30,7 @@ import org.junit.runners.Suite;
         FacadeServiceTest.class, 
         SchedulerEngineTest.class,
         TaskLaunchScheduledServiceTest.class,
+        SchedulerServiceTest.class,
         LaunchingTasksTest.class,
         FrameworkIDServiceTest.class
     })
