@@ -51,7 +51,7 @@ public class ZookeeperElectionServiceTest {
     
     @After
     public void clean() {
-        service.close();
+        service.stopLeadership();
         client.close();
     }
     
@@ -73,25 +73,25 @@ public class ZookeeperElectionServiceTest {
     @Test
     public void assertContend() throws Exception {
         ElectionCandidate anotherElectionCandidate = mock(ElectionCandidate.class);
-        try (CuratorFramework anotherClient = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
-             ZookeeperElectionService anotherService = new ZookeeperElectionService("ANOTHER_CLIENT:8899", ELECTION_PATH, anotherClient, anotherElectionCandidate)) {
-            anotherClient.start();
-            anotherClient.blockUntilConnected();
-            anotherService.startLeadership();
-            ZookeeperElectionService followService;
-            CuratorFramework leaderClient;
-            if (anotherService.isLeader()) {
-                assertFalse(service.isLeader());
-                leaderClient = anotherClient;
-                followService = service;
-            } else {
-                assertTrue(service.isLeader());
-                leaderClient = client;
-                followService = anotherService;
-            }
-            KillSession.kill(leaderClient.getZookeeperClient().getZooKeeper(), EmbedTestingServer.getConnectionString());
-            assertTrue(followService.isLeader());
+        CuratorFramework anotherClient = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        ZookeeperElectionService anotherService = new ZookeeperElectionService("ANOTHER_CLIENT:8899", ELECTION_PATH, anotherClient, anotherElectionCandidate);
+        anotherClient.start();
+        anotherClient.blockUntilConnected();
+        anotherService.startLeadership();
+        ZookeeperElectionService followService;
+        CuratorFramework leaderClient;
+        if (anotherService.isLeader()) {
+            assertFalse(service.isLeader());
+            leaderClient = anotherClient;
+            followService = service;
+        } else {
+            assertTrue(service.isLeader());
+            leaderClient = client;
+            followService = anotherService;
         }
+        KillSession.kill(leaderClient.getZookeeperClient().getZooKeeper(), EmbedTestingServer.getConnectionString());
+        assertTrue(followService.isLeader());
+        anotherService.stopLeadership();
         verify(electionCandidate, atLeastOnce()).startLeadership();
         verify(anotherElectionCandidate, atLeastOnce()).startLeadership();
     }

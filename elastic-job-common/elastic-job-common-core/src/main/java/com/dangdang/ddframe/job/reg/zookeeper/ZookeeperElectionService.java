@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
  * @author gaohongtao
  */
 @Slf4j
-public class ZookeeperElectionService implements AutoCloseable {
+public class ZookeeperElectionService {
     
     private final CountDownLatch leaderLatch = new CountDownLatch(1);
     
@@ -78,6 +78,20 @@ public class ZookeeperElectionService implements AutoCloseable {
     public void startLeadership() {
         log.debug("Elastic job: {} start to elect leadership", leaderSelector.getId());
         leaderSelector.start();
+    }
+    
+    /**
+     * 开始进行选举.
+     */
+    public void stopLeadership() {
+        log.info("Elastic job: Stop leadership election");
+        leaderLatch.countDown();
+        try {
+            leaderSelector.close();
+            // CHECKSTYLE:OFF
+        } catch (final Exception ignored) {
+        }
+        // CHECKSTYLE:ON
     }
     
     /**
@@ -127,17 +141,5 @@ public class ZookeeperElectionService implements AutoCloseable {
             log.debug("Elastic job: Leader node is electing, {} is waiting for {} ms", leaderSelector.getId(), 100);
             BlockUtils.waitingShortTime();
         }
-    }
-    
-    @Override
-    public void close() {
-        log.info("Elastic job: Close leadership election");
-        leaderLatch.countDown();
-        try {
-            leaderSelector.close();
-            // CHECKSTYLE:OFF
-        } catch (final Exception ignored) {
-        }
-        // CHECKSTYLE:ON
     }
 }

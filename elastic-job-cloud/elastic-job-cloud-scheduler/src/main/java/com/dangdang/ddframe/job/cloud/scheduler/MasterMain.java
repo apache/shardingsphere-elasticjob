@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.boot.MasterBootstrap;
  */
 public final class MasterMain {
     
-    
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
     // CHECKSTYLE:ON

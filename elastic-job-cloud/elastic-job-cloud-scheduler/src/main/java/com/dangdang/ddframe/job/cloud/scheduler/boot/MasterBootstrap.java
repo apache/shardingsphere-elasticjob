@@ -111,6 +111,6 @@ public final class MasterBootstrap {
      */
     public void stop() {
         log.info("Elastic job: MasterBootstrap stopped.");
-        electionService.close();
+        electionService.stopLeadership();
     }
 }

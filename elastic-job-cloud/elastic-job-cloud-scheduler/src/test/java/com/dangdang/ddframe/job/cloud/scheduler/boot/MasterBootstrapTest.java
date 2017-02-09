@@ -74,6 +74,6 @@ public class MasterBootstrapTest {
     @Test
     public void assertStop() {
         masterBootstrap.stop();
-        verify(electionService).close();
+        verify(electionService).stopLeadership();
     }
 }
