@@ -17,17 +17,18 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
-import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
+import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.OfferBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Optional;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.functions.Action2;
 import org.apache.mesos.Protos;
@@ -76,6 +77,7 @@ public final class SchedulerEngineTest {
     public void setUp() throws NoSuchFieldException {
         schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService, new JobEventBus(), frameworkIDService, statisticManager);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
+        when(facadeService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         new RunningService(Mockito.mock(CoordinatorRegistryCenter.class)).clear();
     }
     
