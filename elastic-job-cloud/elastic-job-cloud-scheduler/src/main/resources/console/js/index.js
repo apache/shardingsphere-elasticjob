@@ -7,16 +7,16 @@ $(document).ready(function() {
     $('#registerApp').click(function() {
         $('#contentRight').load('/html/app/app_overview.html');
     });
-    $('#register').click(function() {
+    $('#registerJob').click(function() {
         $('#contentRight').load('/html/job/job_overview.html');
     });
     $('#status').click(function() {
         $('#contentRight').load('/html/job/job_status.html');
     });
-    $('#exec_detail').click(function() {
+    $('#execDetail').click(function() {
         $('#contentRight').load('/html/history/job_exec_detail.html');
     });
-    $('#exec_status').click(function() {
+    $('#execStatus').click(function() {
         $('#contentRight').load('/html/history/job_exec_status.html');
     });
     $('#dashboard').click(function() {

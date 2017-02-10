@@ -1,7 +1,7 @@
 $(function(){
     bootstrapValidator();
-    submitBootstrapValidator();
     dataControl();
+    submitBootstrapValidator();
 });
     
 function bindSubmitJobSettingsForm() {

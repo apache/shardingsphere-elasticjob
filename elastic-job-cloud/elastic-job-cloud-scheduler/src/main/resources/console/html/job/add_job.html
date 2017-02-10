@@ -8,9 +8,9 @@
                 </div>
             </div>
             <div class="form-group" >
-                <label for="job_appName" class="col-sm-2 control-label"><i>*</i>应用名称</label>
+                <label for="jobAppName" class="col-sm-2 control-label"><i>*</i>应用名称</label>
                 <div class="col-sm-9">
-                    <input type="text" placeholder="作业所在的应用名称" id="job_appName" name="job_appName" class="form-control" data-toggle="tooltip" data-placement="bottom"  title=""/>
+                    <input type="text" placeholder="yourAppName" id="jobAppName" name="jobAppName" class="form-control" data-toggle="tooltip" data-placement="bottom"  title="作业所在的应用名称，必须是在应用中已注册。"/>
                 </div>
             </div>
             <div class="row">
@@ -127,9 +127,9 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group">
-                        <label for="streamingProcess" hidden="hidden" id="streamingProcess" class="col-sm-6 control-label">支持流式处理数据</label>
-                        <div class="col-sm-6" id="streamingProcess_box" hidden="hidden">
-                            <input type="checkbox" id="streamingProcess_box" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="DATAFLOW类型作业，是否流式处理数据如果流式处理数据, 则fetchData不返回空结果将持续执行作业，如果非流式处理数据, 则处理数据完成后作业结束。" />
+                        <label for="streamingProcess" hidden="hidden" id="streamingProcessBox" class="col-sm-6 control-label">支持流式处理数据</label>
+                        <div class="col-sm-6" >
+                            <input hidden="hidden" type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="DATAFLOW类型作业，是否流式处理数据如果流式处理数据, 则fetchData不返回空结果将持续执行作业，如果非流式处理数据, 则处理数据完成后作业结束。" />
                         </div>
                     </div>
                 </div>
@@ -171,30 +171,6 @@
                 <button type="reset" class="btn btn-inverse" id = "reset_form">重置</button>
             </div>
         </form>
-        <div class="modal" id="jobName-server-check" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>作业信息提示</h3>
-                    </div>
-                    <div class="modal-body">
-                        <h3 style="font-size:20px">输入的作业名称已存在，请重新输入！</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal" id="job-appName-server-check" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>应用名称信息提示</h3>
-                    </div>
-                    <div class="modal-body">
-                        <h3 style="font-size:20px">输入的应用名称不存在，请输入已注册的应用名称！</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="modal" id="delete-data—beanName" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -221,6 +197,7 @@
         </div>
     </div><!-- role -->
 </div><!-- /.box-body --> 
+    
 <script src="plugins/BootstrapValidator/js/bootstrapValidator.js"></script>
 <script src="plugins/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
 <script src="js/common/job_edit_base.js"></script>

@@ -24,7 +24,7 @@
                     <div class="form-group">
                         <label for="cpuCount" class="col-sm-6 control-label">cpu数量</label>
                             <div class="col-sm-6">
-                                <input type="number"  disabled = "disabled" value=1 min=1  id="cpuCount" name="cpuCount" class="form-control" data-toggle="tooltip"  data-placement="bottom" title=""/>
+                                <input type="number" disabled = "disabled" value="1" min="1"  id="cpuCount" name="cpuCount" class="form-control" data-toggle="tooltip"  data-placement="bottom" title=""/>
                             </div>
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                     <div class="form-group">
                         <label for="memoryMB" class="col-sm-6 control-label" >应用内存</label>
                         <div class="col-sm-6">
-                            <input type="number" disabled = "disabled" value=256  min=1 id="memoryMB" name="memoryMB" class="form-control" data-toggle="tooltip" data-placement="bottom" title=""/>
+                            <input type="number" disabled = "disabled" value="256" min="1" id="memoryMB" name="memoryMB" class="form-control" data-toggle="tooltip" data-placement="bottom" title=""/>
                         </div>
                     </div>
                 </div>
@@ -40,9 +40,9 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group">
-                        <label for="eventTraceSamplingCount" class="col-sm-6 control-label" >作业事件追踪采样率</label>
+                        <label for="eventTraceSamplingCount" class="col-sm-6 control-label">作业事件追踪采样率</label>
                         <div class="col-sm-6">
-                            <input type="number" id="eventTraceSamplingCount" name="eventTraceSamplingCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title=""/>
+                            <input type="number" id="eventTraceSamplingCount" value="0" min="0" name="eventTraceSamplingCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title=""/>
                         </div>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                     <div class="form-group">
                         <label for="appCacheEnable" class="col-sm-6 control-label">本地缓存App</label>
                         <div class="col-sm-6">
-                            <input type="checkbox"   checked="checked"  id="appCacheEnable" name="appCacheEnable" data-toggle="tooltip" data-placement="bottom" title="" />
+                            <input type="checkbox"  checked="checked" id="appCacheEnable" name="appCacheEnable" data-toggle="tooltip" data-placement="bottom" title="" />
                         </div>
                     </div>
                 </div>
@@ -67,18 +67,6 @@
                 <button type="button" class="btn btn-primary" id = "save_form">保存</button>
             </div>
         </form>
-        <div class="modal" id="appName-server-check" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>作业app信息提示</h3>
-                    </div>
-                    <div class="modal-body">
-                        <h3>输入的作业app名称已存在，请重新输入！</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 <script src="plugins/BootstrapValidator/js/bootstrapValidator.js"></script>

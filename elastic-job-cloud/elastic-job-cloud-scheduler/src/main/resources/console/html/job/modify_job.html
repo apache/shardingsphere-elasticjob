@@ -8,9 +8,9 @@
                 </div>
             </div>
              <div class="form-group" >
-                <label for="appName" class="col-sm-2 control-label"><i>*</i>应用名称</label>
+                <label for="jobAppName" class="col-sm-2 control-label"><i>*</i>应用名称</label>
                 <div class="col-sm-9">
-                    <input type="text" placeholder="作业所在的应用名称" id="appName" name="appName" class="form-control" data-toggle="tooltip" data-placement="bottom"  title=""/>
+                    <input type="text" placeholder="yourAppName"  disabled = "disabled" id="jobAppName" name="jobAppName" class="form-control" data-toggle="tooltip" data-placement="bottom"  title="作业所在的应用名称，必须是在应用中已注册。"/>
                 </div>
             </div>
             <div class="row">
@@ -127,9 +127,9 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="form-group">
-                        <label for="streamingProcess" hidden="hidden" id="streamingProcess" class="col-sm-6 control-label">支持流式处理数据</label>
-                        <div class="col-sm-6" id="streamingProcess_box" hidden="hidden">
-                            <input type="checkbox" id="streamingProcess_box" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="DATAFLOW类型作业，是否流式处理数据如果流式处理数据, 则fetchData不返回空结果将持续执行作业，如果非流式处理数据, 则处理数据完成后作业结束。" />
+                        <label for="streamingProcess" hidden="hidden" id="streamingProcessBox" class="col-sm-6 control-label">支持流式处理数据</label>
+                        <div class="col-sm-6">
+                            <input type="checkbox" hidden="hidden" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="DATAFLOW类型作业，是否流式处理数据如果流式处理数据, 则fetchData不返回空结果将持续执行作业，如果非流式处理数据, 则处理数据完成后作业结束。" />
                         </div>
                     </div>
                 </div>

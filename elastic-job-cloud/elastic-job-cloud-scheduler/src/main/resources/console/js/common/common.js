@@ -27,3 +27,14 @@ Date.prototype.format=function(fmt) {
     }
     return fmt;
 }
+function dateTimeFormatter(value) {
+    return new Date(value).format("yyyy-MM-dd HH:mm:ss");
+}
+
+function largeContextFormatter(value) {
+    if(value != null && value.length > 50) {
+        return "<div title='" + value+"'>" + value.substring(0,47) + "...</div>";
+    } else {
+        return value;
+    }
+}
