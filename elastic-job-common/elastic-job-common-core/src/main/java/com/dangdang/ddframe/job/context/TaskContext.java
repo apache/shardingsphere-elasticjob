@@ -59,9 +59,9 @@ public final class TaskContext {
     @Setter
     private boolean idle;
     
-    private volatile long updatedTime;
-    
     private final long createTime = System.currentTimeMillis();
+    
+    private volatile long updatedTime;
     
     public TaskContext(final String jobName, final List<Integer> shardingItem, final ExecutionType type) {
         this(jobName, shardingItem, type, UNASSIGNED_SLAVE_ID);

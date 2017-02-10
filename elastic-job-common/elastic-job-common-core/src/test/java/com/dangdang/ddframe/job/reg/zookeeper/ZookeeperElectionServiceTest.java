@@ -45,13 +45,13 @@ public class ZookeeperElectionServiceTest {
         client.start();
         client.blockUntilConnected();
         MockitoAnnotations.initMocks(this);
-        service = new ZookeeperElectionService(HOST_AND_PORT, ELECTION_PATH, client, electionCandidate);
-        service.startLeadership();
+        service = new ZookeeperElectionService(HOST_AND_PORT, client, ELECTION_PATH, electionCandidate);
+        service.startElect();
     }
     
     @After
     public void clean() {
-        service.stopLeadership();
+        service.close();
         client.close();
     }
     
@@ -74,10 +74,10 @@ public class ZookeeperElectionServiceTest {
     public void assertContend() throws Exception {
         ElectionCandidate anotherElectionCandidate = mock(ElectionCandidate.class);
         CuratorFramework anotherClient = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
-        ZookeeperElectionService anotherService = new ZookeeperElectionService("ANOTHER_CLIENT:8899", ELECTION_PATH, anotherClient, anotherElectionCandidate);
+        ZookeeperElectionService anotherService = new ZookeeperElectionService("ANOTHER_CLIENT:8899", anotherClient, ELECTION_PATH, anotherElectionCandidate);
         anotherClient.start();
         anotherClient.blockUntilConnected();
-        anotherService.startLeadership();
+        anotherService.startElect();
         ZookeeperElectionService followService;
         CuratorFramework leaderClient;
         if (anotherService.isLeader()) {
@@ -91,7 +91,7 @@ public class ZookeeperElectionServiceTest {
         }
         KillSession.kill(leaderClient.getZookeeperClient().getZooKeeper(), EmbedTestingServer.getConnectionString());
         assertTrue(followService.isLeader());
-        anotherService.stopLeadership();
+        anotherService.close();
         verify(electionCandidate, atLeastOnce()).startLeadership();
         verify(anotherElectionCandidate, atLeastOnce()).startLeadership();
     }

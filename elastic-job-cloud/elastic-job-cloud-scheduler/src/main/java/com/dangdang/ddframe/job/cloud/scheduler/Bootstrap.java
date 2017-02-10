@@ -15,11 +15,11 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.boot;
+package com.dangdang.ddframe.job.cloud.scheduler;
 
 import com.dangdang.ddframe.job.cloud.scheduler.ha.HANode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerService;
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionService;
@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
  * @author caohao
  */
 @Slf4j
-public final class MasterBootstrap {
+public final class Bootstrap {
     
     private final CountDownLatch latch = new CountDownLatch(1);
     
@@ -44,16 +44,16 @@ public final class MasterBootstrap {
     
     private final ZookeeperElectionService electionService;
     
-    public MasterBootstrap() {
+    public Bootstrap() {
         regCenter = getRegistryCenter();
         electionService = new ZookeeperElectionService(
                 String.format("%s:%d", BootstrapEnvironment.getInstance().getMesosConfiguration().getHostname(), BootstrapEnvironment.getInstance().getRestfulServerConfiguration().getPort()),
-                HANode.ELECTION_NODE, (CuratorFramework) regCenter.getRawClient(), getElectionCandidate());
-        Runtime.getRuntime().addShutdownHook(new Thread("stop-hook") {
+                (CuratorFramework) regCenter.getRawClient(), HANode.ELECTION_NODE, getElectionCandidate());
         
+        Runtime.getRuntime().addShutdownHook(new Thread("stop-hook") {
             @Override
             public void run() {
-                MasterBootstrap.this.stop();
+                Bootstrap.this.stop();
                 latch.countDown();
             }
         });
@@ -97,12 +97,12 @@ public final class MasterBootstrap {
      * 开始选举,如果是leader,会启动调度服务.
      */
     public void start() {
-        electionService.startLeadership();
+        electionService.startElect();
         log.info("Elastic job: The framework {} {} leader", BootstrapEnvironment.getInstance().getMesosConfiguration().getHostname(), electionService.isLeader() ? "is" : "is not");
         try {
             latch.await();
         } catch (final InterruptedException ex) {
-            log.error("Elastic job: MasterBootstrap start with exception:" + ex);
+            log.error("Elastic job: Bootstrap start with exception:" + ex);
         }
     }
     
@@ -110,7 +110,13 @@ public final class MasterBootstrap {
      * 停止选举及调度服务.
      */
     public void stop() {
-        log.info("Elastic job: MasterBootstrap stopped.");
-        electionService.stopLeadership();
+        log.info("Elastic job: Bootstrap stopped.");
+        electionService.close();
+    }
+    
+    // CHECKSTYLE:OFF
+    public static void main(final String[] args) {
+        // CHECKSTYLE:ON
+        new Bootstrap().start();
     }
 }

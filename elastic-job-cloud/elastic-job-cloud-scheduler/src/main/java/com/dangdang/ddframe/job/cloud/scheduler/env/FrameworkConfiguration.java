@@ -15,18 +15,19 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler;
+package com.dangdang.ddframe.job.cloud.scheduler.env;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.MasterBootstrap;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- * 启动入口.
+ * Mesos框架配置项.
+ *
+ * @author zhangliang
  */
-public final class MasterMain {
+@RequiredArgsConstructor
+@Getter
+public final class FrameworkConfiguration {
     
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) throws Exception {
-    // CHECKSTYLE:ON
-        new MasterBootstrap().start();
-    }
+    private final int jobStateQueueSize;
 }

@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.ReconcileScheduledService;
@@ -40,8 +40,8 @@ import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
-import static com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT;
-import static com.dangdang.ddframe.job.cloud.scheduler.boot.env.MesosConfiguration.FRAMEWORK_NAME;
+import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT;
+import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FRAMEWORK_NAME;
 
 /**
  * 调度服务.

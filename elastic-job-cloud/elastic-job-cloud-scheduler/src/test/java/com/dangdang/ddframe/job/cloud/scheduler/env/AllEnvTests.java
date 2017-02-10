@@ -15,19 +15,12 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.boot.env;
+package com.dangdang.ddframe.job.cloud.scheduler.env;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/**
- * Restful服务器配置项.
- *
- * @author zhangliang
- */
-@RequiredArgsConstructor
-@Getter
-public final class RestfulServerConfiguration {
-    
-    private final int port;
+@RunWith(Suite.class)
+@Suite.SuiteClasses(BootstrapEnvironmentTest.class)
+public final class AllEnvTests {
 }

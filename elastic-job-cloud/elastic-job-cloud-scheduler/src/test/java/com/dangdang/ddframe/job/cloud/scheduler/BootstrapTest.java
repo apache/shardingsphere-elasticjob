@@ -15,10 +15,10 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.boot;
+package com.dangdang.ddframe.job.cloud.scheduler;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment.EnvironmentArgument;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment.EnvironmentArgument;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.EmbedTestingServer;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionService;
@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MasterBootstrapTest {
+public class BootstrapTest {
     
     @Mock
     private CuratorFramework client;
@@ -50,7 +50,7 @@ public class MasterBootstrapTest {
     @Mock
     private CountDownLatch latch;
     
-    private MasterBootstrap masterBootstrap;
+    private Bootstrap bootstrap;
     
     @Before
     public void init() throws NoSuchFieldException {
@@ -58,22 +58,22 @@ public class MasterBootstrapTest {
         Properties properties = new Properties();
         properties.setProperty(EnvironmentArgument.ZOOKEEPER_SERVERS.getKey(), "localhost:3181");
         ReflectionUtils.setFieldValue(BootstrapEnvironment.getInstance(), "properties", properties);
-        masterBootstrap = new MasterBootstrap();
-        ReflectionUtils.setFieldValue(masterBootstrap, "regCenter", regCenter);
-        ReflectionUtils.setFieldValue(masterBootstrap, "electionService", electionService);
-        ReflectionUtils.setFieldValue(masterBootstrap, "latch", latch);
+        bootstrap = new Bootstrap();
+        ReflectionUtils.setFieldValue(bootstrap, "regCenter", regCenter);
+        ReflectionUtils.setFieldValue(bootstrap, "electionService", electionService);
+        ReflectionUtils.setFieldValue(bootstrap, "latch", latch);
     }
     
     @Test
     public void assertStart() throws InterruptedException {
-        masterBootstrap.start();
-        verify(electionService).startLeadership();
+        bootstrap.start();
+        verify(electionService).startElect();
         verify(latch).await();
     }
     
     @Test
     public void assertStop() {
-        masterBootstrap.stop();
-        verify(electionService).stopLeadership();
+        bootstrap.stop();
+        verify(electionService).close();
     }
 }

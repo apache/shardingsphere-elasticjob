@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.RestfulServerConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.env.RestfulServerConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;

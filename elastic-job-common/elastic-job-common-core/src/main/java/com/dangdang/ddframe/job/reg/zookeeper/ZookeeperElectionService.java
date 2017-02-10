@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.reg.zookeeper;
 import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
@@ -39,17 +38,13 @@ import java.util.concurrent.Executors;
  * @author gaohongtao
  */
 @Slf4j
-public class ZookeeperElectionService {
+public class ZookeeperElectionService implements AutoCloseable {
     
     private final CountDownLatch leaderLatch = new CountDownLatch(1);
     
     private final LeaderSelector leaderSelector;
     
-    public ZookeeperElectionService(final String identity, final String electionPath, final CuratorFramework client, final ElectionCandidate electionCandidate) {
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(identity));
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(electionPath));
-        Preconditions.checkNotNull(client);
-        Preconditions.checkNotNull(electionCandidate);
+    public ZookeeperElectionService(final String identity, final CuratorFramework client, final String electionPath, final ElectionCandidate electionCandidate) {
         leaderSelector = new LeaderSelector(client, electionPath, getExecutorService(identity), new LeaderSelectorListenerAdapter() {
             
             @Override
@@ -75,15 +70,15 @@ public class ZookeeperElectionService {
     /**
      * 开始进行选举.
      */
-    public void startLeadership() {
+    public void startElect() {
         log.debug("Elastic job: {} start to elect leadership", leaderSelector.getId());
         leaderSelector.start();
     }
     
     /**
-     * 开始进行选举.
+     * 停止选举.
      */
-    public void stopLeadership() {
+    public void close() {
         log.info("Elastic job: Stop leadership election");
         leaderLatch.countDown();
         try {
