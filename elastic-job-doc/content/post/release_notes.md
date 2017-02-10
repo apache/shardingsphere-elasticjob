@@ -12,7 +12,7 @@ weight=1
 ### 缺陷修正
 
 1. [ISSUE 222](https://github.com/dangdangdotcom/elastic-job/issues/222) elastic-job-lite-spring的reg配置参数max-retries不起作用
-
+1. [ISSUE 231](https://github.com/dangdangdotcom/elastic-job/issues/231) 批量删除cloud作业时，mesos会提前同步TASK_LOST消息给framework，导致作业被重新放入ready队列并执行
 
 ### 新功能
 
