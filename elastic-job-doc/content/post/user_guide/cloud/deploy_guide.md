@@ -13,7 +13,7 @@ weight=53
 
 2. 将打包之后的作业`tar.gz`文件放至网络可访问的位置，如：`ftp`或`http`。打包的`tar.gz`文件中`Main`方法需要调用`Elastic-Job-Cloud`提供的`JobBootstrap.execute`方法。
 
-3. 使用`curl`命令调用`RESTful API`注册作业。
+3. 使用`curl`命令调用`RESTful API`注册APP及作业。
 
 ## RESTful API
 
@@ -35,12 +35,13 @@ url：`app`
 |appURL                              |String |`是`    |       | 作业应用所在路径。必须是可以通过网络访问到的路径                                        |
 |cpuCount                            |double |否      |   1   | 作业应用启动所需要的`CPU`数量                                                        |
 |memoryMB                            |double |否      |  128  | 作业应用启动所需要的内存`MB`                                                         |
-|bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`                                                      |
+|bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`                                                        |
 |appCacheEnable                      |bool   |否      | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
+|eventTraceSamplingCount             |int    |否      | 0     | 事件追踪采样率统计条数，默认不采样                                                    |
 
 ```shell
 curl -l -H "Content-type: application/json" -X POST -d 
-'{"appName":"foo_app","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' 
+'{"appName":"foo_app","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' 
 http://elastic_job_cloud_host:8899/app
 ```
 
