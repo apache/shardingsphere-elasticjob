@@ -177,9 +177,9 @@ public final class BootstrapEnvironment {
         PORT("http_port", "8899", true),
 
         //for app repo
-        NEXUS_SERVER("nexus_server","http://maven.dangdang.com/nexus", true),
-        NEXUS_REPO("nexus_repo","distribution", true),
-        NEXUS_USERNAME("nexus_username","distribution_user", true),
+        NEXUS_SERVER("nexus_server","http://yourNexusRepo/nexus", true),
+        NEXUS_REPO("nexus_repo","elastic_job_cloud", true),
+        NEXUS_USERNAME("nexus_username","username", true),
         NEXUS_PASSWORD("nexus_password","password", true),
         
         APP_CACHE_ENABLE("app_cache_enable", "false", true),
