@@ -112,7 +112,6 @@ public final class MasterBootstrap {
     private TaskScheduler getTaskScheduler() {
         return new TaskScheduler.Builder()
                 .withLeaseOfferExpirySecs(1000000000L)
-                //.withFitnessCalculator(BinPackingFitnessCalculators.cpuMemNetworkBinPacker)
                 .withLeaseRejectAction(new Action1<VirtualMachineLease>() {
                     
                     @Override
