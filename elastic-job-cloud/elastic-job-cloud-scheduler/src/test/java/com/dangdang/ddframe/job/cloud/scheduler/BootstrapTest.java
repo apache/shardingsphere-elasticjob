@@ -59,7 +59,6 @@ public class BootstrapTest {
         properties.setProperty(EnvironmentArgument.ZOOKEEPER_SERVERS.getKey(), "localhost:3181");
         ReflectionUtils.setFieldValue(BootstrapEnvironment.getInstance(), "properties", properties);
         bootstrap = new Bootstrap();
-        ReflectionUtils.setFieldValue(bootstrap, "regCenter", regCenter);
         ReflectionUtils.setFieldValue(bootstrap, "electionService", electionService);
         ReflectionUtils.setFieldValue(bootstrap, "latch", latch);
     }
@@ -67,13 +66,7 @@ public class BootstrapTest {
     @Test
     public void assertStart() throws InterruptedException {
         bootstrap.start();
-        verify(electionService).startElect();
+        verify(electionService).start();
         verify(latch).await();
-    }
-    
-    @Test
-    public void assertStop() {
-        bootstrap.stop();
-        verify(electionService).close();
     }
 }

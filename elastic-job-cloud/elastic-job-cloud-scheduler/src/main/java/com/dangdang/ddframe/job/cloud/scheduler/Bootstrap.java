@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler;
 
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.HANode;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerService;
-import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionService;
@@ -32,7 +32,6 @@ import java.util.concurrent.CountDownLatch;
 /**
  * Mesos框架启动器.
  *
- * @author gaohongtao 
  * @author caohao
  */
 @Slf4j
@@ -40,20 +39,17 @@ public final class Bootstrap {
     
     private final CountDownLatch latch = new CountDownLatch(1);
     
-    private final CoordinatorRegistryCenter regCenter;
-    
     private final ZookeeperElectionService electionService;
     
     public Bootstrap() {
-        regCenter = getRegistryCenter();
-        electionService = new ZookeeperElectionService(
-                String.format("%s:%d", BootstrapEnvironment.getInstance().getMesosConfiguration().getHostname(), BootstrapEnvironment.getInstance().getRestfulServerConfiguration().getPort()),
-                (CuratorFramework) regCenter.getRawClient(), HANode.ELECTION_NODE, getElectionCandidate());
+        CoordinatorRegistryCenter regCenter = getRegistryCenter();
+        electionService = new ZookeeperElectionService(BootstrapEnvironment.getInstance().getFrameworkHostPort(),
+                (CuratorFramework) regCenter.getRawClient(), HANode.ELECTION_NODE, new SchedulerElectionCandidate(regCenter));
         
         Runtime.getRuntime().addShutdownHook(new Thread("stop-hook") {
             @Override
             public void run() {
-                Bootstrap.this.stop();
+                electionService.close();
                 latch.countDown();
             }
         });
@@ -65,40 +61,11 @@ public final class Bootstrap {
         return result;
     }
     
-    private ElectionCandidate getElectionCandidate() {
-        return new ElectionCandidate() {
-            
-                private SchedulerService schedulerService;
-            
-                @Override
-                public void startLeadership() throws Exception {
-                    try {
-                        schedulerService = new SchedulerService(regCenter);
-                        schedulerService.start();
-                        //CHECKSTYLE:OFF
-                    } catch (final Throwable throwable) {
-                        //CHECKSTYLE:ON
-                        if (throwable instanceof InterruptedException) {
-                            throw throwable;
-                        }
-                        log.error("Elastic job: Starting error", throwable);
-                        System.exit(1);
-                    }
-                }
-            
-                @Override
-                public void stopLeadership() {
-                    schedulerService.stop();
-                }
-            };
-    }
-    
     /**
-     * 开始选举,如果是leader,会启动调度服务.
+     * 开始启动,如果是leader,会启动调度相关服务.
      */
     public void start() {
-        electionService.startElect();
-        log.info("Elastic job: The framework {} {} leader", BootstrapEnvironment.getInstance().getMesosConfiguration().getHostname(), electionService.isLeader() ? "is" : "is not");
+        electionService.start();
         try {
             latch.await();
         } catch (final InterruptedException ex) {
@@ -106,17 +73,32 @@ public final class Bootstrap {
         }
     }
     
-    /**
-     * 停止选举及调度服务.
-     */
-    public void stop() {
-        log.info("Elastic job: Bootstrap stopped.");
-        electionService.close();
-    }
-    
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
         // CHECKSTYLE:ON
         new Bootstrap().start();
+    }
+    
+    private class SchedulerElectionCandidate implements ElectionCandidate {
+        
+        private final CoordinatorRegistryCenter regCenter;
+        
+        private SchedulerService schedulerService;
+        
+        SchedulerElectionCandidate(final CoordinatorRegistryCenter regCenter) {
+            this.regCenter = regCenter;
+        }
+        
+        /**
+         * 开始领导状态.
+         */
+        public void startLeadership() {
+            schedulerService = new SchedulerService(regCenter);
+            schedulerService.start();
+        }
+        
+        public void stopLeadership() {
+            schedulerService.stop();
+        }
     }
 }

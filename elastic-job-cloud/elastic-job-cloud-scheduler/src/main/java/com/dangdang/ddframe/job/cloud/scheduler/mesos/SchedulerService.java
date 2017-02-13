@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.ReconcileScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
@@ -28,7 +28,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Service;
 import com.netflix.fenzo.TaskScheduler;
@@ -52,6 +51,8 @@ import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FR
 @Slf4j
 @AllArgsConstructor
 public final class SchedulerService {
+    
+    private static final String WEB_UI_PROTOCOL = "http://";
     
     private final BootstrapEnvironment env;
     
@@ -96,7 +97,7 @@ public final class SchedulerService {
         }
         Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(FRAMEWORK_NAME)
                 .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT)
-                .setWebuiUrl("http://" + Joiner.on(":").join(mesosConfig.getHostname(), env.getRestfulServerConfiguration().getPort())).build();
+                .setWebuiUrl(WEB_UI_PROTOCOL + env.getFrameworkHostPort()).build();
         return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     

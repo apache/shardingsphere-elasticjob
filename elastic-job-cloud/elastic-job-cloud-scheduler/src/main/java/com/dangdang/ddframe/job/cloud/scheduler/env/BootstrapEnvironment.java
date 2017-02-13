@@ -62,6 +62,15 @@ public final class BootstrapEnvironment {
     }
     
     /**
+     * 获取Framework的Hostname和Port.
+     *
+     * @return Framework的Hostname和Port
+     */
+    public String getFrameworkHostPort() {
+        return String.format("%s:%d", getMesosConfiguration().getHostname(), getRestfulServerConfiguration().getPort());
+    }
+    
+    /**
      * 获取Mesos配置对象.
      *
      * @return Mesos配置对象

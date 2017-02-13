@@ -18,19 +18,12 @@
 package com.dangdang.ddframe.job.reg.zookeeper;
 
 import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
-import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
-import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
-import org.apache.curator.framework.recipes.leader.Participant;
-import org.apache.curator.utils.CloseableExecutorService;
-import org.apache.curator.utils.ThreadUtils;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 
 /**
  * 使用{@link LeaderSelector}实现选举服务.
@@ -45,7 +38,7 @@ public class ZookeeperElectionService implements AutoCloseable {
     private final LeaderSelector leaderSelector;
     
     public ZookeeperElectionService(final String identity, final CuratorFramework client, final String electionPath, final ElectionCandidate electionCandidate) {
-        leaderSelector = new LeaderSelector(client, electionPath, getExecutorService(identity), new LeaderSelectorListenerAdapter() {
+        leaderSelector = new LeaderSelector(client, electionPath, new LeaderSelectorListenerAdapter() {
             
             @Override
             public void takeLeadership(final CuratorFramework client) throws Exception {
@@ -53,7 +46,8 @@ public class ZookeeperElectionService implements AutoCloseable {
                 try {
                     electionCandidate.startLeadership();
                     leaderLatch.await();
-                    log.warn("Elastic job: {} lost leadership because of latch down", identity);
+                } catch (final InterruptedException ex) {
+                    log.warn("Elastic job: {} lost leadership.", identity);
                 } finally {
                     electionCandidate.stopLeadership();
                 }
@@ -63,14 +57,10 @@ public class ZookeeperElectionService implements AutoCloseable {
         leaderSelector.setId(identity);
     }
     
-    private CloseableExecutorService getExecutorService(final String identity) {
-        return new CloseableExecutorService(Executors.newSingleThreadExecutor(ThreadUtils.newGenericThreadFactory(Joiner.on("-").join("LeaderSelector", identity))));
-    }
-    
     /**
-     * 开始进行选举.
+     * 开始选举.
      */
-    public void startElect() {
+    public void start() {
         log.debug("Elastic job: {} start to elect leadership", leaderSelector.getId());
         leaderSelector.start();
     }
@@ -87,54 +77,5 @@ public class ZookeeperElectionService implements AutoCloseable {
         } catch (final Exception ignored) {
         }
         // CHECKSTYLE:ON
-    }
-    
-    /**
-     * 放弃领导权.
-     */
-    public void abdicateLeadership() {
-        if (!isLeader()) {
-            return;
-        }
-        log.info("Elastic job: {} abdicate leadership", leaderSelector.getId());
-        leaderSelector.interruptLeadership();
-    }
-    
-    /**
-     * 当前服务是否获取了领导权.
-     * 
-     * @return true 是领导 false 不是领导
-     */
-    public boolean isLeader() {
-        return leaderSelector.getId().equals(getLeader().getId());
-    }
-    
-    /**
-     * 获取当前服务的标志.
-     * 
-     * @return 服务标志
-     */
-    public String getIdentity() {
-        return getLeader().getId();
-    }
-    
-    private Participant getLeader() {
-        while (true) {
-            Participant leader;
-            try {
-                leader = leaderSelector.getLeader();
-                // CHECKSTYLE:OFF
-            } catch (final Exception ex) {
-                // CHECKSTYLE:ON
-                log.debug("Elastic job: Leader node is electing({}), {} is waiting for {} ms", ex.getMessage(), leaderSelector.getId(), 100);
-                BlockUtils.waitingShortTime();
-                continue;
-            }
-            if (!Strings.isNullOrEmpty(leader.getId())) {
-                return leader;
-            }
-            log.debug("Elastic job: Leader node is electing, {} is waiting for {} ms", leaderSelector.getId(), 100);
-            BlockUtils.waitingShortTime();
-        }
     }
 }
