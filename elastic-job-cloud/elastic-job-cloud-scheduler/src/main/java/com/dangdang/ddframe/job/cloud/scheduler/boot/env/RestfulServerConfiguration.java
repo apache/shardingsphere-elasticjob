@@ -30,4 +30,13 @@ import lombok.RequiredArgsConstructor;
 public final class RestfulServerConfiguration {
     
     private final int port;
+
+    private final String nexus_server;
+
+    private final String nexus_repo;
+
+    private final String nexus_username;
+
+    private final String nexus_password;
+
 }

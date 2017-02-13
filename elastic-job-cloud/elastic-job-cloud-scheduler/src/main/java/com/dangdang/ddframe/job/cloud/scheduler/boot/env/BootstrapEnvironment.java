@@ -91,7 +91,12 @@ public final class BootstrapEnvironment {
      * @return Restful服务器配置对象
      */
     public RestfulServerConfiguration getRestfulServerConfiguration() {
-        return new RestfulServerConfiguration(Integer.parseInt(getValue(EnvironmentArgument.PORT)));
+        return new RestfulServerConfiguration(
+                Integer.parseInt(getValue(EnvironmentArgument.PORT)),
+                getValue(EnvironmentArgument.NEXUS_SERVER),
+                getValue(EnvironmentArgument.NEXUS_REPO),
+                getValue(EnvironmentArgument.NEXUS_USERNAME),
+                getValue(EnvironmentArgument.NEXUS_PASSWORD));
     }
     
     /**
@@ -170,6 +175,12 @@ public final class BootstrapEnvironment {
         ZOOKEEPER_DIGEST("zk_digest", "", false),
         
         PORT("http_port", "8899", true),
+
+        //for app repo
+        NEXUS_SERVER("nexus_server","http://maven.dangdang.com/nexus", true),
+        NEXUS_REPO("nexus_repo","distribution", true),
+        NEXUS_USERNAME("nexus_username","distribution_user", true),
+        NEXUS_PASSWORD("nexus_password","password", true),
         
         APP_CACHE_ENABLE("app_cache_enable", "false", true),
         

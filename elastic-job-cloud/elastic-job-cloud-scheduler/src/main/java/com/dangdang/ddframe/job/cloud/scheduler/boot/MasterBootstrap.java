@@ -40,6 +40,7 @@ import com.google.common.base.Optional;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.functions.Action1;
+import com.netflix.fenzo.plugins.BinPackingFitnessCalculators;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.curator.framework.recipes.cache.TreeCache;
@@ -111,6 +112,7 @@ public final class MasterBootstrap {
     private TaskScheduler getTaskScheduler() {
         return new TaskScheduler.Builder()
                 .withLeaseOfferExpirySecs(1000000000L)
+                //.withFitnessCalculator(BinPackingFitnessCalculators.cpuMemNetworkBinPacker)
                 .withLeaseRejectAction(new Action1<VirtualMachineLease>() {
                     
                     @Override

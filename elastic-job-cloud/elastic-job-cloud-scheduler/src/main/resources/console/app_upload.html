@@ -1,0 +1,31 @@
+<html>
+<body>
+	<h1>File Upload to Nexus Server</h1>
+ 
+	<form action="/app/upload" method="post" enctype="multipart/form-data">
+ 
+	   <p>
+		Select a file : <input type="file" name="file" size="45" />
+	   </p>
+
+		<p>
+			Group ID : <input type="text" name="groupId" size="20" />
+		</p>
+
+		<p>
+			Artifact ID : <input type="text" name="artifactId" size="20" />
+		</p>
+
+		<p>
+			Version : <input type="text" name="version" size="20" />
+		</p>
+
+		<p>
+			Extension : <input type="text" name="extension" size="20"  value="tar.gz" />
+		</p>
+
+	   <input type="submit" value="Upload It" />
+	</form>
+ 
+</body>
+</html>

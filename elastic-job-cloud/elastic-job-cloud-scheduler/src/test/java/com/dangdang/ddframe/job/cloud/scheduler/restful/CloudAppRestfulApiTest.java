@@ -116,4 +116,10 @@ public final class CloudAppRestfulApiTest {
         verify(regCenter).getChildrenKeys("/config/app");
         verify(regCenter).get("/config/app/test_app");
     }
+
+    @Test
+    public void assertUploadFile() throws Exception {
+        assertThat(sentRequest("http://127.0.0.1:19001/app/upload","post",""), is(500));
+    }
+
 }

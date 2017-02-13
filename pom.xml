@@ -47,7 +47,9 @@
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
         <mockito.version>1.10.19</mockito.version>
-        
+        <commons-io.version>2.4</commons-io.version>
+        <commons-httpclient.version>4.5.2</commons-httpclient.version>
+        <commons-httpcore.version>4.4.6</commons-httpcore.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
         <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
@@ -230,6 +232,11 @@
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-servlet</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-multipart</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
             <dependency>
