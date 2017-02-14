@@ -57,8 +57,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class SchedulerEngineTest {
     
-    private final LeasesQueue leasesQueue = new LeasesQueue();
-    
     @Mock
     private TaskScheduler taskScheduler;
     
@@ -75,7 +73,7 @@ public final class SchedulerEngineTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        schedulerEngine = new SchedulerEngine(leasesQueue, taskScheduler, facadeService, new JobEventBus(), frameworkIDService, statisticManager);
+        schedulerEngine = new SchedulerEngine(taskScheduler, facadeService, new JobEventBus(), frameworkIDService, statisticManager);
         ReflectionUtils.setFieldValue(schedulerEngine, "facadeService", facadeService);
         when(facadeService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         new RunningService(Mockito.mock(CoordinatorRegistryCenter.class)).clear();
@@ -101,7 +99,7 @@ public final class SchedulerEngineTest {
         when(facadeService.getEligibleJobContext()).thenReturn(
                 Collections.singletonList(JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job"), ExecutionType.FAILOVER)));
         schedulerEngine.resourceOffers(schedulerDriver, offers);
-        assertThat(leasesQueue.drainTo().size(), is(2));
+        assertThat(LeasesQueue.getInstance().drainTo().size(), is(2));
     }
     
     @Test

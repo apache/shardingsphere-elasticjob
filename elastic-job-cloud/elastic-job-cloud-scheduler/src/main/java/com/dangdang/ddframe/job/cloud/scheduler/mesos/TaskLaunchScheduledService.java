@@ -66,8 +66,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class TaskLaunchScheduledService extends AbstractScheduledService {
     
-    private final LeasesQueue leasesQueue;
-    
     private final SchedulerDriver schedulerDriver;
     
     private final TaskScheduler taskScheduler;
@@ -102,7 +100,7 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
     protected void runOneIteration() throws Exception {
         try {
             LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
-            List<VirtualMachineLease> virtualMachineLeases = leasesQueue.drainTo();
+            List<VirtualMachineLease> virtualMachineLeases = LeasesQueue.getInstance().drainTo();
             Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), virtualMachineLeases).getResultMap().values();
             List<TaskContext> taskContextsList = new LinkedList<>();
             Map<List<Protos.OfferID>, List<Protos.TaskInfo>> offerIdTaskInfoMap = new HashMap<>();

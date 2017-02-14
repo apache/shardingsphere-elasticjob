@@ -42,8 +42,6 @@ import java.util.List;
 @Slf4j
 public final class SchedulerEngine implements Scheduler {
     
-    private final LeasesQueue leasesQueue;
-    
     private final TaskScheduler taskScheduler;
     
     private final FacadeService facadeService;
@@ -71,7 +69,7 @@ public final class SchedulerEngine implements Scheduler {
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
         for (Protos.Offer offer: offers) {
             log.trace("Adding offer {} from host {}", offer.getId(), offer.getHostname());
-            leasesQueue.offer(offer);
+            LeasesQueue.getInstance().offer(offer);
         }
     }
     

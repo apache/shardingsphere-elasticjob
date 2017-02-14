@@ -63,8 +63,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public final class TaskLaunchScheduledServiceTest {
     
-    private LeasesQueue leasesQueue = new LeasesQueue();
-    
     @Mock
     private SchedulerDriver schedulerDriver;
     
@@ -82,7 +80,7 @@ public final class TaskLaunchScheduledServiceTest {
     @Before
     public void setUp() throws Exception {
         when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app")));
-        taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus);
+        taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
         taskLaunchScheduledService.startUp();
     }
     

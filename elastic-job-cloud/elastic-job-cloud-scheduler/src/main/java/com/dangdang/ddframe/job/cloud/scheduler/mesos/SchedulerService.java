@@ -76,19 +76,17 @@ public final class SchedulerService {
         env = BootstrapEnvironment.getInstance();
         facadeService = new FacadeService(regCenter);
         statisticManager = StatisticManager.getInstance(regCenter, env.getJobEventRdbConfiguration());
-        LeasesQueue leasesQueue = new LeasesQueue();
         TaskScheduler taskScheduler = getTaskScheduler();
         JobEventBus jobEventBus = getJobEventBus();
-        schedulerDriver = getSchedulerDriver(leasesQueue, taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
+        schedulerDriver = getSchedulerDriver(taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
         reconcileScheduledService = new ReconcileScheduledService(facadeService, schedulerDriver, taskScheduler, statisticManager);
-        taskLaunchScheduledService = new TaskLaunchScheduledService(leasesQueue, schedulerDriver, taskScheduler, facadeService, jobEventBus);
+        taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
         restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager);
     }
     
-    private SchedulerDriver getSchedulerDriver(final LeasesQueue leasesQueue, final TaskScheduler taskScheduler,
-                                               final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
+    private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
         MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Optional<String> frameworkIDOptional = frameworkIDService.fetch();
         Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
@@ -98,7 +96,7 @@ public final class SchedulerService {
         Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(FRAMEWORK_NAME)
                 .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT)
                 .setWebuiUrl(WEB_UI_PROTOCOL + env.getFrameworkHostPort()).build();
-        return new MesosSchedulerDriver(new SchedulerEngine(leasesQueue, taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
+        return new MesosSchedulerDriver(new SchedulerEngine(taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     
     private TaskScheduler getTaskScheduler() {
