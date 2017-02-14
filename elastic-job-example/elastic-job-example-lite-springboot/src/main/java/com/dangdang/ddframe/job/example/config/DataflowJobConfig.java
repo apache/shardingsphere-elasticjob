@@ -47,8 +47,8 @@ public class DataflowJobConfig {
     }
     
     @Bean(initMethod = "init")
-    public JobScheduler dataflowJobScheduler(final DataflowJob dataflowJob, @Value("${simpleJob.cron}") final String cron, @Value("${simpleJob.shardingTotalCount}") final int shardingTotalCount,
-                                           @Value("${simpleJob.shardingItemParameters}") final String shardingItemParameters) {
+    public JobScheduler dataflowJobScheduler(final DataflowJob dataflowJob, @Value("${dataflowJob.cron}") final String cron, @Value("${dataflowJob.shardingTotalCount}") final int shardingTotalCount,
+                                           @Value("${dataflowJob.shardingItemParameters}") final String shardingItemParameters) {
         return new SpringJobScheduler(dataflowJob, regCenter, getLiteJobConfiguration(dataflowJob.getClass(), cron, shardingTotalCount, shardingItemParameters), jobEventConfiguration);
     }
     

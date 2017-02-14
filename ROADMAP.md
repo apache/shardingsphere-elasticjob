@@ -83,4 +83,4 @@
     - [ ] Cross Data Center
     - [ ] A/B Test
 - [x] Spring Integrate
-- [ ] Web Console
+- [x] Web Console

@@ -50,57 +50,57 @@ public final class ConfigurationServiceTest {
     public void assertAdd() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.add(jobConfig);
-        verify(regCenter).persist("/config/test_job", CloudJsonConstants.getJobJson());
+        verify(regCenter).persist("/config/job/test_job", CloudJsonConstants.getJobJson());
     }
     
     @Test
     public void assertUpdate() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job");
         configService.update(jobConfig);
-        verify(regCenter).update("/config/test_job", CloudJsonConstants.getJobJson());
+        verify(regCenter).update("/config/job/test_job", CloudJsonConstants.getJobJson());
     }
     
     @Test
     public void assertAddSpringJob() {
         CloudJobConfiguration jobConfig = CloudJobConfigurationBuilder.createCloudSpringJobConfiguration("test_spring_job");
         configService.add(jobConfig);
-        verify(regCenter).persist("/config/test_spring_job", CloudJsonConstants.getSpringJobJson());
+        verify(regCenter).persist("/config/job/test_spring_job", CloudJsonConstants.getSpringJobJson());
     }
     
     @Test
     public void assertLoadAllWithoutRootNode() {
-        when(regCenter.isExisted("/config")).thenReturn(false);
+        when(regCenter.isExisted("/config/job")).thenReturn(false);
         assertTrue(configService.loadAll().isEmpty());
-        verify(regCenter).isExisted("/config");
+        verify(regCenter).isExisted("/config/job");
     }
     
     @Test
     public void assertLoadAllWithRootNode() {
-        when(regCenter.isExisted("/config")).thenReturn(true);
+        when(regCenter.isExisted("/config/job")).thenReturn(true);
         when(regCenter.getChildrenKeys(ConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
-        when(regCenter.isExisted("/config/test_job_1")).thenReturn(true);
-        when(regCenter.isExisted("/config/test_job_2")).thenReturn(false);
-        when(regCenter.get("/config/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
+        when(regCenter.isExisted("/config/job/test_job_1")).thenReturn(true);
+        when(regCenter.isExisted("/config/job/test_job_2")).thenReturn(false);
+        when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
         Collection<CloudJobConfiguration> actual = configService.loadAll();
         assertThat(actual.size(), is(1));
         assertThat(actual.iterator().next().getJobName(), is("test_job_1"));
-        verify(regCenter).isExisted("/config");
-        verify(regCenter).getChildrenKeys("/config");
-        verify(regCenter).get("/config/test_job_1");
-        verify(regCenter).get("/config/test_job_2");
+        verify(regCenter).isExisted("/config/job");
+        verify(regCenter).getChildrenKeys("/config/job");
+        verify(regCenter).get("/config/job/test_job_1");
+        verify(regCenter).get("/config/job/test_job_2");
     }
     
     @Test
     public void assertLoadWithoutConfig() {
-        when(regCenter.isExisted("/config/test_job")).thenReturn(false);
+        when(regCenter.isExisted("/config/job/test_job")).thenReturn(false);
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
         assertFalse(actual.isPresent());
     }
     
     @Test
     public void assertLoadWithConfig() {
-        when(regCenter.isExisted("/config/test_job")).thenReturn(true);
-        when(regCenter.get("/config/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        when(regCenter.isExisted("/config/job/test_job")).thenReturn(true);
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
         assertTrue(actual.isPresent());
         assertThat(actual.get().getJobName(), is("test_job"));
@@ -108,8 +108,8 @@ public final class ConfigurationServiceTest {
     
     @Test
     public void assertLoadWithSpringConfig() {
-        when(regCenter.isExisted("/config/test_spring_job")).thenReturn(true);
-        when(regCenter.get("/config/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
+        when(regCenter.isExisted("/config/job/test_spring_job")).thenReturn(true);
+        when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
         assertTrue(actual.isPresent());
         assertThat(actual.get().getBeanName(), is("springSimpleJob"));
@@ -119,6 +119,6 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertRemove() {
         configService.remove("test_job");
-        verify(regCenter).remove("/config/test_job");
+        verify(regCenter).remove("/config/job/test_job");
     }
 }

@@ -36,8 +36,8 @@ import org.apache.mesos.Protos;
 import org.apache.mesos.Protos.TaskInfo;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -50,7 +50,7 @@ public final class TaskExecutor implements Executor {
     
     private final ExecutorService executorService;
     
-    private final ConcurrentHashMap<String, ClassPathXmlApplicationContext> applicationContexts = new ConcurrentHashMap<>();
+    private final Map<String, ClassPathXmlApplicationContext> applicationContexts = new HashMap<>();
     
     private volatile JobEventBus jobEventBus = new JobEventBus();
     
@@ -145,12 +145,14 @@ public final class TaskExecutor implements Executor {
         
         private ElasticJob getElasticJobBean(final JobConfigurationContext jobConfig) {
             String applicationContextFile = jobConfig.getApplicationContext();
-            ClassPathXmlApplicationContext applicationContext = applicationContexts.get(applicationContextFile);
-            if (null == applicationContext) {
-                applicationContext = new ClassPathXmlApplicationContext(applicationContextFile);
-                applicationContexts.putIfAbsent(applicationContextFile, applicationContext);
+            if (null == applicationContexts.get(applicationContextFile)) {
+                synchronized (applicationContexts) {
+                    if (null == applicationContexts.get(applicationContextFile)) {
+                        applicationContexts.put(applicationContextFile, new ClassPathXmlApplicationContext(applicationContextFile));
+                    }
+                }
             }
-            return (ElasticJob) applicationContext.getBean(jobConfig.getBeanName());
+            return (ElasticJob) applicationContexts.get(applicationContextFile).getBean(jobConfig.getBeanName());
         }
         
         private ElasticJob getElasticJobClass(final JobConfigurationContext jobConfig) {

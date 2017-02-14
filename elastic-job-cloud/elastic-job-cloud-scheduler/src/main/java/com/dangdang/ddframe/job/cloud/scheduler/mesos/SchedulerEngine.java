@@ -17,6 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
+import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
@@ -40,25 +42,26 @@ import java.util.List;
 @Slf4j
 public final class SchedulerEngine implements Scheduler {
     
-    private final LeasesQueue leasesQueue;
-    
     private final TaskScheduler taskScheduler;
     
     private final FacadeService facadeService;
     
     private final JobEventBus jobEventBus;
     
+    private final FrameworkIDService frameworkIDService;
+    
+    private final StatisticManager statisticManager;
+    
     @Override
     public void registered(final SchedulerDriver schedulerDriver, final Protos.FrameworkID frameworkID, final Protos.MasterInfo masterInfo) {
         log.info("call registered");
-        facadeService.start();
+        frameworkIDService.save(frameworkID.getValue());
         taskScheduler.expireAllLeases();
     }
     
     @Override
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
         log.info("call reregistered");
-        facadeService.start();
         taskScheduler.expireAllLeases();
     }
     
@@ -66,7 +69,7 @@ public final class SchedulerEngine implements Scheduler {
     public void resourceOffers(final SchedulerDriver schedulerDriver, final List<Protos.Offer> offers) {
         for (Protos.Offer offer: offers) {
             log.trace("Adding offer {} from host {}", offer.getId(), offer.getHostname());
-            leasesQueue.offer(offer);
+            LeasesQueue.getInstance().offer(offer);
         }
     }
     
@@ -80,8 +83,12 @@ public final class SchedulerEngine implements Scheduler {
     public void statusUpdate(final SchedulerDriver schedulerDriver, final Protos.TaskStatus taskStatus) {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
+        String jobName = taskContext.getMetaInfo().getJobName();
+        if (!facadeService.load(jobName).isPresent()) {
+            return;
+        }
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
-        jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), Source.CLOUD_SCHEDULER, 
+        jobEventBus.post(new JobStatusTraceEvent(jobName, taskContext.getId(), taskContext.getSlaveId(), Source.CLOUD_SCHEDULER, 
                 taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
@@ -89,16 +96,19 @@ public final class SchedulerEngine implements Scheduler {
                     facadeService.updateDaemonStatus(taskContext, false);
                 } else if ("COMPLETE".equals(taskStatus.getMessage())) {
                     facadeService.updateDaemonStatus(taskContext, true);
+                } else {
+                    facadeService.updateDaemonTask(taskContext);
                 }
                 break;
             case TASK_FINISHED:
                 facadeService.removeRunning(taskContext);
                 unAssignTask(taskId);
+                statisticManager.taskRunSuccessfully();
                 break;
             case TASK_KILLED:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);
-                facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
+                facadeService.addDaemonJobToReadyQueue(jobName);
                 unAssignTask(taskId);
                 break;
             case TASK_LOST:
@@ -107,8 +117,8 @@ public final class SchedulerEngine implements Scheduler {
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);
                 facadeService.recordFailoverTask(taskContext);
-                facadeService.addDaemonJobToReadyQueue(taskContext.getMetaInfo().getJobName());
                 unAssignTask(taskId);
+                statisticManager.taskRunFailed();
                 break;
             default:
                 break;
@@ -130,7 +140,6 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void disconnected(final SchedulerDriver schedulerDriver) {
         log.warn("call disconnected");
-        facadeService.stop();
     }
     
     @Override
@@ -141,7 +150,7 @@ public final class SchedulerEngine implements Scheduler {
     
     @Override
     public void executorLost(final SchedulerDriver schedulerDriver, final Protos.ExecutorID executorID, final Protos.SlaveID slaveID, final int i) {
-        log.debug("call executorLost slaveID is: {}, executorID is: {}", slaveID, executorID);
+        log.warn("call executorLost slaveID is: {}, executorID is: {}", slaveID, executorID);
     }
     
     @Override

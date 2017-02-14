@@ -45,18 +45,18 @@ public final class JobExecutionEventTest {
     
     @Test
     public void assertExecutionSuccess() {
-        JobExecutionEvent actual = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        actual.executionSuccess();
-        assertNotNull(actual.getCompleteTime());
-        assertTrue(actual.isSuccess());
+        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent successEvent = startEvent.executionSuccess();
+        assertNotNull(successEvent.getCompleteTime());
+        assertTrue(successEvent.isSuccess());
     }
     
     @Test
     public void assertExecutionFailure() {
-        JobExecutionEvent actual = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
-        actual.executionFailure(new RuntimeException("failure"));
-        assertNotNull(actual.getCompleteTime());
-        assertFalse(actual.isSuccess());
-        assertThat(actual.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+        JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER, 0);
+        JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
+        assertNotNull(failureEvent.getCompleteTime());
+        assertFalse(failureEvent.isSuccess());
+        assertThat(failureEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
     }
 }

@@ -20,13 +20,18 @@ package com.dangdang.ddframe.job.cloud.scheduler.producer;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.lifecycle.LifecycleService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.exception.AppConfigurationException;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
 /**
@@ -35,7 +40,10 @@ import org.apache.mesos.SchedulerDriver;
  * @author caohao
  * @author zhangliang
  */
+@Slf4j
 public class ProducerManager {
+    
+    private final CloudAppConfigurationService appConfigService;
     
     private final ConfigurationService configService;
             
@@ -45,20 +53,23 @@ public class ProducerManager {
     
     private final TransientProducerScheduler transientProducerScheduler;
     
-    private final LifecycleService lifecycleService;
+    private final SchedulerDriver schedulerDriver;
     
-    ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
+    public ProducerManager(final SchedulerDriver schedulerDriver, final CoordinatorRegistryCenter regCenter) {
+        this.schedulerDriver = schedulerDriver;
+        appConfigService = new CloudAppConfigurationService(regCenter);
         configService = new ConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
-        runningService = new RunningService();
+        runningService = new RunningService(regCenter);
         transientProducerScheduler = new TransientProducerScheduler(readyService);
-        lifecycleService = new LifecycleService(schedulerDriver);
     }
     
     /**
      * 启动作业调度器.
      */
     public void startup() {
+        log.info("Start producer manager");
+        transientProducerScheduler.start();
         for (CloudJobConfiguration each : configService.loadAll()) {
             schedule(each);
         }
@@ -70,9 +81,13 @@ public class ProducerManager {
      * @param jobConfig 作业配置
      */
     public void register(final CloudJobConfiguration jobConfig) {
+        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(jobConfig.getAppName());
+        if (!appConfigFromZk.isPresent()) {
+            throw new AppConfigurationException("Register app '%s' firstly.", jobConfig.getAppName());
+        }
         Optional<CloudJobConfiguration> jobConfigFromZk = configService.load(jobConfig.getJobName());
         if (jobConfigFromZk.isPresent()) {
-            throw new JobConfigurationException("job '%s' already existed.", jobConfig.getJobName());
+            throw new JobConfigurationException("Job '%s' already existed.", jobConfig.getJobName());
         }
         configService.add(jobConfig);
         schedule(jobConfig);
@@ -125,7 +140,9 @@ public class ProducerManager {
      * @param jobName 作业名称
      */
     public void unschedule(final String jobName) {
-        lifecycleService.killJob(jobName);
+        for (TaskContext each : runningService.getRunningTasks(jobName)) {
+            schedulerDriver.killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
+        }
         runningService.remove(jobName);
         readyService.remove(Lists.newArrayList(jobName));
     }
@@ -144,6 +161,7 @@ public class ProducerManager {
      * 关闭作业调度器.
      */
     public void shutdown() {
+        log.info("Stop producer manager");
         transientProducerScheduler.shutdown();
     }
 }

@@ -19,14 +19,18 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.context.TaskContext;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
@@ -56,7 +60,10 @@ public final class FacadeServiceTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private ConfigurationService configService;
+    private CloudAppConfigurationService appConfigService;
+    
+    @Mock
+    private ConfigurationService jobConfigService;
     
     @Mock
     private ReadyService readyService;
@@ -72,7 +79,8 @@ public final class FacadeServiceTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         facadeService = new FacadeService(regCenter);
-        ReflectionUtils.setFieldValue(facadeService, "configService", configService);
+        ReflectionUtils.setFieldValue(facadeService, "jobConfigService", jobConfigService);
+        ReflectionUtils.setFieldValue(facadeService, "appConfigService", appConfigService);
         ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
@@ -81,7 +89,7 @@ public final class FacadeServiceTest {
     @Test
     public void assertStart() {
         facadeService.start();
-        verify(runningService).clear();
+        verify(runningService).start();
     }
     
     @Test
@@ -142,34 +150,59 @@ public final class FacadeServiceTest {
     @Test
     public void assertRecordFailoverTaskWhenJobConfigNotExisted() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
-        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+        when(jobConfigService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(failoverService, times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test
     public void assertRecordFailoverTaskWhenIsFailoverDisabled() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createOtherCloudJobConfiguration("test_job")));
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createOtherCloudJobConfiguration("test_job")));
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(failoverService, times(0)).add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
+    }
+    
+    @Test
+    public void assertRecordFailoverTaskWhenIsFailoverDisabledAndIsDaemonJob() {
+        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(failoverService).add(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test
     public void assertRecordFailoverTaskWhenIsFailoverEnabled() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         TaskContext taskContext = TaskContext.from(taskNode.getTaskNodeValue());
         facadeService.recordFailoverTask(taskContext);
         verify(failoverService).add(taskContext);
-        verify(runningService).remove(TaskContext.from(taskNode.getTaskNodeValue()));
     }
     
     @Test
-    public void assertLoad() {
-        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
+    public void assertLoadAppConfig() {
+        Optional<CloudAppConfiguration> appConfigOptional = Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app"));
+        when(appConfigService.load("test_app")).thenReturn(appConfigOptional);
+        assertThat(facadeService.loadAppConfig("test_app"), is(appConfigOptional));
+    }
+    
+    @Test
+    public void assertLoadJobConfig() {
+        Optional<CloudJobConfiguration> jobConfigOptional = Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job"));
+        when(jobConfigService.load("test_job")).thenReturn(jobConfigOptional);
+        assertThat(facadeService.load("test_job"), is(jobConfigOptional));
+    }
+    
+    @Test
+    public void assertLoadAppConfigWhenAbsent() {
+        when(appConfigService.load("test_app")).thenReturn(Optional.<CloudAppConfiguration>absent());
+        assertThat(facadeService.loadAppConfig("test_app"), is(Optional.<CloudAppConfiguration>absent()));
+    }
+    
+    @Test
+    public void assertLoadJobConfigWhenAbsent() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         assertThat(facadeService.load("test_job"), is(Optional.<CloudJobConfiguration>absent()));
     }
     
@@ -224,7 +257,7 @@ public final class FacadeServiceTest {
     @Test
     public void assertGetFailoverTaskId() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         TaskContext taskContext = TaskContext.from(taskNode.getTaskNodeValue());
         facadeService.recordFailoverTask(taskContext);
         verify(failoverService).add(taskContext);

@@ -7,11 +7,30 @@ weight=1
 
 # Release Notes
 
-## 2.0.4-SNAPSHOT
+## 2.0.5-SNAPSHOT
+
+### 缺陷修正
+
+1. [ISSUE 222](https://github.com/dangdangdotcom/elastic-job/issues/222) elastic-job-lite-spring的reg配置参数max-retries不起作用
+1. [ISSUE 231](https://github.com/dangdangdotcom/elastic-job/issues/231) 批量删除cloud作业时，mesos会提前同步TASK_LOST消息给framework，导致作业被重新放入ready队列并执行
+
+### 新功能
+
+1. [ISSUE #217](https://github.com/dangdangdotcom/elastic-job/issues/217) cloud版本增加APP维度配置
+1. [ISSUE #223](https://github.com/dangdangdotcom/elastic-job/issues/223) cloud版本事件追踪采样率
+
+## 2.0.4
 
 ### 缺陷修正
 
 1. [ISSUE #189](https://github.com/dangdangdotcom/elastic-job/issues/189) 管理后台执行失效操作，但任务还在执行
+1. [ISSUE #204](https://github.com/dangdangdotcom/elastic-job/issues/204) 异步事件执行消息顺序不一致导致数据库数据不准确
+1. [ISSUE #209](https://github.com/dangdangdotcom/elastic-job/issues/209) cloud作业资源分配算法改进
+
+### 新功能
+
+1. [ISSUE #203](https://github.com/dangdangdotcom/elastic-job/issues/203) cloud类型作业增加运行统计，并提供REST API查询
+1. [ISSUE #215](https://github.com/dangdangdotcom/elastic-job/issues/215) cloud版本运维管理界面
 
 ### 功能提升
 

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
@@ -27,18 +27,22 @@ import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 待运行作业队列服务.
  *
  * @author zhangliang
+ * @author liguangyun
  */
 @Slf4j
 public class ReadyService {
@@ -54,7 +58,7 @@ public class ReadyService {
     public ReadyService(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
         configService = new ConfigurationService(regCenter);
-        runningService = new RunningService();
+        runningService = new RunningService(regCenter);
     }
     
     /**
@@ -91,7 +95,7 @@ public class ReadyService {
             return;
         }
         Optional<CloudJobConfiguration> cloudJobConfig = configService.load(jobName);
-        if (!cloudJobConfig.isPresent() || JobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType()) {
+        if (!cloudJobConfig.isPresent() || JobExecutionType.DAEMON != cloudJobConfig.get().getJobExecutionType() || runningService.isJobRunning(jobName)) {
             return;
         }
         regCenter.persist(ReadyNode.getReadyJobNodePath(jobName), "1");
@@ -137,7 +141,7 @@ public class ReadyService {
                 regCenter.remove(ReadyNode.getReadyJobNodePath(each));
                 continue;
             }
-            if (!runningService.isJobRunning(each) || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
+            if (!runningService.isJobRunning(each)) {
                 result.add(JobContext.from(jobConfig.get(), ExecutionType.READY));
             }
         }
@@ -160,5 +164,25 @@ public class ReadyService {
                 regCenter.persist(readyJobNode, Integer.toString(times - 1));
             }
         }
+    }
+    
+    /**
+     * 获取待运行的全部任务.
+     * 
+     * @return 待运行的全部任务
+     */
+    public Map<String, Integer> getAllReadyTasks() {
+        if (!regCenter.isExisted(ReadyNode.ROOT)) {
+            return Collections.emptyMap();
+        }
+        List<String> jobNames = regCenter.getChildrenKeys(ReadyNode.ROOT);
+        Map<String, Integer> result = new HashMap<>(jobNames.size(), 1);
+        for (String each : jobNames) {
+            String times = regCenter.get(ReadyNode.getReadyJobNodePath(each));
+            if (!Strings.isNullOrEmpty(times)) {
+                result.put(each, Integer.parseInt(times));
+            }
+        }
+        return result;
     }
 }

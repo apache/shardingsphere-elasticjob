@@ -17,18 +17,18 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
-import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
-import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.ExecutionType;
+import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +40,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -81,22 +83,6 @@ public final class FailoverServiceTest {
     }
     
     @Test
-    public void assertAddWhenJobIsNotPresent() {
-        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
-        when(configService.load("test_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
-        failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(regCenter, times(0)).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
-    }
-    
-    @Test
-    public void assertAddWhenIsDaemonJob() {
-        TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
-        failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
-        verify(regCenter, times(0)).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
-    }
-    
-    @Test
     public void assertAddWhenExisted() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
@@ -126,6 +112,8 @@ public final class FailoverServiceTest {
         when(runningService.isTaskRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()))).thenReturn(false);
         failoverService.add(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(regCenter).isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath());
+        verify(runningService).isTaskRunning(TaskContext.MetaInfo.from(taskNode.getTaskNodePath()));
+        verify(regCenter).persist("/state/failover/test_job/" + taskNode.getTaskNodePath(), taskNode.getTaskNodeValue());
     }
     
     @Test
@@ -175,7 +163,64 @@ public final class FailoverServiceTest {
         when(regCenter.isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(true);
         when(regCenter.get("/state/failover/test_job/" + taskNode.getTaskNodePath())).thenReturn(taskNode.getTaskNodeValue());
         assertThat(failoverService.getTaskId(taskNode.getMetaInfo()).get(), is(taskNode.getTaskNodeValue()));
-        verify(regCenter).isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath());
+        verify(regCenter, times(2)).isExisted("/state/failover/test_job/" + taskNode.getTaskNodePath());
     }
     
+    @Test
+    public void assertGetAllFailoverTasksWithoutRootNode() {
+        when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(false);
+        assertTrue(failoverService.getAllFailoverTasks().isEmpty());
+        verify(regCenter).isExisted(FailoverNode.ROOT);
+    }
+    
+    @Test
+    public void assertGetAllFailoverTasksWhenRootNodeHasNoChild() {
+        when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
+        when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Collections.<String>emptyList());
+        assertTrue(failoverService.getAllFailoverTasks().isEmpty());
+        verify(regCenter).isExisted(FailoverNode.ROOT);
+        verify(regCenter).getChildrenKeys(FailoverNode.ROOT);
+    }
+    
+    @Test
+    public void assertGetAllFailoverTasksWhenJobNodeHasNoChild() {
+        when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
+        when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Lists.newArrayList("test_job"));
+        when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job"))).thenReturn(Collections.<String>emptyList());
+        assertTrue(failoverService.getAllFailoverTasks().isEmpty());
+        verify(regCenter).isExisted(FailoverNode.ROOT);
+        verify(regCenter).getChildrenKeys(FailoverNode.ROOT);
+        verify(regCenter).getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job"));
+    }
+    
+    @Test
+    public void assertGetAllFailoverTasksWithRootNode() {
+        String uuid1 = UUID.randomUUID().toString();
+        String uuid2 = UUID.randomUUID().toString();
+        String uuid3 = UUID.randomUUID().toString();
+        when(regCenter.isExisted(FailoverNode.ROOT)).thenReturn(true);
+        when(regCenter.getChildrenKeys(FailoverNode.ROOT)).thenReturn(Lists.newArrayList("test_job_1", "test_job_2"));
+        when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_1"))).thenReturn(Lists.newArrayList("test_job_1@-@0", "test_job_1@-@1"));
+        when(regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_2"))).thenReturn(Lists.newArrayList("test_job_2@-@0"));
+        when(regCenter.get(FailoverNode.getFailoverTaskNodePath("test_job_1@-@0"))).thenReturn(uuid1);
+        when(regCenter.get(FailoverNode.getFailoverTaskNodePath("test_job_1@-@1"))).thenReturn(uuid2);
+        when(regCenter.get(FailoverNode.getFailoverTaskNodePath("test_job_2@-@0"))).thenReturn(uuid3);
+        Map<String, Collection<FailoverTaskInfo>> result = failoverService.getAllFailoverTasks();
+        assertThat(result.size(), is(2));
+        assertThat(result.get("test_job_1").size(), is(2));
+        assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[0].getTaskInfo().toString(), is("test_job_1@-@0"));
+        assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[0].getOriginalTaskId(), is(uuid1));
+        assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[1].getTaskInfo().toString(), is("test_job_1@-@1"));
+        assertThat(result.get("test_job_1").toArray(new FailoverTaskInfo[]{})[1].getOriginalTaskId(), is(uuid2));
+        assertThat(result.get("test_job_2").size(), is(1));
+        assertThat(result.get("test_job_2").iterator().next().getTaskInfo().toString(), is("test_job_2@-@0"));
+        assertThat(result.get("test_job_2").iterator().next().getOriginalTaskId(), is(uuid3));
+        verify(regCenter).isExisted(FailoverNode.ROOT);
+        verify(regCenter).getChildrenKeys(FailoverNode.ROOT);
+        verify(regCenter).getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_1"));
+        verify(regCenter).getChildrenKeys(FailoverNode.getFailoverJobNodePath("test_job_2"));
+        verify(regCenter).get(FailoverNode.getFailoverTaskNodePath("test_job_1@-@0"));
+        verify(regCenter).get(FailoverNode.getFailoverTaskNodePath("test_job_1@-@1"));
+        verify(regCenter).get(FailoverNode.getFailoverTaskNodePath("test_job_2@-@0"));
+    }
 }

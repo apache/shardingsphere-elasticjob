@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.reg.zookeeper;
 
+import com.dangdang.ddframe.job.fixture.EmbedTestingServer;
 import com.dangdang.ddframe.job.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -33,17 +34,17 @@ public final class ZookeeperRegistryCenterForAuthTest {
     
     private static final String NAME_SPACE = ZookeeperRegistryCenterForAuthTest.class.getName();
     
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), NAME_SPACE);
+    private static final ZookeeperConfiguration ZOOKEEPER_CONFIGURATION = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), NAME_SPACE);
     
     private static ZookeeperRegistryCenter zkRegCenter;
     
     @BeforeClass
     public static void setUp() {
         EmbedTestingServer.start();
-        zkConfig.setDigest("digest:password");
-        zkConfig.setSessionTimeoutMilliseconds(5000);
-        zkConfig.setConnectionTimeoutMilliseconds(5000);
-        zkRegCenter = new ZookeeperRegistryCenter(zkConfig);
+        ZOOKEEPER_CONFIGURATION.setDigest("digest:password");
+        ZOOKEEPER_CONFIGURATION.setSessionTimeoutMilliseconds(5000);
+        ZOOKEEPER_CONFIGURATION.setConnectionTimeoutMilliseconds(5000);
+        zkRegCenter = new ZookeeperRegistryCenter(ZOOKEEPER_CONFIGURATION);
         zkRegCenter.init();
         ZookeeperRegistryCenterTestUtil.persist(zkRegCenter);
     }

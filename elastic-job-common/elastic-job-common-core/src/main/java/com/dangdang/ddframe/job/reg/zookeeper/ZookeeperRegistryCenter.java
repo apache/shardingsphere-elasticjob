@@ -27,7 +27,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.CuratorFrameworkFactory.Builder;
 import org.apache.curator.framework.api.ACLProvider;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;
@@ -60,6 +59,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     
     private final Map<String, TreeCache> caches = new HashMap<>();
     
+    @Getter
     private CuratorFramework client;
     
     public ZookeeperRegistryCenter(final ZookeeperConfiguration zkConfig) {
@@ -69,7 +69,7 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     @Override
     public void init() {
         log.debug("Elastic job: zookeeper registry center init, server lists is: {}.", zkConfig.getServerLists());
-        Builder builder = CuratorFrameworkFactory.builder()
+        CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder()
                 .connectString(zkConfig.getServerLists())
                 .retryPolicy(new ExponentialBackoffRetry(zkConfig.getBaseSleepTimeMilliseconds(), zkConfig.getMaxRetries(), zkConfig.getMaxSleepTimeMilliseconds()))
                 .namespace(zkConfig.getNamespace());
@@ -81,18 +81,18 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
         }
         if (!Strings.isNullOrEmpty(zkConfig.getDigest())) {
             builder.authorization("digest", zkConfig.getDigest().getBytes(Charsets.UTF_8))
-                   .aclProvider(new ACLProvider() {
-                       
-                       @Override
-                       public List<ACL> getDefaultAcl() {
-                           return ZooDefs.Ids.CREATOR_ALL_ACL;
-                       }
-                       
-                       @Override
-                       public List<ACL> getAclForPath(final String path) {
-                           return ZooDefs.Ids.CREATOR_ALL_ACL;
-                       }
-                   });
+                    .aclProvider(new ACLProvider() {
+                    
+                        @Override
+                        public List<ACL> getDefaultAcl() {
+                            return ZooDefs.Ids.CREATOR_ALL_ACL;
+                        }
+                    
+                        @Override
+                        public List<ACL> getAclForPath(final String path) {
+                            return ZooDefs.Ids.CREATOR_ALL_ACL;
+                        }
+                    });
         }
         client = builder.build();
         client.start();
@@ -101,9 +101,9 @@ public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
                 client.close();
                 throw new KeeperException.OperationTimeoutException();
             }
-        //CHECKSTYLE:OFF
+            //CHECKSTYLE:OFF
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
+            //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }

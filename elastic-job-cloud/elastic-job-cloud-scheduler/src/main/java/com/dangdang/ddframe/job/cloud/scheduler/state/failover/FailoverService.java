@@ -17,10 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 
-import com.dangdang.ddframe.job.cloud.scheduler.boot.env.BootstrapEnvironment;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.ExecutionType;
@@ -29,6 +28,7 @@ import com.dangdang.ddframe.job.context.TaskContext.MetaInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +36,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -59,7 +61,7 @@ public class FailoverService {
     public FailoverService(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
         configService = new ConfigurationService(regCenter);
-        runningService = new RunningService();
+        runningService = new RunningService(regCenter);
     }
     
     /**
@@ -72,12 +74,9 @@ public class FailoverService {
             log.warn("Cannot add job, caused by read state queue size is larger than {}.", env.getFrameworkConfiguration().getJobStateQueueSize());
             return;
         }
-        Optional<CloudJobConfiguration> jobConfig = configService.load(taskContext.getMetaInfo().getJobName());
-        if (!jobConfig.isPresent() || JobExecutionType.DAEMON == jobConfig.get().getJobExecutionType()) {
-            return;
-        }
         String failoverTaskNodePath = FailoverNode.getFailoverTaskNodePath(taskContext.getMetaInfo().toString());
         if (!regCenter.isExisted(failoverTaskNodePath) && !runningService.isTaskRunning(taskContext.getMetaInfo())) {
+            // TODO Daemon类型作业增加存储是否立即失效转移
             regCenter.persist(failoverTaskNodePath, taskContext.getId());
         }
     }
@@ -148,6 +147,44 @@ public class FailoverService {
         Optional<String> result = Optional.absent();
         if (regCenter.isExisted(failoverTaskNodePath)) {
             result = Optional.of(regCenter.get(failoverTaskNodePath));
+        }
+        return result;
+    }
+    
+    /**
+     * 获取待失效转移的全部任务.
+     * 
+     * @return 待失效转移的全部任务
+     */
+    public Map<String, Collection<FailoverTaskInfo>> getAllFailoverTasks() {
+        if (!regCenter.isExisted(FailoverNode.ROOT)) {
+            return Collections.emptyMap();
+        }
+        List<String> jobNames = regCenter.getChildrenKeys(FailoverNode.ROOT);
+        Map<String, Collection<FailoverTaskInfo>> result = new HashMap<>(jobNames.size(), 1);
+        for (String each : jobNames) {
+            Collection<FailoverTaskInfo> failoverTasks = getFailoverTasks(each);
+            if (!failoverTasks.isEmpty()) {
+                result.put(each, failoverTasks);
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * 获取待失效转移的任务集合.
+     *
+     * @param jobName 作业名称
+     * @return 待失效转移的任务集合
+     */
+    private Collection<FailoverTaskInfo> getFailoverTasks(final String jobName) {
+        List<String> failOverTasks = regCenter.getChildrenKeys(FailoverNode.getFailoverJobNodePath(jobName));
+        List<FailoverTaskInfo> result = new ArrayList<>(failOverTasks.size());
+        for (String each : failOverTasks) {
+            String originalTaskId = regCenter.get(FailoverNode.getFailoverTaskNodePath(each));
+            if (!Strings.isNullOrEmpty(originalTaskId)) {
+                result.add(new FailoverTaskInfo(MetaInfo.from(each), originalTaskId));
+            }
         }
         return result;
     }

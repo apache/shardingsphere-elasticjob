@@ -19,6 +19,9 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.netflix.fenzo.VirtualMachineLease;
 import com.netflix.fenzo.plugins.VMLeaseObject;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.mesos.Protos;
 
 import java.util.ArrayList;
@@ -31,7 +34,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author zhangliang
  */
-public final class LeasesQueue {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class LeasesQueue {
+    
+    @Getter
+    private static LeasesQueue instance = new LeasesQueue();
     
     private final BlockingQueue<VirtualMachineLease> queue = new LinkedBlockingQueue<>();
     
