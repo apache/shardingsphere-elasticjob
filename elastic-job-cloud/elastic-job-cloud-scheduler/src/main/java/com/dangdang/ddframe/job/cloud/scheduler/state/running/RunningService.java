@@ -76,6 +76,7 @@ public class RunningService {
                 continue;
             }
             RUNNING_TASKS.put(each, Sets.newCopyOnWriteArraySet(Lists.transform(regCenter.getChildrenKeys(RunningNode.getRunningJobNodePath(each)), new Function<String, TaskContext>() {
+                
                 @Override
                 public TaskContext apply(final String input) {
                     return TaskContext.from(regCenter.get(RunningNode.getRunningTaskNodePath(TaskContext.MetaInfo.from(input).toString())));
@@ -94,17 +95,13 @@ public class RunningService {
             return;
         }
         getRunningTasks(taskContext.getMetaInfo().getJobName()).add(taskContext);
-        if (!isDaemon(taskContext)) {
+        if (!isDaemon(taskContext.getMetaInfo().getJobName())) {
             return;
         }
         String runningTaskNodePath = RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString());
         if (!regCenter.isExisted(runningTaskNodePath)) {
             regCenter.persist(runningTaskNodePath, taskContext.getId());
         }
-    }
-    
-    private boolean isDaemon(final TaskContext taskContext) {
-        return isDaemon(taskContext.getMetaInfo().getJobName());
     }
     
     private boolean isDaemon(final String jobName) {
@@ -157,7 +154,7 @@ public class RunningService {
      */
     public void remove(final TaskContext taskContext) {
         getRunningTasks(taskContext.getMetaInfo().getJobName()).remove(taskContext);
-        if (!isDaemonOrAbsent(taskContext)) {
+        if (!isDaemonOrAbsent(taskContext.getMetaInfo().getJobName())) {
             return;
         }
         regCenter.remove(RunningNode.getRunningTaskNodePath(taskContext.getMetaInfo().toString()));
@@ -165,10 +162,6 @@ public class RunningService {
         if (regCenter.isExisted(jobRootNode) && regCenter.getChildrenKeys(jobRootNode).isEmpty()) {
             regCenter.remove(jobRootNode);
         }
-    }
-    
-    private boolean isDaemonOrAbsent(final TaskContext taskContext) {
-        return isDaemonOrAbsent(taskContext.getMetaInfo().getJobName());
     }
     
     private boolean isDaemonOrAbsent(final String jobName) {
@@ -238,10 +231,9 @@ public class RunningService {
         }
         Set<TaskContext> result = Sets.newHashSet();
         for (Map.Entry<String, Set<TaskContext>> each : RUNNING_TASKS.entrySet()) {
-            if (!isDaemonOrAbsent(each.getKey())) {
-                continue;
+            if (isDaemonOrAbsent(each.getKey())) {
+                result.addAll(each.getValue());
             }
-            result.addAll(each.getValue());
         }
         return result;
     }
