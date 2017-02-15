@@ -13,14 +13,14 @@ $(document).ready(function() {
     $('#status').click(function() {
         $('#contentRight').load('/html/job/job_status.html');
     });
+    $('#dashboard').click(function() {
+        $('#contentRight').load('/html/history/job_dashboard.html');
+    });
     $('#execDetail').click(function() {
         $('#contentRight').load('/html/history/job_exec_detail.html');
     });
     $('#execStatus').click(function() {
         $('#contentRight').load('/html/history/job_exec_status.html');
-    });
-    $('#dashboard').click(function() {
-        $('#contentRight').load('/html/history/job_dashboard.html');
     });
 });
 

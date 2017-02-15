@@ -173,6 +173,7 @@ public class ProducerManager {
         transientProducerScheduler.shutdown();
     }
     
+    // TODO 挪到ReconcileService中
     /**
      * 为特定的任务进行显式协调.
      * 
@@ -199,6 +200,7 @@ public class ProducerManager {
         }));
     }
     
+    // TODO 挪到ReconcileService中
     /**
      * 全量的显示协调.
      */
@@ -209,6 +211,7 @@ public class ProducerManager {
         }
     }
     
+    // TODO 挪到ReconcileService中
     /**
      * 隐式协调.
      */

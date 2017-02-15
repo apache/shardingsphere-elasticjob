@@ -72,7 +72,7 @@ function bootstrapValidator(){
                         message: '作业app名称长度不能超过100字符大小'
                     },
                     regexp: {
-                        regexp: /^([a-zA-Z_][a-zA-Z0-9_]*\.)*[a-zA-Z_][a-zA-Z0-9_]*$/,
+                        regexp: /[a-zA-Z0-9_-][a-zA-Z_.]*$/,
                         message: '作业app名称包含非法字符'
                     },
                     callback: {
@@ -233,9 +233,6 @@ function submitBootstrapValidator(){
             }
         }
     });
-    $("#reset_form").on("click", function(){
-        $('#job-settings-form').data('bootstrapValidator').resetForm();
-    });
 }
     
 function submitAppBootstrapValidator(){
@@ -246,16 +243,14 @@ function submitAppBootstrapValidator(){
             bindSubmitAppSettingsForm();
         }
     });
-    $("#reset_form").on("click", function(){
-        $('#job-settings-form').data('bootstrapValidator').resetForm();
-    });
 }
+    
 function dataControl(){
     $('#jobType').change(function() {
         var jobType = $('#jobType').val();
         if(jobType =='SIMPLE'){ 
             $("#jobClassModel").show();
-            $("#scriptCommandLine_text").hide();
+            $("#scriptCommandLineText").hide();
             $("#streamingProcess").hide();
             $("#streamingProcessBox").hide();
             $("#bootstrapScriptDiv").hide();
@@ -263,11 +258,11 @@ function dataControl(){
             $("#jobClassModel").show();
             $("#streamingProcess").show();
             $("#streamingProcessBox").show();
-            $("#scriptCommandLine_text").hide();
+            $("#scriptCommandLineText").hide();
             $("#bootstrapScriptDiv").hide();
         }else if(jobType =='SCRIPT'){
             $("#jobClassModel").hide();
-            $("#scriptCommandLine_text").show(); 
+            $("#scriptCommandLineText").show(); 
             $("#streamingProcess").hide();
             $("#streamingProcessBox").hide();
             $("#bootstrapScriptDiv").show();
@@ -300,10 +295,6 @@ function dataInfo(){
 }
     
 function dataAppInfo(){
-/*    var eventTraceSamplingCount = $("#eventTraceSamplingCount").val();
-    if(eventTraceSamplingCount == "" || eventTraceSamplingCount == "undefined"){
-        eventTraceSamplingCount = 0;
-    }*/
     return {
         "appName":$("#appName").val(),
         "cpuCount":$("#cpuCount").val(),

@@ -39,7 +39,7 @@ function detailJob(jobName){
                 if(result.scriptCommandLine == null){
                     $('#JobDetailTable').bootstrapTable('hideColumn', 'scriptCommandLine');
                 }
-                $("#data-detail").modal({backdrop: 'static', keyboard: true});
+                $("#dataDetail").modal({backdrop: 'static', keyboard: true});
             }else{
                 alert("展示详情页失败！");
             }
@@ -47,9 +47,9 @@ function detailJob(jobName){
     });
 }
     
-$('#add_job').click(function() {
-    $('#addjob_body').load('html/job/add_job.html');
-    $('#data-add').modal({backdrop: 'static', keyboard: true});
+$('#addJob').click(function() {
+    $('#addJobBody').load('html/job/add_job.html');
+    $('#dataAdd').modal({backdrop: 'static', keyboard: true});
 });
     
 function updateJob(jobName){
@@ -58,7 +58,7 @@ function updateJob(jobName){
         async: false,
         success:function(result){
             if (null != result) {
-                $('#updatejob_body').load('html/job/modify_job.html',null,function(){
+                $('#updateJobBody').load('html/job/modify_job.html',null,function(){
                     if(result.jobType == "SCRIPT"){
                         $("#bootstrapScriptDiv").show();
                     }
@@ -66,7 +66,7 @@ function updateJob(jobName){
                         $("#bootstrapScriptDiv").hide();
                     }
                     showJobSettingInfo(result);
-                    $('#data-update').modal({backdrop: 'static', keyboard: true});
+                    $('#dataUpdate').modal({backdrop: 'static', keyboard: true});
                 });
             }else{
                 alert("数据加载失败！");
@@ -94,7 +94,7 @@ function showJobSettingInfo(result){
     if(result.jobType =='SIMPLE'){
         $("#jobClass").attr("value",result.jobClass);
         $("#jobClassModel").show();
-        $("#scriptCommandLine_text").hide();
+        $("#scriptCommandLineText").hide();
         $("#streamingProcess").hide();
         $("#streamingProcessBox").hide();
         $("#bootstrapScriptDiv").hide();
@@ -103,12 +103,12 @@ function showJobSettingInfo(result){
         $("#jobClassModel").show();
         $("#streamingProcess").show();
         $("#streamingProcessBox").show();
-        $("#scriptCommandLine_text").hide();
+        $("#scriptCommandLineText").hide();
         $("#bootstrapScriptDiv").hide();
     }else if(result.jobType =='SCRIPT'){
         $("#jobClass").attr("");
         $("#jobClassModel").hide();
-        $("#scriptCommandLine_text").show(); 
+        $("#scriptCommandLineText").show(); 
         $("#streamingProcess").hide();
         $("#streamingProcessBox").hide();
         $("#bootstrapScriptDiv").show();
@@ -128,5 +128,4 @@ function showJobSettingInfo(result){
     }else{
         $("#streamingProcess").prop("checked",false);
     }
-
 }
