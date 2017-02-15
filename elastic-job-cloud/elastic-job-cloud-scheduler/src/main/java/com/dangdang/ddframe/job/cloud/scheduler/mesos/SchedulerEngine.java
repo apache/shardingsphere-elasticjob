@@ -96,8 +96,6 @@ public final class SchedulerEngine implements Scheduler {
                     facadeService.updateDaemonStatus(taskContext, false);
                 } else if ("COMPLETE".equals(taskStatus.getMessage())) {
                     facadeService.updateDaemonStatus(taskContext, true);
-                } else {
-                    facadeService.updateDaemonTask(taskContext);
                 }
                 break;
             case TASK_FINISHED:

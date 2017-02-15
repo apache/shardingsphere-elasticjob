@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulService;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.util.concurrent.Service;
 import org.apache.mesos.SchedulerDriver;
 import org.junit.Before;
@@ -36,10 +35,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class SchedulerServiceTest {
     
-    private BootstrapEnvironment env = BootstrapEnvironment.getInstance();
-    
-    @Mock
-    private CoordinatorRegistryCenter regCenter;
+    private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
     
     @Mock
     private CloudJobConfigurationListener cloudJobConfigurationListener;
@@ -52,9 +48,6 @@ public class SchedulerServiceTest {
     
     @Mock
     private ProducerManager producerManager;
-    
-    @Mock
-    private Service reconcileScheduledService;
     
     @Mock
     private StatisticManager statisticManager;
@@ -70,7 +63,7 @@ public class SchedulerServiceTest {
     @Before
     public void setUp() throws Exception {
         schedulerService = new SchedulerService(env, facadeService, schedulerDriver,  
-                producerManager, statisticManager, cloudJobConfigurationListener, reconcileScheduledService, 
+                producerManager, statisticManager, cloudJobConfigurationListener, 
                 taskLaunchScheduledService, restfulService);
     }
     
@@ -82,7 +75,6 @@ public class SchedulerServiceTest {
         inOrder.verify(producerManager).startup();
         inOrder.verify(statisticManager).startup();
         inOrder.verify(cloudJobConfigurationListener).start();
-        inOrder.verify(reconcileScheduledService).startAsync();
         inOrder.verify(taskLaunchScheduledService).startAsync();
         inOrder.verify(restfulService).start();
         inOrder.verify(schedulerDriver).start();
@@ -94,7 +86,6 @@ public class SchedulerServiceTest {
         InOrder inOrder = getInOrder();
         inOrder.verify(restfulService).stop();
         inOrder.verify(taskLaunchScheduledService).stopAsync();
-        inOrder.verify(reconcileScheduledService).stopAsync();
         inOrder.verify(cloudJobConfigurationListener).stop();
         inOrder.verify(statisticManager).shutdown();
         inOrder.verify(producerManager).shutdown();
@@ -104,7 +95,7 @@ public class SchedulerServiceTest {
     
     private InOrder getInOrder() {
         return Mockito.inOrder(facadeService, schedulerDriver,
-                producerManager, reconcileScheduledService, statisticManager, cloudJobConfigurationListener,
+                producerManager, statisticManager, cloudJobConfigurationListener,
                 taskLaunchScheduledService, restfulService);
     } 
 }

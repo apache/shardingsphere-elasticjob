@@ -28,11 +28,19 @@ import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.exception.AppConfigurationException;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * 发布任务作业调度管理器.
@@ -163,5 +171,48 @@ public class ProducerManager {
     public void shutdown() {
         log.info("Stop producer manager");
         transientProducerScheduler.shutdown();
+    }
+    
+    /**
+     * 为特定的任务进行显式协调.
+     * 
+     * @param taskId 任务ID
+     */
+    public void explicitReconcile(final String taskId) {
+        explicitReconcile(Collections.singletonList(Iterators.find(runningService.getRunningTasks(TaskContext.from(taskId).getMetaInfo().getJobName()).iterator(), new Predicate<TaskContext>() {
+            @Override
+            public boolean apply(final TaskContext input) {
+                return input.getId().equals(taskId);
+            }
+        })));
+    }
+    
+    private void explicitReconcile(final Collection<TaskContext> taskContexts) {
+        schedulerDriver.reconcileTasks(Collections2.transform(taskContexts, new Function<TaskContext, Protos.TaskStatus>() {
+            @Override
+            public Protos.TaskStatus apply(final TaskContext input) {
+                return Protos.TaskStatus.newBuilder()
+                        .setTaskId(Protos.TaskID.newBuilder().setValue(input.getId()).build())
+                        .setSlaveId(Protos.SlaveID.newBuilder().setValue(input.getSlaveId()).build())
+                        .setState(Protos.TaskState.TASK_RUNNING).build();
+            }
+        }));
+    }
+    
+    /**
+     * 全量的显示协调.
+     */
+    public void explicitReconcile() {
+        Set<TaskContext> runningDaemonTask = runningService.getAllRunningDaemonTasks();
+        if (!runningDaemonTask.isEmpty()) {
+            explicitReconcile(runningDaemonTask);
+        }
+    }
+    
+    /**
+     * 隐式协调.
+     */
+    public void implicitReconcile() {
+        schedulerDriver.reconcileTasks(Collections.<Protos.TaskStatus>emptyList());
     }
 }

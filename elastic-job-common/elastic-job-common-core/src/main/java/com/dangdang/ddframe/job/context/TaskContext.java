@@ -59,10 +59,6 @@ public final class TaskContext {
     @Setter
     private boolean idle;
     
-    private final long createTime = System.currentTimeMillis();
-    
-    private volatile long updatedTime;
-    
     public TaskContext(final String jobName, final List<Integer> shardingItem, final ExecutionType type) {
         this(jobName, shardingItem, type, UNASSIGNED_SLAVE_ID);
     }
@@ -130,13 +126,6 @@ public final class TaskContext {
      */
     public String getExecutorId(final String appURL) {
         return Joiner.on(DELIMITER).join(Encryption.md5(appURL), slaveId);
-    }
-    
-    /**
-     * 更新任务状态时间.
-     */
-    public void updateTime() {
-        updatedTime = System.currentTimeMillis();
     }
     
     /**

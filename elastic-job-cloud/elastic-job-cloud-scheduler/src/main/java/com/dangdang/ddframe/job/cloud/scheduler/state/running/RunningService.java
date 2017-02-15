@@ -122,26 +122,8 @@ public class RunningService {
             Optional<TaskContext> taskContextOptional = findTask(taskContext);
             if (taskContextOptional.isPresent()) {
                 taskContextOptional.get().setIdle(isIdle);
-                taskContextOptional.get().updateTime();
             } else {
                 add(taskContext);
-            }
-        }
-    }
-    
-    /**
-     * 更新Daemon任务时间.
-     *
-     * @param taskContext 任务运行时上下文
-     */
-    public void updateDaemonTask(final TaskContext taskContext) {
-        if (!isDaemon(taskContext)) {
-            return;
-        }
-        synchronized (RUNNING_TASKS) {
-            Optional<TaskContext> taskContextOptional = findTask(taskContext);
-            if (taskContextOptional.isPresent()) {
-                taskContextOptional.get().updateTime();
             }
         }
     }

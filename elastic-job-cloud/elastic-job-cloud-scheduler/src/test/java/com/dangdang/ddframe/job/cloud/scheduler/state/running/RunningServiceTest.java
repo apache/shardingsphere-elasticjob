@@ -112,15 +112,6 @@ public final class RunningServiceTest {
     }
     
     @Test
-    public void assertUpdateDaemonTask() {
-        assertThat(taskContext.getUpdatedTime(), is(0L));
-        runningService.updateDaemonTask(taskContext);
-        assertTrue(taskContext.getUpdatedTime() <= System.currentTimeMillis());
-        runningService.updateDaemonTask(taskContextT);
-        assertThat(taskContextT.getUpdatedTime(), is(0L));
-    }
-    
-    @Test
     public void assertRemoveByJobName() {
         runningService.remove("test_job");
         assertTrue(runningService.getRunningTasks("test_job").isEmpty());

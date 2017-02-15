@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
-import com.dangdang.ddframe.job.cloud.scheduler.ha.ReconcileScheduledService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulService;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;
@@ -66,8 +65,6 @@ public final class SchedulerService {
     
     private final CloudJobConfigurationListener cloudJobConfigurationListener;
     
-    private final Service reconcileScheduledService;
-    
     private final Service taskLaunchScheduledService;
     
     private final RestfulService restfulService;
@@ -81,7 +78,6 @@ public final class SchedulerService {
         schedulerDriver = getSchedulerDriver(taskScheduler, jobEventBus, new FrameworkIDService(regCenter));
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
-        reconcileScheduledService = new ReconcileScheduledService(facadeService, schedulerDriver, taskScheduler, statisticManager);
         taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
         restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager);
     }
@@ -128,7 +124,6 @@ public final class SchedulerService {
         producerManager.startup();
         statisticManager.startup();
         cloudJobConfigurationListener.start();
-        reconcileScheduledService.startAsync();
         taskLaunchScheduledService.startAsync();
         restfulService.start();
         schedulerDriver.start();
@@ -140,7 +135,6 @@ public final class SchedulerService {
     public void stop() {
         restfulService.stop();
         taskLaunchScheduledService.stopAsync();
-        reconcileScheduledService.stopAsync();
         cloudJobConfigurationListener.stop();
         statisticManager.shutdown();
         producerManager.shutdown();

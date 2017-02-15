@@ -45,6 +45,7 @@ public class RestfulService {
         GsonFactory.registerTypeAdapter(CloudAppConfiguration.class, new CloudAppConfigurationGsonFactory.CloudAppConfigurationGsonTypeAdapter());
         CloudJobRestfulApi.init(regCenter, producerManager);
         CloudAppRestfulApi.init(regCenter);
+        CloudOperationRestfulApi.init(producerManager);
     }
     
     /**
@@ -53,7 +54,9 @@ public class RestfulService {
     public void start() {
         try {
             restfulServer.start(RestfulService.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
+            //CHECKSTYLE:OFF
         } catch (final Exception ex) {
+            //CHECKSTYLE:ON
             throw new RuntimeException(ex.getCause());
         }
     }

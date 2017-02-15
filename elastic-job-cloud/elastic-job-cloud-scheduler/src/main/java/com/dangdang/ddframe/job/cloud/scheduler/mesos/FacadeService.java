@@ -258,24 +258,6 @@ public class FacadeService {
     }
     
     /**
-     * 更新常驻作业任务状态.
-     *
-     * @param taskContext 任务运行时上下文 
-     */
-    public void updateDaemonTask(final TaskContext taskContext) {
-        runningService.updateDaemonTask(taskContext);
-    }
-    
-    /**
-     * 获取所有运行中的常驻任务.
-     * 
-     * @return 运行中任务集合
-     */
-    public Set<TaskContext> getAllRunningDaemonTask() {
-        return runningService.getAllRunningDaemonTasks();
-    }
-    
-    /**
      * 获取待运行的全部任务.
      *
      * @return 待运行的全部任务
