@@ -19,9 +19,8 @@ package com.dangdang.ddframe.job.cloud.scheduler;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.HANode;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerService;
+import com.dangdang.ddframe.job.cloud.scheduler.ha.SchedulerElectionCandidate;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionService;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -37,68 +36,28 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public final class Bootstrap {
     
-    private final CountDownLatch latch = new CountDownLatch(1);
-    
-    private final ZookeeperElectionService electionService;
-    
-    public Bootstrap() {
-        CoordinatorRegistryCenter regCenter = getRegistryCenter();
-        electionService = new ZookeeperElectionService(BootstrapEnvironment.getInstance().getFrameworkHostPort(),
-                (CuratorFramework) regCenter.getRawClient(), HANode.ELECTION_NODE, new SchedulerElectionCandidate(regCenter));
+    /**
+     * 启动入口.
+     * 
+     * @param args 命令行参数无需传入
+     */
+    // CHECKSTYLE:OFF
+    public static void main(final String[] args) throws InterruptedException {
+        // CHECKSTYLE:ON
+        CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(BootstrapEnvironment.getInstance().getZookeeperConfiguration());
+        regCenter.init();
+        final ZookeeperElectionService electionService = new ZookeeperElectionService(
+                BootstrapEnvironment.getInstance().getFrameworkHostPort(), (CuratorFramework) regCenter.getRawClient(), HANode.ELECTION_NODE, new SchedulerElectionCandidate(regCenter));
+        electionService.start();
+        final CountDownLatch latch = new CountDownLatch(1);
+        latch.await();
+        Runtime.getRuntime().addShutdownHook(new Thread("shutdown-hook") {
         
-        Runtime.getRuntime().addShutdownHook(new Thread("stop-hook") {
             @Override
             public void run() {
-                electionService.close();
+                electionService.stop();
                 latch.countDown();
             }
         });
-    }
-    
-    private CoordinatorRegistryCenter getRegistryCenter() {
-        CoordinatorRegistryCenter result = new ZookeeperRegistryCenter(BootstrapEnvironment.getInstance().getZookeeperConfiguration());
-        result.init();
-        return result;
-    }
-    
-    /**
-     * 开始启动,如果是leader,会启动调度相关服务.
-     */
-    public void start() {
-        electionService.start();
-        try {
-            latch.await();
-        } catch (final InterruptedException ex) {
-            log.error("Elastic job: Bootstrap start with exception:" + ex);
-        }
-    }
-    
-    // CHECKSTYLE:OFF
-    public static void main(final String[] args) {
-        // CHECKSTYLE:ON
-        new Bootstrap().start();
-    }
-    
-    private class SchedulerElectionCandidate implements ElectionCandidate {
-        
-        private final CoordinatorRegistryCenter regCenter;
-        
-        private SchedulerService schedulerService;
-        
-        SchedulerElectionCandidate(final CoordinatorRegistryCenter regCenter) {
-            this.regCenter = regCenter;
-        }
-        
-        /**
-         * 开始领导状态.
-         */
-        public void startLeadership() {
-            schedulerService = new SchedulerService(regCenter);
-            schedulerService.start();
-        }
-        
-        public void stopLeadership() {
-            schedulerService.stop();
-        }
     }
 }

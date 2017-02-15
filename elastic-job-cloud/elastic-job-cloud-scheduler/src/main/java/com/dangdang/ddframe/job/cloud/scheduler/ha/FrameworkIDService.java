@@ -39,10 +39,7 @@ public class FrameworkIDService {
      */
     public Optional<String> fetch() {
         String frameworkId = regCenter.getDirectly(HANode.FRAMEWORK_ID_NODE);
-        if (Strings.isNullOrEmpty(frameworkId)) {
-            return Optional.absent();
-        }
-        return Optional.of(frameworkId);
+        return Strings.isNullOrEmpty(frameworkId) ? Optional.<String>absent() : Optional.of(frameworkId);
     }
     
     /**

@@ -39,8 +39,7 @@ import org.junit.runners.Suite;
         AllRestfulTests.class, 
         AllMesosTests.class,
         AllStatisticTests.class,
-        AllHATests.class,
-        BootstrapTest.class
+        AllHATests.class
     })
 public final class AllCloudSchedulerTests {
 }

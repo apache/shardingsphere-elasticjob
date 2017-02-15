@@ -47,7 +47,7 @@ public class ZookeeperElectionServiceTest {
     
     @After
     public void clean() {
-        service.close();
+        service.stop();
         client.close();
     }
     
@@ -60,7 +60,7 @@ public class ZookeeperElectionServiceTest {
         anotherClient.blockUntilConnected();
         anotherService.start();
         KillSession.kill(client.getZookeeperClient().getZooKeeper(), EmbedTestingServer.getConnectionString());
-        service.close();
+        service.stop();
         verify(anotherElectionCandidate).startLeadership();
     }
 }

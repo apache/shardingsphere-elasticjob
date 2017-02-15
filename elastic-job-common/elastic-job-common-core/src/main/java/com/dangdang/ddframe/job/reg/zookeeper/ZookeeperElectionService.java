@@ -29,9 +29,10 @@ import java.util.concurrent.CountDownLatch;
  * 使用{@link LeaderSelector}实现选举服务.
  * 
  * @author gaohongtao
+ * @author caohao
  */
 @Slf4j
-public class ZookeeperElectionService implements AutoCloseable {
+public class ZookeeperElectionService {
     
     private final CountDownLatch leaderLatch = new CountDownLatch(1);
     
@@ -68,8 +69,8 @@ public class ZookeeperElectionService implements AutoCloseable {
     /**
      * 停止选举.
      */
-    public void close() {
-        log.info("Elastic job: Stop leadership election");
+    public void stop() {
+        log.info("Elastic job: stop leadership election");
         leaderLatch.countDown();
         try {
             leaderSelector.close();

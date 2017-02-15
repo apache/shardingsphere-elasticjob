@@ -147,5 +147,4 @@ public final class SchedulerService {
         schedulerDriver.stop(true);
         facadeService.stop();
     }
-    
 }
