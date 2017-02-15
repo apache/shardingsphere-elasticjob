@@ -37,7 +37,7 @@ url：`app`
 |memoryMB                            |double |否      |  128  | 作业应用启动所需要的内存`MB`                                                         |
 |bootstrapScript                     |String |`是`    |       | 启动脚本，如：`bin\start.sh`                                                        |
 |appCacheEnable                      |bool   |否      | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
-|eventTraceSamplingCount             |int    |否      | 0     | 事件追踪采样率统计条数，默认不采样                                                    |
+|eventTraceSamplingCount             |int    |否      | 0     | 常驻作业事件采样率统计条数，默认不采样全部记录。为避免数据量过大，可对频繁调度的常驻作业配置采样率，即作业每执行N次，才会记录作业执行及追踪相关数据|
 
 ```shell
 curl -l -H "Content-type: application/json" -X POST -d 

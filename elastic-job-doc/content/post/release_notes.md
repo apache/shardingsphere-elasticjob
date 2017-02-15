@@ -1,4 +1,5 @@
 
+
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "Release Notes"
@@ -17,7 +18,7 @@ weight=1
 ### 新功能
 
 1. [ISSUE #217](https://github.com/dangdangdotcom/elastic-job/issues/217) cloud版本增加APP维度配置
-1. [ISSUE #223](https://github.com/dangdangdotcom/elastic-job/issues/223) cloud版本事件追踪采样率
+1. [ISSUE #223](https://github.com/dangdangdotcom/elastic-job/issues/223) cloud版本常驻作业事件追踪采样率
 
 ## 2.0.4
 
