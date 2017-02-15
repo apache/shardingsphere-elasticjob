@@ -3,7 +3,7 @@ function viewOperApp(val, row){
     var result = '<button type="button" class="btn btn-info" onClick="detailApp(\'' + appName + '\')">详情</button>'+ ' <button type="button" class="btn btn-warning" onClick="getAppResult(\'' + appName + '\')">修改</button>';
     return result;
 }
-
+    
 function detailApp(appName){
     $.ajax({
         url:"/app/"+appName,
@@ -13,15 +13,15 @@ function detailApp(appName){
             if (null != result) {
                 $("#AppDetailTable").bootstrapTable('removeAll');
                 $("#AppDetailTable").bootstrapTable('append',result);
-                $("#data-detailapp").modal({backdrop: 'static', keyboard: true});
+                $("#dataDetailApp").modal({backdrop: 'static', keyboard: true});
             }
         }
     });
 }
     
 $('#add_app').click(function(){
-    $('#addapp_body').load('html/app/add_app.html');
-    $('#data-addapp').modal({backdrop: 'static', keyboard: true});
+    $('#addAppBody').load('html/app/add_app.html');
+    $('#dataAddApp').modal({backdrop: 'static', keyboard: true});
 });
     
 function getAppResult(appName) {
@@ -30,9 +30,9 @@ function getAppResult(appName) {
         async: false,
         success:function(result){
             if(null !=result ){
-                $('#updateapp_body').load('html/app/modify_app.html',null,function(){
+                $('#updateAppBody').load('html/app/modify_app.html',null,function(){
                     showAppSettingInfo(result);
-                    $("#data-updateapp").modal({backdrop: 'static', keyboard: true});
+                    $("#dataUpdateApp").modal({backdrop: 'static', keyboard: true});
                 });
             }
         }
@@ -52,4 +52,3 @@ function showAppSettingInfo(result){
         $("#appCacheEnable").prop("checked",false);
     }
 }
-

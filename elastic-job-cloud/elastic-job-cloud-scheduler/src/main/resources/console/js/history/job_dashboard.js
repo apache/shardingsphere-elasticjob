@@ -41,7 +41,7 @@ function getJobType() {
         chartName = '#job_type',
         colorsArray = ['rgb(144, 237, 125)','rgb(247, 163, 92)','rgb(67, 67, 72)'],
         jobData = getChartData(url);
-        var jobResult = [['SIMPLE', jobData.simpleJobCount],['DATAFLOW', jobData.dataflowJobCount],['SCRIPT',jobData.scriptJobCount]];
+        var jobResult = [['DATAFLOW', jobData.dataflowJobCount],['SIMPLE', jobData.simpleJobCount],['SCRIPT',jobData.scriptJobCount]];
     producePieChart(chartName,'作业类型',colorsArray,jobResult);
 }
     
@@ -125,11 +125,13 @@ function producePieChart(chartName,title,colorsArray,jobData){
         },
         plotOptions: {
             pie: {
+                size: '60%',
                 allowPointSelect: true,
                 cursor: 'pointer',
                 dataLabels: {
                     enabled: true,
-                    format: '<b>{point.name}</b>:<br> {point.percentage:.1f} %'
+                    format: '<b>{point.name}</b>:<br> {point.percentage:.1f} %',
+                    distance: 5
                 }
             }
         },
