@@ -57,7 +57,7 @@
     - [ ] Misfire
     - [x] Idempotency
 - [ ] Mesos Scheduler
-    - [ ] Leadership Election
+    - [x] Leadership Election
     - [ ] Redis Based Queue Improvement
 - [ ] Mesos Executor
     - [x] Executor reuse pool
