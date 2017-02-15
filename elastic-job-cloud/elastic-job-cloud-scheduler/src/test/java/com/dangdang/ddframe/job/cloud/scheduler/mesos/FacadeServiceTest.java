@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
@@ -63,7 +63,7 @@ public final class FacadeServiceTest {
     private CloudAppConfigurationService appConfigService;
     
     @Mock
-    private ConfigurationService jobConfigService;
+    private CloudJobConfigurationService jobConfigService;
     
     @Mock
     private ReadyService readyService;
@@ -166,7 +166,7 @@ public final class FacadeServiceTest {
     @Test
     public void assertRecordFailoverTaskWhenIsFailoverDisabledAndIsDaemonJob() {
         TaskNode taskNode = TaskNode.builder().type(ExecutionType.FAILOVER).build();
-        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         facadeService.recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
         verify(failoverService).add(TaskContext.from(taskNode.getTaskNodeValue()));
     }

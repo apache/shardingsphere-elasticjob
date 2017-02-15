@@ -17,19 +17,10 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.statistics;
 
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.dangdang.ddframe.job.api.JobType;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.JobRunningStatisticJob;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.RegisteredJobStatisticJob;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.TaskResultStatisticJob;
@@ -45,10 +36,18 @@ import com.dangdang.ddframe.job.statistics.type.job.JobTypeStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskResultStatistics;
 import com.dangdang.ddframe.job.statistics.type.task.TaskRunningStatistics;
 import com.google.common.base.Optional;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 统计作业调度管理器.
@@ -63,7 +62,7 @@ public class StatisticManager {
     
     private final CoordinatorRegistryCenter registryCenter;
     
-    private final ConfigurationService configurationService;
+    private final CloudJobConfigurationService configurationService;
     
     private final Optional<JobEventRdbConfiguration> jobEventRdbConfiguration;
     
@@ -76,7 +75,7 @@ public class StatisticManager {
     private StatisticManager(final CoordinatorRegistryCenter registryCenter, final Optional<JobEventRdbConfiguration> jobEventRdbConfiguration,
                              final StatisticsScheduler scheduler, final Map<StatisticInterval, TaskResultMetaData> statisticData) {
         this.registryCenter = registryCenter;
-        this.configurationService = new ConfigurationService(registryCenter);
+        this.configurationService = new CloudJobConfigurationService(registryCenter);
         this.jobEventRdbConfiguration = jobEventRdbConfiguration;
         this.scheduler = scheduler;
         this.statisticData = statisticData;
@@ -237,9 +236,9 @@ public class StatisticManager {
         int transientJobCnt = 0;
         int daemonJobCnt = 0;
         for (CloudJobConfiguration each : configurationService.loadAll()) {
-            if (JobExecutionType.TRANSIENT.equals(each.getJobExecutionType())) {
+            if (CloudJobExecutionType.TRANSIENT.equals(each.getJobExecutionType())) {
                 transientJobCnt++;
-            } else if (JobExecutionType.DAEMON.equals(each.getJobExecutionType())) {
+            } else if (CloudJobExecutionType.DAEMON.equals(each.getJobExecutionType())) {
                 daemonJobCnt++;
             }
         }

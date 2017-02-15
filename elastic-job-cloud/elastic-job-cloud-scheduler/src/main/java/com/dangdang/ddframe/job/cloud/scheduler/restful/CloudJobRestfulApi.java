@@ -18,10 +18,10 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationGsonFactory;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationGsonFactory;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
@@ -89,7 +89,7 @@ public final class CloudJobRestfulApi {
     
     private static ProducerManager producerManager;
     
-    private final ConfigurationService configService;
+    private final CloudJobConfigurationService configService;
     
     private final FacadeService facadeService;
     
@@ -97,7 +97,7 @@ public final class CloudJobRestfulApi {
     
     public CloudJobRestfulApi() {
         Preconditions.checkNotNull(regCenter);
-        configService = new ConfigurationService(regCenter);
+        configService = new CloudJobConfigurationService(regCenter);
         facadeService = new FacadeService(regCenter);
         Optional<JobEventRdbConfiguration> jobEventRdbConfiguration = Optional.absent();
         statisticManager = StatisticManager.getInstance(regCenter, jobEventRdbConfiguration);
@@ -167,7 +167,7 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public void trigger(final String jobName) {
         Optional<CloudJobConfiguration> config = configService.load(jobName);
-        if (config.isPresent() && JobExecutionType.DAEMON == config.get().getJobExecutionType()) {
+        if (config.isPresent() && CloudJobExecutionType.DAEMON == config.get().getJobExecutionType()) {
             throw new JobSystemException("Daemon job '%s' cannot support trigger.", jobName);
         }
         facadeService.addTransient(jobName);

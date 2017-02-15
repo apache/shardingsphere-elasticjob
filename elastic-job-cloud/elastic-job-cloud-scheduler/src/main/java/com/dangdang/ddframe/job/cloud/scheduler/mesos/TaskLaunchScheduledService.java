@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
@@ -158,7 +158,7 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         CloudAppConfiguration appConfig = appConfigOptional.get();
         taskContext.setSlaveId(slaveID.getValue());
         ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig, jobConfig);
-        boolean useDefaultExecutor = JobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
+        boolean useDefaultExecutor = CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
         Protos.CommandInfo.URI uri = buildURI(appConfig, useDefaultExecutor);
         Protos.CommandInfo command = buildCommand(uri, appConfig.getBootstrapScript(), shardingContexts, useDefaultExecutor);
         return buildTaskInfo(taskContext, appConfig, jobConfig, shardingContexts, slaveID, command, useDefaultExecutor);

@@ -15,17 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 
-import org.junit.Test;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-public final class ConfigurationNodeTest {
+/**
+ * 作业执行类型.
+ *
+ * @author zhangliang
+ */
+public enum CloudJobExecutionType {
     
-    @Test
-    public void assertGetRootNodePath() {
-        assertThat(ConfigurationNode.getRootNodePath("test_job"), is("/config/job/test_job"));
-    }
+    DAEMON, TRANSIENT
+    
 }

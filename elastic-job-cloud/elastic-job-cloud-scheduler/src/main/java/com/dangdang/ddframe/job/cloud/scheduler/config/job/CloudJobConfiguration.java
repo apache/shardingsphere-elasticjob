@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
@@ -41,7 +41,7 @@ public final class CloudJobConfiguration implements JobRootConfiguration {
     
     private final double memoryMB;
     
-    private final JobExecutionType jobExecutionType;
+    private final CloudJobExecutionType jobExecutionType;
     
     private String beanName;
     

@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
@@ -62,7 +62,7 @@ public class CloudJobConfigurationListener implements TreeCacheListener {
             if (null == jobConfig) {
                 return;
             }
-            if (JobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
+            if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
                 readyService.remove(Collections.singletonList(jobConfig.getJobName()));
             }
             if (!jobConfig.getTypeConfig().getCoreConfig().isMisfire()) {
@@ -70,13 +70,13 @@ public class CloudJobConfigurationListener implements TreeCacheListener {
             }
             producerManager.reschedule(jobConfig);
         } else if (isJobConfigNode(event, path, Type.NODE_REMOVED)) {
-            String jobName = path.substring(ConfigurationNode.ROOT.length() + 1, path.length());
+            String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1, path.length());
             producerManager.unschedule(jobName);
         }
     }
     
     private boolean isJobConfigNode(final TreeCacheEvent event, final String path, final Type type) {
-        return type == event.getType() && path.startsWith(ConfigurationNode.ROOT) && path.length() > ConfigurationNode.ROOT.length();
+        return type == event.getType() && path.startsWith(CloudJobConfigurationNode.ROOT) && path.length() > CloudJobConfigurationNode.ROOT.length();
     }
     
     private CloudJobConfiguration getJobConfig(final TreeCacheEvent event) {
@@ -104,11 +104,11 @@ public class CloudJobConfigurationListener implements TreeCacheListener {
     }
     
     private TreeCache getCache() {
-        TreeCache result = (TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT);
+        TreeCache result = (TreeCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
         if (null != result) {
             return result;
         }
-        regCenter.addCacheData(ConfigurationNode.ROOT);
-        return (TreeCache) regCenter.getRawCache(ConfigurationNode.ROOT);
+        regCenter.addCacheData(CloudJobConfigurationNode.ROOT);
+        return (TreeCache) regCenter.getRawCache(CloudJobConfigurationNode.ROOT);
     }
 }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
 import com.dangdang.ddframe.job.context.ExecutionType;
@@ -56,7 +56,7 @@ public final class RunningServiceTest {
     
     @Before
     public void setUp() {
-        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(JobExecutionType.DAEMON));
+        when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson(CloudJobExecutionType.DAEMON));
         when(regCenter.get("/config/job/test_job_t")).thenReturn(CloudJsonConstants.getJobJson("test_job_t"));
         runningService = new RunningService(regCenter);
         taskContext = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());

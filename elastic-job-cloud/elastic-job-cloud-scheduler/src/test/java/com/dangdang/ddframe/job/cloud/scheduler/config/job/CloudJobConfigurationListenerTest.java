@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
@@ -102,7 +102,7 @@ public final class CloudJobConfigurationListenerTest {
     @Test
     public void assertChildEventWhenStateIsUpdateAndIsConfigPathAndDaemonJob() throws Exception {
         cloudJobConfigurationListener.childEvent(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, 
-                new ChildData("/config/job/test_job", null, CloudJsonConstants.getJobJson(JobExecutionType.DAEMON).getBytes())));
+                new ChildData("/config/job/test_job", null, CloudJsonConstants.getJobJson(CloudJobExecutionType.DAEMON).getBytes())));
         verify(readyService).remove(Collections.singletonList("test_job"));
         verify(producerManager).reschedule(Matchers.<CloudJobConfiguration>any());
     }

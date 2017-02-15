@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.statistics;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -65,7 +65,7 @@ public class StatisticManagerTest {
     private StatisticsScheduler scheduler;
     
     @Mock
-    private ConfigurationService configurationService;
+    private CloudJobConfigurationService configurationService;
     
     private StatisticManager statisticManager;
     
@@ -150,8 +150,8 @@ public class StatisticManagerTest {
     public void assertJobExecutionTypeStatistics() throws NoSuchFieldException {
         ReflectionUtils.setFieldValue(statisticManager, "configurationService", configurationService);
         when(configurationService.loadAll()).thenReturn(Lists.newArrayList(
-                CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1", JobExecutionType.DAEMON), 
-                CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_2", JobExecutionType.TRANSIENT)));
+                CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_1", CloudJobExecutionType.DAEMON), 
+                CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job_2", CloudJobExecutionType.TRANSIENT)));
         assertThat(statisticManager.getJobExecutionTypeStatistics().getDaemonJobCount(), is(1));
         assertThat(statisticManager.getJobExecutionTypeStatistics().getTransientJobCount(), is(1));
         verify(configurationService, times(2)).loadAll();

@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.fixture;
 
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultExecutorServiceHandler;
 import com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -48,7 +48,7 @@ public final class CloudJsonConstants {
         return String.format(JOB_JSON, jobName, true, "TRANSIENT");
     }
     
-    public static String getJobJson(final JobExecutionType jobExecutionType) {
+    public static String getJobJson(final CloudJobExecutionType jobExecutionType) {
         return String.format(JOB_JSON, "test_job", true, jobExecutionType.name());
     }
     

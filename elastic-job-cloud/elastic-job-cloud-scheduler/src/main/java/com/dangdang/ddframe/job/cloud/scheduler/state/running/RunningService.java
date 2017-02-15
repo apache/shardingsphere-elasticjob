@@ -17,9 +17,9 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.running;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Function;
@@ -57,11 +57,11 @@ public class RunningService {
     
     private final CoordinatorRegistryCenter regCenter;
     
-    private final ConfigurationService configurationService;
+    private final CloudJobConfigurationService configurationService;
     
     public RunningService(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
-        this.configurationService = new ConfigurationService(regCenter);
+        this.configurationService = new CloudJobConfigurationService(regCenter);
     }
     
     /**
@@ -109,7 +109,7 @@ public class RunningService {
     
     private boolean isDaemon(final String jobName) {
         Optional<CloudJobConfiguration> cloudJobConfigurationOptional = configurationService.load(jobName);
-        return cloudJobConfigurationOptional.isPresent() && JobExecutionType.DAEMON == cloudJobConfigurationOptional.get().getJobExecutionType();
+        return cloudJobConfigurationOptional.isPresent() && CloudJobExecutionType.DAEMON == cloudJobConfigurationOptional.get().getJobExecutionType();
     }
     
     /**
@@ -191,7 +191,7 @@ public class RunningService {
     
     private boolean isDaemonOrAbsent(final String jobName) {
         Optional<CloudJobConfiguration> cloudJobConfigurationOptional = configurationService.load(jobName);
-        return !cloudJobConfigurationOptional.isPresent() || JobExecutionType.DAEMON == cloudJobConfigurationOptional.get().getJobExecutionType();
+        return !cloudJobConfigurationOptional.isPresent() || CloudJobExecutionType.DAEMON == cloudJobConfigurationOptional.get().getJobExecutionType();
     }
     
     /**

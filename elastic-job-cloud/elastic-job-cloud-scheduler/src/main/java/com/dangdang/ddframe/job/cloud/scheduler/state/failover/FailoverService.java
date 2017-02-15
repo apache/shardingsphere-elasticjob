@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.ExecutionType;
@@ -54,13 +54,13 @@ public class FailoverService {
     
     private final CoordinatorRegistryCenter regCenter;
     
-    private final ConfigurationService configService;
+    private final CloudJobConfigurationService configService;
     
     private final RunningService runningService;
     
     public FailoverService(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
-        configService = new ConfigurationService(regCenter);
+        configService = new CloudJobConfigurationService(regCenter);
         runningService = new RunningService(regCenter);
     }
     

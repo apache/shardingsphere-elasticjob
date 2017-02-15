@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public class ConfigurationService {
+public class CloudJobConfigurationService {
     
     private final CoordinatorRegistryCenter regCenter;
     
@@ -42,7 +42,7 @@ public class ConfigurationService {
      * @param jobConfig 云作业配置对象
      */
     public void add(final CloudJobConfiguration jobConfig) {
-        regCenter.persist(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), CloudJobConfigurationGsonFactory.toJson(jobConfig));
+        regCenter.persist(CloudJobConfigurationNode.getRootNodePath(jobConfig.getJobName()), CloudJobConfigurationGsonFactory.toJson(jobConfig));
     }
     
     /**
@@ -51,7 +51,7 @@ public class ConfigurationService {
      * @param jobConfig 云作业配置对象
      */
     public void update(final CloudJobConfiguration jobConfig) {
-        regCenter.update(ConfigurationNode.getRootNodePath(jobConfig.getJobName()), CloudJobConfigurationGsonFactory.toJson(jobConfig));
+        regCenter.update(CloudJobConfigurationNode.getRootNodePath(jobConfig.getJobName()), CloudJobConfigurationGsonFactory.toJson(jobConfig));
     }
     
     /**
@@ -60,10 +60,10 @@ public class ConfigurationService {
      * @return 注册的云作业配置
      */
     public Collection<CloudJobConfiguration> loadAll() {
-        if (!regCenter.isExisted(ConfigurationNode.ROOT)) {
+        if (!regCenter.isExisted(CloudJobConfigurationNode.ROOT)) {
             return Collections.emptyList();
         }
-        List<String> jobNames = regCenter.getChildrenKeys(ConfigurationNode.ROOT);
+        List<String> jobNames = regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT);
         Collection<CloudJobConfiguration> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
             Optional<CloudJobConfiguration> config = load(each);
@@ -81,7 +81,7 @@ public class ConfigurationService {
      * @return 云作业配置
      */
     public Optional<CloudJobConfiguration> load(final String jobName) {
-        return Optional.fromNullable(CloudJobConfigurationGsonFactory.fromJson(regCenter.get(ConfigurationNode.getRootNodePath(jobName))));
+        return Optional.fromNullable(CloudJobConfigurationGsonFactory.fromJson(regCenter.get(CloudJobConfigurationNode.getRootNodePath(jobName))));
     }
     
     /**
@@ -90,6 +90,6 @@ public class ConfigurationService {
      * @param jobName 作业名称
      */
     public void remove(final String jobName) {
-        regCenter.remove(ConfigurationNode.getRootNodePath(jobName));
+        regCenter.remove(CloudJobConfigurationNode.getRootNodePath(jobName));
     }
 }

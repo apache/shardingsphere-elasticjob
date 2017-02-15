@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
@@ -92,7 +92,7 @@ public final class TaskLaunchScheduledServiceTest {
     @Test
     public void assertRunOneIteration() throws Exception {
         when(facadeService.getEligibleJobContext()).thenReturn(Lists.newArrayList(
-                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job", JobExecutionType.DAEMON, 1), ExecutionType.FAILOVER)));
+                JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job", CloudJobExecutionType.DAEMON, 1), ExecutionType.FAILOVER)));
         Map<String, VMAssignmentResult> vmAssignmentResultMap = new HashMap<>();
         vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.<VirtualMachineLease>newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
                 Sets.newHashSet(mockTaskAssignmentResult("failover_job", ExecutionType.FAILOVER))));

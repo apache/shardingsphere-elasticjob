@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
@@ -38,13 +38,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public final class ConfigurationServiceTest {
+public final class CloudJobConfigurationServiceTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
     
     @InjectMocks
-    private ConfigurationService configService;
+    private CloudJobConfigurationService configService;
     
     @Test
     public void assertAdd() {
@@ -77,7 +77,7 @@ public final class ConfigurationServiceTest {
     @Test
     public void assertLoadAllWithRootNode() {
         when(regCenter.isExisted("/config/job")).thenReturn(true);
-        when(regCenter.getChildrenKeys(ConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
+        when(regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
         when(regCenter.isExisted("/config/job/test_job_1")).thenReturn(true);
         when(regCenter.isExisted("/config/job/test_job_2")).thenReturn(false);
         when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));

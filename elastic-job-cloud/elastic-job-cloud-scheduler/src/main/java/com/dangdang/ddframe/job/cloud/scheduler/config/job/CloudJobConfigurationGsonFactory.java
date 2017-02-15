@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.util.json.AbstractJobConfigurationGsonTypeAdapter;
@@ -106,11 +106,11 @@ public final class CloudJobConfigurationGsonFactory {
             Preconditions.checkNotNull(customizedValueMap.get("jobExecutionType"), "jobExecutionType cannot be null.");
             if (customizedValueMap.containsKey("beanName") && customizedValueMap.containsKey("applicationContext")) {
                 return new CloudJobConfiguration((String) customizedValueMap.get("appName"), typeConfig, (double) customizedValueMap.get("cpuCount"), 
-                        (double) customizedValueMap.get("memoryMB"), JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), 
+                        (double) customizedValueMap.get("memoryMB"), CloudJobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), 
                         customizedValueMap.get("beanName").toString(), customizedValueMap.get("applicationContext").toString());
             } else {
                 return new CloudJobConfiguration((String) customizedValueMap.get("appName"), typeConfig, (double) customizedValueMap.get("cpuCount"), 
-                        (double) customizedValueMap.get("memoryMB"), JobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
+                        (double) customizedValueMap.get("memoryMB"), CloudJobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
             }
         }
         

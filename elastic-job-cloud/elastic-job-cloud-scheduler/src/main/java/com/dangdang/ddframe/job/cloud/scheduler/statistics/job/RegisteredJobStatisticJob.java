@@ -17,11 +17,16 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.statistics.job;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
+import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
+import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
+import com.google.common.base.Optional;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -30,17 +35,10 @@ import org.quartz.JobExecutionException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
-import com.dangdang.ddframe.job.statistics.StatisticInterval;
-import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
-import com.google.common.base.Optional;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 已注册作业统计作业.
@@ -53,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RegisteredJobStatisticJob extends AbstractStatisticJob {
     
-    private ConfigurationService configurationService;
+    private CloudJobConfigurationService configurationService;
     
     private StatisticRdbRepository repository;
     

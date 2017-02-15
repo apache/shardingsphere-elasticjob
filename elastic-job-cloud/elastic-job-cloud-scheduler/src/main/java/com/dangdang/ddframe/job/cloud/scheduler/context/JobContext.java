@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.context;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

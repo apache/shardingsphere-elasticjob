@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.failover;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
@@ -57,7 +57,7 @@ public final class FailoverServiceTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private ConfigurationService configService;
+    private CloudJobConfigurationService configService;
     
     @Mock
     private RunningService runningService;

@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.config.JobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
@@ -58,7 +58,7 @@ public final class ReadyServiceTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private ConfigurationService configService;
+    private CloudJobConfigurationService configService;
     
     @Mock
     private RunningService runningService;
@@ -85,7 +85,7 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddTransientWithJobConfigIsNotTransient() {
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         readyService.addTransient("test_job");
         verify(regCenter, times(0)).isExisted("/state/ready");
         verify(regCenter, times(0)).persist((String) any(), eq(""));
@@ -148,7 +148,7 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddDaemonWithoutRootNode() {
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         when(regCenter.isExisted("/state/ready")).thenReturn(false);
         readyService.addDaemon("test_job");
         verify(regCenter).persist("/state/ready/test_job", "1");
@@ -156,7 +156,7 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddDaemonWithSameJobName() {
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         when(regCenter.isExisted("/state/ready")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("other_job@-@111", "test_job@-@111"));
         readyService.addDaemon("test_job");
@@ -165,7 +165,7 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddRunningDaemon() {
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         when(regCenter.isExisted("/state/ready")).thenReturn(false);
         when(runningService.isJobRunning("test_job")).thenReturn(true);
         readyService.addDaemon("test_job");
@@ -174,7 +174,7 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddDaemonWithoutSameJobName() {
-        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", JobExecutionType.DAEMON)));
+        when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
         when(regCenter.isExisted("/state/ready")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("other_job@-@111", "other_job@-@222"));
         readyService.addDaemon("test_job");
@@ -239,7 +239,7 @@ public final class ReadyServiceTest {
         when(regCenter.isExisted("/state/ready")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("not_existed_job", "running_job"));
         when(configService.load("not_existed_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
-        when(configService.load("running_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("running_job", JobExecutionType.DAEMON)));
+        when(configService.load("running_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("running_job", CloudJobExecutionType.DAEMON)));
         when(runningService.isJobRunning("running_job")).thenReturn(true);
         assertThat(readyService.getAllEligibleJobContexts(Collections.<JobContext>emptyList()).size(), is(0));
         verify(regCenter).isExisted("/state/ready");

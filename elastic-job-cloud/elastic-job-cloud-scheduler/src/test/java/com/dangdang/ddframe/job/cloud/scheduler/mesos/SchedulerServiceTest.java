@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.restful.RestfulService;
 import com.dangdang.ddframe.job.cloud.scheduler.statistics.StatisticManager;

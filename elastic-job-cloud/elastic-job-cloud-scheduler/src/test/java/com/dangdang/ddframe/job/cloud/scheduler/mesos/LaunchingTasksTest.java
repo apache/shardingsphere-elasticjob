@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
@@ -47,7 +47,7 @@ public final class LaunchingTasksTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private ConfigurationService jobConfigService;
+    private CloudJobConfigurationService jobConfigService;
     
     @Mock
     private ReadyService readyService;

@@ -15,15 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.scheduler.config;
+package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 
-/**
- * 作业执行类型.
- *
- * @author zhangliang
- */
-public enum JobExecutionType {
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class CloudJobConfigurationNodeTest {
     
-    DAEMON, TRANSIENT
-    
+    @Test
+    public void assertGetRootNodePath() {
+        assertThat(CloudJobConfigurationNode.getRootNodePath("test_job"), is("/config/job/test_job"));
+    }
 }

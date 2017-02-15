@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.CloudJobConfigurationListener;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationListener;
 import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;

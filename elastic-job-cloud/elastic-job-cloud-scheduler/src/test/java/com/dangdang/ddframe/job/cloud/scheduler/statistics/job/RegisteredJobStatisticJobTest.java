@@ -17,13 +17,14 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.statistics.job;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
+import com.dangdang.ddframe.job.statistics.StatisticInterval;
+import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
+import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,20 +33,18 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 
-import com.dangdang.ddframe.job.cloud.scheduler.config.ConfigurationService;
-import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.util.StatisticTimeUtils;
-import com.dangdang.ddframe.job.statistics.StatisticInterval;
-import com.dangdang.ddframe.job.statistics.rdb.StatisticRdbRepository;
-import com.dangdang.ddframe.job.statistics.type.job.JobRegisterStatistics;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RegisteredJobStatisticJobTest {
     
     @Mock
-    private ConfigurationService configurationService;
+    private CloudJobConfigurationService configurationService;
     
     @Mock
     private StatisticRdbRepository repository;
@@ -72,7 +71,7 @@ public class RegisteredJobStatisticJobTest {
     
     @Test
     public void assertGetDataMap() throws SchedulerException {
-        assertThat((ConfigurationService) registeredJobStatisticJob.getDataMap().get("configurationService"), is(configurationService));
+        assertThat((CloudJobConfigurationService) registeredJobStatisticJob.getDataMap().get("configurationService"), is(configurationService));
         assertThat((StatisticRdbRepository) registeredJobStatisticJob.getDataMap().get("repository"), is(repository));
     }
     
