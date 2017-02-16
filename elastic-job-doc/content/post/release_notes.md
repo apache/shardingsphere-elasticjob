@@ -8,7 +8,7 @@ weight=1
 
 # Release Notes
 
-## 2.0.5-SNAPSHOT
+## 2.0.5
 
 ### 缺陷修正
 
@@ -17,6 +17,7 @@ weight=1
 
 ### 新功能
 
+1. [ISSUE #191](https://github.com/dangdangdotcom/elastic-job/issues/191) Framework的HA功能
 1. [ISSUE #217](https://github.com/dangdangdotcom/elastic-job/issues/217) cloud版本增加APP维度配置
 1. [ISSUE #223](https://github.com/dangdangdotcom/elastic-job/issues/223) cloud版本常驻作业事件追踪采样率
 
