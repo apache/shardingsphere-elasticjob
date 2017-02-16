@@ -205,6 +205,8 @@ public class JobNodeStorage {
     
     /**
      * 注册连接状态监听器.
+     * 
+     * @param listener 连接状态监听器
      */
     public void addConnectionStateListener(final ConnectionStateListener listener) {
         getClient().getConnectionStateListenable().addListener(listener);
@@ -216,6 +218,8 @@ public class JobNodeStorage {
     
     /**
      * 注册数据监听器.
+     * 
+     * @param listener 数据监听器
      */
     public void addDataListener(final TreeCacheListener listener) {
         TreeCache cache = (TreeCache) regCenter.getRawCache("/" + jobName);

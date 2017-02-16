@@ -126,7 +126,8 @@ public final class TaskLaunchScheduledServiceTest {
     
     private TaskAssignmentResult mockTaskAssignmentResult(final String taskName, final ExecutionType executionType) {
         TaskAssignmentResult result = mock(TaskAssignmentResult.class);
-        TaskRequest taskRequest = new JobTaskRequest(new TaskContext(taskName, Lists.newArrayList(0), executionType, "unassigned-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration(taskName));
+        TaskRequest taskRequest = new JobTaskRequest(
+                new TaskContext(taskName, Lists.newArrayList(0), executionType, "unassigned-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration(taskName));
         when(result.getTaskId()).thenReturn(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", taskName, executionType.name()));
         when(result.getHostname()).thenReturn("localhost");
         when(result.getAssignedPorts()).thenReturn(Lists.newArrayList(1234));
@@ -135,7 +136,6 @@ public final class TaskLaunchScheduledServiceTest {
         when(result.getFitness()).thenReturn(1.0);
         return result; 
     }
-    
     
     @Test
     public void assertScheduler() throws Exception {

@@ -67,7 +67,7 @@ public class JobEventRdbSearch {
     /**
      * 检索作业运行执行轨迹.
      * 
-     * @param condition
+     * @param condition 查询条件
      * @return 作业执行轨迹检索结果
      */
     public Result<JobExecutionEvent> findJobExecutionEvents(final Condition condition) {
@@ -77,7 +77,7 @@ public class JobEventRdbSearch {
     /**
      * 检索作业运行状态轨迹.
      * 
-     * @param condition
+     * @param condition 查询条件
      * @return 作业状态轨迹检索结果
      */
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(final Condition condition) {
@@ -89,7 +89,7 @@ public class JobEventRdbSearch {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_EXECUTION_LOG, FIELDS_JOB_EXECUTION_LOG, condition);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
@@ -111,7 +111,7 @@ public class JobEventRdbSearch {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = createDataPreparedStatement(conn, TABLE_JOB_STATUS_TRACE_LOG, FIELDS_JOB_STATUS_TRACE_LOG, condition);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 JobStatusTraceEvent jobStatusTraceEvent = new JobStatusTraceEvent(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
@@ -131,7 +131,7 @@ public class JobEventRdbSearch {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = createCountPreparedStatement(conn, tableName, tableFields, condition);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             resultSet.next();
             result = resultSet.getInt(1);
@@ -270,6 +270,11 @@ public class JobEventRdbSearch {
         return sqlBuilder.toString();
     }
     
+    /**
+     * 查询条件对象.
+     * 
+     * @author liguangyun
+     */
     @RequiredArgsConstructor
     @Getter
     public static class Condition {

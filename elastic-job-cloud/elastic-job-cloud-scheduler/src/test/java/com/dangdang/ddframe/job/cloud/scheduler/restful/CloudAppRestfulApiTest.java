@@ -35,17 +35,17 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertRegister() throws Exception {
-        when(regCenter.isExisted("/config/app/test_app")).thenReturn(false);
+        when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
-        verify(regCenter).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(getRegCenter()).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
         sentRequest("http://127.0.0.1:19000/app", "DELETE", "test_app");
     }
     
     @Test
     public void assertRegisterWithExistedName() throws Exception {
-        when(regCenter.isExisted("/config/app/test_app")).thenReturn(false);
+        when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
-        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(sentRequest("http://127.0.0.1:19000/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(500));
         sentRequest("http://127.0.0.1:19000/app", "DELETE", "test_app");
     }
@@ -57,18 +57,18 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertUpdate() throws Exception {
-        when(regCenter.isExisted("/config/app/test_app")).thenReturn(true);
-        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(true);
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(sentRequest("http://127.0.0.1:19000/app", "PUT", CloudAppJsonConstants.getAppJson("test_app")), is(204));
-        verify(regCenter).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
+        verify(getRegCenter()).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
         sentRequest("http://127.0.0.1:19000/app", "DELETE", "test_app");
     }
     
     @Test
     public void assertDetail() throws Exception {
-        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(sentGetRequest("http://127.0.0.1:19000/app/test_app"), is(CloudAppJsonConstants.getAppJson("test_app")));
-        verify(regCenter).get("/config/app/test_app");
+        verify(getRegCenter()).get("/config/app/test_app");
     }
     
     @Test
@@ -78,12 +78,12 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertFindAllJobs() throws Exception {
-        when(regCenter.isExisted("/config/app")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/config/app")).thenReturn(Lists.newArrayList("test_app"));
-        when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().isExisted("/config/app")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/config/app")).thenReturn(Lists.newArrayList("test_app"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(sentGetRequest("http://127.0.0.1:19000/app/list"), is("[" + CloudAppJsonConstants.getAppJson("test_app") + "]"));
-        verify(regCenter).isExisted("/config/app");
-        verify(regCenter).getChildrenKeys("/config/app");
-        verify(regCenter).get("/config/app/test_app");
+        verify(getRegCenter()).isExisted("/config/app");
+        verify(getRegCenter()).getChildrenKeys("/config/app");
+        verify(getRegCenter()).get("/config/app/test_app");
     }
 }

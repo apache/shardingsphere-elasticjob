@@ -59,7 +59,7 @@ public class StatisticRdbRepository {
      * 构造函数.
      * 
      * @param dataSource 数据源
-     * @throws SQLException
+     * @throws SQLException SQL异常
      */
     public StatisticRdbRepository(final DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
@@ -78,7 +78,7 @@ public class StatisticRdbRepository {
     private void createTaskResultTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
         for (StatisticInterval each : StatisticInterval.values()) {
-            try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RESULT_STATISTICS + "_" + each, new String[]{"TABLE"});) {
+            try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RESULT_STATISTICS + "_" + each, new String[]{"TABLE"})) {
                 if (!resultSet.next()) {
                     createTaskResultTable(conn, each);
                 }
@@ -101,7 +101,7 @@ public class StatisticRdbRepository {
     
     private void createTaskRunningTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RUNNING_STATISTICS, new String[]{"TABLE"});) {
+        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_TASK_RUNNING_STATISTICS, new String[]{"TABLE"})) {
             if (!resultSet.next()) {
                 createTaskRunningTable(conn);
             }
@@ -122,7 +122,7 @@ public class StatisticRdbRepository {
     
     private void createJobRunningTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_RUNNING_STATISTICS, new String[]{"TABLE"});) {
+        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_RUNNING_STATISTICS, new String[]{"TABLE"})) {
             if (!resultSet.next()) {
                 createJobRunningTable(conn);
             }
@@ -143,7 +143,7 @@ public class StatisticRdbRepository {
     
     private void createJobRegisterTableIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_REGISTER_STATISTICS, new String[]{"TABLE"});) {
+        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_REGISTER_STATISTICS, new String[]{"TABLE"})) {
             if (!resultSet.next()) {
                 createJobRegisterTable(conn);
             }
@@ -275,7 +275,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 TaskResultStatistics taskResultStatistics = new TaskResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3), 
@@ -304,7 +304,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 result = new TaskResultStatistics(resultSet.getInt(1), resultSet.getInt(2), statisticInterval, new Date());
@@ -329,7 +329,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 result = new TaskResultStatistics(resultSet.getLong(1), resultSet.getInt(2), resultSet.getInt(3), 
@@ -356,7 +356,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 TaskRunningStatistics taskRunningStatistics = new TaskRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
@@ -384,7 +384,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 JobRunningStatistics jobRunningStatistics = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
@@ -410,7 +410,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 result = new TaskRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
@@ -435,7 +435,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 result = new JobRunningStatistics(resultSet.getLong(1), resultSet.getInt(2), 
@@ -462,7 +462,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 JobRegisterStatistics jobRegisterStatistics = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2), 
@@ -488,7 +488,7 @@ public class StatisticRdbRepository {
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()
                 ) {
             while (resultSet.next()) {
                 result = new JobRegisterStatistics(resultSet.getLong(1), resultSet.getInt(2), 

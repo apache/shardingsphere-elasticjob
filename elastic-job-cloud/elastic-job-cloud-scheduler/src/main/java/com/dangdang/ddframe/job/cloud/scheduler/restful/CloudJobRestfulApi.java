@@ -177,6 +177,7 @@ public final class CloudJobRestfulApi {
      * 查询作业详情.
      *
      * @param jobName 作业名称
+     * @return 作业配置对象
      */
     @GET
     @Path("/jobs/{jobName}")
@@ -256,6 +257,7 @@ public final class CloudJobRestfulApi {
     /**
      * 检索作业运行轨迹.
      * 
+     * @param info URL信息
      * @return 作业运行轨迹结果
      * @throws ParseException 
      */
@@ -272,6 +274,7 @@ public final class CloudJobRestfulApi {
     /**
      * 检索作业运行状态轨迹.
      * 
+     * @param info URL信息
      * @return 作业运行轨迹结果
      * @throws ParseException 转换异常
      */
@@ -326,6 +329,7 @@ public final class CloudJobRestfulApi {
     /**
      * 获取任务运行结果统计数据.
      * 
+     * @param since 时间跨度
      * @return 任务运行结果统计数据
      */
     @GET
@@ -342,6 +346,7 @@ public final class CloudJobRestfulApi {
     /**
      * 获取任务运行结果统计数据.
      * 
+     * @param period 时间跨度
      * @return 任务运行结果统计数据
      */
     @GET
@@ -364,6 +369,7 @@ public final class CloudJobRestfulApi {
     /**
      * 获取任务运行统计数据集合.
      * 
+     * @param since 时间跨度
      * @return 任务运行统计数据集合
      */
     @GET
@@ -404,6 +410,7 @@ public final class CloudJobRestfulApi {
     /**
      * 获取一周以来作业运行统计数据集合.
      * 
+     * @param since 时间跨度
      * @return 一周以来任务运行统计数据集合
      */
     @GET

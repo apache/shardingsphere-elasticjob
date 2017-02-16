@@ -25,6 +25,6 @@ import org.junit.runners.Suite;
         CloudJobConfigurationNodeTest.class,
         CloudJobConfigurationServiceTest.class,
         CloudJobConfigurationListenerTest.class
-})
+    })
 public class AllCloudJobConfigTests {
 }

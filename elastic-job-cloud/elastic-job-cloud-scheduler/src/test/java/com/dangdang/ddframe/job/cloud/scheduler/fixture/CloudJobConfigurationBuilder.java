@@ -42,7 +42,7 @@ public final class CloudJobConfigurationBuilder {
                 1.0d, 128.0d, jobExecutionType);
     }
     
-    public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final CloudJobExecutionType jobExecutionType, int shardingTotalCount) {
+    public static CloudJobConfiguration createCloudJobConfiguration(final String jobName, final CloudJobExecutionType jobExecutionType, final int shardingTotalCount) {
         return new CloudJobConfiguration("test_app",
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(jobName, "0/30 * * * * ?", shardingTotalCount).failover(true).misfire(true).build(), TestSimpleJob.class.getCanonicalName()),
                 1.0d, 128.0d, jobExecutionType);

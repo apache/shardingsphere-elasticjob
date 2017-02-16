@@ -43,6 +43,7 @@ public final class JobOperateTemplate {
      *
      * @param jobName 作业名称
      * @param serverIp 作业服务器IP地址
+     * @param callback 作业操作的回调方法
      * @return 操作失败的作业服务器IP地址列表(作业维度操作)或作业名称列表(IP维度操作)
      */
     public Collection<String> operate(final Optional<String> jobName, final Optional<String> serverIp, final JobOperateCallback callback) {

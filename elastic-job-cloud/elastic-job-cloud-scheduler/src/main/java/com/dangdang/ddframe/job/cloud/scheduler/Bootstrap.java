@@ -40,6 +40,7 @@ public final class Bootstrap {
      * 启动入口.
      * 
      * @param args 命令行参数无需传入
+     * @throws InterruptedException 线程中断异常
      */
     // CHECKSTYLE:OFF
     public static void main(final String[] args) throws InterruptedException {

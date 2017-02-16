@@ -23,7 +23,6 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import lombok.extern.slf4j.Slf4j;
 
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -50,6 +49,7 @@ public final class RestfulServer {
      * 启动内嵌的RESTful服务器.
      * 
      * @param packages RESTful实现类所在包
+     * @param resourcePath 资源路径
      * @throws Exception 启动服务器异常
      */
     public void start(final String packages, final Optional<String> resourcePath) throws Exception {

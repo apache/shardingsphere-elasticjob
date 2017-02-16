@@ -21,6 +21,8 @@ import com.dangdang.ddframe.job.cloud.scheduler.env.RestfulServerConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.apache.mesos.SchedulerDriver;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,11 +36,13 @@ import static org.mockito.Mockito.reset;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractCloudRestfulApiTest {
     
-    protected static CoordinatorRegistryCenter regCenter;
+    @Getter(AccessLevel.PROTECTED)
+    private static CoordinatorRegistryCenter regCenter;
     
-    protected static JobEventRdbSearch jobEventRdbSearch;
+    @Getter(AccessLevel.PROTECTED)
+    private static JobEventRdbSearch jobEventRdbSearch;
     
-    protected static RestfulService restfulService;
+    private static RestfulService restfulService;
     
     @BeforeClass
     public static void setUpClass() throws Exception {

@@ -92,9 +92,9 @@ public class JobRunningStatisticJob extends AbstractStatisticJob {
     
     @Override
     public void execute(final JobExecutionContext context) throws JobExecutionException {
-        Map<String, Set<TaskContext>> allRunnintTasks = runningService.getAllRunningTasks();
-        statisticJob(getJobRunningCount(allRunnintTasks));
-        statisticTask(getTaskRunningCount(allRunnintTasks));
+        Map<String, Set<TaskContext>> allRunningTasks = runningService.getAllRunningTasks();
+        statisticJob(getJobRunningCount(allRunningTasks));
+        statisticTask(getTaskRunningCount(allRunningTasks));
     }
     
     private void statisticJob(final int runningCount) {
