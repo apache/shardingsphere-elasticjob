@@ -7,17 +7,23 @@ function viewOper(val, row){
     
 function deleteJob(jobName){
     $("#delete-data").modal({backdrop: 'static', keyboard: true});
+    var flag = true;
+    $('#deleteRemove').on("click",function(){
+        flag=false;
+    });
     $('#deleteConfirm').on("click", function(){
-        $.ajax({
-            url:"/job/deregister",
-            type:"DELETE",
-            contentType: "application/json",
-            data:jobName,
-            success:function(result){
-                $("#JobExecDetailTable").bootstrapTable('refresh');
-                $("#delete-data").hide();
-                }
-        });
+        if(flag == true){
+            $.ajax({
+                url:"/job/deregister",
+                type:"DELETE",
+                contentType:"application/json",
+                data:jobName,
+                success:function(result){
+                    $("#JobExecDetailTable").bootstrapTable('refresh');
+                    $("#delete-data").hide();
+                    }
+            });
+        }
     });
 }
     
