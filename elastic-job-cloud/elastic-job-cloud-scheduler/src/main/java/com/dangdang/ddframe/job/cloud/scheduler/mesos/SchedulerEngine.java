@@ -84,14 +84,14 @@ public final class SchedulerEngine implements Scheduler {
         String taskId = taskStatus.getTaskId().getValue();
         TaskContext taskContext = TaskContext.from(taskId);
         String jobName = taskContext.getMetaInfo().getJobName();
-        if (!facadeService.load(jobName).isPresent()) {
-            return;
-        }
         log.trace("call statusUpdate task state is: {}, task id is: {}", taskStatus.getState(), taskId);
         jobEventBus.post(new JobStatusTraceEvent(jobName, taskContext.getId(), taskContext.getSlaveId(), Source.CLOUD_SCHEDULER, 
                 taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), State.valueOf(taskStatus.getState().name()), taskStatus.getMessage()));
         switch (taskStatus.getState()) {
             case TASK_RUNNING:
+                if (!facadeService.load(jobName).isPresent()) {
+                    schedulerDriver.killTask(Protos.TaskID.newBuilder().setValue(taskId).build());
+                }
                 if ("BEGIN".equals(taskStatus.getMessage())) {
                     facadeService.updateDaemonStatus(taskContext, false);
                 } else if ("COMPLETE".equals(taskStatus.getMessage())) {
