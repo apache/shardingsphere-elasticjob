@@ -1,8 +1,5 @@
 package com.dangdang.ddframe.job.lite.internal.worker;
 
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 public class WorkerManagerTest {
     
@@ -29,9 +29,8 @@ public class WorkerManagerTest {
     @Test
     public void assertStart() throws NoSuchFieldException {
         workersManager.start();
-        List workers = (List) ReflectionUtils.getFieldValue(workersManager, workersManager.getClass().getDeclaredField("workers"));
+        List workers = ReflectionUtils.getFieldValue(workersManager, workersManager.getClass().getDeclaredField("workers"));
         Assert.assertThat(workers.size(), CoreMatchers.is(1));
-        
         Mockito.verify(executorService).submit(Matchers.<AbstractWorker>any());
     }
     

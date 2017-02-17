@@ -1,12 +1,12 @@
 package com.dangdang.ddframe.job.lite.internal.worker;
 
+import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileWorker;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileWorker;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 public class WorkersManager {
 
@@ -21,7 +21,7 @@ public class WorkersManager {
     }
     
     public void start() {
-        for(AbstractWorker worker : workers) {
+        for (AbstractWorker worker : workers) {
             executor.submit(worker);
         }
     }

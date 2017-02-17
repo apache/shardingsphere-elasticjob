@@ -70,5 +70,5 @@ public final class JobSettings implements Serializable {
     
     private String scriptCommandLine;
     
-    private long reconcileCycleTime;
+    private int reconcileIntervalSeconds;
 }

@@ -10,50 +10,40 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 修复作业服务器中不正常的状态
+ * 修复作业服务器中不正常的状态.
  * 
  * @author qianzhiqiang
  *
  */
 @Slf4j
 public class ReconcileWorker extends AbstractWorker {
-
-    public final static long DEFAULT_SLEEP_TIME = 60000L;
+    
+    public final static int DEFAULT_SLEEP_TIME = 60000;
+    
+    @Setter
+    private static volatile int sleepTime = 60000;
+    
+    private static volatile boolean isContinued = true;
     
     private final ShardingService shardingService;
     
     private final LeaderElectionService leaderElectionService;
     
-    private static volatile boolean isContinued = true;
-
-    @Setter
-    private static volatile long sleepTime = DEFAULT_SLEEP_TIME;
-	
     public ReconcileWorker(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.shardingService = new ShardingService(regCenter, jobName);
         this.leaderElectionService = new LeaderElectionService(regCenter, jobName);
     }
-	
-	/**
-	 * 查询所有的作业服务器是否是错误状态，如果有则置为重分片状态
-	 */
-    public void doReconcile() {
+    
+    private void doReconcile() {
         log.debug("Reconcile starting!");
-        if(!shardingService.isNeedSharding()
-                && shardingService.isNoRunningButContainShardingNode()) {
+        if (!shardingService.isNeedSharding()
+                && shardingService.hasNotRunningShardingNode()) {
             shardingService.setReshardingFlag();
         }
     }
-
-	/**
-	 * 停止本作业
-	 */
-    public static void stop() {
-        isContinued = false;
-    }
-
+    
     /**
-     * 作业执行方法
+     * 作业执行方法.
      * 
      * <p>
      * leader作业服务器去进行所有作业服务器的判断。
@@ -63,7 +53,7 @@ public class ReconcileWorker extends AbstractWorker {
     @Override
     public void doWork() {
         while (isContinued) {
-            if(leaderElectionService.isLeader() && sleepTime > 0) {
+            if (leaderElectionService.isLeader() && sleepTime > 0) {
                 doReconcile();
             }
             log.debug("Sleep {}ms", sleepTime);

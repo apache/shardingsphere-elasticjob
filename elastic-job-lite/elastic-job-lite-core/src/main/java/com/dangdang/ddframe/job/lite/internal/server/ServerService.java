@@ -190,12 +190,12 @@ public class ServerService {
     }
     
     /**
-     * 判断作业服务器是否含有status节点
+     * 判断作业服务器是否存在status节点.
      * 
      * @param ip 作业服务器IP
-     * @return 是否含有status节点
+     * @return 作业服务器是否存在status节点
      */
-    public boolean isHasStatusNode(String ip) {
+    public boolean hasStatusNode(final String ip) {
     	return this.jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip));
     }
 }

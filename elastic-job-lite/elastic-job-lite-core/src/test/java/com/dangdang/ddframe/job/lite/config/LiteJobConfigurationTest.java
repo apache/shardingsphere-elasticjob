@@ -33,14 +33,14 @@ public final class LiteJobConfigurationTest {
     public void assertBuildAllProperties() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName()))
-                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).reconcileCycleTime(60L).build();
+                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).reconcileIntervalSeconds(60).build();
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
         assertThat(actual.getMonitorPort(), is(8888));
         assertThat(actual.getJobShardingStrategyClass(), is("testClass"));
         assertTrue(actual.isDisabled());
         assertTrue(actual.isOverwrite());
-        assertThat(actual.getReconcileCycleTime(), is(60L));
+        assertThat(actual.getReconcileIntervalSeconds(), is(60));
     }
     
     @Test

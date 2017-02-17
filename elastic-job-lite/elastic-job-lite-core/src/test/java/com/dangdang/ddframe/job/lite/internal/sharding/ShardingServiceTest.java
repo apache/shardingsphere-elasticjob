@@ -219,12 +219,12 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertIsNoRunningButContainShardingNode() throws NoSuchFieldException {
-    	when(jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode("ip3"))).thenReturn(true);
-    	when(serverService.isHasStatusNode(ShardingNode.getShardingNode("ip3"))).thenReturn(false);
-    	when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2", "ip3"));
+    public void assertNotRunningAndShardingNodeExisted() throws NoSuchFieldException {
+        when(jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode("ip3"))).thenReturn(true);
+        when(serverService.hasStatusNode(ShardingNode.getShardingNode("ip3"))).thenReturn(false);
+        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2", "ip3"));
         ReflectionUtils.setFieldValue(shardingService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(shardingService, "serverService", serverService);
-        assertThat(shardingService.isNoRunningButContainShardingNode(), is(true));
+        assertThat(shardingService.hasNotRunningShardingNode(), is(true));
     }
 }
