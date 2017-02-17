@@ -71,4 +71,6 @@ public final class BaseJobBeanDefinitionParserTag {
     public static final String JOB_EXCEPTION_HANDLER_ATTRIBUTE = "job-exception-handler";
     
     public static final String EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE = "event-trace-rdb-data-source";
+    
+    public static final String RECONCILE_CYCLE_TIME = "reconcile-cycle-time";
 }

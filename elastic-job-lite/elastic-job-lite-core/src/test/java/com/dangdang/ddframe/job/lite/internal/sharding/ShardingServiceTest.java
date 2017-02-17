@@ -217,4 +217,14 @@ public final class ShardingServiceTest {
         verify(transactionDeleteBuilder).forPath("/test_job/leader/sharding/processing");
         verify(curatorTransactionBridge, times(3)).and();
     }
+    
+    @Test
+    public void assertIsNoRunningButContainShardingNode() throws NoSuchFieldException {
+    	when(jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode("ip3"))).thenReturn(true);
+    	when(serverService.isHasStatusNode(ShardingNode.getShardingNode("ip3"))).thenReturn(false);
+    	when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2", "ip3"));
+        ReflectionUtils.setFieldValue(shardingService, "jobNodeStorage", jobNodeStorage);
+        ReflectionUtils.setFieldValue(shardingService, "serverService", serverService);
+        assertThat(shardingService.isNoRunningButContainShardingNode(), is(true));
+    }
 }

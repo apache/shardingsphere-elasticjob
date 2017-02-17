@@ -17,17 +17,18 @@
 
 package com.dangdang.ddframe.job.lite.internal.config;
 
+import java.io.IOException;
+import java.util.Map;
+
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.util.json.AbstractJobConfigurationGsonTypeAdapter;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * Lite作业配置的Gson工厂.
@@ -99,6 +100,9 @@ public final class LiteJobConfigurationGsonFactory {
                 case "overwrite":
                     customizedValueMap.put("overwrite", in.nextBoolean());
                     break;
+                case "reconcileCycleTime":
+                    customizedValueMap.put("reconcileCycleTime", in.nextLong());
+                    break;
                 default:
                     in.skipValue();
                     break;
@@ -126,6 +130,9 @@ public final class LiteJobConfigurationGsonFactory {
             if (customizedValueMap.containsKey("overwrite")) {
                 builder.overwrite((boolean) customizedValueMap.get("overwrite"));
             }
+            if (customizedValueMap.containsKey("reconcileCycleTime")){
+                builder.reconcileCycleTime((long) customizedValueMap.get("reconcileCycleTime"));
+            }
             return builder.build();
         }
     
@@ -137,6 +144,7 @@ public final class LiteJobConfigurationGsonFactory {
             out.name("jobShardingStrategyClass").value(value.getJobShardingStrategyClass());
             out.name("disabled").value(value.isDisabled());
             out.name("overwrite").value(value.isOverwrite());
+            out.name("reconcileCycleTime").value(value.getReconcileCycleTime());
         }
     }
 }

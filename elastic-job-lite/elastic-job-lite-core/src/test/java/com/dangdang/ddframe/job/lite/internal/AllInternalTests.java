@@ -52,6 +52,11 @@ import com.dangdang.ddframe.job.lite.internal.sharding.ShardingServiceTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorageTest;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtilsTest;
+import com.dangdang.ddframe.job.lite.internal.worker.WorkerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.worker.WorkersManager;
+import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileWorkerListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileWorkerTest;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -92,7 +97,10 @@ import org.junit.runners.Suite.SuiteClasses;
     GuaranteeServiceTest.class, 
     SchedulerFacadeTest.class,
     LiteJobFacadeTest.class, 
-    JobExecutorTest.class
+    JobExecutorTest.class,
+    ReconcileWorkerTest.class,
+    ReconcileWorkerListenerManagerTest.class,
+    WorkerManagerTest.class,
     })
 public final class AllInternalTests {
 }
