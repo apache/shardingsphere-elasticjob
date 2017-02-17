@@ -259,7 +259,7 @@ public final class CloudJobRestfulApi {
      * 
      * @param info URL信息
      * @return 作业运行轨迹结果
-     * @throws ParseException 
+     * @throws ParseException 解析异常
      */
     @GET
     @Path("events/executions")

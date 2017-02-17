@@ -13,6 +13,8 @@ weight=50
 
 ## [部署指南](../deploy_guide/)
 
+## [RESTful API](../cloud_restful_api/)
+
 ## [Elastic-Job-Cloud-Scheduler启动指南](../scheduler_guide/)
 
 ## [Elastic-Job-Cloud-Scheduler高可用模式](../high_availability/)
