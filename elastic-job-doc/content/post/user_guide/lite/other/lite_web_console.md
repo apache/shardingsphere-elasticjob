@@ -36,21 +36,3 @@ weight=21
 
 * 添加作业。
 作业在首次运行时将自动添加。`Elastic-Job-Lite`以`jar`方式启动，并无作业分发功能。如需完全通过运维平台发布作业，请使用`Elastic-Job-Cloud`。
-
-## 主要界面
-
-* 总览页
-
-![总览页](../../../../../img/console/lite_index.png)
-
-* 注册中心管理页
-
-![注册中心管理页](../../../../../img/console/lite_reg_center.png)
-
-* 作业详细信息页
-
-![作业详细信息页](../../../../../img/console/lite_job_details.png)
-
-* 服务器详细信息页
-
-![服务器详细信息页](../../../../../img/console/lite_server_details.png)
