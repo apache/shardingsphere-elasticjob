@@ -194,13 +194,13 @@ public class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * 设置监视作业服务器状态的reconcile线程执行间隔分钟数.
+         * 设置修复作业服务器不一致状态服务执行间隔分钟数.
          * 
          * <p>
          * 每隔一段时间监视作业服务器的状态，如果不正确则重新分片。
          * </p>
          * 
-         * @param reconcileIntervalMinutes reconcile线程执行间隔分钟数
+         * @param reconcileIntervalMinutes 修复作业服务器不一致状态服务执行间隔分钟数
          * 
          * @return 作业配置构建器
          */

@@ -51,9 +51,9 @@
                         <input type="number" id="monitorPort" name="monitorPort" class="form-control" data-toggle="tooltip" data-placement="bottom" title="抓取作业注册信息监听服务端口。配置为-1表示不启用监听服务。" />
                     </div>
                     
-                    <label for="reconcileIntervalMinutes" class="col-sm-2 control-label">作业服务器状态修复周期</label>
+                    <label for="reconcileIntervalMinutes" class="col-sm-2 control-label">作业服务器状态修复间隔分钟数</label>
                     <div class="col-sm-2">
-                        <input type="number" id="reconcileIntervalMinutes" name="reconcileIntervalMinutes" class="form-control" data-toggle="tooltip" data-placement="bottom" title="修复错误状态的作业服务器扫描修复周期。配置为-1表示不启用修复动作。" />
+                        <input type="number" id="reconcileIntervalMinutes" name="reconcileIntervalMinutes" class="form-control" data-toggle="tooltip" data-placement="bottom" title="修复错误状态的作业服务器扫描修复间隔分钟数。配置为-1表示不启用修复动作。" />
                     </div>
                 </div>
                 

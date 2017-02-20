@@ -194,7 +194,8 @@ echo sharding execution context is $*
 |disabled                            |boolean|否      |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
 |overwrite                           |boolean|否      |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
 |jobProperties                       |String |否      |     | 作业定制化属性，目前支持`job_exception_handler`和`executor_service_handler`，用于扩展异常处理和自定义作业处理线程池 |
-|event-trace-rdb-data-source         |String |否      |     | 作业事件追踪的数据源`Bean`引用|
+|event-trace-rdb-data-source         |String |否      |     | 作业事件追踪的数据源`Bean`引用                                                 |
+|reconcile-interval-minutes          |int    |否      |-1   | 修复作业服务器不一致状态服务调度间隔分钟数                                       |
 
 #### job:dataflow命名空间属性详细说明
 
@@ -397,3 +398,6 @@ public class JobMain {
     }
 }
 ```
+
+### 4. 修复作业服务器不一致状态
+`elastic-job`在配置中提供了`reconcileIntervalMinutes`设置修复状态服务执行间隔分钟数，用于修复作业服务器不一致状态，默认为-1不启用。

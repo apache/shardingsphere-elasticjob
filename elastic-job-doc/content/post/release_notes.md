@@ -8,6 +8,12 @@ weight=1
 
 # Release Notes
 
+## 2.0.6-SNAPSHOT
+
+### 新功能
+
+1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) elastic-job-lite：主节点增加reconcile线程任务，修复分片不一致等分布式相关一致性问题。
+
 ## 2.0.5
 
 ### 缺陷修正
