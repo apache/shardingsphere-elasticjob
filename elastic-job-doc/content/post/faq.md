@@ -107,7 +107,7 @@ weight=400
 
 回答：
 
-基于扩展性提升，概念明晰和命名规范化的考虑，`elastic-job 2.100`版本决定抛弃原有包袱的束缚，重新定义了`JAVA API`，`Spring`命名空间并且删除了已废弃的`API`。
+基于扩展性提升，概念明晰和命名规范化的考虑，`elastic-job 2.0.0`版本决定抛弃原有包袱的束缚，重新定义了`JAVA API`，`Spring`命名空间并且删除了已废弃的`API`。
 
 **重新定义`JAVA API`**
 
@@ -140,3 +140,21 @@ weight=400
 * 删除废弃作业调度器类，包括`com.dangdang.ddframe.job.schedule.JobController`和`com.dangdang.ddframe.job.spring.schedule.SpringJobController`。
 
 * 不再支持非`Spring`命名空间通过`xml`方式配置`bean`，如有需要请使用`Spring Java Config`。
+
+### 11. `Elastic-Job 2.0.5`版本使用Cloud需要注意哪些问题?
+
+回答：
+
+对于Elastic Job Cloud，原作业维度配置无法满足易用性和扩展性等需求，因此在`elastic-job 2.0.5`Cloud版本中增加了`作业APP`的概念，即作业打包部署后的应用，描述了作业启动需要用到的CPU、内存、启动脚本及应用下载路径等基本信息，每个APP可以包含一个或多个作业。
+
+**增加`JOB APP API`**
+
+* 将作业打包部署后发布作业APP。
+
+* 作业APP配置参数cpuCount,memoryMB分别代表应用启动时需要用到的`CPU`及内存。
+
+**调整`JOB API`**
+
+* 新增作业时，必须先发布打包部署后的作业APP。
+
+* 作业配置参数cpuCount,memoryMB分别代表作业运行时需要用到的`CPU`及内存。

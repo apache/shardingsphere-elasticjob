@@ -1,7 +1,7 @@
 +++
 date = "2017-01-07T16:14:21+08:00"
 title = "Elastic-Job-Cloud运维平台"
-weight=21
+weight=60
 +++
 
 # Elastic-Job-Cloud运维平台

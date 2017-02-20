@@ -1,4 +1,3 @@
-
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "Elastic-Job-Cloud-Scheduler启动指南"
@@ -37,5 +36,3 @@ weight=54
 ***
 
 * 停止：不提供停止脚本，可直接使用`kill`杀进程。
-
-* `Elastic-Job-Cloud-Scheduler`是什么？`Elastic-Job-Cloud-Scheduler`是`Mesos Framework`，用于资源调度和应用分发，需要独立启动提供服务。

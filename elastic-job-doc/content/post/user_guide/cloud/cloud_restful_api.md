@@ -1,14 +1,14 @@
 +++
 date = "2017-02-17T14:14:21+08:00"
 title = "Elastic-Job-Cloud REST API"
-weight=21
+weight=56
 +++
 
 # Elastic-Job-Cloud RESTful API
 
-`Elastic-Job-Cloud`提供APP及作业注册等`RESTful API`可通过`curl`操作。
+`Elastic-Job-Cloud`提供APP发布及作业注册等`RESTful API`可通过`curl`操作。
 
-### 注册作业App
+### 发布作业APP
 
 url：`app`
 
@@ -34,7 +34,7 @@ curl -l -H "Content-type: application/json" -X POST -d
 http://elastic_job_cloud_host:8899/app
 ```
 
-### 修改作业App配置
+### 修改作业APP配置
 
 url：`app`
 
