@@ -39,7 +39,7 @@ function renderSettings() {
         $("#jobShardingStrategyClass").attr("value", data.jobShardingStrategyClass);
         $("#executorServiceHandler").attr("value", data.jobProperties["executor_service_handler"]);
         $("#jobExceptionHandler").attr("value", data.jobProperties["job_exception_handler"]);
-        $("#reconcileIntervalSeconds").attr("value", data.reconcileIntervalSeconds);
+        $("#reconcileIntervalMinutes").attr("value", data.reconcileIntervalMinutes);
         $("#description").text(data.description);
         if (!data.monitorExecution) {
             $("#execution_info_tab").addClass("disabled");
@@ -74,8 +74,8 @@ function bindSubmitJobSettingsForm() {
         var executorServiceHandler = $("#executorServiceHandler").val();
         var jobExceptionHandler = $("#jobExceptionHandler").val();
         var description = $("#description").val();
-        var reconcileIntervalSeconds = $("#reconcileIntervalSeconds").val();
-        var postJson = {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalSeconds:reconcileIntervalSeconds};
+        var reconcileIntervalMinutes = $("#reconcileIntervalMinutes").val();
+        var postJson = {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, description: description, scriptCommandLine: scriptCommandLine, reconcileIntervalMinutes:reconcileIntervalMinutes};
         $.post("job/settings", postJson, function() {
             showSuccessDialog();
             if (monitorExecution) {

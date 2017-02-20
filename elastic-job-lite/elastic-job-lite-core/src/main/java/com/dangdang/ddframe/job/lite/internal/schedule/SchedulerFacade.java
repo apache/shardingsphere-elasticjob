@@ -26,8 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.lite.internal.worker.WorkersManager;
-import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileWorker;
+import com.dangdang.ddframe.job.lite.internal.reconcile.ReconcileService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class SchedulerFacade {
     
     private final ListenerManager listenerManager;
     
-    private final WorkersManager workersManager;
+    private final ReconcileService reconcileService;
     
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         configService = new ConfigurationService(regCenter, jobName);
@@ -62,8 +61,8 @@ public class SchedulerFacade {
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         monitorService = new MonitorService(regCenter, jobName);
+        reconcileService = new ReconcileService(regCenter, jobName);
         listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
-        workersManager = new WorkersManager(regCenter, jobName);
     }
     
     /**
@@ -87,7 +86,7 @@ public class SchedulerFacade {
         shardingService.setReshardingFlag();
         monitorService.listen();
         listenerManager.setCurrentShardingTotalCount(configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount());
-        workersManager.start();
+        reconcileService.startAsync();
     }
     
     /**

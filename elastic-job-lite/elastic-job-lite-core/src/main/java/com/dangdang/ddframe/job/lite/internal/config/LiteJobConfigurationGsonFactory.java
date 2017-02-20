@@ -99,8 +99,8 @@ public final class LiteJobConfigurationGsonFactory {
                 case "overwrite":
                     customizedValueMap.put("overwrite", in.nextBoolean());
                     break;
-                case "reconcileIntervalSeconds":
-                    customizedValueMap.put("reconcileIntervalSeconds", in.nextInt());
+                case "reconcileIntervalMinutes":
+                    customizedValueMap.put("reconcileIntervalMinutes", in.nextInt());
                     break;
                 default:
                     in.skipValue();
@@ -129,8 +129,8 @@ public final class LiteJobConfigurationGsonFactory {
             if (customizedValueMap.containsKey("overwrite")) {
                 builder.overwrite((boolean) customizedValueMap.get("overwrite"));
             }
-            if (customizedValueMap.containsKey("reconcileIntervalSeconds")) {
-                builder.reconcileIntervalSeconds((int) customizedValueMap.get("reconcileIntervalSeconds"));
+            if (customizedValueMap.containsKey("reconcileIntervalMinutes")) {
+                builder.reconcileIntervalMinutes((int) customizedValueMap.get("reconcileIntervalMinutes"));
             }
             return builder.build();
         }
@@ -143,7 +143,7 @@ public final class LiteJobConfigurationGsonFactory {
             out.name("jobShardingStrategyClass").value(value.getJobShardingStrategyClass());
             out.name("disabled").value(value.isDisabled());
             out.name("overwrite").value(value.isOverwrite());
-            out.name("reconcileIntervalSeconds").value(value.getReconcileIntervalSeconds());
+            out.name("reconcileIntervalMinutes").value(value.getReconcileIntervalMinutes());
         }
     }
 }

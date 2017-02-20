@@ -38,6 +38,7 @@ import com.dangdang.ddframe.job.lite.internal.listener.JobListenerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorServiceDisableTest;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorServiceEnableTest;
+import com.dangdang.ddframe.job.lite.internal.reconcile.ReconcileServiceTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistryTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleControllerTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListenerTest;
@@ -52,10 +53,6 @@ import com.dangdang.ddframe.job.lite.internal.sharding.ShardingServiceTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorageTest;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtilsTest;
-import com.dangdang.ddframe.job.lite.internal.worker.WorkerManagerTest;
-import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileListenerManagerTest;
-import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileWorkerTest;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -97,9 +94,8 @@ import org.junit.runners.Suite.SuiteClasses;
     SchedulerFacadeTest.class,
     LiteJobFacadeTest.class, 
     JobExecutorTest.class,
-    ReconcileWorkerTest.class,
-    ReconcileListenerManagerTest.class,
-    WorkerManagerTest.class
+    ReconcileServiceTest.class,
+    ReconcileServiceTest.class
     })
 public final class AllInternalTests {
 }

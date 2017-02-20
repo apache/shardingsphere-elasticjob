@@ -48,7 +48,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
     
     private final boolean overwrite;
     
-    private final int reconcileIntervalSeconds;
+    private final int reconcileIntervalMinutes;
     
     /**
      * 获取作业名称.
@@ -95,7 +95,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
         
         private boolean overwrite;
         
-        private int reconcileIntervalSeconds = 60;
+        private int reconcileIntervalMinutes = -1;
         
         /**
          * 设置监控作业执行时状态.
@@ -194,18 +194,18 @@ public class LiteJobConfiguration implements JobRootConfiguration {
         }
         
         /**
-         * 设置监视作业服务器状态的reconcile线程执行间隔秒数.
+         * 设置监视作业服务器状态的reconcile线程执行间隔分钟数.
          * 
          * <p>
          * 每隔一段时间监视作业服务器的状态，如果不正确则重新分片。
          * </p>
          * 
-         * @param reconcileIntervalSeconds reconcile线程执行间隔秒数
+         * @param reconcileIntervalMinutes reconcile线程执行间隔分钟数
          * 
          * @return 作业配置构建器
          */
-        public Builder reconcileIntervalSeconds(final int reconcileIntervalSeconds) {
-            this.reconcileIntervalSeconds = reconcileIntervalSeconds;
+        public Builder reconcileIntervalMinutes(final int reconcileIntervalMinutes) {
+            this.reconcileIntervalMinutes = reconcileIntervalMinutes;
             return this;
         }
         
@@ -215,7 +215,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
          * @return 作业配置对象
          */
         public final LiteJobConfiguration build() {
-            return new LiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, disabled, overwrite, reconcileIntervalSeconds);
+            return new LiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, disabled, overwrite, reconcileIntervalMinutes);
         }
     }
 }

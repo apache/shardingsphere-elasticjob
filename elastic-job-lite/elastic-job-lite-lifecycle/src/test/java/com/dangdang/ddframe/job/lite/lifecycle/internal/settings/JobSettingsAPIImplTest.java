@@ -79,7 +79,7 @@ public class JobSettingsAPIImplTest {
         assertFalse(jobSettings.isFailover());
         assertTrue(jobSettings.isMisfire());
         assertThat(jobSettings.getJobShardingStrategyClass(), is(""));
-        assertThat(jobSettings.getReconcileIntervalSeconds(), is(60));
+        assertThat(jobSettings.getReconcileIntervalMinutes(), is(-1));
         jobSettings.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class.getCanonicalName());
         jobSettings.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());
         assertThat(jobSettings.getDescription(), is(""));
@@ -106,12 +106,12 @@ public class JobSettingsAPIImplTest {
         jobSettings.setMisfire(true);
         jobSettings.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), DefaultExecutorServiceHandler.class.getCanonicalName());
         jobSettings.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), DefaultJobExceptionHandler.class.getCanonicalName());
-        jobSettings.setReconcileIntervalSeconds(70);
+        jobSettings.setReconcileIntervalMinutes(70);
         jobSettingsAPI.updateJobSettings(jobSettings);
         verify(regCenter).update("/test_job/config", "{\"jobName\":\"test_job\",\"jobClass\":\"com.dangdang.ddframe.job.lite.fixture.TestDataflowJob\","
                 + "\"cron\":\"0/1 * * * * ?\",\"shardingTotalCount\":10,\"monitorExecution\":true,\"streamingProcess\":true,"
                 + "\"maxTimeDiffSeconds\":-1,\"monitorPort\":-1,\"failover\":false,\"misfire\":true,"
                 + "\"jobProperties\":{\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","
-                + "\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\"},\"reconcileIntervalSeconds\":70}");
+                + "\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\"},\"reconcileIntervalMinutes\":70}");
     }
 }

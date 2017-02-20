@@ -25,8 +25,6 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
-import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileListenerManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -60,9 +58,6 @@ public class ListenerManagerTest {
     @Mock
     private GuaranteeListenerManager guaranteeListenerManager;
     
-    @Mock
-    private ReconcileListenerManager reconcileListenerManager;
-    
     private final ListenerManager listenerManager = new ListenerManager(null, "test_job", Collections.<ElasticJobListener>emptyList());
     
     @Before
@@ -75,7 +70,6 @@ public class ListenerManagerTest {
         ReflectionUtils.setFieldValue(listenerManager, "jobOperationListenerManager", jobOperationListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "configurationListenerManager", configurationListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "guaranteeListenerManager", guaranteeListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "reconcileListenerManager", reconcileListenerManager);
     }
     
     @Test
@@ -88,7 +82,6 @@ public class ListenerManagerTest {
         verify(jobOperationListenerManager).start();
         verify(configurationListenerManager).start();
         verify(guaranteeListenerManager).start();
-        verify(reconcileListenerManager).start();
     }
     
     @Test

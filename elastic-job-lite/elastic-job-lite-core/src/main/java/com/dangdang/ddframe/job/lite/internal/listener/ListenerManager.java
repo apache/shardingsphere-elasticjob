@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
-import com.dangdang.ddframe.job.lite.internal.worker.reconcile.ReconcileListenerManager;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
@@ -51,8 +50,6 @@ public class ListenerManager {
 
     private final GuaranteeListenerManager guaranteeListenerManager;
     
-    private final ReconcileListenerManager reconcileListenerManager;
-    
     public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         electionListenerManager = new ElectionListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
@@ -61,7 +58,6 @@ public class ListenerManager {
         jobOperationListenerManager = new JobOperationListenerManager(regCenter, jobName);
         configurationListenerManager = new ConfigurationListenerManager(regCenter, jobName);
         guaranteeListenerManager = new GuaranteeListenerManager(regCenter, jobName, elasticJobListeners);
-        reconcileListenerManager = new ReconcileListenerManager(regCenter, jobName);
     }
     
     /**
@@ -75,7 +71,6 @@ public class ListenerManager {
         jobOperationListenerManager.start();
         configurationListenerManager.start();
         guaranteeListenerManager.start();
-        reconcileListenerManager.start();
     }
     
     /**
