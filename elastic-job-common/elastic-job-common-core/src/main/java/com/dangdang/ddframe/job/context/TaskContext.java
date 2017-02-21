@@ -121,11 +121,11 @@ public final class TaskContext {
     /**
      * 获取任务执行器主键.
      * 
-     * @param appURL 应用URL地址
+     * @param appName 应用名称
      * @return 任务执行器主键
      */
-    public String getExecutorId(final String appURL) {
-        return Joiner.on(DELIMITER).join(Encryption.md5(appURL), slaveId);
+    public String getExecutorId(final String appName) {
+        return Joiner.on(DELIMITER).join(Encryption.md5(appName), slaveId);
     }
     
     /**
