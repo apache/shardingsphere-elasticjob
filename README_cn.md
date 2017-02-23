@@ -204,11 +204,19 @@ public class MyElasticJob implements SimpleJob {
 
 同`Elastic-Job-Lite`
 
+### 作业APP配置
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"appName":"yourAppName","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' 
+http://elastic_job_cloud_host:8899/app
+```
+
 ### 作业配置
 
 ```shell
 curl -l -H "Content-type: application/json" -X POST -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
+'{"jobName":"fooJob","appName":"yourAppName","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"failover":true,"misfire":true}' 
 http://elastic_job_cloud_host:8899/job/register
 ```
 

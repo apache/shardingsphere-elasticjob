@@ -189,13 +189,14 @@ echo sharding execution context is $*
 |max-time-diff-seconds               |int    |否      |-1   | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为`-1`表示不校验时间误差|
 |failover                            |boolean|否      |false| 是否开启失效转移<br />仅`monitorExecution`开启，失效转移才有效                   |
 |misfire                             |boolean|否      |true | 是否开启错过任务重新执行                                                       |
-|job-sharding-strategy-class         |String |否      |true | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](http://dangdangdotcom.github.io/elastic-job/post/job_strategy)  |
+|job-sharding-strategy-class         |String |否      |true | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](http://dangdangdotcom.github.io/elastic-job/post/job_strategy)|
 |description                         |String |否      |     | 作业描述信息                                                                 |
 |disabled                            |boolean|否      |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
 |overwrite                           |boolean|否      |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
-|jobProperties                       |String |否      |     | 作业定制化属性，目前支持`job_exception_handler`和`executor_service_handler`，用于扩展异常处理和自定义作业处理线程池 |
-|event-trace-rdb-data-source         |String |否      |     | 作业事件追踪的数据源`Bean`引用                                                 |
-|reconcile-interval-minutes          |int    |否      |-1   | 修复作业服务器不一致状态服务调度间隔分钟数                                       |
+|job-exception-handler               |String |否      |     | 扩展异常处理类                                                               |
+|executor-service-handler            |String |否      |     | 扩展作业处理线程池类                                                          |
+|event-trace-rdb-data-source         |String |否      |     | 作业事件追踪的数据源`Bean`引用                                                |
+|reconcile-interval-minutes          |int    |否      |-1   | 修复作业服务器不一致状态服务调度间隔分钟数，配置为`-1`表示不执行修复。              |
 
 #### job:dataflow命名空间属性详细说明
 
