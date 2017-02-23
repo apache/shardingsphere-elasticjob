@@ -29,17 +29,11 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
     
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
-        <property name="cache" value="false"/>
-        <property name="order" value="1" /> 
-        <property name="suffix" value=".ftl" />
-        <property name="contentType" value="text/html;charset=utf-8" />
-        <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
-        <property name="requestContextAttribute" value="rc" />
+    <bean id="viewResolver"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/" />
+        <property name="suffix" value=".html" />
     </bean>
-    
-    <bean id="freemarkerConfiguration" class="org.springframework.beans.factory.config.PropertiesFactoryBean" p:location="classpath:META-INF/dd-job-console/freemarker.properties" />
-    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" p:defaultEncoding="UTF-8" p:templateLoaderPath="/templates" p:freemarkerSettings-ref="freemarkerConfiguration" />
     
     <mvc:interceptors>
         <mvc:interceptor>

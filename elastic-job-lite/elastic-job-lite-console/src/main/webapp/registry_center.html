@@ -1,19 +1,14 @@
-<#import "tags/dashboard.ftl" as dashboard>
-<table id="regCenters" class="table table-hover">
-    <thead>
-        <tr>
-            <th>注册中心名称</th>
-            <th>连接地址</th>
-            <th>命名空间</th>
-            <th>登录凭证</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-<button type="button" class="btn btn-success" data-toggle="modal" data-target="#add-reg-center">添加</button>
-<div id="add-reg-center" class="modal fade" tabindex="-1" role="dialog">
+<div class="indexContent">
+<section class="content-header">
+    <h1>注册中心</h1>
+</section>
+<hr style="background-color:#00c0ef;height:3px;width:100%;margin-bottom:0px;"> 
+<section class="content">
+<table id="regCenters"></table>
+<button type="button" class="btn btn-success" data-toggle="modal" id="add-register">添加</button>
+</section>
+</div>
+<div id="add-reg-center" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -47,12 +42,8 @@
         </div>
     </div>
 </div>
-<@dashboard.successDialog "success-dialog" />
-<@dashboard.failureDialog "connect-reg-center-failure-dialog" "连接失败，请检查注册中心配置" />
-<@dashboard.confirmDialog "delete-confirm-dialog" "确认要删除吗？" />
-<@dashboard.failureDialog "add-reg-center-failure-dialog" "注册中心名称重复" />
 <script src="lib/jquery/jquery-2.1.4.min.js"></script>
 <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-<script src="js/common.js"></script>
-<script src="js/dashboard.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
 <script src="js/registry_center.js"></script>

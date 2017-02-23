@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Job Console</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="lib/AdminLTE/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="lib/AdminLTE/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="lib/font-awesome-4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="lib/jquery/jquery-2.1.4.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/index.js"></script>
+    </head>
+    <body class="hold-transition skin-purple sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+        <!-- Logo -->
+        <a href="index.html" class="logo">
+        <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Elastic Job Lite Console</b></span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+            <div class="navbar-header">
+                <span class="navbar-brand">当前注册中心：<span id="activated-reg-center"></span></span>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" id="overview">总览</a></li>
+                    <li><a href="/">注册中心管理</a></li>
+                    <li><a href="#" id="help">帮助</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+                <li class="header">主菜单</li>
+                <li class="treeview active">
+                    <a href="#" class="nav-header collapsed" data-toggle="collapse">
+                        <i class="fa fa-edit"></i>注册中心
+                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                    </a>
+                    <ul id="registry-center-dimension" class="nav nav-list tree"></ul>
+                    <a href="#" class="nav-header collapsed" data-toggle="collapse">
+                        <i class="fa fa-laptop"></i>作业维度
+                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                    </a>
+                    <ul id="jobs-dimension" class="nav nav-list tree"></ul>
+                    <a href="#" class="nav-header collapsed" data-toggle="collapse">
+                        <i class="fa fa-dashboard"></i>服务器维度
+                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                    </a>
+                    <ul id="servers-dimension" class="nav nav-list tree"></ul>
+                </li>
+            </ul>
+    </section>
+    <!-- /.sidebar -->
+    </aside>
+    <!-- Content Wrapper. Contains page content -->
+    <div id="content">
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0.0
+        </div>
+            <strong>Copyright &copy; 1999-2016 <a href="http://www.dangdang.com">当当网</a>.</strong> All rights reserved.
+    </footer>
+    </div>
+<div id="success-dialog" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">信息框</h4>
+            </div>
+            <div class="modal-body">
+                <p>操作已成功完成</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="connect-reg-center-failure-dialog" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">信息框</h4>
+            </div>
+            <div class="modal-body">
+                <p>操作未成功，原因：连接失败，请检查注册中心配置</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="remove-job-failure-dialog" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">信息框</h4>
+            </div>
+            <div class="modal-body">
+                <p>操作未成功，原因：删除作业失败，请检查作业是否已被停止</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="add-reg-center-failure-dialog" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">信息框</h4>
+            </div>
+            <div class="modal-body">
+                <p>操作未成功，原因：注册中心名称重复</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="delete-confirm-dialog" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">确认框</h4>
+            </div>
+            <div class="modal-body">
+                <p>确认要删除吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="delete-confirm-dialog-confirm-btn" type="button" class="btn btn-danger">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+</html>

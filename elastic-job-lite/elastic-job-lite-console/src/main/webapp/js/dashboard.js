@@ -10,6 +10,11 @@ $(function() {
 
 function renderRegistryCenterForDashboardNav() {
     $.get("registry_center", {}, function(data) {
+        for(var i=0;i<data.length;i++){
+            if(data[i].activated == true){
+                $("#activated-reg-center").text(data[i].name);
+            }
+        }
         var activatedRegCenter = $("#activated-reg-center").text();
         var $registryCenterDimension = $("#registry-center-dimension");
         $registryCenterDimension.empty();
@@ -32,7 +37,8 @@ function bindConnectLink() {
         var regName = $(event.currentTarget).attr("reg-name");
         $.post("registry_center/connect", {name : regName}, function (data) {
             if (data) {
-                window.location = "overview";
+                showSuccessDialog();
+                renderRegistryCenterForDashboardNav();
             } else {
                 link.button("reset");
                 showFailureDialog("connect-reg-center-failure-dialog");
@@ -50,7 +56,7 @@ function renderJobsForDashboardNav() {
         var $jobsDimension = $("#jobs-dimension");
         $jobsDimension.empty();
         for (var i = 0; i < data.length; i++) {
-            var liContent = "<a href='job_detail?jobName=" + data[i].jobName + "&jobType=" + data[i].jobType + "' data-placement='right' title='" + data[i].description + "'>" + data[i].jobName + "</a>";
+            var liContent = "<a href='index.html?jobName=" + data[i].jobName + "&jobType=" + data[i].jobType + "' data-placement='right' title='" + data[i].description + "'>" + data[i].jobName + "</a>";
             if (currentJob && currentJob === data[i].jobName) {
                 $jobsDimension.append("<li class='open'>" + liContent + "</li>");
             } else {
@@ -69,7 +75,7 @@ function renderJServersForDashboardNav() {
         var $serversDimension = $("#servers-dimension");
         $serversDimension.empty();
         for (var i = 0; i < data.length; i++) {
-            var liContent = "<a href='server_detail?serverIp=" + data[i].serverIp + "' data-placement='right' title='" + data[i].serverHostName + "'>" + data[i].serverIp + "</a>";
+            var liContent = "<a href='index.html?serverIp=" + data[i].serverIp + "' data-placement='right' title='" + data[i].serverHostName + "'>" + data[i].serverIp + "</a>";
             if (currentIp && currentIp === data[i].serverIp) {
                 $serversDimension.append("<li class='open'>" + liContent + "</li>");
             } else {
