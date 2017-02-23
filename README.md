@@ -142,6 +142,14 @@ public class MyElasticJob implements SimpleJob {
 
 Same with `Elastic-Job-Lite`
 
+### Job App configuration
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"appName":"yourAppName","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' 
+http://elastic_job_cloud_host:8899/app
+```
+
 ### Job configuration
 
 ```shell
