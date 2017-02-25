@@ -65,43 +65,43 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         while (in.hasNext()) {
             String jsonName = in.nextName();
             switch (jsonName) {
-                case "jobName":
+                case JobCoreConfigurationConstants.JOB_NAME:
                     jobName = in.nextString();
                     break;
-                case "cron":
+                case JobCoreConfigurationConstants.JOB_CRON:
                     cron = in.nextString();
                     break;
-                case "shardingTotalCount":
+                case JobCoreConfigurationConstants.SHARDING_TOTAL_COUNT:
                     shardingTotalCount = in.nextInt();
                     break;
-                case "shardingItemParameters":
+                case JobCoreConfigurationConstants.SHARDING_ITEM_PARAMETERS:
                     shardingItemParameters = in.nextString();
                     break;
-                case "jobParameter":
+                case JobCoreConfigurationConstants.JOB_PARAMETER:
                     jobParameter = in.nextString();
                     break;
-                case "failover":
+                case JobCoreConfigurationConstants.FAIL_OVER:
                     failover = in.nextBoolean();
                     break;
-                case "misfire":
+                case JobCoreConfigurationConstants.MIS_FIRE:
                     misfire = in.nextBoolean();
                     break;
-                case "description":
+                case JobCoreConfigurationConstants.DESCRIPTION:
                     description = in.nextString();
                     break;
-                case "jobProperties":
+                case JobCoreConfigurationConstants.JOB_PROPERTIES:
                     jobProperties = getJobProperties(in);
                     break;
-                case "jobType":
+                case JobCoreConfigurationConstants.JOB_TYPE:
                     jobType = JobType.valueOf(in.nextString());
                     break;
-                case "jobClass":
+                case JobCoreConfigurationConstants.JOB_CLASS:
                     jobClass = in.nextString();
                     break;
-                case "streamingProcess":
+                case JobCoreConfigurationConstants.STREAMING_PROCESS:
                     streamingProcess = in.nextBoolean();
                     break;
-                case "scriptCommandLine":
+                case JobCoreConfigurationConstants.SCRIPT_COMMAND_LINE:
                     scriptCommandLine = in.nextString();
                     break;
                 default:
@@ -121,10 +121,10 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         in.beginObject();
         while (in.hasNext()) {
             switch (in.nextName()) {
-                case "job_exception_handler":
+                case JobCoreConfigurationConstants.JOB_EXCEPTION_HANDLER:
                     result.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), in.nextString());
                     break;
-                case "executor_service_handler":
+                case JobCoreConfigurationConstants.EXECUTOR_SERVICE_HANDLER:
                     result.put(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), in.nextString());
                     break;
                 default:
@@ -175,23 +175,23 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
     @Override
     public void write(final JsonWriter out, final T value) throws IOException {
         out.beginObject();
-        out.name("jobName").value(value.getTypeConfig().getCoreConfig().getJobName());
-        out.name("jobClass").value(value.getTypeConfig().getJobClass());
-        out.name("jobType").value(value.getTypeConfig().getJobType().name());
-        out.name("cron").value(value.getTypeConfig().getCoreConfig().getCron());
-        out.name("shardingTotalCount").value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        out.name("shardingItemParameters").value(value.getTypeConfig().getCoreConfig().getShardingItemParameters());
-        out.name("jobParameter").value(value.getTypeConfig().getCoreConfig().getJobParameter());
-        out.name("failover").value(value.getTypeConfig().getCoreConfig().isFailover());
-        out.name("misfire").value(value.getTypeConfig().getCoreConfig().isMisfire());
-        out.name("description").value(value.getTypeConfig().getCoreConfig().getDescription());
-        out.name("jobProperties").jsonValue(value.getTypeConfig().getCoreConfig().getJobProperties().json());
+        out.name(JobCoreConfigurationConstants.JOB_NAME).value(value.getTypeConfig().getCoreConfig().getJobName());
+        out.name(JobCoreConfigurationConstants.JOB_CLASS).value(value.getTypeConfig().getJobClass());
+        out.name(JobCoreConfigurationConstants.JOB_TYPE).value(value.getTypeConfig().getJobType().name());
+        out.name(JobCoreConfigurationConstants.JOB_CRON).value(value.getTypeConfig().getCoreConfig().getCron());
+        out.name(JobCoreConfigurationConstants.SHARDING_TOTAL_COUNT).value(value.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        out.name(JobCoreConfigurationConstants.SHARDING_ITEM_PARAMETERS).value(value.getTypeConfig().getCoreConfig().getShardingItemParameters());
+        out.name(JobCoreConfigurationConstants.JOB_PARAMETER).value(value.getTypeConfig().getCoreConfig().getJobParameter());
+        out.name(JobCoreConfigurationConstants.FAIL_OVER).value(value.getTypeConfig().getCoreConfig().isFailover());
+        out.name(JobCoreConfigurationConstants.MIS_FIRE).value(value.getTypeConfig().getCoreConfig().isMisfire());
+        out.name(JobCoreConfigurationConstants.DESCRIPTION).value(value.getTypeConfig().getCoreConfig().getDescription());
+        out.name(JobCoreConfigurationConstants.JOB_PROPERTIES).jsonValue(value.getTypeConfig().getCoreConfig().getJobProperties().json());
         if (value.getTypeConfig().getJobType() == JobType.DATAFLOW) {
             DataflowJobConfiguration dataflowJobConfig = (DataflowJobConfiguration) value.getTypeConfig();
-            out.name("streamingProcess").value(dataflowJobConfig.isStreamingProcess());
+            out.name(JobCoreConfigurationConstants.STREAMING_PROCESS).value(dataflowJobConfig.isStreamingProcess());
         } else if (value.getTypeConfig().getJobType() == JobType.SCRIPT) {
             ScriptJobConfiguration scriptJobConfig = (ScriptJobConfiguration) value.getTypeConfig();
-            out.name("scriptCommandLine").value(scriptJobConfig.getScriptCommandLine());
+            out.name(JobCoreConfigurationConstants.SCRIPT_COMMAND_LINE).value(scriptJobConfig.getScriptCommandLine());
         }
         writeCustomized(out, value);
         out.endObject();

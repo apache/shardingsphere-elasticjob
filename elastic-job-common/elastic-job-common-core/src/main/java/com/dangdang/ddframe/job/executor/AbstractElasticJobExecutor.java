@@ -104,6 +104,12 @@ public abstract class AbstractElasticJobExecutor {
         if (shardingContexts.isAllowSendJobEvent()) {
             jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobName));
         }
+        if(jobFacade.clusterOrderIfNecessary()){
+            //当job需要全局顺序的时候，misfire是没意义的
+            jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(),State.TASK_FINISHED,String.format(
+                    "This job '%s' need cluster order but currently still has node running,so return",jobName));
+            return;
+        }
         if (jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())) {
             if (shardingContexts.isAllowSendJobEvent()) {
                 jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format(

@@ -118,4 +118,9 @@ public class CloudJobFacade implements JobFacade {
         jobEventBus.post(new JobStatusTraceEvent(taskContext.getMetaInfo().getJobName(), taskContext.getId(), taskContext.getSlaveId(), 
                 Source.CLOUD_EXECUTOR, taskContext.getType(), String.valueOf(taskContext.getMetaInfo().getShardingItems()), state, message));
     }
+
+    @Override
+    public boolean clusterOrderIfNecessary() {
+        return false;
+    }
 }
