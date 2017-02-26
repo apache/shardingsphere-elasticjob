@@ -104,6 +104,7 @@ public final class LiteJobConfigurationGsonFactory {
                     break;
                 case LiteJobConfigurationConstants.CLUSTER_ORDER:
                     customizedValueMap.put(LiteJobConfigurationConstants.CLUSTER_ORDER,in.nextBoolean());
+                    break;
                 default:
                     in.skipValue();
                     break;

@@ -12,7 +12,6 @@
         <module>elastic-job-common</module>
         <module>elastic-job-lite</module>
         <module>elastic-job-cloud</module>
-        <module>elastic-job-example</module>
     </modules>
     
     <properties>

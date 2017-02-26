@@ -57,6 +57,8 @@ public final class BaseJobBeanDefinitionParserTag {
     public static final String DISABLED_ATTRIBUTE = "disabled";
     
     public static final String OVERWRITE_ATTRIBUTE = "overwrite";
+
+    public static final String CLUSTER_ORDER = "clusterOrder";
     
     public static final String LISTENER_TAG = "listener";
     
