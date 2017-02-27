@@ -48,7 +48,7 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 # Architecture
 
-## Elastic-ob-Lite
+## Elastic-Job-Lite
 
 ![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_lite.png)
 ***
