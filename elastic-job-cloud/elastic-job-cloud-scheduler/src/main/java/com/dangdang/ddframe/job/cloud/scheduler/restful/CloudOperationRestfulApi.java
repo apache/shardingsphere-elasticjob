@@ -17,10 +17,16 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.gson.JsonArray;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONException;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -36,6 +42,8 @@ public final class CloudOperationRestfulApi {
     
     private static ProducerManager producerManager;
     
+    private static MesosStateService mesosStateService;
+    
     private static final long RECONCILE_INTERVAL = 10 * 1000;
     
     private static long lastReconcileTime;
@@ -45,8 +53,9 @@ public final class CloudOperationRestfulApi {
      * 
      * @param producerManager 生产管理器
      */
-    public static void init(final ProducerManager producerManager) {
+    public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudOperationRestfulApi.producerManager = producerManager;
+        CloudOperationRestfulApi.mesosStateService = new MesosStateService(regCenter);
     }
     
     /**
@@ -84,5 +93,18 @@ public final class CloudOperationRestfulApi {
             throw new RuntimeException("Repeat explicitReconcile");
         }
         lastReconcileTime = System.currentTimeMillis();
+    }
+    
+    /**
+     * 获取作业云App的沙箱信息.
+     *
+     * @param appName 云作业App配置名称
+     * @return 沙箱信息
+     */
+    @GET
+    @Path("/sandbox")
+    public JsonArray sandbox(@QueryParam("appName") final String appName) throws JSONException {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(appName), "Lack param 'appName'");
+        return mesosStateService.sandbox(appName);
     }
 }

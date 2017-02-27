@@ -45,7 +45,7 @@ public class RestfulService {
         GsonFactory.registerTypeAdapter(CloudAppConfiguration.class, new CloudAppConfigurationGsonFactory.CloudAppConfigurationGsonTypeAdapter());
         CloudJobRestfulApi.init(regCenter, producerManager);
         CloudAppRestfulApi.init(regCenter);
-        CloudOperationRestfulApi.init(producerManager);
+        CloudOperationRestfulApi.init(regCenter, producerManager);
     }
     
     /**
