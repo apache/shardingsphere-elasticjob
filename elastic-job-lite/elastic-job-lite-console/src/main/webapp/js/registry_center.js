@@ -6,28 +6,48 @@ $(function() {
 });
 
 function renderRegCenters() {
-    $.get("registry_center", {}, function(data) {
-        $("#regCenters tbody").empty();
-        for (var i = 0;i < data.length;i++) {
-            var baseTd = "<td>" + data[i].name + "</td><td>" + data[i].zkAddressList + "</td><td>" + data[i].namespace + "</td><td>" + data[i].digest + "</td>";
-            var operationTd;
-            if (true === data[i].activated) {
-                $("#activated-reg-center").text(data[i].name);
-                operationTd = "<td><button disabled operation='connect' class='btn' regName='" + data[i].name + "'>已连</button><button operation='delete' class='btn btn-danger' data-toggle='modal' data-target='#delete-confirm-dialog' regName='" + data[i].name + "'>删除</button></td>";
-            } else {
-                operationTd = "<td><button operation='connect' class='btn btn-primary' regName='" + data[i].name + "' data-loading-text='切换中...'>连接</button><button operation='delete' class='btn btn-danger' data-toggle='modal' data-target='#delete-confirm-dialog' regName='" + data[i].name + "'>删除</button></td>";
-            }
-            $("#regCenters tbody").append("<tr>" + baseTd + operationTd + "</tr>");
-        }
-        renderRegistryCenterForDashboardNav();
-        renderJobsForDashboardNav();
-        renderJServersForDashboardNav();
+    $('#regCenters').bootstrapTable({
+        url: 'registry_center',
+        method: 'get',
+        cache: false,
+        columns: [
+        {
+            field: 'name',
+            title: '注册中心名称'
+        }, {
+            field: 'zkAddressList',
+            title: '连接地址'
+        }, {
+            field: 'namespace',
+            title: '命名空间'
+        },{
+            field: 'digest',
+            title: '登录凭证'
+        },{
+            field: 'oper',
+            title: '操作',
+            formatter: 'viewoper'
+        }]
     });
+    renderRegistryCenterForDashboardNav();
+    renderJobsForDashboardNav();
+    renderJServersForDashboardNav();
+}
+
+function viewoper(val, row){
+    var operationTd,name = row.name;
+    if (true === row.activated) {
+        $("#activated-reg-center").text(name);
+        operationTd = "<button disabled operation='connect' class='btn' regName='" + name + "'>已连</button><button operation='delete' class='btn btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+    } else {
+        operationTd = "<button operation='connect' class='btn btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button><button operation='delete' class='btn btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+    }
+    return operationTd;
 }
 
 function bindConnectButtons() {
     $(document).on("click", "button[operation='connect']", function(event) {
-    	var btn = $(this).button("loading");
+        var btn = $(this).button("loading");
         var regName = $(event.currentTarget).attr("regName");
         var currentConnectBtn = $(event.currentTarget);
         $.post("registry_center/connect", {name : regName}, function (data) {
@@ -54,6 +74,7 @@ function bindConnectButtons() {
 
 function bindDeleteButtons() {
     $(document).on("click", "button[operation='delete']", function(event) {
+        $('#delete-confirm-dialog').modal();
         var regName = $(event.currentTarget).attr("regName");
         var tr = $(event.currentTarget).parent().parent();
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
@@ -61,11 +82,17 @@ function bindDeleteButtons() {
             $.post("registry_center/delete", {name : regName}, function (data) {
                 tr.empty();
                 $("#delete-confirm-dialog").modal("hide");
+                $(".modal-backdrop").remove();
+                $("body").removeClass('modal-open');
                 renderRegistryCenterForDashboardNav();
             });
         });
     });
 }
+
+$('#add-register').click(function() {
+    $('#add-reg-center').modal();
+});
 
 function bindSubmitRegCenterForm() {
     $("#add-reg-center-form").submit(function(event) {
@@ -75,17 +102,14 @@ function bindSubmitRegCenterForm() {
         var namespace = $("#namespace").val();
         var digest = $("#digest").val();
         $.post("registry_center", {name: name, zkAddressList: zkAddressList, namespace: namespace, digest: digest}, function(data) {
-            $("#add-reg-center").modal("hide");
             if (data) {
-                var baseTd = "<td>" + name + "</td><td>" + zkAddressList + "</td><td>" + namespace + "</td><td>" + digest + "</td>";
-                var operationTd;
-                if (name != $("#activated-reg-center").text()) {
-                    operationTd = "<td><button operation='connect' class='btn btn-primary' regName='" + name + "'>连接</button><button operation='delete' class='btn btn-danger' data-toggle='modal' data-target='#delete-confirm-dialog' regName='" + name + "'>删除</button></td>";
-                } else {
-                    operationTd = "<td><button disabled operation='connect' class='btn' regName='" + name + "'>已连</button><button operation='delete' class='btn btn-danger' data-toggle='modal' data-target='#delete-confirm-dialog' regName='" + name + "'>删除</button></td>";
-                }
-                
-                $("#regCenters tbody").append("<tr>" + baseTd + operationTd + "</tr>");
+                $('#add-reg-center').on('hide.bs.modal', function () {
+                  $('#add-reg-center-form')[0].reset();
+                });
+                $("#add-reg-center").modal("hide");
+                $("#regCenters").bootstrapTable('refresh');
+                $(".modal-backdrop").remove();
+                $("body").removeClass('modal-open');
                 showSuccessDialog();
                 renderRegistryCenterForDashboardNav();
             } else {

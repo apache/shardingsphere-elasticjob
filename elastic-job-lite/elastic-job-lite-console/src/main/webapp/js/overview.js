@@ -2,43 +2,85 @@ $(function() {
     renderJobsOverview();
     renderServersOverview();
 });
-
+    
 function renderJobsOverview() {
-    $.get("job/jobs", {}, function (data) {
-        $("#jobs-overview-tbl tbody").empty();
-        for (var i = 0;i < data.length;i++) {
-            var status = data[i].status;
-            var baseTd = "<td>" + "<a href='job_detail?jobName=" + data[i].jobName + "&jobType=" + data[i].jobType + "'>" + data[i].jobName + "</a>" + "</td><td>" + status + "</td><td>" + data[i].cron + "</td><td>" + data[i].description + "</td>";
-            var trClass = "";
-            if ("OK" === status) {
-                trClass = "success";
-            } else if ("MANUALLY_DISABLED" === status) {
-                trClass = "info";
-            } else if ("PARTIAL_ALIVE" === status) {
-                trClass = "warning";
-            } else if ("ALL_CRASHED" === status) {
-                trClass = "danger";
+    $('#jobs-overview-tbl').bootstrapTable({
+        url: 'job/jobs',
+        method: 'get',
+        cache: false,
+        rowStyle: function (row, index) {
+            var strclass = "";
+            if ("OK" === row.status) {
+                strclass = 'success';
+            } else if ("MANUALLY_DISABLED" === row.status) {
+                strclass = 'info';
+            } else if ("PARTIAL_ALIVE" === row.status) {
+                strclass = "warning";
+            } else if ("ALL_CRASHED" === row.status) {
+                strclass = "danger";
+            } else {
+                return {};
             }
-            $("#jobs-overview-tbl tbody").append("<tr class='" + trClass + "'>" + baseTd + "</tr>");
-        }
+            return { classes: strclass }
+        },
+        columns: [
+        {
+            field: 'jobName',
+            title: '作业名'
+        }, {
+            field: 'status',
+            title: '运行状态'
+        }, {
+            field: 'cron',
+            title: 'cron表达式'
+        },{
+            field: 'description',
+            title: '描述'
+        }]
     });
 }
-
+    
+function jobFormatter(val, row){
+    var jobName = row.jobName;
+    var jobType = row.jobtype;
+    var result = "<a href='index.html?jobName=" + jobName + "&jobType=" + jobType + "'>" + jobName + "</a>";
+    return result;
+}
+    
 function renderServersOverview() {
-    $.get("server/servers", {}, function (data) {
-        $("#servers-overview-tbl tbody").empty();
-        for (var i = 0;i < data.length;i++) {
-            var status = data[i].status;
-            var baseTd = "<td>" + "<a href='server_detail?serverIp=" + data[i].serverIp + "'>" + data[i].serverIp + "</a>" + "</td><td>" + data[i].serverHostName + "</td><td>" + status + "</td>";
-            var trClass = "";
-            if ("OK" === status) {
-                trClass = "success";
-            } else if ("PARTIAL_ALIVE" === status) {
-                trClass = "warning";
-            } else if ("ALL_CRASHED" === status) {
-                trClass = "danger";
+    $('#servers-overview-tbl').bootstrapTable({
+        url: 'server/servers',
+        method: 'get',
+        cache: false,
+        rowStyle: function (row, index) {
+            var strclass = "";
+            if ("OK" === row.status) {
+                strclass = 'success';//还有一个active
+            } else if ("PARTIAL_ALIVE" === row.status) {
+                strclass = 'warning';
+            } else if ("ALL_CRASHED" === row.status) {
+                strclass = "danger";
+            } else {
+                return {};
             }
-            $("#servers-overview-tbl tbody").append("<tr class='" + trClass + "'>" + baseTd + "</tr>");
-        }
+            return { classes: strclass }
+        },
+        columns: [
+        {
+            field: 'serverIp',
+            title: '服务器IP'
+        }, {
+            field: 'serverHostName',
+            title: '服务器名'
+        }, {
+            field: 'status',
+            title: '状态'
+        }]
     });
+}
+    
+function serverFormatter(val, row){
+    var serverIp = row.serverIp;
+    var result = "<a href='index.html?serverIp=" + serverIp + "'>" + serverIp + "</a>";
+    return result;
 }

@@ -1,0 +1,9 @@
+.indexContent{
+    min-height:670px;
+    background-color: #ecf0f5;
+    z-index: 800;
+    margin-left: 230px;
+}
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
+    color: black;
+}
