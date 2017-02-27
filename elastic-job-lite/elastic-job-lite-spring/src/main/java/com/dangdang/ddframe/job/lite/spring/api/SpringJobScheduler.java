@@ -22,9 +22,13 @@ import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.spring.api.strategy.SpringJobShardingStrategyFactory;
 import com.dangdang.ddframe.job.lite.spring.job.util.AopTargetUtils;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * 基于Spring的作业启动器.
@@ -32,7 +36,7 @@ import com.google.common.base.Optional;
  * @author caohao
  * @author zhangliang
  */
-public class SpringJobScheduler extends JobScheduler {
+public class SpringJobScheduler extends JobScheduler implements ApplicationContextAware{
     
     private final ElasticJob elasticJob;
     
@@ -58,5 +62,10 @@ public class SpringJobScheduler extends JobScheduler {
     @Override
     protected Optional<ElasticJob> createElasticJobInstance() {
         return Optional.fromNullable(elasticJob);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        SpringJobShardingStrategyFactory.addApplicationContext(applicationContext);
     }
 }

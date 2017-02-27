@@ -14,41 +14,16 @@
  * limitations under the License.
  * </p>
  */
-
 package com.dangdang.ddframe.job.lite.api.strategy;
 
-import com.dangdang.ddframe.job.exception.JobConfigurationException;
-import com.dangdang.ddframe.job.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
-import com.google.common.base.Strings;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 /**
- * 作业分片策略工厂.
- * 
- * @author zhangliang
+ * @author leizhenyu
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class JobShardingStrategyFactory {
-    
+public interface JobShardingStrategyFactory {
     /**
-     * 获取 作业分片策略实例.
-     * 
-     * @param jobShardingStrategyClassName 作业分片策略类名
-     * @return 作业分片策略实例
+     * 根据分片策略类名，加载此类的实例
+     * @param jobShardingStrategyClassName
+     * @return
      */
-    public static JobShardingStrategy getStrategy(final String jobShardingStrategyClassName) {
-        if (Strings.isNullOrEmpty(jobShardingStrategyClassName)) {
-            return new AverageAllocationJobShardingStrategy();
-        }
-        try {
-            Class<?> jobShardingStrategyClass = Class.forName(jobShardingStrategyClassName);
-            if (!JobShardingStrategy.class.isAssignableFrom(jobShardingStrategyClass)) {
-                throw new JobConfigurationException("Class '%s' is not job strategy class", jobShardingStrategyClassName);
-            }
-            return (JobShardingStrategy) jobShardingStrategyClass.newInstance();
-        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            throw new JobConfigurationException("Sharding strategy class '%s' config error, message details are '%s'", jobShardingStrategyClassName, ex.getMessage());
-        }
-    }
+    JobShardingStrategy getStrategy(String jobShardingStrategyClassName);
 }
