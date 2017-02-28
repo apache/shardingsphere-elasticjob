@@ -23,7 +23,13 @@ import com.dangdang.ddframe.job.lite.api.strategy.impl.AverageAllocationJobShard
 import org.junit.Before;
 import org.junit.Test;
 
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class JobShardingStrategyFactoryTest {
@@ -59,5 +65,13 @@ public class JobShardingStrategyFactoryTest {
     @Test
     public void assertGetStrategySuccess() {
         assertThat(jobShardingStrategyService.getJobShardingStrategy(AverageAllocationJobShardingStrategy.class.getName()), instanceOf(AverageAllocationJobShardingStrategy.class));
+    }
+
+    @Test
+    public void assertOnlyOneStrategyFactoryClass()throws Exception{
+        Field field = jobShardingStrategyService.getClass().getDeclaredField("factories");
+        field.setAccessible(true);
+        List lists =(List) field.get(new JobShardingStrategyService());
+        assertEquals(lists.size(),1);
     }
 }

@@ -56,7 +56,7 @@ public class SpringJobShardingStrategyFactory implements JobShardingStrategyFact
                     throw new JobConfigurationException("Class '%s' load Failed", strategyClassName);
                 }catch (NoSuchBeanDefinitionException e){
                     //spring 容器的行为，如果不存在此类型的bean，直接抛异常，没有更优的办法，只好catch了，并且吞掉异常
-                    log.debug(String.format("No this class bean %s define in spring container.",strategyClassName));
+                    log.debug(String.format("No this class bean %s defined in spring container.",strategyClassName));
                     return null;
                 }
             }

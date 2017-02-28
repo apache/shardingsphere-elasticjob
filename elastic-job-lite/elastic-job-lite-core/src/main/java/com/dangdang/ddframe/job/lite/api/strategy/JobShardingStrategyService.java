@@ -46,7 +46,6 @@ public class JobShardingStrategyService {
      * @return job 分片类策略工厂
      */
     private void initJobShardingStrategyFactory(){
-        List<JobShardingStrategyFactory> jobShardingStrategyFactories = Lists.newArrayList();
         JobShardingStrategyFactory failBackJobShardingStrgtegyFactory = null;
 
         //将默认的策略分片工厂类作为fallback，加在list的最后面。避免出现默认的排在第一而所有的策略类被默认的工厂类初始化
