@@ -20,18 +20,15 @@ package com.dangdang.ddframe.job.lite.console.service.impl;
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
 import com.dangdang.ddframe.job.lite.console.repository.RegistryCenterConfigurationsXmlRepository;
+import com.dangdang.ddframe.job.lite.console.repository.impl.RegistryCenterConfigurationsXmlRepositoryImpl;
 import com.dangdang.ddframe.job.lite.console.service.RegistryCenterService;
 import com.google.common.base.Optional;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.Collection;
 
-@Service
 public class RegistryCenterServiceImpl implements RegistryCenterService {
     
-    @Resource
-    private RegistryCenterConfigurationsXmlRepository regCenterConfigurationsXmlRepository;
+    private RegistryCenterConfigurationsXmlRepository regCenterConfigurationsXmlRepository = new RegistryCenterConfigurationsXmlRepositoryImpl();
     
     @Override
     public Collection<RegistryCenterConfiguration> loadAll() {

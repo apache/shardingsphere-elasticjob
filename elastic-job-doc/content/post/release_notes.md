@@ -14,6 +14,9 @@ weight=1
 
 1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) elastic-job-lite：主节点增加reconcile线程任务，修复分片不一致等分布式相关一致性问题。
 
+### 功能提升
+1. [ISSUE #240](https://github.com/dangdangdotcom/elastic-job/issues/240) elastic-job-lite版本运维管理界面与Cloud版保持一致
+
 ## 2.0.5
 
 ### 缺陷修正

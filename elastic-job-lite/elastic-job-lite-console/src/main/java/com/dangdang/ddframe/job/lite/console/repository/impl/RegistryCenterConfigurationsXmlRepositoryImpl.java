@@ -17,12 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.console.repository.impl;
 
-import org.springframework.stereotype.Repository;
-
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
 import com.dangdang.ddframe.job.lite.console.repository.RegistryCenterConfigurationsXmlRepository;
 
-@Repository
 public class RegistryCenterConfigurationsXmlRepositoryImpl extends AbstractXmlRepositoryImpl<RegistryCenterConfigurations> implements RegistryCenterConfigurationsXmlRepository {
     
     public RegistryCenterConfigurationsXmlRepositoryImpl() {

@@ -18,24 +18,19 @@
 package com.dangdang.ddframe.job.lite.console.util;
 
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SessionRegistryCenterConfiguration {
     
-    private static ThreadLocal<RegistryCenterConfiguration> regCenterConfig = new ThreadLocal<>();
+    private static RegistryCenterConfiguration regCenterConfig;
     
     public static RegistryCenterConfiguration getRegistryCenterConfiguration() {
-        return regCenterConfig.get();
+        return regCenterConfig;
     }
     
     public static void setRegistryCenterConfiguration(final RegistryCenterConfiguration regCenterConfig) {
-        SessionRegistryCenterConfiguration.regCenterConfig.set(regCenterConfig);
-    }
-    
-    public static void clear() {
-        regCenterConfig.remove();
+        SessionRegistryCenterConfiguration.regCenterConfig = regCenterConfig;
     }
 }

@@ -17,16 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.console.repository.impl;
 
-import java.io.File;
-
-import javax.annotation.PostConstruct;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import com.dangdang.ddframe.job.lite.console.exception.JobConsoleException;
 import com.dangdang.ddframe.job.lite.console.repository.XmlRepository;
 import com.dangdang.ddframe.job.lite.console.util.HomeFolder;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.File;
 
 public abstract class AbstractXmlRepositoryImpl<E> implements XmlRepository<E> {
     
@@ -39,10 +37,6 @@ public abstract class AbstractXmlRepositoryImpl<E> implements XmlRepository<E> {
     protected AbstractXmlRepositoryImpl(final String fileName, final Class<E> clazz) {
         file = new File(HomeFolder.getFilePathInHomeFolder(fileName));
         this.clazz = clazz;
-    }
-    
-    @PostConstruct
-    private void init() {
         HomeFolder.createHomeFolderIfNotExisted();
         try {
             jaxbContext = JAXBContext.newInstance(clazz);

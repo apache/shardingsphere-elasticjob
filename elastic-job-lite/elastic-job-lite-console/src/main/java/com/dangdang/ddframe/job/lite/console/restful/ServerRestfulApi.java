@@ -15,35 +15,36 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.controller;
+package com.dangdang.ddframe.job.lite.console.restful;
 
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
+import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
-@RestController
-@RequestMapping("server")
-public class ServerController {
+@Path("/server")
+public class ServerRestfulApi {
     
-    @Resource
-    private JobAPIService jobAPIService;
+    private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
-    @RequestMapping(value = "servers", method = RequestMethod.GET)
+    @GET
+    @Path("/servers")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         return jobAPIService.getServerStatisticsAPI().getAllServersBriefInfo();
     }
     
-    @RequestMapping(value = "jobs", method = RequestMethod.GET)
-    public Collection<ServerInfo> getJobs(final ServerInfo jobServer, final ModelMap model) {
-        model.put("serverIp", jobServer.getIp());
-        return jobAPIService.getServerStatisticsAPI().getJobs(jobServer.getIp());
+    @GET
+    @Path("/jobs")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Collection<ServerInfo> getJobs(final @QueryParam("ip") String ip) {
+        return jobAPIService.getServerStatisticsAPI().getJobs(ip);
     }
 }

@@ -24,33 +24,37 @@ $(function() {
 });
 
 function renderSettings() {
-    $.get("job/settings", {jobName : $("#job-name").text()}, function (data) {
-        $("#jobType").attr("value", data.jobType);
-        $("#jobClass").attr("value", data.jobClass);
-        $("#shardingTotalCount").attr("value", data.shardingTotalCount);
-        $("#cron").attr("value", data.cron);
-        $("#shardingItemParameters").text(data.shardingItemParameters);
-        $("#jobParameter").attr("value", data.jobParameter);
-        $("#monitorExecution").attr("checked", data.monitorExecution);
-        $("#failover").attr("checked", data.failover);
-        $("#misfire").attr("checked", data.misfire);
-        $("#streamingProcess").attr("checked", data.streamingProcess);
-        $("#maxTimeDiffSeconds").attr("value", data.maxTimeDiffSeconds);
-        $("#monitorPort").attr("value", data.monitorPort);
-        $("#jobShardingStrategyClass").attr("value", data.jobShardingStrategyClass);
-        $("#executorServiceHandler").attr("value", data.jobProperties["executor_service_handler"]);
-        $("#jobExceptionHandler").attr("value", data.jobProperties["job_exception_handler"]);
-        $("#reconcileCycleTime").attr("value", data.reconcileCycleTime);
-        $("#description").text(data.description);
-        if (!data.monitorExecution) {
-            $("#execution_info_tab").addClass("disabled");
-        }
-        $("#scriptCommandLine").attr("value", data.scriptCommandLine);
-        if($("#jobType").val() == "DATAFLOW"){
-            $('#streamingProcessGroup').show();
-        }
-        if($("#jobType").val() == "SCRIPT"){
-            $('#scriptCommandLineGroup').show();
+    $.ajax({
+        url: "/job/settings/"+$("#job-name").text(),
+        async: false,
+        success: function(data){
+            $("#jobType").attr("value", data.jobType);
+            $("#jobClass").attr("value", data.jobClass);
+            $("#shardingTotalCount").attr("value", data.shardingTotalCount);
+            $("#cron").attr("value", data.cron);
+            $("#shardingItemParameters").text(data.shardingItemParameters);
+            $("#jobParameter").attr("value", data.jobParameter);
+            $("#monitorExecution").attr("checked", data.monitorExecution);
+            $("#failover").attr("checked", data.failover);
+            $("#misfire").attr("checked", data.misfire);
+            $("#streamingProcess").attr("checked", data.streamingProcess);
+            $("#maxTimeDiffSeconds").attr("value", data.maxTimeDiffSeconds);
+            $("#monitorPort").attr("value", data.monitorPort);
+            $("#jobShardingStrategyClass").attr("value", data.jobShardingStrategyClass);
+            $("#executorServiceHandler").attr("value", data.jobProperties["executor_service_handler"]);
+            $("#jobExceptionHandler").attr("value", data.jobProperties["job_exception_handler"]);
+            $("#reconcileCycleTime").attr("value", data.reconcileCycleTime);
+            $("#description").text(data.description);
+            if (!data.monitorExecution) {
+                $("#execution_info_tab").addClass("disabled");
+            }
+            $("#scriptCommandLine").attr("value", data.scriptCommandLine);
+            if($("#jobType").val() == "DATAFLOW"){
+                $('#streamingProcessGroup').show();
+            }
+            if($("#jobType").val() == "SCRIPT"){
+                $('#scriptCommandLineGroup').show();
+            }
         }
     });
 }
@@ -137,7 +141,6 @@ function renderServers() {
 }
 
 function operFormatter(val, row){
-    var operationTd = "";
     var triggerButton = "<button operation='trigger' class='btn btn-success' ip='" + row.ip + "'>触发</button>";
     var resumeButton = "<button operation='resume' class='btn btn-success' ip='" + row.ip + "'>恢复</button>";
     var pauseButton = "<button operation='pause' class='btn btn-warning' ip='" + row.ip + "'" + ">暂停</button>";
@@ -145,7 +148,7 @@ function operFormatter(val, row){
     var removeButton = "<button operation='remove' class='btn btn-danger' ip='" + row.ip + "'>删除</button>";
     var disableButton = "<button operation='disable' class='btn btn-danger' ip='" + row.ip + "'>失效</button>";
     var enableButton = "<button operation='enable' class='btn btn-success' ip='" + row.ip + "'>生效</button>";
-    operationTd = triggerButton + "&nbsp;";
+    var operationTd = triggerButton + "&nbsp;";
     if ("PAUSED" === row.status) {
         operationTd = operationTd + resumeButton + "&nbsp;";
     } else if ("DISABLED" !== row.status && "CRASHED" !== row.status && "SHUTDOWN" !== row.status) {
