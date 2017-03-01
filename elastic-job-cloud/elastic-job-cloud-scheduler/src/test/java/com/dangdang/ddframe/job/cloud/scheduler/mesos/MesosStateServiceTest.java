@@ -31,6 +31,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collection;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -67,7 +69,7 @@ public class MesosStateServiceTest {
         MesosStateService service = new MesosStateService(registryCenter);
         JsonArray sandbox = service.sandbox("foo_app");
         assertThat(sandbox.size(), is(1));
-        assertThat(sandbox.get(0).getAsJsonObject().get("hostname").getAsString(), is("192.168.96.45"));
+        assertThat(sandbox.get(0).getAsJsonObject().get("hostname").getAsString(), is("127.0.0.1"));
         assertThat(sandbox.get(0).getAsJsonObject().get("path").getAsString(), is("/slaves/d8701508-41b7-471e-9b32-61cf824a660d-S0/"
                 + "frameworks/d8701508-41b7-471e-9b32-61cf824a660d-0000/executors/foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0/runs/53fb4af7-aee2-44f6-9e47-6f418d9f27e1"));
     }
@@ -76,6 +78,10 @@ public class MesosStateServiceTest {
     public void assertExecutors() throws Exception {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
-        assertThat(service.executors("foo_app").size(), is(1));
+        Collection<MesosStateService.ExecutorInfo> executorInfos = service.executors("foo_app");
+        assertThat(executorInfos.size(), is(1));
+        MesosStateService.ExecutorInfo executorInfo = executorInfos.iterator().next();
+        assertThat(executorInfo.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        assertThat(executorInfo.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
     }
 }

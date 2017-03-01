@@ -73,7 +73,7 @@ public class CloudOperationRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertSandbox() throws Exception {
         ReflectionUtils.setFieldValue(new CloudOperationRestfulApi(), "lastReconcileTime", 0);
-        assertThat(sentGetRequest("http://127.0.0.1:19000/operate/sandbox?appName=foo_app"), is("[{\"hostname\":\"192.168.96.45\","
+        assertThat(sentGetRequest("http://127.0.0.1:19000/operate/sandbox?appName=foo_app"), is("[{\"hostname\":\"127.0.0.1\","
                 + "\"path\":\"/slaves/d8701508-41b7-471e-9b32-61cf824a660d-S0/frameworks/d8701508-41b7-471e-9b32-61cf824a660d-0000/executors/foo_app@-@"
                 + "d8701508-41b7-471e-9b32-61cf824a660d-S0/runs/53fb4af7-aee2-44f6-9e47-6f418d9f27e1\"}]"));
     }
