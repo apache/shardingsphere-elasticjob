@@ -196,7 +196,7 @@ echo sharding execution context is $*
 |job-exception-handler               |String |否      |     | 扩展异常处理类                                                               |
 |executor-service-handler            |String |否      |     | 扩展作业处理线程池类                                                          |
 |event-trace-rdb-data-source         |String |否      |     | 作业事件追踪的数据源`Bean`引用                                                |
-|reconcile-interval-minutes          |int    |否      |-1   | 修复作业服务器不一致状态服务调度间隔分钟数，配置为`-1`表示不执行修复。              |
+|reconcile-interval-minutes          |int    |否      |10   | 修复作业服务器不一致状态服务调度间隔分钟数，配置为小于`1`的任意值表示不执行修复       |
 
 #### job:dataflow命名空间属性详细说明
 
@@ -401,4 +401,4 @@ public class JobMain {
 ```
 
 ### 4. 修复作业服务器不一致状态
-`elastic-job`在配置中提供了`reconcileIntervalMinutes`设置修复状态服务执行间隔分钟数，用于修复作业服务器不一致状态，默认为-1不启用。
+`elastic-job`在配置中提供了`reconcileIntervalMinutes`设置修复状态服务执行间隔分钟数，用于修复作业服务器不一致状态，默认为10，每10分钟检测并修复一次。

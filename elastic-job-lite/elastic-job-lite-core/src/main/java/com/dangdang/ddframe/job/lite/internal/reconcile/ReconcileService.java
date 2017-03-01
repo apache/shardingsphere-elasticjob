@@ -54,7 +54,7 @@ public class ReconcileService extends AbstractScheduledService {
     @Override
     protected void runOneIteration() throws Exception {
         LiteJobConfiguration config = configService.load(true);
-        int reconcileIntervalMinutes = null == config || config.getReconcileIntervalMinutes() <= 0 ? -1 : config.getReconcileIntervalMinutes();
+        int reconcileIntervalMinutes = null == config ? -1 : config.getReconcileIntervalMinutes();
         if (reconcileIntervalMinutes > 0 && (System.currentTimeMillis() - lastReconcileTime >= reconcileIntervalMinutes * 60 * 1000)) {
             lastReconcileTime = System.currentTimeMillis();
             if (leaderElectionService.isLeader() && !shardingService.isNeedSharding()

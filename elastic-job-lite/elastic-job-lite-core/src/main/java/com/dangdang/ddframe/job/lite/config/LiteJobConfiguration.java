@@ -95,7 +95,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
         
         private boolean overwrite;
         
-        private int reconcileIntervalMinutes = -1;
+        private int reconcileIntervalMinutes = 10;
         
         /**
          * 设置监控作业执行时状态.
@@ -197,7 +197,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
          * 设置修复作业服务器不一致状态服务执行间隔分钟数.
          * 
          * <p>
-         * 每隔一段时间监视作业服务器的状态，如果不正确则重新分片。
+         * 每隔一段时间监视作业服务器的状态，如果不正确则重新分片.
          * </p>
          * 
          * @param reconcileIntervalMinutes 修复作业服务器不一致状态服务执行间隔分钟数
