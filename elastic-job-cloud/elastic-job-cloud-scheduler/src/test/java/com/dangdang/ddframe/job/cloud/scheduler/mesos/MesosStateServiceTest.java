@@ -31,6 +31,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collection;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -76,6 +78,10 @@ public class MesosStateServiceTest {
     public void assertExecutors() throws Exception {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
-        assertThat(service.executors("foo_app").size(), is(1));
+        Collection<MesosStateService.ExecutorInfo> executorInfos = service.executors("foo_app");
+        assertThat(executorInfos.size(), is(1));
+        MesosStateService.ExecutorInfo executorInfo = executorInfos.iterator().next();
+        assertThat(executorInfo.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        assertThat(executorInfo.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
     }
 }

@@ -19,13 +19,17 @@ package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sun.jersey.api.client.Client;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -109,8 +113,17 @@ public class MesosStateService {
      * @return 执行器信息
      * @throws JSONException 解析JSON格式异常
      */
-    public Collection<JSONObject> executors(final String appName) throws JSONException {
-        return findExecutors(fetch(stateUrl).getJSONArray("frameworks"), appName);
+    public Collection<ExecutorInfo> executors(final String appName) throws JSONException {
+        return Collections2.transform(findExecutors(fetch(stateUrl).getJSONArray("frameworks"), appName), new Function<JSONObject, ExecutorInfo>() {
+            @Override
+            public ExecutorInfo apply(final JSONObject input) {
+                try {
+                    return ExecutorInfo.builder().id(getExecutorId(input)).slaveId(input.getString("slave_id")).build();
+                } catch (final JSONException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
     
     private JSONObject fetch(final String url) {
@@ -128,11 +141,24 @@ public class MesosStateService {
             JSONArray executors = framework.getJSONArray("executors");
             for (int j = 0; j < executors.length(); j++) {
                 JSONObject executor = executors.getJSONObject(j);
-                if (appName.equals((executor.has("id") ? executor.getString("id") : executor.getString("executor_id")).split("@-@")[0])) {
+                if (appName.equals(getExecutorId(executor).split("@-@")[0])) {
                     result.add(executor);
                 }
             }
         }
         return result;
+    }
+    
+    private String getExecutorId(final JSONObject executor) throws JSONException {
+        return executor.has("id") ? executor.getString("id") : executor.getString("executor_id");
+    }
+    
+    @Builder
+    @Getter
+    public static final class ExecutorInfo {
+        
+        private final String id;
+        
+        private final String slaveId;
     }
 }
