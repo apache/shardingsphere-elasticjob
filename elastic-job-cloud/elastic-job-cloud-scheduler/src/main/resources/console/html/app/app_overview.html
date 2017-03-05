@@ -1,0 +1,120 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper" style="min-height:680px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>应用定义</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="box box-info">
+                <div id="jobExecDetailToolbar">
+                    <div class="form-inline" role="form">
+                        <div class="form-group">
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="add_app" type="button" class="label label-success" style="width:80px;font-size:14px; padding: 6px;">增加</a></td>
+                        </div>
+                    </div>
+                </div>
+                <table id="JobExecDetailTable" 
+                    data-show-refresh="true"
+                    data-show-toggle="true"
+                    data-striped="true"
+                    data-toggle="table"
+                    data-url="/app/list"
+                    data-flat="true"
+                    data-click-to-select="true"
+                    data-search="true"
+                    data-strict-search="false"
+                    data-query-params="queryParams"
+                    data-query-params-type="notLimit"
+                    data-pagination="true"
+                    data-page-list="[10, 20, 50, 100]"
+                    data-show-columns="true"
+                    data-toolbar="#jobExecDetailToolbar">
+                        <thead>
+                            <tr>
+                                <th data-field="appName" data-sortable="true">应用名称</th>
+                                <th data-field="appURL" data-sortable="true">应用所在路径</th>
+                                <th data-field="bootstrapScript" data-sortable="true">启动脚本</th>
+                                <th data-field="appURL" data-formatter="viewOperApp">操作</th>
+                            </tr>
+                        </thead>
+                </table>
+                </div><!-- /.box -->
+
+            </div>
+        </div>
+    </section><!-- /.content -->
+</div><!-- /.box -->
+<div class="modal" id="dataDetailApp" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:60%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h2 class="modal-title">应用详情</h2>
+            </div>
+            <div class="modal-body">
+                <table id="AppDetailTable"
+                    data-striped="true"
+                    data-toggle="table"
+                    data-flat="true"
+                    data-card-view="true">
+                        <thead>
+                            <tr>
+                                <th data-field="appName">应用名称</th>
+                                <th data-field="appURL">应用所在路径</th>
+                                <th data-field="bootstrapScript">启动脚本</th>
+                                <th data-field="cpuCount">CPU数量</th>
+                                <th data-field="memoryMB">应用内存(M)</th>
+                                <th data-field="appCacheEnable">本地缓存应用</th>
+                                <th data-field="eventTraceSamplingCount">作业事件采样次数(Daemon)</th>
+                            </tr>
+                        </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="dataUpdateApp" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h2 class="modal-title">修改应用 </h2>
+            </div>
+            <div class="modal-body" id="updateAppBody">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="delete-data" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">删除作业</h2>
+            </div>
+            <div class="modal-body">
+                <h3>确认要删除该作业吗？</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteConfirm" data-dismiss="modal">确认</button>
+                <button type="button" class="btn btn-" data-dismiss="modal" onClick="closeModal()">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="dataAddApp" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h2 class="modal-title">添加应用</h2>
+            </div>
+            <div class="modal-body" id="addAppBody">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- bootstrap-table -->
+<script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="plugins/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="js/app/app_overview.js"></script>

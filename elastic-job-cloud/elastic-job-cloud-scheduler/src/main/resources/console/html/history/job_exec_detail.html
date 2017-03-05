@@ -1,0 +1,88 @@
+<div class="content-wrapper" style="min-height:680px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>作业执行轨迹 </h1>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+    <div class="row">
+        <div class="box box-info">
+            <div class="box-body">
+                <div id="jobExecDetailToolbar">
+                <div class="form-inline" role="form">
+                    <div class="form-group toolbar">
+                        <label for="jobName">作业名称:</label>
+                        <input type="text" class="form-control" id="jobName" placeholder="">
+                    </div>
+                    <div class="form-group toolbar">
+                        <label for="taskId">任务ID:</label>
+                        <input type="text" class="form-control" size="55" id="taskId" placeholder="">
+                    </div>
+                    <br/>
+                    <div class="form-group toolbar">
+                        <label for="ip">宿主机IP:</label>
+                        <input type="text" class="form-control" data-inputmask="'alias': 'ip'" data-mask="" id="ip">
+                    </div>
+                    <div class="form-group toolbar">
+                        <label>执行时间:</label>
+                        <input type="text" class="form-control pull-right custom-datepicker" id="startTime">
+                    </div>
+                    <div class="form-group toolbar">
+                        <span>至</span>
+                        <input type="text" class="form-control pull-right custom-datepicker" id="endTime">
+                    </div>
+                    <div class="form-group toolbar">
+                        <label for="isSuccess">是否成功:</label>
+                        <input type="radio" name="isSuccess" value="1">是</input>
+                        <input type="radio" name="isSuccess" value="0">否</input>
+                        <input type="radio" name="isSuccess" value="">全部</input>
+                    </div>
+                </div>
+                </div>
+                <table id="jobExecDetailTable" 
+                    data-show-refresh="true"
+                    data-show-toggle="true"
+                    data-striped="true"
+                    data-toggle="table"
+                    data-url="/job/events/executions"
+                    data-flat="true"
+                    data-click-to-select="true"
+                    data-row-style="rowStyle"
+                    data-query-params="queryParams"
+                    data-query-params-type="notLimit"
+                    data-side-pagination="server"
+                    data-pagination="true"
+                    data-page-list="[10, 20, 50, 100]"
+                    data-show-columns="true"
+                    data-toolbar="#jobExecDetailToolbar">
+                    <thead>
+                    <tr>
+                        <th data-field="jobName" data-sortable="true">作业名称</th>
+                        <th data-field="taskId">任务ID</th>
+                        <th data-field="ip" data-sortable="true">宿主机IP</th>
+                        <th data-field="shardingItem">分片</th>
+                        <th data-field="source" data-sortable="true">执行依据</th>
+                        <th data-field="success" data-sortable="true" data-formatter="successFormatter">是否成功</th>
+                        <th data-field="failureCause.plainText" data-formatter="largeContextFormatter">失败原因</th>
+                        <th data-field="startTime" data-sortable="true" data-formatter="dateTimeFormatter">执行开始时间</th>
+                        <th data-field="completeTime" data-sortable="true" data-formatter="dateTimeFormatter">执行结束时间</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div><!-- /.box-body -->
+        </div><!-- /.box -->
+    </div>
+    </section><!-- /.content -->
+</div>
+<!-- bootstrap-table -->
+<script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="plugins/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<!-- daterangepicker -->
+<script src="plugins/daterangepicker/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<!-- InputMask -->
+<script src="plugins/input-mask/jquery.inputmask.js"></script>
+<script src="plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<script src="js/common/common.js"></script>
+<script src="js/history/job_exec_detail.js"></script>

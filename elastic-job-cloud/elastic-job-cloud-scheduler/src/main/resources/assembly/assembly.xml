@@ -1,0 +1,28 @@
+<assembly>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>src/main/resources/conf</directory>
+            <includes>
+                <include>elastic-job-cloud-scheduler.properties</include>
+            </includes>
+            <outputDirectory>conf</outputDirectory>
+            <directoryMode>0644</directoryMode>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources/bin</directory>
+            <outputDirectory>bin</outputDirectory>
+            <directoryMode>0644</directoryMode>
+            <fileMode>0755</fileMode>
+        </fileSet>
+    </fileSets>
+    
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>lib</outputDirectory>
+            <directoryMode>0644</directoryMode>
+        </dependencySet>
+    </dependencySets>
+</assembly>

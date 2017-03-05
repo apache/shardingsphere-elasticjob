@@ -1,0 +1,128 @@
+<div class="content-wrapper" style="min-height:780px;">
+<!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>作业定义</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="box box-info">
+                <div id="jobExecDetailToolbar">
+                    <div class="form-inline" role="form">
+                        <div class="form-group">
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" id="addJob" type="button" class="label label-success" style="width:80px;font-size:14px; padding: 6px;">增加</a></td>
+                        </div>
+                    </div>
+                </div>
+                    <table id="JobExecDetailTable" 
+                        data-show-refresh="true"
+                        data-show-toggle="true"
+                        data-striped="true"
+                        data-toggle="table"
+                        data-url="/job/jobs"
+                        data-flat="true"
+                        data-click-to-select="true"
+                        data-search="true"
+                        data-strict-search="false"
+                        data-query-params="jobName"
+                        data-query-params-type="notLimit"
+                        data-pagination="true"
+                        data-page-list="[10, 20, 50, 100]"
+                        data-show-columns="true"
+                        data-toolbar="#jobExecDetailToolbar">
+                        <thead>
+                            <tr>
+                                <th data-field="jobName"  data-sortable="true">作业名称</th>
+                                <th data-field="appName"  data-sortable="true">应用名称</th>
+                                <th data-field="jobClass" data-sortable="true">作业实现类</th>
+                                <th data-field="shardingTotalCount" data-sortable="true">作业分片总数</th>
+                                <th data-field="cron" data-sortable="true">cron表达式</th>
+                                <th data-field="appURL" data-formatter="viewOper">操作</th>
+                            </tr>
+                        </thead>
+                    </table>
+            </div><!-- /.box -->
+        </div>
+    </section><!-- /.content -->
+</div><!-- /.box -->
+<div class="modal" id="dataDetail" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:60%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h2 class="modal-title">作业详情</h2>
+            </div>
+            <div class="modal-body">
+                <table id="JobDetailTable"
+                    data-striped="true"
+                    data-toggle="table"
+                    data-flat="true"
+                    data-card-view="true">
+                        <thead>
+                            <tr>
+                                <th data-field="jobName">作业名称</th>
+                                <th data-field="appName">应用名称</th>
+                                <th data-field="jobClass">作业实现类</th>
+                                <th data-field="cron">cron表达式</th>
+                                <th data-field="cpuCount">CPU数量</th>
+                                <th data-field="memoryMB">单片作业内存</th>
+                                <th data-field="shardingTotalCount">作业分片总数</th>
+                                <th data-field="jobType">实现类型</th>
+                                <th data-field="jobExecutionType">作业执行类型</th>
+                                <th data-field="beanName">beanName</th>
+                                <th data-field="bootstrapScript">启动脚本</th>
+                                <th data-field="scriptCommandLine">作业执行脚本</th>
+                                <th data-field="failover">支持失效转移</th>
+                                <th data-field="misfire">支持misfire</th>
+                                <th data-field="streamingProcess">流式处理数据</th>
+                                <th data-field="shardingItemParameters">分片序列号/参数对照表</th>
+                                <th data-field="jobParameter">作业自定义参数</th>
+                                <th data-field="description">作业描述信息</th>
+                                <th data-field="applicationContext">Spring配置文件相对路径及名称</th>
+                            </tr>
+                        </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="delete-data" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 style="font-size:20px">确认要删除该作业吗？</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" style="font-size:14px" class="btn btn-danger" id="deleteConfirm" data-dismiss="modal">确认</button>
+                <button type="button" style="font-size:14px" class="btn btn-success" id="deleteRemove" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="dataUpdate" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h2 class="modal-title">修改作业</h2>
+            </div>
+            <div class="modal-body" id="updateJobBody">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="dataAdd" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h2 class="modal-title">添加作业</h2>
+            </div>
+            <div class="modal-body" id="addJobBody">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- bootstrap-table -->
+<script src="plugins/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="plugins/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="js/job/job_overview.js"></script>

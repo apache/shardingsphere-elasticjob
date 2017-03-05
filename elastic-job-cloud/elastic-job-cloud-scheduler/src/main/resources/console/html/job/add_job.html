@@ -1,0 +1,202 @@
+<div class="box-body"><!-- /.box-header -->
+    <div role="tabpanel" class="tab-pane active" onsubmit="return false;">
+        <form id="job-settings-form" class="form-horizontal" style="position:relative;left:10px;">
+            <div class="form-group" id="jobClassModel">
+                <label for="jobClass" class="col-sm-2 control-label"><i>*</i>作业实现类</label>
+                <div class="col-sm-9">
+                    <input type="text" placeholder="yourJobClass" id="jobClass" name="jobClass" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业实现类，需实现ElasticJob接口，脚本型作业不需要配置"/>
+                </div>
+            </div>
+            <div class="form-group" >
+                <label for="jobAppName" class="col-sm-2 control-label"><i>*</i>应用名称</label>
+                <div class="col-sm-9">
+                    <input type="text" placeholder="yourAppName" id="jobAppName" name="jobAppName" class="form-control" data-toggle="tooltip" data-placement="bottom"  title="作业所在的应用名称，必须是在应用中已注册。"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="jobName" class="col-sm-6 control-label"><i>*</i>作业名称</label>
+                        <div class="col-sm-6">
+                            <input type="text" placeholder="yourJob" id="jobName" name="jobName" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业名称"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="jobType" class="col-sm-6 control-label" ><i>*</i>实现类型</label>
+                        <div class="col-sm-6">
+                            <select id="jobType" name="jobType" class="form-control" data-toggle="tooltip" data-placement="bottom" >
+                                <option value="SIMPLE" required>SIMPLE</option>
+                                <option value="DATAFLOW">DATAFLOW</option>
+                                <option value="SCRIPT">SCRIPT</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="cpuCount" class="col-sm-6 control-label"><i>*</i>CPU数量</label>
+                        <div class="col-sm-6">
+                            <input type="number" value="0.001" min="0.001" step="0.001" id="cpuCount" name="cpuCount" class="form-control" data-toggle="tooltip"  data-placement="bottom" title="单片作业所需要的CPU数量，最小值为0.001"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="cron" class="col-sm-6 control-label"><i>*</i>cron表达式</label>
+                        <div class="col-sm-6">
+                            <input type="text" placeholder="0/5 * * * * ?"  id="cron" name="cron" class="form-control" data-toggle="tooltip" data-placement="bottom"  title="作业启动时间的cron表达式。如：0/5 * * * * ?"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="jobExecutionType" class="col-sm-6 control-label"><i>*</i>作业执行类型</label>
+                        <div class="col-sm-6">
+                            <select id="jobExecutionType" name="jobExecutionType" class="form-control" data-toggle="tooltip" data-placement="bottom" >
+                                <option value="DAEMON">DAEMON</option>
+                                <option value="TRANSIENT">TRANSIENT</option>
+                            </select> 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="memoryMB" class="col-sm-6 control-label" ><i>*</i>单片作业内存</label>
+                        <div class="col-sm-6">
+                            <input type="number" value="1"  min="1" id="memoryMB" name="memoryMB" class="form-control" data-toggle="tooltip" data-placement="bottom" title="单片作业所需要的内存MB，最小值为1"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="beanName" class="col-sm-6 control-label">beanName</label>
+                            <div class="col-sm-6">
+                                <input type="text" placeholder="yourBeanName" id="beanName" name="beanName" class="form-control" data-toggle="tooltip" data-placement="bottom" title="Spring容器中配置的bean名称" />
+                            </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="shardingTotalCount" class="col-sm-6 control-label" ><i>*</i>作业分片总数</label>
+                        <div class="col-sm-6">
+                            <input type="number" min=1 max=100  value=1 id="shardingTotalCount" name="shardingTotalCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业分片总数"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" hidden="hidden" id="bootstrapScriptDiv">
+                    <div class="form-group">
+                        <label for="bootstrapScript" class="col-sm-6 control-label"><i>*</i>启动脚本</label>
+                        <div class="col-sm-6">
+                            <input type="text" placeholder="bin/start.sh" id="bootstrapScript" name="bootstrapScript" class="form-control" data-toggle="tooltip" data-placement="bottom" title="启动脚本，如：bin\start.sh。"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="jobParameter" class="col-sm-6 control-label">作业自定义参数</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="jobParameter" name="jobParameter" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业例：每次获取的数据量、作业实例从数据库读取的主键。" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="failover" class="col-sm-6 control-label">支持自动失效转移</label>
+                        <div class="col-sm-6">
+                            <input type="checkbox" id="failover" name="failover" data-toggle="tooltip" data-placement="bottom" title="只有开启监控作业执行时状态的情况下才可以开启失效转移" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="misfire" class="col-sm-6 control-label">支持misfire</label>
+                        <div class="col-sm-6">
+                            <input type="checkbox" id="misfire" name="misfire" data-toggle="tooltip" data-placement="bottom" title="是否开启任务错过重新执行" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="streamingProcess" hidden="hidden" id="streamingProcessBox" class="col-sm-6 control-label">支持流式处理数据</label>
+                        <div class="col-sm-6" >
+                            <input hidden="hidden" type="checkbox" id="streamingProcess" name="streamingProcess" data-toggle="tooltip" data-placement="bottom" title="DATAFLOW类型作业，是否流式处理数据如果流式处理数据, 则fetchData不返回空结果将持续执行作业，如果非流式处理数据, 则处理数据完成后作业结束。" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="applicationContext" class="col-sm-2 control-label">Spring配置文件相对路径及名称</label>
+                    <div class="col-sm-9">
+                        <input type="text" placeholder="META-INF\applicationContext.xml" id="applicationContext" name="applicationContext" class="form-control" data-toggle="tooltip" data-placement="bottom" title="Spring方式配置Spring配置文件相对路径以及名称，如：META-INF\applicationContext.xml" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="shardingItemParameters" class="col-sm-2 control-label">分片序列号/参数对照表</label>
+                    <div class="col-sm-9">
+                        <textarea id="shardingItemParameters" placeholder="0=a,1=b,2=c" name="shardingItemParameters" class="form-control" data-toggle="tooltip" data-placement="bottom" title="分片序列号和参数用等号分隔，多个键值对用逗号分隔，类似map。分片序列号从0开始，不可大于或等于作业分片总数。如：0=a,1=b,2=c"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group" id="scriptCommandLineText" hidden="hidden">
+                    <label for="scriptCommandLine" class="col-sm-2 control-label"><i>*</i>作业执行脚本</label>
+                    <div class="col-sm-9">
+                        <input type="text"  id="scriptCommandLine" name="scriptCommandLine" class="form-control" data-toggle="tooltip" data-placement="bottom" title="SCRIPT类型作业命令行执行脚本" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="description" class="col-sm-2 control-label">作业描述信息</label>
+                    <div class="col-sm-9">
+                        <textarea id="description" name="description" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div> 
+            <div class="form-group" style="text-align: center;">
+                <button type="submit" class="btn btn-primary" id = "save_form">保存</button>
+            </div>
+        </form>
+        <div class="modal" id="delete-data—beanName" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Spring方式配置</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h3 style="font-size:20px">请填写beanName名称</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" id="delete-data-applicationContext" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Spring方式配置</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h3 style="font-size:20px">请填写Spring配置文件相对路径及名称</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- role -->
+</div><!-- /.box-body -->
+<script src="plugins/BootstrapValidator/js/bootstrapValidator.js"></script>
+<script src="plugins/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
+<script src="js/common/job_edit_base.js"></script>
+<script src="js/job/add_job.js"></script>

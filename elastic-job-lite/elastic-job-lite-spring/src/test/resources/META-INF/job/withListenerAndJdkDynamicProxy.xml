@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.dangdang.com/schema/ddframe/job
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop.xsd
+                        ">
+    <context:component-scan base-package="com.dangdang.ddframe.job.lite.spring.fixture.aspect,com.dangdang.ddframe.job.lite.spring.fixture.service" />
+    <aop:aspectj-autoproxy proxy-target-class="false" />
+    <import resource="base.xml" />
+    <job:simple id="simpleElasticJob_namespace_listener_jdk_proxy" class="com.dangdang.ddframe.job.lite.spring.fixture.job.FooSimpleElasticJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" event-trace-rdb-data-source="elasticJobLog">
+        <job:listener class="com.dangdang.ddframe.job.lite.spring.fixture.listener.SimpleJdkDynamicProxyListener" />
+    </job:simple>
+    <job:dataflow id="dataflowElasticJob_namespace_listener_jdk_proxy" class="com.dangdang.ddframe.job.lite.spring.fixture.job.DataflowElasticJob" registry-center-ref="regCenter" cron="0/1 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" description="中文描述" overwrite="true" streaming-process="true" />
+</beans>
