@@ -18,14 +18,17 @@
 package com.dangdang.ddframe.job.cloud.scheduler.ha;
 
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerService;
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 调度器选举候选人.
  *
  * @author caohao
  */
+@Slf4j
 public class SchedulerElectionCandidate implements ElectionCandidate {
     
     private final CoordinatorRegistryCenter regCenter;
@@ -37,9 +40,14 @@ public class SchedulerElectionCandidate implements ElectionCandidate {
     }
     
     @Override
-    public void startLeadership() {
-        schedulerService = new SchedulerService(regCenter);
-        schedulerService.start();
+    public void startLeadership() throws Exception {
+        try {
+            schedulerService = new SchedulerService(regCenter);
+            schedulerService.start();
+            //CHECKSTYLE:OFF
+        } catch (final Throwable throwable) {
+            throw new JobSystemException(throwable);
+        }
     }
     
     @Override
