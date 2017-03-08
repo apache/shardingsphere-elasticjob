@@ -48,7 +48,6 @@
     <module name="NeedBraces"/>
     <module name="RightCurly"/>
     <module name="FinalClass"/>
-    <module name="HideUtilityClassConstructor"/>
     <module name="InterfaceIsType"/>
     <module name="VisibilityModifier"/>
     <module name="ArrayTypeStyle"/>

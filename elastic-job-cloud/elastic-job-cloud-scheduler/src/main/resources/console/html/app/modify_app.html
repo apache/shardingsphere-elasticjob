@@ -1,0 +1,77 @@
+<div class="box-body"><!-- /.box-header -->
+    <div role="tabpanel" class="tab-pane active" onsubmit="return false;">
+        <form id="job-settings-form" class="form-horizontal" style="position:relative;left:10px;">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="appName" class="col-sm-6 control-label"><i>*</i>应用名称</label>
+                        <div class="col-sm-6">
+                            <input type="text" disabled="disabled" placeholder="yourappName" id="appName" name="appName" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业app名称"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5" >
+                    <div class="form-group">
+                        <label for="bootstrapScript" class="col-sm-6 control-label"><i>*</i>启动脚本</label>
+                        <div class="col-sm-6">
+                            <input type="text" disabled="disabled" placeholder="bin/start.sh" id="bootstrapScript" name="bootstrapScript" class="form-control" data-toggle="tooltip" data-placement="bottom" title="启动脚本，如：bin\start.sh。"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="cpuCount" class="col-sm-6 control-label">CPU数量</label>
+                            <div class="col-sm-6">
+                                <input type="number" disabled="disabled" value="1.0" min="1.0" step="0.1" id="cpuCount" name="cpuCount" class="form-control" data-toggle="tooltip"  data-placement="bottom" title=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label for="memoryMB" class="col-sm-6 control-label" >应用内存(M)</label>
+                            <div class="col-sm-6">
+                                <input type="number" disabled="disabled" value="256" min="1" id="memoryMB" name="memoryMB" class="form-control" data-toggle="tooltip" data-placement="bottom" title=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label for="eventTraceSamplingCount" class="col-sm-6 control-label" >作业事件采样次数(Daemon)</label>
+                            <div class="col-sm-6">
+                                <input type="number" id="eventTraceSamplingCount" value="0" min="0" name="eventTraceSamplingCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label for="appCacheEnable" class="col-sm-6 control-label">本地缓存应用</label>
+                            <div class="col-sm-6">
+                                <input type="checkbox" checked="checked" id="appCacheEnable" name="appCacheEnable" data-toggle="tooltip" data-placement="bottom" title="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="position:relative;left:60px;">
+                    <div class="form-group">
+                        <label for="appURL" class="col-sm-2 control-label"><i>*</i>应用所在路径</label>
+                        <div class="col-sm-8">
+                            <input type="text" disabled="disabled" placeholder="http://file_host:8080/foo-job.tar.gz" id="appURL" name="appURL" class="form-control" data-toggle="tooltip" data-placement="bottom" title="必须是可以通过网络访问到的路径。如：http://file_host:8080/your-job.tar.gz"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="text-align:center;">
+                    <button type="button" class="btn btn-primary" id="save_form">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="plugins/BootstrapValidator/js/bootstrapValidator.js"></script>
+<script src="plugins/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
+<!-- add_job -->
+<script src="js/common/job_edit_base.js"></script>
+<script src="js/app/modify_app.js"></script>
