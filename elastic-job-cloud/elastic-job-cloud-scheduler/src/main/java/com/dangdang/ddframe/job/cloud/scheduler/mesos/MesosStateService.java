@@ -48,12 +48,10 @@ public class MesosStateService {
     
     private static String stateUrl;
     
-    private final String frameworkID;
+    private final FrameworkIDService frameworkIDService;
     
     public MesosStateService(final CoordinatorRegistryCenter regCenter) {
-        Optional<String> frameworkIDOptional = new FrameworkIDService(regCenter).fetch();
-        Preconditions.checkState(frameworkIDOptional.isPresent());
-        this.frameworkID = frameworkIDOptional.get();
+        frameworkIDService = new FrameworkIDService(regCenter);
     }
     
     /**
@@ -133,6 +131,13 @@ public class MesosStateService {
     
     private Collection<JSONObject> findExecutors(final JSONArray frameworks, final String appName) throws JSONException {
         List<JSONObject> result = Lists.newArrayList();
+        Optional<String> frameworkIDOptional = frameworkIDService.fetch();
+        String frameworkID;
+        if (frameworkIDOptional.isPresent()) {
+            frameworkID = frameworkIDOptional.get();
+        } else {
+            return result;
+        }
         for (int i = 0; i < frameworks.length(); i++) {
             JSONObject framework = frameworks.getJSONObject(i);
             if (!framework.getString("id").equals(frameworkID)) {

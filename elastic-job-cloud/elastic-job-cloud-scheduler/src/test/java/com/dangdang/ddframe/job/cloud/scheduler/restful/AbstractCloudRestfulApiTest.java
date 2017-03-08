@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.RestfulServerConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.ha.HANode;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -33,7 +32,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractCloudRestfulApiTest {
@@ -53,7 +51,6 @@ public abstract class AbstractCloudRestfulApiTest {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         ProducerManager producerManager = new ProducerManager(schedulerDriver, regCenter);
         producerManager.startup();
-        when(regCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         restfulService = new RestfulService(regCenter, new RestfulServerConfiguration(19000), producerManager);
         restfulService.start();
     }
