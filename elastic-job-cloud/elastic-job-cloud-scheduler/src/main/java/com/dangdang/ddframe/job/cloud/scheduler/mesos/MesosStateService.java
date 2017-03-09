@@ -124,6 +124,16 @@ public class MesosStateService {
         });
     }
     
+    /**
+     * 获取所有执行器.
+     *
+     * @return 执行器信息
+     * @throws JSONException 解析JSON格式异常
+     */
+    public Collection<ExecutorInfo> executors() throws JSONException {
+        return executors(null);
+    }
+    
     private JSONObject fetch(final String url) {
         Preconditions.checkState(!Strings.isNullOrEmpty(url));
         return Client.create().resource(url).get(JSONObject.class);
@@ -146,7 +156,7 @@ public class MesosStateService {
             JSONArray executors = framework.getJSONArray("executors");
             for (int j = 0; j < executors.length(); j++) {
                 JSONObject executor = executors.getJSONObject(j);
-                if (appName.equals(getExecutorId(executor).split("@-@")[0])) {
+                if (null == appName || appName.equals(getExecutorId(executor).split("@-@")[0])) {
                     result.add(executor);
                 }
             }

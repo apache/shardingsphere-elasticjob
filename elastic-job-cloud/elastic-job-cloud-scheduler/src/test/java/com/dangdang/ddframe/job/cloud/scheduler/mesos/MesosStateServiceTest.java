@@ -78,10 +78,21 @@ public class MesosStateServiceTest {
     public void assertExecutors() throws Exception {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
-        Collection<MesosStateService.ExecutorInfo> executorInfos = service.executors("foo_app");
-        assertThat(executorInfos.size(), is(1));
-        MesosStateService.ExecutorInfo executorInfo = executorInfos.iterator().next();
-        assertThat(executorInfo.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
-        assertThat(executorInfo.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        Collection<MesosStateService.ExecutorInfo> executorInfo = service.executors("foo_app");
+        assertThat(executorInfo.size(), is(1));
+        MesosStateService.ExecutorInfo executor = executorInfo.iterator().next();
+        assertThat(executor.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        assertThat(executor.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+    }
+    
+    @Test
+    public void assertAllExecutors() throws Exception {
+        when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
+        MesosStateService service = new MesosStateService(registryCenter);
+        Collection<MesosStateService.ExecutorInfo> executorInfo = service.executors();
+        assertThat(executorInfo.size(), is(1));
+        MesosStateService.ExecutorInfo executor = executorInfo.iterator().next();
+        assertThat(executor.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        assertThat(executor.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
     }
 }
