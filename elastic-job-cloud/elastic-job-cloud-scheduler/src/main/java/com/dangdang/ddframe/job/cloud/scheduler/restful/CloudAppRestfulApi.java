@@ -20,11 +20,19 @@ package com.dangdang.ddframe.job.cloud.scheduler.restful;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService.ExecutorInfo;
+import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.exception.AppConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.json.GsonFactory;
 import com.google.common.base.Optional;
+import org.apache.mesos.Protos.ExecutorID;
+import org.apache.mesos.Protos.SlaveID;
+import org.codehaus.jettison.json.JSONException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,6 +41,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
@@ -46,19 +55,29 @@ public final class CloudAppRestfulApi {
     
     private static CoordinatorRegistryCenter regCenter;
     
-    private final CloudAppConfigurationService configService;
+    private static ProducerManager producerManager;
+    
+    private final CloudAppConfigurationService appConfigService;
+    
+    private final CloudJobConfigurationService jobConfigService;
+    
+    private final MesosStateService mesosStateService;
     
     public CloudAppRestfulApi() {
-        configService = new CloudAppConfigurationService(regCenter);
+        appConfigService = new CloudAppConfigurationService(regCenter);
+        jobConfigService = new CloudJobConfigurationService(regCenter);
+        mesosStateService = new MesosStateService(regCenter);
     }
     
     /**
      * 初始化.
      *
+     * @param producerManager 生产管理器
      * @param regCenter 注册中心
      */
-    public static void init(final CoordinatorRegistryCenter regCenter) {
+    public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudAppRestfulApi.regCenter = regCenter;
+        CloudAppRestfulApi.producerManager = producerManager;
         GsonFactory.registerTypeAdapter(CloudAppConfiguration.class, new CloudAppConfigurationGsonFactory.CloudAppConfigurationGsonTypeAdapter());
     }
     
@@ -70,11 +89,11 @@ public final class CloudAppRestfulApi {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void register(final CloudAppConfiguration appConfig) {
-        Optional<CloudAppConfiguration> appConfigFromZk = configService.load(appConfig.getAppName());
+        Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(appConfig.getAppName());
         if (appConfigFromZk.isPresent()) {
             throw new AppConfigurationException("app '%s' already existed.", appConfig.getAppName());
         }
-        configService.add(appConfig);
+        appConfigService.add(appConfig);
     }
     
     /**
@@ -85,7 +104,7 @@ public final class CloudAppRestfulApi {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public void update(final CloudAppConfiguration appConfig) {
-        configService.update(appConfig);
+        appConfigService.update(appConfig);
     }
     
     /**
@@ -98,7 +117,7 @@ public final class CloudAppRestfulApi {
     @Path("/{appName}")
     @Consumes(MediaType.APPLICATION_JSON)
     public CloudAppConfiguration detail(@PathParam("appName") final String appName) {
-        Optional<CloudAppConfiguration> config = configService.load(appName);
+        Optional<CloudAppConfiguration> config = appConfigService.load(appName);
         if (config.isPresent()) {
             return config.get();
         }
@@ -112,19 +131,45 @@ public final class CloudAppRestfulApi {
      */
     @GET
     @Path("/list")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Collection<CloudAppConfiguration> findAllApps() {
-        return configService.loadAll();
+        return appConfigService.loadAll();
     }
     
     /**
-     * 注销云作业App配置.
+     * 注销云作业App.
      *
-     * @param appConfig 云作业App配置
+     * @param appName 云作业App名称
      */
     @DELETE
+    @Path("/{appName}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void deregister(final String appConfig) {
-        configService.remove(appConfig);
+    public void deregister(@PathParam("appName") final String appName) {
+        if (appConfigService.load(appName).isPresent()) {
+            removeAppAndJobConfigurations(appName);
+            stopExecutors(appName);
+        }
+    }
+    
+    private void removeAppAndJobConfigurations(final String appName) {
+        Collection<CloudJobConfiguration> jobs = jobConfigService.loadAll();
+        for (CloudJobConfiguration each : jobs) {
+            if (appName.equals(each.getAppName())) {
+                producerManager.deregister(each.getJobName());
+            }
+        }
+        appConfigService.remove(appName);
+    }
+    
+    private void stopExecutors(final String appName) {
+        try {
+            Collection<ExecutorInfo> executorInfo = mesosStateService.executors(appName);
+            for (ExecutorInfo each : executorInfo) {
+                producerManager.sendFrameworkMessage(ExecutorID.newBuilder().setValue(each.getId()).build(),
+                        SlaveID.newBuilder().setValue(each.getSlaveId()).build(), "STOP".getBytes());
+            }
+        } catch (final JSONException ex) {
+            throw new JobSystemException(ex);
+        }
     }
 }

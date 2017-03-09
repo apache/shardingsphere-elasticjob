@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.TaskContext;
@@ -36,6 +36,8 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.ExecutorID;
+import org.apache.mesos.Protos.SlaveID;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.Collection;
@@ -163,6 +165,18 @@ public class ProducerManager {
     public void reschedule(final CloudJobConfiguration jobConfig) {
         unschedule(jobConfig.getJobName());
         schedule(jobConfig);
+    }
+    
+    
+    /**
+     * 向Executor发送消息.
+     * 
+     * @param executorId 接受消息的executorId
+     * @param slaveId 运行executor的slaveId
+     * @param data 消息内容
+     */
+    public void sendFrameworkMessage(final ExecutorID executorId, final SlaveID slaveId, final byte[] data) {
+        schedulerDriver.sendFrameworkMessage(executorId, slaveId, data);
     }
     
     /**

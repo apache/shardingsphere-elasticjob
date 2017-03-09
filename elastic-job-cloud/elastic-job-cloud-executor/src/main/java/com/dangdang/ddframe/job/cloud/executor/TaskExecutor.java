@@ -92,6 +92,10 @@ public final class TaskExecutor implements Executor {
     
     @Override
     public void frameworkMessage(final ExecutorDriver executorDriver, final byte[] bytes) {
+        if (null != bytes && "STOP".equals(new String(bytes))) {
+            log.error("call frameworkMessage executor stopped.");
+            executorDriver.stop();
+        }
     }
     
     @Override

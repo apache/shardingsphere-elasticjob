@@ -38,7 +38,6 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().isExisted("/config/app/test_app")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         verify(getRegCenter()).persist("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
-        sentRequest("http://127.0.0.1:19000/app", "DELETE", "test_app");
     }
     
     @Test
@@ -47,7 +46,6 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         assertThat(sentRequest("http://127.0.0.1:19000/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(sentRequest("http://127.0.0.1:19000/app", "POST", CloudAppJsonConstants.getAppJson("test_app")), is(500));
-        sentRequest("http://127.0.0.1:19000/app", "DELETE", "test_app");
     }
     
     @Test
@@ -61,7 +59,6 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(sentRequest("http://127.0.0.1:19000/app", "PUT", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         verify(getRegCenter()).update("/config/app/test_app", CloudAppJsonConstants.getAppJson("test_app"));
-        sentRequest("http://127.0.0.1:19000/app", "DELETE", "test_app");
     }
     
     @Test
@@ -84,6 +81,12 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         assertThat(sentGetRequest("http://127.0.0.1:19000/app/list"), is("[" + CloudAppJsonConstants.getAppJson("test_app") + "]"));
         verify(getRegCenter()).isExisted("/config/app");
         verify(getRegCenter()).getChildrenKeys("/config/app");
+        verify(getRegCenter()).get("/config/app/test_app");
+    }
+    
+    @Test
+    public void assertDeregister() throws Exception {
+        assertThat(sentRequest("http://127.0.0.1:19000/app/test_app", "DELETE", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
     }
 }
