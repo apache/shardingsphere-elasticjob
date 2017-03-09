@@ -42,10 +42,10 @@ public class CloudOperationRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @BeforeClass
     public static void startServer() throws Exception {
-        MesosStateService.register("127.0.0.1", 5050);
-        masterServer = new RestfulServer(5050);
+        MesosStateService.register("127.0.0.1", 9050);
+        masterServer = new RestfulServer(9050);
         masterServer.start(MesosMasterServerMock.class.getPackage().getName(), Optional.<String>absent());
-        slaveServer = new RestfulServer(5051);
+        slaveServer = new RestfulServer(9051);
         slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), Optional.<String>absent());
     }
     
