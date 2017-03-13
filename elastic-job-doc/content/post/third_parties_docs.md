@@ -6,9 +6,7 @@ weight=600
 
 # 第三方文档
 
-### 2017-03 [源码分析：Elastic-Job项目源码分析2--console执行一窥](http://blog.csdn.net/spy19881201/article/details/61648889)
-
-### 2017-03 [源码分析：Elastic-Job项目源码分析1--核心骨架JobScheduler](http://blog.csdn.net/spy19881201/article/details/61631799)
+### 2017-03 [源码分析：Elastic-Job项目源码分析系列](http://blog.csdn.net/spy19881201/article/category/6784965)
 
 ### 2016-09 [2016全球容器技术大会分享：基于Mesos的当当作业云Elastic-Job-Cloud](http://ppt.geekbang.org/slide/show/378)
 
