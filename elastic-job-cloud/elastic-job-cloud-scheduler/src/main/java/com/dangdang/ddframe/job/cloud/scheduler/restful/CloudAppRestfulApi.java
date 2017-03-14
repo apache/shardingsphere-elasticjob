@@ -47,7 +47,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 /**
- * 云作业App的REST API.
+ * 云作业应用的REST API.
  *
  * @author caohao
  */
@@ -86,9 +86,9 @@ public final class CloudAppRestfulApi {
     }
     
     /**
-     * 注册云作业APP配置.
+     * 注册应用配置.
      * 
-     * @param appConfig 云作业APP配置
+     * @param appConfig 应用配置
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -101,9 +101,9 @@ public final class CloudAppRestfulApi {
     }
     
     /**
-     * 更新云作业App配置.
+     * 更新应用配置.
      *
-     * @param appConfig 云作业App配置
+     * @param appConfig 应用配置
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -112,10 +112,10 @@ public final class CloudAppRestfulApi {
     }
     
     /**
-     * 查询云作业App配置.
+     * 查询应用配置.
      *
-     * @param appName 云作业App配置名称
-     * @return 云作业App配置
+     * @param appName 应用配置名称
+     * @return 应用配置
      */
     @GET
     @Path("/{appName}")
@@ -129,9 +129,9 @@ public final class CloudAppRestfulApi {
     }
     
     /**
-     * 查找全部云作业App配置.
+     * 查询全部应用配置.
      * 
-     * @return 全部云作业App配置
+     * @return 全部应用配置
      */
     @GET
     @Path("/list")
@@ -141,9 +141,9 @@ public final class CloudAppRestfulApi {
     }
     
     /**
-     * 启用云作业App.
+     * 启用应用.
      *
-     * @param appName 云作业App名称
+     * @param appName 应用名称
      */
     @PUT
     @Path("/{appName}/enable")
@@ -155,9 +155,9 @@ public final class CloudAppRestfulApi {
     }
     
     /**
-     * 禁用云作业App.
+     * 禁用应用.
      *
-     * @param appName 云作业App名称
+     * @param appName 应用名称
      */
     @PUT
     @Path("/{appName}/disable")
@@ -174,9 +174,9 @@ public final class CloudAppRestfulApi {
     }
     
     /**
-     * 注销云作业App.
+     * 注销应用.
      *
-     * @param appName 云作业App名称
+     * @param appName 应用名称
      */
     @DELETE
     @Path("/{appName}")

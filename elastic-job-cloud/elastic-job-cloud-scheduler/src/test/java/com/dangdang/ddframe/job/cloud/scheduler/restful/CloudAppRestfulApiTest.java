@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudAppJsonConstants;
+import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJsonConstants;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,13 +93,23 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertDisable() throws Exception {
+        when(getRegCenter().isExisted("/config/job")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(sentRequest("http://127.0.0.1:19000/app/test_app/disable", "PUT"), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
+        verify(getRegCenter()).persist("/state/disable/app/test_app", "test_app");
     }
     
     @Test
     public void assertEnable() throws Exception {
+        when(getRegCenter().isExisted("/config/job")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         assertThat(sentRequest("http://127.0.0.1:19000/app/test_app/enable", "PUT"), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
+        verify(getRegCenter()).remove("/state/disable/app/test_app");
     }
 }

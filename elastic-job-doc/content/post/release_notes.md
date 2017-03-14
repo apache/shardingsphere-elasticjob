@@ -13,9 +13,9 @@ weight=1
 ### 新功能
 
 1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) elastic-job-lite：主节点增加reconcile线程任务，修复分片不一致等分布式相关一致性问题。
-1. [ISSUE #242](https://github.com/dangdangdotcom/elastic-job/issues/242) cloud支持删除app及作业功能
-1. [ISSUE #243](https://github.com/dangdangdotcom/elastic-job/issues/243) cloud支持禁用app及作业功能
-
+1. [ISSUE #242](https://github.com/dangdangdotcom/elastic-job/issues/242) cloud支持删除应用及作业功能
+1. [ISSUE #243](https://github.com/dangdangdotcom/elastic-job/issues/243) cloud支持禁用/启用应用及作业功能
+    
 ## 2.0.5
 
 ### 缺陷修正
