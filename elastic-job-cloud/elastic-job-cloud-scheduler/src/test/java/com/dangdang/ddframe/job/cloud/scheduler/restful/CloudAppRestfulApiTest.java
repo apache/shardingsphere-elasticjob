@@ -89,4 +89,16 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         assertThat(sentRequest("http://127.0.0.1:19000/app/test_app", "DELETE", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
     }
+    
+    @Test
+    public void assertDisable() throws Exception {
+        assertThat(sentRequest("http://127.0.0.1:19000/app/test_app/disable", "PUT"), is(204));
+        verify(getRegCenter()).get("/config/app/test_app");
+    }
+    
+    @Test
+    public void assertEnable() throws Exception {
+        assertThat(sentRequest("http://127.0.0.1:19000/app/test_app/enable", "PUT"), is(204));
+        verify(getRegCenter()).get("/config/app/test_app");
+    }
 }

@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.job.DisableJobService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.TaskContext;
@@ -61,6 +62,8 @@ public class ProducerManager {
     
     private final RunningService runningService;
     
+    private final DisableJobService disableJobService;
+    
     private final TransientProducerScheduler transientProducerScheduler;
     
     private final SchedulerDriver schedulerDriver;
@@ -71,6 +74,7 @@ public class ProducerManager {
         configService = new CloudJobConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
+        disableJobService = new DisableJobService(regCenter);
         transientProducerScheduler = new TransientProducerScheduler(readyService);
     }
     
@@ -91,6 +95,9 @@ public class ProducerManager {
      * @param jobConfig 作业配置
      */
     public void register(final CloudJobConfiguration jobConfig) {
+        if (disableJobService.isDisabled(jobConfig.getJobName())) {
+            throw new JobConfigurationException("Job '%s' has been disable.", jobConfig.getJobName());
+        }
         Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(jobConfig.getAppName());
         if (!appConfigFromZk.isPresent()) {
             throw new AppConfigurationException("Register app '%s' firstly.", jobConfig.getAppName());
@@ -137,6 +144,9 @@ public class ProducerManager {
      * @param jobConfig 作业配置
      */
     public void schedule(final CloudJobConfiguration jobConfig) {
+        if (disableJobService.isDisabled(jobConfig.getAppName())) {
+            return;
+        }
         if (CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
             transientProducerScheduler.register(jobConfig);
         } else if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
@@ -166,7 +176,6 @@ public class ProducerManager {
         unschedule(jobConfig.getJobName());
         schedule(jobConfig);
     }
-    
     
     /**
      * 向Executor发送消息.

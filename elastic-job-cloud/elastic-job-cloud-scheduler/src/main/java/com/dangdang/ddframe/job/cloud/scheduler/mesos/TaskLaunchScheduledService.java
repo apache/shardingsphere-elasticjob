@@ -132,7 +132,8 @@ public class TaskLaunchScheduledService extends AbstractScheduledService {
         List<Protos.TaskInfo> result = new ArrayList<>(vmAssignmentResult.getTasksAssigned().size());
         for (TaskAssignmentResult each: vmAssignmentResult.getTasksAssigned()) {
             TaskContext taskContext = TaskContext.from(each.getTaskId());
-            if (!integrityViolationJobs.contains(taskContext.getMetaInfo().getJobName()) && !facadeService.isRunning(taskContext)) {
+            String jobName = taskContext.getMetaInfo().getJobName();
+            if (!integrityViolationJobs.contains(jobName) && !facadeService.isRunning(taskContext) && !facadeService.isJobDisabled(jobName)) {
                 Protos.TaskInfo taskInfo = getTaskInfo(slaveId, each);
                 if (null != taskInfo) {
                     result.add(taskInfo);

@@ -25,6 +25,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService.ExecutorInfo;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.app.DisableAppService;
 import com.dangdang.ddframe.job.exception.AppConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -61,12 +62,15 @@ public final class CloudAppRestfulApi {
     
     private final CloudJobConfigurationService jobConfigService;
     
+    private final DisableAppService disableAppService;
+    
     private final MesosStateService mesosStateService;
     
     public CloudAppRestfulApi() {
         appConfigService = new CloudAppConfigurationService(regCenter);
         jobConfigService = new CloudJobConfigurationService(regCenter);
         mesosStateService = new MesosStateService(regCenter);
+        disableAppService = new DisableAppService(regCenter);
     }
     
     /**
@@ -137,6 +141,39 @@ public final class CloudAppRestfulApi {
     }
     
     /**
+     * 启用云作业App.
+     *
+     * @param appName 云作业App名称
+     */
+    @PUT
+    @Path("/{appName}/enable")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void enable(@PathParam("appName") final String appName) throws JSONException {
+        if (appConfigService.load(appName).isPresent()) {
+            disableAppService.remove(appName);
+        }
+    }
+    
+    /**
+     * 禁用云作业App.
+     *
+     * @param appName 云作业App名称
+     */
+    @PUT
+    @Path("/{appName}/disable")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void disable(@PathParam("appName") final String appName) {
+        if (appConfigService.load(appName).isPresent()) {
+            disableAppService.add(appName);
+            for (CloudJobConfiguration each : jobConfigService.loadAll()) {
+                if (appName.equals(each.getAppName())) {
+                    producerManager.unschedule(each.getJobName());
+                }
+            }
+        }
+    }
+    
+    /**
      * 注销云作业App.
      *
      * @param appName 云作业App名称
@@ -152,8 +189,7 @@ public final class CloudAppRestfulApi {
     }
     
     private void removeAppAndJobConfigurations(final String appName) {
-        Collection<CloudJobConfiguration> jobs = jobConfigService.loadAll();
-        for (CloudJobConfiguration each : jobs) {
+        for (CloudJobConfiguration each : jobConfigService.loadAll()) {
             if (appName.equals(each.getAppName())) {
                 producerManager.deregister(each.getJobName());
             }
@@ -163,8 +199,8 @@ public final class CloudAppRestfulApi {
     
     private void stopExecutors(final String appName) {
         try {
-            Collection<ExecutorInfo> executorInfo = mesosStateService.executors(appName);
-            for (ExecutorInfo each : executorInfo) {
+            Collection<ExecutorInfo> executorBriefInfo = mesosStateService.executors(appName);
+            for (ExecutorInfo each : executorBriefInfo) {
                 producerManager.sendFrameworkMessage(ExecutorID.newBuilder().setValue(each.getId()).build(),
                         SlaveID.newBuilder().setValue(each.getSlaveId()).build(), "STOP".getBytes());
             }

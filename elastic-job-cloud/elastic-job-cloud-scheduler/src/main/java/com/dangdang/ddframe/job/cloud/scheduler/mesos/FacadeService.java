@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.app.DisableAppService;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.job.DisableJobService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
@@ -62,12 +64,18 @@ public class FacadeService {
     
     private final FailoverService failoverService;
     
+    private final DisableAppService disableAppService;
+    
+    private final DisableJobService disableJobService;
+    
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
         appConfigService = new CloudAppConfigurationService(regCenter);
         jobConfigService = new CloudJobConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
         failoverService = new FailoverService(regCenter);
+        disableAppService = new DisableAppService(regCenter);
+        disableJobService = new DisableJobService(regCenter);
     }
     
     /**
@@ -215,16 +223,6 @@ public class FacadeService {
     }
     
     /**
-     * 判断作业是否在运行.
-     *
-     * @param jobName 作业名称
-     * @return 作业是否在运行
-     */
-    public boolean isRunning(final String jobName) {
-        return !runningService.getRunningTasks(jobName).isEmpty();
-    }
-    
-    /**
      * 根据作业执行类型判断作业是否在运行.
      *
      * <p>READY类型的作业为整体, 任意一片运行都视为作业运行. FAILOVER则仅以当前分片运行为运行依据.</p>
@@ -282,6 +280,17 @@ public class FacadeService {
      */
     public Map<String, Collection<FailoverTaskInfo>> getAllFailoverTasks() {
         return failoverService.getAllFailoverTasks();
+    }
+    
+    /**
+     * 判断作业是否被禁用.
+     * 
+     * @param jobName 作业名称
+     * @return 作业是否被禁用
+     */
+    public boolean isJobDisabled(final String jobName) {
+        Optional<CloudJobConfiguration> jobConfiguration = jobConfigService.load(jobName);
+        return !jobConfiguration.isPresent() || disableAppService.isDisabled(jobConfiguration.get().getAppName()) || disableJobService.isDisabled(jobName);
     }
     
     /**
