@@ -294,6 +294,24 @@ public class FacadeService {
     }
     
     /**
+     * 将作业移出禁用队列.
+     *
+     * @param jobName 作业名称
+     */
+    public void enableJob(final String jobName) {
+        disableJobService.remove(jobName);
+    }
+    
+    /**
+     * 将作业放入禁用队列.
+     *
+     * @param jobName 作业名称
+     */
+    public void disableJob(final String jobName) {
+        disableJobService.add(jobName);
+    }
+    
+    /**
      * 停止门面服务.
      */
     public void stop() {

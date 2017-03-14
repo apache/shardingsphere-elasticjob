@@ -271,23 +271,45 @@ public final class FacadeServiceTest {
     }
     
     @Test
-    public void assertJobEnabled() {
+    public void assertJobDisabledWhenAppEnabled() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(disableAppService.isDisabled("test_app")).thenReturn(false);
+        when(disableJobService.isDisabled("test_job")).thenReturn(true);
+        assertTrue(facadeService.isJobDisabled("test_job"));
+    }
+    
+    @Test
+    public void assertIsJobEnabled() {
         when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         assertFalse(facadeService.isJobDisabled("test_job"));
     }
     
     @Test
-    public void assertJobDisabledWhenAppDisabled() {
+    public void assertIsJobDisabledWhenAppDisabled() {
         when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(disableAppService.isDisabled("test_app")).thenReturn(true);
         assertTrue(facadeService.isJobDisabled("test_job"));
     }
     
     @Test
-    public void assertJobDisabledWhenAppEnabled() {
+    public void assertIsJobDisabledWhenAppEnabled() {
         when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         when(disableAppService.isDisabled("test_app")).thenReturn(false);
         when(disableJobService.isDisabled("test_job")).thenReturn(true);
         assertTrue(facadeService.isJobDisabled("test_job"));
+    }
+    
+    @Test
+    public void assertEnableJob() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        facadeService.enableJob("test_job");
+        verify(disableJobService).remove("test_job");
+    }
+    
+    @Test
+    public void assertDisableJob() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        facadeService.disableJob("test_job");
+        verify(disableJobService).add("test_job");
     }
 }

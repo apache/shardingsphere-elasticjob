@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
-import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
@@ -48,6 +48,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -56,6 +57,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -155,6 +157,45 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public void deregister(final String jobName) {
         producerManager.deregister(jobName);
+    }
+    
+    /**
+     * 查询作业是否被禁用.
+     *
+     * @param jobName 作业名称
+     */
+    @GET
+    @Path("/{jobName}/disable")
+    @Produces(MediaType.APPLICATION_JSON)
+    public boolean isDisabled(@PathParam("jobName") final String jobName) throws JSONException {
+        return facadeService.isJobDisabled(jobName);
+    }
+    
+    /**
+     * 启用作业.
+     *
+     * @param jobName 作业名称
+     */
+    @DELETE
+    @Path("/{jobName}/disable")
+    public void enable(@PathParam("jobName") final String jobName) throws JSONException {
+        if (configService.load(jobName).isPresent()) {
+            facadeService.enableJob(jobName);
+        }
+    }
+    
+    /**
+     * 禁用作业.
+     *
+     * @param jobName 作业名称
+     */
+    @POST
+    @Path("/{jobName}/disable")
+    public void disable(@PathParam("jobName") final String jobName) {
+        if (configService.load(jobName).isPresent()) {
+            facadeService.disableJob(jobName);
+            producerManager.unschedule(jobName);
+        }
     }
     
     /**

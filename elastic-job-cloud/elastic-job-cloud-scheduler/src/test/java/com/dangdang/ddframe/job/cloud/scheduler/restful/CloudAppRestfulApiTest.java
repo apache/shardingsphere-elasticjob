@@ -92,12 +92,18 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     }
     
     @Test
+    public void assertIsDisabled() throws Exception {
+        when(getRegCenter().isExisted("/state/disable/app/test_app")).thenReturn(true);
+        assertThat(sentGetRequest("http://127.0.0.1:19000/app/test_app/disable"), is("true"));
+    }
+    
+    @Test
     public void assertDisable() throws Exception {
         when(getRegCenter().isExisted("/config/job")).thenReturn(true);
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(sentRequest("http://127.0.0.1:19000/app/test_app/disable", "PUT"), is(204));
+        assertThat(sentRequest("http://127.0.0.1:19000/app/test_app/disable", "POST"), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
         verify(getRegCenter()).persist("/state/disable/app/test_app", "test_app");
     }
@@ -108,7 +114,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
         when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
         when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
-        assertThat(sentRequest("http://127.0.0.1:19000/app/test_app/enable", "PUT"), is(204));
+        assertThat(sentRequest("http://127.0.0.1:19000/app/test_app/disable", "DELETE"), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
         verify(getRegCenter()).remove("/state/disable/app/test_app");
     }

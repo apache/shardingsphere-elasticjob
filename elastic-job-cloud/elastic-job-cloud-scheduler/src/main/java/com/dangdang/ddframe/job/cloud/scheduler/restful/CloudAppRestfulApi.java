@@ -141,17 +141,15 @@ public final class CloudAppRestfulApi {
     }
     
     /**
-     * 启用应用.
+     * 查询应用是否被禁用.
      *
      * @param appName 应用名称
      */
-    @PUT
-    @Path("/{appName}/enable")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void enable(@PathParam("appName") final String appName) throws JSONException {
-        if (appConfigService.load(appName).isPresent()) {
-            disableAppService.remove(appName);
-        }
+    @GET
+    @Path("/{appName}/disable")
+    @Produces(MediaType.APPLICATION_JSON)
+    public boolean isDisabled(@PathParam("appName") final String appName) throws JSONException {
+        return disableAppService.isDisabled(appName);
     }
     
     /**
@@ -159,9 +157,8 @@ public final class CloudAppRestfulApi {
      *
      * @param appName 应用名称
      */
-    @PUT
+    @POST
     @Path("/{appName}/disable")
-    @Consumes(MediaType.APPLICATION_JSON)
     public void disable(@PathParam("appName") final String appName) {
         if (appConfigService.load(appName).isPresent()) {
             disableAppService.add(appName);
@@ -170,6 +167,19 @@ public final class CloudAppRestfulApi {
                     producerManager.unschedule(each.getJobName());
                 }
             }
+        }
+    }
+    
+    /**
+     * 启用应用.
+     *
+     * @param appName 应用名称
+     */
+    @DELETE
+    @Path("/{appName}/disable")
+    public void enable(@PathParam("appName") final String appName) throws JSONException {
+        if (appConfigService.load(appName).isPresent()) {
+            disableAppService.remove(appName);
         }
     }
     
