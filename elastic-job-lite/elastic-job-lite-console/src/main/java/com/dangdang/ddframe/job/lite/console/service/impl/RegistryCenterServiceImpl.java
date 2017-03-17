@@ -24,26 +24,24 @@ import com.dangdang.ddframe.job.lite.console.repository.impl.RegistryCenterConfi
 import com.dangdang.ddframe.job.lite.console.service.RegistryCenterService;
 import com.google.common.base.Optional;
 
-import java.util.Collection;
-
 public class RegistryCenterServiceImpl implements RegistryCenterService {
     
     private RegistryCenterConfigurationsXmlRepository regCenterConfigurationsXmlRepository = new RegistryCenterConfigurationsXmlRepositoryImpl();
     
     @Override
-    public Collection<RegistryCenterConfiguration> loadAll() {
-        return regCenterConfigurationsXmlRepository.load().getRegistryCenterConfiguration();
+    public RegistryCenterConfigurations loadAll() {
+        return regCenterConfigurationsXmlRepository.load();
     }
     
     @Override
     public RegistryCenterConfiguration load(final String name) {
-        RegistryCenterConfigurations configs = regCenterConfigurationsXmlRepository.load();
+        RegistryCenterConfigurations configs = loadAll();
         RegistryCenterConfiguration result = findRegistryCenterConfiguration(name, configs);
         setActivated(configs, result);
         return result;
     }
     
-    private RegistryCenterConfiguration findRegistryCenterConfiguration(final String name, final RegistryCenterConfigurations configs) {
+    public RegistryCenterConfiguration findRegistryCenterConfiguration(final String name, final RegistryCenterConfigurations configs) {
         for (RegistryCenterConfiguration each : configs.getRegistryCenterConfiguration()) {
             if (name.equals(each.getName())) {
                 return each;
@@ -65,7 +63,7 @@ public class RegistryCenterServiceImpl implements RegistryCenterService {
     
     @Override
     public Optional<RegistryCenterConfiguration> loadActivated() {
-        RegistryCenterConfigurations configs = regCenterConfigurationsXmlRepository.load();
+        RegistryCenterConfigurations configs = loadAll();
         RegistryCenterConfiguration result = findActivatedRegistryCenterConfiguration(configs);
         if (null == result) {
             return Optional.absent();
@@ -84,7 +82,7 @@ public class RegistryCenterServiceImpl implements RegistryCenterService {
     
     @Override
     public boolean add(final RegistryCenterConfiguration config) {
-        RegistryCenterConfigurations configs = regCenterConfigurationsXmlRepository.load();
+        RegistryCenterConfigurations configs = loadAll();
         boolean result = configs.getRegistryCenterConfiguration().add(config);
         if (result) {
             regCenterConfigurationsXmlRepository.save(configs);
@@ -94,7 +92,7 @@ public class RegistryCenterServiceImpl implements RegistryCenterService {
     
     @Override
     public void delete(final String name) {
-        RegistryCenterConfigurations configs = regCenterConfigurationsXmlRepository.load();
+        RegistryCenterConfigurations configs = loadAll();
         if (configs.getRegistryCenterConfiguration().remove(new RegistryCenterConfiguration(name))) {
             regCenterConfigurationsXmlRepository.save(configs);
         }

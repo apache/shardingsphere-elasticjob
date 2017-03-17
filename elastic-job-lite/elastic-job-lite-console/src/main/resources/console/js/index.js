@@ -1,31 +1,51 @@
-$(document).ready(function() {
-    var jobName = GetQueryParam("jobName");
-    var serverIp = GetQueryParam("serverIp");
-    if(null != jobName){
-        $('#content').load('job_detail.html');
+$(function() {
+    var jobName = getCurrentUrl("jobName");
+    var serverIp = getCurrentUrl("serverIp");
+    if (null !== jobName) {
+        $("#content").load("html/job/job_detail.html");
+        renderDashboardNav();
+    } else if (null !== serverIp) {
+        $("#content").load("html/server/server_detail.html");
+        renderDashboardNav();
+    } else {
+        $("#content").load("html/reg/registry_center.html");
     }
-    else if(null != serverIp){
-        $('#content').load('server_detail.html');
-    }
-    else{
-        $('#content').load('registry_center.html');
-        renderRegistryCenterForDashboardNav();
-        renderJobsForDashboardNav();
-        renderJServersForDashboardNav();
-    }
-    $('#registry-center-dimension').click(function() {
-        $('#content').load('registry_center.html');
+    $("#registry-center").click(function() {
+        $("#content").load("html/reg/registry_center.html");
+        renderDashboardNav();
     });
-    $('#overview').click(function() {
-        $('#content').load('overview.html');
+    $("#exec-detail").click(function() {
+        $("#content").load("html/event/job_exec_detail.html");
     });
-    $('#jobs-dimension').click(function() {
-        $('#content').load('job_detail.html');
+    $("#exec-status").click(function() {
+        $("#content").load("html/event/job_exec_status.html");
     });
-    $('#servers-dimension').click(function() {
-        $('#content').load('server_detail.html');
+    $("#registry-center-dimension").click(function() {
+        $("#content").load("html/reg/registry_center.html");
+        renderDashboardNav();
     });
-    $('#help').click(function() {
-        $('#content').load('help.html');
+    $("#data-source").click(function() {
+        $("#content").load("html/event/data_source.html");
+    });
+    $("#data-source-dimension").click(function() {
+        $("#content").load("html/event/data_source.html");
+    });
+    $("#overview").click(function() {
+        $("#content").load("html/overview/overview.html");
+        renderDashboardNav();
+    });
+    $("#jobs-dimension").click(function() {
+        $("#content").load("html/job/job_detail.html");
+    });
+    $("#servers-dimension").click(function() {
+        $("#content").load("html/server/server_detail.html");
+    });
+    $("#help").click(function() {
+        $("#content").load("html/help.html");
     });
 });
+
+function renderDashboardNav() {
+    renderJobsForDashboardNav();
+    renderJServersForDashboardNav();
+}

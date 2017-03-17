@@ -15,21 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.service;
+package com.dangdang.ddframe.job.lite.console.repository.impl;
 
-import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
-import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
-import com.google.common.base.Optional;
+import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfigurations;
+import com.dangdang.ddframe.job.lite.console.repository.DataSourceConfigurationsXmlRepository;
 
-public interface RegistryCenterService {
+public class DataSourceConfigurationsXmlRepositoryImpl extends AbstractXmlRepositoryImpl<DataSourceConfigurations> implements DataSourceConfigurationsXmlRepository {
     
-    RegistryCenterConfigurations loadAll();
-    
-    RegistryCenterConfiguration load(String name);
-    
-    Optional<RegistryCenterConfiguration> loadActivated();
-    
-    boolean add(RegistryCenterConfiguration config);
-    
-    void delete(String name);
+    public DataSourceConfigurationsXmlRepositoryImpl() {
+        super("DataSourceConfigurations.xml", DataSourceConfigurations.class);
+    }
 }

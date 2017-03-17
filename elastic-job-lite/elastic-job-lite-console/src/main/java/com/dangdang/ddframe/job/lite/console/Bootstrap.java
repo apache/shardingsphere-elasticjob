@@ -30,7 +30,8 @@ public class Bootstrap {
     /**
      * 启动Restful服务.
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
+        
         try {
             RestfulServer restfulServer = new RestfulServer(PORT);
             restfulServer.start(LiteJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
