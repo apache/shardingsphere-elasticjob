@@ -29,16 +29,16 @@ public class CloudOperationRestfulApiTest extends AbstractCloudRestfulApiTest {
     @Test
     public void assertExplicitReconcile() throws Exception {
         ReflectionUtils.setFieldValue(new CloudOperationRestfulApi(), "lastReconcileTime", 0);
-        assertThat(sentRequest("http://127.0.0.1:19000/operate/reconcile/explicit", "POST", ""), is(204));
-        assertThat(sentRequest("http://127.0.0.1:19000/operate/reconcile/explicit", "POST", ""), is(500));
+        assertThat(sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit", "POST", ""), is(204));
+        assertThat(sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit", "POST", ""), is(500));
         ReflectionUtils.setFieldValue(new CloudOperationRestfulApi(), "lastReconcileTime", 0);
-        assertThat(sentRequest("http://127.0.0.1:19000/operate/reconcile/explicit?taskId=unknown", "POST", ""), is(500));
+        assertThat(sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit?taskId=unknown", "POST", ""), is(500));
     }
     
     @Test
     public void assertImplicitReconcile() throws Exception {
         ReflectionUtils.setFieldValue(new CloudOperationRestfulApi(), "lastReconcileTime", 0);
-        assertThat(sentRequest("http://127.0.0.1:19000/operate/reconcile/implicit", "POST", ""), is(204));
-        assertThat(sentRequest("http://127.0.0.1:19000/operate/reconcile/implicit", "POST", ""), is(500));
+        assertThat(sentRequest("http://127.0.0.1:19000/api/operate/reconcile/implicit", "POST", ""), is(204));
+        assertThat(sentRequest("http://127.0.0.1:19000/api/operate/reconcile/implicit", "POST", ""), is(500));
     }
 }

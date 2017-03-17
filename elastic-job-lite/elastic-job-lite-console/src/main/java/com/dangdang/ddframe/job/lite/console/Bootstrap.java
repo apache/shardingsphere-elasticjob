@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.console;
 
 import com.dangdang.ddframe.job.lite.console.restful.LiteJobRestfulApi;
 import com.dangdang.ddframe.job.restful.RestfulServer;
+import com.dangdang.ddframe.job.security.WwwAuthFilter;
 import com.google.common.base.Optional;
 
 public class Bootstrap {
@@ -34,7 +35,11 @@ public class Bootstrap {
         
         try {
             RestfulServer restfulServer = new RestfulServer(PORT);
-            restfulServer.start(LiteJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
+            restfulServer.addFilter(WwwAuthFilter.class, "/")
+                         .addFilter(WwwAuthFilter.class, "*.html")
+                         .addFilter(WwwAuthFilter.class, "*.js")
+                         .addFilter(WwwAuthFilter.class, "*.css")
+                         .start(LiteJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
             //CHECKSTYLE:OFF
         } catch (final Exception ex) {
             //CHECKSTYLE:ON

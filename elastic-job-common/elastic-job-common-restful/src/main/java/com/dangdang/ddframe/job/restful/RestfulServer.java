@@ -23,9 +23,14 @@ import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
@@ -41,8 +46,11 @@ public final class RestfulServer {
     
     private final Server server;
     
+    private final ServletContextHandler servletContextHandler;
+    
     public RestfulServer(final int port) {
         server = new Server(port);
+        servletContextHandler = buildServletContextHandler();
     }
     
     /**
@@ -56,24 +64,31 @@ public final class RestfulServer {
         log.info("Elastic Job: Start RESTful server");
         HandlerList handlers = new HandlerList();
         if (resourcePath.isPresent()) {
-            handlers.addHandler(buildResourceHandler(resourcePath.get()));
+            servletContextHandler.setBaseResource(Resource.newClassPathResource(resourcePath.get()));
+            servletContextHandler.addServlet(new ServletHolder(DefaultServlet.class), "/*");
         }
-        handlers.addHandler(buildServletContextHandler(packages));
+        servletContextHandler.addServlet(getServletHolder(packages), "/api/*");
+        handlers.addHandler(servletContextHandler);
         server.setHandler(handlers);
         server.start();
     }
     
-    private ServletContextHandler buildServletContextHandler(final String packages) {
-        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.setContextPath("/");
-        servletContextHandler.addServlet(getServletHolder(packages), "/*");
-        return servletContextHandler;
+    /**
+     * 添加Filter.
+     *
+     * @param filterClass filter实现类
+     * @param urlPattern 过滤的路径
+     * @return RESTful服务器
+     */
+    public RestfulServer addFilter(final Class<? extends Filter> filterClass, final String urlPattern) {
+        servletContextHandler.addFilter(filterClass, urlPattern, EnumSet.of(DispatcherType.REQUEST));
+        return this;
     }
     
-    private ResourceHandler buildResourceHandler(final String resourcePath) throws Exception {
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setBaseResource(Resource.newClassPathResource(resourcePath));
-        return resourceHandler;
+    private ServletContextHandler buildServletContextHandler() {
+        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        servletContextHandler.setContextPath("/");
+        return servletContextHandler;
     }
     
     private ServletHolder getServletHolder(final String packages) {

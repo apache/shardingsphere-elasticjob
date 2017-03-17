@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.restful;
 
 import com.dangdang.ddframe.job.restful.fixture.Caller;
+import com.dangdang.ddframe.job.restful.fixture.TestFilter;
 import com.dangdang.ddframe.job.restful.fixture.TestRestfulApi;
 import com.google.common.base.Optional;
 import org.eclipse.jetty.client.ContentExchange;
@@ -39,7 +40,7 @@ import javax.ws.rs.core.MediaType;
 @RunWith(MockitoJUnitRunner.class)
 public final class RestfulServerTest {
     
-    private static final String URL = "http://127.0.0.1:17000/test/call";
+    private static final String URL = "http://127.0.0.1:17000/api/test/call";
     
     private static RestfulServer server;
     
@@ -48,6 +49,7 @@ public final class RestfulServerTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         server = new RestfulServer(17000);
+        server.addFilter(TestFilter.class, "/*");
         server.start(TestRestfulApi.class.getPackage().getName(), Optional.<String>absent());
     }
     

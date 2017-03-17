@@ -10,7 +10,7 @@ $(function() {
 
 function renderDataSources() {
     $("#data-sources").bootstrapTable({
-        url: "data_source",
+        url: "api/data_source",
         method: "get",
         cache: false,
         columns: 
@@ -53,7 +53,7 @@ function bindConnectButtons() {
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         var currentConnectBtn = $(event.currentTarget);
         $.ajax({
-            url: "data_source/connect",
+            url: "api/data_source/connect",
             type: "POST",
             data: JSON.stringify({"name" : dataSourceName}),
             contentType: "application/json",
@@ -80,7 +80,7 @@ function bindDeleteButtons() {
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
         $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
             $.ajax({
-                url: "data_source/delete",
+                url: "api/data_source/delete",
                 type: "POST",
                 data: JSON.stringify({"name" : dataSourceName}),
                 contentType: "application/json",
@@ -141,7 +141,7 @@ function submitDataSource() {
             var username = $("#username").val();
             var password = $("#password").val();
             $.ajax({
-                url: "data_source",
+                url: "api/data_source",
                 type: "POST",
                 data: JSON.stringify({"name": name, "driver": driver, "url": url, "username": username, "password": password}),
                 contentType: "application/json",
