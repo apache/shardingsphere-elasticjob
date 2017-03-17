@@ -17,17 +17,19 @@
 
 package com.dangdang.ddframe.job.lite.console.restful;
 
-import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
-import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
+import java.util.Collection;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+
+import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
+import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 
 @Path("/server")
 public class ServerRestfulApi {
@@ -36,15 +38,16 @@ public class ServerRestfulApi {
     
     @GET
     @Path("/servers")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         return jobAPIService.getServerStatisticsAPI().getAllServersBriefInfo();
     }
     
     @GET
-    @Path("/jobs")
+    @Path("/jobs/{ip}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Collection<ServerInfo> getJobs(final @QueryParam("ip") String ip) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<ServerInfo> getJobs(@PathParam("ip") final String ip) {
         return jobAPIService.getServerStatisticsAPI().getJobs(ip);
     }
 }

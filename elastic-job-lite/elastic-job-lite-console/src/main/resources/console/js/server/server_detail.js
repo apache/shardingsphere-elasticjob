@@ -1,5 +1,5 @@
 $(function() {
-    $("#server-ip").text(GetQueryParam("serverIp"));
+    $("#server-ip").text(getCurrentUrl("serverIp"));
     renderJobs();
     bindTriggerButtons();
     bindPauseButtons();
@@ -13,9 +13,9 @@ $(function() {
 
 function renderJobs() {
     var ip = $("#server-ip").text();
-    $('#jobs').bootstrapTable({
-        url: 'server/jobs?ip=' + ip,
-        method: 'get',
+    $("#jobs").bootstrapTable({
+        url: "/server/jobs/" + ip,
+        method: "get",
         cache: false,
         rowStyle: function (row, index) {
             var strclass = "";
@@ -32,25 +32,25 @@ function renderJobs() {
             }
             return { classes: strclass }
         },
-        columns: [
-        {
-            field: 'jobName',
-            title: '作业名'
+        columns: 
+        [{
+            field: "jobName",
+            title: "作业名"
         }, {
-            field: 'status',
-            title: '状态'
+            field: "status",
+            title: "状态"
         }, {
-            field: 'sharding',
-            title: '分片项'
+            field: "sharding",
+            title: "分片项"
         },{
-            field: 'operation',
-            title: '操作',
-            formatter: 'operFormatter'
+            field: "operation",
+            title: "操作",
+            formatter: "generateOperationButtons"
         }]
     });
 }
 
-function operFormatter(val, row){
+function generateOperationButtons(val, row){
     var operationTd = "";
     var triggerButton = "<button operation='trigger' class='btn btn-success' job-name='" + row.jobName + "'>触发</button>";
     var resumeButton = "<button operation='resume' class='btn btn-success' job-name='" + row.jobName + "'>恢复</button>";
@@ -74,9 +74,16 @@ function operFormatter(val, row){
 
 function bindTriggerButtons() {
     $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
-        $.post("job/trigger", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
-            $('#jobs').bootstrapTable('refresh');
-            showSuccessDialog();
+        $.ajax({
+            url: "/job/trigger",
+            type: "POST",
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(){
+                $("#jobs").bootstrapTable("refresh");
+                showSuccessDialog();
+            }
         });
     });
     $(document).on("click", "button[operation='trigger'][data-toggle='modal']", function(event) {
@@ -86,9 +93,16 @@ function bindTriggerButtons() {
 
 function bindPauseButtons() {
     $(document).on("click", "button[operation='pause'][data-toggle!='modal']", function(event) {
-        $.post("job/pause", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
-            $('#jobs').bootstrapTable('refresh');
-            showSuccessDialog();
+        $.ajax({
+            url: "/job/pause",
+            type: "POST",
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(){
+                $("#jobs").bootstrapTable("refresh");
+                showSuccessDialog();
+            }
         });
     });
     $(document).on("click", "button[operation='pause'][data-toggle='modal']", function(event) {
@@ -98,45 +112,80 @@ function bindPauseButtons() {
 
 function bindResumeButtons() {
     $(document).on("click", "button[operation='resume']", function(event) {
-        $.post("job/resume", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function () {
-            $('#jobs').bootstrapTable('refresh');
-            showSuccessDialog();
+        $.ajax({
+            url: "/job/resume",
+            type: "POST",
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(){
+                $("#jobs").bootstrapTable("refresh");
+                showSuccessDialog();
+            }
         });
     });
 }
 
 function bindTriggerAllButton() {
     $(document).on("click", "#trigger-all-jobs-btn", function() {
-        $.post("job/triggerAll/ip", {ip : $("#server-ip").text()}, function () {
-            $('#jobs').bootstrapTable('refresh');
-            showSuccessDialog();
+        $.ajax({
+            url: "/job/triggerAll/ip",
+            type: "POST",
+            data: JSON.stringify({ip : $("#server-ip").text()}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(){
+                $("#jobs").bootstrapTable("refresh");
+                showSuccessDialog();
+            }
         });
     });
 }
 
 function bindPauseAllButton() {
     $(document).on("click", "#pause-all-jobs-btn", function() {
-        $.post("job/pauseAll/ip", {ip : $("#server-ip").text()}, function () {
-            $('#jobs').bootstrapTable('refresh');
-            showSuccessDialog();
+        $.ajax({
+            url: "/job/pauseAll/ip",
+            type: "POST",
+            data: JSON.stringify({ip : $("#server-ip").text()}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(){
+                $("#jobs").bootstrapTable("refresh");
+                showSuccessDialog();
+            }
         });
     });
 }
 
 function bindResumeAllButton() {
     $(document).on("click", "#resume-all-jobs-btn", function() {
-        $.post("job/resumeAll/ip", {ip : $("#server-ip").text()}, function () {
-            $('#jobs').bootstrapTable('refresh');
-            showSuccessDialog();
+        $.ajax({
+            url: "/job/resumeAll/ip",
+            type: "POST",
+            data: JSON.stringify({ip : $("#server-ip").text()}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(){
+                $("#jobs").bootstrapTable("refresh");
+                showSuccessDialog();
+            }
         });
     });
 }
 
 function bindShutdownButtons() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
-        $.post("job/shutdown", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
-            $('#jobs').bootstrapTable('refresh');
-            showSuccessDialog();
+        $.ajax({
+            url: "/job/shutdown",
+            type: "POST",
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(){
+                $("#jobs").bootstrapTable("refresh");
+                showSuccessDialog();
+            }
         });
     });
     $(document).on("click", "button[operation='shutdown']", function(event) {
@@ -146,13 +195,20 @@ function bindShutdownButtons() {
 
 function bindRemoveButtons() {
     $(document).on("click", "button[operation='remove']", function(event) {
-        $.post("job/remove", {jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}, function (data) {
-            if (data.length > 0) {
-                showFailureDialog("remove-job-failure-dialog");
-            } else {
-                showSuccessDialog();
+        $.ajax({
+            url: "/job/remove",
+            type: "POST",
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(data){
+                if (data.length > 0) {
+                    showFailureDialog("remove-job-failure-dialog");
+                } else {
+                    showSuccessDialog();
+                }
+                $("#jobs").bootstrapTable("refresh");
             }
-            $('#jobs').bootstrapTable('refresh');
         });
     });
     $(document).on("click", "button[operation='remove']", function(event) {

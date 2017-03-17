@@ -17,13 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.console.restful;
 
-import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
-import com.dangdang.ddframe.job.lite.console.service.RegistryCenterService;
-import com.dangdang.ddframe.job.lite.console.service.impl.RegistryCenterServiceImpl;
-import com.dangdang.ddframe.job.lite.console.util.SessionRegistryCenterConfiguration;
-import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactory;
-import com.dangdang.ddframe.job.reg.exception.RegException;
-import com.google.common.base.Optional;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,14 +28,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+
+import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
+import com.dangdang.ddframe.job.lite.console.service.impl.RegistryCenterServiceImpl;
+import com.dangdang.ddframe.job.lite.console.util.SessionRegistryCenterConfiguration;
+import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactory;
+import com.dangdang.ddframe.job.reg.exception.RegException;
+import com.google.common.base.Optional;
 
 @Path("/registry_center")
 public class RegistryCenterRestfulApi {
     
     public static final String REG_CENTER_CONFIG_KEY = "reg_center_config_key";
     
-    private RegistryCenterService regCenterService = new RegistryCenterServiceImpl();
+    private RegistryCenterServiceImpl regCenterService = new RegistryCenterServiceImpl();
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -50,7 +50,7 @@ public class RegistryCenterRestfulApi {
         if (regCenterConfig.isPresent()) {
             setRegistryCenterNameToSession(regCenterConfig.get(), request.getSession());
         }
-        return regCenterService.loadAll();
+        return regCenterService.loadAll().getRegistryCenterConfiguration();
     }
     
     @POST
@@ -71,7 +71,11 @@ public class RegistryCenterRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Boolean connect(final RegistryCenterConfiguration config, final @Context HttpServletRequest request) {
-        return setRegistryCenterNameToSession(regCenterService.load(config.getName()), request.getSession());
+        boolean isConnected = setRegistryCenterNameToSession(regCenterService.findRegistryCenterConfiguration(config.getName(), regCenterService.loadAll()), request.getSession());
+        if (isConnected) {
+            regCenterService.load(config.getName());
+        }
+        return isConnected;
     }
     
     private boolean setRegistryCenterNameToSession(final RegistryCenterConfiguration regCenterConfig, final HttpSession session) {

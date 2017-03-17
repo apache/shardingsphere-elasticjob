@@ -1,0 +1,51 @@
+<div class="index-content">
+    <section class="content-header">
+        <h1>事件追踪数据源</h1>
+    </section>
+    <section class="content">
+        <table id="data-sources" data-pagination="true" data-page-list="[10, 20, 50, 100]"></table>
+        <button type="button" class="btn btn-success" data-toggle="modal" id="add-data-source">添加</button>
+    </section>
+</div>
+<div id="add-data-source-center" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="close-add-data-source-form" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加事件追踪数据源</h4>
+            </div>
+            <form id="data-source-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name" class="control-label">数据源名称：</label>
+                        <input type="text" class="form-control" id="name" name="name" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver" class="control-label">数据源驱动：</label>
+                        <input type="text" class="form-control" id="driver" name="driver" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="url" class="control-label">数据源连接地址：</label>
+                        <input type="text" class="form-control" id="url" name="url">
+                    </div>
+                    <div class="form-group">
+                        <label for="username" class="control-label">数据源连接用户名：</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="control-label">数据源连接连接口令：</label>
+                        <input type="text" class="form-control" id="password" name="password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="add-data-source-btn" type="submit" class="btn btn-primary">确认</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator.js"></script>
+<script src="lib/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
+<script src="js/event/data_source.js"></script>

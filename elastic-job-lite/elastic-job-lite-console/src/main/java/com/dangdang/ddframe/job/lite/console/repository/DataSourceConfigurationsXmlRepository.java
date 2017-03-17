@@ -15,21 +15,9 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.service;
+package com.dangdang.ddframe.job.lite.console.repository;
 
-import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
-import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
-import com.google.common.base.Optional;
+import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfigurations;
 
-public interface RegistryCenterService {
-    
-    RegistryCenterConfigurations loadAll();
-    
-    RegistryCenterConfiguration load(String name);
-    
-    Optional<RegistryCenterConfiguration> loadActivated();
-    
-    boolean add(RegistryCenterConfiguration config);
-    
-    void delete(String name);
+public interface DataSourceConfigurationsXmlRepository extends XmlRepository<DataSourceConfigurations> {
 }
