@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.StreamingDataflo
 import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -46,6 +47,7 @@ public final class StreamingDataflowElasticJobForPausedTest extends AbstractBase
     }
     
     @Test
+    @Ignore
     public void assertClearPausedJobStatusWhenRestartingJob() {
         while (!StreamingDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();

@@ -17,15 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -36,50 +36,58 @@ public final class AverageAllocationJobShardingStrategyTest {
     
     @Test
     public void shardingForZeroServer() {
-        assertThat(jobShardingStrategy.sharding(Collections.<String>emptyList(), getJobShardingStrategyOption(3)), is(Collections.EMPTY_MAP));
+        assertThat(jobShardingStrategy.sharding(Collections.<JobShardingUnit>emptyList(), getJobShardingStrategyOption(3)),
+                is((Collection<JobShardingResult>) Collections.<JobShardingResult>emptyList()));
     }
     
     @Test
     public void shardingForOneServer() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(1);
-        expected.put("host0", Arrays.asList(0, 1, 2));
-        assertThat(jobShardingStrategy.sharding(Collections.singletonList("host0"), getJobShardingStrategyOption(3)), is(expected));
+        Collection<JobShardingResult> expected = Collections.singletonList(new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Arrays.asList(0, 1, 2)));
+        assertThat(jobShardingStrategy.sharding(Collections.singletonList(new JobShardingUnit("host0", "test_job_instance_id")), getJobShardingStrategyOption(3)), is(expected));
     }
     
     @Test
     public void shardingForServersMoreThanShardingCount() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Collections.singletonList(0));
-        expected.put("host1", Collections.singletonList(1));
-        expected.put("host2", Collections.<Integer>emptyList());
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(2)), is(expected));
+        Collection<JobShardingResult> expected = Arrays.asList(
+                new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Collections.singletonList(0)),
+                new JobShardingResult(new JobShardingUnit("host1", "test_job_instance_id"), Collections.singletonList(1)),
+                new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Collections.<Integer>emptyList()));
+        assertThat(jobShardingStrategy.sharding(Arrays.asList(
+                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")), 
+                getJobShardingStrategyOption(2)), is(expected));
     }
     
     @Test
     public void shardingForServersLessThanShardingCountAliquot() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Arrays.asList(0, 1, 2));
-        expected.put("host1", Arrays.asList(3, 4, 5));
-        expected.put("host2", Arrays.asList(6, 7, 8));
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(9)), is(expected));
+        Collection<JobShardingResult> expected = Arrays.asList(
+                new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Arrays.asList(0, 1, 2)),
+                new JobShardingResult(new JobShardingUnit("host1", "test_job_instance_id"), Arrays.asList(3, 4, 5)),
+                new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Arrays.asList(6, 7, 8)));
+        assertThat(jobShardingStrategy.sharding(Arrays.asList(
+                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")),
+                getJobShardingStrategyOption(9)), is(expected));
     }
     
     @Test
     public void shardingForServersLessThanShardingCountAliquantFor8ShardingCountAnd3Servers() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Arrays.asList(0, 1, 6));
-        expected.put("host1", Arrays.asList(2, 3, 7));
-        expected.put("host2", Arrays.asList(4, 5));
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(8)), is(expected));
+        Collection<JobShardingResult> expected = Arrays.asList(
+                new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Arrays.asList(0, 1, 6)),
+                new JobShardingResult(new JobShardingUnit("host1", "test_job_instance_id"), Arrays.asList(2, 3, 7)),
+                new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Arrays.asList(4, 5)));
+        assertThat(jobShardingStrategy.sharding(Arrays.asList(
+                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")), 
+                getJobShardingStrategyOption(8)), is(expected));
     }
     
     @Test
     public void shardingForServersLessThanShardingCountAliquantFor10ShardingCountAnd3Servers() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Arrays.asList(0, 1, 2, 9));
-        expected.put("host1", Arrays.asList(3, 4, 5));
-        expected.put("host2", Arrays.asList(6, 7, 8));
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(10)), is(expected));
+        Collection<JobShardingResult> expected = Arrays.asList(
+                new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Arrays.asList(0, 1, 2, 9)),
+                new JobShardingResult(new JobShardingUnit("host1", "test_job_instance_id"), Arrays.asList(3, 4, 5)),
+                new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Arrays.asList(6, 7, 8)));
+        assertThat(jobShardingStrategy.sharding(Arrays.asList(
+                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")),
+        getJobShardingStrategyOption(10)), is(expected));
     }
     
     private JobShardingStrategyOption getJobShardingStrategyOption(final int shardingTotalCount) {

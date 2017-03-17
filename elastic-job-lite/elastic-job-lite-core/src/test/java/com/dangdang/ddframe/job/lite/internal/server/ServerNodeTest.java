@@ -17,7 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -31,6 +33,11 @@ public final class ServerNodeTest {
     
     private ServerNode serverNode = new ServerNode("test_job");
     
+    @BeforeClass
+    public static void setUp() {
+        JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
+    }
+    
     @Test
     public void assertGetHostNameNode() {
         assertThat(ServerNode.getHostNameNode("host0"), is("servers/host0/hostName"));
@@ -38,47 +45,47 @@ public final class ServerNodeTest {
     
     @Test
     public void assertGetStatusNode() {
-        assertThat(ServerNode.getStatusNode("host0"), is("servers/host0/status"));
+        assertThat(serverNode.getStatusNode("host0"), is("servers/host0/test_job_instance_id/status"));
     }
     
     @Test
     public void assertGetTriggerNode() {
-        assertThat(ServerNode.getTriggerNode("host0"), is("servers/host0/trigger"));
+        assertThat(serverNode.getTriggerNode("host0"), is("servers/host0/test_job_instance_id/trigger"));
     }
     
     @Test
     public void assertGetDisabledNode() {
-        assertThat(ServerNode.getDisabledNode("host0"), is("servers/host0/disabled"));
+        assertThat(serverNode.getDisabledNode("host0"), is("servers/host0/test_job_instance_id/disabled"));
     }
     
     @Test
     public void assertPausedNode() {
-        assertThat(ServerNode.getPausedNode("host0"), is("servers/host0/paused"));
+        assertThat(serverNode.getPausedNode("host0"), is("servers/host0/test_job_instance_id/paused"));
     }
     
     @Test
     public void assertShutdownNode() {
-        assertThat(ServerNode.getShutdownNode("host0"), is("servers/host0/shutdown"));
+        assertThat(serverNode.getShutdownNode("host0"), is("servers/host0/test_job_instance_id/shutdown"));
     }
     
     @Test
     public void assertIsLocalJobTriggerPath() {
-        assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/" + localHostService.getIp() + "/trigger"));
+        assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/trigger"));
     }
     
     @Test
     public void assertIsLocalJobPausedPath() {
-        assertTrue(serverNode.isLocalJobPausedPath("/test_job/servers/" + localHostService.getIp() + "/paused"));
+        assertTrue(serverNode.isLocalJobPausedPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/paused"));
     }
     
     @Test
     public void assertIsLocalJobShutdownPath() {
-        assertTrue(serverNode.isLocalJobShutdownPath("/test_job/servers/" + localHostService.getIp() + "/shutdown"));
+        assertTrue(serverNode.isLocalJobShutdownPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/shutdown"));
     }
     
     @Test
     public void assertIsLocalServerDisabledPath() {
-        assertTrue(serverNode.isLocalServerDisabledPath("/test_job/servers/" + localHostService.getIp() + "/disabled"));
+        assertTrue(serverNode.isLocalServerDisabledPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/disabled"));
     }
     
     @Test

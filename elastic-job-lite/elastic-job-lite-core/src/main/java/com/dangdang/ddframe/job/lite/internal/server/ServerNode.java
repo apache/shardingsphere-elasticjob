@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 
@@ -36,27 +37,30 @@ public class ServerNode {
     
     static final String STATUS_APPENDIX = "status";
     
-    static final String STATUS = ROOT + "/%s/" + STATUS_APPENDIX;
+    static final String STATUS = ROOT + "/%s/%s/" + STATUS_APPENDIX;
     
     static final String TRIGGER_APPENDIX = "trigger";
     
-    static final String TRIGGER = ROOT + "/%s/" + TRIGGER_APPENDIX;
+    static final String TRIGGER = ROOT + "/%s/%s/" + TRIGGER_APPENDIX;
     
     static final String DISABLED_APPENDIX = "disabled";
     
-    static final String DISABLED = ROOT + "/%s/" + DISABLED_APPENDIX;
+    static final String DISABLED = ROOT + "/%s/%s/" + DISABLED_APPENDIX;
     
-    static final String PAUSED = ROOT + "/%s/paused";
+    static final String PAUSED = ROOT + "/%s/%s/paused";
     
     static final String SHUTDOWN_APPENDIX = "shutdown";
     
-    static final String SHUTDOWN = ROOT + "/%s/" + SHUTDOWN_APPENDIX;
+    static final String SHUTDOWN = ROOT + "/%s/%s/" + SHUTDOWN_APPENDIX;
     
     private final LocalHostService localHostService = new LocalHostService();
+    
+    private final String jobName;
     
     private final JobNodePath jobNodePath;
     
     public ServerNode(final String jobName) {
+        this.jobName = jobName;
         jobNodePath = new JobNodePath(jobName);
     }
     
@@ -64,24 +68,44 @@ public class ServerNode {
         return String.format(HOST_NAME, ip);
     }
     
-    static String getStatusNode(final String ip) {
-        return String.format(STATUS, ip);
+    String getStatusNode(final String ip) {
+        return String.format(STATUS, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    static String getTriggerNode(final String ip) {
-        return String.format(TRIGGER, ip);
+    static String getStatusNode(final String ip, final String instanceId) {
+        return String.format(STATUS, ip, instanceId);
     }
     
-    static String getDisabledNode(final String ip) {
-        return String.format(DISABLED, ip);
+    String getTriggerNode(final String ip) {
+        return String.format(TRIGGER, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    static String getPausedNode(final String ip) {
-        return String.format(PAUSED, ip);
+    static String getTriggerNode(final String ip, final String instanceId) {
+        return String.format(TRIGGER, ip, instanceId);
     }
     
-    static String getShutdownNode(final String ip) {
-        return String.format(SHUTDOWN, ip);
+    String getPausedNode(final String ip) {
+        return String.format(PAUSED, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
+    }
+    
+    static String getPausedNode(final String ip, final String instanceId) {
+        return String.format(PAUSED, ip, instanceId);
+    }
+    
+    String getDisabledNode(final String ip) {
+        return String.format(DISABLED, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
+    }
+    
+    static String getDisabledNode(final String ip, final String instanceId) {
+        return String.format(DISABLED, ip, instanceId);
+    }
+        
+    String getShutdownNode(final String ip) {
+        return String.format(SHUTDOWN, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
+    }
+    
+    static String getShutdownNode(final String ip, final String instanceId) {
+        return String.format(SHUTDOWN, ip, instanceId);
     }
     
     /**
@@ -91,7 +115,7 @@ public class ServerNode {
      * @return 是否为作业服务器立刻触发路径
      */
     public boolean isLocalJobTriggerPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.TRIGGER, localHostService.getIp())));
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.TRIGGER, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
     }
     
     /**
@@ -101,7 +125,7 @@ public class ServerNode {
      * @return 是否为作业服务器暂停路径
      */
     public boolean isLocalJobPausedPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.PAUSED, localHostService.getIp())));
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.PAUSED, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
     }
     
     /**
@@ -111,7 +135,7 @@ public class ServerNode {
      * @return 是否为作业服务器关闭路径
      */
     public boolean isLocalJobShutdownPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.SHUTDOWN, localHostService.getIp())));
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.SHUTDOWN, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
     }
     
     /**
@@ -121,7 +145,7 @@ public class ServerNode {
      * @return 是否为作业服务器禁用路径
      */
     public boolean isLocalServerDisabledPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.DISABLED, localHostService.getIp())));
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.DISABLED, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
     }
     
     /**

@@ -1,5 +1,3 @@
-
-
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "Release Notes"
@@ -12,7 +10,7 @@ weight=1
 
 ### 新功能
 
-1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) elastic-job-lite：主节点增加reconcile线程任务，修复分片不一致等分布式相关一致性问题。
+1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) elastic-job-lite：主节点增加reconcile线程任务，修复分片不一致等分布式相关一致性问题
 
 ### 功能提升
 

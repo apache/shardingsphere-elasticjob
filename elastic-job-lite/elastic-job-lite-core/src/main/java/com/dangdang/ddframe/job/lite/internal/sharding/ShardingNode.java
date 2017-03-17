@@ -18,17 +18,16 @@
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Elastic Job分片节点名称的常量类.
  * 
  * @author zhangliang
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 final class ShardingNode {
     
     static final String LEADER_SHARDING_ROOT = ElectionNode.ROOT + "/sharding";
@@ -37,9 +36,15 @@ final class ShardingNode {
     
     static final String PROCESSING = LEADER_SHARDING_ROOT + "/processing";
     
-    private static final String SERVER_SHARDING = ServerNode.ROOT + "/%s/sharding";
+    private static final String SERVER_SHARDING = ServerNode.ROOT + "/%s/%s/sharding";
     
-    static String getShardingNode(final String ip) {
-        return String.format(SERVER_SHARDING, ip);
+    private final String jobName;
+    
+    static String getShardingNode(final String ip, final String instanceId) {
+        return String.format(SERVER_SHARDING, ip, instanceId);
+    }
+    
+    String getShardingNode(final String ip) {
+        return String.format(SERVER_SHARDING, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
 }

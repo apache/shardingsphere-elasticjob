@@ -175,16 +175,17 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
-            assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
+            assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/disabled"));
             while (null != regCenter.get("/" + jobName + "/leader/election/host")) {
                 BlockUtils.waitingShortTime();
             }
         } else {
-            assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
+            assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/disabled"));
             assertThat(regCenter.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));
         }
-        assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/paused"));
-        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), CoreMatchers.is(ServerStatus.READY.name()));
+        assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/paused"));
+        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/status"),
+                CoreMatchers.is(ServerStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");
     }
     

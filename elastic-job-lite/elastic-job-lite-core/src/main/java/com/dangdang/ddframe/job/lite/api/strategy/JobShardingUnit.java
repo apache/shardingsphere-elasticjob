@@ -15,19 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.sharding;
+package com.dangdang.ddframe.job.lite.api.strategy;
 
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import org.junit.Test;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-public class ShardingNodeTest {
+/**
+ * 作业分片单元.
+ * 
+ * @author zhangliang
+ */
+@RequiredArgsConstructor
+@Getter
+@EqualsAndHashCode
+public final class JobShardingUnit {
     
-    @Test
-    public void assertGetShardingNode() {
-        JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
-        assertThat(new ShardingNode("test_job").getShardingNode("host0"), is("servers/host0/test_job_instance_id/sharding"));
-    }
+    private final String serverIp;
+    
+    private final String jobInstanceId;
 }

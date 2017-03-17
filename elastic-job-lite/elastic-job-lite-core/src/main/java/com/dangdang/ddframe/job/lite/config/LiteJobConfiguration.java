@@ -36,6 +36,8 @@ public class LiteJobConfiguration implements JobRootConfiguration {
     
     private final JobTypeConfiguration typeConfig;
     
+    private final String instanceId;
+    
     private final boolean monitorExecution;
     
     private final int maxTimeDiffSeconds;
@@ -82,6 +84,8 @@ public class LiteJobConfiguration implements JobRootConfiguration {
     public static class Builder {
         
         private final JobTypeConfiguration jobConfig;
+    
+        private String instanceId = "defaultInstance";
         
         private boolean monitorExecution = true;
         
@@ -96,6 +100,21 @@ public class LiteJobConfiguration implements JobRootConfiguration {
         private boolean overwrite;
         
         private int reconcileIntervalMinutes = 10;
+    
+        /**
+         * 设置作业实例主键.
+         * 
+         * <p>
+         * 同IP可运行实例主键不同, 但名称相同的多个作业实例.
+         * </p>
+         * @param instanceId 作业实例主键
+         *
+         * @return 作业配置构建器
+         */
+        public Builder instanceId(final String instanceId) {
+            this.instanceId = instanceId;
+            return this;
+        }
         
         /**
          * 设置监控作业执行时状态.
@@ -215,7 +234,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
          * @return 作业配置对象
          */
         public final LiteJobConfiguration build() {
-            return new LiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, disabled, overwrite, reconcileIntervalMinutes);
+            return new LiteJobConfiguration(jobConfig, instanceId, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, disabled, overwrite, reconcileIntervalMinutes);
         }
     }
 }

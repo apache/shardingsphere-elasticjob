@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 根据作业名的哈希值对服务器列表进行轮转的分片策略.
@@ -34,20 +36,20 @@ public class RotateServerByNameJobShardingStrategy implements JobShardingStrateg
     private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
-    public Map<String, List<Integer>> sharding(final List<String> serversList, final JobShardingStrategyOption option) {
-        return averageAllocationJobShardingStrategy.sharding(rotateServerList(serversList, option.getJobName()), option);
+    public Collection<JobShardingResult> sharding(final List<JobShardingUnit> shardingUnits, final JobShardingStrategyOption option) {
+        return averageAllocationJobShardingStrategy.sharding(rotateServerList(shardingUnits, option.getJobName()), option);
     }
     
-    private List<String> rotateServerList(final List<String> serversList, final String jobName) {
-        int serverSize = serversList.size();
-        int offset = Math.abs(jobName.hashCode()) % serverSize;
+    private List<JobShardingUnit> rotateServerList(final List<JobShardingUnit> shardingUnits, final String jobName) {
+        int shardingUnitsSize = shardingUnits.size();
+        int offset = Math.abs(jobName.hashCode()) % shardingUnitsSize;
         if (0 == offset) {
-            return serversList;
+            return shardingUnits;
         }
-        List<String> result = new ArrayList<>(serverSize);
-        for (int i = 0; i < serverSize; i++) {
-            int index = (i + offset) % serverSize;
-            result.add(serversList.get(index));
+        List<JobShardingUnit> result = new ArrayList<>(shardingUnitsSize);
+        for (int i = 0; i < shardingUnitsSize; i++) {
+            int index = (i + offset) % shardingUnitsSize;
+            result.add(shardingUnits.get(index));
         }
         return result;
     }

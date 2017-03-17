@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -35,18 +37,21 @@ public class ServerService {
     
     private final JobNodeStorage jobNodeStorage;
     
+    private final ServerNode serverNode;
+    
     private final LocalHostService localHostService = new LocalHostService();
     
     public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        serverNode = new ServerNode(jobName);
     }
     
     /**
      * 每次作业启动前清理上次运行状态.
      */
     public void clearPreviousServerStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStatusNode(localHostService.getIp()));
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getShutdownNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getShutdownNode(localHostService.getIp()));
     }
     
     /**
@@ -57,26 +62,26 @@ public class ServerService {
     public void persistServerOnline(final boolean enabled) {
         jobNodeStorage.fillJobNode(ServerNode.getHostNameNode(localHostService.getIp()), localHostService.getHostName());
         if (enabled) {
-            jobNodeStorage.removeJobNodeIfExisted(ServerNode.getDisabledNode(localHostService.getIp()));
+            jobNodeStorage.removeJobNodeIfExisted(serverNode.getDisabledNode(localHostService.getIp()));
         } else {
-            jobNodeStorage.fillJobNode(ServerNode.getDisabledNode(localHostService.getIp()), "");
+            jobNodeStorage.fillJobNode(serverNode.getDisabledNode(localHostService.getIp()), "");
         }
-        jobNodeStorage.fillEphemeralJobNode(ServerNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getShutdownNode(localHostService.getIp()));
+        jobNodeStorage.fillEphemeralJobNode(serverNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getShutdownNode(localHostService.getIp()));
     }
     
     /**
      * 清除立刻执行作业的标记.
      */
     public void clearJobTriggerStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getTriggerNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getTriggerNode(localHostService.getIp()));
     }
     
     /**
      * 清除暂停作业的标记.
      */
     public void clearJobPausedStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getPausedNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getPausedNode(localHostService.getIp()));
     }
     
     /**
@@ -85,14 +90,14 @@ public class ServerService {
      * @return 是否是手工暂停的作业
      */
     public boolean isJobPausedManually() {
-        return jobNodeStorage.isJobNodeExisted(ServerNode.getPausedNode(localHostService.getIp()));
+        return jobNodeStorage.isJobNodeExisted(serverNode.getPausedNode(localHostService.getIp()));
     }
     
     /**
      * 处理服务器关机的相关信息.
      */
     public void processServerShutdown() {
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStatusNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode(localHostService.getIp()));
     }
     
     /**
@@ -101,14 +106,14 @@ public class ServerService {
      * @param status 服务器状态
      */
     public void updateServerStatus(final ServerStatus status) {
-        jobNodeStorage.updateJobNode(ServerNode.getStatusNode(localHostService.getIp()), status);
+        jobNodeStorage.updateJobNode(serverNode.getStatusNode(localHostService.getIp()), status);
     }
     
     /**
      * 删除服务器状态.
      */
     public void removeServerStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(ServerNode.getStatusNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode(localHostService.getIp()));
     }
     
     /**
@@ -123,24 +128,32 @@ public class ServerService {
     }
     
     /**
-     * 获取可分片的作业服务器列表.
+     * 获取可分片的单元列表.
      *
-     * @return 可分片的作业服务器列表
+     * @return 可分片的单元列表
      */
-    public List<String> getAvailableShardingServers() {
+    public List<JobShardingUnit> getAvailableShardingUnits() {
         List<String> servers = getAllServers();
-        List<String> result = new ArrayList<>(servers.size());
+        List<JobShardingUnit> result = new LinkedList<>();
         for (String each : servers) {
-            if (isAvailableShardingServer(each)) {
-                result.add(each);
+            List<String> instances = getAvailableInstances(each);
+            for (String instanceId : instances) {
+                result.add(new JobShardingUnit(each, instanceId));
             }
         }
         return result;
     }
     
-    private boolean isAvailableShardingServer(final String ip) {
-        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) 
-                && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip));
+    private List<String> getAvailableInstances(final String ip) {
+        List<String> result = new LinkedList<>();
+        List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip);
+        for (String each : instances) {
+            if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each))
+                    && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip, each))) {
+                result.add(each);
+            }
+        }
+        return result;
     }
     
     /**
@@ -166,8 +179,14 @@ public class ServerService {
      * @return 作业服务器是否可用
      */
     public boolean isAvailableServer(final String ip) {
-        return jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getPausedNode(ip))
-                && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip));
+        List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip);
+        for (String each : instances) {
+            if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getPausedNode(ip, each))
+                    && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip, each))) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -177,7 +196,7 @@ public class ServerService {
      */
     public boolean isLocalhostServerReady() {
         String ip = localHostService.getIp();
-        return isAvailableServer(ip) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(ServerNode.getStatusNode(ip)));
+        return isAvailableServer(ip) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(serverNode.getStatusNode(ip)));
     }
     
     /**
@@ -186,7 +205,7 @@ public class ServerService {
      * @return 当前服务器是否是启用状态
      */
     public boolean isLocalhostServerEnabled() {
-        return !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(localHostService.getIp()));
+        return !jobNodeStorage.isJobNodeExisted(serverNode.getDisabledNode(localHostService.getIp()));
     }
     
     /**
@@ -196,6 +215,6 @@ public class ServerService {
      * @return 作业服务器是否存在status节点
      */
     public boolean hasStatusNode(final String ip) {
-    	return this.jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip));
+        return jobNodeStorage.isJobNodeExisted(serverNode.getStatusNode(ip));
     }
 }

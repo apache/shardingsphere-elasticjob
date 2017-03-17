@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 作业分片策略.
@@ -30,9 +30,9 @@ public interface JobShardingStrategy {
     /**
      * 进行作业分片.
      * 
-     * @param serversList 所有参与分片的服务器列表
+     * @param shardingUnits 所有参与分片的单元列表
      * @param option 作业分片策略选项
-     * @return 分配分片的服务器IP和分片集合的映射
+     * @return 分片结果集合
      */
-    Map<String, List<Integer>> sharding(List<String> serversList, JobShardingStrategyOption option);
+    Collection<JobShardingResult> sharding(List<JobShardingUnit> shardingUnits, JobShardingStrategyOption option);
 }
