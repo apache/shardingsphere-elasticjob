@@ -30,8 +30,9 @@ public class Bootstrap {
     /**
      * 启动Restful服务.
      */
+    //CHECKSTYLE:OFF
     public static void main(final String[] args) {
-        
+    //CHECKSTYLE:ON
         try {
             RestfulServer restfulServer = new RestfulServer(PORT);
             restfulServer.start(LiteJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
@@ -39,6 +40,6 @@ public class Bootstrap {
         } catch (final Exception ex) {
             //CHECKSTYLE:ON
             throw new RuntimeException(ex.getCause());
-        }    
+        }
     }
 }

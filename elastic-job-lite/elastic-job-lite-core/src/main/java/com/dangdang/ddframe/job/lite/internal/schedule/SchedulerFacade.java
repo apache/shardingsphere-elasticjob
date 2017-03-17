@@ -86,7 +86,9 @@ public class SchedulerFacade {
         shardingService.setReshardingFlag();
         monitorService.listen();
         listenerManager.setCurrentShardingTotalCount(configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount());
-        reconcileService.startAsync();
+        if (!reconcileService.isRunning()) {
+            reconcileService.startAsync();
+        }
     }
     
     /**
