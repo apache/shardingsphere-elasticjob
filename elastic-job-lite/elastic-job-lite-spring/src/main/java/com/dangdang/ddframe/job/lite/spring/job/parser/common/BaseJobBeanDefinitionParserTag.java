@@ -36,6 +36,8 @@ public final class BaseJobBeanDefinitionParserTag {
     
     public static final String SHARDING_TOTAL_COUNT_ATTRIBUTE = "sharding-total-count";
     
+    public static final String INSTANCE_ID = "instance-id";
+    
     public static final String SHARDING_ITEM_PARAMETERS_ATTRIBUTE = "sharding-item-parameters";
     
     public static final String JOB_PARAMETER_ATTRIBUTE = "job-parameter";
