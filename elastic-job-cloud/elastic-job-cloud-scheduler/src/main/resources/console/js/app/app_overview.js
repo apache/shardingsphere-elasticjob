@@ -6,7 +6,7 @@ function viewOperApp(val, row){
     
 function detailApp(appName){
     $.ajax({
-        url:"/app/"+appName,
+        url:"/api/app/"+appName,
         async: false,
         contentType: "application/json",
         success:function(result){
@@ -26,7 +26,7 @@ $('#add_app').click(function(){
     
 function getAppResult(appName) {
     $.ajax({
-        url:"/app/"+appName,
+        url:"/api/app/"+appName,
         async: false,
         success:function(result){
             if(null !=result ){

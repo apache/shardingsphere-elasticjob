@@ -8,7 +8,7 @@ function bindSubmitAppSettingsForm() {
         type:'post',
         dataType:'json',
         data:JSON.stringify(dataAppInfo()),
-        url:'/app',
+        url:'/api/app',
         contentType: "application/json",
         success: function(data) {
             window.location="index.html?appName=appName"

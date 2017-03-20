@@ -9,7 +9,7 @@ $(function() {
 });
 
 function renderRegCenterForDashboardNav() {
-    $.get("registry_center", {}, function(data) {
+    $.get("api/registry_center", {}, function(data) {
         var index;
         for (index = 0; index < data.length; index++) {
             if (data[index].activated) {
@@ -32,7 +32,7 @@ function renderRegCenterForDashboardNav() {
 }
 
 function renderDataSourceForDashboardNav() {
-    $.get("data_source", {}, function(data) {
+    $.get("api/data_source", {}, function(data) {
         var index;
         for (index = 0; index < data.length; index++) {
             if (data[index].activated) {
@@ -60,7 +60,7 @@ function switchRegCenter() {
         var link = $(this).button("loading");
         var regName = $(event.currentTarget).attr("reg-name");
         $.ajax({
-            url: "registry_center/connect",
+            url: "api/registry_center/connect",
             type: "POST",
             data: JSON.stringify({"name" : regName}),
             contentType: "application/json",
@@ -87,7 +87,7 @@ function switchDataSource() {
         var link = $(this).button("loading");
         var dataSourceName = $(event.currentTarget).attr("data-source-name");
         $.ajax({
-            url: "data_source/connect",
+            url: "api/data_source/connect",
             type: "POST",
             data: JSON.stringify({"name" : dataSourceName}),
             contentType: "application/json",
@@ -110,7 +110,7 @@ function renderJobsForDashboardNav() {
     if ("未连接" === $("#activated-reg-center").text()) {
         return;
     }
-    $.get("job/jobs", {}, function (data) {
+    $.get("api/job/jobs", {}, function (data) {
         var currentJob = $("#job-name").text();
         var $jobsDimension = $("#jobs-dimension");
         $jobsDimension.empty();
@@ -129,7 +129,7 @@ function renderJServersForDashboardNav() {
     if ("未连接" === $("#activated-reg-center").text()) {
         return;
     }
-    $.get("server/servers", {}, function (data) {
+    $.get("api/server/servers", {}, function (data) {
         var currentIp = $("#server-ip").text();
         var $serversDimension = $("#servers-dimension");
         $serversDimension.empty();

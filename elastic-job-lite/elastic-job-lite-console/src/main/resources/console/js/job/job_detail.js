@@ -27,7 +27,7 @@ $(function() {
 function renderSettings() {
     var jobName = $("#job-name").text();
     $.ajax({
-        url: "/job/settings/" + jobName,
+        url: "/api/job/settings/" + jobName,
         async: false,
         success: function(data) {
             $("#job-type").attr("value", data.jobType);
@@ -92,7 +92,7 @@ function bindSubmitJobSettingsForm() {
             var reconcileCycleTime = $("#reconcile-cycle-time").val();
             var postJson = {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, description: description, scriptCommandLine: scriptCommandLine, reconcileCycleTime:reconcileCycleTime};
             $.ajax({
-                url: "/job/settings",
+                url: "/api/job/settings",
                 type: "POST",
                 data: JSON.stringify(postJson),
                 contentType: "application/json",
@@ -113,7 +113,7 @@ function bindSubmitJobSettingsForm() {
 function renderServers() {
     var jobName = $("#job-name").text();
     $("#job-servers").bootstrapTable({
-        url: "/job/servers/" + jobName,
+        url: "/api/job/servers/" + jobName,
         method: "get",
         cache: false,
         rowStyle: function (row, index) {
@@ -184,7 +184,7 @@ function bindTriggerButtons() {
     $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/trigger",
+            url: "/api/job/trigger",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip")}),
             contentType: "application/json",
@@ -201,7 +201,7 @@ function bindTriggerAllButton() {
     $(document).on("click", "#trigger-all-jobs-btn", function() {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/triggerAll/name",
+            url: "/api/job/triggerAll/name",
             type: "POST",
             data: JSON.stringify({jobName : jobName}),
             contentType: "application/json",
@@ -218,7 +218,7 @@ function bindPauseButtons() {
     $(document).on("click", "button[operation='pause'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/pause",
+            url: "/api/job/pause",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip")}),
             contentType: "application/json",
@@ -235,7 +235,7 @@ function bindPauseAllButton() {
     $(document).on("click", "#pause-all-jobs-btn", function() {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/pauseAll/name",
+            url: "/api/job/pauseAll/name",
             type: "POST",
             data: JSON.stringify({jobName : jobName}),
             contentType: "application/json",
@@ -252,7 +252,7 @@ function bindResumeButtons() {
     $(document).on("click", "button[operation='resume']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/resume",
+            url: "/api/job/resume",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip")}),
             contentType: "application/json",
@@ -269,7 +269,7 @@ function bindResumeAllButton() {
     $(document).on("click", "#resume-all-jobs-btn", function() {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/resumeAll/name",
+            url: "/api/job/resumeAll/name",
             type: "POST",
             data: JSON.stringify({jobName : jobName}),
             contentType: "application/json",
@@ -285,7 +285,7 @@ function bindResumeAllButton() {
 function renderExecution() {
     var jobName = $("#job-name").text();
     $("#execution").bootstrapTable({
-        url: "/job/execution/" + jobName,
+        url: "/api/job/execution/" + jobName,
         method: "get",
         cache: false,
         rowStyle: function (row, index) {
@@ -338,7 +338,7 @@ function bindShutdownButtons() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/shutdown",
+            url: "/api/job/shutdown",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip")}),
             contentType: "application/json",
@@ -355,7 +355,7 @@ function bindRemoveButtons() {
     $(document).on("click", "button[operation='remove']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/remove",
+            url: "/api/job/remove",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip")}),
             contentType: "application/json",
@@ -376,7 +376,7 @@ function bindDisableButtons() {
     $(document).on("click", "button[operation='disable']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/disable",
+            url: "/api/job/disable",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip")}),
             contentType: "application/json",
@@ -393,7 +393,7 @@ function bindEnableButtons() {
     $(document).on("click", "button[operation='enable']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/job/enable",
+            url: "/api/job/enable",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip")}),
             contentType: "application/json",
