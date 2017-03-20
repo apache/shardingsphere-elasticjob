@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public final class OdevitySortByNameJobShardingStrategyTest {
         expected.add(new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Collections.<Integer>emptyList()));
         assertThat(odevitySortByNameJobShardingStrategy.sharding(Arrays.asList(
                 new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")), 
-                new JobShardingStrategyOption("1", 2)), is(expected));
+                new JobShardingMetadata("1", 2)), is(expected));
     }
     
     @Test
@@ -53,6 +53,6 @@ public final class OdevitySortByNameJobShardingStrategyTest {
         expected.add(new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Collections.<Integer>emptyList()));
         assertThat(odevitySortByNameJobShardingStrategy.sharding(
                 Arrays.asList(new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")),
-                new JobShardingStrategyOption("0", 2)), is(expected));
+                new JobShardingMetadata("0", 2)), is(expected));
     }
 }

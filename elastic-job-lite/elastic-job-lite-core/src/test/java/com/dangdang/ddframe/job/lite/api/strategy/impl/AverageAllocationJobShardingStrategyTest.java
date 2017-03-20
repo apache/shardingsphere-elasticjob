@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 import org.junit.Test;
 
@@ -90,7 +90,7 @@ public final class AverageAllocationJobShardingStrategyTest {
         getJobShardingStrategyOption(10)), is(expected));
     }
     
-    private JobShardingStrategyOption getJobShardingStrategyOption(final int shardingTotalCount) {
-        return new JobShardingStrategyOption("test_job", shardingTotalCount);
+    private JobShardingMetadata getJobShardingStrategyOption(final int shardingTotalCount) {
+        return new JobShardingMetadata("test_job", shardingTotalCount);
     }
 }

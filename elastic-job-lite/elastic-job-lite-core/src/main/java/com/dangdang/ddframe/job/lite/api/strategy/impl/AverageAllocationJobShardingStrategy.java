@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 
 import java.util.ArrayList;
@@ -44,12 +44,12 @@ import java.util.List;
 public final class AverageAllocationJobShardingStrategy implements JobShardingStrategy {
     
     @Override
-    public Collection<JobShardingResult> sharding(final List<JobShardingUnit> shardingUnits, final JobShardingStrategyOption option) {
-        if (shardingUnits.isEmpty()) {
+    public Collection<JobShardingResult> sharding(final List<JobShardingUnit> jobShardingUnits, final JobShardingMetadata jobShardingMetadata) {
+        if (jobShardingUnits.isEmpty()) {
             return Collections.emptyList();
         }
-        Collection<JobShardingResult> result = shardingAliquot(shardingUnits, option.getShardingTotalCount());
-        addAliquant(shardingUnits, option.getShardingTotalCount(), result);
+        Collection<JobShardingResult> result = shardingAliquot(jobShardingUnits, jobShardingMetadata.getShardingTotalCount());
+        addAliquant(jobShardingUnits, jobShardingMetadata.getShardingTotalCount(), result);
         return result;
     }
     

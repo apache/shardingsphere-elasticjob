@@ -21,13 +21,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 作业分片策略选项.
+ * 作业分片元数据.
  * 
  * @author zhangliang
  */
 @Getter
 @RequiredArgsConstructor
-public final class JobShardingStrategyOption {
+public final class JobShardingMetadata {
     
     /**
      * 作业名称.

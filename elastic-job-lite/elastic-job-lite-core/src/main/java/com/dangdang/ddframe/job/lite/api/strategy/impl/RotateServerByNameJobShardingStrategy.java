@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ public class RotateServerByNameJobShardingStrategy implements JobShardingStrateg
     private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
-    public Collection<JobShardingResult> sharding(final List<JobShardingUnit> shardingUnits, final JobShardingStrategyOption option) {
-        return averageAllocationJobShardingStrategy.sharding(rotateServerList(shardingUnits, option.getJobName()), option);
+    public Collection<JobShardingResult> sharding(final List<JobShardingUnit> jobShardingUnits, final JobShardingMetadata jobShardingMetadata) {
+        return averageAllocationJobShardingStrategy.sharding(rotateServerList(jobShardingUnits, jobShardingMetadata.getJobName()), jobShardingMetadata);
     }
     
     private List<JobShardingUnit> rotateServerList(final List<JobShardingUnit> shardingUnits, final String jobName) {
