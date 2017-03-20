@@ -38,12 +38,6 @@ public final class ExecutionNode {
     
     static final String COMPLETED = ROOT + "/%s/completed";
     
-    static final String LAST_BEGIN_TIME = ROOT + "/%s/lastBeginTime";
-    
-    static final String NEXT_FIRE_TIME = ROOT + "/%s/nextFireTime";
-    
-    static final String LAST_COMPLETE_TIME = ROOT + "/%s/lastCompleteTime";
-    
     static final String MISFIRE = ROOT + "/%s/misfire";
     
     static final String LEADER_ROOT = ElectionNode.ROOT + "/" + ROOT;
@@ -70,18 +64,6 @@ public final class ExecutionNode {
     
     static String getCompletedNode(final int item) {
         return String.format(COMPLETED, item);
-    }
-    
-    static String getLastBeginTimeNode(final int item) {
-        return String.format(LAST_BEGIN_TIME, item);
-    }
-    
-    static String getNextFireTimeNode(final int item) {
-        return String.format(NEXT_FIRE_TIME, item);
-    }
-    
-    static String getLastCompleteTimeNode(final int item) {
-        return String.format(LAST_COMPLETE_TIME, item);
     }
     
     static String getMisfireNode(final int item) {

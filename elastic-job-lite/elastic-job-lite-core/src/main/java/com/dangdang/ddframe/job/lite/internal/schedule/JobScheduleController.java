@@ -24,12 +24,8 @@ import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * 作业调度控制器.
@@ -89,33 +85,6 @@ public class JobScheduleController {
         return TriggerBuilder.newTrigger()
                 .withIdentity(triggerIdentity)
                 .withSchedule(cronScheduleBuilder).build();
-    }
-    
-    /**
-     * 获取下次作业触发时间.
-     * 
-     * @return 下次作业触发时间
-     */
-    public Date getNextFireTime() {
-        List<? extends Trigger> triggers;
-        try {
-            triggers = scheduler.getTriggersOfJob(jobDetail.getKey());
-        } catch (final SchedulerException ex) {
-            return null;
-        }
-        Date result = null;
-        for (Trigger each : triggers) {
-            Date nextFireTime = each.getNextFireTime();
-            if (null == nextFireTime) {
-                continue;
-            }
-            if (null == result) {
-                result = nextFireTime;
-            } else if (nextFireTime.getTime() < result.getTime()) {
-                result = nextFireTime;
-            }
-        }
-        return result;
     }
     
     /**

@@ -21,7 +21,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 作业运行时信息对象.
@@ -39,12 +38,6 @@ public final class ExecutionInfo implements Serializable, Comparable<ExecutionIn
     private ExecutionStatus status;
     
     private String failoverIp;
-    
-    private Date lastBeginTime;
-    
-    private Date nextFireTime;
-    
-    private Date lastCompleteTime;
     
     @Override
     public int compareTo(final ExecutionInfo o) {

@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -157,12 +156,6 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         if (regCenter.isExisted(jobNodePath.getExecutionNodePath(item, "failover"))) {
             result.setFailoverIp(regCenter.get(jobNodePath.getExecutionNodePath(item, "failover")));
         }
-        String lastBeginTime = regCenter.get(jobNodePath.getExecutionNodePath(item, "lastBeginTime"));
-        result.setLastBeginTime(null == lastBeginTime ? null : new Date(Long.parseLong(lastBeginTime)));
-        String nextFireTime = regCenter.get(jobNodePath.getExecutionNodePath(item, "nextFireTime"));
-        result.setNextFireTime(null == nextFireTime ? null : new Date(Long.parseLong(nextFireTime)));
-        String lastCompleteTime = regCenter.get(jobNodePath.getExecutionNodePath(item, "lastCompleteTime"));
-        result.setLastCompleteTime(null == lastCompleteTime ? null : new Date(Long.parseLong(lastCompleteTime)));
         return result;
     }
 }

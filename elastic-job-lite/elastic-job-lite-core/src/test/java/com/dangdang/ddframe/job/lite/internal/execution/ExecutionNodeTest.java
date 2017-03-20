@@ -38,21 +38,6 @@ public final class ExecutionNodeTest {
     }
     
     @Test
-    public void assertGetLastBeginTimeNode() {
-        assertThat(ExecutionNode.getLastBeginTimeNode(0), is("execution/0/lastBeginTime"));
-    }
-    
-    @Test
-    public void assertGetNextFireTimeNode() {
-        assertThat(ExecutionNode.getNextFireTimeNode(0), is("execution/0/nextFireTime"));
-    }
-    
-    @Test
-    public void assertGetLastCompleteTimeNode() {
-        assertThat(ExecutionNode.getLastCompleteTimeNode(0), is("execution/0/lastCompleteTime"));
-    }
-    
-    @Test
     public void assertGetMisfireNode() {
         assertThat(ExecutionNode.getMisfireNode(0), is("execution/0/misfire"));
     }

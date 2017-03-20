@@ -30,7 +30,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
-import java.util.Date;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.Is.is;
@@ -153,15 +152,6 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.isExisted("/test_job/execution/1/failover")).thenReturn(false);
         when(regCenter.isExisted("/test_job/execution/2/failover")).thenReturn(true);
         when(regCenter.get("/test_job/execution/2/failover")).thenReturn("ip0");
-        when(regCenter.get("/test_job/execution/0/lastBeginTime")).thenReturn("0");
-        when(regCenter.get("/test_job/execution/1/lastBeginTime")).thenReturn("0");
-        when(regCenter.get("/test_job/execution/2/lastBeginTime")).thenReturn(null);
-        when(regCenter.get("/test_job/execution/0/nextFireTime")).thenReturn("0");
-        when(regCenter.get("/test_job/execution/1/nextFireTime")).thenReturn("0");
-        when(regCenter.get("/test_job/execution/2/nextFireTime")).thenReturn(null);
-        when(regCenter.get("/test_job/execution/0/lastCompleteTime")).thenReturn("0");
-        when(regCenter.get("/test_job/execution/1/lastCompleteTime")).thenReturn("0");
-        when(regCenter.get("/test_job/execution/2/lastCompleteTime")).thenReturn(null);
         int i = 0;
         for (ExecutionInfo each : jobStatisticsAPI.getExecutionInfo("test_job")) {
             i++;
@@ -169,23 +159,14 @@ public final class JobStatisticsAPIImplTest {
             switch (i) {
                 case 1:
                     assertNull(each.getFailoverIp());
-                    assertThat(each.getLastBeginTime(), is(new Date(0L)));
-                    assertThat(each.getNextFireTime(), is(new Date(0L)));
-                    assertThat(each.getLastCompleteTime(), is(new Date(0L)));
                     assertThat(each.getStatus(), is(ExecutionInfo.ExecutionStatus.RUNNING));
                     break;
                 case 2:
                     assertNull(each.getFailoverIp());
-                    assertThat(each.getLastBeginTime(), is(new Date(0L)));
-                    assertThat(each.getNextFireTime(), is(new Date(0L)));
-                    assertThat(each.getLastCompleteTime(), is(new Date(0L)));
                     assertThat(each.getStatus(), is(ExecutionInfo.ExecutionStatus.COMPLETED));
                     break;
                 case 3:
                     assertThat(each.getFailoverIp(), is("ip0"));
-                    assertNull(each.getLastBeginTime());
-                    assertNull(each.getNextFireTime());
-                    assertNull(each.getLastCompleteTime());
                     assertThat(each.getStatus(), is(ExecutionInfo.ExecutionStatus.PENDING));
                     break;
                 default:

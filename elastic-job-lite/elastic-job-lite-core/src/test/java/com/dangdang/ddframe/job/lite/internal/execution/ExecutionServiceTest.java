@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
@@ -38,7 +37,6 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +44,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -100,43 +96,6 @@ public final class ExecutionServiceTest {
     }
     
     @Test
-    public void assertRegisterJobBeginWithoutNextFireTime() {
-        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(jobScheduleController.getNextFireTime()).thenReturn(null);
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        executionService.registerJobBegin(getShardingContext());
-        verify(configService).load(true);
-        verify(serverService).updateServerStatus(ServerStatus.RUNNING);
-        verify(jobNodeStorage).fillEphemeralJobNode("execution/0/running", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("execution/1/running", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("execution/2/running", "");
-        verify(jobNodeStorage).replaceJobNode(eq("execution/0/lastBeginTime"), anyLong());
-        verify(jobNodeStorage).replaceJobNode(eq("execution/1/lastBeginTime"), anyLong());
-        verify(jobNodeStorage).replaceJobNode(eq("execution/2/lastBeginTime"), anyLong());
-    }
-    
-    @Test
-    public void assertRegisterJobBeginWithNextFireTime() {
-        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(jobScheduleController.getNextFireTime()).thenReturn(new Date(0L));
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        executionService.registerJobBegin(getShardingContext());
-        verify(configService).load(true);
-        verify(serverService).updateServerStatus(ServerStatus.RUNNING);
-        verify(jobNodeStorage).fillEphemeralJobNode("execution/0/running", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("execution/1/running", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("execution/2/running", "");
-        verify(jobNodeStorage).replaceJobNode(eq("execution/0/lastBeginTime"), anyLong());
-        verify(jobNodeStorage).replaceJobNode(eq("execution/1/lastBeginTime"), anyLong());
-        verify(jobNodeStorage).replaceJobNode(eq("execution/2/lastBeginTime"), anyLong());
-        verify(jobNodeStorage).replaceJobNode("execution/0/nextFireTime", 0L);
-        verify(jobNodeStorage).replaceJobNode("execution/1/nextFireTime", 0L);
-        verify(jobNodeStorage).replaceJobNode("execution/2/nextFireTime", 0L);
-    }
-    
-    @Test
     public void assertRegisterJobCompletedWhenNotMonitorExecution() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
@@ -157,9 +116,6 @@ public final class ExecutionServiceTest {
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/running");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/running");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/running");
-        verify(jobNodeStorage).replaceJobNode(eq("execution/0/lastCompleteTime"), anyLong());
-        verify(jobNodeStorage).replaceJobNode(eq("execution/1/lastCompleteTime"), anyLong());
-        verify(jobNodeStorage).replaceJobNode(eq("execution/2/lastCompleteTime"), anyLong());
     }
     
     @Test

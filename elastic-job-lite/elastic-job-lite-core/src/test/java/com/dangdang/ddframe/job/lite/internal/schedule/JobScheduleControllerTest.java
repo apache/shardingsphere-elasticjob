@@ -36,16 +36,8 @@ import org.quartz.TriggerKey;
 import org.quartz.impl.triggers.CronTriggerImpl;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,37 +59,6 @@ public final class JobScheduleControllerTest {
     public void initMocks() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         jobScheduleController = new JobScheduleController(scheduler, jobDetail, schedulerFacade, "test_job_Trigger");
-    }
-    
-    @Test
-    public void assertGetNextFireTimeWhenSchedulerExceptionOccur() throws NoSuchFieldException, SchedulerException {
-        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
-        JobKey jobKey = new JobKey("test_job");
-        when(jobDetail.getKey()).thenReturn(jobKey);
-        doThrow(SchedulerException.class).when(scheduler).getTriggersOfJob(jobKey);
-        assertNull(jobScheduleController.getNextFireTime());
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Test
-    public void assertGetNextFireTime() throws NoSuchFieldException, SchedulerException {
-        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
-        JobKey jobKey = new JobKey("test_job");
-        Trigger trigger1 = mock(Trigger.class);
-        Trigger trigger2 = mock(Trigger.class);
-        Trigger trigger3 = mock(Trigger.class);
-        Trigger trigger4 = mock(Trigger.class);
-        @SuppressWarnings("rawtypes")
-        List triggers = Arrays.asList(trigger1, trigger2, trigger3, trigger4);
-        when(trigger1.getNextFireTime()).thenReturn(null);
-        when(trigger2.getNextFireTime()).thenReturn(new Date(1L));
-        when(trigger3.getNextFireTime()).thenReturn(new Date(100L));
-        when(trigger4.getNextFireTime()).thenReturn(new Date(0L));
-        when(jobDetail.getKey()).thenReturn(jobKey);
-        when(scheduler.getTriggersOfJob(jobKey)).thenReturn(triggers);
-        assertThat(jobScheduleController.getNextFireTime().getTime(), is(0L));
     }
     
     @Test
