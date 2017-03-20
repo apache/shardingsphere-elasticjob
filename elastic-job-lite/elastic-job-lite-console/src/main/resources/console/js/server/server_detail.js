@@ -52,11 +52,11 @@ function renderJobs() {
 
 function generateOperationButtons(val, row){
     var operationTd = "";
-    var triggerButton = "<button operation='trigger' class='btn btn-success' job-name='" + row.jobName + "'>触发</button>";
-    var resumeButton = "<button operation='resume' class='btn btn-success' job-name='" + row.jobName + "'>恢复</button>";
-    var pauseButton = "<button operation='pause' class='btn btn-warning' job-name='" + row.jobName + "'>暂停</button>";
-    var shutdownButton = "<button operation='shutdown' class='btn btn-danger' job-name='" + row.jobName + "'>关闭</button>";
-    var removeButton = "<button operation='remove' class='btn btn-danger' job-name='" + row.jobName + "'>删除</button>";
+    var triggerButton = "<button operation='trigger' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
+    var resumeButton = "<button operation='resume' class='btn-xs btn-info' job-name='" + row.jobName + "'>恢复</button>";
+    var pauseButton = "<button operation='pause' class='btn-xs btn-warning' job-name='" + row.jobName + "'>暂停</button>";
+    var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' job-name='" + row.jobName + "'>关闭</button>";
+    var removeButton = "<button operation='remove' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
     operationTd = triggerButton + "&nbsp;";
     if ("PAUSED" === row.status) {
         operationTd = triggerButton + "&nbsp;" + resumeButton;

@@ -18,7 +18,7 @@
     <script src="js/util/dashboard.js"></script>
     <script src="js/index.js"></script>
     </head>
-    <body class="hold-transition skin-purple sidebar-mini">
+    <body class="hold-transition skin-blue-light sidebar-mini">
     <div class="wrapper">
         <header class="main-header">
         <a href="index.html" class="logo">
@@ -36,7 +36,7 @@
                     <li><a href="#" id="overview">总览</a></li>
                     <li><a href="#" id="registry-center">注册中心管理</a></li>
                     <li><a href="#" id="data-source">事件追踪数据源管理</a></li>
-                    <li><a href="#" id="help">帮助</a></li>
+                    <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
                     <li></li>
                 </ul>
             </div>
@@ -45,39 +45,46 @@
     <aside class="main-sidebar">
         <section class="sidebar">
             <ul class="sidebar-menu">
-                <li class="header">主菜单</li>
                 <li class="treeview active">
                     <a href="#registry-center-dimension" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-laptop"></i>注册中心
+                        <i class="fa fa-laptop"></i>注册中心<i class="fa fa-angle-left pull-right"></i>
                         <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
                     </a>
                     <ul id="registry-center-dimension" class="nav nav-list tree collapse in"></ul>
+                </li>
+                <li class="treeview">
                      <a href="#data-source-dimension" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-database"></i>事件追踪数据源
+                        <i class="fa fa-database"></i>事件追踪数据源<i class="fa fa-angle-left pull-right"></i>
                         <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
                     </a>
                     <ul id="data-source-dimension" class="nav nav-list tree collapse in"></ul>
+                </li>
+                <li class="treeview">
                     <a href="#jobs-dimension" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-edit"></i>作业维度
-                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                        <i class="fa fa-edit"></i>作业维度<i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul id="jobs-dimension" class="nav nav-list tree collapse in"></ul>
+                </li>
+                <li class="treeview">
                     <a href="#servers-dimension" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-desktop"></i>服务器维度
+                        <i class="fa fa-desktop"></i>服务器维度<i class="fa fa-angle-left pull-right"></i>
                         <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
                     </a>
                     <ul id="servers-dimension" class="nav nav-list tree collapse in"></ul>
+                </li>
+                <li class="treeview">
                     <a href="#record" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-dashboard"></i>作业历史
+                        <i class="fa fa-dashboard"></i>作业历史<i class="fa fa-angle-left pull-right"></i>
                         <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
                     </a>
                     <ul id="record" class="nav nav-list tree collapse">
-                        <li><a href="#" id="exec-detail">运行轨迹查询</a></li>
-                        <li><a href="#" id="exec-status">运行状态查询</a></li>
+                        <li><a href="#" id="exec-detail"><i class="fa fa-circle-o"></i> 运行轨迹查询</a></li>
+                        <li><a href="#" id="exec-status"><i class="fa fa-circle-o"></i> 运行状态查询</a></li>
                     </ul>
                 </li>
+                <li><a href="#"><i class="fa fa-book"></i><span>帮助文档</span></a></li>
             </ul>
-    </section>
+        </section>
     </aside>
     <div id="content">
     </div>
