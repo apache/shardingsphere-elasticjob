@@ -16,10 +16,6 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -52,4 +48,36 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
     </dependencies>
+    
+    <build>
+        <resources>
+            <resource>
+               <directory>src/main/resources</directory>
+               <excludes>
+                   <exclude>bin/*</exclude>
+                   <exclude>conf/*</exclude>
+                   <exclude>assembly/*</exclude>
+               </excludes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/resources/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

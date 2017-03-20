@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.env.RestfulServerConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
+import com.dangdang.ddframe.job.security.WwwAuthFilter;
 import com.google.common.base.Optional;
 
 /**
@@ -46,7 +47,11 @@ public class RestfulService {
      */
     public void start() {
         try {
-            restfulServer.start(RestfulService.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
+            restfulServer.addFilter(WwwAuthFilter.class, "*/")
+                         .addFilter(WwwAuthFilter.class, "*.html")
+                         .addFilter(WwwAuthFilter.class, "*.js")
+                         .addFilter(WwwAuthFilter.class, "*.css")
+                         .start(RestfulService.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
             //CHECKSTYLE:OFF
         } catch (final Exception ex) {
             //CHECKSTYLE:ON

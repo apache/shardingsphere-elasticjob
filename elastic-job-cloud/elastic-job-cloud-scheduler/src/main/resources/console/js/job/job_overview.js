@@ -14,7 +14,7 @@ function deleteJob(jobName){
     $('#deleteConfirm').on("click", function(){
         if(flag == true){
             $.ajax({
-                url:"/job/deregister",
+                url:"/api/job/deregister",
                 type:"DELETE",
                 contentType:"application/json",
                 data:jobName,
@@ -29,7 +29,7 @@ function deleteJob(jobName){
     
 function detailJob(jobName){
     $.ajax({
-        url:"/job/jobs/"+jobName,
+        url:"/api/job/jobs/"+jobName,
         async: false,
         contentType: "application/json",
         success:function(result){
@@ -60,7 +60,7 @@ $('#addJob').click(function() {
     
 function updateJob(jobName){
     $.ajax({
-        url:"/job/jobs/"+jobName,
+        url:"/api/job/jobs/"+jobName,
         async: false,
         success:function(result){
             if (null != result) {
