@@ -28,11 +28,11 @@ public final class ElectionNodeTest {
     
     @Test
     public void assertIsShardingTotalCountPath() {
-        assertTrue(electionNode.isLeaderHostPath("/test_job/leader/election/host"));
+        assertTrue(electionNode.isLeaderHostPath("/test_job/leader/election/host_instance"));
     }
     
     @Test
     public void assertIsNotShardingTotalCountPath() {
-        assertFalse(electionNode.isLeaderHostPath("/test_job/leader/election/host1"));
+        assertFalse(electionNode.isLeaderHostPath("/test_job/leader/election/host_instance1"));
     }
 }

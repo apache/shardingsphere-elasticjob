@@ -77,7 +77,7 @@ public final class ElectionListenerManagerTest {
     @Test
     public void assertLeaderElectionJobListenerWhenIsLeaderHostPathButNotRemove() {
         electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/leader/election/host", null, "localhost".getBytes())), "/test_job/leader/election/host");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/leader/election/host_instance", null, "localhost".getBytes())), "/test_job/leader/election/host_instance");
         verify(leaderElectionService, times(0)).leaderElection();
     }
     
@@ -85,7 +85,7 @@ public final class ElectionListenerManagerTest {
     public void assertLeaderElectionJobListenerWhenIsLeaderHostPathAndIsRemoveAndIsLeader() {
         when(leaderElectionService.hasLeader()).thenReturn(true);
         electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host", null, "localhost".getBytes())), "/test_job/leader/election/host");
+                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host_instance", null, "localhost".getBytes())), "/test_job/leader/election/host_instance");
         verify(leaderElectionService).hasLeader();
         verify(leaderElectionService, times(0)).leaderElection();
     }
@@ -95,7 +95,7 @@ public final class ElectionListenerManagerTest {
         when(leaderElectionService.hasLeader()).thenReturn(false);
         when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("localhost"));
         electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host", null, "localhost".getBytes())), "/test_job/leader/election/host");
+                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host_instance", null, "localhost".getBytes())), "/test_job/leader/election/host_instance");
         verify(leaderElectionService).hasLeader();
         verify(serverService).getAvailableServers();
         verify(leaderElectionService).leaderElection();
@@ -106,7 +106,7 @@ public final class ElectionListenerManagerTest {
         when(leaderElectionService.hasLeader()).thenReturn(false);
         when(serverService.getAvailableServers()).thenReturn(Collections.<String>emptyList());
         electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host", null, "localhost".getBytes())), "/test_job/leader/election/host");
+                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host_instance", null, "localhost".getBytes())), "/test_job/leader/election/host_instance");
         verify(leaderElectionService).hasLeader();
         verify(serverService).getAvailableServers();
         verify(leaderElectionService, times(0)).leaderElection();

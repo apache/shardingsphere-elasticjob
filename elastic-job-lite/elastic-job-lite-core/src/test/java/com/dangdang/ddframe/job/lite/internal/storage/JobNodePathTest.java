@@ -58,6 +58,6 @@ public final class JobNodePathTest {
     
     @Test
     public void assertGetLeaderIpNodePath() {
-        assertThat(jobNodePath.getLeaderHostNodePath(), is("/test_job/leader/election/host"));
+        assertThat(jobNodePath.getLeaderHostNodePath(), is("/test_job/leader/election/host_instance"));
     }
 }

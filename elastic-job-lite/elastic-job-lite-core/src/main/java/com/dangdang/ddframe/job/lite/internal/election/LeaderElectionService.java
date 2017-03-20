@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
@@ -36,11 +37,14 @@ public class LeaderElectionService {
     
     private final LocalHostService localHostService = new LocalHostService();
     
+    private final String jobName;
+    
     private final ServerService serverService;
     
     private final JobNodeStorage jobNodeStorage;
     
     public LeaderElectionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
     }
@@ -69,13 +73,12 @@ public class LeaderElectionService {
      * @return 当前节点是否是主节点
      */
     public Boolean isLeader() {
-        String localHostIp = localHostService.getIp();
         while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
             log.info("Leader node is electing, waiting for {} ms", 100);
             BlockUtils.waitingShortTime();
             leaderElection();
         }
-        return localHostIp.equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST));
+        return (localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstanceId(jobName)).equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST_AND_INSTANCE));
     }
     
     /**
@@ -89,14 +92,14 @@ public class LeaderElectionService {
      * @return 是否已经有主节点
      */
     public boolean hasLeader() {
-        return jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST);
+        return jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST_AND_INSTANCE);
     }
     
     /**
      * 删除主节点供重新选举.
      */
     public void removeLeader() {
-        jobNodeStorage.removeJobNodeIfExisted(ElectionNode.LEADER_HOST);
+        jobNodeStorage.removeJobNodeIfExisted(ElectionNode.LEADER_HOST_AND_INSTANCE);
     }
     
     @RequiredArgsConstructor
@@ -106,8 +109,8 @@ public class LeaderElectionService {
     
         @Override
         public void execute() {
-            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST) && (isForceElect || serverService.isAvailableServer(localHostService.getIp()))) {
-                jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST, localHostService.getIp());
+            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST_AND_INSTANCE) && (isForceElect || serverService.isAvailableServer(localHostService.getIp()))) {
+                jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST_AND_INSTANCE, localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstanceId(jobName));
             }
         }
     }
