@@ -31,7 +31,13 @@ import lombok.RequiredArgsConstructor;
 @EqualsAndHashCode
 public final class JobShardingUnit {
     
+    /**
+     * 作业服务器IP地址.
+     */
     private final String serverIp;
     
+    /**
+     * 作业实例主键.
+     */
     private final String jobInstanceId;
 }

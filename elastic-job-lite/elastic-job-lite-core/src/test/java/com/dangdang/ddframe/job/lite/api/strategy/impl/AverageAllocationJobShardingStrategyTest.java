@@ -36,14 +36,14 @@ public final class AverageAllocationJobShardingStrategyTest {
     
     @Test
     public void shardingForZeroServer() {
-        assertThat(jobShardingStrategy.sharding(Collections.<JobShardingUnit>emptyList(), getJobShardingStrategyOption(3)),
+        assertThat(jobShardingStrategy.sharding(Collections.<JobShardingUnit>emptyList(), getJobShardingMetadata(3)),
                 is((Collection<JobShardingResult>) Collections.<JobShardingResult>emptyList()));
     }
     
     @Test
     public void shardingForOneServer() {
         Collection<JobShardingResult> expected = Collections.singletonList(new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Arrays.asList(0, 1, 2)));
-        assertThat(jobShardingStrategy.sharding(Collections.singletonList(new JobShardingUnit("host0", "test_job_instance_id")), getJobShardingStrategyOption(3)), is(expected));
+        assertThat(jobShardingStrategy.sharding(Collections.singletonList(new JobShardingUnit("host0", "test_job_instance_id")), getJobShardingMetadata(3)), is(expected));
     }
     
     @Test
@@ -54,7 +54,7 @@ public final class AverageAllocationJobShardingStrategyTest {
                 new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Collections.<Integer>emptyList()));
         assertThat(jobShardingStrategy.sharding(Arrays.asList(
                 new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")), 
-                getJobShardingStrategyOption(2)), is(expected));
+                getJobShardingMetadata(2)), is(expected));
     }
     
     @Test
@@ -65,7 +65,7 @@ public final class AverageAllocationJobShardingStrategyTest {
                 new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Arrays.asList(6, 7, 8)));
         assertThat(jobShardingStrategy.sharding(Arrays.asList(
                 new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")),
-                getJobShardingStrategyOption(9)), is(expected));
+                getJobShardingMetadata(9)), is(expected));
     }
     
     @Test
@@ -76,7 +76,7 @@ public final class AverageAllocationJobShardingStrategyTest {
                 new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Arrays.asList(4, 5)));
         assertThat(jobShardingStrategy.sharding(Arrays.asList(
                 new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")), 
-                getJobShardingStrategyOption(8)), is(expected));
+                getJobShardingMetadata(8)), is(expected));
     }
     
     @Test
@@ -86,11 +86,11 @@ public final class AverageAllocationJobShardingStrategyTest {
                 new JobShardingResult(new JobShardingUnit("host1", "test_job_instance_id"), Arrays.asList(3, 4, 5)),
                 new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Arrays.asList(6, 7, 8)));
         assertThat(jobShardingStrategy.sharding(Arrays.asList(
-                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")),
-        getJobShardingStrategyOption(10)), is(expected));
+                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")), 
+                getJobShardingMetadata(10)), is(expected));
     }
     
-    private JobShardingMetadata getJobShardingStrategyOption(final int shardingTotalCount) {
+    private JobShardingMetadata getJobShardingMetadata(final int shardingTotalCount) {
         return new JobShardingMetadata("test_job", shardingTotalCount);
     }
 }

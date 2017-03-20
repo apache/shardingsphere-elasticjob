@@ -116,7 +116,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         result.setJobName(jobName);
         result.setIp(serverIp);
-        result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp, "hostName")));
+        result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp)));
         result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
         result.setStatus(getServerStatus(jobName, serverIp));
         return result;

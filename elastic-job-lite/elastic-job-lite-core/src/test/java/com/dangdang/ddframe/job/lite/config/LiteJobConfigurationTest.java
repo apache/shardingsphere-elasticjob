@@ -32,8 +32,9 @@ public final class LiteJobConfigurationTest {
     @Test
     public void assertBuildAllProperties() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName()))
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).jobInstanceId("test_job_instance_id")
                 .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).reconcileIntervalMinutes(60).build();
+        assertThat(actual.getJobInstanceId(), is("test_job_instance_id"));
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
         assertThat(actual.getMonitorPort(), is(8888));
@@ -47,6 +48,7 @@ public final class LiteJobConfigurationTest {
     public void assertBuildRequiredProperties() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build();
+        assertThat(actual.getJobInstanceId(), is(LiteJobConfiguration.DEFAULT_JOB_INSTANCE_ID));
         assertTrue(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(-1));
         assertThat(actual.getMonitorPort(), is(-1));

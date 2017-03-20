@@ -33,7 +33,13 @@ import java.util.List;
 @EqualsAndHashCode
 public final class JobShardingResult {
     
+    /**
+     * 作业分片单元.
+     */
     private final JobShardingUnit jobShardingUnit;
     
+    /**
+     * 分片项列表.
+     */
     private final List<Integer> shardingItems;
 }

@@ -28,7 +28,7 @@ import java.util.List;
 public interface JobShardingStrategy {
     
     /**
-     * 进行作业分片.
+     * 作业分片.
      * 
      * @param jobShardingUnits 所有参与分片的单元列表
      * @param jobShardingMetadata 作业分片策略选项

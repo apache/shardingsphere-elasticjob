@@ -51,7 +51,7 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
             JobNodePath jobNodePath = new JobNodePath(jobName);
             List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
             for (String server : servers) {
-                serverHostMap.put(server, regCenter.get(jobNodePath.getServerNodePath(server, "hostName")));
+                serverHostMap.put(server, regCenter.get(jobNodePath.getServerNodePath(server)));
                 if (!regCenter.isExisted(jobNodePath.getServerNodePath(server, "shutdown")) && regCenter.isExisted(jobNodePath.getServerNodePath(server, "status"))) {
                     aliveServers.add(server);
                 } else {
@@ -93,7 +93,7 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         result.setJobName(jobName);
         result.setIp(serverIp);
-        result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp, "hostName")));
+        result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp)));
         result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
         String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
         boolean disabled = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));

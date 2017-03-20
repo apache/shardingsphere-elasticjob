@@ -34,6 +34,8 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class LiteJobConfiguration implements JobRootConfiguration {
     
+    public static final String DEFAULT_JOB_INSTANCE_ID = "defaultInstance";
+    
     private final JobTypeConfiguration typeConfig;
     
     private final String jobInstanceId;
@@ -85,7 +87,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
         
         private final JobTypeConfiguration jobConfig;
     
-        private String jobInstanceId = "defaultInstance";
+        private String jobInstanceId = DEFAULT_JOB_INSTANCE_ID;
         
         private boolean monitorExecution = true;
         
