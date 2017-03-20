@@ -133,6 +133,25 @@ public final class ServerServiceTest {
     }
     
     @Test
+    public void assertGetAllShardingUnits() {
+        when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3"));
+        when(jobNodeStorage.getJobNodeChildrenKeys("servers/host0")).thenReturn(Arrays.asList("test_job_instance_id_1", "test_job_instance_id_2"));
+        when(jobNodeStorage.getJobNodeChildrenKeys("servers/host1")).thenReturn(Arrays.asList("test_job_instance_id_1", "test_job_instance_id_2"));
+        when(jobNodeStorage.getJobNodeChildrenKeys("servers/host2")).thenReturn(Arrays.asList("test_job_instance_id_1", "test_job_instance_id_2"));
+        when(jobNodeStorage.getJobNodeChildrenKeys("servers/host3")).thenReturn(Arrays.asList("test_job_instance_id_1", "test_job_instance_id_2"));
+        assertThat(serverService.getAllShardingUnits(), is(Arrays.asList(
+                new JobShardingUnit("host0", "test_job_instance_id_1"), new JobShardingUnit("host0", "test_job_instance_id_2"),
+                new JobShardingUnit("host1", "test_job_instance_id_1"), new JobShardingUnit("host1", "test_job_instance_id_2"),
+                new JobShardingUnit("host2", "test_job_instance_id_1"), new JobShardingUnit("host2", "test_job_instance_id_2"),
+                new JobShardingUnit("host3", "test_job_instance_id_1"), new JobShardingUnit("host3", "test_job_instance_id_2"))));
+        verify(jobNodeStorage).getJobNodeChildrenKeys("servers");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("servers/host0");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("servers/host1");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("servers/host2");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("servers/host3");
+    }
+    
+    @Test
     public void assertGetAvailableShardingServers() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3", "host4"));
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/host0")).thenReturn(Collections.singletonList("test_job_instance_id"));
@@ -283,9 +302,9 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertHasStatusNode() {
-        when(jobNodeStorage.isJobNodeExisted(serverNode.getStatusNode("IP"))).thenReturn(true);
-        serverService.hasStatusNode("IP");
-        verify(jobNodeStorage).isJobNodeExisted(serverNode.getStatusNode("IP"));
+    public void assertIsOffline() {
+        when(jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode("ip1", "test_job_instance_id"))).thenReturn(true);
+        assertFalse(serverService.isOffline("ip1", "test_job_instance_id"));
+        verify(jobNodeStorage).isJobNodeExisted(ServerNode.getStatusNode("ip1", "test_job_instance_id"));
     }
 }

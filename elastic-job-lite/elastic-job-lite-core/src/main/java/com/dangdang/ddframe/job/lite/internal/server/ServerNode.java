@@ -80,10 +80,6 @@ public class ServerNode {
         return String.format(TRIGGER, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    static String getTriggerNode(final String ip, final String jobInstanceId) {
-        return String.format(TRIGGER, ip, jobInstanceId);
-    }
-    
     String getPausedNode(final String ip) {
         return String.format(PAUSED, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }

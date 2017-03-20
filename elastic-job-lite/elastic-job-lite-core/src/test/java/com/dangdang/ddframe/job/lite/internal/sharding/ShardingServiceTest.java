@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
@@ -77,8 +78,6 @@ public final class ShardingServiceTest {
     private ServerService serverService;
     
     private final ShardingService shardingService = new ShardingService(null, "test_job");
-    
-    private final ShardingNode shardingNode = new ShardingNode("test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
@@ -118,11 +117,11 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingWithoutAvailableServers() {
-        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
+        when(serverService.getAllShardingUnits()).thenReturn(Arrays.asList(new JobShardingUnit("ip1", "test_job_instance_id"), new JobShardingUnit("ip2", "test_job_instance_id")));
         when(serverService.getAvailableShardingUnits()).thenReturn(Collections.<JobShardingUnit>emptyList());
         shardingService.shardingIfNecessary();
         verify(serverService).getAvailableShardingUnits();
-        verify(serverService).getAllServers();
+        verify(serverService).getAllShardingUnits();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/test_job_instance_id/sharding");
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/test_job_instance_id/sharding");
         verify(jobNodeStorage, times(0)).isJobNodeExisted("leader/sharding/necessary");
@@ -142,12 +141,12 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingNecessaryWhenMonitorExecutionEnabled() {
-        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.singletonList(new JobShardingUnit("mockedIP", "test_job_instance_id")));
+        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.singletonList(new JobShardingUnit("ip1", "test_job_instance_id")));
+        when(serverService.getAllShardingUnits()).thenReturn(Arrays.asList(new JobShardingUnit("ip1", "test_job_instance_id"), new JobShardingUnit("ip2", "test_job_instance_id")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
-        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
         when(executionService.hasRunningItems()).thenReturn(true, false);
         shardingService.shardingIfNecessary();
         verify(serverService).getAvailableShardingUnits();
@@ -163,12 +162,12 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingNecessaryWhenMonitorExecutionDisabled() throws Exception {
-        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.singletonList(new JobShardingUnit("mockedIP", "test_job_instance_id")));
+        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.singletonList(new JobShardingUnit("ip1", "test_job_instance_id")));
+        when(serverService.getAllShardingUnits()).thenReturn(Arrays.asList(new JobShardingUnit("ip1", "test_job_instance_id"), new JobShardingUnit("ip2", "test_job_instance_id")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
-        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2"));
         shardingService.shardingIfNecessary();
         verify(serverService).getAvailableShardingUnits();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
@@ -224,12 +223,21 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertNotRunningAndShardingNodeExisted() throws NoSuchFieldException {
-        when(jobNodeStorage.isJobNodeExisted(shardingNode.getShardingNode("ip3"))).thenReturn(true);
-        when(serverService.hasStatusNode(shardingNode.getShardingNode("ip3"))).thenReturn(false);
-        when(serverService.getAllServers()).thenReturn(Arrays.asList("ip1", "ip2", "ip3"));
-        ReflectionUtils.setFieldValue(shardingService, "jobNodeStorage", jobNodeStorage);
-        ReflectionUtils.setFieldValue(shardingService, "serverService", serverService);
-        assertThat(shardingService.hasNotRunningShardingNode(), is(true));
+    public void assertHasShardingInfoInOfflineServers() throws NoSuchFieldException {
+        when(serverService.getAllShardingUnits()).thenReturn(Arrays.asList(new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id")));
+        when(jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode("host0", "test_job_instance_id"))).thenReturn(true);
+        when(serverService.isOffline("host0", "test_job_instance_id")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode("host1", "test_job_instance_id"))).thenReturn(true);
+        when(serverService.isOffline("host1", "test_job_instance_id")).thenReturn(true);
+        assertTrue(shardingService.hasShardingInfoInOfflineServers());
+    }
+    
+    @Test
+    public void assertHasNotShardingInfoInOfflineServers() throws NoSuchFieldException {
+        when(serverService.getAllShardingUnits()).thenReturn(Arrays.asList(new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id")));
+        when(jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode("host0", "test_job_instance_id"))).thenReturn(true);
+        when(serverService.isOffline("host0", "test_job_instance_id")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode("host1", "test_job_instance_id"))).thenReturn(false);
+        assertFalse(shardingService.hasShardingInfoInOfflineServers());
     }
 }

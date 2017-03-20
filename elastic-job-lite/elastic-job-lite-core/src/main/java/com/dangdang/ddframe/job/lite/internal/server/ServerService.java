@@ -117,13 +117,19 @@ public class ServerService {
     }
     
     /**
-     * 获取所有的作业服务器列表.
-     * 
-     * @return 所有的作业服务器列表
+     * 获取所有分片单元列表.
+     *
+     * @return 所有分片单元列表
      */
-    public List<String> getAllServers() {
-        List<String> result = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT);
-        Collections.sort(result);
+    public List<JobShardingUnit> getAllShardingUnits() {
+        List<JobShardingUnit> result = new LinkedList<>();
+        List<String> servers = getAllServers();
+        for (String each : servers) {
+            List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + each);
+            for (String jobInstanceId : jobInstances) {
+                result.add(new JobShardingUnit(each, jobInstanceId));
+            }
+        }
         return result;
     }
     
@@ -146,8 +152,8 @@ public class ServerService {
     
     private List<String> getAvailableInstances(final String ip) {
         List<String> result = new LinkedList<>();
-        List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip);
-        for (String each : instances) {
+        List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip);
+        for (String each : jobInstances) {
             if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each))
                     && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip, each))) {
                 result.add(each);
@@ -169,6 +175,12 @@ public class ServerService {
                 result.add(each);
             }
         }
+        return result;
+    }
+    
+    private List<String> getAllServers() {
+        List<String> result = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT);
+        Collections.sort(result);
         return result;
     }
     
@@ -209,12 +221,13 @@ public class ServerService {
     }
     
     /**
-     * 判断作业服务器是否存在status节点.
+     * 判断作业节点是否离线.
      * 
      * @param ip 作业服务器IP
-     * @return 作业服务器是否存在status节点
+     * @param jobInstanceId 作业实例主键
+     * @return 作业节点是否离线
      */
-    public boolean hasStatusNode(final String ip) {
-        return jobNodeStorage.isJobNodeExisted(serverNode.getStatusNode(ip));
+    public boolean isOffline(final String ip, final String jobInstanceId) {
+        return !jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, jobInstanceId));
     }
 }

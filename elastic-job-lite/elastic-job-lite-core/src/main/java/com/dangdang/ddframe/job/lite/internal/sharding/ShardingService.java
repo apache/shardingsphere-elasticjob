@@ -140,8 +140,8 @@ public class ShardingService {
     }
     
     private void clearShardingInfo() {
-        for (String each : serverService.getAllServers()) {
-            jobNodeStorage.removeJobNodeIfExisted(shardingNode.getShardingNode(each));
+        for (JobShardingUnit each : serverService.getAllShardingUnits()) {
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getShardingNode(each.getServerIp(), each.getJobInstanceId()));
         }
     }
     
@@ -159,14 +159,13 @@ public class ShardingService {
     }
     
     /**
-     * 查询是否存在没有运行状态并且含有分片节点的作业服务器.
+     * 查询是包含有分片节点的不在线服务器.
      * 
-     * @return 是否存在没有运行状态并且含有分片节点的作业服务器
+     * @return 是包含有分片节点的不在线服务器
      */
-    public boolean hasNotRunningShardingNode() {
-        for (String each : this.serverService.getAllServers()) {
-            if (this.jobNodeStorage.isJobNodeExisted(shardingNode.getShardingNode(each)) 
-                && !this.serverService.hasStatusNode(each)) {
+    public boolean hasShardingInfoInOfflineServers() {
+        for (JobShardingUnit each : serverService.getAllShardingUnits()) {
+            if (jobNodeStorage.isJobNodeExisted(ShardingNode.getShardingNode(each.getServerIp(), each.getJobInstanceId())) && serverService.isOffline(each.getServerIp(), each.getJobInstanceId())) {
                 return true;
             }
         }
