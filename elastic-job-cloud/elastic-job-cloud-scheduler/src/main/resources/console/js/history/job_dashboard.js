@@ -10,7 +10,7 @@ $(function () {
 });
     
 function getTasksResultSinceLastMinute() {
-    var url = '/job/statistics/tasks/results/lastMinute',
+    var url = '/api/job/statistics/tasks/results/lastMinute',
         chartName = '#total_jobs_lastMinute',
         colorsArray = ['rgb(144,237,125)','red'],
         jobData = getChartData(url);
@@ -19,7 +19,7 @@ function getTasksResultSinceLastMinute() {
 }
     
 function getTasksResultSinceLastHour() {
-    var url = '/job/statistics/tasks/results/lastHour',
+    var url = '/api/job/statistics/tasks/results/lastHour',
         chartName = '#total_jobs_lastHour',
         colorsArray = ['rgb(144,237,125)','red'],
         jobData = getChartData(url);
@@ -28,7 +28,7 @@ function getTasksResultSinceLastHour() {
 }
     
 function getTasksResultSinceLastWeek() {
-    var url = '/job/statistics/tasks/results/lastWeek',
+    var url = '/api/job/statistics/tasks/results/lastWeek',
         chartName = '#total_jobs_weekly',
         colorsArray = ['rgb(144,237,125)','red'],
         jobData = getChartData(url);
@@ -37,7 +37,7 @@ function getTasksResultSinceLastWeek() {
 }
     
 function getJobType() {
-    var url = '/job/statistics/jobs/type',
+    var url = '/api/job/statistics/jobs/type',
         chartName = '#job_type',
         colorsArray = ['rgb(144, 237, 125)','rgb(247, 163, 92)','rgb(67, 67, 72)'],
         jobData = getChartData(url);
@@ -46,7 +46,7 @@ function getJobType() {
 }
     
 function getJobExecutionType() {
-    var url = '/job/statistics/jobs/executionType',
+    var url = '/api/job/statistics/jobs/executionType',
         chartName = '#job_execution_type',
         colorsArray = ['rgb(144, 237, 125)','rgb(124, 181, 236)'],
         jobData = getChartData(url);
@@ -55,7 +55,7 @@ function getJobExecutionType() {
 }
     
 function getStatictisJobs(){
-    var url = '/job/statistics/tasks/results?since=last24hours',
+    var url = '/api/job/statistics/tasks/results?since=last24hours',
         chartName = '#statictis_jobs',
         jobData = getChartData(url);
         var succData = [],failData = [];
@@ -69,8 +69,8 @@ function getStatictisJobs(){
 }
     
 function getRunningJobAndTaskSincelastWeek(){
-    var urlJob = '/job/statistics/jobs/running?since=lastWeek',
-        urlTask = '/job/statistics/tasks/running?since=lastWeek',
+    var urlJob = '/api/job/statistics/jobs/running?since=lastWeek',
+        urlTask = '/api/job/statistics/tasks/running?since=lastWeek',
         chartName = '#run_jobs',
         jobData = getChartData(urlJob),
         taskData =  getChartData(urlTask),
@@ -88,7 +88,7 @@ function getRunningJobAndTaskSincelastWeek(){
 }
     
 function getRegisteredJobs(){
-    var url = '/job/statistics/jobs/register',
+    var url = '/api/job/statistics/jobs/register',
         chartName = '#import_jobs',
         jobData = getChartData(url);
         var registerData = [];

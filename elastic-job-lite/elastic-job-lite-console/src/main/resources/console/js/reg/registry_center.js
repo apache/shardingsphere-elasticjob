@@ -10,7 +10,7 @@ $(function() {
 
 function renderRegCenters() {
     $("#reg-centers").bootstrapTable({
-        url: "registry_center",
+        url: "api/registry_center",
         method: "get",
         cache: false,
         columns: 
@@ -40,9 +40,9 @@ function generateOperationButtons(val, row) {
     var name = row.name;
     if (row.activated) {
         $("#activated-reg-center").text(name);
-        operationTd = "<button disabled operation='connect' class='btn' regName='" + name + "'>已连</button><button operation='delete' class='btn btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button disabled operation='connect' class='btn-xs' regName='" + name + "'>已连</button><button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     } else {
-        operationTd = "<button operation='connect' class='btn btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button><button operation='delete' class='btn btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connect' class='btn-xs btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button><button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     }
     return operationTd;
 }
@@ -51,9 +51,8 @@ function bindConnectButtons() {
     $(document).on("click", "button[operation='connect']", function(event) {
         var btn = $(this).button("loading");
         var regName = $(event.currentTarget).attr("regName");
-        var currentConnectBtn = $(event.currentTarget);
         $.ajax({
-            url: "registry_center/connect",
+            url: "api/registry_center/connect",
             type: "POST",
             data: JSON.stringify({"name" : regName}),
             contentType: "application/json",
@@ -82,7 +81,7 @@ function bindDeleteButtons() {
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
         $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
             $.ajax({
-                url: "registry_center/delete",
+                url: "api/registry_center/delete",
                 type: "POST",
                 data: JSON.stringify({"name" : regName}),
                 contentType: "application/json",
@@ -142,7 +141,7 @@ function submitRegCenter() {
             var namespace = $("#namespace").val();
             var digest = $("#digest").val();
             $.ajax({
-                url: "registry_center",
+                url: "api/registry_center",
                 type: "POST",
                 data: JSON.stringify({"name": name, "zkAddressList": zkAddressList, "namespace": namespace, "digest": digest}),
                 contentType: "application/json",

@@ -14,7 +14,7 @@ $(function() {
 function renderJobs() {
     var ip = $("#server-ip").text();
     $("#jobs").bootstrapTable({
-        url: "/server/jobs/" + ip,
+        url: "/api/server/jobs/" + ip,
         method: "get",
         cache: false,
         rowStyle: function (row, index) {
@@ -52,11 +52,11 @@ function renderJobs() {
 
 function generateOperationButtons(val, row){
     var operationTd = "";
-    var triggerButton = "<button operation='trigger' class='btn btn-success' job-name='" + row.jobName + "'>触发</button>";
-    var resumeButton = "<button operation='resume' class='btn btn-success' job-name='" + row.jobName + "'>恢复</button>";
-    var pauseButton = "<button operation='pause' class='btn btn-warning' job-name='" + row.jobName + "'>暂停</button>";
-    var shutdownButton = "<button operation='shutdown' class='btn btn-danger' job-name='" + row.jobName + "'>关闭</button>";
-    var removeButton = "<button operation='remove' class='btn btn-danger' job-name='" + row.jobName + "'>删除</button>";
+    var triggerButton = "<button operation='trigger' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
+    var resumeButton = "<button operation='resume' class='btn-xs btn-info' job-name='" + row.jobName + "'>恢复</button>";
+    var pauseButton = "<button operation='pause' class='btn-xs btn-warning' job-name='" + row.jobName + "'>暂停</button>";
+    var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' job-name='" + row.jobName + "'>关闭</button>";
+    var removeButton = "<button operation='remove' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
     operationTd = triggerButton + "&nbsp;";
     if ("PAUSED" === row.status) {
         operationTd = triggerButton + "&nbsp;" + resumeButton;
@@ -75,7 +75,7 @@ function generateOperationButtons(val, row){
 function bindTriggerButtons() {
     $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
         $.ajax({
-            url: "/job/trigger",
+            url: "/api/job/trigger",
             type: "POST",
             data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
             contentType: "application/json",
@@ -94,7 +94,7 @@ function bindTriggerButtons() {
 function bindPauseButtons() {
     $(document).on("click", "button[operation='pause'][data-toggle!='modal']", function(event) {
         $.ajax({
-            url: "/job/pause",
+            url: "/api/job/pause",
             type: "POST",
             data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
             contentType: "application/json",
@@ -113,7 +113,7 @@ function bindPauseButtons() {
 function bindResumeButtons() {
     $(document).on("click", "button[operation='resume']", function(event) {
         $.ajax({
-            url: "/job/resume",
+            url: "/api/job/resume",
             type: "POST",
             data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
             contentType: "application/json",
@@ -129,7 +129,7 @@ function bindResumeButtons() {
 function bindTriggerAllButton() {
     $(document).on("click", "#trigger-all-jobs-btn", function() {
         $.ajax({
-            url: "/job/triggerAll/ip",
+            url: "/api/job/triggerAll/ip",
             type: "POST",
             data: JSON.stringify({ip : $("#server-ip").text()}),
             contentType: "application/json",
@@ -145,7 +145,7 @@ function bindTriggerAllButton() {
 function bindPauseAllButton() {
     $(document).on("click", "#pause-all-jobs-btn", function() {
         $.ajax({
-            url: "/job/pauseAll/ip",
+            url: "/api/job/pauseAll/ip",
             type: "POST",
             data: JSON.stringify({ip : $("#server-ip").text()}),
             contentType: "application/json",
@@ -161,7 +161,7 @@ function bindPauseAllButton() {
 function bindResumeAllButton() {
     $(document).on("click", "#resume-all-jobs-btn", function() {
         $.ajax({
-            url: "/job/resumeAll/ip",
+            url: "/api/job/resumeAll/ip",
             type: "POST",
             data: JSON.stringify({ip : $("#server-ip").text()}),
             contentType: "application/json",
@@ -177,7 +177,7 @@ function bindResumeAllButton() {
 function bindShutdownButtons() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
         $.ajax({
-            url: "/job/shutdown",
+            url: "/api/job/shutdown",
             type: "POST",
             data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
             contentType: "application/json",
@@ -196,7 +196,7 @@ function bindShutdownButtons() {
 function bindRemoveButtons() {
     $(document).on("click", "button[operation='remove']", function(event) {
         $.ajax({
-            url: "/job/remove",
+            url: "/api/job/remove",
             type: "POST",
             data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
             contentType: "application/json",

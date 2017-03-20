@@ -15,24 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.security;
+package com.dangdang.ddframe.job.security;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.codec.binary.Base64;
 
 @Slf4j
 public final class WwwAuthFilter implements Filter {
@@ -45,7 +38,8 @@ public final class WwwAuthFilter implements Filter {
     
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
-        String configFilePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + System.getProperty("file.separator") + filterConfig.getInitParameter("auth-config");
+        String fileSeparator = System.getProperty("file.separator");
+        String configFilePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + fileSeparator + "conf" + fileSeparator + "auth.properties";
         Properties props = new Properties();
         try {
             props.load(new FileInputStream(configFilePath));

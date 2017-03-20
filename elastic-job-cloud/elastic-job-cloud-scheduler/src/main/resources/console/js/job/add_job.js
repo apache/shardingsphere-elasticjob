@@ -9,7 +9,7 @@ function bindSubmitJobSettingsForm() {
         type: 'post',
         dataType:'json',
         data:JSON.stringify(dataInfo()),
-        url:'/job/register',
+        url:'/api/job/register',
         contentType: "application/json",
         success: function(data) {
             window.location="index.html";
