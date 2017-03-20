@@ -72,40 +72,40 @@ public class ServerNode {
         return String.format(STATUS, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    static String getStatusNode(final String ip, final String instanceId) {
-        return String.format(STATUS, ip, instanceId);
+    static String getStatusNode(final String ip, final String jobInstanceId) {
+        return String.format(STATUS, ip, jobInstanceId);
     }
     
     String getTriggerNode(final String ip) {
         return String.format(TRIGGER, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    static String getTriggerNode(final String ip, final String instanceId) {
-        return String.format(TRIGGER, ip, instanceId);
+    static String getTriggerNode(final String ip, final String jobInstanceId) {
+        return String.format(TRIGGER, ip, jobInstanceId);
     }
     
     String getPausedNode(final String ip) {
         return String.format(PAUSED, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    static String getPausedNode(final String ip, final String instanceId) {
-        return String.format(PAUSED, ip, instanceId);
+    static String getPausedNode(final String ip, final String jobInstanceId) {
+        return String.format(PAUSED, ip, jobInstanceId);
     }
     
     String getDisabledNode(final String ip) {
         return String.format(DISABLED, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    static String getDisabledNode(final String ip, final String instanceId) {
-        return String.format(DISABLED, ip, instanceId);
+    static String getDisabledNode(final String ip, final String jobInstanceId) {
+        return String.format(DISABLED, ip, jobInstanceId);
     }
         
     String getShutdownNode(final String ip) {
         return String.format(SHUTDOWN, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    static String getShutdownNode(final String ip, final String instanceId) {
-        return String.format(SHUTDOWN, ip, instanceId);
+    static String getShutdownNode(final String ip, final String jobInstanceId) {
+        return String.format(SHUTDOWN, ip, jobInstanceId);
     }
     
     /**

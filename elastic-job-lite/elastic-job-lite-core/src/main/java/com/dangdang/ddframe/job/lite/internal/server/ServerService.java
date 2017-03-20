@@ -136,9 +136,9 @@ public class ServerService {
         List<String> servers = getAllServers();
         List<JobShardingUnit> result = new LinkedList<>();
         for (String each : servers) {
-            List<String> instances = getAvailableInstances(each);
-            for (String instanceId : instances) {
-                result.add(new JobShardingUnit(each, instanceId));
+            List<String> jobInstances = getAvailableInstances(each);
+            for (String jobInstanceId : jobInstances) {
+                result.add(new JobShardingUnit(each, jobInstanceId));
             }
         }
         return result;

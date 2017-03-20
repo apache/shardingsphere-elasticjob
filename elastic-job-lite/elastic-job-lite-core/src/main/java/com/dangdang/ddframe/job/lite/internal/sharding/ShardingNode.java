@@ -40,8 +40,8 @@ final class ShardingNode {
     
     private final String jobName;
     
-    static String getShardingNode(final String ip, final String instanceId) {
-        return String.format(SERVER_SHARDING, ip, instanceId);
+    static String getShardingNode(final String ip, final String jobInstanceId) {
+        return String.format(SERVER_SHARDING, ip, jobInstanceId);
     }
     
     String getShardingNode(final String ip) {

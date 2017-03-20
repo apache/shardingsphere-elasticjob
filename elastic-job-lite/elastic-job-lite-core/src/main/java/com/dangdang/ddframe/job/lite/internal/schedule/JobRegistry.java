@@ -78,10 +78,10 @@ public final class JobRegistry {
      * 添加作业实例主键.
      *
      * @param jobName 作业名称
-     * @param instanceId 作业实例主键
+     * @param jobInstanceId 作业实例主键
      */
-    public void addJobInstanceId(final String jobName, final String instanceId) {
-        jobInstanceIdMap.put(jobName, instanceId);
+    public void addJobInstanceId(final String jobName, final String jobInstanceId) {
+        jobInstanceIdMap.put(jobName, jobInstanceId);
     }
     
     /**
