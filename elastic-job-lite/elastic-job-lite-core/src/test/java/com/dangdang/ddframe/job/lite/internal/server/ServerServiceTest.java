@@ -126,13 +126,6 @@ public final class ServerServiceTest {
     }
     
     @Test
-    public void assertGetAllServers() {
-        when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3"));
-        assertThat(serverService.getAllServers(), is(Arrays.asList("host0", "host1", "host2", "host3")));
-        verify(jobNodeStorage).getJobNodeChildrenKeys("servers");
-    }
-    
-    @Test
     public void assertGetAllShardingUnits() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3"));
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/host0")).thenReturn(Arrays.asList("test_job_instance_id_1", "test_job_instance_id_2"));
