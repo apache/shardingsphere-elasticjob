@@ -51,10 +51,10 @@ public final class ServerStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
         when(regCenter.getChildrenKeys("/test_job1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
-        when(regCenter.get("/test_job1/servers/ip1/hostName")).thenReturn("host1");
-        when(regCenter.get("/test_job1/servers/ip2/hostName")).thenReturn("host2");
-        when(regCenter.get("/test_job2/servers/ip3/hostName")).thenReturn("host3");
-        when(regCenter.get("/test_job2/servers/ip4/hostName")).thenReturn("host4");
+        when(regCenter.get("/test_job1/servers/ip1")).thenReturn("host1");
+        when(regCenter.get("/test_job1/servers/ip2")).thenReturn("host2");
+        when(regCenter.get("/test_job2/servers/ip3")).thenReturn("host3");
+        when(regCenter.get("/test_job2/servers/ip4")).thenReturn("host4");
         when(regCenter.isExisted("/test_job1/servers/ip1/shutdown")).thenReturn(false);
         when(regCenter.isExisted("/test_job1/servers/ip1/status")).thenReturn(true);
         when(regCenter.isExisted("/test_job1/servers/ip2/shutdown")).thenReturn(true);
@@ -92,8 +92,8 @@ public final class ServerStatisticsAPIImplTest {
         when(regCenter.isExisted("/test_job1/servers/localhost")).thenReturn(true);
         when(regCenter.isExisted("/test_job2/servers/localhost")).thenReturn(true);
         when(regCenter.isExisted("/test_job3/servers/localhost")).thenReturn(false);
-        when(regCenter.get("/test_job1/servers/localhost/hostName")).thenReturn("localhost");
-        when(regCenter.get("/test_job2/servers/localhost/hostName")).thenReturn("localhost");
+        when(regCenter.get("/test_job1/servers/localhost")).thenReturn("localhost");
+        when(regCenter.get("/test_job2/servers/localhost")).thenReturn("localhost");
         when(regCenter.get("/test_job1/servers/localhost/sharding")).thenReturn("0,1");
         when(regCenter.get("/test_job2/servers/localhost/sharding")).thenReturn("2");
         when(regCenter.get("/test_job1/servers/localhost/status")).thenReturn("RUNNING");

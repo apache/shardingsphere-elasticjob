@@ -33,7 +33,7 @@ public class ServerNode {
      */
     public static final String ROOT = "servers";
     
-    static final String HOST_NAME = ROOT + "/%s/hostName";
+    static final String HOST_NAME = ROOT + "/%s";
     
     static final String STATUS_APPENDIX = "status";
     

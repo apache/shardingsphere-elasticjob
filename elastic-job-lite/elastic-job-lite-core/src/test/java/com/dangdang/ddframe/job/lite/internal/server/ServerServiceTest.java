@@ -70,7 +70,7 @@ public final class ServerServiceTest {
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
         serverService.persistServerOnline(false);
-        verify(jobNodeStorage).fillJobNode("servers/mockedIP/hostName", "mockedHostName");
+        verify(jobNodeStorage).fillJobNode("servers/mockedIP", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
         verify(jobNodeStorage).fillJobNode("servers/mockedIP/test_job_instance_id/disabled", "");
@@ -81,7 +81,7 @@ public final class ServerServiceTest {
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
         serverService.persistServerOnline(true);
-        verify(jobNodeStorage).fillJobNode("servers/mockedIP/hostName", "mockedHostName");
+        verify(jobNodeStorage).fillJobNode("servers/mockedIP", "mockedHostName");
         verify(localHostService, times(4)).getIp();
         verify(localHostService).getHostName();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/test_job_instance_id/disabled");

@@ -108,8 +108,8 @@ public final class JobStatisticsAPIImplTest {
     @Test
     public void assertGetServers() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.get("/test_job/servers/ip1/hostName")).thenReturn("host1");
-        when(regCenter.get("/test_job/servers/ip2/hostName")).thenReturn("host2");
+        when(regCenter.get("/test_job/servers/ip1")).thenReturn("host1");
+        when(regCenter.get("/test_job/servers/ip2")).thenReturn("host2");
         when(regCenter.get("/test_job/servers/ip1/sharding")).thenReturn("0,1");
         when(regCenter.get("/test_job/servers/ip2/sharding")).thenReturn("2,3");
         when(regCenter.get("/test_job/servers/ip1/status")).thenReturn("RUNNING");

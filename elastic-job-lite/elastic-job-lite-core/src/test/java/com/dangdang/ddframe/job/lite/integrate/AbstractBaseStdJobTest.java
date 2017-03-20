@@ -173,7 +173,7 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
+        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(localHostService.getHostName()));
         if (disabled) {
             assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/disabled"));
             while (null != regCenter.get("/" + jobName + "/leader/election/host_instance")) {

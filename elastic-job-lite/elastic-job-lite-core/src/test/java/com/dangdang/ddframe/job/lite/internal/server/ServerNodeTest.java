@@ -40,7 +40,7 @@ public final class ServerNodeTest {
     
     @Test
     public void assertGetHostNameNode() {
-        assertThat(ServerNode.getHostNameNode("host0"), is("servers/host0/hostName"));
+        assertThat(ServerNode.getHostNameNode("host0"), is("servers/host0"));
     }
     
     @Test
