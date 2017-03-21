@@ -82,6 +82,13 @@ public interface CoordinatorRegistryCenter extends RegistryCenter {
     void addCacheData(String cachePath);
     
     /**
+     * 释放本地缓存.
+     *
+     * @param cachePath 需释放缓存的路径
+     */
+    void evictCacheData(String cachePath);
+    
+    /**
      * 获取注册中心数据缓存对象.
      * 
      * @param cachePath 缓存的节点路径

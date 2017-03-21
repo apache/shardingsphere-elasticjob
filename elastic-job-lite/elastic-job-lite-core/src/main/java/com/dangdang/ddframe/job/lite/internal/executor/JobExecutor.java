@@ -70,4 +70,12 @@ public class JobExecutor {
         regCenter.addCacheData("/" + liteJobConfig.getJobName());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
     }
+    
+    /**
+     * 关闭作业.
+     */
+    public void close() {
+        log.debug("Job '{}' controller close.", liteJobConfig.getJobName());
+        regCenter.evictCacheData("/" + liteJobConfig.getJobName());
+    }
 }

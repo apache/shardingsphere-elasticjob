@@ -181,7 +181,8 @@ public class ShardingService {
         public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
             for (JobShardingResult each : shardingResults) {
                 if (!each.getShardingItems().isEmpty()) {
-                    curatorTransactionFinal.create().forPath(jobNodePath.getFullPath(ShardingNode.getShardingNode(each.getJobShardingUnit().getServerIp(), each.getJobShardingUnit().getJobInstanceId())),
+                    curatorTransactionFinal.create().forPath(
+                            jobNodePath.getFullPath(ShardingNode.getShardingNode(each.getJobShardingUnit().getServerIp(), each.getJobShardingUnit().getJobInstanceId())), 
                             ShardingItems.toItemsString(each.getShardingItems()).getBytes()).and();
                 }
             }

@@ -75,6 +75,16 @@ public final class JobRegistry {
     }
     
     /**
+     * 删除作业调度控制器.
+     *
+     * @param jobName 作业名称
+     * @return 删除的作业调度控制器
+     */
+    public JobScheduleController removeJobScheduleController(final String jobName) {
+        return schedulerMap.remove(jobName);
+    }
+    
+    /**
      * 添加作业实例主键.
      *
      * @param jobName 作业名称

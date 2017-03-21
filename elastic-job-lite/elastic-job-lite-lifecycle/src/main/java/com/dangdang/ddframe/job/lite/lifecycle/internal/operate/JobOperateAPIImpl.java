@@ -119,8 +119,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             @Override
             public boolean doOperate(final String jobName, final String serverIp) {
                 JobNodePath jobNodePath = new JobNodePath(jobName);
-                if (regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, JobNodePath.STATUS_NODE)) 
-                        || regCenter.isExisted(jobNodePath.getLeaderHostNodePath())) {
+                if (regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, JobNodePath.STATUS_NODE)) || regCenter.isExisted(jobNodePath.getLeaderHostNodePath())) {
                     return false;
                 }
                 regCenter.remove(jobNodePath.getServerNodePath(serverIp));

@@ -29,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
 import static org.junit.Assert.assertNotNull;
@@ -59,7 +58,7 @@ public final class JobExecutorTest {
     }
     
     @Test
-    public void assertNew() throws NoSuchFieldException {
+    public void assertNew() {
         TestDistributeOnceElasticJobListener testDistributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(caller);
         assertNull(ReflectionUtils.getFieldValue(testDistributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false)));
         new JobExecutor(null, liteJobConfig, new TestElasticJobListener(caller), testDistributeOnceElasticJobListener);
@@ -67,10 +66,16 @@ public final class JobExecutorTest {
     }
     
     @Test
-    public void assertInit() throws NoSuchFieldException, SchedulerException {
+    public void assertInit() {
         jobExecutor.init();
         verify(schedulerFacade).clearPreviousServerStatus();
         verify(regCenter).addCacheData("/test_job");
         verify(schedulerFacade).registerStartUpInfo(liteJobConfig);
+    }
+    
+    @Test
+    public void assertClose() {
+        jobExecutor.close();
+        verify(regCenter).evictCacheData("/test_job");
     }
 }
