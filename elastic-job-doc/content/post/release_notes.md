@@ -10,12 +10,13 @@ weight=1
 
 ### 新功能
 
-1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) Elastic-Job-Lite主节点增加异步协调线程任务，修复分片不一致等分布式相关一致性问题
+1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) Elastic-Job-Lite自诊断并修复分布式不稳定造成的问题
 1. [ISSUE #248](https://github.com/dangdangdotcom/elastic-job/issues/248) Elastic-Job-Lite同一台作业服务器可以通过不同的作业实例名称运行多个相同的作业实例
+1. [ISSUE #249](https://github.com/dangdangdotcom/elastic-job/issues/249) Elastic-Job-Lite运维界面支持事件追踪查询
 
 ### 功能提升
 
-1. [ISSUE #240](https://github.com/dangdangdotcom/elastic-job/issues/240) elastic-job-lite版本运维管理界面与Cloud版保持一致
+1. [ISSUE #240](https://github.com/dangdangdotcom/elastic-job/issues/240) Elastic-Job-Lite运维界面重构
 
 ### 缺陷修正
 
