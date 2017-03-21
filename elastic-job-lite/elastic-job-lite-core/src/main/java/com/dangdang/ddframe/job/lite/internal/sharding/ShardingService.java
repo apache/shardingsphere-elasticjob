@@ -120,8 +120,8 @@ public class ShardingService {
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         clearShardingInfo();
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
-        JobShardingMetadata option = new JobShardingMetadata(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(availableShardingUnits, option)));
+        JobShardingMetadata shardingMetadata = new JobShardingMetadata(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(availableShardingUnits, shardingMetadata)));
         log.debug("Job '{}' sharding complete.", jobName);
     }
     
@@ -180,8 +180,10 @@ public class ShardingService {
         @Override
         public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
             for (JobShardingResult each : shardingResults) {
-                curatorTransactionFinal.create().forPath(jobNodePath.getFullPath(ShardingNode.getShardingNode(each.getJobShardingUnit().getServerIp(), each.getJobShardingUnit().getJobInstanceId())),
-                        ShardingItems.toItemsString(each.getShardingItems()).getBytes()).and();
+                if (!each.getShardingItems().isEmpty()) {
+                    curatorTransactionFinal.create().forPath(jobNodePath.getFullPath(ShardingNode.getShardingNode(each.getJobShardingUnit().getServerIp(), each.getJobShardingUnit().getJobInstanceId())),
+                            ShardingItems.toItemsString(each.getShardingItems()).getBytes()).and();
+                }
             }
             curatorTransactionFinal.delete().forPath(jobNodePath.getFullPath(ShardingNode.NECESSARY)).and();
             curatorTransactionFinal.delete().forPath(jobNodePath.getFullPath(ShardingNode.PROCESSING)).and();
