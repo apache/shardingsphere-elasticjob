@@ -40,7 +40,7 @@ public final class SensitiveInfoUtils {
     
     private static final String FAKE_IP_SAMPLE = "ip";
     
-    private static final String IP_REGEX = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
+    private static final String IP_REGEX = "((\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})";
     
     /**
      * 屏蔽替换IP地址敏感信息.

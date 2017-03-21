@@ -16,6 +16,10 @@ weight=1
 
 1. [ISSUE #240](https://github.com/dangdangdotcom/elastic-job/issues/240) elastic-job-lite版本运维管理界面与Cloud版保持一致
 
+### 缺陷修正
+
+1. [ISSUE #246](https://github.com/dangdangdotcom/elastic-job/issues/246) 通过JobOperateAPI.remove()后，再JobScheduler.init()创建相同作业后多次触发执行
+
 ## 2.0.5
 
 ### 缺陷修正
