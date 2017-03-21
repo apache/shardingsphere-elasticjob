@@ -1,9 +1,8 @@
 #!/bin/bash
 
-show_usage()
-{
+show_usage() {
     echo "Usage: $0 [OPTIONS]"
-    echo "  -p <port>          Server port (default: 8088)."
+    echo "  -p <port>          Server port (default: 8899)"
     exit 1
 }
 
@@ -11,8 +10,7 @@ if [ $# -ne 0 ] && [ $# -ne 2 ]; then
   show_usage
 fi
 
-# default port is 8088
-port="8088"
+port="8899"
 
 if [ $# -eq 2 ]; then
   while getopts p: arg 

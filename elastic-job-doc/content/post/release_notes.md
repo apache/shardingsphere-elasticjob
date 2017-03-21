@@ -10,7 +10,8 @@ weight=1
 
 ### 新功能
 
-1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) elastic-job-lite：主节点增加reconcile线程任务，修复分片不一致等分布式相关一致性问题
+1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) Elastic-Job-Lite主节点增加异步协调线程任务，修复分片不一致等分布式相关一致性问题
+1. [ISSUE #248](https://github.com/dangdangdotcom/elastic-job/issues/248) Elastic-Job-Lite同一台作业服务器可以通过不同的作业实例名称运行多个相同的作业实例
 
 ### 功能提升
 

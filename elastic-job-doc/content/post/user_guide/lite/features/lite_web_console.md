@@ -6,7 +6,9 @@ weight=21
 
 # Elastic-Job-Lite运维平台
 
-以`war`包形式提供，可自行部署至`tomcat`或`jetty`等支持`servlet`的`web`容器中。可通过`mvn install`编译或`maven`中央仓库获取。
+解压缩`elastic-job-lite-console-${version}.tar.gz`并执行`bin\start.sh`。打开浏览器访问`http://localhost:8899/`即可访问控制台。`8899`为默认端口号，可通过启动脚本输入`-p`自定义端口号。
+
+`elastic-job-lite-console-${version}.tar.gz`可通过`mvn install`编译获取。
 
 ## 登录
 
@@ -18,13 +20,13 @@ weight=21
 
 * 注册中心管理
 
-* 作业维度状态查看
-
-* 服务器维度状态查看
-
 * 快捷修改作业设置
 
-* 控制作业暂停，恢复运行，停止和删除
+* 作业和服务器维度状态查看
+
+* 操作作业暂停\恢复、禁用\启用、停止和删除等生命周期
+
+* 事件追踪查询
 
 ## 设计理念
 
@@ -34,5 +36,5 @@ weight=21
 
 ## 不支持项
 
-* 添加作业。
+* 添加作业
 作业在首次运行时将自动添加。`Elastic-Job-Lite`以`jar`方式启动，并无作业分发功能。如需完全通过运维平台发布作业，请使用`Elastic-Job-Cloud`。

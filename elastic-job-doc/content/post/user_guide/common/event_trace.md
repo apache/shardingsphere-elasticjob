@@ -8,6 +8,26 @@ weight=30
 
 `Elastic-Job`的`Lite`版和`Cloud`版都提供了事件追踪功能，可通过事件订阅的方式处理调度过程的重要事件，用于查询、统计和监控。`Elastic-Job`目前提供了基于关系型数据库两种事件订阅方式记录事件。
 
+## 开启事件追踪
+
+### Lite版通过代码配置
+
+`Elastic-Job-Lite`在配置中提供了`JobEventConfiguration`，目前支持数据库方式配置。
+
+```java
+    // 初始化数据源
+    DataSource dataSource = ...;
+    // 定义日志数据库事件溯源配置
+    JobEventConfiguration jobEventRdbConfig = new JobEventRdbConfiguration(dataSource);
+    // 初始化注册中心
+    CoordinatorRegistryCenter regCenter = ...;
+    // 初始化作业配置
+    LiteJobConfiguration liteJobConfig = ...;
+    new JobScheduler(regCenter, liteJobConfig, jobEventRdbConfig).init(); 
+```
+
+### Cloud版通过配置文件
+
 ## 基于关系型数据库的事件追踪
 
 通过配置开启。具体配置方式请分别参见[Elastic-Job-Lite开发指南](../../lite/dev_guide/)和[Elastic-Job-Cloud-Scheduler启动指南](../../cloud/scheduler_guide/)。

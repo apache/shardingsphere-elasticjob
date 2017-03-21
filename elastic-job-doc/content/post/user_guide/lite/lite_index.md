@@ -11,6 +11,10 @@ weight=10
 
 ## [开发指南](../dev_guide/)
 
-## [作业部署](../deploy_guide/)
+## [部署指南](../deploy_guide/)
 
-## [其他功能](../other_features/)
+## [配置手册](../config_manual/)
+
+## [操作手册](../operation_manual/)
+
+## [详细功能列表](../feature_details/)

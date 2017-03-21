@@ -7,5 +7,9 @@ weight=57
 # Elastic-Job-Cloud其他功能
 
 ## [运维平台](../cloud_web_console/)
+
 ## [Elastic-Job-Cloud-Scheduler高可用模式](../high_availability/)
+
 ## [事件追踪](../../common/event_trace/)
+
+## [定制化处理](../../common/customized_hook/)

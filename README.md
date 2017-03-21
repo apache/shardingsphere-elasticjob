@@ -28,6 +28,7 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 * Failover
 * Misfired jobs refire
 * Sharding consistently, same sharding item for a job only one running instance
+* Self diagnose and recover when distribute environment unstable
 * Parallel scheduling supported
 * Job lifecycle operation
 * Lavish job types

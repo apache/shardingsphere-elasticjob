@@ -119,18 +119,3 @@ public class JobDemo {
 ```
 
 之后将作业和用于执行`Java Main`方法的`Shell`脚本打包为`gz.tar`格式，然后使用`Cloud`提供的`REST API`将其部署至`Elastic-Job-Cloud`系统。如对如何打包不理解请参考我们提供的`example`。
-
-## 其他功能
-
-### 1. 作业事件追踪
-作业事件追踪目前支持数据库方式配置。
-
-更多信息请参见[Elastic-Job事件追踪](../../common/event_trace/)。
-
-### 2. 异常处理
-
-`elastic-job`在配置中提供了`JobProperties`，可扩展`JobExceptionHandler`接口，并设置`job_exception_handler`定制异常处理流程。默认实现是记录日志但不抛出异常。
-
-### 3. 定制化作业处理线程池
-
-`elastic-job`在配置中提供了`JobProperties`，可扩展`ExecutorServiceHandler`接口，并设置`executor_service_handler`定制线程池。默认使用`CPU*2`线程数的线程池。
