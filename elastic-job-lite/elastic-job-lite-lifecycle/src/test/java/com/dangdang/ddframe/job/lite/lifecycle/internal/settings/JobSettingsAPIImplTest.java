@@ -114,4 +114,28 @@ public class JobSettingsAPIImplTest {
                 + "\"jobProperties\":{\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\","
                 + "\"job_exception_handler\":\"" + DefaultJobExceptionHandler.class.getCanonicalName() + "\"},\"reconcileIntervalMinutes\":70}");
     }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void assertUpdateJobSettingsIfJobNameIsEmpty() {
+        JobSettings jobSettings = new JobSettings();
+        jobSettings.setJobName("");
+        jobSettingsAPI.updateJobSettings(jobSettings);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void assertUpdateJobSettingsIfCronIsEmpty() {
+        JobSettings jobSettings = new JobSettings();
+        jobSettings.setJobName("test_job");
+        jobSettings.setCron("");
+        jobSettingsAPI.updateJobSettings(jobSettings);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void assertUpdateJobSettingsIfShardingTotalCountLessThanOne() {
+        JobSettings jobSettings = new JobSettings();
+        jobSettings.setJobName("test_job");
+        jobSettings.setCron("0/1 * * * * ?");
+        jobSettings.setShardingTotalCount(0);
+        jobSettingsAPI.updateJobSettings(jobSettings);
+    }
 }
