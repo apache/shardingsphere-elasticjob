@@ -23,6 +23,7 @@ weight=1
 1. [ISSUE #237](https://github.com/dangdangdotcom/elastic-job/issues/238) 增加REST API对分片总数不小于1的校验
 1. [ISSUE #238](https://github.com/dangdangdotcom/elastic-job/issues/238) IP正则表达式错误
 1. [ISSUE #246](https://github.com/dangdangdotcom/elastic-job/issues/246) 通过JobOperateAPI.remove()后，再JobScheduler.init()创建相同作业后多次触发执行
+1. [ISSUE #250](https://github.com/dangdangdotcom/elastic-job/issues/250) Misfire任务多触发一次
 
 ## 2.0.5
 

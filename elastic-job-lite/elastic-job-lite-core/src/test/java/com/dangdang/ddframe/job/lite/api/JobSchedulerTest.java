@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
-import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
@@ -58,38 +57,25 @@ public final class JobSchedulerTest {
     @Mock
     private ElasticJobListenerCaller caller;
     
-    private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createSimpleLiteJobConfiguration();
+    private LiteJobConfiguration liteJobConfig;
     
-    private JobScheduler jobScheduler = new JobScheduler(regCenter, liteJobConfig);
+    private JobScheduler jobScheduler;
     
     @Before
     public void initMocks() throws NoSuchFieldException {
+        liteJobConfig = LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build(), TestSimpleJob.class.getCanonicalName())).build();
+        jobScheduler = new JobScheduler(regCenter, liteJobConfig);
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "jobExecutor", jobExecutor);
         when(jobExecutor.getSchedulerFacade()).thenReturn(schedulerFacade);
-    }
-    
-    @Test
-    public void assertInitIfIsMisfire() throws NoSuchFieldException, SchedulerException {
-        mockInit(true);
-        jobScheduler.init();
-        assertInit();
-    }
-    
-    @Test
-    public void assertInitIfIsNotMisfire() throws NoSuchFieldException, SchedulerException {
-        mockInit(false);
-        jobScheduler.init();
-        assertInit();
-    }
-    
-    private void mockInit(final boolean isMisfire) {
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
-        when(schedulerFacade.loadJobConfiguration()).thenReturn(LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).misfire(isMisfire).build(), TestSimpleJob.class.getCanonicalName())).build());
+        when(schedulerFacade.loadJobConfiguration()).thenReturn(liteJobConfig);
     }
     
-    private void assertInit() throws NoSuchFieldException, SchedulerException {
+    @Test
+    public void assertInit() throws NoSuchFieldException, SchedulerException {
+        jobScheduler.init();
         verify(jobExecutor).init();
         Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), JobScheduleController.class.getDeclaredField("scheduler"));
         assertThat(scheduler.getListenerManager().getTriggerListeners().size(), is(1));
@@ -100,7 +86,6 @@ public final class JobSchedulerTest {
     
     @Test
     public void assertShutdown() {
-        mockInit(true);
         jobScheduler.init();
         jobScheduler.shutdown();
     }

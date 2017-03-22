@@ -95,7 +95,7 @@ public class JobScheduler {
         jobExecutor.init();
         JobTypeConfiguration jobTypeConfig = jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig();
         JobScheduleController jobScheduleController = new JobScheduleController(
-                createScheduler(jobTypeConfig.getCoreConfig().isMisfire()), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
+                createScheduler(), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
         jobScheduleController.scheduleJob(jobTypeConfig.getCoreConfig().getCron());
         jobRegistry.addJobScheduleController(jobName, jobScheduleController);
     }
@@ -120,11 +120,11 @@ public class JobScheduler {
         return Optional.absent();
     }
     
-    private Scheduler createScheduler(final boolean isMisfire) {
+    private Scheduler createScheduler() {
         Scheduler result;
         try {
             StdSchedulerFactory factory = new StdSchedulerFactory();
-            factory.initialize(getBaseQuartzProperties(isMisfire));
+            factory.initialize(getBaseQuartzProperties());
             result = factory.getScheduler();
             result.getListenerManager().addTriggerListener(jobExecutor.getSchedulerFacade().newJobTriggerListener());
         } catch (final SchedulerException ex) {
@@ -133,14 +133,12 @@ public class JobScheduler {
         return result;
     }
     
-    private Properties getBaseQuartzProperties(final boolean isMisfire) {
+    private Properties getBaseQuartzProperties() {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", jobName);
-        if (!isMisfire) {
-            result.put("org.quartz.jobStore.misfireThreshold", "1");
-        }
+        result.put("org.quartz.jobStore.misfireThreshold", "1");
         result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
         result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
         return result;
