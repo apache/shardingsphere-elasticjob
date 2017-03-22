@@ -24,15 +24,14 @@ function renderServersOverview() {
         columns: 
         [{
             field: "serverIp",
-            title: "服务器IP"
-        }, {
-            field: "serverHostName",
-            title: "服务器名"
+            title: "服务器IP",
+            sortable: "true"
         }, {
             field: "status",
-            title: "状态"
+            title: "状态",
+            sortable: "true"
         }, {
-            fidle: "operation",
+            field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
         }]

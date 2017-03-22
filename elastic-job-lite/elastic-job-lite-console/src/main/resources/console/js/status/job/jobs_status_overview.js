@@ -26,10 +26,12 @@ function renderJobsOverview() {
         columns: 
         [{
             field: "jobName",
-            title: "作业名"
+            title: "作业名",
+            sortable: "true"
         }, {
             field: "status",
-            title: "运行状态"
+            title: "运行状态",
+            sortable: "true"
         }, {
             field: "description",
             title: "描述"
