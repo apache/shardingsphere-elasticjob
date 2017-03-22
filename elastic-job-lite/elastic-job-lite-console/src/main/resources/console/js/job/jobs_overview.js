@@ -71,7 +71,7 @@ function bindModifyButtons() {
             success: function(data) {
                 if (null !== data) {
                     $(".box-body").remove();
-                    $('#update-job-body').load('html/job/job_detail.html', null, function() {
+                    $('#update-job-body').load('html/job/job_config.html', null, function() {
                         $('#data-update-job').modal({backdrop : 'static', keyboard : true});
                         renderJob(data);
                     });

@@ -3,34 +3,40 @@ $(function() {
     var serverIp = getCurrentUrl("serverIp");
     var statusPage = getCurrentUrl("statusPage");
     if (null !== statusPage) {
-        $("#content").load("html/job/jobs_status.html");
+        $("#content").load("html/job/job_config.html");
         $("#job").addClass("active");
     } else if (null !== serverIp) {
-        $("#content").load("html/server/server_detail.html");
+        $("#content").load("html/status/server/server_status_detail.html");
         $("#server").addClass("active");
+    } else if (null !== jobName) {
+        $("#content").load("html/job/jobs_overview.html");
+        $("#job").addClass("active");
     } else {
-        $("#content").load("html/reg/registry_center.html");
+        $("#content").load("html/global/registry_center.html");
         $("#settings").addClass("active");
     }
     $("#reg-center").click(function() {
-        $("#content").load("html/reg/registry_center.html");
+        $("#content").load("html/global/registry_center.html");
     });
     $("#event-trace-data-source").click(function() {
-        $("#content").load("html/event/event_trace_data_source.html");
+        $("#content").load("html/global/event_trace_data_source.html");
+    });
+    $("#job-config").click(function() {
+        $("#content").load("html/job/jobs_overview.html");
     });
     $("#job-status").click(function() {
-        $("#content").load("html/job/jobs_status_overview.html");
+        $("#content").load("html/status/job/jobs_status_overview.html");
     });
     $("#server-status").click(function() {
-        $("#content").load("html/server/servers_overview.html");
+        $("#content").load("html/status/server/servers_status_overview.html");
     });
     $("#exec-detail").click(function() {
-        $("#content").load("html/history/job_exec_detail.html");
+        $("#content").load("html/history/job_event_trace_history.html");
     });
     $("#exec-status").click(function() {
-        $("#content").load("html/history/job_exec_status.html");
+        $("#content").load("html/history/job_status_history.html");
     });
     $("#help").click(function() {
-        $("#content").load("html/help.html");
+        $("#content").load("html/help/help.html");
     });
 });

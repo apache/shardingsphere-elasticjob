@@ -19,13 +19,13 @@ function renderDataSources() {
             title: "数据源名称"
         }, {
             field: "driver",
-            title: "数据源驱动"
+            title: "数据库驱动"
         }, {
             field: "url",
-            title: "数据源连接地址"
+            title: "数据库连接地址"
         }, {
             field: "username",
-            title: "连接用户名"
+            title: "数据库用户名"
         }, {
             field: "operation",
             title: "操作",
