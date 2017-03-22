@@ -1,4 +1,4 @@
-##Elastic-Job - distributed scheduled job solution
+# Elastic-Job - distributed scheduled job solution
 
   Elastic-Job是ddframe中dd-job的作业模块中分离出来的分布式弹性作业框架。去掉了和dd-job中的监控和ddframe接入规范部分。该项目基于成熟的开源产品Quartz和Zookeeper及其客户端Curator进行二次开发。
 

@@ -7,9 +7,9 @@ weight=14
 
 # Elastic-Job-Lite配置手册
 
-## Java Code配置
+## 1. Java Code配置
 
-### 注册中心配置
+### a. 注册中心配置
 
 用于注册和协调作业分布式行为的组件，目前仅支持`Zookeeper`。
 
@@ -26,7 +26,7 @@ weight=14
 | connectionTimeoutMilliseconds | boolean | 否       | 15000  | 连接超时时间<br />单位：毫秒 |
 | digest                        | String  | 否       |        | 连接`Zookeeper`的权限令牌<br />缺省为不需要权限验证 |
 
-### 作业配置
+### b. 作业配置
 
 作业配置分为3级，分别是`JobCoreConfiguration`，`JobTypeConfiguration`和`LiteJobConfiguration`。`LiteJobConfiguration`使用`JobTypeConfiguration`，`JobTypeConfiguration`使用`JobCoreConfiguration`，层层嵌套。
 `JobTypeConfiguration`根据不同实现类型分为`SimpleJobConfiguration`，`DataflowJobConfiguration`和`ScriptJobConfiguration`。
@@ -80,7 +80,7 @@ weight=14
 | reconcileIntervalMinutes | int                  | 否       |10               | 修复作业服务器不一致状态服务调度间隔时间，配置为小于`1`的任意值表示不执行修复<br />单位：分钟 |
 | eventTraceRdbDataSource  | String               | 否       |                 | 作业事件追踪的数据源`Bean`引用 |
 
-## Spring命名空间配置
+## 2. Spring命名空间配置
 
 `Spring`命名空间与`Java Code`方式配置类似，大部分属性只是将命名方式由驼峰式改为以减号间隔。使用`Spring`命名空间需在`pom.xml`文件中添加`elastic-job-lite-spring`模块的依赖。
 
@@ -92,7 +92,7 @@ weight=14
 </dependency>
 ```
 
-### 注册中心配置
+### a. 注册中心配置
 
 #### reg:zookeeper命名空间属性详细说明
 
@@ -109,7 +109,7 @@ weight=14
 | digest                          | String | 否     |       | 连接`Zookeeper`的权限令牌<br />缺省为不需要权限验证                                                      |
 
 
-### 作业配置
+### b. 作业配置
 
 #### job:simple命名空间属性详细说明
 
@@ -161,7 +161,7 @@ job:script命名空间拥有job:simple命名空间的全部属性，以下仅列
 | ------------------------------ |:-------|:-------|:--------------|:--------------------------------------------------|
 | class                          | String |`是`    |               | 前置后置任务监听实现类，需实现`ElasticJobListener`接口 |
 
-### 作业监听配置
+### c. 作业监听配置
 
 #### job:distributed-listener命名空间属性详细说明
 

@@ -7,14 +7,14 @@ weight=12
 
 # Elastic-Job-Lite开发指南
 
-## 作业开发
+## 1. 作业开发
 
 `Elastic-Job-Lite`和`Elastic-Job-Cloud`提供统一作业接口，开发者仅需对业务作业进行一次开发，之后可根据不同的配置以及部署至不同的`Lite`或`Cloud`环境。
 
 `Elastic-Job`提供`Simple`、`Dataflow`和`Script` `3`种作业类型。
 方法参数`shardingContext`包含作业配置、片和运行时信息。可通过`getShardingTotalCount()`, `getShardingItem()`等方法分别获取分片总数，运行在本作业服务器的分片序列号等。
 
-### 1. Simple类型作业
+### a. Simple类型作业
 
 意为简单实现，未经任何封装的类型。需实现`SimpleJob`接口。该接口仅提供单一方法用于覆盖，此方法将定时执行。与`Quartz`原生接口相似，但提供了弹性扩缩容和分片等功能。
 
@@ -39,7 +39,7 @@ public class MyElasticJob implements SimpleJob {
 }
 ```
 
-### 2. Dataflow类型作业
+### b. Dataflow类型作业
 
 `Dataflow`类型用于处理数据流，需实现`DataflowJob`接口。该接口提供`2`个方法可供覆盖，分别用于抓取(`fetchData`)和处理(`processData`)数据。
 
@@ -82,7 +82,7 @@ public class MyElasticJob implements DataflowJob<Foo> {
 如果采用流式作业处理方式，建议`processData`处理数据后更新其状态，避免`fetchData`再次抓取到，从而使得作业永不停止。
 流式数据处理参照`TbSchedule`设计，适用于不间歇的数据处理。
 
-### 3. Script类型作业
+### c. Script类型作业
 
 `Script`类型作业意为脚本类型作业，支持`shell`，`python`，`perl`等所有类型脚本。只需通过控制台或代码配置`scriptCommandLine`即可，无需编码。执行脚本路径可包含参数，参数传递完毕后，作业框架会自动追加最后一个参数为作业运行时信息。
 
@@ -95,7 +95,7 @@ echo sharding execution context is $*
 
 `sharding execution context is {"jobName":"scriptElasticDemoJob","shardingTotalCount":10,"jobParameter":"","shardingItem":0,"shardingParameter":"A"}`
 
-## 作业配置
+## 2. 作业配置
 
 `Elastic-Job`配置分为`3`个层级，分别是`Core`, `Type`和`Root`。每个层级使用相似于装饰者模式的方式装配。
 
@@ -105,7 +105,7 @@ echo sharding execution context is $*
 
 `Root`对应`JobRootConfiguration`，有`2`个子类分别对应`Lite`和`Cloud`部署类型，提供不同部署类型所需的配置，如：`Lite`类型的是否需要覆盖本地配置或`Cloud`占用`CPU`或`Memory`数量等。
 
-### 使用Java代码配置
+### a. 使用Java代码配置
 
 **通用作业配置**
 
@@ -132,7 +132,7 @@ echo sharding execution context is $*
     JobRootConfiguration scriptJobRootConfig = LiteJobConfiguration.newBuilder(scriptCoreConfig).build();
 ```
 
-### Spring命名空间配置
+### b. Spring命名空间配置
 
 与`Spring`容器配合使用作业，可将作业`Bean`配置为`Spring Bean`，并在作业中通过依赖注入使用`Spring`容器管理的数据源等对象。可用`placeholder`占位符从属性文件中取值。`Lite`可考虑使用`Spring`命名空间方式简化配置。
 
@@ -175,9 +175,9 @@ echo sharding execution context is $*
 
 配置项详细说明请参见[Elastic-Job-Lite配置手册](../config_manual/)
 
-## 作业启动
+## 3. 作业启动
 
-### 1. Java启动方式
+### a. Java启动方式
 
 ```java
 public class JobDemo {
@@ -199,6 +199,6 @@ public class JobDemo {
 }
 ```
 
-### 2. Spring启动方式
+### b. Spring启动方式
 
 将配置`Spring`命名空间的xml通过`Spring`启动，作业将自动加载。
