@@ -26,25 +26,19 @@ public class Bootstrap {
     
     private static final String CONSOLE_PATH = "console";
     
-    private static final int PORT = 8088;
+    private static final int PORT = 8899;
     
     /**
      * 启动Restful服务.
      */
     //CHECKSTYLE:OFF
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws Exception {
     //CHECKSTYLE:ON
-        try {
-            RestfulServer restfulServer = new RestfulServer(PORT);
-            restfulServer.addFilter(WwwAuthFilter.class, "/")
-                         .addFilter(WwwAuthFilter.class, "*.html")
-                         .addFilter(WwwAuthFilter.class, "*.js")
-                         .addFilter(WwwAuthFilter.class, "*.css")
-                         .start(LiteJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
-            //CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-            //CHECKSTYLE:ON
-            throw new RuntimeException(ex.getCause());
-        }
+        RestfulServer restfulServer = new RestfulServer(PORT);
+        restfulServer.addFilter(WwwAuthFilter.class, "/")
+                     .addFilter(WwwAuthFilter.class, "*.html")
+                     .addFilter(WwwAuthFilter.class, "*.js")
+                     .addFilter(WwwAuthFilter.class, "*.css")
+                     .start(LiteJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
     }
 }

@@ -15,9 +15,6 @@ $(function() {
         $("#content").load("html/reg/registry_center.html");
         $("#settings").addClass("active");
     }
-    $("#overview").click(function() {
-        $("#content").load("html/overview/overview.html");
-    });
     $("#reg-center").click(function() {
         $("#content").load("html/reg/registry_center.html");
     });
@@ -34,10 +31,10 @@ $(function() {
         $("#content").load("html/server/servers_overview.html");
     });
     $("#exec-detail").click(function() {
-        $("#content").load("html/event/job_exec_detail.html");
+        $("#content").load("html/history/job_exec_detail.html");
     });
     $("#exec-status").click(function() {
-        $("#content").load("html/event/job_exec_status.html");
+        $("#content").load("html/history/job_exec_status.html");
     });
     $("#help").click(function() {
         $("#content").load("html/help.html");

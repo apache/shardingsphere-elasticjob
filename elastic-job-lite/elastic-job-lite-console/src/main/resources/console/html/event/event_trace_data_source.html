@@ -1,10 +1,10 @@
 <div class="index-content">
     <section class="content-header">
-        <h4>事件追踪数据源</h4>
+        <h4>事件追踪数据源配置</h4>
     </section>
     <section class="content">
         <table id="data-sources" data-pagination="true" data-page-list="[10, 20, 50, 100]"></table>
-        <button type="button" class="btn-sm btn-success" data-toggle="modal" id="add-data-source">添加</button>
+        <button type="button" class="label label-success" data-toggle="modal" id="add-data-source">添加</button>
     </section>
 </div>
 <div id="add-data-source-center" class="modal" tabindex="-1" role="dialog">
@@ -21,19 +21,19 @@
                         <input type="text" class="form-control" id="name" name="name" required autofocus>
                     </div>
                     <div class="form-group">
-                        <label for="driver" class="control-label">数据源驱动：</label>
+                        <label for="driver" class="control-label">数据库驱动：</label>
                         <input type="text" class="form-control" id="driver" name="driver" required>
                     </div>
                     <div class="form-group">
-                        <label for="url" class="control-label">数据源连接地址：</label>
+                        <label for="url" class="control-label">数据库地址：</label>
                         <input type="text" class="form-control" id="url" name="url">
                     </div>
                     <div class="form-group">
-                        <label for="username" class="control-label">数据源连接用户名：</label>
+                        <label for="username" class="control-label">数据库用户名：</label>
                         <input type="text" class="form-control" id="username" name="username">
                     </div>
                     <div class="form-group">
-                        <label for="password" class="control-label">数据源连接连接口令：</label>
+                        <label for="password" class="control-label">数据库密码：</label>
                         <input type="text" class="form-control" id="password" name="password">
                     </div>
                 </div>

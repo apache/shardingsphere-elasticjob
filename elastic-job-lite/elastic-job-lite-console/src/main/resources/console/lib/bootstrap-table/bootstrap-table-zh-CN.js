@@ -34,7 +34,11 @@
             return '列';
         }
     };
-
     $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
 
+    // BOOTSTRAP TABLE INIT
+    // =======================
+    $(function () {
+        $('[data-toggle="table"]').bootstrapTable();
+    });
 })(jQuery);

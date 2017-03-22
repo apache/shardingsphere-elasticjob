@@ -22,19 +22,12 @@
     <body class="hold-transition skin-blue-light sidebar-mini">
     <div class="wrapper">
         <header class="main-header">
-        <a href="index.html" class="logo">
+        <a class="logo">
             <span class="logo-lg"><b>Elastic Job Lite Console</b></span>
         </a>
         <nav class="navbar navbar-static-top" role="navigation">
-            <div class="navbar-header">
-                <span class="navbar-brand">当前注册中心：<span id="activated-reg-center"></span></span>
-            </div>
-            <div class="navbar-header">
-                <span class="navbar-brand">当前事件追踪数据源：<span id="activated-data-source"></span></span>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#" id="overview">总览</a></li>
+            <div id="navbar" class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
                     <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">注册中心管理<span class="caret"></span></a>
                         <ul class="dropdown-menu" id="registry-center-dimension"></ul>
                     </li>
@@ -42,6 +35,7 @@
                         <ul class="dropdown-menu" id="data-source-dimension"></ul>
                     </li>
                     <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
+                    <li></li>
                 </ul>
             </div>
         </nav>
@@ -49,41 +43,36 @@
     <aside class="main-sidebar">
         <section class="sidebar">
             <ul class="sidebar-menu">
-                <li class="header">主菜单</li>
                 <li class="treeview" id="settings">
                     <a href="#">
-                        <i class="fa fa-laptop">     中心配置</i><i class="pull-right fa fa-angle-left "></i>
+                        <i class="fa fa-cogs">&nbsp;&nbsp;全局配置</i><i class="pull-right fa fa-angle-left "></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" id="reg-center"><i class="fa fa-circle-o"></i> 注册中心配置</a></li>
-                        <li><a href="#" id="event-trace-data-source"><i class="fa fa-circle-o"></i> 事件追踪数据源配置</a></li>
+                        <li><a href="#" id="reg-center"><i class="fa fa-circle-o"></i>注册中心配置</a></li>
+                        <li><a href="#" id="event-trace-data-source"><i class="fa fa-circle-o"></i>事件追踪数据源配置</a></li>
                     </ul>
                 </li>
                 <li class="treeview" id="job">
-                    <a href="#">
-                        <i class="fa fa-database">     作业维度</i><i class="pull-right fa fa-angle-left "></i>
-                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                    <a href="#" id="job-dimension">
+                        <i class="fa fa-tags">&nbsp;&nbsp;作业配置</i>
                     </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#" id="job-dimension"><i class="fa fa-circle-o"></i> 定义</a></li>
-                        <li><a href="#" id="job-status"><i class="fa fa-circle-o"></i> 状态</a></li>
-                    </ul>
                 </li>
                 <li class="treeview" id="server">
                     <a href="#">
-                        <i class="fa fa-edit">     服务器维度</i><i class="pull-right fa fa-angle-left "></i>
+                        <i class="fa fa-tasks">&nbsp;&nbsp;作业状态</i><i class="pull-right fa fa-angle-left "></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" id="server-status"><i class="fa fa-circle-o"></i> 状态</a></li>
+                        <li><a href="#" id="server-status"><i class="fa fa-circle-o"></i>服务器维度</a></li>
+                        <li><a href="#" id="job-status"><i class="fa fa-circle-o"></i>作业维度</a></li>
                     </ul>
                 </li>
                 <li class="treeview" id="history">
                     <a href="#">
-                        <i class="fa fa-dashboard">     作业历史</i><i class="pull-right fa fa-angle-left "></i>
+                        <i class="fa fa-history">&nbsp;&nbsp;作业历史</i><i class="pull-right fa fa-angle-left "></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#" id="exec-detail"><i class="fa fa-circle-o"></i> 运行轨迹查询</a></li>
-                        <li><a href="#" id="exec-status"><i class="fa fa-circle-o"></i> 运行状态查询</a></li>
+                        <li><a href="#" id="exec-detail"><i class="fa fa-circle-o"></i>历史轨迹</a></li>
+                        <li><a href="#" id="exec-status"><i class="fa fa-circle-o"></i>历史状态</a></li>
                     </ul>
                 </li>
                 <li class="treeview">
