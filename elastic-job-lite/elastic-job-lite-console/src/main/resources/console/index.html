@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/index.css">
     <script src="lib/jquery/jquery-2.1.4.min.js"></script>
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="lib/AdminLTE/js/app.min.js"></script>
     <script src="js/util/common.js"></script>
     <script src="js/util/dashboard.js"></script>
     <script src="js/index.js"></script>
@@ -34,10 +35,13 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#" id="overview">总览</a></li>
-                    <li><a href="#" id="registry-center">注册中心管理</a></li>
-                    <li><a href="#" id="data-source">事件追踪数据源管理</a></li>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">注册中心管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu" id="registry-center-dimension"></ul>
+                    </li>
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">事件追踪数据源管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu" id="data-source-dimension"></ul>
+                    </li>
                     <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
-                    <li></li>
                 </ul>
             </div>
         </nav>
@@ -45,65 +49,74 @@
     <aside class="main-sidebar">
         <section class="sidebar">
             <ul class="sidebar-menu">
-                <li class="treeview active">
-                    <a href="#registry-center-dimension" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-laptop"></i>注册中心<i class="fa fa-angle-left pull-right"></i>
+                <li class="header">主菜单</li>
+                <li class="treeview" id="settings">
+                    <a href="#">
+                        <i class="fa fa-laptop">     中心配置</i><i class="pull-right fa fa-angle-left "></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#" id="reg-center"><i class="fa fa-circle-o"></i> 注册中心配置</a></li>
+                        <li><a href="#" id="event-trace-data-source"><i class="fa fa-circle-o"></i> 事件追踪数据源配置</a></li>
+                    </ul>
+                </li>
+                <li class="treeview" id="job">
+                    <a href="#">
+                        <i class="fa fa-database">     作业维度</i><i class="pull-right fa fa-angle-left "></i>
                         <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
                     </a>
-                    <ul id="registry-center-dimension" class="nav nav-list tree collapse in"></ul>
+                    <ul class="treeview-menu">
+                        <li><a href="#" id="job-dimension"><i class="fa fa-circle-o"></i> 定义</a></li>
+                        <li><a href="#" id="job-status"><i class="fa fa-circle-o"></i> 状态</a></li>
+                    </ul>
                 </li>
-                <li class="treeview">
-                     <a href="#data-source-dimension" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-database"></i>事件追踪数据源<i class="fa fa-angle-left pull-right"></i>
-                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                <li class="treeview" id="server">
+                    <a href="#">
+                        <i class="fa fa-edit">     服务器维度</i><i class="pull-right fa fa-angle-left "></i>
                     </a>
-                    <ul id="data-source-dimension" class="nav nav-list tree collapse in"></ul>
+                    <ul class="treeview-menu">
+                        <li><a href="#" id="server-status"><i class="fa fa-circle-o"></i> 状态</a></li>
+                    </ul>
                 </li>
-                <li class="treeview">
-                    <a href="#jobs-dimension" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-edit"></i>作业维度<i class="fa fa-angle-left pull-right"></i>
+                <li class="treeview" id="history">
+                    <a href="#">
+                        <i class="fa fa-dashboard">     作业历史</i><i class="pull-right fa fa-angle-left "></i>
                     </a>
-                    <ul id="jobs-dimension" class="nav nav-list tree collapse in"></ul>
-                </li>
-                <li class="treeview">
-                    <a href="#servers-dimension" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-desktop"></i>服务器维度<i class="fa fa-angle-left pull-right"></i>
-                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
-                    </a>
-                    <ul id="servers-dimension" class="nav nav-list tree collapse in"></ul>
-                </li>
-                <li class="treeview">
-                    <a href="#record" class="nav-header collapsed" data-toggle="collapse">
-                        <i class="fa fa-dashboard"></i>作业历史<i class="fa fa-angle-left pull-right"></i>
-                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
-                    </a>
-                    <ul id="record" class="nav nav-list tree collapse">
+                    <ul class="treeview-menu">
                         <li><a href="#" id="exec-detail"><i class="fa fa-circle-o"></i> 运行轨迹查询</a></li>
                         <li><a href="#" id="exec-status"><i class="fa fa-circle-o"></i> 运行状态查询</a></li>
                     </ul>
                 </li>
-                <li><a href="#"><i class="fa fa-book"></i><span>帮助文档</span></a></li>
+                <li class="treeview">
+                    <a href="#" id="help">
+                        <i class="fa fa-book">     帮助</i>
+                    </a>
+                </li> 
             </ul>
         </section>
     </aside>
     <div id="content">
     </div>
     <footer class="main-footer">
-        <strong>Copyright &copy; 2004-2016 <a href="http://www.dangdang.com">当当网</a>.</strong> All rights reserved.
+        <strong>Copyright &copy; 2004-2017 <a href="http://www.dangdang.com">当当网</a>.</strong> All rights reserved.
     </footer>
+    <aside class="control-sidebar control-sidebar-dark">
+        <div class="tab-content">
+            <div id="control-sidebar-theme-demo-options-tab" class="tab-pane active"></div>
+        </div>
+    </aside>
     </div>
     <div id="success-dialog" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title size-font">信息框</h3>
+                    <h4 class="modal-title">信息框</h4>
                 </div>
                 <div class="modal-body">
-                    <h3 class="size-font">操作已成功完成</h3>
+                    <h4>操作已成功完成</h4>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn-sm btn-success" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>
@@ -113,13 +126,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title size-font">信息框</h3>
+                    <h4 class="modal-title">信息框</h4>
                 </div>
                 <div class="modal-body">
-                    <h3 class="size-font">操作未成功，原因：连接失败，请检查注册中心配置</h3>
+                    <h4>操作未成功，原因：连接失败，请检查注册中心配置</h4>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn-sm btn-danger" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>
@@ -129,13 +142,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title size-font">信息框</h3>
+                    <h4 class="modal-title">信息框</h4>
                 </div>
                 <div class="modal-body">
-                    <h3 class="size-font">操作未成功，原因：连接失败，请检查事件追踪数据源配置</h3>
+                    <h4>操作未成功，原因：连接失败，请检查事件追踪数据源配置</h4>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn-sm btn-danger" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>
@@ -145,13 +158,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title size-font">信息框</h3>
+                    <h4 class="modal-title">信息框</h4>
                 </div>
                 <div class="modal-body">
-                    <h3 class="size-font">操作未成功，原因：删除作业失败，请检查作业是否已被停止</h3>
+                    <h4>操作未成功，原因：删除作业失败，请检查作业是否已被停止</h4>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn-sm btn-danger" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>
@@ -161,13 +174,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title size-font">信息框</h3>
+                    <h4 class="modal-title">信息框</h4>
                 </div>
                 <div class="modal-body">
-                    <h3 class="size-font">操作未成功，原因：注册中心名称重复</h3>
+                    <h4>操作未成功，原因：注册中心名称重复</h4>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn-sm btn-danger" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>
@@ -177,13 +190,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title size-font">信息框</h3>
+                    <h4 class="modal-title">信息框</h4>
                 </div>
                 <div class="modal-body">
-                    <h3 class="size-font">操作未成功，原因：数据源名称重复</h3>
+                    <h4>操作未成功，原因：数据源名称重复</h4>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn-sm btn-danger" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>
@@ -193,14 +206,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title size-font">确认框</h3>
+                    <h4 class="modal-title">确认框</h4>
                 </div>
                 <div class="modal-body">
-                    <h3 class="size-font">确认要删除吗？</h3>
+                    <h4>确认要删除吗？</h4>
                 </div>
                 <div class="modal-footer">
-                    <button id="delete-confirm-dialog-confirm-btn" type="button" class="btn btn-danger">确认</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                    <button id="delete-confirm-dialog-confirm-btn" type="button" class="btn-sm btn-danger">确认</button>
+                    <button type="button" class="btn-sm btn-success" data-dismiss="modal">关闭</button>
                 </div>
             </div>
         </div>

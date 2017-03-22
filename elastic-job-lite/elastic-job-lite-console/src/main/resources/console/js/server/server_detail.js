@@ -4,9 +4,6 @@ $(function() {
     bindTriggerButtons();
     bindPauseButtons();
     bindResumeButtons();
-    bindTriggerAllButton();
-    bindPauseAllButton();
-    bindResumeAllButton();
     bindShutdownButtons();
     bindRemoveButtons();
 });
@@ -51,13 +48,12 @@ function renderJobs() {
 }
 
 function generateOperationButtons(val, row){
-    var operationTd = "";
     var triggerButton = "<button operation='trigger' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
     var resumeButton = "<button operation='resume' class='btn-xs btn-info' job-name='" + row.jobName + "'>恢复</button>";
     var pauseButton = "<button operation='pause' class='btn-xs btn-warning' job-name='" + row.jobName + "'>暂停</button>";
     var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' job-name='" + row.jobName + "'>关闭</button>";
     var removeButton = "<button operation='remove' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
-    operationTd = triggerButton + "&nbsp;";
+    var operationTd = triggerButton + "&nbsp;";
     if ("PAUSED" === row.status) {
         operationTd = triggerButton + "&nbsp;" + resumeButton;
     } else if ("DISABLED" !== row.status && "CRASHED" !== row.status && "SHUTDOWN" !== row.status) {
