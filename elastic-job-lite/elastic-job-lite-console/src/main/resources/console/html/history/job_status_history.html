@@ -1,4 +1,4 @@
-<<div class="index-content">
+<div class="index-content">
     <section class="content-header">
         <h4>历史作业执行状态 </h4>
     </section>
@@ -26,22 +26,22 @@
                             </div>
                         </div>
                     </div>
-                        <table id="job-exec-status-table" 
-                            data-show-refresh="true"
-                            data-show-toggle="true"
-                            data-striped="true"
-                            data-toggle="table"
-                            data-url="/api/job/events/statusTraces"
-                            data-flat="true"
-                            data-click-to-select="true"
-                            data-row-style="rowStyle"
-                            data-query-params="queryParams"
-                            data-query-params-type="notLimit"
-                            data-side-pagination="server"
-                            data-pagination="true"
-                            data-page-list="[10, 20, 50, 100]"
-                            data-show-columns="true"
-                            data-toolbar="#jobExecStatusToolbar">
+                    <table id="job-exec-status-table"
+                           data-show-refresh="true"
+                           data-show-toggle="true"
+                           data-striped="true"
+                           data-toggle="table"
+                           data-url="/api/job/events/statusTraces"
+                           data-flat="true"
+                           data-click-to-select="true"
+                           data-row-style="rowStyle"
+                           data-query-params="queryParams"
+                           data-query-params-type="notLimit"
+                           data-side-pagination="server"
+                           data-pagination="true"
+                           data-page-list="[10, 20, 50, 100]"
+                           data-show-columns="true"
+                           data-toolbar="#jobExecStatusToolbar">
                         <thead>
                             <tr>
                                 <th data-field="jobName" data-sortable="true">作业名称</th>
@@ -65,4 +65,4 @@
 <script src="lib/input-mask/jquery.inputmask.date.extensions.js"></script>
 <script src="lib/input-mask/jquery.inputmask.extensions.js"></script>
 <script src="js/common/formatter.js"></script>
-<script src="js/history/job_status_history.js"></script>
+<script src="js/history/job_event_trace_history.js"></script>

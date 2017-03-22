@@ -30,10 +30,10 @@ $(function() {
     $("#server-status").click(function() {
         $("#content").load("html/status/server/servers_status_overview.html");
     });
-    $("#exec-detail").click(function() {
+    $("#event-trace-history").click(function() {
         $("#content").load("html/history/job_event_trace_history.html");
     });
-    $("#exec-status").click(function() {
+    $("#status-history").click(function() {
         $("#content").load("html/history/job_status_history.html");
     });
     $("#help").click(function() {
