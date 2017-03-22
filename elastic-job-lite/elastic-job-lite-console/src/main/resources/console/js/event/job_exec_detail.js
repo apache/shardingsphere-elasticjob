@@ -16,8 +16,8 @@ function queryParams(params) {
         order: params.sortOrder,
         jobName: $("#job-name").val(),
         taskId: $("#taskId").val(),
-        startTime: $("#startTime").val(),
-        endTime: $("#endTime").val(),
+        startTime: $("#start-time").val(),
+        endTime: $("#end-time").val(),
         ip: $("#ip").val(),
         isSuccess: $('input[name = "isSuccess"]:checked ').val()
     };

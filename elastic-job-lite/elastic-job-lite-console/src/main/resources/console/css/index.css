@@ -4,9 +4,6 @@
     z-index: 800;
     margin-left: 230px;
 }
-.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
-    color: black;
-}
 .form-group.toolbar label {
     float: left;
     width: 90px;
@@ -20,6 +17,7 @@
     height: 52px;
     text-align: center;
 }
-.size-font {
-    font-size: 20px;
+.update-model-size{
+    width:210%;
+    margin-left:-290px;
 }
