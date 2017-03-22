@@ -5,9 +5,6 @@ $(function() {
     if (null !== statusPage) {
         $("#content").load("html/job/jobs_status.html");
         $("#job").addClass("active");
-    } else if (null !== jobName) {
-        $("#content").load("html/job/jobs_overview.html");
-        $("#job").addClass("active");
     } else if (null !== serverIp) {
         $("#content").load("html/server/server_detail.html");
         $("#server").addClass("active");
@@ -20,9 +17,6 @@ $(function() {
     });
     $("#event-trace-data-source").click(function() {
         $("#content").load("html/event/event_trace_data_source.html");
-    });
-    $("#job-dimension").click(function() {
-        $("#content").load("html/job/jobs_overview.html");
     });
     $("#job-status").click(function() {
         $("#content").load("html/job/jobs_status_overview.html");
