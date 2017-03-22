@@ -3,7 +3,7 @@ $(function() {
     var serverIp = getCurrentUrl("serverIp");
     var statusPage = getCurrentUrl("statusPage");
     if (null !== statusPage) {
-        $("#content").load("html/job/job_config.html");
+        $("#content").load("html/status/job/job_status_detail.html");
         $("#job").addClass("active");
     } else if (null !== serverIp) {
         $("#content").load("html/status/server/server_status_detail.html");

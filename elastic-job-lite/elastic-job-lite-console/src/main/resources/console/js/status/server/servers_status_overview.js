@@ -40,11 +40,11 @@ function renderServersOverview() {
 }
 
 function generateOperationButtons(val, row) {
-    return "<button operation='status' class='btn-xs btn-info' serverIp='" + row.serverIp + "'>状态</button>";
+    return "<button operation='server-status' class='btn-xs btn-info' serverIp='" + row.serverIp + "'>状态</button>";
 }
 
 function bindStatusButtons() {
-    $(document).on("click", "button[operation='status'][data-toggle!='modal']", function(event) {
+    $(document).on("click", "button[operation='server-status'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("serverIp");
         window.location = "index.html?serverIp=" + serverIp;
     });
