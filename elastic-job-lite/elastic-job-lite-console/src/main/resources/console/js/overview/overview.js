@@ -5,7 +5,7 @@ $(function() {
 
 function renderJobsOverview() {
     $("#jobs-overview-tbl").bootstrapTable({
-        url: "api/job/jobs",
+        url: "/api/job/jobs",
         method: "get",
         cache: false,
         rowStyle: function (row, index) {
@@ -47,7 +47,7 @@ function jobFormatter(val, row) {
 
 function renderServersOverview() {
     $("#servers-overview-tbl").bootstrapTable({
-        url: "api/server/servers",
+        url: "/api/server/servers",
         method: "get",
         cache: false,
         rowStyle: function (row, index) {

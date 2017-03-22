@@ -1,7 +1,4 @@
 $(function() {
-    $(".nav-header").click(function() {
-        $(this).parent().children("" + $(this).hash + "").toggle(200);
-    });
     renderRegCenterForDashboardNav();
     renderDataSourceForDashboardNav();
     switchRegCenter();
@@ -56,7 +53,6 @@ function renderDataSourceForDashboardNav() {
 
 function switchRegCenter() {
     $(document).on("click", "a[reg-name]", function(event) {
-        event.preventDefault();
         var link = $(this).button("loading");
         var regName = $(event.currentTarget).attr("reg-name");
         $.ajax({
@@ -70,8 +66,6 @@ function switchRegCenter() {
                     showSuccessDialog();
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
-                    renderJobsForDashboardNav();
-                    renderJServersForDashboardNav();
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -103,43 +97,5 @@ function switchDataSource() {
                 }
             }
         });
-    });
-}
-
-function renderJobsForDashboardNav() {
-    if ("未连接" === $("#activated-reg-center").text()) {
-        return;
-    }
-    $.get("api/job/jobs", {}, function (data) {
-        var currentJob = $("#job-name").text();
-        var $jobsDimension = $("#jobs-dimension");
-        $jobsDimension.empty();
-        for (var i = 0; i < data.length; i++) {
-            var liContent = "<a href='index.html?jobName=" + data[i].jobName + "&jobType=" + data[i].jobType + "' data-placement='right' title='" + data[i].description + "'>" + data[i].jobName + "</a>";
-            if (currentJob && currentJob === data[i].jobName) {
-                $jobsDimension.append("<li class='open'>" + liContent + "</li>");
-            } else {
-                $jobsDimension.append("<li>" + liContent + "</li>");
-            }
-        }
-    });
-}
-
-function renderJServersForDashboardNav() {
-    if ("未连接" === $("#activated-reg-center").text()) {
-        return;
-    }
-    $.get("api/server/servers", {}, function (data) {
-        var currentIp = $("#server-ip").text();
-        var $serversDimension = $("#servers-dimension");
-        $serversDimension.empty();
-        for (var i = 0; i < data.length; i++) {
-            var liContent = "<a href='index.html?serverIp=" + data[i].serverIp + "' data-placement='right' title='" + data[i].serverHostName + "'>" + data[i].serverIp + "</a>";
-            if (currentIp && currentIp === data[i].serverIp) {
-                $serversDimension.append("<li class='open'>" + liContent + "</li>");
-            } else {
-                $serversDimension.append("<li>" + liContent + "</li>");
-            }
-        }
     });
 }
