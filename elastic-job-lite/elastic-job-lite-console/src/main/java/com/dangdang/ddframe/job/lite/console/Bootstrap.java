@@ -37,8 +37,6 @@ public class Bootstrap {
         RestfulServer restfulServer = new RestfulServer(PORT);
         restfulServer.addFilter(WwwAuthFilter.class, "/")
                      .addFilter(WwwAuthFilter.class, "*.html")
-                     .addFilter(WwwAuthFilter.class, "*.js")
-                     .addFilter(WwwAuthFilter.class, "*.css")
                      .start(LiteJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
     }
 }

@@ -12,21 +12,6 @@ function renderJobsOverview() {
         url: "/api/job/jobs",
         method: "get",
         cache: false,
-        rowStyle: function (row, index) {
-            var strclass = "";
-            if ("OK" === row.status) {
-                strclass = "success";
-            } else if ("MANUALLY_DISABLED" === row.status) {
-                strclass = "info";
-            } else if ("PARTIAL_ALIVE" === row.status) {
-                strclass = "warning";
-            } else if ("ALL_CRASHED" === row.status) {
-                strclass = "danger";
-            } else {
-                return {};
-            }
-            return { classes: strclass }
-        },
         columns: 
         [{
             field: "jobName",
@@ -38,11 +23,32 @@ function renderJobsOverview() {
             field: "description",
             title: "描述"
         }, {
-            fidle: "operation",
+            field: "status",
+            title: "状态",
+            formatter: "statusFormatter"
+        }, {
+            field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
         }]
     });
+}
+
+function statusFormatter(value, row) {
+    switch(value) {
+        case "OK":
+            return "<span class='label label-success'>全部可用</span>";
+            break;
+        case "MANUALLY_DISABLED":
+            return "<span class='label label-info'>被禁用</span>";
+            break;
+        case "PARTIAL_ALIVE":
+            return "<span class='label label-warning'>部分可用</span>";
+            break;
+        case "ALL_CRASHED":
+            return "<span class='label label-danger'>全部宕机</span>";
+            break;
+    }
 }
 
 function generateOperationButtons(val, row) {

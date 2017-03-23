@@ -36,13 +36,13 @@ public final class ServerBriefInfo implements Serializable, Comparable<ServerBri
     
     private String serverIp;
     
-    private String serverHostName;
+    private String instanceId;
     
     private ServerBriefStatus status;
     
     @Override
     public int compareTo(final ServerBriefInfo o) {
-        return getServerIp().compareTo(o.getServerIp());
+        return (getServerIp() + getInstanceId()).compareTo(o.getServerIp() + o.getInstanceId());
     }
     
     /**
@@ -57,18 +57,19 @@ public final class ServerBriefInfo implements Serializable, Comparable<ServerBri
         ALL_CRASHED;
         
         /**
-         * 获取作业服务器状态.
+         * 获取作业服务器实例状态.
          * 
          * @param aliveServers 存活的作业服务器集合
          * @param crashedServers 崩溃的作业服务器集合
          * @param serverIp 作业服务器IP地址
+         * @param instanceId 作业服务器实例ID
          * @return 作业服务器状态
          */
-        public static ServerBriefStatus getServerBriefStatus(final Collection<String> aliveServers, final Collection<String> crashedServers, final String serverIp) {
-            if (!aliveServers.contains(serverIp)) {
+        public static ServerBriefStatus getServerBriefStatus(final Collection<String> aliveServers, final Collection<String> crashedServers, final String serverIp, final String instanceId) {
+            if (!aliveServers.contains(serverIp + "-" + instanceId)) {
                 return ALL_CRASHED;
             }
-            if (!crashedServers.contains(serverIp)) {
+            if (!crashedServers.contains(serverIp + "-" + instanceId)) {
                 return OK;
             }
             return PARTIAL_ALIVE;

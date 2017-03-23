@@ -38,7 +38,7 @@ public final class ServerInfo implements Serializable {
     
     private String ip;
     
-    private String hostName;
+    private String instanceId;
     
     private ServerStatus status;
     

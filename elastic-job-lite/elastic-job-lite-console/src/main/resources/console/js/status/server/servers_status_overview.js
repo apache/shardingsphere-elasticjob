@@ -8,28 +8,20 @@ function renderServersOverview() {
         url: "/api/server/servers",
         method: "get",
         cache: false,
-        rowStyle: function (row, index) {
-            var strclass = "";
-            if ("OK" === row.status) {
-                strclass = "success";
-            } else if ("PARTIAL_ALIVE" === row.status) {
-                strclass = "warning";
-            } else if ("ALL_CRASHED" === row.status) {
-                strclass = "danger";
-            } else {
-                return {};
-            }
-            return { classes: strclass }
-        },
         columns: 
         [{
             field: "serverIp",
             title: "服务器IP",
             sortable: "true"
         }, {
+            field: "instanceId",
+            title: "服务器实例ID",
+            sortable: "true"
+        }, {
             field: "status",
             title: "状态",
-            sortable: "true"
+            sortable: "true",
+            formatter: "statusFormatter"
         }, {
             field: "operation",
             title: "操作",
@@ -38,13 +30,28 @@ function renderServersOverview() {
     });
 }
 
+function statusFormatter(value) {
+    switch(value) {
+        case "OK":
+            return "<span class='label label-success'>全部可用</span>";
+            break;
+        case "PARTIAL_ALIVE":
+            return "<span class='label label-warning'>部分可用</span>";
+            break;
+        case "ALL_CRASHED":
+            return "<span class='label label-danger'>全部宕机</span>";
+            break;
+    }
+}
+
 function generateOperationButtons(val, row) {
-    return "<button operation='server-status' class='btn-xs btn-info' serverIp='" + row.serverIp + "'>状态</button>";
+    return "<button operation='server-status' class='btn-xs btn-info' serverIp='" + row.serverIp + "' serverInstanceId='" + row.instanceId + "'>状态</button>";
 }
 
 function bindStatusButtons() {
     $(document).on("click", "button[operation='server-status'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("serverIp");
-        window.location = "index.html?serverIp=" + serverIp;
+        var serverInstanceId = $(event.currentTarget).attr("serverInstanceId");
+        window.location = "index.html?serverIp=" + serverIp + "&serverInstanceId=" + serverInstanceId;
     });
 }

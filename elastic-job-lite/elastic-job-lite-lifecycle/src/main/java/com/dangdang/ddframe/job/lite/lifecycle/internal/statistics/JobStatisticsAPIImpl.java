@@ -75,29 +75,34 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     
     private JobBriefInfo.JobStatus getJobStatus(final String jobName) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+        List<String> serverIps = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+        int serverInstanceSize = 0;
         int okCount = 0;
         int crashedCount = 0;
         int disabledCount = 0;
-        for (String each : servers) {
-            switch (getServerStatus(jobName, each)) {
-                case READY:
-                case RUNNING:
-                    okCount++;
-                    break;
-                case DISABLED:
-                case PAUSED:
-                    disabledCount++;
-                    break;
-                case CRASHED:
-                case SHUTDOWN:
-                    crashedCount++;
-                    break;
-                default:
-                    break;
+        for (String serverIp : serverIps) {
+            List<String> jobInstances = regCenter.getChildrenKeys(jobNodePath.getServerNodePath(serverIp));
+            for (String each : jobInstances) {
+                serverInstanceSize++;
+                switch (getServerStatus(jobName, serverIp, each)) {
+                    case READY:
+                    case RUNNING:
+                        okCount++;
+                        break;
+                    case DISABLED:
+                    case PAUSED:
+                        disabledCount++;
+                        break;
+                    case CRASHED:
+                    case SHUTDOWN:
+                        crashedCount++;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
-        return JobBriefInfo.JobStatus.getJobStatus(okCount, crashedCount, disabledCount, servers.size());
+        return JobBriefInfo.JobStatus.getJobStatus(okCount, crashedCount, disabledCount, serverInstanceSize);
     }
     
     @Override
@@ -105,29 +110,32 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         List<String> serverIps = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
         Collection<ServerInfo> result = new ArrayList<>(serverIps.size());
-        for (String each : serverIps) {
-            result.add(getJobServer(jobName, each));
+        for (String serverIp : serverIps) {
+            List<String> jobInstances = regCenter.getChildrenKeys(jobNodePath.getServerNodePath(serverIp));
+            for (String each : jobInstances) {
+                result.add(getJobServer(jobName, serverIp, each));
+            }
         }
         return result;
     }
     
-    private ServerInfo getJobServer(final String jobName, final String serverIp) {
+    private ServerInfo getJobServer(final String jobName, final String serverIp, final String instanceId) {
         ServerInfo result = new ServerInfo();
         JobNodePath jobNodePath = new JobNodePath(jobName);
         result.setJobName(jobName);
         result.setIp(serverIp);
-        result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp)));
-        result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
-        result.setStatus(getServerStatus(jobName, serverIp));
+        result.setInstanceId(instanceId);
+        result.setSharding(regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "sharding")));
+        result.setStatus(getServerStatus(jobName, serverIp, instanceId));
         return result;
     }
     
-    private ServerInfo.ServerStatus getServerStatus(final String jobName, final String serverIp) {
+    private ServerInfo.ServerStatus getServerStatus(final String jobName, final String serverIp, final String instanceId) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
-        boolean disabled = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
-        boolean paused = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "paused"));
-        boolean shutdown = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
+        String status = regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "status"));
+        boolean disabled = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "disabled"));
+        boolean paused = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "paused"));
+        boolean shutdown = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "shutdown"));
         return ServerInfo.ServerStatus.getServerStatus(status, disabled, paused, shutdown);
     }
     

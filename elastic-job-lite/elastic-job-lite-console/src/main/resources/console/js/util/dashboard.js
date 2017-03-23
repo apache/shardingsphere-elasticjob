@@ -72,7 +72,6 @@ function switchRegCenter() {
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
                     getJobNavTag();
-                    getServerNavTag();
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -162,17 +161,6 @@ function getJobNavTag() {
     });
 }
 
-function getServerNavTag() {
-    $.ajax({
-        url: "/api/server/servers",
-        method: "get",
-        cache: false,
-        success: function(data) {
-            $("#server-nav-tag").text(data.length);
-        }
-    });
-}
-
 function getRegCenterNavTag() {
     $.ajax({
         url: "api/registry_center",
@@ -180,6 +168,17 @@ function getRegCenterNavTag() {
         cache: false,
         success: function(data) {
             $("#reg-nav-tag").text(data.length);
+            if (data.length > 0) {
+                for (var index = 0; index < data.length; index++) {
+                    if (data[index].activated) {
+                        getJobNavTag();
+                    } else {
+                        $("#job-nav-tag").text("0");
+                    }
+                }
+            } else {
+                $("#job-nav-tag").text("0");
+            }
         }
     });
 }

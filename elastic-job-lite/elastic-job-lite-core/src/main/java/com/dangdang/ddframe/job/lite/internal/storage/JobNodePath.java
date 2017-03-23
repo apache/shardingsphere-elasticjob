@@ -114,7 +114,7 @@ public final class JobNodePath {
     }
     
     /**
-     * 根据IP地址和子节点名称获取作业节点路径.
+     * 根据IP地址和子节点名称获取子节点路径.
      *
      * @param serverIp 作业服务器IP地址
      * @param nodeName 子节点名称
@@ -122,6 +122,29 @@ public final class JobNodePath {
      */
     public String getServerNodePath(final String serverIp, final String nodeName) {
         return String.format("%s/%s", getServerNodePath(serverIp), nodeName);
+    }
+    
+    /**
+     * 根据IP地址和实例ID获取作业实例节点路径.
+     *
+     * @param serverIp 作业服务器IP地址
+     * @param instanceId 作业服务器实例ID
+     * @return 作业实例节点路径
+     */
+    public String getServerInstanceNodePath(final String serverIp, final String instanceId) {
+        return String.format("%s/%s", getServerNodePath(serverIp), instanceId);
+    }
+    
+    /**
+     * 根据IP地址和实例ID和子节点名称获取子节点路径.
+     *
+     * @param serverIp 作业服务器IP地址
+     * @param instanceId 作业服务器实例ID
+     * @param nodeName 子节点名称
+     * @return 作业实例节点子节点路径
+     */
+    public String getServerInstanceNodePath(final String serverIp, final String instanceId, final String nodeName) {
+        return String.format("%s/%s", getServerInstanceNodePath(serverIp, instanceId), nodeName);
     }
     
     /**

@@ -29,7 +29,8 @@ public interface JobOperateCallback {
      * 
      * @param jobName 作业名称
      * @param serverIp 服务器地址
+     * @param serverInstanceId 服务器实例ID
      * @return 操作是否成功
      */
-    boolean doOperate(String jobName, String serverIp);
+    boolean doOperate(String jobName, String serverIp, String serverInstanceId);
 }

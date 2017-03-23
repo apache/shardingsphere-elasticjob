@@ -50,211 +50,226 @@ public final class JobOperateAPIImplTest {
     
     @Test
     public void assertTriggerWithJobNameAndServerIp() {
-        jobOperateAPI.trigger(Optional.of("test_job"), Optional.of("localhost"));
-        verify(regCenter).persist("/test_job/servers/localhost/trigger", "");
+        jobOperateAPI.trigger(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance"));
+        verify(regCenter).persist("/test_job/servers/localhost/defaultInstance/trigger", "");
     }
     
     @Test
     public void assertTriggerWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        jobOperateAPI.trigger(Optional.of("test_job"), Optional.<String>absent());
+        when(regCenter.getChildrenKeys("/test_job/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
+        jobOperateAPI.trigger(Optional.of("test_job"), Optional.<String>absent(), Optional.<String>absent());
         verify(regCenter).getChildrenKeys("/test_job/servers");
-        verify(regCenter).persist("/test_job/servers/ip1/trigger", "");
-        verify(regCenter).persist("/test_job/servers/ip2/trigger", "");
+        verify(regCenter).persist("/test_job/servers/ip1/defaultInstance/trigger", "");
+        verify(regCenter).persist("/test_job/servers/ip2/defaultInstance/trigger", "");
     }
     
     @Test
     public void assertTriggerWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        jobOperateAPI.trigger(Optional.<String>absent(), Optional.of("localhost"));
+        jobOperateAPI.trigger(Optional.<String>absent(), Optional.of("localhost"), Optional.of("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job1/servers/localhost")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job1/servers/localhost")).thenReturn(Arrays.asList("defaultInstance"));
         verify(regCenter).getChildrenKeys("/");
-        verify(regCenter).persist("/test_job1/servers/localhost/trigger", "");
-        verify(regCenter).persist("/test_job2/servers/localhost/trigger", "");
+        verify(regCenter).persist("/test_job1/servers/localhost/defaultInstance/trigger", "");
+        verify(regCenter).persist("/test_job2/servers/localhost/defaultInstance/trigger", "");
     }
     
     @Test
     public void assertPauseWithJobNameAndServerIp() {
-        jobOperateAPI.pause(Optional.of("test_job"), Optional.of("localhost"));
-        verify(regCenter).persist("/test_job/servers/localhost/paused", "");
+        jobOperateAPI.pause(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance"));
+        verify(regCenter).persist("/test_job/servers/localhost/defaultInstance/paused", "");
     }
     
     @Test
     public void assertPauseWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        jobOperateAPI.pause(Optional.of("test_job"), Optional.<String>absent());
+        when(regCenter.getChildrenKeys("/test_job/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
+        jobOperateAPI.pause(Optional.of("test_job"), Optional.<String>absent(), Optional.<String>absent());
         verify(regCenter).getChildrenKeys("/test_job/servers");
-        verify(regCenter).persist("/test_job/servers/ip1/paused", "");
-        verify(regCenter).persist("/test_job/servers/ip2/paused", "");
+        verify(regCenter).persist("/test_job/servers/ip1/defaultInstance/paused", "");
+        verify(regCenter).persist("/test_job/servers/ip2/defaultInstance/paused", "");
     }
     
     @Test
     public void assertPauseWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        jobOperateAPI.pause(Optional.<String>absent(), Optional.of("localhost"));
+        jobOperateAPI.pause(Optional.<String>absent(), Optional.of("localhost"), Optional.of("defaultInstance"));
         verify(regCenter).getChildrenKeys("/");
-        verify(regCenter).persist("/test_job1/servers/localhost/paused", "");
-        verify(regCenter).persist("/test_job2/servers/localhost/paused", "");
+        verify(regCenter).persist("/test_job1/servers/localhost/defaultInstance/paused", "");
+        verify(regCenter).persist("/test_job2/servers/localhost/defaultInstance/paused", "");
     }
     
     @Test
     public void assertResumeWithJobNameAndServerIp() {
-        jobOperateAPI.resume(Optional.of("test_job"), Optional.of("localhost"));
-        verify(regCenter).remove("/test_job/servers/localhost/paused");
+        jobOperateAPI.resume(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance"));
+        verify(regCenter).remove("/test_job/servers/localhost/defaultInstance/paused");
     }
     
     @Test
     public void assertResumeWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        jobOperateAPI.resume(Optional.of("test_job"), Optional.<String>absent());
+        when(regCenter.getChildrenKeys("/test_job/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
+        jobOperateAPI.resume(Optional.of("test_job"), Optional.<String>absent(), Optional.<String>absent());
         verify(regCenter).getChildrenKeys("/test_job/servers");
-        verify(regCenter).remove("/test_job/servers/ip1/paused");
-        verify(regCenter).remove("/test_job/servers/ip2/paused");
+        verify(regCenter).remove("/test_job/servers/ip1/defaultInstance/paused");
+        verify(regCenter).remove("/test_job/servers/ip2/defaultInstance/paused");
     }
     
     @Test
     public void assertResumeWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        jobOperateAPI.resume(Optional.<String>absent(), Optional.of("localhost"));
+        jobOperateAPI.resume(Optional.<String>absent(), Optional.of("localhost"), Optional.of("defaultInstance"));
         verify(regCenter).getChildrenKeys("/");
-        verify(regCenter).remove("/test_job1/servers/localhost/paused");
-        verify(regCenter).remove("/test_job2/servers/localhost/paused");
+        verify(regCenter).remove("/test_job1/servers/localhost/defaultInstance/paused");
+        verify(regCenter).remove("/test_job2/servers/localhost/defaultInstance/paused");
     }
     
     @Test
     public void assertDisableWithJobNameAndServerIp() {
-        jobOperateAPI.disable(Optional.of("test_job"), Optional.of("localhost"));
-        verify(regCenter).persist("/test_job/servers/localhost/disabled", "");
+        jobOperateAPI.disable(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance"));
+        verify(regCenter).persist("/test_job/servers/localhost/defaultInstance/disabled", "");
     }
     
     @Test
     public void assertDisableWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        jobOperateAPI.disable(Optional.of("test_job"), Optional.<String>absent());
+        when(regCenter.getChildrenKeys("/test_job/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
+        jobOperateAPI.disable(Optional.of("test_job"), Optional.<String>absent(), Optional.<String>absent());
         verify(regCenter).getChildrenKeys("/test_job/servers");
-        verify(regCenter).persist("/test_job/servers/ip1/disabled", "");
-        verify(regCenter).persist("/test_job/servers/ip2/disabled", "");
+        verify(regCenter).persist("/test_job/servers/ip1/defaultInstance/disabled", "");
+        verify(regCenter).persist("/test_job/servers/ip2/defaultInstance/disabled", "");
     }
     
     @Test
     public void assertDisableWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        jobOperateAPI.disable(Optional.<String>absent(), Optional.of("localhost"));
+        jobOperateAPI.disable(Optional.<String>absent(), Optional.of("localhost"), Optional.of("defaultInstance"));
         verify(regCenter).getChildrenKeys("/");
-        verify(regCenter).persist("/test_job1/servers/localhost/disabled", "");
-        verify(regCenter).persist("/test_job2/servers/localhost/disabled", "");
+        verify(regCenter).persist("/test_job1/servers/localhost/defaultInstance/disabled", "");
+        verify(regCenter).persist("/test_job2/servers/localhost/defaultInstance/disabled", "");
     }
     
     @Test
     public void assertEnableWithJobNameAndServerIp() {
-        jobOperateAPI.enable(Optional.of("test_job"), Optional.of("localhost"));
-        verify(regCenter).remove("/test_job/servers/localhost/disabled");
+        jobOperateAPI.enable(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance"));
+        verify(regCenter).remove("/test_job/servers/localhost/defaultInstance/disabled");
     }
     
     @Test
     public void assertEnableWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        jobOperateAPI.enable(Optional.of("test_job"), Optional.<String>absent());
+        when(regCenter.getChildrenKeys("/test_job/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
+        jobOperateAPI.enable(Optional.of("test_job"), Optional.<String>absent(), Optional.<String>absent());
         verify(regCenter).getChildrenKeys("/test_job/servers");
-        verify(regCenter).remove("/test_job/servers/ip1/disabled");
-        verify(regCenter).remove("/test_job/servers/ip2/disabled");
+        verify(regCenter).remove("/test_job/servers/ip1/defaultInstance/disabled");
+        verify(regCenter).remove("/test_job/servers/ip2/defaultInstance/disabled");
     }
     
     @Test
     public void assertEnableWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        jobOperateAPI.enable(Optional.<String>absent(), Optional.of("localhost"));
+        jobOperateAPI.enable(Optional.<String>absent(), Optional.of("localhost"), Optional.of("defaultInstance"));
         verify(regCenter).getChildrenKeys("/");
-        verify(regCenter).remove("/test_job1/servers/localhost/disabled");
-        verify(regCenter).remove("/test_job2/servers/localhost/disabled");
+        verify(regCenter).remove("/test_job1/servers/localhost/defaultInstance/disabled");
+        verify(regCenter).remove("/test_job2/servers/localhost/defaultInstance/disabled");
     }
     
     @Test
     public void assertShutdownWithJobNameAndServerIp() {
-        jobOperateAPI.shutdown(Optional.of("test_job"), Optional.of("localhost"));
-        verify(regCenter).persist("/test_job/servers/localhost/shutdown", "");
+        jobOperateAPI.shutdown(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance"));
+        verify(regCenter).persist("/test_job/servers/localhost/defaultInstance/shutdown", "");
     }
     
     @Test
     public void assertShutdownWithJobName() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        jobOperateAPI.shutdown(Optional.of("test_job"), Optional.<String>absent());
+        when(regCenter.getChildrenKeys("/test_job/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
+        jobOperateAPI.shutdown(Optional.of("test_job"), Optional.<String>absent(), Optional.<String>absent());
         verify(regCenter).getChildrenKeys("/test_job/servers");
-        verify(regCenter).persist("/test_job/servers/ip1/shutdown", "");
-        verify(regCenter).persist("/test_job/servers/ip2/shutdown", "");
+        verify(regCenter).persist("/test_job/servers/ip1/defaultInstance/shutdown", "");
+        verify(regCenter).persist("/test_job/servers/ip2/defaultInstance/shutdown", "");
     }
     
     @Test
     public void assertShutdownWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        jobOperateAPI.shutdown(Optional.<String>absent(), Optional.of("localhost"));
+        jobOperateAPI.shutdown(Optional.<String>absent(), Optional.of("localhost"), Optional.of("defaultInstance"));
         verify(regCenter).getChildrenKeys("/");
-        verify(regCenter).persist("/test_job1/servers/localhost/shutdown", "");
-        verify(regCenter).persist("/test_job2/servers/localhost/shutdown", "");
+        verify(regCenter).persist("/test_job1/servers/localhost/defaultInstance/shutdown", "");
+        verify(regCenter).persist("/test_job2/servers/localhost/defaultInstance/shutdown", "");
     }
     
     @Test
     public void assertRemoveWithJobNameAndServerIpWhenJobStillAlive() {
-        when(regCenter.isExisted("/test_job/servers/localhost/status")).thenReturn(true);
+        when(regCenter.isExisted("/test_job/servers/localhost/defaultInstance/status")).thenReturn(true);
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Collections.<String>emptyList());
-        assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.of("localhost")), Is.<Collection<String>>is(Collections.singletonList("localhost")));
-        verify(regCenter).isExisted("/test_job/servers/localhost/status");
+        assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance")), Is.<Collection<String>>is(Collections.singletonList("localhost-defaultInstance")));
+        verify(regCenter).isExisted("/test_job/servers/localhost/defaultInstance/status");
     }
     
     @Test
     public void assertRemoveWithJobNameAndServerIpWhenIsLastInstance() {
         when(regCenter.isExisted("/test_job/servers/localhost/status")).thenReturn(false);
         when(regCenter.getNumChildren("/test_job/servers")).thenReturn(0);
-        assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.of("localhost")), Is.<Collection<String>>is(Collections.<String>emptyList()));
-        verify(regCenter).isExisted("/test_job/servers/localhost/status");
+        assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance")), Is.<Collection<String>>is(Collections.<String>emptyList()));
+        verify(regCenter).isExisted("/test_job/servers/localhost/defaultInstance/status");
         verify(regCenter).getNumChildren("/test_job/servers");
-        verify(regCenter).remove("/test_job/servers/localhost");
+        verify(regCenter).remove("/test_job/servers/localhost/defaultInstance");
         verify(regCenter).remove("/test_job");
     }
     
     @Test
     public void assertRemoveWithJobNameAndServerIpWhenIsNotLastInstance() {
-        when(regCenter.isExisted("/test_job/servers/localhost/status")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/servers/localhost/defaultInstance/status")).thenReturn(false);
         when(regCenter.getNumChildren("/test_job/servers")).thenReturn(1);
-        assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.of("localhost")), Is.<Collection<String>>is(Collections.<String>emptyList()));
-        verify(regCenter).isExisted("/test_job/servers/localhost/status");
+        assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance")), Is.<Collection<String>>is(Collections.<String>emptyList()));
+        verify(regCenter).isExisted("/test_job/servers/localhost/defaultInstance/status");
         verify(regCenter).getNumChildren("/test_job/servers");
-        verify(regCenter).remove("/test_job/servers/localhost");
+        verify(regCenter).remove("/test_job/servers/localhost/defaultInstance");
         verify(regCenter, times(0)).remove("/test_job");
     }
     
     @Test
     public void assertRemoveWithJobName() {
-        when(regCenter.isExisted("/test_job/servers/ip1/status")).thenReturn(false);
-        when(regCenter.isExisted("/test_job/servers/ip2/status")).thenReturn(true);
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.<String>absent()), Is.<Collection<String>>is(Collections.singletonList("ip2")));
-        verify(regCenter).isExisted("/test_job/servers/ip1/status");
-        verify(regCenter).isExisted("/test_job/servers/ip2/status");
+        when(regCenter.getChildrenKeys("/test_job/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.isExisted("/test_job/servers/ip2/defaultInstance/status")).thenReturn(true);
+        assertThat(jobOperateAPI.remove(Optional.of("test_job"), Optional.<String>absent(), Optional.<String>absent()), Is.<Collection<String>>is(Collections.singletonList("ip2-defaultInstance")));
+        verify(regCenter).isExisted("/test_job/servers/ip1/defaultInstance/status");
+        verify(regCenter).isExisted("/test_job/servers/ip2/defaultInstance/status");
         verify(regCenter).getChildrenKeys("/test_job/servers");
-        verify(regCenter).remove("/test_job/servers/ip1");
+        verify(regCenter).remove("/test_job/servers/ip1/defaultInstance");
         verify(regCenter).getNumChildren("/test_job/servers");
         verify(regCenter, times(0)).remove("/test_job/servers/ip2");
     }
     
     @Test
     public void assertRemoveWithServerIp() {
-        when(regCenter.isExisted("/test_job1/servers/localhost/status")).thenReturn(false);
-        when(regCenter.isExisted("/test_job2/servers/localhost/status")).thenReturn(true);
+        when(regCenter.isExisted("/test_job1/servers/localhost/defaultInstance/status")).thenReturn(false);
+        when(regCenter.isExisted("/test_job2/servers/localhost/defaultInstance/status")).thenReturn(true);
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        assertThat(jobOperateAPI.remove(Optional.<String>absent(), Optional.of("localhost")), Is.<Collection<String>>is(Collections.singletonList("test_job2")));
+        assertThat(jobOperateAPI.remove(Optional.<String>absent(), Optional.of("localhost"), Optional.of("defaultInstance")), Is.<Collection<String>>is(Collections.singletonList("test_job2")));
         verify(regCenter).getChildrenKeys("/");
-        verify(regCenter).isExisted("/test_job1/servers/localhost/status");
-        verify(regCenter).isExisted("/test_job2/servers/localhost/status");
-        verify(regCenter).remove("/test_job1/servers/localhost");
-        verify(regCenter, times(0)).remove("/test_job2/servers/localhost");
+        verify(regCenter).isExisted("/test_job1/servers/localhost/defaultInstance/status");
+        verify(regCenter).isExisted("/test_job2/servers/localhost/defaultInstance/status");
+        verify(regCenter).remove("/test_job1/servers/localhost/defaultInstance");
+        verify(regCenter, times(0)).remove("/test_job2/servers/localhost/defaultInstance");
     }
     
     @Test
     public void assertRemoveWithJobNameWhenLeaderHostStillExisted() {
         when(regCenter.isExisted("/test_job/leader/election/host_instance")).thenReturn(true);
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Collections.<String>emptyList());
-        assertThat(jobOperateAPI.remove(Optional.of("test_job"),  Optional.of("localhost")), Is.<Collection<String>>is(Collections.singletonList("localhost")));
+        assertThat(jobOperateAPI.remove(Optional.of("test_job"),  Optional.of("localhost"), Optional.of("defaultInstance")), Is.<Collection<String>>is(Collections.singletonList("localhost-defaultInstance")));
         verify(regCenter).isExisted("/test_job/leader/election/host_instance");
-        verify(regCenter).isExisted("/test_job/servers/localhost/status");
+        verify(regCenter).isExisted("/test_job/servers/localhost/defaultInstance/status");
     }
 }

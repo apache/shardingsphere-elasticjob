@@ -28,19 +28,19 @@ public final class ServerBriefStatusTest {
     
     @Test
     public void assertGetServerBriefStatusForAllCrashed() {
-        assertThat(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(Collections.<String>emptyList(), Collections.singletonList("localhost"), "localhost"),
+        assertThat(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(Collections.<String>emptyList(), Collections.singletonList("localhost-defaultInstance"), "localhost", "defaultInstance"),
                 is(ServerBriefInfo.ServerBriefStatus.ALL_CRASHED));
     }
     
     @Test
     public void assertGetServerBriefStatusForOk() {
-        assertThat(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(Collections.singletonList("localhost"), Collections.<String>emptyList(), "localhost"),
+        assertThat(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(Collections.singletonList("localhost-defaultInstance"), Collections.<String>emptyList(), "localhost", "defaultInstance"),
                 is(ServerBriefInfo.ServerBriefStatus.OK));
     }
     
     @Test
     public void assertGetServerBriefStatusForPartialAlive() {
-        assertThat(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(Collections.singletonList("localhost"), Collections.singletonList("localhost"), "localhost"),
+        assertThat(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(Collections.singletonList("localhost-defaultInstance"), Collections.singletonList("localhost-defaultInstance"), "localhost", "defaultInstance"),
                 is(ServerBriefInfo.ServerBriefStatus.PARTIAL_ALIVE));
     }
 }

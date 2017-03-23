@@ -17,12 +17,22 @@
 
 package com.dangdang.ddframe.job.lite.console.restful;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
+import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
+import com.dangdang.ddframe.job.lite.console.util.SessionDataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
+import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
@@ -34,24 +44,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
-
-import org.apache.commons.dbcp.BasicDataSource;
-
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
-import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
-import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfiguration;
-import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
-import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
-import com.dangdang.ddframe.job.lite.console.util.SessionDataSourceConfiguration;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/job")
 public class LiteJobRestfulApi {
@@ -102,70 +100,70 @@ public class LiteJobRestfulApi {
     @Path("/trigger")
     @Consumes(MediaType.APPLICATION_JSON)
     public void triggerJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/pause")
     @Consumes(MediaType.APPLICATION_JSON)
     public void pauseJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().pause(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().pause(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/resume")
     @Consumes(MediaType.APPLICATION_JSON)
     public void resumeJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().resume(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().resume(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/triggerAll/name")
     @Consumes(MediaType.APPLICATION_JSON)
     public void triggerAllJobsByJobName(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobServer.getJobName()), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobServer.getJobName()), Optional.<String>absent(), Optional.<String>absent());
     }
     
     @POST
     @Path("/pauseAll/name")
     @Consumes(MediaType.APPLICATION_JSON)
     public void pauseAllJobsByJobName(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().pause(Optional.of(jobServer.getJobName()), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().pause(Optional.of(jobServer.getJobName()), Optional.<String>absent(), Optional.<String>absent());
     }
     
     @POST
     @Path("/resumeAll/name")
     @Consumes(MediaType.APPLICATION_JSON)
     public void resumeAllJobsByJobName(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().resume(Optional.of(jobServer.getJobName()), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().resume(Optional.of(jobServer.getJobName()), Optional.<String>absent(), Optional.<String>absent());
     }
     
     @POST
     @Path("/triggerAll/ip")
     @Consumes(MediaType.APPLICATION_JSON)
     public void triggerAllJobs(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().trigger(Optional.<String>absent(), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().trigger(Optional.<String>absent(), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/pauseAll/ip")
     @Consumes(MediaType.APPLICATION_JSON)
     public void pauseAllJobs(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().pause(Optional.<String>absent(), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().pause(Optional.<String>absent(), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/resumeAll/ip")
     @Consumes(MediaType.APPLICATION_JSON)
     public void resumeAllJobs(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().resume(Optional.<String>absent(), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().resume(Optional.<String>absent(), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/shutdown")
     @Consumes(MediaType.APPLICATION_JSON)
     public void shutdownJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
@@ -173,21 +171,21 @@ public class LiteJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<String> removeJob(final ServerInfo jobServer) {
-        return jobAPIService.getJobOperatorAPI().remove(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+        return jobAPIService.getJobOperatorAPI().remove(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/disable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void disableJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/enable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void enableJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
+        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @GET
@@ -196,7 +194,7 @@ public class LiteJobRestfulApi {
     @Produces(MediaType.APPLICATION_JSON)
     public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo info) throws ParseException {
         JobEventRdbSearch jobEventRdbSearch = new JobEventRdbSearch(setUpEventTraceDataSource());
-        return jobEventRdbSearch.findJobExecutionEvents(buildCondition(info, new String[]{"jobName", "taskId", "ip", "isSuccess"}));
+        return jobEventRdbSearch.findJobExecutionEvents(buildCondition(info, new String[]{"jobName", "ip", "isSuccess"}));
     }
     
     @GET
@@ -204,7 +202,7 @@ public class LiteJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo info) throws ParseException {
         JobEventRdbSearch jobEventRdbSearch = new JobEventRdbSearch(setUpEventTraceDataSource());
-        return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(info, new String[]{"jobName", "taskId", "slaveId", "source", "executionType", "state"}));
+        return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(info, new String[]{"jobName", "source", "executionType", "state"}));
     }
     
     private DataSource setUpEventTraceDataSource() {

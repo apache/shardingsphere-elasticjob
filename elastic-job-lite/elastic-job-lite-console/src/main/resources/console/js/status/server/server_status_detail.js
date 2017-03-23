@@ -1,5 +1,6 @@
 $(function() {
     $("#server-ip").text(getCurrentUrl("serverIp"));
+    $("#server-instance-id").text(getCurrentUrl("serverInstanceId"));
     renderJobs();
     bindTriggerButtons();
     bindPauseButtons();
@@ -10,32 +11,19 @@ $(function() {
 
 function renderJobs() {
     var ip = $("#server-ip").text();
+    var instanceId = $("#server-instance-id").text();
     $("#jobs").bootstrapTable({
-        url: "/api/server/jobs/" + ip,
+        url: "/api/server/jobs/" + ip + "/" + instanceId,
         method: "get",
         cache: false,
-        rowStyle: function (row, index) {
-            var strclass = "";
-            if ("READY" === row.status) {
-                strclass = "info";
-            } else if ("RUNNING" === row.status) {
-                strclass = "success";
-            } else if ("DISABLED" === row.status || "PAUSED" === row.status) {
-                strclass = "warning";
-            } else if ("CRASHED" === row.status || "SHUTDOWN" === row.status) {
-                strclass = "danger";
-            } else {
-                return {};
-            }
-            return { classes: strclass }
-        },
         columns: 
         [{
             field: "jobName",
             title: "作业名"
         }, {
             field: "status",
-            title: "状态"
+            title: "状态",
+            formatter: "statusFormatter"
         }, {
             field: "sharding",
             title: "分片项"
@@ -45,6 +33,29 @@ function renderJobs() {
             formatter: "generateOperationButtons"
         }]
     });
+}
+
+function statusFormatter(value) {
+    switch(value) {
+        case "RUNNING":
+            return "<span class='label label-primary'>运行中</span>";
+            break;
+        case "READY":
+            return "<span class='label label-info'>准备中</span>";
+            break;
+        case "PAUSED":
+            return "<span class='label label-warning'>暂停中</span>";
+            break;
+        case "DISABLED":
+            return "<span class='label label-warning'>禁用中</span>";
+            break;
+        case "CRASHED":
+            return "<span class='label label-danger'>宕机</span>";
+            break;
+        case "SHUTDOWN":
+            return "<span class='label label-danger'>停止</span>";
+            break;
+    }
 }
 
 function generateOperationButtons(val, row){
@@ -73,7 +84,7 @@ function bindTriggerButtons() {
         $.ajax({
             url: "/api/job/trigger",
             type: "POST",
-            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text(), instanceId : $("#server-instance-id").text()}),
             contentType: "application/json",
             dataType: "json",
             success: function(){
@@ -92,7 +103,7 @@ function bindPauseButtons() {
         $.ajax({
             url: "/api/job/pause",
             type: "POST",
-            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text(), instanceId : $("#server-instance-id").text()}),
             contentType: "application/json",
             dataType: "json",
             success: function(){
@@ -111,55 +122,7 @@ function bindResumeButtons() {
         $.ajax({
             url: "/api/job/resume",
             type: "POST",
-            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
-            contentType: "application/json",
-            dataType: "json",
-            success: function(){
-                $("#jobs").bootstrapTable("refresh");
-                showSuccessDialog();
-            }
-        });
-    });
-}
-
-function bindTriggerAllButton() {
-    $(document).on("click", "#trigger-all-jobs-btn", function() {
-        $.ajax({
-            url: "/api/job/triggerAll/ip",
-            type: "POST",
-            data: JSON.stringify({ip : $("#server-ip").text()}),
-            contentType: "application/json",
-            dataType: "json",
-            success: function(){
-                $("#jobs").bootstrapTable("refresh");
-                showSuccessDialog();
-            }
-        });
-    });
-}
-
-function bindPauseAllButton() {
-    $(document).on("click", "#pause-all-jobs-btn", function() {
-        $.ajax({
-            url: "/api/job/pauseAll/ip",
-            type: "POST",
-            data: JSON.stringify({ip : $("#server-ip").text()}),
-            contentType: "application/json",
-            dataType: "json",
-            success: function(){
-                $("#jobs").bootstrapTable("refresh");
-                showSuccessDialog();
-            }
-        });
-    });
-}
-
-function bindResumeAllButton() {
-    $(document).on("click", "#resume-all-jobs-btn", function() {
-        $.ajax({
-            url: "/api/job/resumeAll/ip",
-            type: "POST",
-            data: JSON.stringify({ip : $("#server-ip").text()}),
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text(), instanceId : $("#server-instance-id").text()}),
             contentType: "application/json",
             dataType: "json",
             success: function(){
@@ -175,7 +138,7 @@ function bindShutdownButtons() {
         $.ajax({
             url: "/api/job/shutdown",
             type: "POST",
-            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text(), instanceId : $("#server-instance-id").text()}),
             contentType: "application/json",
             dataType: "json",
             success: function(){
@@ -194,7 +157,7 @@ function bindRemoveButtons() {
         $.ajax({
             url: "/api/job/remove",
             type: "POST",
-            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text()}),
+            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text(), instanceId : $("#server-instance-id").text()}),
             contentType: "application/json",
             dataType: "json",
             success: function(data){

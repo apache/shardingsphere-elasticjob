@@ -27,9 +27,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * 作业服务器状态展示的实现类.
@@ -43,45 +43,53 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
     
     @Override
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
-        Map<String, String> serverHostMap = new HashMap<>();
+        Set<String> serverInstances = new HashSet<>();
         Collection<String> aliveServers = new ArrayList<>();
         Collection<String> crashedServers = new ArrayList<>();
         List<String> jobs = regCenter.getChildrenKeys("/");
         for (String jobName : jobs) {
             JobNodePath jobNodePath = new JobNodePath(jobName);
             List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+            
             for (String server : servers) {
-                serverHostMap.put(server, regCenter.get(jobNodePath.getServerNodePath(server)));
-                if (!regCenter.isExisted(jobNodePath.getServerNodePath(server, "shutdown")) && regCenter.isExisted(jobNodePath.getServerNodePath(server, "status"))) {
-                    aliveServers.add(server);
-                } else {
-                    crashedServers.add(server);
+                List<String> jobInstances = regCenter.getChildrenKeys(jobNodePath.getServerNodePath(server));
+                for (String jobInstance : jobInstances) {
+                    String identifier = server + "-" + jobInstance;
+                    serverInstances.add(identifier);
+                    if (!regCenter.isExisted(jobNodePath.getServerInstanceNodePath(server, jobInstance, "shutdown")) 
+                            && regCenter.isExisted(jobNodePath.getServerInstanceNodePath(server, jobInstance, "status"))) {
+                        aliveServers.add(identifier);
+                    } else {
+                        crashedServers.add(identifier);
+                    }
                 }
             }
         }
-        List<ServerBriefInfo> result = new ArrayList<>(serverHostMap.size());
-        for (Map.Entry<String, String> entry : serverHostMap.entrySet()) {
-            result.add(getServerBriefInfo(aliveServers, crashedServers, entry.getKey(), entry.getValue()));
+        List<ServerBriefInfo> result = new ArrayList<>(serverInstances.size());
+        for (String each : serverInstances) {
+            result.add(getServerBriefInfo(aliveServers, crashedServers, each));
         }
         Collections.sort(result);
         return result;
     }
     
-    private ServerBriefInfo getServerBriefInfo(final Collection<String> aliveServers, final Collection<String> crashedServers, final String serverIp, final String hostName) {
+    private ServerBriefInfo getServerBriefInfo(final Collection<String> aliveServers, final Collection<String> crashedServers, final String key) {
         ServerBriefInfo result = new ServerBriefInfo();
+        String serverIp = key.split("-")[0];
+        String instanceId = key.split("-")[1];
         result.setServerIp(serverIp);
-        result.setServerHostName(hostName);
-        result.setStatus(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(aliveServers, crashedServers, serverIp));
+        result.setInstanceId(instanceId);
+        result.setStatus(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(aliveServers, crashedServers, serverIp, instanceId));
         return result;
     }
     
     @Override
-    public Collection<ServerInfo> getJobs(final String serverIp) {
+    public Collection<ServerInfo> getJobs(final String serverIp, final String instanceId) {
         List<String> jobs = regCenter.getChildrenKeys("/");
         Collection<ServerInfo> result = new ArrayList<>(jobs.size());
         for (String each : jobs) {
             JobNodePath jobNodePath = new JobNodePath(each);
-            if (regCenter.isExisted(jobNodePath.getServerNodePath(serverIp))) {
+            if (regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId))) {
                 result.add(getJob(serverIp, each));
             }
         }
@@ -93,7 +101,6 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         result.setJobName(jobName);
         result.setIp(serverIp);
-        result.setHostName(regCenter.get(jobNodePath.getServerNodePath(serverIp)));
         result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
         String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
         boolean disabled = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
