@@ -91,6 +91,7 @@ function bindDeleteButtons() {
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     renderDataSourceForDashboardNav();
+                    getEventTraceNavTag();
                 }
             });
         });
@@ -158,6 +159,7 @@ function submitDataSource() {
                         $("body").removeClass("modal-open");
                         showSuccessDialog();
                         renderDataSourceForDashboardNav();
+                        getEventTraceNavTag();
                     } else {
                         showFailureDialog("add-data-source-failure-dialog");
                     }
