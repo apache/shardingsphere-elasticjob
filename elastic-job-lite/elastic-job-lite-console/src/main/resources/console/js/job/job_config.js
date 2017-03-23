@@ -34,8 +34,8 @@ function bindSubmitJobSettingsForm() {
             var reconcileCycleTime = $("#reconcile-cycle-time").val();
             var postJson = {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, description: description, scriptCommandLine: scriptCommandLine, reconcileCycleTime:reconcileCycleTime};
             $.ajax({
-                url: "/api/job/settings",
-                type: "POST",
+                url: "/api/jobs/settings",
+                type: "PUT",
                 data: JSON.stringify(postJson),
                 contentType: "application/json",
                 dataType: "json",

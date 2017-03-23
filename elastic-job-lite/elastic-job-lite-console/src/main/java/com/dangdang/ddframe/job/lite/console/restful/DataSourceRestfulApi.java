@@ -1,24 +1,24 @@
 package com.dangdang.ddframe.job.lite.console.restful;
 
-import java.util.Collection;
+import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceFactory;
+import com.dangdang.ddframe.job.lite.console.service.impl.DataSourceServiceImpl;
+import com.dangdang.ddframe.job.lite.console.util.SessionDataSourceConfiguration;
+import com.google.common.base.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 
-import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceFactory;
-import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfiguration;
-import com.dangdang.ddframe.job.lite.console.service.impl.DataSourceServiceImpl;
-import com.dangdang.ddframe.job.lite.console.util.SessionDataSourceConfiguration;
-import com.google.common.base.Optional;
-
-@Path("/data_source")
+@Path("/data-source")
 public class DataSourceRestfulApi {
     
     public static final String DATA_SOURCE_CONFIG_KEY = "data_source_config_key";
@@ -37,12 +37,12 @@ public class DataSourceRestfulApi {
     
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public boolean add(final DataSourceConfiguration config) {
         return dataSourceService.add(config);
     }
     
-    @POST
-    @Path("/delete")
+    @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     public void delete(final DataSourceConfiguration config) {
         dataSourceService.delete(config.getName());
@@ -52,7 +52,7 @@ public class DataSourceRestfulApi {
     @Path("/connect")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Boolean connect(final DataSourceConfiguration config, final @Context HttpServletRequest request) {
+    public boolean connect(final DataSourceConfiguration config, final @Context HttpServletRequest request) {
         boolean isConnected = setDataSourceNameToSession(dataSourceService.findDataSourceConfiguration(config.getName(), dataSourceService.loadAll()), request.getSession());
         if (isConnected) {
             dataSourceService.load(config.getName());

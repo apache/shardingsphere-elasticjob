@@ -29,6 +29,6 @@ cd `dirname $0`
 cd ..
 DEPLOY_DIR=`pwd`
 LIB_DIR=${DEPLOY_DIR}/lib/*
-CONSOLE_MAIN=com.dangdang.ddframe.job.lite.console.Bootstrap
+CONSOLE_MAIN=com.dangdang.ddframe.job.lite.console.ConsoleBootstrap
 
 java -classpath ${LIB_DIR}:. ${CONSOLE_MAIN} $port

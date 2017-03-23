@@ -38,6 +38,7 @@ import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -51,7 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Path("/job")
+@Path("/jobs")
 public class LiteJobRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
@@ -59,7 +60,6 @@ public class LiteJobRestfulApi {
     DataSourceConfiguration dataSourceConfiguration = SessionDataSourceConfiguration.getDataSourceConfiguration();
     
     @GET
-    @Path("/jobs")
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {
         return jobAPIService.getJobStatisticsAPI().getAllJobsBriefInfo();
@@ -73,7 +73,7 @@ public class LiteJobRestfulApi {
         return jobAPIService.getJobSettingsAPI().getJobSettings(jobName);
     }
     
-    @POST
+    @PUT
     @Path("/settings")
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateJobSettings(final JobSettings jobSettings) {

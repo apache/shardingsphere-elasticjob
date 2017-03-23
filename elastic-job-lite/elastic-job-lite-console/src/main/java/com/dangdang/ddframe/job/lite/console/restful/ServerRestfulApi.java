@@ -30,20 +30,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
-@Path("/server")
+@Path("/servers")
 public class ServerRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
     @GET
-    @Path("/servers")
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         return jobAPIService.getServerStatisticsAPI().getAllServersBriefInfo();
     }
     
     @GET
-    @Path("/jobs/{ip}/{instanceId}")
+    @Path("/{ip}/instances/{instanceId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ServerInfo> getJobs(@PathParam("ip") final String ip, @PathParam("instanceId") final String instanceId) {

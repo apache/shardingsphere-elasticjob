@@ -11,7 +11,7 @@ $(function() {
 });
 
 function renderRegCenterForDashboardNav() {
-    $.get("api/registry_center", {}, function(data) {
+    $.get("api/registry-center", {}, function(data) {
         var index;
         for (index = 0; index < data.length; index++) {
             if (data[index].activated) {
@@ -34,7 +34,7 @@ function renderRegCenterForDashboardNav() {
 }
 
 function renderDataSourceForDashboardNav() {
-    $.get("api/data_source", {}, function(data) {
+    $.get("api/data-source", {}, function(data) {
         var index;
         for (index = 0; index < data.length; index++) {
             if (data[index].activated) {
@@ -61,7 +61,7 @@ function switchRegCenter() {
         var link = $(this).button("loading");
         var regName = $(event.currentTarget).attr("reg-name");
         $.ajax({
-            url: "api/registry_center/connect",
+            url: "api/registry-center/connect",
             type: "POST",
             data: JSON.stringify({"name" : regName}),
             contentType: "application/json",
@@ -87,7 +87,7 @@ function switchDataSource() {
         var link = $(this).button("loading");
         var dataSourceName = $(event.currentTarget).attr("data-source-name");
         $.ajax({
-            url: "api/data_source/connect",
+            url: "api/data-source/connect",
             type: "POST",
             data: JSON.stringify({"name" : dataSourceName}),
             contentType: "application/json",
@@ -152,8 +152,7 @@ function controlDropdownMenuStyle() {
 
 function getJobNavTag() {
     $.ajax({
-        url: "/api/job/jobs",
-        method: "get",
+        url: "/api/jobs",
         cache: false,
         success: function(data) {
             $("#job-nav-tag").text(data.length);
@@ -163,8 +162,7 @@ function getJobNavTag() {
 
 function getRegCenterNavTag() {
     $.ajax({
-        url: "api/registry_center",
-        method: "get",
+        url: "api/registry-center",
         cache: false,
         success: function(data) {
             $("#reg-nav-tag").text(data.length);
@@ -185,8 +183,7 @@ function getRegCenterNavTag() {
 
 function getEventTraceNavTag() {
     $.ajax({
-        url: "api/data_source",
-        method: "get",
+        url: "api/data-source",
         cache: false,
         success: function(data) {
             $("#event-trace-nav-tag").text(data.length);

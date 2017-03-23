@@ -22,14 +22,21 @@ import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.dangdang.ddframe.job.security.WwwAuthFilter;
 import com.google.common.base.Optional;
 
-public class Bootstrap {
+/**
+ * 界面启动器.
+ *
+ * @author caohao
+ */
+public final class ConsoleBootstrap {
     
     private static final String CONSOLE_PATH = "console";
     
     private static final int PORT = 8899;
     
     /**
-     * 启动Restful服务.
+     * 启动RESTful服务并加载页面.
+     * 
+     * @throws Exception 启动服务器异常
      */
     //CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {

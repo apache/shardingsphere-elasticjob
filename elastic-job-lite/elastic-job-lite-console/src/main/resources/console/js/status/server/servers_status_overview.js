@@ -5,8 +5,7 @@ $(function() {
 
 function renderServersOverview() {
     $("#servers-overview-tbl").bootstrapTable({
-        url: "/api/server/servers",
-        method: "get",
+        url: "/api/servers",
         cache: false,
         columns: 
         [{

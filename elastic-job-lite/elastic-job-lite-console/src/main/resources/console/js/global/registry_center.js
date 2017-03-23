@@ -10,8 +10,7 @@ $(function() {
 
 function renderRegCenters() {
     $("#reg-centers").bootstrapTable({
-        url: "api/registry_center",
-        method: "get",
+        url: "api/registry-center",
         cache: false,
         columns: 
         [{
@@ -52,7 +51,7 @@ function bindConnectButtons() {
         var btn = $(this).button("loading");
         var regName = $(event.currentTarget).attr("regName");
         $.ajax({
-            url: "api/registry_center/connect",
+            url: "api/registry-center/connect",
             type: "POST",
             data: JSON.stringify({"name" : regName}),
             contentType: "application/json",
@@ -80,8 +79,8 @@ function bindDeleteButtons() {
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
         $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
             $.ajax({
-                url: "api/registry_center/delete",
-                type: "POST",
+                url: "api/registry-center",
+                type: "DELETE",
                 data: JSON.stringify({"name" : regName}),
                 contentType: "application/json",
                 dataType: "json",

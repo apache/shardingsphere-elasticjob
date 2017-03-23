@@ -9,8 +9,7 @@ $(function() {
 
 function renderJobsOverview() {
     $("#jobs-overview-tbl").bootstrapTable({
-        url: "/api/job/jobs",
-        method: "get",
+        url: "/api/jobs",
         cache: false,
         columns: 
         [{
@@ -39,7 +38,7 @@ function statusFormatter(value, row) {
         case "OK":
             return "<span class='label label-success'>全部可用</span>";
             break;
-        case "MANUALLY_DISABLED":
+        case "DISABLED":
             return "<span class='label label-info'>被禁用</span>";
             break;
         case "PARTIAL_ALIVE":
@@ -73,7 +72,7 @@ function bindModifyButtons() {
     $(document).on("click", "button[operation='modifyJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         $.ajax({
-            url: "/api/job/settings/" + jobName,
+            url: "/api/jobs/settings/" + jobName,
             success: function(data) {
                 if (null !== data) {
                     $(".box-body").remove();
@@ -91,7 +90,7 @@ function bindRemoveButtons() {
     $(document).on("click", "button[operation='removeJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         $.ajax({
-            url: "/api/job/remove",
+            url: "/api/jobs/remove",
             type: "POST",
             data: JSON.stringify({jobName : jobName}),
             contentType: "application/json",
@@ -113,7 +112,7 @@ function bindTriggerButtons() {
     $(document).on("click", "button[operation='triggerJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         $.ajax({
-            url: "/api/job/triggerAll/name",
+            url: "/api/jobs/triggerAll/name",
             type: "POST",
             data: JSON.stringify({jobName : jobName}),
             contentType: "application/json",
@@ -130,7 +129,7 @@ function bindPauseButtons() {
     $(document).on("click", "button[operation='pauseJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         $.ajax({
-            url: "/api/job/pauseAll/name",
+            url: "/api/jobs/pauseAll/name",
             type: "POST",
             data: JSON.stringify({jobName : jobName}),
             contentType: "application/json",
@@ -147,7 +146,7 @@ function bindResumeButtons() {
     $(document).on("click", "button[operation='resumeJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         $.ajax({
-            url: "/api/job/resumeAll/name",
+            url: "/api/jobs/resumeAll/name",
             type: "POST",
             data: JSON.stringify({jobName : jobName}),
             contentType: "application/json",

@@ -19,8 +19,7 @@ $(function() {
 function renderServers() {
     var jobName = $("#job-name").text();
     $("#job-servers").bootstrapTable({
-        url: "/api/job/servers/" + jobName,
-        method: "get",
+        url: "/api/jobs/servers/" + jobName,
         cache: false,
         columns: [
         {
@@ -99,7 +98,7 @@ function bindTriggerButtons() {
     $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/job/trigger",
+            url: "/api/jobs/trigger",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
             contentType: "application/json",
@@ -116,7 +115,7 @@ function bindPauseButtons() {
     $(document).on("click", "button[operation='pause'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/job/pause",
+            url: "/api/jobs/pause",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
             contentType: "application/json",
@@ -133,7 +132,7 @@ function bindResumeButtons() {
     $(document).on("click", "button[operation='resume']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/job/resume",
+            url: "/api/jobs/resume",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
             contentType: "application/json",
@@ -150,7 +149,7 @@ function bindShutdownButtons() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/job/shutdown",
+            url: "/api/jobs/shutdown",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
             contentType: "application/json",
@@ -167,7 +166,7 @@ function bindRemoveButtons() {
     $(document).on("click", "button[operation='remove']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/job/remove",
+            url: "/api/jobs/remove",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
             contentType: "application/json",
@@ -188,7 +187,7 @@ function bindDisableButtons() {
     $(document).on("click", "button[operation='disable']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/job/disable",
+            url: "/api/jobs/disable",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
             contentType: "application/json",
@@ -205,7 +204,7 @@ function bindEnableButtons() {
     $(document).on("click", "button[operation='enable']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/job/enable",
+            url: "/api/jobs/enable",
             type: "POST",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
             contentType: "application/json",
@@ -221,8 +220,7 @@ function bindEnableButtons() {
 function renderExecution() {
     var jobName = $("#job-name").text();
     $("#execution").bootstrapTable({
-        url: "/api/job/execution/" + jobName,
-        method: "get",
+        url: "/api/jobs/execution/" + jobName,
         cache: false,
         columns: [
             {

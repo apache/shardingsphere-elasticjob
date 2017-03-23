@@ -5,8 +5,7 @@ $(function() {
 
 function renderJobsOverview() {
     $("#jobs-status-overview").bootstrapTable({
-        url: "/api/job/jobs",
-        method: "get",
+        url: "/api/jobs",
         cache: false,
         columns: 
         [{
