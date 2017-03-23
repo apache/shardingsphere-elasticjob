@@ -158,3 +158,9 @@ weight=400
 * 新增作业时，必须先发布打包部署后的作业APP。
 
 * 作业配置参数cpuCount,memoryMB分别代表作业运行时需要用到的`CPU`及内存。
+
+### 12. `Elastic-Job 2.0.6`版本支持单节点运行多个相同的作业实例，是否不兼容原来的数据结构?
+
+回答：
+
+是的。新`Elastic-Job Lite`的数据结构和原有结构并不兼容。在升级`Elastic-Job 2.0.6`版本时，请清理`Zookeeper`中相关作业节点下的`server`节点下的所有数据。否则使用`Web Console`时会导致显示错乱，且将导致`Elastic-Job-Lite`运行不稳定。

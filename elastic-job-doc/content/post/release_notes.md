@@ -8,6 +8,10 @@ weight=1
 
 ## 2.0.6-SNAPSHOT
 
+### 兼容性提示
+
+1. 新Elastic-Job Lite的数据结构和原有结构并不兼容。在升级Elastic-Job 2.0.6版本时，请清理Zookeeper中相关作业节点的server节点下的所有数据。
+
 ### 新功能
 
 1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) Elastic-Job-Lite自诊断并修复分布式不稳定造成的问题
