@@ -3,6 +3,11 @@ $(function() {
     renderDataSourceForDashboardNav();
     switchRegCenter();
     switchDataSource();
+    renderSkin();
+    controlSubMenuStyle();
+    controlDropdownMenuStyle();
+    getRegCenterNavTag();
+    getEventTraceNavTag();
 });
 
 function renderRegCenterForDashboardNav() {
@@ -66,6 +71,8 @@ function switchRegCenter() {
                     showSuccessDialog();
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
+                    getJobNavTag();
+                    getServerNavTag();
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -97,5 +104,93 @@ function switchDataSource() {
                 }
             }
         });
+    });
+}
+
+var my_skins = [
+    "skin-blue",
+    "skin-black",
+    "skin-red",
+    "skin-yellow",
+    "skin-purple",
+    "skin-green",
+    "skin-blue-light",
+    "skin-black-light",
+    "skin-red-light",
+    "skin-yellow-light",
+    "skin-purple-light",
+    "skin-green-light"
+];
+
+function renderSkin() {
+    $("[data-skin]").on("click", function(event) {
+        event.preventDefault();
+        changeSkin($(this).data("skin"));
+    });
+}
+
+function changeSkin(skinClass) {
+    $.each(my_skins, function(index) {
+      $("body").removeClass(my_skins[index]);
+    });
+    $("body").addClass(skinClass);
+}
+
+function controlSubMenuStyle() {
+    $(".sub-menu").click(function() {
+        $(this).parent().parent().children().removeClass("active");
+        $(this).parent().addClass("active");
+    });
+}
+
+function controlDropdownMenuStyle() {
+    $("a.dropdown-toggle").click(function() {
+        if (0 === $(this).parent().children("ul").children("li").length) {
+            $(this).parent().children("ul").hide();
+        }
+    });
+}
+
+function getJobNavTag() {
+    $.ajax({
+        url: "/api/job/jobs",
+        method: "get",
+        cache: false,
+        success: function(data) {
+            $("#job-nav-tag").text(data.length);
+        }
+    });
+}
+
+function getServerNavTag() {
+    $.ajax({
+        url: "/api/server/servers",
+        method: "get",
+        cache: false,
+        success: function(data) {
+            $("#server-nav-tag").text(data.length);
+        }
+    });
+}
+
+function getRegCenterNavTag() {
+    $.ajax({
+        url: "api/registry_center",
+        method: "get",
+        cache: false,
+        success: function(data) {
+            $("#reg-nav-tag").text(data.length);
+        }
+    });
+}
+
+function getEventTraceNavTag() {
+    $.ajax({
+        url: "api/data_source",
+        method: "get",
+        cache: false,
+        success: function(data) {
+            $("#event-trace-nav-tag").text(data.length);
+        }
     });
 }

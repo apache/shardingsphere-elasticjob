@@ -97,6 +97,7 @@ function bindRemoveButtons() {
                     showSuccessDialog();
                 }
                 $("#jobs-overview-tbl").bootstrapTable("refresh");
+                getJobNavTag();
             }
         });
     });
