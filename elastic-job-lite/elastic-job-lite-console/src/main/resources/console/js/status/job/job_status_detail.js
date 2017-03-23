@@ -42,9 +42,6 @@ function renderServers() {
             field: "ip",
             title: "IP地址"
         }, {
-            field: "hostName",
-            title: "机器名"
-        }, {
             field: "status",
             title: "状态"
         }, {
@@ -144,17 +141,17 @@ function renderExecution() {
         method: "get",
         cache: false,
         rowStyle: function (row, index) {
-            var strclass = "";
+            var statusClass = "";
             if ("RUNNING" === row.status) {
-                strclass = "success";
+                statusClass = "success";
             } else if ("COMPLETED" === row.status) {
-                strclass = "info";
+                statusClass = "info";
             } else if ("PENDING" === row.status) {
-                strclass = "warning";
+                statusClass = "warning";
             } else {
                 return {};
             }
-            return { classes : strclass }
+            return { classes : statusClass }
         },
         columns: [
         {
@@ -166,27 +163,8 @@ function renderExecution() {
         }, {
             field: "failoverIp",
             title: "失效转移执行"
-        }, {
-            field: "lastBeginTime",
-            title: "上次作业开始时间",
-            formatter: "dateFormatter"
-        }, {
-            field: "lastCompleteTime",
-            title: "上次作业完成时间",
-            formatter: "dateFormatter"
-        }, {
-            field: "nextFireTime",
-            title: "下次作业运行时间",
-            formatter: "dateFormatter"
         }]
     });
-}
-function dateFormatter(val, row) {
-    return null === row.nextFireTime ? null : new Date(row.nextFireTime).toLocaleString();
-}
-
-function ipFormatter(val, row) {
-    return null === row.failoverIp ? "-" : row.failoverIp;
 }
 
 function bindShutdownButtons() {

@@ -40,9 +40,9 @@ function generateOperationButtons(val, row) {
     var name = row.name;
     if (row.activated) {
         $("#activated-reg-center").text(name);
-        operationTd = "<button disabled operation='connect' class='btn-xs' regName='" + name + "'>已连</button><button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button disabled operation='connect' class='btn-xs' regName='" + name + "'>已连</button>&nbsp;<button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     } else {
-        operationTd = "<button operation='connect' class='btn-xs btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button><button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connect' class='btn-xs btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     }
     return operationTd;
 }
@@ -62,6 +62,8 @@ function bindConnectButtons() {
                     $("#activated-reg-center").text(regName);
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
+                    getJobNavTag();
+                    getServerNavTag();
                     showSuccessDialog();
                 } else {
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -90,6 +92,7 @@ function bindDeleteButtons() {
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     renderRegCenterForDashboardNav();
+                    getRegCenterNavTag();
                 }
             });
         });
@@ -156,6 +159,7 @@ function submitRegCenter() {
                         $("body").removeClass("modal-open");
                         showSuccessDialog();
                         renderRegCenterForDashboardNav();
+                        getRegCenterNavTag();
                     } else {
                         showFailureDialog("add-reg-center-failure-dialog");
                     }

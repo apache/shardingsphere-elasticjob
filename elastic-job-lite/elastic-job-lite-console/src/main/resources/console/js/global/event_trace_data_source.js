@@ -19,13 +19,13 @@ function renderDataSources() {
             title: "数据源名称"
         }, {
             field: "driver",
-            title: "数据源驱动"
+            title: "数据库驱动"
         }, {
             field: "url",
-            title: "数据源连接地址"
+            title: "数据库连接地址"
         }, {
             field: "username",
-            title: "连接用户名"
+            title: "数据库用户名"
         }, {
             field: "operation",
             title: "操作",
@@ -40,9 +40,9 @@ function generateOperationButtons(val, row) {
     var name = row.name;
     if (row.activated) {
         $("#activated-data-source").text(name);
-        operationTd = "<button disabled operation='connectDataSource' class='btn-xs' dataSourceName='" + name + "'>已连</button><button operation='deleteDataSource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
+        operationTd = "<button disabled operation='connectDataSource' class='btn-xs' dataSourceName='" + name + "'>已连</button>&nbsp;<button operation='deleteDataSource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
     } else {
-        operationTd = "<button operation='connectDataSource' class='btn-xs btn-primary' dataSourceName='" + name + "' data-loading-text='切换中...'>连接</button><button operation='deleteDataSource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connectDataSource' class='btn-xs btn-primary' dataSourceName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='deleteDataSource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
     }
     return operationTd;
 }
@@ -91,6 +91,7 @@ function bindDeleteButtons() {
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     renderDataSourceForDashboardNav();
+                    getEventTraceNavTag();
                 }
             });
         });
@@ -158,6 +159,7 @@ function submitDataSource() {
                         $("body").removeClass("modal-open");
                         showSuccessDialog();
                         renderDataSourceForDashboardNav();
+                        getEventTraceNavTag();
                     } else {
                         showFailureDialog("add-data-source-failure-dialog");
                     }

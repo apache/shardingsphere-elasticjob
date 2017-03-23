@@ -26,10 +26,12 @@ function renderJobsOverview() {
         columns: 
         [{
             field: "jobName",
-            title: "作业名"
+            title: "作业名",
+            sortable: "true"
         }, {
             field: "status",
-            title: "运行状态"
+            title: "运行状态",
+            sortable: "true"
         }, {
             field: "description",
             title: "描述"
@@ -42,11 +44,11 @@ function renderJobsOverview() {
 }
 
 function generateOperationButtons(val, row) {
-    return "<button operation='status' class='btn-xs btn-info' jobName='" + row.jobName + "'>状态</button>";
+    return "<button operation='job-status' class='btn-xs btn-info' jobName='" + row.jobName + "'>状态</button>";
 }
 
 function bindStatusButtons() {
-    $(document).on("click", "button[operation='status'][data-toggle!='modal']", function(event) {
+    $(document).on("click", "button[operation='job-status'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         window.location = "index.html?jobName=" + jobName + "&statusPage=show";
     });

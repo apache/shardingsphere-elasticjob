@@ -24,15 +24,14 @@ function renderServersOverview() {
         columns: 
         [{
             field: "serverIp",
-            title: "服务器IP"
-        }, {
-            field: "serverHostName",
-            title: "服务器名"
+            title: "服务器IP",
+            sortable: "true"
         }, {
             field: "status",
-            title: "状态"
+            title: "状态",
+            sortable: "true"
         }, {
-            fidle: "operation",
+            field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
         }]
@@ -40,11 +39,11 @@ function renderServersOverview() {
 }
 
 function generateOperationButtons(val, row) {
-    return "<button operation='status' class='btn-xs btn-info' serverIp='" + row.serverIp + "'>状态</button>";
+    return "<button operation='server-status' class='btn-xs btn-info' serverIp='" + row.serverIp + "'>状态</button>";
 }
 
 function bindStatusButtons() {
-    $(document).on("click", "button[operation='status'][data-toggle!='modal']", function(event) {
+    $(document).on("click", "button[operation='server-status'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("serverIp");
         window.location = "index.html?serverIp=" + serverIp;
     });

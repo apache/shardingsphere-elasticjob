@@ -2798,11 +2798,4 @@
         compareObjects: compareObjects,
         calculateObjectValue: calculateObjectValue
     };
-
-    // BOOTSTRAP TABLE INIT
-    // =======================
-
-    $(function () {
-        $('[data-toggle="table"]').bootstrapTable();
-    });
 }(jQuery);
