@@ -46,7 +46,7 @@ function statusFormatter(value) {
 }
 
 function generateOperationButtons(val, row) {
-    return "<button operation='job-status' class='btn-xs btn-info' jobName='" + row.jobName + "'>状态</button>";
+    return "<button operation='job-status' class='btn-xs btn-info' jobName='" + row.jobName + "'>详情</button>";
 }
 
 function bindStatusButtons() {

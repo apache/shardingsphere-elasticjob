@@ -44,7 +44,7 @@ function statusFormatter(value) {
 }
 
 function generateOperationButtons(val, row) {
-    return "<button operation='server-status' class='btn-xs btn-info' serverIp='" + row.serverIp + "' serverInstanceId='" + row.instanceId + "'>状态</button>";
+    return "<button operation='server-status' class='btn-xs btn-info' serverIp='" + row.serverIp + "' serverInstanceId='" + row.instanceId + "'>详情</button>";
 }
 
 function bindStatusButtons() {

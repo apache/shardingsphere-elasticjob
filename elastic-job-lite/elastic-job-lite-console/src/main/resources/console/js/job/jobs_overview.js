@@ -14,7 +14,8 @@ function renderJobsOverview() {
         columns: 
         [{
             field: "jobName",
-            title: "作业名"
+            title: "作业名",
+            sortable: true
         }, {
             field: "cron",
             title: "cron表达式"
@@ -24,6 +25,7 @@ function renderJobsOverview() {
         }, {
             field: "status",
             title: "状态",
+            sortable: true,
             formatter: "statusFormatter"
         }, {
             field: "operation",

@@ -90,22 +90,23 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
         for (String each : jobs) {
             JobNodePath jobNodePath = new JobNodePath(each);
             if (regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId))) {
-                result.add(getJob(serverIp, each));
+                result.add(getJob(serverIp, instanceId, each));
             }
         }
         return result;
     }
     
-    private ServerInfo getJob(final String serverIp, final String jobName) {
+    private ServerInfo getJob(final String serverIp, final String instanceId, final String jobName) {
         ServerInfo result = new ServerInfo();
         JobNodePath jobNodePath = new JobNodePath(jobName);
         result.setJobName(jobName);
         result.setIp(serverIp);
-        result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
-        String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
-        boolean disabled = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
-        boolean paused = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "paused"));
-        boolean shutdown = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
+        result.setInstanceId(instanceId);
+        result.setSharding(regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"sharding")));
+        String status = regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"status"));
+        boolean disabled = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"disabled"));
+        boolean paused = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"paused"));
+        boolean shutdown = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"shutdown"));
         result.setStatus(ServerInfo.ServerStatus.getServerStatus(status, disabled, paused, shutdown));
         return result;
     }
