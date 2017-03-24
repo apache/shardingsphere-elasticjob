@@ -22,15 +22,17 @@
                     </div>
                     <div class="form-group">
                         <label for="driver" class="control-label">数据库驱动：</label>
-                        <input type="text" class="form-control" id="driver" name="driver" required>
+                        <select id="driver" name="driver" class="form-control" disabled>
+                            <option>com.mysql.jdbc.Driver</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="url" class="control-label">数据库连接地址：</label>
-                        <input type="text" class="form-control" id="url" name="url">
+                        <input type="text" class="form-control" id="url" name="url" required>
                     </div>
                     <div class="form-group">
                         <label for="username" class="control-label">数据库用户名：</label>
-                        <input type="text" class="form-control" id="username" name="username">
+                        <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="form-group">
                         <label for="password" class="control-label">数据库密码：</label>
@@ -38,7 +40,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="add-data-source-btn" type="submit" class="btn-sm btn-primary">确认</button>
+                    <button id="add-data-source-btn" type="submit" class="btn-xs btn-primary">确认</button>
                 </div>
             </form>
         </div>
