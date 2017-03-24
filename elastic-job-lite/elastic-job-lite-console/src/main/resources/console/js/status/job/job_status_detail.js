@@ -12,16 +12,19 @@ function renderServers() {
         columns: [
         {
             field: "ip",
-            title: "IP地址"
+            title: "IP地址",
+            sortable: "true"
         }, {
             field: "instanceId",
-            title: "实例ID"
+            title: "实例ID", 
+            sortable: "true"
         }, {
-                field: "sharding",
-                title: "分片项"
+            field: "sharding",
+            title: "分片项"
         }, {
             field: "status",
-            title: "状态",
+            title: "状态", 
+            sortable: "true",
             formatter: "statusFormatter"
         },  {
             field: "operation",
@@ -61,8 +64,8 @@ function generateOperationButtons(val, row) {
     var pauseButton = "<button operation='pause' class='btn-xs btn-warning' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>暂停</button>";
     var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>关闭</button>";
     var removeButton = "<button operation='remove' class='btn-xs btn-danger' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>删除</button>";
-    var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>失效</button>";
-    var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>生效</button>";
+    var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>禁用</button>";
+    var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>启用</button>";
     var operationTd = triggerButton + "&nbsp;" + executionButton + "&nbsp;";
     if ("PAUSED" === row.status) {
         operationTd = operationTd + resumeButton + "&nbsp;";
@@ -77,7 +80,7 @@ function generateOperationButtons(val, row) {
     }
     if ("DISABLED" === row.status) {
         operationTd = operationTd + enableButton;
-    } else if ("CRASHED" !== row.status && "SHUTDOWN" !== row.status){
+    } else if ("CRASHED" !== row.status && "SHUTDOWN" !== row.status) {
         operationTd = operationTd + disableButton;
     }
     return operationTd;

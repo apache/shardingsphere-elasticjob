@@ -80,7 +80,7 @@ function bindConnectButtons() {
 
 function bindDeleteButtons() {
     $(document).on("click", "button[operation='delete']", function(event) {
-        $("#delete-confirm-dialog").modal();
+        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var regName = $(event.currentTarget).attr("regName");
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
         $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
@@ -105,7 +105,7 @@ function bindDeleteButtons() {
 
 function dealRegCenterModal() {
     $("#add-register").click(function() {
-        $("#add-reg-center").modal();
+        $("#add-reg-center").modal({backdrop: 'static', keyboard: true});
     });
     $("#close-add-reg-form").click(function() {
         $("#add-reg-center").on("hide.bs.modal", function () {
@@ -192,7 +192,7 @@ function validate() {
                         message: "注册中心长度不能超过30字符大小"
                     },
                     regexp: {
-                        regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
+                        regexp: /^([a-zA-Z0-9_]+(-|\.))*[a-zA-Z0-9_]+$/,
                         message: "注册中心包含非法字符"
                     }
                 }

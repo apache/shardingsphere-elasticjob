@@ -7,8 +7,6 @@ function renderJobsOverview() {
     $("#jobs-overview-tbl").bootstrapTable({
         url: "/api/jobs",
         cache: false,
-        search: true,
-        showRefresh: true,
         showColumns: true,
         columns: 
         [{

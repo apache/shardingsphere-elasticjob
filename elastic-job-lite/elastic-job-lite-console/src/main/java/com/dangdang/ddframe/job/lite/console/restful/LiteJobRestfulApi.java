@@ -67,7 +67,6 @@ public class LiteJobRestfulApi {
     
     @GET
     @Path("/settings/{jobName}")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public JobSettings getJobSettings(@PathParam("jobName") final String jobName) {
         return jobAPIService.getJobSettingsAPI().getJobSettings(jobName);
@@ -81,16 +80,14 @@ public class LiteJobRestfulApi {
     }
     
     @GET
-    @Path("/servers/{jobServer}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/servers/{jobName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ServerInfo> getServers(@PathParam("jobServer") final String jobName) {
+    public Collection<ServerInfo> getServers(@PathParam("jobName") final String jobName) {
         return jobAPIService.getJobStatisticsAPI().getServers(jobName);
     }
     
     @GET
     @Path("/execution/{jobName}")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ExecutionInfo> getExecutionInfo(@PathParam("jobName") final String jobName) {
         return jobAPIService.getJobStatisticsAPI().getExecutionInfo(jobName);

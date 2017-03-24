@@ -120,7 +120,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             public boolean doOperate(final String jobName, final String serverIp, final String serverInstanceId) {
                 JobNodePath jobNodePath = new JobNodePath(jobName);
                 if (regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, serverInstanceId, JobNodePath.STATUS_NODE)) 
-                        || regCenter.get(jobNodePath.getLeaderHostNodePath()).equals(serverIp + "_" + serverInstanceId)) {
+                        || (serverIp + "_" + serverInstanceId).equals(regCenter.get(jobNodePath.getLeaderHostNodePath()))) {
                     return false;
                 }
                 regCenter.remove(jobNodePath.getServerInstanceNodePath(serverIp, serverInstanceId));

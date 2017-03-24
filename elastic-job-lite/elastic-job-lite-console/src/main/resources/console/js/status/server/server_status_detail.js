@@ -18,10 +18,12 @@ function renderJobs() {
         columns: 
         [{
             field: "jobName",
-            title: "作业名"
+            title: "作业名",
+            sortable: "true"
         }, {
             field: "status",
             title: "状态",
+            sortable: "true",
             formatter: "statusFormatter"
         }, {
             field: "sharding",

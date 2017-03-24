@@ -79,7 +79,7 @@ function bindConnectButtons() {
 
 function bindDeleteButtons() {
     $(document).on("click", "button[operation='deleteDataSource']", function(event) {
-        $("#delete-confirm-dialog").modal();
+        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
         $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
@@ -104,7 +104,7 @@ function bindDeleteButtons() {
 
 function dealDataSourceModal() {
     $("#add-data-source").click(function() {
-        $("#add-data-source-center").modal();
+        $("#add-data-source-center").modal({backdrop: 'static', keyboard: true});
     });
     $("#close-add-data-source-form").click(function() {
         $("#add-data-source-center").on("hide.bs.modal", function () {
@@ -115,12 +115,6 @@ function dealDataSourceModal() {
 }
 
 function handleFieldValidator() {
-    $("#username").focus(function() {
-        $("#data-source-form").data("bootstrapValidator").enableFieldValidators("username", true);
-    });
-    $("#username").blur(function() {
-        $("#data-source-form").data("bootstrapValidator").enableFieldValidators("username", "" === $("#username").val() ? false : true);
-    });
     $("#password").focus(function() {
         $("#data-source-form").data("bootstrapValidator").enableFieldValidators("password", true);
     });
@@ -131,9 +125,6 @@ function handleFieldValidator() {
 
 function submitDataSource() {
     $("#add-data-source-btn").on("click", function(event) {
-        if ("" === $("#username").val()) {
-            $("#data-source-form").data("bootstrapValidator").enableFieldValidators("username", false);
-        }
         if ("" === $("#password").val()) {
             $("#data-source-form").data("bootstrapValidator").enableFieldValidators("password", false);
         }
@@ -185,57 +176,45 @@ function validate() {
             name: {
                 validators: {
                     notEmpty: {
-                        message: "数据源不能为空"
+                        message: "数据源名称不能为空"
                     },
                     stringLength: {
                         max: 30,
-                        message: "数据源长度不能超过30字符大小"
+                        message: "数据源名称长度不能超过30字符大小"
                     },
                     regexp: {
-                        regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
+                        regexp: /^([a-zA-Z0-9_]+(-|\.))*[a-zA-Z0-9_]+$/,
                         message: "数据源包含非法字符"
-                    }
-                }
-            },
-            driver: {
-                validators: {
-                    notEmpty: {
-                        message: "数据源驱动不能为空"
-                    },
-                    stringLength: {
-                        max: 60,
-                        message: "数据源驱动长度不能超过60字符大小"
-                    },
-                    regexp: {
-                        regexp: /^[^?!@#$%\^&*()'';""\]\[<>\\`~{}|=+/]+$/,
-                        message: "数据源驱动包含非法字符"
                     }
                 }
             },
             url: {
                 validators: {
                     notEmpty: {
-                        message: "数据源驱动不能为空"
+                        message: "数据库URL不能为空"
                     },
                     stringLength: {
-                        max: 60,
-                        message: "数据源连接地址长度不能超过60字符大小"
+                        max: 100,
+                        message: "数据库URL长度不能超过100字符大小"
                     },
                     regexp: {
                         regexp: /^[^?!@#$%\^&*()'',;""\]\[<>\\`~{}|=+]+$/,
-                        message: "数据源连接地址包含非法字符"
+                        message: "数据库URL包含非法字符"
                     }
                 }
             },
             username: {
                 validators: {
+                    notEmpty: {
+                        message: "数据库用户名不能为空"
+                    },
                     stringLength: {
                         max: 20,
-                        message: "用户名不能超过20字符大小"
+                        message: "数据库用户名不能超过20字符大小"
                     },
                     regexp: {
                         regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
-                        message: "用户名包含非法字符"
+                        message: "数据库用户名包含非法字符"
                     }
                 }
             },
@@ -243,11 +222,11 @@ function validate() {
                 validators: {
                     stringLength: {
                         max: 20,
-                        message: "口令不能超过20字符大小"
+                        message: "数据库口令不能超过20字符大小"
                     },
                     regexp: {
                         regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
-                        message: "口令包含非法字符"
+                        message: "数据库口令包含非法字符"
                     }
                 }
             }

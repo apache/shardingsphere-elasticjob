@@ -3,7 +3,7 @@
         <h4>事件追踪数据源配置总览</h4>
     </section>
     <section class="content">
-        <table id="data-sources" data-pagination="true" data-page-list="[10, 20, 50, 100]"></table>
+        <table id="data-sources" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true"></table>
         <button type="button" class="btn-xs btn-success" data-toggle="modal" id="add-data-source">添加</button>
     </section>
 </div>
@@ -22,8 +22,8 @@
                     </div>
                     <div class="form-group">
                         <label for="driver" class="control-label">数据库驱动：</label>
-                        <select id="driver" name="driver" class="form-control" disabled>
-                            <option>com.mysql.jdbc.Driver</option>
+                        <select id="driver" name="driver" class="form-control">
+                            MySQL:<option>com.mysql.jdbc.Driver</option>
                         </select>
                     </div>
                     <div class="form-group">
