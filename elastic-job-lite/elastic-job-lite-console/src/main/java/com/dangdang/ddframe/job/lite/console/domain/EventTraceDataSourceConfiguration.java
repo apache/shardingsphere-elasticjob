@@ -18,7 +18,7 @@ import lombok.Setter;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @NoArgsConstructor
-public class DataSourceConfiguration implements Serializable {
+public class EventTraceDataSourceConfiguration implements Serializable {
     
     private static final long serialVersionUID = -5996257770767863699L;
     
@@ -40,7 +40,7 @@ public class DataSourceConfiguration implements Serializable {
     @XmlAttribute
     private boolean activated;
     
-    public DataSourceConfiguration(final String name, final String driver, final String url, final String username) {
+    public EventTraceDataSourceConfiguration(final String name, final String driver, final String url, final String username) {
         this.name = name;
         this.driver = driver;
         this.url = url;

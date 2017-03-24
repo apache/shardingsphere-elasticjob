@@ -2,7 +2,7 @@ package com.dangdang.ddframe.job.lite.console.domain;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
@@ -41,7 +41,7 @@ public final class EventTraceDataSourceFactory {
         if (null != result) {
             return result;
         }
-        DataSourceConfiguration dataSourceConfiguration = new DataSourceConfiguration(null, driver, url, username);
+        EventTraceDataSourceConfiguration dataSourceConfiguration = new EventTraceDataSourceConfiguration(null, driver, url, username);
         if (password.isPresent()) {
             dataSourceConfiguration.setPassword(password.get());
         }

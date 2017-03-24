@@ -2,7 +2,7 @@ package com.dangdang.ddframe.job.lite.console.domain;
 
 import java.sql.DriverManager;
 
-import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,9 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 public class EventTraceDataSource {
     
     @Getter(AccessLevel.PROTECTED)
-    private DataSourceConfiguration dataSourceConfig;
+    private EventTraceDataSourceConfiguration dataSourceConfig;
     
-    public EventTraceDataSource(final DataSourceConfiguration dataSourceConfig) {
+    public EventTraceDataSource(final EventTraceDataSourceConfiguration dataSourceConfig) {
         this.dataSourceConfig = dataSourceConfig;
     }
     
