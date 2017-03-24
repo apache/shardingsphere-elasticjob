@@ -12,16 +12,21 @@ function renderDataSources() {
     $("#data-sources").bootstrapTable({
         url: "api/data-source",
         cache: false,
+        search: true,
+        showRefresh: true,
+        showColumns: true,
         columns: 
         [{
             field: "name",
-            title: "数据源名称"
+            title: "数据源名称",
+            sortable: true
         }, {
             field: "driver",
             title: "数据库驱动"
         }, {
             field: "url",
-            title: "数据库连接地址"
+            title: "数据库连接地址",
+            sortable: true
         }, {
             field: "username",
             title: "数据库用户名"

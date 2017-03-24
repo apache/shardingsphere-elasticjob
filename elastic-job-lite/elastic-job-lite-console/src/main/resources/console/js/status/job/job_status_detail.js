@@ -1,5 +1,5 @@
 $(function() {
-    $("#job-name").text(getCurrentUrl("jobName"));
+    $("#job-name").text(getCurrentUrl("job-name"));
     renderServers();
     $('[href="#servers"]').click(function() {
         renderServers();
@@ -7,13 +7,7 @@ $(function() {
     $('[href="#execution-info"]').click(function() {
         renderExecution();
     });
-    bindTriggerButtons();
-    bindPauseButtons();
-    bindResumeButtons();
-    bindShutdownButtons();
-    bindRemoveButtons();
-    bindDisableButtons();
-    bindEnableButtons();
+    bindButtons();
 });
 
 function renderServers() {
@@ -94,7 +88,17 @@ function generateOperationButtons(val, row) {
     return operationTd;
 }
 
-function bindTriggerButtons() {
+function bindButtons() {
+    bindTriggerButton();
+    bindPauseButton();
+    bindResumeButton();
+    bindShutdownButton();
+    bindRemoveButton();
+    bindDisableButton();
+    bindEnableButton();
+}
+
+function bindTriggerButton() {
     $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
@@ -111,7 +115,7 @@ function bindTriggerButtons() {
     });
 }
 
-function bindPauseButtons() {
+function bindPauseButton() {
     $(document).on("click", "button[operation='pause'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
@@ -128,7 +132,7 @@ function bindPauseButtons() {
     });
 }
 
-function bindResumeButtons() {
+function bindResumeButton() {
     $(document).on("click", "button[operation='resume']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
@@ -145,7 +149,7 @@ function bindResumeButtons() {
     });
 }
 
-function bindShutdownButtons() {
+function bindShutdownButton() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
@@ -162,7 +166,7 @@ function bindShutdownButtons() {
     });
 }
 
-function bindRemoveButtons() {
+function bindRemoveButton() {
     $(document).on("click", "button[operation='remove']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
@@ -183,7 +187,7 @@ function bindRemoveButtons() {
     });
 }
 
-function bindDisableButtons() {
+function bindDisableButton() {
     $(document).on("click", "button[operation='disable']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
@@ -200,7 +204,7 @@ function bindDisableButtons() {
     });
 }
 
-function bindEnableButtons() {
+function bindEnableButton() {
     $(document).on("click", "button[operation='enable']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({

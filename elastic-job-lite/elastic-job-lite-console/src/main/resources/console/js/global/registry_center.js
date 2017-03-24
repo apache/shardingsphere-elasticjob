@@ -12,16 +12,22 @@ function renderRegCenters() {
     $("#reg-centers").bootstrapTable({
         url: "api/registry-center",
         cache: false,
+        search: true,
+        showRefresh: true,
+        showColumns: true,
         columns: 
         [{
             field: "name",
-            title: "注册中心名称"
+            title: "注册中心名称",
+            sortable: true
         }, {
             field: "zkAddressList",
-            title: "连接地址"
+            title: "连接地址",
+            sortable: true
         }, {
             field: "namespace",
-            title: "命名空间"
+            title: "命名空间",
+            sortable: true
         }, {
             field: "digest",
             title: "登录凭证"
@@ -140,7 +146,7 @@ function submitRegCenter() {
             var namespace = $("#namespace").val();
             var digest = $("#digest").val();
             $.ajax({
-                url: "api/registry_center",
+                url: "api/registry-center",
                 type: "POST",
                 data: JSON.stringify({"name": name, "zkAddressList": zkAddressList, "namespace": namespace, "digest": digest}),
                 contentType: "application/json",

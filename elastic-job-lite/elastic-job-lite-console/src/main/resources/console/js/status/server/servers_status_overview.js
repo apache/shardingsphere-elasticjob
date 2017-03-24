@@ -1,6 +1,6 @@
 $(function() {
     renderServersOverview();
-    bindStatusButtons();
+    bindServerStatusDetailButton();
 });
 
 function renderServersOverview() {
@@ -44,13 +44,13 @@ function statusFormatter(value) {
 }
 
 function generateOperationButtons(val, row) {
-    return "<button operation='server-status' class='btn-xs btn-info' serverIp='" + row.serverIp + "' serverInstanceId='" + row.instanceId + "'>详情</button>";
+    return "<button operation='server-status-detail' class='btn-xs btn-info' server-ip='" + row.serverIp + "' server-instance-id='" + row.instanceId + "'>详情</button>";
 }
 
-function bindStatusButtons() {
-    $(document).on("click", "button[operation='server-status'][data-toggle!='modal']", function(event) {
-        var serverIp = $(event.currentTarget).attr("serverIp");
-        var serverInstanceId = $(event.currentTarget).attr("serverInstanceId");
-        window.location = "index.html?serverIp=" + serverIp + "&serverInstanceId=" + serverInstanceId;
+function bindServerStatusDetailButton() {
+    $(document).on("click", "button[operation='server-status-detail'][data-toggle!='modal']", function(event) {
+        var serverIp = $(event.currentTarget).attr("server-ip");
+        var serverInstanceId = $(event.currentTarget).attr("server-instance-id");
+        window.location = "index.html?server-ip=" + serverIp + "&server-instance-id=" + serverInstanceId;
     });
 }

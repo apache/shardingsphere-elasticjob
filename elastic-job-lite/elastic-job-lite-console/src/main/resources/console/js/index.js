@@ -1,13 +1,15 @@
 $(function() {
-    var jobName = getCurrentUrl("jobName");
-    var serverIp = getCurrentUrl("serverIp");
-    var statusPage = getCurrentUrl("statusPage");
+    var jobName = getCurrentUrl("job-name");
+    var serverIp = getCurrentUrl("server-ip");
+    var statusPage = getCurrentUrl("status-page");
     if (null !== statusPage) {
         $("#content").load("html/status/job/job_status_detail.html");
-        $("#job").addClass("active");
+        $("#server").addClass("active");
+        $("#job-status").parent().addClass("active");
     } else if (null !== serverIp) {
         $("#content").load("html/status/server/server_status_detail.html");
         $("#server").addClass("active");
+        $("#server-status").parent().addClass("active");
     } else if (null !== jobName) {
         $("#content").load("html/job/jobs_overview.html");
         $("#job").addClass("active");

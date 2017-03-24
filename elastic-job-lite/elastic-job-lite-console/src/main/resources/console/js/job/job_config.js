@@ -41,7 +41,7 @@ function bindSubmitJobSettingsForm() {
                 dataType: "json",
                 success: function() {
                     showSuccessDialog();
-                    window.location = "index.html?jobName=" + jobName;
+                    window.location = "index.html";
                 }
             });
         }
