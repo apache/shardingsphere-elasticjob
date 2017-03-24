@@ -134,7 +134,7 @@ public final class LiteJobConfigurationGsonFactory {
             }
             return builder.build();
         }
-    
+        
         @Override
         protected void writeCustomized(final JsonWriter out, final LiteJobConfiguration value) throws IOException {
             out.name("monitorExecution").value(value.isMonitorExecution());
