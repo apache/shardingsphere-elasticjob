@@ -104,9 +104,9 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         result.addConstructorArgValue(element.getAttribute(MAX_TIME_DIFF_SECONDS_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(MONITOR_PORT_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(JOB_SHARDING_STRATEGY_CLASS_ATTRIBUTE));
+        result.addConstructorArgValue(element.getAttribute(RECONCILE_INTERVAL_MINUTES));
         result.addConstructorArgValue(element.getAttribute(DISABLED_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(OVERWRITE_ATTRIBUTE));
-        result.addConstructorArgValue(element.getAttribute(RECONCILE_INTERVAL_MINUTES));
         return result.getBeanDefinition();
     }
     
