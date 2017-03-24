@@ -81,11 +81,12 @@ public class SchedulerFacade {
         listenerManager.startAllListeners();
         leaderElectionService.leaderForceElection();
         configService.persist(liteJobConfig);
-        serverService.persistServerOnline(!liteJobConfig.isDisabled());
+        LiteJobConfiguration liteJobConfigFromZk = configService.load(false);
+        serverService.persistServerOnline(!liteJobConfigFromZk.isDisabled());
         serverService.clearJobPausedStatus();
         shardingService.setReshardingFlag();
         monitorService.listen();
-        listenerManager.setCurrentShardingTotalCount(configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount());
+        listenerManager.setCurrentShardingTotalCount(liteJobConfigFromZk.getTypeConfig().getCoreConfig().getShardingTotalCount());
         if (!reconcileService.isRunning()) {
             reconcileService.startAsync();
         }
