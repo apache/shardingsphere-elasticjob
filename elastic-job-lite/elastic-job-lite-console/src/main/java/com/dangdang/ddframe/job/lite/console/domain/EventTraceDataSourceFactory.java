@@ -41,11 +41,11 @@ public final class EventTraceDataSourceFactory {
         if (null != result) {
             return result;
         }
-        EventTraceDataSourceConfiguration dataSourceConfiguration = new EventTraceDataSourceConfiguration(null, driver, url, username);
+        EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = new EventTraceDataSourceConfiguration(null, driver, url, username);
         if (password.isPresent()) {
-            dataSourceConfiguration.setPassword(password.get());
+            eventTraceDataSourceConfiguration.setPassword(password.get());
         }
-        result = new EventTraceDataSource(dataSourceConfiguration);
+        result = new EventTraceDataSource(eventTraceDataSourceConfiguration);
         result.init();
         DATA_SOURCE_REGISTRY.put(hashCode, result);
         return result;
