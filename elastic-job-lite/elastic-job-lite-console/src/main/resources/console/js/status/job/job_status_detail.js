@@ -1,12 +1,6 @@
 $(function() {
     $("#job-name").text(getCurrentUrl("job-name"));
     renderServers();
-    $('[href="#servers"]').click(function() {
-        renderServers();
-    });
-    $('[href="#execution-info"]').click(function() {
-        renderExecution();
-    });
     bindButtons();
 });
 
@@ -61,14 +55,15 @@ function statusFormatter(value, row) {
 }
 
 function generateOperationButtons(val, row) {
-    var triggerButton = "<button operation='trigger' class='btn-xs btn-success' ip='" + row.ip + "' instanceId='" + row.instanceId + "'>触发</button>";
-    var resumeButton = "<button operation='resume' class='btn-xs btn-success' ip='" + row.ip + "' instanceId='" + row.instanceId + "'>恢复</button>";
-    var pauseButton = "<button operation='pause' class='btn-xs btn-warning' ip='" + row.ip + "' instanceId='" + row.instanceId + "'>暂停</button>";
-    var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' ip='" + row.ip + "' instanceId='" + row.instanceId + "'>关闭</button>";
-    var removeButton = "<button operation='remove' class='btn-xs btn-danger' ip='" + row.ip + "' instanceId='" + row.instanceId + "'>删除</button>";
-    var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' instanceId='" + row.instanceId + "'>失效</button>";
-    var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' instanceId='" + row.instanceId + "'>生效</button>";
-    var operationTd = triggerButton + "&nbsp;";
+    var triggerButton = "<button operation='trigger' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>触发</button>";
+    var executionButton = "<button operation='execution' class='btn-xs btn-info' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>详情</button>";
+    var resumeButton = "<button operation='resume' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>恢复</button>";
+    var pauseButton = "<button operation='pause' class='btn-xs btn-warning' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>暂停</button>";
+    var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>关闭</button>";
+    var removeButton = "<button operation='remove' class='btn-xs btn-danger' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>删除</button>";
+    var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>失效</button>";
+    var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>生效</button>";
+    var operationTd = triggerButton + "&nbsp;" + executionButton + "&nbsp;";
     if ("PAUSED" === row.status) {
         operationTd = operationTd + resumeButton + "&nbsp;";
     } else if ("DISABLED" !== row.status && "CRASHED" !== row.status && "SHUTDOWN" !== row.status) {
@@ -89,6 +84,7 @@ function generateOperationButtons(val, row) {
 }
 
 function bindButtons() {
+    bindExecutionButton();
     bindTriggerButton();
     bindPauseButton();
     bindResumeButton();
@@ -98,13 +94,21 @@ function bindButtons() {
     bindEnableButton();
 }
 
+function bindExecutionButton() {
+    $(document).on("click", "button[operation='execution'][data-toggle!='modal']", function(event) {
+        $('#execution-info').modal({backdrop : 'static', keyboard : true});
+        renderExecution();
+    });
+}
+
+
 function bindTriggerButton() {
     $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
             url: "/api/jobs/trigger",
             type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
+            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
             contentType: "application/json",
             dataType: "json",
             success: function() {
@@ -121,7 +125,7 @@ function bindPauseButton() {
         $.ajax({
             url: "/api/jobs/pause",
             type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
+            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
             contentType: "application/json",
             dataType: "json",
             success: function() {
@@ -138,7 +142,7 @@ function bindResumeButton() {
         $.ajax({
             url: "/api/jobs/resume",
             type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
+            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
             contentType: "application/json",
             dataType: "json",
             success: function() {
@@ -155,7 +159,7 @@ function bindShutdownButton() {
         $.ajax({
             url: "/api/jobs/shutdown",
             type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
+            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
             contentType: "application/json",
             dataType: "json",
             success: function() {
@@ -172,7 +176,7 @@ function bindRemoveButton() {
         $.ajax({
             url: "/api/jobs/remove",
             type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
+            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
             contentType: "application/json",
             dataType: "json",
             success: function(data) {
@@ -193,7 +197,7 @@ function bindDisableButton() {
         $.ajax({
             url: "/api/jobs/disable",
             type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
+            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
             contentType: "application/json",
             dataType: "json",
             success: function() {
@@ -210,7 +214,7 @@ function bindEnableButton() {
         $.ajax({
             url: "/api/jobs/enable",
             type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instanceId")}),
+            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
             contentType: "application/json",
             dataType: "json",
             success: function() {

@@ -1,20 +1,23 @@
 <div class="index-content">
     <section class="content">
         <h4>作业名称：<span id="job-name"></span></h4>
-        <ul class="nav nav-tabs" role="tablist">
-            <li id="servers-tab" role="presentation" class="active"><a href="#servers" aria-controls="servers" role="tab" data-toggle="tab">作业服务器</a></li>
-            <li id="execution-info-tab" role="presentation"><a href="#execution-info" aria-controls="execution-info" role="tab" data-toggle="tab">作业运行状态</a></li>
-        </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="servers">
-                <table id="job-servers">
-                </table>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="execution-info">
-                <table id="execution"></table>
-            </div>
+            <table id="job-servers"/>
         </div>
     </section>
+</div>
+<div id="execution-info" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="close-execution-info-modal" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">作业运行状态</h4>
+            </div>
+            <div class="modal-body">
+                <table id="execution"/>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
 <script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
