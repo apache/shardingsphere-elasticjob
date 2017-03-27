@@ -25,7 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public final class ServerOperatorNodeTest {
+public final class ServerOperationNodeTest {
     
     private LocalHostService localHostService = new LocalHostService();
     

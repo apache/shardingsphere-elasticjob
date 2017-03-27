@@ -41,18 +41,19 @@ public class ServerNode {
     
     static final String TRIGGER = ROOT + "/%s/%s/" + TRIGGER_APPENDIX;
     
-    private final LocalHostService localHostService = new LocalHostService();
-    
     private final String jobName;
+    
+    private final String ip;
     
     private final JobNodePath jobNodePath;
     
     public ServerNode(final String jobName) {
         this.jobName = jobName;
+        ip = new LocalHostService().getIp();
         jobNodePath = new JobNodePath(jobName);
     }
     
-    String getStatusNode(final String ip) {
+    String getStatusNode() {
         return String.format(STATUS, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
@@ -71,7 +72,7 @@ public class ServerNode {
      * @return 是否为作业服务器立刻触发路径
      */
     public boolean isLocalJobTriggerPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.TRIGGER, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
+        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.TRIGGER, ip, JobRegistry.getInstance().getJobInstanceId(jobName))));
     }
     
     /**

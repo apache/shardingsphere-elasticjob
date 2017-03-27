@@ -53,7 +53,7 @@ public class ServerService {
      * 每次作业启动前清理上次运行状态.
      */
     public void clearPreviousServerStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode());
         jobNodeStorage.removeJobNodeIfExisted(serverOperationNode.getShutdownNode());
     }
     
@@ -68,7 +68,7 @@ public class ServerService {
         } else {
             jobNodeStorage.fillJobNode(serverOperationNode.getDisabledNode(), "");
         }
-        jobNodeStorage.fillEphemeralJobNode(serverNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
+        jobNodeStorage.fillEphemeralJobNode(serverNode.getStatusNode(), ServerStatus.READY);
         jobNodeStorage.removeJobNodeIfExisted(serverOperationNode.getShutdownNode());
     }
     
@@ -83,7 +83,7 @@ public class ServerService {
      * 处理服务器关机的相关信息.
      */
     public void processServerShutdown() {
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode());
     }
     
     /**
@@ -92,14 +92,14 @@ public class ServerService {
      * @param status 服务器状态
      */
     public void updateServerStatus(final ServerStatus status) {
-        jobNodeStorage.updateJobNode(serverNode.getStatusNode(localHostService.getIp()), status);
+        jobNodeStorage.updateJobNode(serverNode.getStatusNode(), status);
     }
     
     /**
      * 删除服务器状态.
      */
     public void removeServerStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode());
     }
     
     /**
@@ -194,7 +194,7 @@ public class ServerService {
      */
     public boolean isLocalhostServerReady() {
         String ip = localHostService.getIp();
-        return isAvailableServer(ip) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(serverNode.getStatusNode(ip)));
+        return isAvailableServer(ip) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(serverNode.getStatusNode()));
     }
     
     /**

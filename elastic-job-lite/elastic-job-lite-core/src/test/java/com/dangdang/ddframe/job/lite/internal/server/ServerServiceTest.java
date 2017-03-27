@@ -45,34 +45,38 @@ public final class ServerServiceTest {
     @Mock
     private LocalHostService localHostService;
     
-    private ServerNode serverNode = new ServerNode("test_job");
+    private ServerNode serverNode;
     
-    private ServerOperationNode serverOperationNode = new ServerOperationNode("test_job");
+    private ServerOperationNode serverOperationNode;
     
     private final ServerService serverService = new ServerService(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
+        JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
+        serverNode = new ServerNode("test_job");
+        serverOperationNode = new ServerOperationNode("test_job");
+        ReflectionUtils.setFieldValue(serverNode, "ip", "mockedIP");
         ReflectionUtils.setFieldValue(serverOperationNode, "ip", "mockedIP");
+        ReflectionUtils.setFieldValue(serverService, "serverNode", serverNode);
+        ReflectionUtils.setFieldValue(serverService, "serverOperationNode", serverOperationNode);
         ReflectionUtils.setFieldValue(serverService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(serverService, "localHostService", localHostService);
         ReflectionUtils.setFieldValue(serverService, "serverOperationNode", serverOperationNode);
         when(localHostService.getIp()).thenReturn("mockedIP");
-        JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
     }
     
     @Test
     public void assertClearPreviousServerStatus() {
         serverService.clearPreviousServerStatus();
-        verify(jobNodeStorage).removeJobNodeIfExisted(serverNode.getStatusNode("mockedIP"));
+        verify(jobNodeStorage).removeJobNodeIfExisted(serverNode.getStatusNode());
         verify(jobNodeStorage).removeJobNodeIfExisted(serverOperationNode.getShutdownNode("mockedIP"));
     }
     
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
         serverService.persistServerOnline(false);
-        verify(localHostService).getIp();
         verify(jobNodeStorage).fillJobNode("servers/mockedIP/operation/disabled", "");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/test_job_instance_id/status", ServerStatus.READY);
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/operation/shutdown");
@@ -81,7 +85,6 @@ public final class ServerServiceTest {
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
         serverService.persistServerOnline(true);
-        verify(localHostService).getIp();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/operation/disabled");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/test_job_instance_id/status", ServerStatus.READY);
     }

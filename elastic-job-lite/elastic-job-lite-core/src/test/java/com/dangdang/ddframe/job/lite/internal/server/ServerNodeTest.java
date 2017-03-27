@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -29,18 +29,18 @@ import static org.junit.Assert.assertTrue;
 
 public final class ServerNodeTest {
     
-    private LocalHostService localHostService = new LocalHostService();
-    
-    private ServerNode serverNode = new ServerNode("test_job");
+    private static ServerNode serverNode;
     
     @BeforeClass
-    public static void setUp() {
+    public static void setUp() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
+        serverNode = new ServerNode("test_job");
+        ReflectionUtils.setFieldValue(serverNode, "ip", "host0");
     }
     
     @Test
     public void assertGetStatusNode() {
-        assertThat(serverNode.getStatusNode("host0"), is("servers/host0/test_job_instance_id/status"));
+        assertThat(serverNode.getStatusNode(), is("servers/host0/test_job_instance_id/status"));
     }
     
     @Test
@@ -50,7 +50,7 @@ public final class ServerNodeTest {
     
     @Test
     public void assertIsLocalJobTriggerPath() {
-        assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/trigger"));
+        assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/host0/test_job_instance_id/trigger"));
     }
     
     @Test
