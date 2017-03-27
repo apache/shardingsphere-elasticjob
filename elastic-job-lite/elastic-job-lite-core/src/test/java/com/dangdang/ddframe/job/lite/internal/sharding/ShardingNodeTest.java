@@ -28,6 +28,6 @@ public class ShardingNodeTest {
     @Test
     public void assertGetShardingNode() {
         JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
-        assertThat(new ShardingNode("test_job").getShardingNode("host0"), is("servers/host0/test_job_instance_id/sharding"));
+        assertThat(new ShardingNode("test_job").getShardingNode("host0"), is("servers/host0/instances/test_job_instance_id/sharding"));
     }
 }

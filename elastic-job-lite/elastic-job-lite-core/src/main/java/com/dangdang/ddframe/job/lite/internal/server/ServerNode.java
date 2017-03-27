@@ -33,13 +33,18 @@ public class ServerNode {
      */
     public static final String ROOT = "servers";
     
+    /**
+     * 作业实例信息根节点.
+     */
+    public static final String INSTANCES_ROOT = "instances";
+    
     static final String STATUS_APPENDIX = "status";
     
-    static final String STATUS = ROOT + "/%s/%s/" + STATUS_APPENDIX;
+    static final String STATUS = ROOT + "/%s/" + INSTANCES_ROOT + "/%s/" + STATUS_APPENDIX;
     
     static final String TRIGGER_APPENDIX = "trigger";
     
-    static final String TRIGGER = ROOT + "/%s/%s/" + TRIGGER_APPENDIX;
+    static final String TRIGGER = ROOT + "/%s/" + INSTANCES_ROOT + "/%s/" + TRIGGER_APPENDIX;
     
     private final String jobName;
     

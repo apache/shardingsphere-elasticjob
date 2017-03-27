@@ -40,23 +40,23 @@ public final class ServerNodeTest {
     
     @Test
     public void assertGetStatusNode() {
-        assertThat(serverNode.getStatusNode(), is("servers/host0/test_job_instance_id/status"));
+        assertThat(serverNode.getStatusNode(), is("servers/host0/instances/test_job_instance_id/status"));
     }
     
     @Test
     public void assertGetTriggerNode() {
-        assertThat(serverNode.getTriggerNode("host0"), is("servers/host0/test_job_instance_id/trigger"));
+        assertThat(serverNode.getTriggerNode("host0"), is("servers/host0/instances/test_job_instance_id/trigger"));
     }
     
     @Test
     public void assertIsLocalJobTriggerPath() {
-        assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/host0/test_job_instance_id/trigger"));
+        assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/host0/instances/test_job_instance_id/trigger"));
     }
     
     @Test
     public void assertIsServerStatusPath() {
-        assertTrue(serverNode.isServerStatusPath("/test_job/servers/host0/status"));
-        assertFalse(serverNode.isServerStatusPath("/otherJob/servers/host0/status"));
-        assertFalse(serverNode.isServerStatusPath("/test_job/servers/host0/disabled"));
+        assertTrue(serverNode.isServerStatusPath("/test_job/servers/host0/instances/status"));
+        assertFalse(serverNode.isServerStatusPath("/otherJob/servers/host0/instances/status"));
+        assertFalse(serverNode.isServerStatusPath("/test_job/servers/host0/operation/disabled"));
     }
 }

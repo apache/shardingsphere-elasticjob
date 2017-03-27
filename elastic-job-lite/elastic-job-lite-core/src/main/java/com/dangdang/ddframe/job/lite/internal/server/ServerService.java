@@ -111,7 +111,7 @@ public class ServerService {
         List<JobShardingUnit> result = new LinkedList<>();
         List<String> servers = getAllServers();
         for (String each : servers) {
-            List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + each);
+            List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + each + "/" + ServerNode.INSTANCES_ROOT);
             for (String jobInstanceId : jobInstances) {
                 result.add(new JobShardingUnit(each, jobInstanceId));
             }
@@ -138,7 +138,7 @@ public class ServerService {
     
     private List<String> getAvailableInstances(final String ip) {
         List<String> result = new LinkedList<>();
-        List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip);
+        List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
         for (String each : jobInstances) {
             if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each))
                     && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getShutdownNode(ip))) {
@@ -177,7 +177,7 @@ public class ServerService {
      * @return 作业服务器是否可用
      */
     public boolean isAvailableServer(final String ip) {
-        List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip);
+        List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
         for (String each : instances) {
             if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) 
                     && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getShutdownNode(ip))) {

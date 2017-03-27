@@ -36,7 +36,7 @@ final class ShardingNode {
     
     static final String PROCESSING = LEADER_SHARDING_ROOT + "/processing";
     
-    private static final String SERVER_SHARDING = ServerNode.ROOT + "/%s/%s/sharding";
+    private static final String SERVER_SHARDING = ServerNode.ROOT + "/%s/" + ServerNode.INSTANCES_ROOT + "/%s/sharding";
     
     private final String jobName;
     

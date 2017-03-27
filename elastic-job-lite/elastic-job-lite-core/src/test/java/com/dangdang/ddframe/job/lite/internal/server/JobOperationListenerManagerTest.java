@@ -127,8 +127,8 @@ public final class JobOperationListenerManagerTest {
     @Test
     public void assertJobTriggerStatusJobListenerWhenIsAddAndIsJobLocalHostTriggerPathButNoJobRegister() {
         jobOperationListenerManager.new JobTriggerStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/trigger", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/trigger");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/instances/test_job_instance_id/trigger", null, "".getBytes())),
+                "/test_job/servers/" + ip + "/instances/test_job_instance_id/trigger");
         verify(serverService).clearJobTriggerStatus();
         verify(jobScheduleController, times(0)).triggerJob();
     }
@@ -137,8 +137,8 @@ public final class JobOperationListenerManagerTest {
     public void assertJobTriggerStatusJobListenerWhenIsAddAndIsJobLocalHostTriggerPathAndJobRegisterButServerIsNotReady() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         jobOperationListenerManager.new JobTriggerStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/trigger", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/trigger");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/instances/test_job_instance_id/trigger", null, "".getBytes())),
+                "/test_job/servers/" + ip + "/instances/test_job_instance_id/trigger");
         verify(serverService).clearJobTriggerStatus();
         verify(serverService).isLocalhostServerReady();
         verify(jobScheduleController, times(0)).triggerJob();
@@ -149,8 +149,8 @@ public final class JobOperationListenerManagerTest {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         when(serverService.isLocalhostServerReady()).thenReturn(true);
         jobOperationListenerManager.new JobTriggerStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/trigger", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/trigger");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/instances/test_job_instance_id/trigger", null, "".getBytes())),
+                "/test_job/servers/" + ip + "/instances/test_job_instance_id/trigger");
         verify(serverService).isLocalhostServerReady();
         verify(jobScheduleController).triggerJob();
         verify(serverService).clearJobTriggerStatus();

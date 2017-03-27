@@ -122,8 +122,8 @@ public final class ShardingServiceTest {
         shardingService.shardingIfNecessary();
         verify(serverService).getAvailableShardingUnits();
         verify(serverService).getAllShardingUnits();
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/test_job_instance_id/sharding");
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/test_job_instance_id/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/instances/test_job_instance_id/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/instances/test_job_instance_id/sharding");
         verify(jobNodeStorage, times(0)).isJobNodeExisted("leader/sharding/necessary");
     }
     
@@ -154,8 +154,8 @@ public final class ShardingServiceTest {
         verify(leaderElectionService).isLeader();
         verify(configService).load(false);
         verify(executionService, times(2)).hasRunningItems();
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/test_job_instance_id/sharding");
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/test_job_instance_id/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/instances/test_job_instance_id/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/instances/test_job_instance_id/sharding");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
         verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
@@ -173,26 +173,26 @@ public final class ShardingServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
         verify(leaderElectionService).isLeader();
         verify(configService).load(false);
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/test_job_instance_id/sharding");
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/test_job_instance_id/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip1/instances/test_job_instance_id/sharding");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/ip2/instances/test_job_instance_id/sharding");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
         verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
     
     @Test
     public void assertGetLocalHostShardingItemsWhenNodeExisted() {
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/sharding")).thenReturn(true);
-        when(jobNodeStorage.getJobNodeDataDirectly("servers/mockedIP/test_job_instance_id/sharding")).thenReturn("0,1,2");
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/instances/test_job_instance_id/sharding")).thenReturn(true);
+        when(jobNodeStorage.getJobNodeDataDirectly("servers/mockedIP/instances/test_job_instance_id/sharding")).thenReturn("0,1,2");
         assertThat(shardingService.getLocalHostShardingItems(), is(Arrays.asList(0, 1, 2)));
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/sharding");
-        verify(jobNodeStorage).getJobNodeDataDirectly("servers/mockedIP/test_job_instance_id/sharding");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/instances/test_job_instance_id/sharding");
+        verify(jobNodeStorage).getJobNodeDataDirectly("servers/mockedIP/instances/test_job_instance_id/sharding");
     }
     
     @Test
     public void assertGetLocalHostShardingWhenNodeNotExisted() {
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/sharding")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/instances/test_job_instance_id/sharding")).thenReturn(false);
         assertThat(shardingService.getLocalHostShardingItems(), is(Collections.EMPTY_LIST));
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/sharding");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/instances/test_job_instance_id/sharding");
     }
     
     @Test
@@ -202,7 +202,7 @@ public final class ShardingServiceTest {
         TransactionDeleteBuilder transactionDeleteBuilder = mock(TransactionDeleteBuilder.class);
         CuratorTransactionBridge curatorTransactionBridge = mock(CuratorTransactionBridge.class);
         when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
-        when(transactionCreateBuilder.forPath("/test_job/servers/host0/test_job_instance_id/sharding", "0,1,2".getBytes())).thenReturn(curatorTransactionBridge);
+        when(transactionCreateBuilder.forPath("/test_job/servers/host0/instances/test_job_instance_id/sharding", "0,1,2".getBytes())).thenReturn(curatorTransactionBridge);
         when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
         when(curatorTransactionFinal.delete()).thenReturn(transactionDeleteBuilder);
         when(transactionDeleteBuilder.forPath("/test_job/leader/sharding/necessary")).thenReturn(curatorTransactionBridge);
@@ -215,7 +215,7 @@ public final class ShardingServiceTest {
         ShardingService.PersistShardingInfoTransactionExecutionCallback actual = shardingService.new PersistShardingInfoTransactionExecutionCallback(shardingItems);
         actual.execute(curatorTransactionFinal);
         verify(curatorTransactionFinal).create();
-        verify(transactionCreateBuilder).forPath("/test_job/servers/host0/test_job_instance_id/sharding", "0,1,2".getBytes());
+        verify(transactionCreateBuilder).forPath("/test_job/servers/host0/instances/test_job_instance_id/sharding", "0,1,2".getBytes());
         verify(curatorTransactionFinal, times(2)).delete();
         verify(transactionDeleteBuilder).forPath("/test_job/leader/sharding/necessary");
         verify(transactionDeleteBuilder).forPath("/test_job/leader/sharding/processing");
