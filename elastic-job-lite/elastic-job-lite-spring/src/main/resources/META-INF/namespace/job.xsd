@@ -33,7 +33,6 @@
                 <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />
                 <xsd:attribute name="sharding-item-parameters" type="xsd:string" />
                 <xsd:attribute name="job-parameter" type="xsd:string" />
-                <xsd:attribute name="job-instance-id" type="xsd:string" default="defaultInstance" />
                 <xsd:attribute name="monitor-execution" type="xsd:string" default="true"/>
                 <xsd:attribute name="monitor-port" type="xsd:string" default="-1"/>
                 <xsd:attribute name="max-time-diff-seconds" type="xsd:string" default="-1"/>

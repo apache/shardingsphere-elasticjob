@@ -34,11 +34,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class LiteJobConfiguration implements JobRootConfiguration {
     
-    public static final String DEFAULT_JOB_INSTANCE_ID = "defaultInstance";
-    
     private final JobTypeConfiguration typeConfig;
-    
-    private final String jobInstanceId;
     
     private final boolean monitorExecution;
     
@@ -87,8 +83,6 @@ public class LiteJobConfiguration implements JobRootConfiguration {
         
         private final JobTypeConfiguration jobConfig;
     
-        private String jobInstanceId = DEFAULT_JOB_INSTANCE_ID;
-        
         private boolean monitorExecution = true;
         
         private int maxTimeDiffSeconds = -1;
@@ -103,21 +97,6 @@ public class LiteJobConfiguration implements JobRootConfiguration {
         
         private int reconcileIntervalMinutes = 10;
     
-        /**
-         * 设置作业实例主键.
-         * 
-         * <p>
-         * 同IP可运行实例主键不同, 但名称相同的多个作业实例.
-         * </p>
-         * @param jobInstanceId 作业实例主键
-         *
-         * @return 作业配置构建器
-         */
-        public Builder jobInstanceId(final String jobInstanceId) {
-            this.jobInstanceId = jobInstanceId;
-            return this;
-        }
-        
         /**
          * 设置监控作业执行时状态.
          *
@@ -236,7 +215,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
          * @return 作业配置对象
          */
         public final LiteJobConfiguration build() {
-            return new LiteJobConfiguration(jobConfig, jobInstanceId, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, reconcileIntervalMinutes, disabled, overwrite);
+            return new LiteJobConfiguration(jobConfig, monitorExecution, maxTimeDiffSeconds, monitorPort, jobShardingStrategyClass, reconcileIntervalMinutes, disabled, overwrite);
         }
     }
 }

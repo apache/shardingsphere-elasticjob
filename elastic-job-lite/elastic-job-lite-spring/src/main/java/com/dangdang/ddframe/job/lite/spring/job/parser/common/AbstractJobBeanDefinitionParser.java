@@ -47,7 +47,6 @@ import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBean
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.EXECUTOR_SERVICE_HANDLER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.FAILOVER_ATTRIBUTE;
-import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.JOB_INSTANCE_ID;
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.JOB_EXCEPTION_HANDLER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.JOB_PARAMETER_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.JOB_SHARDING_STRATEGY_CLASS_ATTRIBUTE;
@@ -99,7 +98,6 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     private BeanDefinition createLiteJobConfigurationBeanDefinition(final Element element, final BeanDefinition jobCoreBeanDefinition) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(LiteJobConfiguration.class);
         result.addConstructorArgValue(getJobTypeConfigurationBeanDefinition(jobCoreBeanDefinition, element));
-        result.addConstructorArgValue(element.getAttribute(JOB_INSTANCE_ID));
         result.addConstructorArgValue(element.getAttribute(MONITOR_EXECUTION_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(MAX_TIME_DIFF_SECONDS_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(MONITOR_PORT_ATTRIBUTE));
