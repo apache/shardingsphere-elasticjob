@@ -82,7 +82,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
             private final TreeCacheEvent event;
             
             boolean isLeaderCrashedOrServerOn() {
-                return isLeaderCrashed() || isServerEnabled() || isServerResumed();
+                return isLeaderCrashed() || isServerEnabled();
             }
             
             private boolean isLeaderCrashed() {
@@ -93,20 +93,12 @@ public class ElectionListenerManager extends AbstractListenerManager {
                 return serverNode.isLocalServerDisabledPath(path) && Type.NODE_REMOVED == event.getType();
             }
             
-            private boolean isServerResumed() {
-                return serverNode.isLocalJobPausedPath(path) && Type.NODE_REMOVED == event.getType();
-            }
-            
             boolean isServerOff() {
-                return isServerDisabled() || isServerPaused() || isServerShutdown();
+                return isServerDisabled() || isServerShutdown();
             }
             
             private boolean isServerDisabled() {
                 return serverNode.isLocalServerDisabledPath(path) && Type.NODE_ADDED == event.getType();
-            }
-            
-            private boolean isServerPaused() {
-                return serverNode.isLocalJobPausedPath(path) && Type.NODE_ADDED == event.getType();
             }
             
             private boolean isServerShutdown() {

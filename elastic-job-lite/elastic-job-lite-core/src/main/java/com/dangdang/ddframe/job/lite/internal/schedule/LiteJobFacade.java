@@ -89,7 +89,7 @@ public class LiteJobFacade implements JobFacade {
     
     @Override
     public void failoverIfNecessary() {
-        if (configService.load(true).isFailover() && !serverService.isJobPausedManually()) {
+        if (configService.load(true).isFailover()) {
             failoverService.failoverIfNecessary();
         }
     }
@@ -142,9 +142,9 @@ public class LiteJobFacade implements JobFacade {
     public boolean isEligibleForJobRunning() {
         LiteJobConfiguration liteJobConfig = configService.load(true);
         if (liteJobConfig.getTypeConfig() instanceof DataflowJobConfiguration) {
-            return !serverService.isJobPausedManually() && !shardingService.isNeedSharding() && ((DataflowJobConfiguration) liteJobConfig.getTypeConfig()).isStreamingProcess();    
+            return !shardingService.isNeedSharding() && ((DataflowJobConfiguration) liteJobConfig.getTypeConfig()).isStreamingProcess();    
         }
-        return !serverService.isJobPausedManually() && !shardingService.isNeedSharding();
+        return !shardingService.isNeedSharding();
     }
     
     @Override

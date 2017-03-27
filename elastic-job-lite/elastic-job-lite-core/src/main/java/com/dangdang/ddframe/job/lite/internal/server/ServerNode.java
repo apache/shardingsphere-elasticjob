@@ -47,8 +47,6 @@ public class ServerNode {
     
     static final String DISABLED = ROOT + "/%s/%s/" + DISABLED_APPENDIX;
     
-    static final String PAUSED = ROOT + "/%s/%s/paused";
-    
     static final String SHUTDOWN_APPENDIX = "shutdown";
     
     static final String SHUTDOWN = ROOT + "/%s/%s/" + SHUTDOWN_APPENDIX;
@@ -80,14 +78,6 @@ public class ServerNode {
         return String.format(TRIGGER, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    String getPausedNode(final String ip) {
-        return String.format(PAUSED, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
-    }
-    
-    static String getPausedNode(final String ip, final String jobInstanceId) {
-        return String.format(PAUSED, ip, jobInstanceId);
-    }
-    
     String getDisabledNode(final String ip) {
         return String.format(DISABLED, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
@@ -112,16 +102,6 @@ public class ServerNode {
      */
     public boolean isLocalJobTriggerPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.TRIGGER, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
-    }
-    
-    /**
-     * 判断给定路径是否为作业服务器暂停路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为作业服务器暂停路径
-     */
-    public boolean isLocalJobPausedPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.PAUSED, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
     }
     
     /**

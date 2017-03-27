@@ -59,11 +59,6 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertPausedNode() {
-        assertThat(serverNode.getPausedNode("host0"), is("servers/host0/test_job_instance_id/paused"));
-    }
-    
-    @Test
     public void assertShutdownNode() {
         assertThat(serverNode.getShutdownNode("host0"), is("servers/host0/test_job_instance_id/shutdown"));
     }
@@ -71,11 +66,6 @@ public final class ServerNodeTest {
     @Test
     public void assertIsLocalJobTriggerPath() {
         assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/trigger"));
-    }
-    
-    @Test
-    public void assertIsLocalJobPausedPath() {
-        assertTrue(serverNode.isLocalJobPausedPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/paused"));
     }
     
     @Test

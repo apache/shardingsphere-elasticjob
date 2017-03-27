@@ -21,12 +21,12 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager.ConnectionLostListener;
-import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager.JobPausedStatusJobListener;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.framework.state.ConnectionState;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +76,7 @@ public final class JobOperationListenerManagerTest {
     public void assertStart() {
         jobOperationListenerManager.start();
         verify(jobNodeStorage).addConnectionStateListener(Matchers.<ConnectionLostListener>any());
-        verify(jobNodeStorage, times(3)).addDataListener(Matchers.<JobPausedStatusJobListener>any());
+        verify(jobNodeStorage, times(2)).addDataListener(Matchers.<TreeCacheListener>any());
     }
     
     @Test
@@ -91,25 +91,11 @@ public final class JobOperationListenerManagerTest {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
         when(serverService.isLocalhostServerEnabled()).thenReturn(true);
-        when(serverService.isJobPausedManually()).thenReturn(false);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
         verify(serverService).isLocalhostServerEnabled();
         verify(serverService).persistServerOnline(true);
         verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
         verify(jobScheduleController).resumeJob();
-    }
-    
-    @Test
-    public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsPausedManually() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-        when(serverService.isLocalhostServerEnabled()).thenReturn(true);
-        when(serverService.isJobPausedManually()).thenReturn(true);
-        jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
-        verify(serverService).isLocalhostServerEnabled();
-        verify(serverService).persistServerOnline(true);
-        verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
-        verify(jobScheduleController, times(0)).resumeJob();
     }
     
     @Test
@@ -168,55 +154,6 @@ public final class JobOperationListenerManagerTest {
         verify(serverService).isLocalhostServerReady();
         verify(jobScheduleController).triggerJob();
         verify(serverService).clearJobTriggerStatus();
-    }
-    
-    @Test
-    public void assertJobPausedStatusJobListenerWhenIsNotJobPausedPath() {
-        jobOperationListenerManager.new JobPausedStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/other", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/other");
-        verify(jobScheduleController, times(0)).pauseJob();
-        verify(jobScheduleController, times(0)).resumeJob();
-    }
-    
-    @Test
-    public void assertJobPausedStatusJobListenerWhenIsJobPausedPathButJobIsNotExisted() {
-        jobOperationListenerManager.new JobPausedStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/paused", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/paused");
-        verify(jobScheduleController, times(0)).pauseJob();
-        verify(jobScheduleController, times(0)).resumeJob();
-    }
-    
-    @Test
-    public void assertJobPausedStatusJobListenerWhenIsJobPausedPathAndUpdate() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        jobOperationListenerManager.new JobPausedStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/paused", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/paused");
-        verify(jobScheduleController, times(0)).pauseJob();
-        verify(jobScheduleController, times(0)).resumeJob();
-    }
-    
-    @Test
-    public void assertJobPausedStatusJobListenerWhenIsJobPausedPathAndAdd() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        jobOperationListenerManager.new JobPausedStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/paused", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/paused");
-        verify(jobScheduleController).pauseJob();
-        verify(jobScheduleController, times(0)).resumeJob();
-    }
-    
-    @Test
-    public void assertJobPausedStatusJobListenerWhenIsJobPausedPathAndRemove() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        jobOperationListenerManager.new JobPausedStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/paused", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/paused");
-        verify(jobScheduleController, times(0)).pauseJob();
-        verify(jobScheduleController).resumeJob();
-        verify(serverService).clearJobPausedStatus();
     }
     
     @Test

@@ -113,19 +113,9 @@ public class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertFailoverIfNecessaryButIsPaused() {
-        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
-                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(serverService.isJobPausedManually()).thenReturn(true);
-        liteJobFacade.failoverIfNecessary();
-        verify(failoverService, times(0)).failoverIfNecessary();
-    }
-    
-    @Test
     public void assertFailoverIfNecessary() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(serverService.isJobPausedManually()).thenReturn(false);
         liteJobFacade.failoverIfNecessary();
         verify(failoverService).failoverIfNecessary();
     }
@@ -229,15 +219,6 @@ public class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertNotEligibleForJobRunningWhenJobPausedManually() {
-        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestDataflowJob.class.getCanonicalName(), true)).build());
-        when(serverService.isJobPausedManually()).thenReturn(true);
-        assertThat(liteJobFacade.isEligibleForJobRunning(), is(false));
-        verify(serverService).isJobPausedManually();
-    }
-    
-    @Test
     public void assertNotEligibleForJobRunningWhenNeedSharding() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), true)).build());
@@ -255,13 +236,11 @@ public class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertEligibleForJobRunningWhenNotJobPausedManuallyAndNotNeedShardingAndStreamingProcess() {
-        when(serverService.isJobPausedManually()).thenReturn(false);
+    public void assertEligibleForJobRunningWhenNotNeedShardingAndStreamingProcess() {
         when(shardingService.isNeedSharding()).thenReturn(false);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), true)).build());
         assertThat(liteJobFacade.isEligibleForJobRunning(), is(true));
-        verify(serverService).isJobPausedManually();
         verify(shardingService).isNeedSharding();
         verify(configService).load(true);
     }

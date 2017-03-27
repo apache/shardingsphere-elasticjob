@@ -83,7 +83,6 @@ public class SchedulerFacade {
         configService.persist(liteJobConfig);
         LiteJobConfiguration liteJobConfigFromZk = configService.load(false);
         serverService.persistServerOnline(!liteJobConfigFromZk.isDisabled());
-        serverService.clearJobPausedStatus();
         shardingService.setReshardingFlag();
         monitorService.listen();
         listenerManager.setCurrentShardingTotalCount(liteJobConfigFromZk.getTypeConfig().getCoreConfig().getShardingTotalCount());
