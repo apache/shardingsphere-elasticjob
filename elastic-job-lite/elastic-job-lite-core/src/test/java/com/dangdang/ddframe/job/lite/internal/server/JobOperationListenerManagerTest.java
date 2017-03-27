@@ -185,8 +185,8 @@ public final class JobOperationListenerManagerTest {
     public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathAndAdd() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/test_job_instance_id/shutdown", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/test_job_instance_id/shutdown");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/operation/shutdown", null, "".getBytes())),
+                "/test_job/servers/" + ip + "/operation/shutdown");
         verify(jobScheduleController).shutdown();
         verify(serverService).processServerShutdown();
     }

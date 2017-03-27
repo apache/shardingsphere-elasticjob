@@ -41,6 +41,8 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
+    private final ServerOperationNode serverOperationNode;
+    
     private final ServerService serverService;
     
     private final ShardingService shardingService;
@@ -51,6 +53,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         super(regCenter, jobName);
         this.jobName = jobName;
         serverNode = new ServerNode(jobName);
+        serverOperationNode = new ServerOperationNode(jobName);
         serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
@@ -100,7 +103,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (!serverNode.isLocalJobShutdownPath(path)) {
+            if (!serverOperationNode.isLocalJobShutdownPath(path)) {
                 return;
             }
             JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);

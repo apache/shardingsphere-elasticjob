@@ -175,15 +175,14 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(""));
         if (disabled) {
-            assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/disabled"));
+            assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/operation/disabled"));
             while (null != regCenter.get("/" + jobName + "/leader/election/host_instance")) {
                 BlockUtils.waitingShortTime();
             }
         } else {
-            assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/disabled"));
+            assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/operation/disabled"));
             assertThat(regCenter.get("/" + jobName + "/leader/election/host_instance"), is(localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstanceId(jobName)));
         }
-        assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/paused"));
         assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/" + JobRegistry.getInstance().getJobInstanceId(jobName) + "/status"),
                 CoreMatchers.is(ServerStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");

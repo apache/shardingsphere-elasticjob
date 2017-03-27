@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.election;
 
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
+import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
@@ -42,15 +42,14 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     private final ElectionNode electionNode;
     
-    private final ServerNode serverNode;
-    
+    private final ServerOperationNode serverOperationNode;
     
     public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         leaderElectionService = new LeaderElectionService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         electionNode = new ElectionNode(jobName);
-        serverNode = new ServerNode(jobName);
+        serverOperationNode = new ServerOperationNode(jobName);
     }
     
     @Override
@@ -90,7 +89,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
             }
             
             private boolean isServerEnabled() {
-                return serverNode.isLocalServerDisabledPath(path) && Type.NODE_REMOVED == event.getType();
+                return serverOperationNode.isLocalServerDisabledPath(path) && Type.NODE_REMOVED == event.getType();
             }
             
             boolean isServerOff() {
@@ -98,11 +97,11 @@ public class ElectionListenerManager extends AbstractListenerManager {
             }
             
             private boolean isServerDisabled() {
-                return serverNode.isLocalServerDisabledPath(path) && Type.NODE_ADDED == event.getType();
+                return serverOperationNode.isLocalServerDisabledPath(path) && Type.NODE_ADDED == event.getType();
             }
             
             private boolean isServerShutdown() {
-                return serverNode.isLocalJobShutdownPath(path) && Type.NODE_ADDED == event.getType();
+                return serverOperationNode.isLocalJobShutdownPath(path) && Type.NODE_ADDED == event.getType();
             }
         }
     }

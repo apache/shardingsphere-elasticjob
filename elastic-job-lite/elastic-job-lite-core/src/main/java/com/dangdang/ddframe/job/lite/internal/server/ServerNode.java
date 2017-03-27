@@ -41,14 +41,6 @@ public class ServerNode {
     
     static final String TRIGGER = ROOT + "/%s/%s/" + TRIGGER_APPENDIX;
     
-    static final String DISABLED_APPENDIX = "disabled";
-    
-    static final String DISABLED = ROOT + "/%s/%s/" + DISABLED_APPENDIX;
-    
-    static final String SHUTDOWN_APPENDIX = "shutdown";
-    
-    static final String SHUTDOWN = ROOT + "/%s/%s/" + SHUTDOWN_APPENDIX;
-    
     private final LocalHostService localHostService = new LocalHostService();
     
     private final String jobName;
@@ -72,22 +64,6 @@ public class ServerNode {
         return String.format(TRIGGER, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
     }
     
-    String getDisabledNode(final String ip) {
-        return String.format(DISABLED, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
-    }
-    
-    static String getDisabledNode(final String ip, final String jobInstanceId) {
-        return String.format(DISABLED, ip, jobInstanceId);
-    }
-        
-    String getShutdownNode(final String ip) {
-        return String.format(SHUTDOWN, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
-    }
-    
-    static String getShutdownNode(final String ip, final String jobInstanceId) {
-        return String.format(SHUTDOWN, ip, jobInstanceId);
-    }
-    
     /**
      * 判断给定路径是否为作业服务器立刻触发路径.
      *
@@ -99,26 +75,6 @@ public class ServerNode {
     }
     
     /**
-     * 判断给定路径是否为作业服务器关闭路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为作业服务器关闭路径
-     */
-    public boolean isLocalJobShutdownPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.SHUTDOWN, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
-    }
-    
-    /**
-     * 判断给定路径是否为作业服务器禁用路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为作业服务器禁用路径
-     */
-    public boolean isLocalServerDisabledPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerNode.DISABLED, localHostService.getIp(), JobRegistry.getInstance().getJobInstanceId(jobName))));
-    }
-    
-    /**
      * 判断给定路径是否为作业服务器状态路径.
      * 
      * @param path 待判断的路径
@@ -126,25 +82,5 @@ public class ServerNode {
      */
     public boolean isServerStatusPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.STATUS_APPENDIX);
-    }
-    
-    /**
-     * 判断给定路径是否为作业服务器禁用路径.
-     * 
-     * @param path 待判断的路径
-     * @return 是否为作业服务器禁用路径
-     */
-    public boolean isServerDisabledPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.DISABLED_APPENDIX);
-    }
-    
-    /**
-     * 判断给定路径是否为作业服务器关闭路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为作业服务器关闭路径
-     */
-    public boolean isServerShutdownPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.SHUTDOWN_APPENDIX);
     }
 }

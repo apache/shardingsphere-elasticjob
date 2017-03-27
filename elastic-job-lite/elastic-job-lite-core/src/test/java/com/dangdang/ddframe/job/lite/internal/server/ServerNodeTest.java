@@ -49,28 +49,8 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertGetDisabledNode() {
-        assertThat(serverNode.getDisabledNode("host0"), is("servers/host0/test_job_instance_id/disabled"));
-    }
-    
-    @Test
-    public void assertShutdownNode() {
-        assertThat(serverNode.getShutdownNode("host0"), is("servers/host0/test_job_instance_id/shutdown"));
-    }
-    
-    @Test
     public void assertIsLocalJobTriggerPath() {
         assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/trigger"));
-    }
-    
-    @Test
-    public void assertIsLocalJobShutdownPath() {
-        assertTrue(serverNode.isLocalJobShutdownPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/shutdown"));
-    }
-    
-    @Test
-    public void assertIsLocalServerDisabledPath() {
-        assertTrue(serverNode.isLocalServerDisabledPath("/test_job/servers/" + localHostService.getIp() + "/test_job_instance_id/disabled"));
     }
     
     @Test
@@ -78,19 +58,5 @@ public final class ServerNodeTest {
         assertTrue(serverNode.isServerStatusPath("/test_job/servers/host0/status"));
         assertFalse(serverNode.isServerStatusPath("/otherJob/servers/host0/status"));
         assertFalse(serverNode.isServerStatusPath("/test_job/servers/host0/disabled"));
-    }
-    
-    @Test
-    public void assertIsServerDisabledPath() {
-        assertTrue(serverNode.isServerDisabledPath("/test_job/servers/host0/disabled"));
-        assertFalse(serverNode.isServerDisabledPath("/otherJob/servers/host0/status"));
-        assertFalse(serverNode.isServerDisabledPath("/test_job/servers/host0/status"));
-    }
-    
-    @Test
-    public void assertIsServerShutdownPath() {
-        assertTrue(serverNode.isServerShutdownPath("/test_job/servers/host0/shutdown"));
-        assertFalse(serverNode.isServerShutdownPath("/otherJob/servers/host0/status"));
-        assertFalse(serverNode.isServerShutdownPath("/test_job/servers/host0/status"));
     }
 }

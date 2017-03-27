@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
+import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNode;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.Setter;
 import org.apache.curator.framework.CuratorFramework;
@@ -44,6 +45,8 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
+    private final ServerOperationNode serverOperationNode;
+    
     @Setter
     private int currentShardingTotalCount;
     
@@ -53,6 +56,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
         executionService = new ExecutionService(regCenter, jobName);
         configNode = new ConfigurationNode(jobName);
         serverNode = new ServerNode(jobName);
+        serverOperationNode = new ServerOperationNode(jobName);
     }
     
     @Override
@@ -80,7 +84,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (isServersCrashed(event, path) || serverNode.isServerDisabledPath(path) || serverNode.isServerShutdownPath(path)) {
+            if (isServersCrashed(event, path) || serverOperationNode.isServerDisabledPath(path) || serverOperationNode.isServerShutdownPath(path)) {
                 shardingService.setReshardingFlag();
             }
         }

@@ -123,7 +123,7 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerStatusPathButUpdateAndIsServerDisabledPath() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip + "/disabled", null, "".getBytes())), "/test_job/servers/" + ip + "/disabled");
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip + "/operation/disabled", null, "".getBytes())), "/test_job/servers/" + ip + "/operation/disabled");
         verify(shardingService).setReshardingFlag();
     }
 }

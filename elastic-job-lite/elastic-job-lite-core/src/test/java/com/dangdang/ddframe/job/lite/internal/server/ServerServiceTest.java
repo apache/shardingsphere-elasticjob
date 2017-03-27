@@ -34,7 +34,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,13 +47,17 @@ public final class ServerServiceTest {
     
     private ServerNode serverNode = new ServerNode("test_job");
     
+    private ServerOperationNode serverOperationNode = new ServerOperationNode("test_job");
+    
     private final ServerService serverService = new ServerService(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(serverOperationNode, "ip", "mockedIP");
         ReflectionUtils.setFieldValue(serverService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(serverService, "localHostService", localHostService);
+        ReflectionUtils.setFieldValue(serverService, "serverOperationNode", serverOperationNode);
         when(localHostService.getIp()).thenReturn("mockedIP");
         JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
     }
@@ -63,23 +66,23 @@ public final class ServerServiceTest {
     public void assertClearPreviousServerStatus() {
         serverService.clearPreviousServerStatus();
         verify(jobNodeStorage).removeJobNodeIfExisted(serverNode.getStatusNode("mockedIP"));
-        verify(jobNodeStorage).removeJobNodeIfExisted(serverNode.getShutdownNode("mockedIP"));
+        verify(jobNodeStorage).removeJobNodeIfExisted(serverOperationNode.getShutdownNode("mockedIP"));
     }
     
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
         serverService.persistServerOnline(false);
-        verify(localHostService, times(3)).getIp();
-        verify(jobNodeStorage).fillJobNode("servers/mockedIP/test_job_instance_id/disabled", "");
+        verify(localHostService).getIp();
+        verify(jobNodeStorage).fillJobNode("servers/mockedIP/operation/disabled", "");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/test_job_instance_id/status", ServerStatus.READY);
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/test_job_instance_id/shutdown");
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/operation/shutdown");
     }
     
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
         serverService.persistServerOnline(true);
-        verify(localHostService, times(3)).getIp();
-        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/test_job_instance_id/disabled");
+        verify(localHostService).getIp();
+        verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/operation/disabled");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/test_job_instance_id/status", ServerStatus.READY);
     }
     
@@ -135,25 +138,25 @@ public final class ServerServiceTest {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/host3")).thenReturn(Collections.singletonList("test_job_instance_id"));
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/host4")).thenReturn(Collections.singletonList("test_job_instance_id"));
         when(jobNodeStorage.isJobNodeExisted("servers/host0/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/host0/test_job_instance_id/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/host0/operation/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/host1/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/host1/test_job_instance_id/disabled")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/host1/operation/disabled")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("servers/host2/test_job_instance_id/status")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/host3/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/host3/test_job_instance_id/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/host3/operation/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/host4/test_job_instance_id/status")).thenReturn(true);
         assertThat(serverService.getAvailableShardingUnits(), is(Arrays.asList(
                 new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host3", "test_job_instance_id"), new JobShardingUnit("host4", "test_job_instance_id"))));
         verify(jobNodeStorage).getJobNodeChildrenKeys("servers");
         verify(jobNodeStorage).isJobNodeExisted("servers/host0/test_job_instance_id/status");
-        verify(jobNodeStorage).isJobNodeExisted("servers/host0/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host0/operation/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/host1/test_job_instance_id/status");
-        verify(jobNodeStorage).isJobNodeExisted("servers/host1/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host1/operation/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/host2/test_job_instance_id/status");
         verify(jobNodeStorage).isJobNodeExisted("servers/host3/test_job_instance_id/status");
-        verify(jobNodeStorage).isJobNodeExisted("servers/host3/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host3/operation/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/host4/test_job_instance_id/status");
-        verify(jobNodeStorage).isJobNodeExisted("servers/host4/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host4/operation/disabled");
     }
     
     @Test
@@ -164,22 +167,22 @@ public final class ServerServiceTest {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/host2")).thenReturn(Collections.singletonList("test_job_instance_id"));
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/host3")).thenReturn(Collections.singletonList("test_job_instance_id"));
         when(jobNodeStorage.isJobNodeExisted("servers/host0/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/host0/test_job_instance_id/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/host0/operation/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/host1/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/host1/test_job_instance_id/disabled")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/host1/operation/disabled")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("servers/host2/test_job_instance_id/status")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/host3/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/host3/test_job_instance_id/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/host3/operation/disabled")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/host4/test_job_instance_id/status")).thenReturn(true);
         assertThat(serverService.getAvailableServers(), is(Arrays.asList("host0", "host3")));
         verify(jobNodeStorage).getJobNodeChildrenKeys("servers");
         verify(jobNodeStorage).isJobNodeExisted("servers/host0/test_job_instance_id/status");
-        verify(jobNodeStorage).isJobNodeExisted("servers/host0/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host0/operation/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/host1/test_job_instance_id/status");
-        verify(jobNodeStorage).isJobNodeExisted("servers/host1/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host1/operation/disabled");
         verify(jobNodeStorage).isJobNodeExisted("servers/host2/test_job_instance_id/status");
         verify(jobNodeStorage).isJobNodeExisted("servers/host3/test_job_instance_id/status");
-        verify(jobNodeStorage).isJobNodeExisted("servers/host3/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/host3/operation/disabled");
     }
     
     @Test
@@ -195,37 +198,37 @@ public final class ServerServiceTest {
     public void assertIsLocalhostServerReadyWhenServerDisabled() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/mockedIP")).thenReturn(Collections.singletonList("test_job_instance_id"));
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/operation/disabled")).thenReturn(true);
         assertFalse(serverService.isLocalhostServerReady());
         verify(localHostService).getIp();
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/operation/disabled");
     }
     
     @Test
     public void assertIsLocalhostServerReadyWhenServerShutdown() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/mockedIP")).thenReturn(Collections.singletonList("test_job_instance_id"));
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/shutdown")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/operation/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/operation/shutdown")).thenReturn(true);
         assertFalse(serverService.isLocalhostServerReady());
         verify(localHostService).getIp();
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled");
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/shutdown");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/operation/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/operation/shutdown");
     }
         
     @Test
     public void assertIsLocalhostServerReadyWhenServerRunning() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/mockedIP")).thenReturn(Collections.singletonList("test_job_instance_id"));
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/shutdown")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/operation/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/operation/shutdown")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/status")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("servers/mockedIP/test_job_instance_id/status")).thenReturn("RUNNING");
         assertFalse(serverService.isLocalhostServerReady());
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/status");
         verify(localHostService).getIp();
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled");
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/shutdown");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/operation/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/operation/shutdown");
         verify(jobNodeStorage).getJobNodeData("servers/mockedIP/test_job_instance_id/status");
     }
     
@@ -233,24 +236,23 @@ public final class ServerServiceTest {
     public void assertIsLocalhostServerReadyWhenServerReady() {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers/mockedIP")).thenReturn(Collections.singletonList("test_job_instance_id"));
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/status")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/shutdown")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/operation/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/operation/shutdown")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/status")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("servers/mockedIP/test_job_instance_id/status")).thenReturn("READY");
         assertTrue(serverService.isLocalhostServerReady());
         verify(localHostService).getIp();
         verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/status");
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled");
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/shutdown");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/operation/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/operation/shutdown");
         verify(jobNodeStorage).getJobNodeData("servers/mockedIP/test_job_instance_id/status");
     }
     
     @Test
     public void assertIsLocalhostServerEnabled() {
-        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("servers/mockedIP/operation/disabled")).thenReturn(false);
         assertTrue(serverService.isLocalhostServerEnabled());
-        verify(localHostService).getIp();
-        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/test_job_instance_id/disabled");
+        verify(jobNodeStorage).isJobNodeExisted("servers/mockedIP/operation/disabled");
     }
     
     @Test

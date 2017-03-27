@@ -39,11 +39,14 @@ public class ServerService {
     
     private final ServerNode serverNode;
     
+    private final ServerOperationNode serverOperationNode;
+    
     private final LocalHostService localHostService = new LocalHostService();
     
     public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverNode = new ServerNode(jobName);
+        serverOperationNode = new ServerOperationNode(jobName);
     }
     
     /**
@@ -51,7 +54,7 @@ public class ServerService {
      */
     public void clearPreviousServerStatus() {
         jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode(localHostService.getIp()));
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getShutdownNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverOperationNode.getShutdownNode());
     }
     
     /**
@@ -61,12 +64,12 @@ public class ServerService {
      */
     public void persistServerOnline(final boolean enabled) {
         if (enabled) {
-            jobNodeStorage.removeJobNodeIfExisted(serverNode.getDisabledNode(localHostService.getIp()));
+            jobNodeStorage.removeJobNodeIfExisted(serverOperationNode.getDisabledNode());
         } else {
-            jobNodeStorage.fillJobNode(serverNode.getDisabledNode(localHostService.getIp()), "");
+            jobNodeStorage.fillJobNode(serverOperationNode.getDisabledNode(), "");
         }
         jobNodeStorage.fillEphemeralJobNode(serverNode.getStatusNode(localHostService.getIp()), ServerStatus.READY);
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getShutdownNode(localHostService.getIp()));
+        jobNodeStorage.removeJobNodeIfExisted(serverOperationNode.getShutdownNode());
     }
     
     /**
@@ -138,7 +141,7 @@ public class ServerService {
         List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip);
         for (String each : jobInstances) {
             if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each))
-                    && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip, each))) {
+                    && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getShutdownNode(ip))) {
                 result.add(each);
             }
         }
@@ -176,8 +179,8 @@ public class ServerService {
     public boolean isAvailableServer(final String ip) {
         List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip);
         for (String each : instances) {
-            if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(ServerNode.getDisabledNode(ip, each)) 
-                    && !jobNodeStorage.isJobNodeExisted(ServerNode.getShutdownNode(ip, each))) {
+            if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) 
+                    && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getShutdownNode(ip))) {
                 return true;
             }
         }
@@ -200,7 +203,7 @@ public class ServerService {
      * @return 当前服务器是否是启用状态
      */
     public boolean isLocalhostServerEnabled() {
-        return !jobNodeStorage.isJobNodeExisted(serverNode.getDisabledNode(localHostService.getIp()));
+        return !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode());
     }
     
     /**

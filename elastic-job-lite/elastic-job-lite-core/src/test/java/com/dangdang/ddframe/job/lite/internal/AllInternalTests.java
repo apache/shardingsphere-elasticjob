@@ -46,6 +46,7 @@ import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNodeTest;
+import com.dangdang.ddframe.job.lite.internal.server.ServerOperatorNodeTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNodeTest;
@@ -73,7 +74,8 @@ import org.junit.runners.Suite.SuiteClasses;
     ServerNodeTest.class,
     JobOperationListenerManagerTest.class, 
     ShardingServiceTest.class, 
-    ShardingNodeTest.class,
+    ShardingNodeTest.class, 
+    ServerOperatorNodeTest.class, 
     ShardingListenerManagerTest.class, 
     ExecutionContextServiceTest.class, 
     ExecutionServiceTest.class, 
