@@ -56,7 +56,6 @@ public final class ServerServiceTest {
         ReflectionUtils.setFieldValue(serverService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(serverService, "localHostService", localHostService);
         when(localHostService.getIp()).thenReturn("mockedIP");
-        when(localHostService.getHostName()).thenReturn("mockedHostName");
         JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
     }
     
@@ -70,9 +69,7 @@ public final class ServerServiceTest {
     @Test
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
         serverService.persistServerOnline(false);
-        verify(jobNodeStorage).fillJobNode("servers/mockedIP", "mockedHostName");
-        verify(localHostService, times(4)).getIp();
-        verify(localHostService).getHostName();
+        verify(localHostService, times(3)).getIp();
         verify(jobNodeStorage).fillJobNode("servers/mockedIP/test_job_instance_id/disabled", "");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/test_job_instance_id/status", ServerStatus.READY);
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/test_job_instance_id/shutdown");
@@ -81,9 +78,7 @@ public final class ServerServiceTest {
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
         serverService.persistServerOnline(true);
-        verify(jobNodeStorage).fillJobNode("servers/mockedIP", "mockedHostName");
-        verify(localHostService, times(4)).getIp();
-        verify(localHostService).getHostName();
+        verify(localHostService, times(3)).getIp();
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/test_job_instance_id/disabled");
         verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/test_job_instance_id/status", ServerStatus.READY);
     }

@@ -60,7 +60,6 @@ public class ServerService {
      * @param enabled 作业是否启用
      */
     public void persistServerOnline(final boolean enabled) {
-        jobNodeStorage.fillJobNode(ServerNode.getHostNameNode(localHostService.getIp()), localHostService.getHostName());
         if (enabled) {
             jobNodeStorage.removeJobNodeIfExisted(serverNode.getDisabledNode(localHostService.getIp()));
         } else {

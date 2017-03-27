@@ -33,8 +33,6 @@ public class ServerNode {
      */
     public static final String ROOT = "servers";
     
-    static final String HOST_NAME = ROOT + "/%s";
-    
     static final String STATUS_APPENDIX = "status";
     
     static final String STATUS = ROOT + "/%s/%s/" + STATUS_APPENDIX;
@@ -60,10 +58,6 @@ public class ServerNode {
     public ServerNode(final String jobName) {
         this.jobName = jobName;
         jobNodePath = new JobNodePath(jobName);
-    }
-    
-    static String getHostNameNode(final String ip) {
-        return String.format(HOST_NAME, ip);
     }
     
     String getStatusNode(final String ip) {

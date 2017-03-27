@@ -39,11 +39,6 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertGetHostNameNode() {
-        assertThat(ServerNode.getHostNameNode("host0"), is("servers/host0"));
-    }
-    
-    @Test
     public void assertGetStatusNode() {
         assertThat(serverNode.getStatusNode("host0"), is("servers/host0/test_job_instance_id/status"));
     }
