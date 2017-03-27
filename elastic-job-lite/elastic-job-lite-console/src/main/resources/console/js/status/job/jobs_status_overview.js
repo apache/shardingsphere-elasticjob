@@ -19,7 +19,8 @@ function renderJobsOverview() {
             sortable: "true"
         }, {
             field: "description",
-            title: "描述"
+            title: "描述",
+            sortable: true
         }, {
             field: "operation",
             title: "操作",

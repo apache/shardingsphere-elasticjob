@@ -22,7 +22,8 @@ function renderDataSources() {
             sortable: true
         }, {
             field: "driver",
-            title: "数据库驱动"
+            title: "数据库驱动",
+            sortable: true
         }, {
             field: "url",
             title: "数据库连接地址",
@@ -152,7 +153,6 @@ function submitDataSource() {
                         $("#data-sources").bootstrapTable("refresh");
                         $(".modal-backdrop").remove();
                         $("body").removeClass("modal-open");
-                        showSuccessDialog();
                         renderDataSourceForDashboardNav();
                         getEventTraceNavTag();
                     } else {

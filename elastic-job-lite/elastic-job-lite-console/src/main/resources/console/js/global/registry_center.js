@@ -161,7 +161,6 @@ function submitRegCenter() {
                         $("#reg-centers").bootstrapTable("refresh");
                         $(".modal-backdrop").remove();
                         $("body").removeClass("modal-open");
-                        showSuccessDialog();
                         renderRegCenterForDashboardNav();
                         getRegCenterNavTag();
                     } else {

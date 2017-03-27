@@ -19,10 +19,12 @@ function renderJobsOverview() {
             sortable: true
         }, {
             field: "cron",
-            title: "cron表达式"
+            title: "cron表达式",
+            sortable: true
         }, {
             field: "description",
-            title: "描述"
+            title: "描述",
+            sortable: true
         }, {
             field: "operation",
             title: "操作",
