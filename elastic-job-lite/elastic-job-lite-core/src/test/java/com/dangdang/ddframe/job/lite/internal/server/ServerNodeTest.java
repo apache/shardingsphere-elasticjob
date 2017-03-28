@@ -59,4 +59,21 @@ public final class ServerNodeTest {
         assertFalse(serverNode.isServerStatusPath("/otherJob/servers/host0/instances/status"));
         assertFalse(serverNode.isServerStatusPath("/test_job/servers/host0/operation/disabled"));
     }
+    
+    @Test
+    public void assertShutdownNode() {
+        assertThat(serverNode.getShutdownNode("host0"), is("servers/host0/instances/test_job_instance_id/shutdown"));
+    }
+    
+    @Test
+    public void assertIsLocalJobShutdownPath() {
+        assertTrue(serverNode.isLocalJobShutdownPath("/test_job/servers/host0/instances/test_job_instance_id/shutdown"));
+    }
+    
+    @Test
+    public void assertIsServerShutdownPath() {
+        assertTrue(serverNode.isServerShutdownPath("/test_job/servers/host0/instances/test_job_instance_id/shutdown"));
+        assertFalse(serverNode.isServerShutdownPath("/otherJob/servers/host0/operation/status"));
+        assertFalse(serverNode.isServerShutdownPath("/test_job/servers/host0/operation/status"));
+    }
 }

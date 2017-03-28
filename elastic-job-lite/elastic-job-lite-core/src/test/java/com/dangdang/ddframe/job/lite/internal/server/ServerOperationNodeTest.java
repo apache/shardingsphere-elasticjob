@@ -37,16 +37,6 @@ public final class ServerOperationNodeTest {
     }
     
     @Test
-    public void assertShutdownNode() {
-        assertThat(serverOperationNode.getShutdownNode("host0"), is("servers/host0/operation/shutdown"));
-    }
-    
-    @Test
-    public void assertIsLocalJobShutdownPath() {
-        assertTrue(serverOperationNode.isLocalJobShutdownPath("/test_job/servers/" + localHostService.getIp() + "/operation/shutdown"));
-    }
-    
-    @Test
     public void assertIsLocalServerDisabledPath() {
         assertTrue(serverOperationNode.isLocalServerDisabledPath("/test_job/servers/" + localHostService.getIp() + "/operation/disabled"));
     }
@@ -56,12 +46,5 @@ public final class ServerOperationNodeTest {
         assertTrue(serverOperationNode.isServerDisabledPath("/test_job/servers/host0/operation/disabled"));
         assertFalse(serverOperationNode.isServerDisabledPath("/otherJob/servers/host0/operation/status"));
         assertFalse(serverOperationNode.isServerDisabledPath("/test_job/servers/host0/operation/status"));
-    }
-    
-    @Test
-    public void assertIsServerShutdownPath() {
-        assertTrue(serverOperationNode.isServerShutdownPath("/test_job/servers/host0/operation/shutdown"));
-        assertFalse(serverOperationNode.isServerShutdownPath("/otherJob/servers/host0/operation/status"));
-        assertFalse(serverOperationNode.isServerShutdownPath("/test_job/servers/host0/operation/status"));
     }
 }

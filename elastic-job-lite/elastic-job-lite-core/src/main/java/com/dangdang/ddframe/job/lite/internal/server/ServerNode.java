@@ -46,6 +46,10 @@ public class ServerNode {
     
     static final String TRIGGER = ROOT + "/%s/" + INSTANCES_ROOT + "/%s/" + TRIGGER_APPENDIX;
     
+    static final String SHUTDOWN_APPENDIX = "shutdown";
+    
+    static final String SHUTDOWN = ROOT + "/%s/" + INSTANCES_ROOT + "/%s/" + SHUTDOWN_APPENDIX;
+    
     private final String jobName;
     
     private final String ip;
@@ -88,5 +92,34 @@ public class ServerNode {
      */
     public boolean isServerStatusPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerNode.STATUS_APPENDIX);
+    }
+    
+    
+    String getShutdownNode() {
+        return getShutdownNode(ip);
+    }
+    
+    String getShutdownNode(final String ip) {
+        return String.format(SHUTDOWN, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
+    }
+    
+    /**
+     * 判断给定路径是否为作业服务器关闭路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器关闭路径
+     */
+    public boolean isLocalJobShutdownPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(String.format(SHUTDOWN, ip, JobRegistry.getInstance().getJobInstanceId(jobName))));
+    }
+    
+    /**
+     * 判断给定路径是否为作业服务器关闭路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为作业服务器关闭路径
+     */
+    public boolean isServerShutdownPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(SHUTDOWN_APPENDIX);
     }
 }

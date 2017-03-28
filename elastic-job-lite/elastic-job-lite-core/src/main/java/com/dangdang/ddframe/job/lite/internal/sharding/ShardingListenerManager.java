@@ -84,7 +84,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (isServersCrashed(event, path) || serverOperationNode.isServerDisabledPath(path) || serverOperationNode.isServerShutdownPath(path)) {
+            if (isServersCrashed(event, path) || serverOperationNode.isServerDisabledPath(path) || serverNode.isServerShutdownPath(path)) {
                 shardingService.setReshardingFlag();
             }
         }

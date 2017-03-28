@@ -35,10 +35,6 @@ public class ServerOperationNode {
     
     static final String DISABLED = ROOT + DISABLED_APPENDIX;
     
-    static final String SHUTDOWN_APPENDIX = "shutdown";
-    
-    static final String SHUTDOWN = ROOT + SHUTDOWN_APPENDIX;
-    
     private final String ip;
     
     private final JobNodePath jobNodePath;
@@ -56,24 +52,6 @@ public class ServerOperationNode {
         return String.format(DISABLED, ip);
     }
         
-    String getShutdownNode() {
-        return getShutdownNode(ip);
-    }
-    
-    String getShutdownNode(final String ip) {
-        return String.format(SHUTDOWN, ip);
-    }
-    
-    /**
-     * 判断给定路径是否为作业服务器关闭路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为作业服务器关闭路径
-     */
-    public boolean isLocalJobShutdownPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerOperationNode.SHUTDOWN, ip)));
-    }
-    
     /**
      * 判断给定路径是否为作业服务器禁用路径.
      *
@@ -92,15 +70,5 @@ public class ServerOperationNode {
      */
     public boolean isServerDisabledPath(final String path) {
         return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerOperationNode.OPERATION_ROOT + ServerOperationNode.DISABLED_APPENDIX);
-    }
-    
-    /**
-     * 判断给定路径是否为作业服务器关闭路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为作业服务器关闭路径
-     */
-    public boolean isServerShutdownPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerOperationNode.OPERATION_ROOT + ServerOperationNode.SHUTDOWN_APPENDIX);
     }
 }

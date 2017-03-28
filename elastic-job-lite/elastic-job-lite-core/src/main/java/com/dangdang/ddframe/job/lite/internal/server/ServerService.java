@@ -54,7 +54,7 @@ public class ServerService {
      */
     public void clearPreviousServerStatus() {
         jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode());
-        jobNodeStorage.removeJobNodeIfExisted(serverOperationNode.getShutdownNode());
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getShutdownNode());
     }
     
     /**
@@ -69,7 +69,7 @@ public class ServerService {
             jobNodeStorage.fillJobNode(serverOperationNode.getDisabledNode(), "");
         }
         jobNodeStorage.fillEphemeralJobNode(serverNode.getStatusNode(), ServerStatus.READY);
-        jobNodeStorage.removeJobNodeIfExisted(serverOperationNode.getShutdownNode());
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getShutdownNode());
     }
     
     /**
@@ -141,7 +141,7 @@ public class ServerService {
         List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
         for (String each : jobInstances) {
             if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each))
-                    && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getShutdownNode(ip))) {
+                    && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(serverNode.getShutdownNode(ip))) {
                 result.add(each);
             }
         }
@@ -180,7 +180,7 @@ public class ServerService {
         List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
         for (String each : instances) {
             if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) 
-                    && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getShutdownNode(ip))) {
+                    && !jobNodeStorage.isJobNodeExisted(serverNode.getShutdownNode(ip))) {
                 return true;
             }
         }

@@ -103,7 +103,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (!serverOperationNode.isLocalJobShutdownPath(path)) {
+            if (!serverNode.isLocalJobShutdownPath(path)) {
                 return;
             }
             JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
