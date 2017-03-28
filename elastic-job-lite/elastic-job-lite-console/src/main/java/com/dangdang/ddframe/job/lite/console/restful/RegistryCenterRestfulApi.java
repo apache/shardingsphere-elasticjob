@@ -67,8 +67,8 @@ public class RegistryCenterRestfulApi {
     
     @POST
     @Path("/connect")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public boolean connect(final RegistryCenterConfiguration config, final @Context HttpServletRequest request) {
         boolean isConnected = setRegistryCenterNameToSession(regCenterService.findRegistryCenterConfiguration(config.getName(), regCenterService.loadAll()), request.getSession());
         if (isConnected) {

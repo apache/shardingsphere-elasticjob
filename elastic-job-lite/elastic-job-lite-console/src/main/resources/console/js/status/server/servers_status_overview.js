@@ -13,8 +13,12 @@ function renderServersOverview() {
             title: "服务器IP",
             sortable: "true"
         }, {
-            field: "instanceId",
-            title: "服务器实例ID",
+            field: "instanceNum",
+            title: "实例数量",
+            sortable: "true"
+        }, {
+            field: "jobNum",
+            title: "作业数量",
             sortable: "true"
         }, {
             field: "status",
@@ -44,13 +48,12 @@ function statusFormatter(value) {
 }
 
 function generateOperationButtons(val, row) {
-    return "<button operation='server-status-detail' class='btn-xs btn-info' server-ip='" + row.serverIp + "' server-instance-id='" + row.instanceId + "'>详情</button>";
+    return "<button operation='server-status-detail' class='btn-xs btn-info' server-ip='" + row.serverIp + "'>详情</button>";
 }
 
 function bindServerStatusDetailButton() {
     $(document).on("click", "button[operation='server-status-detail'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
-        var serverInstanceId = $(event.currentTarget).attr("server-instance-id");
-        window.location = "index.html?server-ip=" + serverIp + "&server-instance-id=" + serverInstanceId;
+        window.location = "index.html?server-ip=" + serverIp;
     });
 }

@@ -50,8 +50,8 @@ public class DataSourceRestfulApi {
     
     @POST
     @Path("/connect")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public boolean connect(final DataSourceConfiguration config, final @Context HttpServletRequest request) {
         boolean isConnected = setDataSourceNameToSession(dataSourceService.findDataSourceConfiguration(config.getName(), dataSourceService.loadAll()), request.getSession());
         if (isConnected) {

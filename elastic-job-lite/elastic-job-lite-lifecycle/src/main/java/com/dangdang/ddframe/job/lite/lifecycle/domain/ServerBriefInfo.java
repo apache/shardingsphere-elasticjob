@@ -24,9 +24,9 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
- * 作业服务器简明信息对象.
+ * 服务器维度简明信息对象.
  *
- * @author zhangliang
+ * @author caohao
  */
 @Getter
 @Setter
@@ -36,13 +36,15 @@ public final class ServerBriefInfo implements Serializable, Comparable<ServerBri
     
     private String serverIp;
     
-    private String instanceId;
+    private int instanceNum;
+    
+    private int jobNum;
     
     private ServerBriefStatus status;
     
     @Override
     public int compareTo(final ServerBriefInfo o) {
-        return (getServerIp() + getInstanceId()).compareTo(o.getServerIp() + o.getInstanceId());
+        return (getServerIp()).compareTo(o.getServerIp());
     }
     
     /**

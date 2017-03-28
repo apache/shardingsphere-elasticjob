@@ -43,8 +43,8 @@ public class ServerRestfulApi {
     
     @GET
     @Path("/{ip}/instances/{instanceId}")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Collection<ServerInfo> getJobs(@PathParam("ip") final String ip, @PathParam("instanceId") final String instanceId) {
         return jobAPIService.getServerStatisticsAPI().getJobs(ip, instanceId);
     }

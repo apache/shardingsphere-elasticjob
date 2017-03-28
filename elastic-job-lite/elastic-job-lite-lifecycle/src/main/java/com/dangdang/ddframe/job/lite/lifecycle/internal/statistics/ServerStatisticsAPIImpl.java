@@ -78,7 +78,6 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
         String serverIp = key.split("-")[0];
         String instanceId = key.split("-")[1];
         result.setServerIp(serverIp);
-        result.setInstanceId(instanceId);
         result.setStatus(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(aliveServers, crashedServers, serverIp, instanceId));
         return result;
     }
