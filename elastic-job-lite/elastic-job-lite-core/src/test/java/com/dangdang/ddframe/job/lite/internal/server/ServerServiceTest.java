@@ -68,14 +68,14 @@ public final class ServerServiceTest {
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
         serverService.persistServerOnline(false);
         verify(jobNodeStorage).fillJobNode("servers/mockedIP/operation/disabled", "");
-        verify(jobNodeStorage).fillJobNode("servers/mockedIP/instances/test_job_instance_id", "{\"serverStatus\":\"READY\",\"shutdown\":false}");
+        verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/instances/test_job_instance_id", "{\"serverStatus\":\"READY\",\"shutdown\":false}");
     }
     
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
         serverService.persistServerOnline(true);
         verify(jobNodeStorage).removeJobNodeIfExisted("servers/mockedIP/operation/disabled");
-        verify(jobNodeStorage).fillJobNode("servers/mockedIP/instances/test_job_instance_id", "{\"serverStatus\":\"READY\",\"shutdown\":false}");
+        verify(jobNodeStorage).fillEphemeralJobNode("servers/mockedIP/instances/test_job_instance_id", "{\"serverStatus\":\"READY\",\"shutdown\":false}");
     }
     
     @Test

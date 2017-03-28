@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
@@ -45,13 +44,10 @@ public class ServerService {
     
     private final LocalHostService localHostService = new LocalHostService();
     
-    private final ConfigurationService configService;
-    
     public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverNode = new ServerNode(jobName);
         serverOperationNode = new ServerOperationNode(jobName);
-        configService = new ConfigurationService(regCenter, jobName);
     }
     
     /**
@@ -65,9 +61,7 @@ public class ServerService {
         } else {
             jobNodeStorage.fillJobNode(serverOperationNode.getDisabledNode(), "");
         }
-        // TODO 使用临时节点
-//        jobNodeStorage.fillEphemeralJobNode(serverNode.getLocalInstanceNode(), new Gson().toJson(new InstanceInfo()));
-        jobNodeStorage.fillJobNode(serverNode.getLocalInstanceNode(), new Gson().toJson(new InstanceInfo()));
+        jobNodeStorage.fillEphemeralJobNode(serverNode.getLocalInstanceNode(), new Gson().toJson(new InstanceInfo()));
     }
     
     /**
