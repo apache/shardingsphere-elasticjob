@@ -40,8 +40,6 @@ import java.util.List;
  */
 public class ExecutionService {
     
-    private final String jobName;
-    
     private final JobNodeStorage jobNodeStorage;
     
     private final ConfigurationService configService;
@@ -51,7 +49,6 @@ public class ExecutionService {
     private final LeaderElectionService leaderElectionService;
     
     public ExecutionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
-        this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);

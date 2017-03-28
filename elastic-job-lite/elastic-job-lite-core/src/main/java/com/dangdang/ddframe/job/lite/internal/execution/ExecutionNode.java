@@ -32,6 +32,10 @@ public final class ExecutionNode {
      */
     public static final String ROOT = "execution";
     
+    public static final String IP = ROOT + "/%s/ip";
+    
+    public static final String INSTANCE = ROOT + "/%s/instance";
+    
     static final String RUNNING_APPENDIX = "running";
     
     static final String RUNNING = ROOT + "/%s/" + RUNNING_APPENDIX;
@@ -50,6 +54,14 @@ public final class ExecutionNode {
     
     public ExecutionNode(final String jobName) {
         jobNodePath = new JobNodePath(jobName);
+    }
+    
+    public static String getIpNode(final int item) {
+        return String.format(IP, item);
+    }
+    
+    public static String getInstanceNode(final int item) {
+        return String.format(INSTANCE, item);
     }
     
     /**

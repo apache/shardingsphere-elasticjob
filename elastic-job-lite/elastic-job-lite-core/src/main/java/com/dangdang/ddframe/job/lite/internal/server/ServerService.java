@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
+import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
@@ -44,10 +45,13 @@ public class ServerService {
     
     private final LocalHostService localHostService = new LocalHostService();
     
+    private final ConfigurationService configService;
+    
     public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverNode = new ServerNode(jobName);
         serverOperationNode = new ServerOperationNode(jobName);
+        configService = new ConfigurationService(regCenter, jobName);
     }
     
     /**
@@ -88,8 +92,8 @@ public class ServerService {
      * @return 所有分片单元列表
      */
     public List<JobShardingUnit> getAllShardingUnits() {
-        List<JobShardingUnit> result = new LinkedList<>();
         List<String> servers = getAllServers();
+        List<JobShardingUnit> result = new LinkedList<>();
         for (String each : servers) {
             List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + each + "/" + ServerNode.INSTANCES_ROOT);
             for (String jobInstanceId : jobInstances) {

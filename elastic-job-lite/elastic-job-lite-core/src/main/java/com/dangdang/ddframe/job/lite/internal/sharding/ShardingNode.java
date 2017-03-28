@@ -18,8 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -35,16 +33,4 @@ final class ShardingNode {
     static final String NECESSARY = LEADER_SHARDING_ROOT + "/necessary";
     
     static final String PROCESSING = LEADER_SHARDING_ROOT + "/processing";
-    
-    private static final String SERVER_SHARDING = ServerNode.ROOT + "/%s/" + ServerNode.INSTANCES_ROOT + "/%s/sharding";
-    
-    private final String jobName;
-    
-    static String getShardingNode(final String ip, final String jobInstanceId) {
-        return String.format(SERVER_SHARDING, ip, jobInstanceId);
-    }
-    
-    String getShardingNode(final String ip) {
-        return String.format(SERVER_SHARDING, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
-    }
 }
