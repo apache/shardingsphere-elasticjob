@@ -87,12 +87,6 @@ public class SchedulerFacadeTest {
     }
     
     @Test
-    public void assertClearPreviousServerStatus() {
-        schedulerFacade.clearPreviousServerStatus();
-        verify(serverService).clearPreviousServerStatus();
-    }
-    
-    @Test
     public void assertRegisterStartUpInfo() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), false)).build());
@@ -111,7 +105,7 @@ public class SchedulerFacadeTest {
     public void assertReleaseJobResource() {
         schedulerFacade.releaseJobResource();
         verify(monitorService).close();
-        verify(serverService).removeServerStatus();
+        verify(serverService).removeInstanceStatus();
     }
     
     @Test

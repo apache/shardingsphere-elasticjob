@@ -39,41 +39,33 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertGetStatusNode() {
-        assertThat(serverNode.getStatusNode(), is("servers/host0/instances/test_job_instance_id/status"));
+    public void assertGetLocalInstanceNode() {
+        assertThat(serverNode.getLocalInstanceNode(), is("servers/host0/instances/test_job_instance_id"));
     }
     
     @Test
-    public void assertGetTriggerNode() {
-        assertThat(serverNode.getTriggerNode("host0"), is("servers/host0/instances/test_job_instance_id/trigger"));
+    public void assertGetInstanceNode() {
+        assertThat(ServerNode.getInstanceNode("host0", "test_job_instance_id"), is("servers/host0/instances/test_job_instance_id"));
     }
     
     @Test
-    public void assertIsLocalJobTriggerPath() {
-        assertTrue(serverNode.isLocalJobTriggerPath("/test_job/servers/host0/instances/test_job_instance_id/trigger"));
+    public void assertIsLocalInstancePath() {
+        assertTrue(serverNode.isLocalInstancePath("/test_job/servers/host0/instances/test_job_instance_id"));
     }
     
     @Test
-    public void assertIsServerStatusPath() {
-        assertTrue(serverNode.isServerStatusPath("/test_job/servers/host0/instances/status"));
-        assertFalse(serverNode.isServerStatusPath("/otherJob/servers/host0/instances/status"));
-        assertFalse(serverNode.isServerStatusPath("/test_job/servers/host0/operation/disabled"));
+    public void assertIsNotLocalInstancePath() {
+        assertFalse(serverNode.isLocalInstancePath("/test_job/servers/host1/instances/other_job_instance_id"));
     }
     
     @Test
-    public void assertShutdownNode() {
-        assertThat(serverNode.getShutdownNode("host0"), is("servers/host0/instances/test_job_instance_id/shutdown"));
+    public void assertIsInstancePath() {
+        assertTrue(serverNode.isInstancePath("/test_job/servers/host0/instances/test_job_instance_id"));
     }
     
     @Test
-    public void assertIsLocalJobShutdownPath() {
-        assertTrue(serverNode.isLocalJobShutdownPath("/test_job/servers/host0/instances/test_job_instance_id/shutdown"));
-    }
-    
-    @Test
-    public void assertIsServerShutdownPath() {
-        assertTrue(serverNode.isServerShutdownPath("/test_job/servers/host0/instances/test_job_instance_id/shutdown"));
-        assertFalse(serverNode.isServerShutdownPath("/otherJob/servers/host0/operation/status"));
-        assertFalse(serverNode.isServerShutdownPath("/test_job/servers/host0/operation/status"));
+    public void assertIsNotInstancePath() {
+        assertFalse(serverNode.isInstancePath("/test_job/other/host0/instances/test_job_instance_id"));
+        assertFalse(serverNode.isInstancePath("/test_job/servers/host0/other/test_job_instance_id"));
     }
 }

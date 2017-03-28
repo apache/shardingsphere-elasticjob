@@ -19,10 +19,12 @@ package com.dangdang.ddframe.job.lite.internal.election;
 
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceInfo;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
@@ -105,7 +107,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
             }
             
             private boolean isServerShutdown() {
-                return serverNode.isLocalJobShutdownPath(path) && Type.NODE_ADDED == event.getType();
+                return serverNode.isLocalInstancePath(path) && new Gson().fromJson(new String(event.getData().getData()), InstanceInfo.class).isShutdown();
             }
         }
     }

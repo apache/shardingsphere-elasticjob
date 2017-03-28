@@ -22,9 +22,12 @@ import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFac
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceInfo;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNode;
+import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.gson.Gson;
 import lombok.Setter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
@@ -36,6 +39,8 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * @author zhangliang
  */
 public class ShardingListenerManager extends AbstractListenerManager {
+    
+    private final JobNodeStorage jobNodeStorage;
     
     private final ShardingService shardingService;
     
@@ -52,6 +57,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     public ShardingListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         configNode = new ConfigurationNode(jobName);
@@ -84,13 +90,17 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (isServersCrashed(event, path) || serverOperationNode.isServerDisabledPath(path) || serverNode.isServerShutdownPath(path)) {
+            if (isServersCrashed(event, path) || serverOperationNode.isServerDisabledPath(path) || isServersShutdown(path)) {
                 shardingService.setReshardingFlag();
             }
         }
         
         private boolean isServersCrashed(final TreeCacheEvent event, final String path) {
-            return serverNode.isServerStatusPath(path) && Type.NODE_UPDATED != event.getType();
+            return serverNode.isInstancePath(path) && Type.NODE_UPDATED != event.getType();
+        }
+    
+        private boolean isServersShutdown(final String path) {
+            return serverNode.isInstancePath(path) && new Gson().fromJson(jobNodeStorage.getJobNodeDataDirectly(serverNode.getLocalInstanceNode()), InstanceInfo.class).isShutdown();
         }
     }
 }

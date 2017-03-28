@@ -24,9 +24,9 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.gson.Gson;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 
@@ -39,9 +39,9 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    private final ServerNode serverNode;
+    private final CoordinatorRegistryCenter regCenter;
     
-    private final ServerOperationNode serverOperationNode;
+    private final ServerNode serverNode;
     
     private final ServerService serverService;
     
@@ -52,8 +52,8 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     public JobOperationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
+        this.regCenter = regCenter;
         serverNode = new ServerNode(jobName);
-        serverOperationNode = new ServerOperationNode(jobName);
         serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
@@ -85,17 +85,18 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (Type.NODE_ADDED != event.getType() || !serverNode.isLocalJobTriggerPath(path)) {
-                return;
-            }
-            serverService.clearJobTriggerStatus();
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-            if (null == jobScheduleController) {
-                return;
-            }
-            if (serverService.isLocalhostServerReady()) {
-                jobScheduleController.triggerJob();
-            }
+            // TODO trigger
+//            if (Type.NODE_ADDED != event.getType() || !serverNode.isLocalJobTriggerPath(path)) {
+//                return;
+//            }
+//            serverService.clearJobTriggerStatus();
+//            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+//            if (null == jobScheduleController) {
+//                return;
+//            }
+//            if (serverService.isLocalhostServerReady()) {
+//                jobScheduleController.triggerJob();
+//            }
         }
     }
     
@@ -103,13 +104,13 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (!serverNode.isLocalJobShutdownPath(path)) {
+            if (!serverNode.isLocalInstancePath(path) || !new Gson().fromJson(new String(event.getData().getData()), InstanceInfo.class).isShutdown()) {
                 return;
             }
             JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-            if (null != jobScheduleController && Type.NODE_ADDED == event.getType()) {
+            if (null != jobScheduleController) {
                 jobScheduleController.shutdown();
-                serverService.processServerShutdown();
+                serverService.removeInstanceStatus();
             }
         }
     }

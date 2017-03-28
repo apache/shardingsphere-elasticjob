@@ -66,7 +66,6 @@ public class JobExecutor {
      */
     public void init() {
         log.debug("Job '{}' controller init.", liteJobConfig.getJobName());
-        schedulerFacade.clearPreviousServerStatus();
         regCenter.addCacheData("/" + liteJobConfig.getJobName());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
     }

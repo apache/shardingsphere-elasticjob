@@ -116,7 +116,7 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerStatusPathAndAdd() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/status", null, "".getBytes())), "/test_job/servers/" + ip + "/status");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/instances", null, "".getBytes())), "/test_job/servers/" + ip + "/instances");
         verify(shardingService).setReshardingFlag();
     }
     

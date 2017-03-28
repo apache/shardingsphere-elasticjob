@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,14 +51,6 @@ public class ServerService {
     }
     
     /**
-     * 每次作业启动前清理上次运行状态.
-     */
-    public void clearPreviousServerStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode());
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getShutdownNode());
-    }
-    
-    /**
      * 持久化作业服务器上线相关信息.
      * 
      * @param enabled 作业是否启用
@@ -68,22 +61,9 @@ public class ServerService {
         } else {
             jobNodeStorage.fillJobNode(serverOperationNode.getDisabledNode(), "");
         }
-        jobNodeStorage.fillEphemeralJobNode(serverNode.getStatusNode(), ServerStatus.READY);
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getShutdownNode());
-    }
-    
-    /**
-     * 清除立刻执行作业的标记.
-     */
-    public void clearJobTriggerStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getTriggerNode(localHostService.getIp()));
-    }
-    
-    /**
-     * 处理服务器关机的相关信息.
-     */
-    public void processServerShutdown() {
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode());
+        // TODO 使用临时节点
+//        jobNodeStorage.fillEphemeralJobNode(serverNode.getLocalInstanceNode(), new Gson().toJson(new InstanceInfo()));
+        jobNodeStorage.fillJobNode(serverNode.getLocalInstanceNode(), new Gson().toJson(new InstanceInfo()));
     }
     
     /**
@@ -92,14 +72,14 @@ public class ServerService {
      * @param status 服务器状态
      */
     public void updateServerStatus(final ServerStatus status) {
-        jobNodeStorage.updateJobNode(serverNode.getStatusNode(), status);
+        jobNodeStorage.updateJobNode(serverNode.getLocalInstanceNode(), new Gson().toJson(new InstanceInfo(status)));
     }
     
     /**
-     * 删除服务器状态.
+     * 删除运行实例状态.
      */
-    public void removeServerStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getStatusNode());
+    public void removeInstanceStatus() {
+        jobNodeStorage.removeJobNodeIfExisted(serverNode.getLocalInstanceNode());
     }
     
     /**
@@ -140,8 +120,8 @@ public class ServerService {
         List<String> result = new LinkedList<>();
         List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
         for (String each : jobInstances) {
-            if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each))
-                    && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) && !jobNodeStorage.isJobNodeExisted(serverNode.getShutdownNode(ip))) {
+            if (jobNodeStorage.isJobNodeExisted(ServerNode.getInstanceNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip))
+                    && !new Gson().fromJson(jobNodeStorage.getJobNodeDataDirectly(ServerNode.getInstanceNode(ip, each)), InstanceInfo.class).isShutdown()) {
                 result.add(each);
             }
         }
@@ -179,8 +159,8 @@ public class ServerService {
     public boolean isAvailableServer(final String ip) {
         List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
         for (String each : instances) {
-            if (jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip)) 
-                    && !jobNodeStorage.isJobNodeExisted(serverNode.getShutdownNode(ip))) {
+            if (jobNodeStorage.isJobNodeExisted(ServerNode.getInstanceNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip))
+                    && !new Gson().fromJson(jobNodeStorage.getJobNodeDataDirectly(ServerNode.getInstanceNode(ip, each)), InstanceInfo.class).isShutdown()) {
                 return true;
             }
         }
@@ -193,8 +173,8 @@ public class ServerService {
      * @return 当前服务器是否是等待执行的状态
      */
     public boolean isLocalhostServerReady() {
-        String ip = localHostService.getIp();
-        return isAvailableServer(ip) && ServerStatus.READY.name().equals(jobNodeStorage.getJobNodeData(serverNode.getStatusNode()));
+        return isAvailableServer(localHostService.getIp())
+                && ServerStatus.READY == new Gson().fromJson(jobNodeStorage.getJobNodeDataDirectly(serverNode.getLocalInstanceNode()), InstanceInfo.class).getServerStatus();
     }
     
     /**
@@ -214,6 +194,6 @@ public class ServerService {
      * @return 作业节点是否离线
      */
     public boolean isOffline(final String ip, final String jobInstanceId) {
-        return !jobNodeStorage.isJobNodeExisted(ServerNode.getStatusNode(ip, jobInstanceId));
+        return !jobNodeStorage.isJobNodeExisted(ServerNode.getInstanceNode(ip, jobInstanceId));
     }
 }

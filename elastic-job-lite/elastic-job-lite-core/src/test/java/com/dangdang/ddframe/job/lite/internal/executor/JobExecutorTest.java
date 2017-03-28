@@ -68,7 +68,6 @@ public final class JobExecutorTest {
     @Test
     public void assertInit() {
         jobExecutor.init();
-        verify(schedulerFacade).clearPreviousServerStatus();
         verify(regCenter).addCacheData("/test_job");
         verify(schedulerFacade).registerStartUpInfo(liteJobConfig);
     }
