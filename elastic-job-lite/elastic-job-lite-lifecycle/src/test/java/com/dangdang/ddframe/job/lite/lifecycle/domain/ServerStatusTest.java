@@ -26,21 +26,16 @@ public class ServerStatusTest {
     
     @Test
     public void assertGetServerStatusWhenIsShutdown() {
-        assertThat(ServerInfo.ServerStatus.getServerStatus("", false, false, true), is(ServerInfo.ServerStatus.SHUTDOWN));
+        assertThat(ServerInfo.ServerStatus.getServerStatus("", false, true), is(ServerInfo.ServerStatus.SHUTDOWN));
     }
     
     @Test
     public void assertGetServerStatusWhenIsCrashed() {
-        assertThat(ServerInfo.ServerStatus.getServerStatus("", false, false, false), is(ServerInfo.ServerStatus.CRASHED));
+        assertThat(ServerInfo.ServerStatus.getServerStatus("", false, false), is(ServerInfo.ServerStatus.CRASHED));
     }
     
     @Test
     public void assertGetServerStatusWhenIsDisabled() {
-        assertThat(ServerInfo.ServerStatus.getServerStatus("READY", true, false, false), is(ServerInfo.ServerStatus.DISABLED));
-    }
-    
-    @Test
-    public void assertGetServerStatusWhenIsPaused() {
-        assertThat(ServerInfo.ServerStatus.getServerStatus("READY", false, true, false), is(ServerInfo.ServerStatus.PAUSED));
+        assertThat(ServerInfo.ServerStatus.getServerStatus("READY", true, false), is(ServerInfo.ServerStatus.DISABLED));
     }
 }

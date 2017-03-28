@@ -53,30 +53,6 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
     }
     
     @Override
-    public void pause(final Optional<String> jobName, final Optional<String> serverIp, final Optional<String> serverInstanceId) {
-        jobOperatorTemplate.operate(jobName, serverIp, serverInstanceId, new JobOperateCallback() {
-            
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp, final String serverInstanceId) {
-                regCenter.persist(new JobNodePath(jobName).getServerInstanceNodePath(serverIp, serverInstanceId, JobNodePath.PAUSED_NODE), "");
-                return true;
-            }
-        });
-    }
-    
-    @Override
-    public void resume(final Optional<String> jobName, final Optional<String> serverIp, final Optional<String> serverInstanceId) {
-        jobOperatorTemplate.operate(jobName, serverIp, serverInstanceId, new JobOperateCallback() {
-        
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp, final String serverInstanceId) {
-                regCenter.remove(new JobNodePath(jobName).getServerInstanceNodePath(serverIp, serverInstanceId, JobNodePath.PAUSED_NODE));
-                return true;
-            }
-        });
-    }
-    
-    @Override
     public void disable(final Optional<String> jobName, final Optional<String> serverIp, final Optional<String> serverInstanceId) {
         jobOperatorTemplate.operate(jobName, serverIp, serverInstanceId, new JobOperateCallback() {
             

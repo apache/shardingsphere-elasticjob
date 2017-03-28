@@ -37,11 +37,6 @@ public final class JobNodePath {
     public static final String TRIGGER_NODE = "trigger";
     
     /**
-     * 作业暂停节点名称.
-     */
-    public static final String PAUSED_NODE = "paused";
-    
-    /**
      * 作业禁用节点名称.
      */
     public static final String DISABLED_NODE = "disabled";
@@ -61,6 +56,8 @@ public final class JobNodePath {
     private static final String CONFIG_NODE = "config";
     
     private static final String SERVERS_NODE = "servers";
+    
+    private static final String INSTANCES_ROOT = "instances";
     
     private static final String EXECUTION_NODE = "execution";
     
@@ -132,7 +129,7 @@ public final class JobNodePath {
      * @return 作业实例节点路径
      */
     public String getServerInstanceNodePath(final String serverIp, final String instanceId) {
-        return String.format("%s/%s", getServerNodePath(serverIp), instanceId);
+        return String.format("%s/" + INSTANCES_ROOT + "/%s", getServerNodePath(serverIp), instanceId);
     }
     
     /**

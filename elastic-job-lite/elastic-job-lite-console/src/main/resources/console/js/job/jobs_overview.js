@@ -1,6 +1,7 @@
 $(function() {
     renderJobsOverview();
     bindModifyButton();
+    bindRemoveButton();
 });
 
 function renderJobsOverview() {
@@ -34,14 +35,15 @@ function renderJobsOverview() {
 }
 
 function generateOperationButtons(val, row) {
-    return "<button operation='modify-job' class='btn-xs btn-info' job-name='" + row.jobName + "'>修改</button>";
+    return "<button operation='modify-job' class='btn-xs btn-info' job-name='" + row.jobName + "'>修改</button>" + "&nbsp;" +
+        "<button operation='remove-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
 }
 
 function bindModifyButton() {
     $(document).on("click", "button[operation='modify-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
-            url: "/api/jobs/settings/" + jobName,
+            url: "/api/jobs/config/" + jobName,
             success: function(data) {
                 if (null !== data) {
                     $(".box-body").remove();
@@ -51,6 +53,32 @@ function bindModifyButton() {
                     });
                 }
             }
+        });
+    });
+}
+
+function bindRemoveButton() {
+    $(document).on("click", "button[operation='remove-job'][data-toggle!='modal']", function(event) {
+        var jobName = $(event.currentTarget).attr("job-name");
+        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        $(document).off("click", "#delete-confirm-dialog-confirm-btn");
+        $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
+            $.ajax({
+                url: "/api/jobs/config/" + jobName,
+                type: "DELETE",
+                success: function(data) {
+                    if (data.length > 0) {
+                        showFailureDialog("remove-job-failure-dialog");
+                    } else {
+                        showSuccessDialog();
+                    }
+                    $("#jobs-overview-tbl").bootstrapTable("refresh");
+                    $("#delete-confirm-dialog").modal("hide");
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
+                    refreshJobNavTag();
+                }
+            });
         });
     });
 }

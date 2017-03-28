@@ -6,8 +6,8 @@ $(function() {
     renderSkin();
     controlSubMenuStyle();
     controlDropdownMenuStyle();
-    getRegCenterNavTag();
-    getEventTraceNavTag();
+    refreshRegCenterNavTag();
+    refreshEventTraceNavTag();
 });
 
 function renderRegCenterForDashboardNav() {
@@ -71,7 +71,7 @@ function switchRegCenter() {
                     showSuccessDialog();
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
-                    getJobNavTag();
+                    refreshJobNavTag();
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -150,7 +150,7 @@ function controlDropdownMenuStyle() {
     });
 }
 
-function getJobNavTag() {
+function refreshJobNavTag() {
     $.ajax({
         url: "/api/jobs",
         cache: false,
@@ -160,7 +160,7 @@ function getJobNavTag() {
     });
 }
 
-function getRegCenterNavTag() {
+function refreshRegCenterNavTag() {
     $.ajax({
         url: "api/registry-center",
         cache: false,
@@ -169,7 +169,7 @@ function getRegCenterNavTag() {
             if (data.length > 0) {
                 for (var index = 0; index < data.length; index++) {
                     if (data[index].activated) {
-                        getJobNavTag();
+                        refreshJobNavTag();
                     } else {
                         $("#job-nav-tag").text("0");
                     }
@@ -181,7 +181,7 @@ function getRegCenterNavTag() {
     });
 }
 
-function getEventTraceNavTag() {
+function refreshEventTraceNavTag() {
     $.ajax({
         url: "api/data-source",
         cache: false,

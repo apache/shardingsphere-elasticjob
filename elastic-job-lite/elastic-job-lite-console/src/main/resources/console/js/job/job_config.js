@@ -5,7 +5,7 @@ $(function() {
 
 function bindSubmitJobSettingsForm() {
     $("#update-job-info-btn").on("click", function(ev){
-        var bootstrapValidator = $("#job-settings-form").data("bootstrapValidator");
+        var bootstrapValidator = $("#job-config-form").data("bootstrapValidator");
         bootstrapValidator.validate();
         if (bootstrapValidator.isValid()) {
             var jobName = $("#job-name").val();
@@ -49,7 +49,7 @@ function bindSubmitJobSettingsForm() {
 }
 
 function validate() {
-    $("#job-settings-form").bootstrapValidator({
+    $("#job-config-form").bootstrapValidator({
         message: "This value is not valid",
         feedbackIcons: {
             valid: "glyphicon glyphicon-ok",
@@ -103,7 +103,7 @@ function validate() {
             }
         }
     });
-    $("#job-settings-form").submit(function(event) {
+    $("#job-config-form").submit(function(event) {
         event.preventDefault();
     });
 }

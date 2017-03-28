@@ -93,8 +93,6 @@ public final class ServerStatisticsAPIImplTest {
         when(regCenter.get("/test_job2/servers/localhost/defaultInstance/status")).thenReturn("RUNNING");
         when(regCenter.isExisted("/test_job1/servers/localhost/defaultInstance/disabled")).thenReturn(false);
         when(regCenter.isExisted("/test_job2/servers/localhost/defaultInstance/disabled")).thenReturn(false);
-        when(regCenter.isExisted("/test_job1/servers/localhost/defaultInstance/paused")).thenReturn(false);
-        when(regCenter.isExisted("/test_job2/servers/localhost/defaultInstance/paused")).thenReturn(false);
         when(regCenter.isExisted("/test_job1/servers/localhost/defaultInstance/shutdown")).thenReturn(false);
         when(regCenter.isExisted("/test_job2/servers/localhost/defaultInstance/shutdown")).thenReturn(false);
         int i = 0;

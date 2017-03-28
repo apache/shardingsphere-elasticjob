@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
+import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
@@ -81,7 +82,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         int crashedCount = 0;
         int disabledCount = 0;
         for (String serverIp : serverIps) {
-            List<String> jobInstances = regCenter.getChildrenKeys(jobNodePath.getServerNodePath(serverIp));
+            List<String> jobInstances = regCenter.getChildrenKeys(jobNodePath.getServerNodePath(serverIp) + "/" +ServerNode.INSTANCES_ROOT);
             for (String each : jobInstances) {
                 serverInstanceSize++;
                 switch (getServerStatus(jobName, serverIp, each)) {
@@ -90,7 +91,6 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
                         okCount++;
                         break;
                     case DISABLED:
-                    case PAUSED:
                         disabledCount++;
                         break;
                     case CRASHED:
@@ -111,7 +111,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         List<String> serverIps = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
         Collection<ServerInfo> result = new ArrayList<>(serverIps.size());
         for (String serverIp : serverIps) {
-            List<String> jobInstances = regCenter.getChildrenKeys(jobNodePath.getServerNodePath(serverIp));
+            List<String> jobInstances = regCenter.getChildrenKeys(jobNodePath.getServerNodePath(serverIp) + "/" + ServerNode.INSTANCES_ROOT);
             for (String each : jobInstances) {
                 result.add(getJobServer(jobName, serverIp, each));
             }
@@ -134,9 +134,8 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         String status = regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "status"));
         boolean disabled = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "disabled"));
-        boolean paused = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "paused"));
         boolean shutdown = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "shutdown"));
-        return ServerInfo.ServerStatus.getServerStatus(status, disabled, paused, shutdown);
+        return ServerInfo.ServerStatus.getServerStatus(status, disabled, shutdown);
     }
     
     @Override

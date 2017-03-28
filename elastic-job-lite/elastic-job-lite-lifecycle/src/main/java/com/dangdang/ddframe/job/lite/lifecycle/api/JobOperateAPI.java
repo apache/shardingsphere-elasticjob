@@ -40,26 +40,6 @@ public interface JobOperateAPI {
     void trigger(Optional<String> jobName, Optional<String> serverIp, Optional<String> serverInstanceId);
     
     /**
-     * 作业暂停.
-     * 
-     * <p>不会导致重新分片.</p>
-     *
-     * @param jobName 作业名称
-     * @param serverIp 作业服务器IP地址
-     * @param serverInstanceId 作业服务器实例ID
-     */
-    void pause(Optional<String> jobName, Optional<String> serverIp, Optional<String> serverInstanceId);
-    
-    /**
-     * 作业恢复.
-     *
-     * @param jobName 作业名称
-     * @param serverIp 作业服务器IP地址
-     * @param serverInstanceId 作业服务器实例ID
-     */
-    void resume(Optional<String> jobName, Optional<String> serverIp, Optional<String> serverInstanceId);
-    
-    /**
      * 作业禁用.
      * 
      * <p>会重新分片.</p>

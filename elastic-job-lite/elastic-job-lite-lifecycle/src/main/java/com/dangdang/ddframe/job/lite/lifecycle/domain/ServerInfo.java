@@ -54,7 +54,6 @@ public final class ServerInfo implements Serializable {
         READY, 
         RUNNING, 
         DISABLED,
-        PAUSED, 
         CRASHED, 
         SHUTDOWN;
     
@@ -63,11 +62,10 @@ public final class ServerInfo implements Serializable {
          * 
          * @param status 作业状态
          * @param isDisabled 作业是否禁用
-         * @param isPaused 作业是否暂停
          * @param isShutdown 作业是否关闭
          * @return 作业服务器状态
          */
-        public static ServerStatus getServerStatus(final String status, final boolean isDisabled, final boolean isPaused, final boolean isShutdown) {
+        public static ServerStatus getServerStatus(final String status, final boolean isDisabled, final boolean isShutdown) {
             if (isShutdown) {
                 return SHUTDOWN;
             }
@@ -76,9 +74,6 @@ public final class ServerInfo implements Serializable {
             }
             if (isDisabled) {
                 return DISABLED;
-            }
-            if (isPaused) {
-                return PAUSED;
             }
             return ServerStatus.valueOf(status);
         }

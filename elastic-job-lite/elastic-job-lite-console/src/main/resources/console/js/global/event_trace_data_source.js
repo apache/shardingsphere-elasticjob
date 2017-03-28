@@ -56,7 +56,6 @@ function bindConnectButtons() {
     $(document).on("click", "button[operation='connectDataSource']", function(event) {
         var btn = $(this).button("loading");
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
-        var currentConnectBtn = $(event.currentTarget);
         $.ajax({
             url: "api/data-source/connect",
             type: "POST",
@@ -96,7 +95,7 @@ function bindDeleteButtons() {
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     renderDataSourceForDashboardNav();
-                    getEventTraceNavTag();
+                    refreshEventTraceNavTag();
                 }
             });
         });
@@ -154,7 +153,7 @@ function submitDataSource() {
                         $(".modal-backdrop").remove();
                         $("body").removeClass("modal-open");
                         renderDataSourceForDashboardNav();
-                        getEventTraceNavTag();
+                        refreshEventTraceNavTag();
                     } else {
                         showFailureDialog("add-data-source-failure-dialog");
                     }

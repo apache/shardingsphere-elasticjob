@@ -67,7 +67,7 @@ function bindConnectButtons() {
                     $("#activated-reg-center").text(regName);
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
-                    getJobNavTag();
+                    refreshJobNavTag();
                     showSuccessDialog();
                 } else {
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -96,7 +96,7 @@ function bindDeleteButtons() {
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     renderRegCenterForDashboardNav();
-                    getRegCenterNavTag();
+                    refreshRegCenterNavTag();
                 }
             });
         });
@@ -162,7 +162,7 @@ function submitRegCenter() {
                         $(".modal-backdrop").remove();
                         $("body").removeClass("modal-open");
                         renderRegCenterForDashboardNav();
-                        getRegCenterNavTag();
+                        refreshRegCenterNavTag();
                     } else {
                         showFailureDialog("add-reg-center-failure-dialog");
                     }

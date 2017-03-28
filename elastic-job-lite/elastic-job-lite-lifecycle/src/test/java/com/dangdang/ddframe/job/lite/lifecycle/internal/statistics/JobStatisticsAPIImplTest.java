@@ -62,11 +62,11 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.getChildrenKeys("/test_job/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
-        when(regCenter.getChildrenKeys("/test_job/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
-        when(regCenter.get("/test_job/servers/ip1/defaultInstance/status")).thenReturn("RUNNING");
-        when(regCenter.get("/test_job/servers/ip2/defaultInstance/status")).thenReturn("READY");
-        when(regCenter.isExisted("/test_job/servers/ip2/defaultInstance/disabled")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/test_job/servers/ip1/instances")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers/ip2/instances")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.get("/test_job/servers/ip1/instances/defaultInstance/status")).thenReturn("RUNNING");
+        when(regCenter.get("/test_job/servers/ip2/instances/defaultInstance/status")).thenReturn("READY");
+        when(regCenter.isExisted("/test_job/servers/ip2/instances/defaultInstance/disabled")).thenReturn(true);
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
         assertThat(jobBrief.getJobName(), is("test_job"));
         assertThat(jobBrief.getDescription(), is("desc"));
@@ -82,15 +82,14 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job_2/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job_2", "desc2"));
         when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
-        when(regCenter.getChildrenKeys("/test_job_1/servers/ip1")).thenReturn(Arrays.asList("defaultInstance"));
-        when(regCenter.getChildrenKeys("/test_job_1/servers/ip2")).thenReturn(Arrays.asList("defaultInstance"));
-        when(regCenter.getChildrenKeys("/test_job_2/servers/ip3")).thenReturn(Arrays.asList("defaultInstance"));
-        when(regCenter.getChildrenKeys("/test_job_2/servers/ip4")).thenReturn(Arrays.asList("defaultInstance"));
-        when(regCenter.get("/test_job_1/servers/ip1/defaultInstance/status")).thenReturn("RUNNING");
-        when(regCenter.get("/test_job_1/servers/ip2/defaultInstance/status")).thenReturn("READY");
-        when(regCenter.isExisted("/test_job_1/servers/ip2/defaultInstance/disabled")).thenReturn(true);
-        when(regCenter.isExisted("/test_job_2/servers/ip3/defaultInstance/paused")).thenReturn(true);
-        when(regCenter.isExisted("/test_job_2/servers/ip4/defaultInstance/shutdown")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/test_job_1/servers/ip1/instances")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job_1/servers/ip2/instances")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job_2/servers/ip3/instances")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job_2/servers/ip4/instances")).thenReturn(Arrays.asList("defaultInstance"));
+        when(regCenter.get("/test_job_1/servers/ip1/instances/defaultInstance/status")).thenReturn("RUNNING");
+        when(regCenter.get("/test_job_1/servers/ip2/instances/defaultInstance/status")).thenReturn("READY");
+        when(regCenter.isExisted("/test_job_1/servers/ip2/instances/defaultInstance/disabled")).thenReturn(true);
+        when(regCenter.isExisted("/test_job_2/servers/ip4/instances/defaultInstance/shutdown")).thenReturn(true);
         int i = 0;
         for (JobBriefInfo each : jobStatisticsAPI.getAllJobsBriefInfo()) {
             i++;
@@ -114,10 +113,10 @@ public final class JobStatisticsAPIImplTest {
     @Test
     public void assertGetServers() {
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-        when(regCenter.get("/test_job/servers/ip1/defaultInstance/sharding")).thenReturn("0,1");
-        when(regCenter.get("/test_job/servers/ip2/defaultInstance/sharding")).thenReturn("2,3");
-        when(regCenter.get("/test_job/servers/ip1/defaultInstance/status")).thenReturn("RUNNING");
-        when(regCenter.get("/test_job/servers/ip2/defaultInstance/status")).thenReturn("READY");
+        when(regCenter.get("/test_job/servers/ip1/instances/defaultInstance/sharding")).thenReturn("0,1");
+        when(regCenter.get("/test_job/servers/ip2/instances/defaultInstance/sharding")).thenReturn("2,3");
+        when(regCenter.get("/test_job/servers/ip1/instances/defaultInstance/status")).thenReturn("RUNNING");
+        when(regCenter.get("/test_job/servers/ip2/instances/defaultInstance/status")).thenReturn("READY");
         int i = 0;
         for (ServerInfo each : jobStatisticsAPI.getServers("test_job")) {
             i++;

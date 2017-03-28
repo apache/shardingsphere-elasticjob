@@ -102,12 +102,11 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
         result.setJobName(jobName);
         result.setIp(serverIp);
         result.setInstanceId(instanceId);
-        result.setSharding(regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"sharding")));
-        String status = regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"status"));
-        boolean disabled = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"disabled"));
-        boolean paused = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"paused"));
-        boolean shutdown = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId,"shutdown"));
-        result.setStatus(ServerInfo.ServerStatus.getServerStatus(status, disabled, paused, shutdown));
+        result.setSharding(regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "sharding")));
+        String status = regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "status"));
+        boolean disabled = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "disabled"));
+        boolean shutdown = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "shutdown"));
+        result.setStatus(ServerInfo.ServerStatus.getServerStatus(status, disabled, shutdown));
         return result;
     }
 }

@@ -36,6 +36,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -66,123 +67,79 @@ public class LiteJobRestfulApi {
     }
     
     @GET
-    @Path("/settings/{jobName}")
+    @Path("/config/{jobName}")
     @Produces(MediaType.APPLICATION_JSON)
     public JobSettings getJobSettings(@PathParam("jobName") final String jobName) {
         return jobAPIService.getJobSettingsAPI().getJobSettings(jobName);
     }
     
     @PUT
-    @Path("/settings")
+    @Path("/config")
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateJobSettings(final JobSettings jobSettings) {
         jobAPIService.getJobSettingsAPI().updateJobSettings(jobSettings);
     }
     
-    @GET
-    @Path("/servers/{jobName}")
+    @DELETE
+    @Path("/config/{jobName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ServerInfo> getServers(@PathParam("jobName") final String jobName) {
-        return jobAPIService.getJobStatisticsAPI().getServers(jobName);
-    }
-    
-    @GET
-    @Path("/execution/{jobName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ExecutionInfo> getExecutionInfo(@PathParam("jobName") final String jobName) {
-        return jobAPIService.getJobStatisticsAPI().getExecutionInfo(jobName);
+    public Collection<String> removeJob(@PathParam("jobName") final String jobName) {
+        return jobAPIService.getJobOperatorAPI().remove(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
     }
     
     @POST
-    @Path("/trigger")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void triggerJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
+    @Path("/{jobName}/trigger")
+    public void triggerJob(@PathParam("jobName") final String jobName) {
+        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
     }
     
     @POST
-    @Path("/pause")
+    @Path("/{jobName}/disable")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void pauseJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().pause(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
+    public void disableJob(@PathParam("jobName") final String jobName) {
+        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
+    }
+    
+    @DELETE
+    @Path("/{jobName}/disable")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void enableJob(@PathParam("jobName") final String jobName) {
+        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
     }
     
     @POST
-    @Path("/resume")
+    @Path("/{jobName}/shutdown")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void resumeJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().resume(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
-    }
-    
-    @POST
-    @Path("/triggerAll/name")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void triggerAllJobsByJobName(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobServer.getJobName()), Optional.<String>absent(), Optional.<String>absent());
-    }
-    
-    @POST
-    @Path("/pauseAll/name")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void pauseAllJobsByJobName(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().pause(Optional.of(jobServer.getJobName()), Optional.<String>absent(), Optional.<String>absent());
-    }
-    
-    @POST
-    @Path("/resumeAll/name")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void resumeAllJobsByJobName(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().resume(Optional.of(jobServer.getJobName()), Optional.<String>absent(), Optional.<String>absent());
-    }
-    
-    @POST
-    @Path("/triggerAll/ip")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void triggerAllJobs(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().trigger(Optional.<String>absent(), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
-    }
-    
-    @POST
-    @Path("/pauseAll/ip")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void pauseAllJobs(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().pause(Optional.<String>absent(), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
-    }
-    
-    @POST
-    @Path("/resumeAll/ip")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void resumeAllJobs(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().resume(Optional.<String>absent(), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
-    }
-    
-    @POST
-    @Path("/shutdown")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void shutdownJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
-    }
-    
-    @POST
-    @Path("/remove")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<String> removeJob(final ServerInfo jobServer) {
-        return jobAPIService.getJobOperatorAPI().remove(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
+    public void shutdownJob(@PathParam("jobName") final String jobName) {
+        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
     }
     
     @POST
     @Path("/disable")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void disableJob(final ServerInfo jobServer) {
+    public void disableServerJob(final ServerInfo jobServer) {
         jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
     @POST
     @Path("/enable")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void enableJob(final ServerInfo jobServer) {
+    public void enableServerJob(final ServerInfo jobServer) {
         jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
+    }
+    
+    @GET
+    @Path("/{jobName}/servers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<ServerInfo> getServers(@PathParam("jobName") final String jobName) {
+        return jobAPIService.getJobStatisticsAPI().getServers(jobName);
+    }
+    
+    @GET
+    @Path("/{jobName}/execution")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<ExecutionInfo> getExecutionInfo(@PathParam("jobName") final String jobName) {
+        return jobAPIService.getJobStatisticsAPI().getExecutionInfo(jobName);
     }
     
     @GET

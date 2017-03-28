@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.internal.operate;
 
+import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
@@ -61,7 +62,7 @@ public final class JobOperateTemplate {
             List<String> serverIpList = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
             result = new ArrayList<>(serverIpList.size());
             for (String ip : serverIpList) {
-                for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath(ip))) {
+                for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath(ip) + "/" + ServerNode.INSTANCES_ROOT)) {
                     boolean isSuccess = callback.doOperate(jobName.get(), ip, each);
                     if (!isSuccess) {
                         result.add(ip + "-" + each);
