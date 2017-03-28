@@ -17,12 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.console.restful;
 
-import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
-import com.dangdang.ddframe.job.lite.console.service.impl.RegistryCenterServiceImpl;
-import com.dangdang.ddframe.job.lite.console.util.SessionRegistryCenterConfiguration;
-import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactory;
-import com.dangdang.ddframe.job.reg.exception.RegException;
-import com.google.common.base.Optional;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,7 +29,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
+
+import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
+import com.dangdang.ddframe.job.lite.console.service.impl.RegistryCenterServiceImpl;
+import com.dangdang.ddframe.job.lite.console.util.SessionRegistryCenterConfiguration;
+import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactory;
+import com.dangdang.ddframe.job.reg.exception.RegException;
+import com.google.common.base.Optional;
 
 @Path("/registry-center")
 public class RegistryCenterRestfulApi {
@@ -50,7 +51,7 @@ public class RegistryCenterRestfulApi {
         if (regCenterConfig.isPresent()) {
             setRegistryCenterNameToSession(regCenterConfig.get(), request.getSession());
         }
-        return regCenterService.loadAll().getRegistryCenterConfiguration();
+        return regCenterService.loadAll().getRegistryCenterConfigurations().getRegistryCenterConfiguration();
     }
     
     @POST

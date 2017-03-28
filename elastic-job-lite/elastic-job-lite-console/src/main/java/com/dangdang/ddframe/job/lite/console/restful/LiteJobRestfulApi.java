@@ -22,10 +22,10 @@ import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
 import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
-import com.dangdang.ddframe.job.lite.console.util.SessionDataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.console.util.SessionEventTraceDataSourceConfiguration;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
@@ -58,7 +58,7 @@ public class LiteJobRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
-    DataSourceConfiguration dataSourceConfiguration = SessionDataSourceConfiguration.getDataSourceConfiguration();
+    EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = SessionEventTraceDataSourceConfiguration.getEventTraceDataSourceConfiguration();
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -161,10 +161,10 @@ public class LiteJobRestfulApi {
     
     private DataSource setUpEventTraceDataSource() {
         BasicDataSource result = new BasicDataSource();
-        result.setDriverClassName(dataSourceConfiguration.getDriver());
-        result.setUrl(dataSourceConfiguration.getUrl());
-        result.setUsername(dataSourceConfiguration.getUsername());
-        result.setPassword(dataSourceConfiguration.getPassword());
+        result.setDriverClassName(eventTraceDataSourceConfiguration.getDriver());
+        result.setUrl(eventTraceDataSourceConfiguration.getUrl());
+        result.setUsername(eventTraceDataSourceConfiguration.getUsername());
+        result.setPassword(eventTraceDataSourceConfiguration.getPassword());
         return result;
     }
     
