@@ -182,8 +182,7 @@ public abstract class AbstractBaseStdJobTest {
             assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/operation/disabled"));
             assertThat(regCenter.get("/" + jobName + "/leader/election/host_instance"), is(localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstanceId(jobName)));
         }
-        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/instances/" + JobRegistry.getInstance().getJobInstanceId(jobName)),
-                CoreMatchers.is("{\"serverStatus\":\"READY\",\"shutdown\":false}"));
+        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/instances/" + JobRegistry.getInstance().getJobInstanceId(jobName)), CoreMatchers.is("READY"));
         regCenter.remove("/" + jobName + "/leader/election");
     }
     

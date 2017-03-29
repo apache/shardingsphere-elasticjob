@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.gson.Gson;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.state.ConnectionState;
@@ -104,12 +103,8 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (!serverNode.isLocalInstancePath(path) || !new Gson().fromJson(new String(event.getData().getData()), InstanceInfo.class).isShutdown()) {
-                return;
-            }
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-            if (null != jobScheduleController) {
-                jobScheduleController.shutdown();
+            if (serverNode.isLocalInstancePath(path) && TreeCacheEvent.Type.NODE_REMOVED == event.getType() && null != JobRegistry.getInstance().getJobScheduleController(jobName)) {
+                JobRegistry.getInstance().getJobScheduleController(jobName).shutdown();
                 serverService.removeInstanceStatus();
             }
         }

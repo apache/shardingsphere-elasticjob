@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +60,7 @@ public class ServerService {
         } else {
             jobNodeStorage.fillJobNode(serverOperationNode.getDisabledNode(), "");
         }
-        jobNodeStorage.fillEphemeralJobNode(serverNode.getLocalInstanceNode(), new Gson().toJson(new InstanceInfo()));
+        jobNodeStorage.fillEphemeralJobNode(serverNode.getLocalInstanceNode(), ServerStatus.READY.name());
     }
     
     /**
@@ -70,7 +69,7 @@ public class ServerService {
      * @param status 服务器状态
      */
     public void updateServerStatus(final ServerStatus status) {
-        jobNodeStorage.updateJobNode(serverNode.getLocalInstanceNode(), new Gson().toJson(new InstanceInfo(status)));
+        jobNodeStorage.updateJobNode(serverNode.getLocalInstanceNode(), status.name());
     }
     
     /**
@@ -116,10 +115,12 @@ public class ServerService {
     
     private List<String> getAvailableInstances(final String ip) {
         List<String> result = new LinkedList<>();
+        if (jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip))) {
+            return result;
+        }
         List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
         for (String each : jobInstances) {
-            if (jobNodeStorage.isJobNodeExisted(ServerNode.getInstanceNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip))
-                    && !new Gson().fromJson(jobNodeStorage.getJobNodeDataDirectly(ServerNode.getInstanceNode(ip, each)), InstanceInfo.class).isShutdown()) {
+            if (jobNodeStorage.isJobNodeExisted(ServerNode.getInstanceNode(ip, each))) {
                 result.add(each);
             }
         }
@@ -155,14 +156,8 @@ public class ServerService {
      * @return 作业服务器是否可用
      */
     public boolean isAvailableServer(final String ip) {
-        List<String> instances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
-        for (String each : instances) {
-            if (jobNodeStorage.isJobNodeExisted(ServerNode.getInstanceNode(ip, each)) && !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip))
-                    && !new Gson().fromJson(jobNodeStorage.getJobNodeDataDirectly(ServerNode.getInstanceNode(ip, each)), InstanceInfo.class).isShutdown()) {
-                return true;
-            }
-        }
-        return false;
+        return !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip))
+                && !jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT).isEmpty();
     }
     
     /**
@@ -171,8 +166,8 @@ public class ServerService {
      * @return 当前服务器是否是等待执行的状态
      */
     public boolean isLocalhostServerReady() {
-        return isAvailableServer(localHostService.getIp())
-                && ServerStatus.READY == new Gson().fromJson(jobNodeStorage.getJobNodeDataDirectly(serverNode.getLocalInstanceNode()), InstanceInfo.class).getServerStatus();
+        return isAvailableServer(localHostService.getIp()) && jobNodeStorage.isJobNodeExisted(serverNode.getLocalInstanceNode())
+                && ServerStatus.READY == ServerStatus.valueOf(jobNodeStorage.getJobNodeDataDirectly(serverNode.getLocalInstanceNode()));
     }
     
     /**

@@ -133,8 +133,8 @@ public final class ElectionListenerManagerTest {
         when(serverOperationNode.isServerDisabledPath("/test_job/server/mockedIP/operation/shutdown")).thenReturn(false);
         when(serverNode.isLocalInstancePath("/test_job/server/mockedIP/instances/127.0.0.1@-@0")).thenReturn(true);
         electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/server/mockedIP/instances/127.0.0.1@-@0", null,
-                "{\"serverStatus\":\"READY\",\"shutdown\":true}".getBytes())), "/test_job/server/mockedIP/instances/127.0.0.1@-@0");
+                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/server/mockedIP/instances/127.0.0.1@-@0", null,
+                "READY".getBytes())), "/test_job/server/mockedIP/instances/127.0.0.1@-@0");
         verify(leaderElectionService).removeLeader();
     }
 }

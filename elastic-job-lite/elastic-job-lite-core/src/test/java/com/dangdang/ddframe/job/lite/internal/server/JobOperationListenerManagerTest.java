@@ -168,7 +168,7 @@ public final class JobOperationListenerManagerTest {
     @Test
     public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathButJobIsNotExisted() {
         jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/instances/127.0.0.1@-@0", null, "{\"serverStatus\":\"RUNNING\",\"shutdown\":true}".getBytes())),
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/instances/127.0.0.1@-@0", null, "RUNNING".getBytes())),
                 "/test_job/servers/" + ip + "/127.0.0.1@-@0");
         verify(jobScheduleController, times(0)).shutdown();
     }
@@ -177,7 +177,7 @@ public final class JobOperationListenerManagerTest {
     public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathAndAdd() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/instances/127.0.0.1@-@0", null, "{\"serverStatus\":\"RUNNING\",\"shutdown\":true}".getBytes())),
+                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/servers/" + ip + "/instances/127.0.0.1@-@0", null, "".getBytes())),
                 "/test_job/servers/" + ip + "/instances/127.0.0.1@-@0");
         verify(jobScheduleController).shutdown();
         verify(serverService).removeInstanceStatus();
