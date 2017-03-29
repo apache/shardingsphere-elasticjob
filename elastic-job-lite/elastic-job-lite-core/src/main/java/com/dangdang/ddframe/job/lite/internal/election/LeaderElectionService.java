@@ -78,7 +78,7 @@ public class LeaderElectionService {
             BlockUtils.waitingShortTime();
             leaderElection();
         }
-        return (localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()).equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST_AND_INSTANCE));
+        return JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST_AND_INSTANCE));
     }
     
     /**
@@ -110,7 +110,7 @@ public class LeaderElectionService {
         @Override
         public void execute() {
             if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST_AND_INSTANCE) && (isForceElect || serverService.isAvailableServer(localHostService.getIp()))) {
-                jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST_AND_INSTANCE, localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+                jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST_AND_INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             }
         }
     }

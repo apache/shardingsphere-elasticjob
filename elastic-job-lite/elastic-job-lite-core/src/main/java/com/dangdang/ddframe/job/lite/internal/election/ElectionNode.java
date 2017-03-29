@@ -33,7 +33,7 @@ public final class ElectionNode {
     
     static final String ELECTION_ROOT = ROOT + "/election";
     
-    static final String LEADER_HOST_AND_INSTANCE = ELECTION_ROOT + "/host_instance";
+    static final String LEADER_HOST_AND_INSTANCE = ELECTION_ROOT + "/instance";
     
     static final String LATCH = ELECTION_ROOT + "/latch";
     

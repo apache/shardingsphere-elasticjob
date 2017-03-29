@@ -174,13 +174,13 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         if (disabled) {
             assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(ServerStatus.DISABLED.name()));
-            while (null != regCenter.get("/" + jobName + "/leader/election/host_instance")) {
+            while (null != regCenter.get("/" + jobName + "/leader/election/instance")) {
                 BlockUtils.waitingShortTime();
             }
             regCenter.persist("/" + jobName + "/servers/" + localHostService.getIp(), "");
         } else {
             assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(""));
-            assertThat(regCenter.get("/" + jobName + "/leader/election/host_instance"), is(localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
+            assertThat(regCenter.get("/" + jobName + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         }
         assertThat(regCenter.get("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()), CoreMatchers.is(InstanceStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");

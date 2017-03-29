@@ -51,7 +51,7 @@ public final class JobNodePath {
      */
     public static final String STATUS_NODE = "status";
     
-    private static final String LEADER_HOST_NODE = "leader/election/host_instance";
+    private static final String LEADER_HOST_NODE = "leader/election/instance";
     
     private static final String CONFIG_NODE = "config";
     
