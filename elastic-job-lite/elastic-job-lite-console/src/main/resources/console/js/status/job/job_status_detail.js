@@ -1,12 +1,13 @@
 $(function() {
     $("#job-name").text(getCurrentUrl("job-name"));
-    renderServers();
-    renderExecution();
-    bindButtons();
+    renderInstanceTable();
+    renderShardingTable();
+    bindInstanceButtons();
+    bindShardingButtons();
     renderBreadCrumbMenu();
 });
 
-function renderServers() {
+function renderInstanceTable() {
     var jobName = $("#job-name").text();
     $("#job-servers").bootstrapTable({
         url: "/api/jobs/" + jobName + "/servers",
@@ -24,16 +25,16 @@ function renderServers() {
             field: "status",
             title: "状态", 
             sortable: "true",
-            formatter: "statusFormatter"
+            formatter: "instanceStatusFormatter"
         },  {
             field: "operation",
             title: "操作",
-            formatter: "generateOperationButtons"
+            formatter: "generateInstanceOperationButtons"
         }]
     });
 }
 
-function statusFormatter(value, row) {
+function instanceStatusFormatter(value, row) {
     switch(value) {
         case "RUNNING":
             return "<span class='label label-primary'>运行中</span>";
@@ -41,38 +42,93 @@ function statusFormatter(value, row) {
         case "READY":
             return "<span class='label label-info'>准备中</span>";
             break;
-        case "DISABLED":
-            return "<span class='label label-warning'>禁用中</span>";
-            break;
-        case "CRASHED":
-            return "<span class='label label-danger'>宕机</span>";
-            break;
-        case "SHUTDOWN":
-            return "<span class='label label-danger'>停止</span>";
+        default:
+            return "-";
             break;
     }
 }
 
-function generateOperationButtons(val, row) {
+function generateInstanceOperationButtons(val, row) {
+    return "<button operation='shutdown' class='btn-xs btn-danger' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>关闭</button>";
+}
+
+function bindInstanceButtons() {
+    bindShutdownButton();
+}
+
+function bindShutdownButton() {
+    $(document).on("click", "button[operation='shutdown']", function(event) {
+        var jobName = $("#job-name").text();
+        $.ajax({
+            url: "/api/jobs/" + jobName + "/shutdown",
+            type: "POST",
+            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function() {
+                $("#job-servers").bootstrapTable("refresh");
+                showSuccessDialog();
+            }
+        });
+    });
+}
+
+function renderShardingTable() {
+    var jobName = $("#job-name").text();
+    $("#execution").bootstrapTable({
+        url: "/api/jobs/" + jobName + "/execution",
+        cache: false,
+        columns: [
+            {
+                field: "item",
+                title: "分片项"
+            }, {
+                field: "status",
+                title: "状态",
+                formatter: "shardingStatusFormatter"
+            },  {
+                field: "operation",
+                title: "操作",
+                formatter: "generateShardingOperationButtons"
+            }]
+    });
+}
+
+function shardingStatusFormatter(value, row) {
+    switch(value) {
+        case "RUNNING":
+            return "<span class='label label-primary'>运行中</span>";
+            break;
+        case "COMPLETED":
+            return "<span class='label label-success'>已完成</span>";
+            break;
+        case "PENDING":
+            return "<span class='label label-info'>待运行</span>";
+            break;
+        case "DISABLED":
+            return "<span class='label label-warning'>禁用中</span>";
+            break;
+        default:
+            return "-";
+            break;
+    }
+}
+
+function generateShardingOperationButtons(val, row) {
     var triggerButton = "<button operation='trigger' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>触发</button>";
     var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>禁用</button>";
     var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>启用</button>";
-    var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>关闭</button>";
-    var operationTd = triggerButton + "&nbsp;";
+    var operationTd = "";
     if ("DISABLED" === row.status) {
-        operationTd = operationTd + enableButton;
-    } else if ("CRASHED" !== row.status && "SHUTDOWN" !== row.status) {
-        operationTd = operationTd + disableButton;
-    }
-    if ("SHUTDOWN" !== row.status) {
-        operationTd = operationTd + shutdownButton + "&nbsp;";
+        operationTd = enableButton;
+    } else {
+        operationTd = triggerButton + "&nbsp;" + disableButton;
     }
     return operationTd;
 }
 
-function bindButtons() {
+function bindShardingButtons() {
     bindTriggerButton();
-    bindShutdownButton();
     bindDisableButton();
     bindEnableButton();
 }
@@ -115,8 +171,8 @@ function bindEnableButton() {
     $(document).on("click", "button[operation='enable']", function(event) {
         var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/jobs/enable",
-            type: "POST",
+            url: "/api/jobs/disable",
+            type: "DELETE",
             data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
             contentType: "application/json",
             dataType: "json",
@@ -126,57 +182,6 @@ function bindEnableButton() {
             }
         });
     });
-}
-
-function bindShutdownButton() {
-    $(document).on("click", "button[operation='shutdown']", function(event) {
-        var jobName = $("#job-name").text();
-        $.ajax({
-            url: "/api/jobs/" + jobName + "/shutdown",
-            type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
-            contentType: "application/json",
-            dataType: "json",
-            success: function() {
-                $("#job-servers").bootstrapTable("refresh");
-                showSuccessDialog();
-            }
-        });
-    });
-}
-
-function renderExecution() {
-    var jobName = $("#job-name").text();
-    $("#execution").bootstrapTable({
-        url: "/api/jobs/" + jobName + "/execution",
-        cache: false,
-        columns: [
-            {
-                field: "item",
-                title: "分片项"
-            }, {
-                field: "status",
-                title: "状态",
-                formatter: "executionStatusFormatter"
-            }, {
-                field: "failoverIp",
-                title: "失效转移执行"
-            }]
-    });
-}
-
-function executionStatusFormatter(value, row) {
-    switch(value) {
-        case "RUNNING":
-            return "<span class='label label-primary'>运行中</span>";
-            break;
-        case "COMPLETED":
-            return "<span class='label label-success'>已完成</span>";
-            break;
-        case "PENDING":
-            return "<span class='label label-warning'>待运行</span>";
-            break;
-    }
 }
 
 function renderBreadCrumbMenu() {

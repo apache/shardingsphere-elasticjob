@@ -98,14 +98,14 @@ public class LiteJobRestfulApi {
     @POST
     @Path("/disable")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void disableServerJob(final ServerInfo jobServer) {
+    public void disableShardingJob(final ServerInfo jobServer) {
         jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
-    @POST
-    @Path("/enable")
+    @DELETE
+    @Path("/disable")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void enableServerJob(final ServerInfo jobServer) {
+    public void enableShardingJob(final ServerInfo jobServer) {
         jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
     }
     
