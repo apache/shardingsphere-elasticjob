@@ -1,6 +1,5 @@
 $(function() {
-    $("#server-ip").text(getCurrentUrl("server-ip"));
-    $("#server-instance-id").text(getCurrentUrl("server-instance-id"));
+    $("#server-ip").text($("#index-server-ip").text());
     renderJobs();
     bindTriggerButtons();
     bindShutdownButtons();

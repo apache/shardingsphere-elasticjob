@@ -54,6 +54,7 @@ function generateOperationButtons(val, row) {
 function bindServerStatusDetailButton() {
     $(document).on("click", "button[operation='server-status-detail'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
-        window.location = "index.html?server-ip=" + serverIp;
+        $("#index-server-ip").text(serverIp);
+        $("#content").load("html/status/server/server_status_detail.html");
     });
 }

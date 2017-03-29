@@ -10,7 +10,7 @@ import com.google.common.base.Optional;
 
 public class EventTraceDataSourceServiceImpl implements EventTraceDataSourceService {
     
-    private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl("EventTraceDataSourceConfigurations.xml");
+    private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
     
     @Override
     public GlobalConfiguration loadAll() {

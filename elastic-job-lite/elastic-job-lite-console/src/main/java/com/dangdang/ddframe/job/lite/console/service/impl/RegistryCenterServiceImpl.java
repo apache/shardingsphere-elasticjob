@@ -27,7 +27,7 @@ import com.google.common.base.Optional;
 
 public class RegistryCenterServiceImpl implements RegistryCenterService {
     
-    private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl("RegistryCenterConfigurations.xml");
+    private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
     
     @Override
     public GlobalConfiguration loadAll() {
