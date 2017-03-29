@@ -187,8 +187,8 @@ function validate() {
                         message: "注册中心不能为空"
                     },
                     stringLength: {
-                        max: 30,
-                        message: "注册中心长度不能超过30字符大小"
+                        max: 50,
+                        message: "注册中心长度不能超过50字符大小"
                     },
                     regexp: {
                         regexp: /^([a-zA-Z0-9_]+(-|\.))*[a-zA-Z0-9_]+$/,
@@ -202,8 +202,8 @@ function validate() {
                         message: "注册中心地址不能为空"
                     },
                     stringLength: {
-                        max: 60,
-                        message: "注册中心地址长度不能超过60字符大小"
+                        max: 100,
+                        message: "注册中心地址长度不能超过100字符大小"
                     },
                     regexp: {
                         regexp: /^[^?!@#$%\^&*()'';""\]\[<>\\`~{}|=+/]+$/,
@@ -214,8 +214,8 @@ function validate() {
             namespace: {
                 validators: {
                     stringLength: {
-                        max: 30,
-                        message: "命名空间长度不能超过30字符大小"
+                        max: 50,
+                        message: "命名空间长度不能超过50字符大小"
                     },
                     regexp: {
                         regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,

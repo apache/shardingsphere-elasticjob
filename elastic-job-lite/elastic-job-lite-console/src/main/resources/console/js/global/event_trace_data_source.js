@@ -178,8 +178,8 @@ function validate() {
                         message: "数据源名称不能为空"
                     },
                     stringLength: {
-                        max: 30,
-                        message: "数据源名称长度不能超过30字符大小"
+                        max: 50,
+                        message: "数据源名称长度不能超过50字符大小"
                     },
                     regexp: {
                         regexp: /^([a-zA-Z0-9_]+(-|\.))*[a-zA-Z0-9_]+$/,
@@ -208,8 +208,8 @@ function validate() {
                         message: "数据库用户名不能为空"
                     },
                     stringLength: {
-                        max: 20,
-                        message: "数据库用户名不能超过20字符大小"
+                        max: 50,
+                        message: "数据库用户名不能超过50字符大小"
                     },
                     regexp: {
                         regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
@@ -220,8 +220,8 @@ function validate() {
             password: {
                 validators: {
                     stringLength: {
-                        max: 20,
-                        message: "数据库口令不能超过20字符大小"
+                        max: 50,
+                        message: "数据库口令不能超过50字符大小"
                     },
                     regexp: {
                         regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
