@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
@@ -70,7 +71,7 @@ public final class JobOperationListenerManagerTest {
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "executionService", executionService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, jobOperationListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
-        JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
     @Test

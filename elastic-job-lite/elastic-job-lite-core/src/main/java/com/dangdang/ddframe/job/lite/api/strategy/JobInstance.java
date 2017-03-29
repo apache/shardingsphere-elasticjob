@@ -17,24 +17,35 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy;
 
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 /**
- * 作业分片单元.
+ * 作业运行实例.
  * 
  * @author zhangliang
  */
 @RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode
-public final class JobShardingUnit {
+@EqualsAndHashCode(of = "jobInstanceId")
+public final class JobInstance {
+    
+    private static final String DELIMITER = "@-@";
+    
+    private final LocalHostService localHostService = new LocalHostService();
     
     /**
      * 作业实例主键.
      */
     private final String jobInstanceId;
+    
+    public JobInstance() {
+        jobInstanceId = localHostService.getIp() + DELIMITER + UUID.randomUUID().toString();
+    }
     
     /**
      * 获取作业服务器IP地址.
@@ -42,6 +53,6 @@ public final class JobShardingUnit {
      * @return 作业服务器IP地址
      */
     public String getIp() {
-        return jobInstanceId.substring(0, jobInstanceId.indexOf("@-@"));
+        return jobInstanceId.substring(0, jobInstanceId.indexOf(DELIMITER));
     }
 }

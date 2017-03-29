@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.api.strategy.fixture;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +31,7 @@ public class InvalidJobShardingStrategy implements JobShardingStrategy {
     }
     
     @Override
-    public Collection<JobShardingResult> sharding(final List<JobShardingUnit> jobShardingUnits, final JobShardingMetadata jobShardingMetadata) {
+    public Collection<JobShardingResult> sharding(final List<JobInstance> jobInstances, final JobShardingMetadata jobShardingMetadata) {
         return null;
     }
 }

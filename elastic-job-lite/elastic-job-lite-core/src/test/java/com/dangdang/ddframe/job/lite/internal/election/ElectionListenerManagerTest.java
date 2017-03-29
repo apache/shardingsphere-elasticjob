@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager.LeaderElectionJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
@@ -60,7 +61,7 @@ public final class ElectionListenerManagerTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         ReflectionUtils.setFieldValue(electionListenerManager, electionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
         ReflectionUtils.setFieldValue(electionListenerManager, "instanceNode", instanceNode);
         ReflectionUtils.setFieldValue(electionListenerManager, "serverNode", serverNode);

@@ -36,7 +36,7 @@ public final class JobShardingResult {
     /**
      * 作业分片单元.
      */
-    private final JobShardingUnit jobShardingUnit;
+    private final JobInstance jobInstance;
     
     /**
      * 分片项列表.

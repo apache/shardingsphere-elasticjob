@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
@@ -50,7 +50,7 @@ public final class ServerServiceTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        JobRegistry.getInstance().addJobInstanceId("test_job", "mockedIP@-@0");
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("mockedIP@-@0"));
         InstanceNode instanceNode = new InstanceNode("test_job");
         ServerNode serverNode = new ServerNode("test_job");
         ReflectionUtils.setFieldValue(serverNode, "ip", "mockedIP");
@@ -98,7 +98,7 @@ public final class ServerServiceTest {
         when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3", "host4"));
         when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Arrays.asList("host0@-@0", "host2@-@0", "host3@-@0", "host4@-@0"));
         when(jobNodeStorage.getJobNodeData("servers/host2")).thenReturn(ServerStatus.DISABLED.name());
-        assertThat(serverService.getAvailableShardingUnits(), is(Arrays.asList(new JobShardingUnit("host0@-@0"), new JobShardingUnit("host3@-@0"), new JobShardingUnit("host4@-@0"))));
+        assertThat(serverService.getAvailableShardingUnits(), is(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host3@-@0"), new JobInstance("host4@-@0"))));
     }
     
     @Test

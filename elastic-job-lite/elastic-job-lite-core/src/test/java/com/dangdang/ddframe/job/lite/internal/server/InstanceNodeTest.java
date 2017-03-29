@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public final class InstanceNodeTest {
     
     @BeforeClass
     public static void setUp() throws NoSuchFieldException {
-        JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         instanceNode = new InstanceNode("test_job");
     }
     

@@ -17,19 +17,15 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
-import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import com.google.common.base.Joiner;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.curator.test.TestingServer;
 
-import java.io.File;
-import java.io.IOException;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class EmbedTestingServer {
     
-    private static final int PORT = 3181;
+    private static final int PORT = 2181;
     
     private static volatile TestingServer testingServer;
     
@@ -38,27 +34,27 @@ final class EmbedTestingServer {
     }
     
     static void start() {
-        if (null != testingServer) {
-            return;
-        }
-        try {
-            testingServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
-            // CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-            RegExceptionHandler.handleException(ex);
-        } finally {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                
-                @Override
-                public void run() {
-                    try {
-                        testingServer.close();
-                    } catch (final IOException ex) {
-                        RegExceptionHandler.handleException(ex);
-                    }
-                }
-            });
-        }
+//        if (null != testingServer) {
+//            return;
+//        }
+//        try {
+//            testingServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
+//            // CHECKSTYLE:OFF
+//        } catch (final Exception ex) {
+//            // CHECKSTYLE:ON
+//            RegExceptionHandler.handleException(ex);
+//        } finally {
+//            Runtime.getRuntime().addShutdownHook(new Thread() {
+//                
+//                @Override
+//                public void run() {
+//                    try {
+//                        testingServer.close();
+//                    } catch (final IOException ex) {
+//                        RegExceptionHandler.handleException(ex);
+//                    }
+//                }
+//            });
+//        }
     }
 }

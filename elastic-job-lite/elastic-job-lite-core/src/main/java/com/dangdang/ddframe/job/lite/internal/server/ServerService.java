@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
@@ -80,12 +80,12 @@ public class ServerService {
      *
      * @return 可分片的单元列表
      */
-    public List<JobShardingUnit> getAvailableShardingUnits() {
-        List<JobShardingUnit> result = new LinkedList<>();
+    public List<JobInstance> getAvailableShardingUnits() {
+        List<JobInstance> result = new LinkedList<>();
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
-            JobShardingUnit shardingUnit = new JobShardingUnit(each);
+            JobInstance shardingUnit = new JobInstance(each);
             if (isServerEnabled(shardingUnit.getIp())) {
-                result.add(new JobShardingUnit(each));
+                result.add(new JobInstance(each));
             }
         }
         return result;

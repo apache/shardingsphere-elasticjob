@@ -180,9 +180,9 @@ public abstract class AbstractBaseStdJobTest {
             regCenter.persist("/" + jobName + "/servers/" + localHostService.getIp(), "");
         } else {
             assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(""));
-            assertThat(regCenter.get("/" + jobName + "/leader/election/host_instance"), is(localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstanceId(jobName)));
+            assertThat(regCenter.get("/" + jobName + "/leader/election/host_instance"), is(localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         }
-        assertThat(regCenter.get("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstanceId(jobName)), CoreMatchers.is(InstanceStatus.READY.name()));
+        assertThat(regCenter.get("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()), CoreMatchers.is(InstanceStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");
     }
     

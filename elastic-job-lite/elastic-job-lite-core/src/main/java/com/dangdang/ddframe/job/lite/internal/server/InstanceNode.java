@@ -49,7 +49,7 @@ public class InstanceNode {
      * @return 本地作业运行实例路径
      */
     public String getLocalInstanceNode() {
-        return String.format(INSTANCES, JobRegistry.getInstance().getJobInstanceId(jobName));
+        return String.format(INSTANCES, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
     }
     
     static String getInstanceNode(final String jobInstanceId) {
@@ -63,7 +63,7 @@ public class InstanceNode {
      * @return 是否为本地作业运行实例路径
      */
     public boolean isLocalInstancePath(final String path) {
-        return path.equals(jobNodePath.getFullPath(String.format(INSTANCES, JobRegistry.getInstance().getJobInstanceId(jobName))));
+        return path.equals(jobNodePath.getFullPath(String.format(INSTANCES, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())));
     }
     
     /**

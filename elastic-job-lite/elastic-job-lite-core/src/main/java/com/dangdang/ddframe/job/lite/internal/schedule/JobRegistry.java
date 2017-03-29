@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -36,7 +37,7 @@ public final class JobRegistry {
     
     private Map<String, JobScheduleController> schedulerMap = new ConcurrentHashMap<>();
     
-    private Map<String, String> jobInstanceIdMap = new ConcurrentHashMap<>();
+    private Map<String, JobInstance> jobInstanceMap = new ConcurrentHashMap<>();
     
     /**
      * 获取作业注册表实例.
@@ -85,22 +86,22 @@ public final class JobRegistry {
     }
     
     /**
-     * 添加作业实例主键.
+     * 添加作业实例.
      *
      * @param jobName 作业名称
-     * @param jobInstanceId 作业实例主键
+     * @param jobInstance 作业实例
      */
-    public void addJobInstanceId(final String jobName, final String jobInstanceId) {
-        jobInstanceIdMap.put(jobName, jobInstanceId);
+    public void addJobInstance(final String jobName, final JobInstance jobInstance) {
+        jobInstanceMap.put(jobName, jobInstance);
     }
     
     /**
-     * 获取作业实例主键.
+     * 获取作业运行实例.
      *
      * @param jobName 作业名称
-     * @return 作业实例主键
+     * @return 作业运行实例
      */
-    public String getJobInstanceId(final String jobName) {
-        return jobInstanceIdMap.get(jobName);
+    public JobInstance getJobInstance(final String jobName) {
+        return jobInstanceMap.get(jobName);
     }
 }

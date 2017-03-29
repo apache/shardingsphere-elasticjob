@@ -27,13 +27,13 @@ import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.google.common.base.Optional;
 import lombok.Setter;
 import org.quartz.Job;
@@ -48,7 +48,6 @@ import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Arrays;
 import java.util.Properties;
-import java.util.UUID;
 
 /**
  * 作业调度器.
@@ -70,8 +69,6 @@ public class JobScheduler {
     
     private final JobRegistry jobRegistry;
     
-    private final LocalHostService localHostService;
-    
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
         this(regCenter, liteJobConfig, new JobEventBus(), elasticJobListeners);
     }
@@ -86,24 +83,19 @@ public class JobScheduler {
         jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
         jobFacade = new LiteJobFacade(regCenter, jobName, Arrays.asList(elasticJobListeners), jobEventBus);
         jobRegistry = JobRegistry.getInstance();
-        localHostService = new LocalHostService();
     }
     
     /**
      * 初始化作业.
      */
     public void init() {
-        jobRegistry.addJobInstanceId(jobName, createJobInstanceId());
+        jobRegistry.addJobInstance(jobName, new JobInstance());
         jobExecutor.init();
         JobTypeConfiguration jobTypeConfig = jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig();
         JobScheduleController jobScheduleController = new JobScheduleController(
                 createScheduler(), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
         jobScheduleController.scheduleJob(jobTypeConfig.getCoreConfig().getCron());
         jobRegistry.addJobScheduleController(jobName, jobScheduleController);
-    }
-    
-    private String createJobInstanceId() {
-        return localHostService.getIp() + "@-@" + UUID.randomUUID().toString();
     }
     
     private JobDetail createJobDetail(final String jobClass) {

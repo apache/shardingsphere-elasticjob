@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService.LeaderElectionExecutionCallback;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
@@ -59,7 +60,7 @@ public final class LeaderElectionServiceTest {
         ReflectionUtils.setFieldValue(leaderElectionService, "serverService", serverService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
-        JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
     @Test

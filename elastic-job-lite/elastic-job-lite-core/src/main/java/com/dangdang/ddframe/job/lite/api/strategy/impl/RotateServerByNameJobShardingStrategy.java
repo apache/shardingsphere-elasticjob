@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.api.strategy.impl;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingUnit;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,17 +36,17 @@ public class RotateServerByNameJobShardingStrategy implements JobShardingStrateg
     private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
-    public Collection<JobShardingResult> sharding(final List<JobShardingUnit> jobShardingUnits, final JobShardingMetadata jobShardingMetadata) {
-        return averageAllocationJobShardingStrategy.sharding(rotateServerList(jobShardingUnits, jobShardingMetadata.getJobName()), jobShardingMetadata);
+    public Collection<JobShardingResult> sharding(final List<JobInstance> jobInstances, final JobShardingMetadata jobShardingMetadata) {
+        return averageAllocationJobShardingStrategy.sharding(rotateServerList(jobInstances, jobShardingMetadata.getJobName()), jobShardingMetadata);
     }
     
-    private List<JobShardingUnit> rotateServerList(final List<JobShardingUnit> shardingUnits, final String jobName) {
+    private List<JobInstance> rotateServerList(final List<JobInstance> shardingUnits, final String jobName) {
         int shardingUnitsSize = shardingUnits.size();
         int offset = Math.abs(jobName.hashCode()) % shardingUnitsSize;
         if (0 == offset) {
             return shardingUnits;
         }
-        List<JobShardingUnit> result = new ArrayList<>(shardingUnitsSize);
+        List<JobInstance> result = new ArrayList<>(shardingUnitsSize);
         for (int i = 0; i < shardingUnitsSize; i++) {
             int index = (i + offset) % shardingUnitsSize;
             result.add(shardingUnits.get(index));

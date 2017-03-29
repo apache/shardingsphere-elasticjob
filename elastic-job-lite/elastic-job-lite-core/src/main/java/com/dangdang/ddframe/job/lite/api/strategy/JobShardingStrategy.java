@@ -30,9 +30,9 @@ public interface JobShardingStrategy {
     /**
      * 作业分片.
      * 
-     * @param jobShardingUnits 所有参与分片的单元列表
+     * @param jobInstances 所有参与分片的单元列表
      * @param jobShardingMetadata 作业分片策略选项
      * @return 分片结果集合
      */
-    Collection<JobShardingResult> sharding(List<JobShardingUnit> jobShardingUnits, JobShardingMetadata jobShardingMetadata);
+    Collection<JobShardingResult> sharding(List<JobInstance> jobInstances, JobShardingMetadata jobShardingMetadata);
 }
