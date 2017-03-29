@@ -60,7 +60,7 @@ public final class ElectionListenerManagerTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
+        JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
         ReflectionUtils.setFieldValue(electionListenerManager, electionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
         ReflectionUtils.setFieldValue(electionListenerManager, "serverNode", serverNode);
         ReflectionUtils.setFieldValue(electionListenerManager, "serverOperationNode", serverOperationNode);
@@ -131,10 +131,10 @@ public final class ElectionListenerManagerTest {
     public void assertLeaderElectionJobListenerWhenJobShutdownAndIsLeader() {
         when(leaderElectionService.isLeader()).thenReturn(true);
         when(serverOperationNode.isServerDisabledPath("/test_job/server/mockedIP/operation/shutdown")).thenReturn(false);
-        when(serverNode.isLocalInstancePath("/test_job/server/mockedIP/instances/test_job_instance_id")).thenReturn(true);
+        when(serverNode.isLocalInstancePath("/test_job/server/mockedIP/instances/127.0.0.1@-@0")).thenReturn(true);
         electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/server/mockedIP/instances/test_job_instance_id", null,
-                "{\"serverStatus\":\"READY\",\"shutdown\":true}".getBytes())), "/test_job/server/mockedIP/instances/test_job_instance_id");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/server/mockedIP/instances/127.0.0.1@-@0", null,
+                "{\"serverStatus\":\"READY\",\"shutdown\":true}".getBytes())), "/test_job/server/mockedIP/instances/127.0.0.1@-@0");
         verify(leaderElectionService).removeLeader();
     }
 }

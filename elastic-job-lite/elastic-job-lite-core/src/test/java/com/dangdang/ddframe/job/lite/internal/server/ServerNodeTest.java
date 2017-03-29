@@ -33,24 +33,24 @@ public final class ServerNodeTest {
     
     @BeforeClass
     public static void setUp() throws NoSuchFieldException {
-        JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
+        JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
         serverNode = new ServerNode("test_job");
         ReflectionUtils.setFieldValue(serverNode, "ip", "host0");
     }
     
     @Test
     public void assertGetLocalInstanceNode() {
-        assertThat(serverNode.getLocalInstanceNode(), is("servers/host0/instances/test_job_instance_id"));
+        assertThat(serverNode.getLocalInstanceNode(), is("servers/host0/instances/127.0.0.1@-@0"));
     }
     
     @Test
     public void assertGetInstanceNode() {
-        assertThat(ServerNode.getInstanceNode("host0", "test_job_instance_id"), is("servers/host0/instances/test_job_instance_id"));
+        assertThat(ServerNode.getInstanceNode("host0", "127.0.0.1@-@0"), is("servers/host0/instances/127.0.0.1@-@0"));
     }
     
     @Test
     public void assertIsLocalInstancePath() {
-        assertTrue(serverNode.isLocalInstancePath("/test_job/servers/host0/instances/test_job_instance_id"));
+        assertTrue(serverNode.isLocalInstancePath("/test_job/servers/host0/instances/127.0.0.1@-@0"));
     }
     
     @Test
@@ -60,12 +60,12 @@ public final class ServerNodeTest {
     
     @Test
     public void assertIsInstancePath() {
-        assertTrue(serverNode.isInstancePath("/test_job/servers/host0/instances/test_job_instance_id"));
+        assertTrue(serverNode.isInstancePath("/test_job/servers/host0/instances/127.0.0.1@-@0"));
     }
     
     @Test
     public void assertIsNotInstancePath() {
-        assertFalse(serverNode.isInstancePath("/test_job/other/host0/instances/test_job_instance_id"));
-        assertFalse(serverNode.isInstancePath("/test_job/servers/host0/other/test_job_instance_id"));
+        assertFalse(serverNode.isInstancePath("/test_job/other/host0/instances/127.0.0.1@-@0"));
+        assertFalse(serverNode.isInstancePath("/test_job/servers/host0/other/127.0.0.1@-@0"));
     }
 }

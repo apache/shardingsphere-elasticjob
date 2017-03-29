@@ -59,7 +59,7 @@ public final class LeaderElectionServiceTest {
         ReflectionUtils.setFieldValue(leaderElectionService, "serverService", serverService);
         when(localHostService.getIp()).thenReturn("mockedIP");
         when(localHostService.getHostName()).thenReturn("mockedHostName");
-        JobRegistry.getInstance().addJobInstanceId("test_job", "test_job_instance_id");
+        JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
     }
     
     @Test
@@ -79,7 +79,7 @@ public final class LeaderElectionServiceTest {
         when(jobNodeStorage.isJobNodeExisted("leader/election/host_instance")).thenReturn(true);
         leaderElectionService.new LeaderElectionExecutionCallback(false).execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/election/host_instance");
-        verify(jobNodeStorage, times(0)).fillEphemeralJobNode("leader/election/host_instance", "mockedIP_test_job_instance_id");
+        verify(jobNodeStorage, times(0)).fillEphemeralJobNode("leader/election/host_instance", "mockedIP_127.0.0.1@-@0");
     }
     
     @Test
@@ -88,7 +88,7 @@ public final class LeaderElectionServiceTest {
         when(serverService.isAvailableServer("mockedIP")).thenReturn(true);
         leaderElectionService.new LeaderElectionExecutionCallback(false).execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/election/host_instance");
-        verify(jobNodeStorage).fillEphemeralJobNode("leader/election/host_instance", "mockedIP_test_job_instance_id");
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/election/host_instance", "mockedIP_127.0.0.1@-@0");
     }
     
     @Test
@@ -97,7 +97,7 @@ public final class LeaderElectionServiceTest {
         when(serverService.isAvailableServer("mockedIP")).thenReturn(false);
         leaderElectionService.new LeaderElectionExecutionCallback(false).execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/election/host_instance");
-        verify(jobNodeStorage, times(0)).fillEphemeralJobNode("leader/election/host_instance", "mockedIP_test_job_instance_id");
+        verify(jobNodeStorage, times(0)).fillEphemeralJobNode("leader/election/host_instance", "mockedIP_127.0.0.1@-@0");
     }
     
     @Test
@@ -106,14 +106,14 @@ public final class LeaderElectionServiceTest {
         when(serverService.isAvailableServer("mockedIP")).thenReturn(false);
         leaderElectionService.new LeaderElectionExecutionCallback(true).execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/election/host_instance");
-        verify(jobNodeStorage).fillEphemeralJobNode("leader/election/host_instance", "mockedIP_test_job_instance_id");
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/election/host_instance", "mockedIP_127.0.0.1@-@0");
     }
     
     @Test
     public void assertIsLeader() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/host_instance")).thenReturn(false, true);
         when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("mockedIP"));
-        when(jobNodeStorage.getJobNodeData("leader/election/host_instance")).thenReturn("mockedIP_test_job_instance_id");
+        when(jobNodeStorage.getJobNodeData("leader/election/host_instance")).thenReturn("mockedIP_127.0.0.1@-@0");
         assertTrue(leaderElectionService.isLeader());
     }
     

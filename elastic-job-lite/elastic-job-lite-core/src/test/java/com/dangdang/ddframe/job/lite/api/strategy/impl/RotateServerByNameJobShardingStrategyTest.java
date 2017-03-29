@@ -36,33 +36,33 @@ public final class RotateServerByNameJobShardingStrategyTest {
     @Test
     public void assertSharding1() {
         Collection<JobShardingResult> expected = Arrays.asList(
-                new JobShardingResult(new JobShardingUnit("host1", "test_job_instance_id"), Collections.singletonList(0)),
-                new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Collections.singletonList(1)),
-                new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Collections.<Integer>emptyList()));
+                new JobShardingResult(new JobShardingUnit("host1", "127.0.0.1@-@0"), Collections.singletonList(0)),
+                new JobShardingResult(new JobShardingUnit("host2", "127.0.0.1@-@0"), Collections.singletonList(1)),
+                new JobShardingResult(new JobShardingUnit("host0", "127.0.0.1@-@0"), Collections.<Integer>emptyList()));
         assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(
-                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")), 
+                new JobShardingUnit("host0", "127.0.0.1@-@0"), new JobShardingUnit("host1", "127.0.0.1@-@0"), new JobShardingUnit("host2", "127.0.0.1@-@0")), 
                 new JobShardingMetadata("1", 2)), is(expected));
     }
     
     @Test
     public void assertSharding2() {
         Collection<JobShardingResult> expected = Arrays.asList(
-                new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Collections.singletonList(0)),
-                new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Collections.singletonList(1)),
-                new JobShardingResult(new JobShardingUnit("host1", "test_job_instance_id"), Collections.<Integer>emptyList()));
+                new JobShardingResult(new JobShardingUnit("host2", "127.0.0.1@-@0"), Collections.singletonList(0)),
+                new JobShardingResult(new JobShardingUnit("host0", "127.0.0.1@-@0"), Collections.singletonList(1)),
+                new JobShardingResult(new JobShardingUnit("host1", "127.0.0.1@-@0"), Collections.<Integer>emptyList()));
         assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(
-                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")),
+                new JobShardingUnit("host0", "127.0.0.1@-@0"), new JobShardingUnit("host1", "127.0.0.1@-@0"), new JobShardingUnit("host2", "127.0.0.1@-@0")),
                 new JobShardingMetadata("2", 2)), is(expected));
     }
     
     @Test
     public void assertSharding3() {
         Collection<JobShardingResult> expected = Arrays.asList(
-                new JobShardingResult(new JobShardingUnit("host0", "test_job_instance_id"), Collections.singletonList(0)),
-                new JobShardingResult(new JobShardingUnit("host1", "test_job_instance_id"), Collections.singletonList(1)),
-                new JobShardingResult(new JobShardingUnit("host2", "test_job_instance_id"), Collections.<Integer>emptyList()));
+                new JobShardingResult(new JobShardingUnit("host0", "127.0.0.1@-@0"), Collections.singletonList(0)),
+                new JobShardingResult(new JobShardingUnit("host1", "127.0.0.1@-@0"), Collections.singletonList(1)),
+                new JobShardingResult(new JobShardingUnit("host2", "127.0.0.1@-@0"), Collections.<Integer>emptyList()));
         assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(
-                new JobShardingUnit("host0", "test_job_instance_id"), new JobShardingUnit("host1", "test_job_instance_id"), new JobShardingUnit("host2", "test_job_instance_id")),
+                new JobShardingUnit("host0", "127.0.0.1@-@0"), new JobShardingUnit("host1", "127.0.0.1@-@0"), new JobShardingUnit("host2", "127.0.0.1@-@0")),
                 new JobShardingMetadata("3", 2)), is(expected));
     }
 }
