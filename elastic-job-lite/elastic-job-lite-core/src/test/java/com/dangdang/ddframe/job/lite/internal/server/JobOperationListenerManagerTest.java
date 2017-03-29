@@ -91,9 +91,8 @@ public final class JobOperationListenerManagerTest {
     public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsNotPausedManually() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-        when(serverService.isLocalhostServerEnabled()).thenReturn(true);
+        when(serverService.isServerEnabled(new LocalHostService().getIp())).thenReturn(true);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
-        verify(serverService).isLocalhostServerEnabled();
         verify(serverService).persistServerOnline(true);
         verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
         verify(jobScheduleController).resumeJob();
@@ -176,9 +175,8 @@ public final class JobOperationListenerManagerTest {
     @Test
     public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathAndAdd() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/servers/" + ip + "/instances/127.0.0.1@-@0", null, "".getBytes())),
-                "/test_job/servers/" + ip + "/instances/127.0.0.1@-@0");
+        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(
+                null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/instances/127.0.0.1@-@0", null, "".getBytes())), "/test_job/instances/127.0.0.1@-@0");
         verify(jobScheduleController).shutdown();
         verify(serverService).removeInstanceStatus();
     }

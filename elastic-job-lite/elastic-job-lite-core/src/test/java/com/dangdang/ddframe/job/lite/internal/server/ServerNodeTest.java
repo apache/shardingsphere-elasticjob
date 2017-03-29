@@ -17,55 +17,26 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import org.junit.BeforeClass;
+import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Test;
-import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public final class ServerNodeTest {
     
-    private static ServerNode serverNode;
+    private LocalHostService localHostService = new LocalHostService();
     
-    @BeforeClass
-    public static void setUp() throws NoSuchFieldException {
-        JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
-        serverNode = new ServerNode("test_job");
-        ReflectionUtils.setFieldValue(serverNode, "ip", "host0");
+    private ServerNode serverNode = new ServerNode("test_job");
+    
+    @Test
+    public void assertGetServerNode() {
+        assertThat(serverNode.getServerNode("host0"), is("servers/host0"));
     }
     
     @Test
-    public void assertGetLocalInstanceNode() {
-        assertThat(serverNode.getLocalInstanceNode(), is("servers/host0/instances/127.0.0.1@-@0"));
-    }
-    
-    @Test
-    public void assertGetInstanceNode() {
-        assertThat(ServerNode.getInstanceNode("host0", "127.0.0.1@-@0"), is("servers/host0/instances/127.0.0.1@-@0"));
-    }
-    
-    @Test
-    public void assertIsLocalInstancePath() {
-        assertTrue(serverNode.isLocalInstancePath("/test_job/servers/host0/instances/127.0.0.1@-@0"));
-    }
-    
-    @Test
-    public void assertIsNotLocalInstancePath() {
-        assertFalse(serverNode.isLocalInstancePath("/test_job/servers/host1/instances/other_job_instance_id"));
-    }
-    
-    @Test
-    public void assertIsInstancePath() {
-        assertTrue(serverNode.isInstancePath("/test_job/servers/host0/instances/127.0.0.1@-@0"));
-    }
-    
-    @Test
-    public void assertIsNotInstancePath() {
-        assertFalse(serverNode.isInstancePath("/test_job/other/host0/instances/127.0.0.1@-@0"));
-        assertFalse(serverNode.isInstancePath("/test_job/servers/host0/other/127.0.0.1@-@0"));
+    public void assertIsLocalServerPath() {
+        assertTrue(serverNode.isLocalServerPath("/test_job/servers/" + localHostService.getIp()));
     }
 }

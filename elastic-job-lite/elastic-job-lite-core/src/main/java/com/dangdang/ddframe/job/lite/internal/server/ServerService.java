@@ -37,16 +37,16 @@ public class ServerService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    private final ServerNode serverNode;
+    private final InstanceNode instanceNode;
     
-    private final ServerOperationNode serverOperationNode;
+    private final ServerNode serverNode;
     
     private final LocalHostService localHostService = new LocalHostService();
     
     public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        instanceNode = new InstanceNode(jobName);
         serverNode = new ServerNode(jobName);
-        serverOperationNode = new ServerOperationNode(jobName);
     }
     
     /**
@@ -55,8 +55,8 @@ public class ServerService {
      * @param enabled 作业是否启用
      */
     public void persistServerOnline(final boolean enabled) {
-        jobNodeStorage.fillJobNode(serverOperationNode.getServerNode(), enabled ? "" : ServerStatus.DISABLED.name());
-        jobNodeStorage.fillEphemeralJobNode(serverNode.getLocalInstanceNode(), InstanceStatus.READY.name());
+        jobNodeStorage.fillJobNode(serverNode.getServerNode(), enabled ? "" : ServerStatus.DISABLED.name());
+        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstanceNode(), InstanceStatus.READY.name());
     }
     
     /**
@@ -65,31 +65,14 @@ public class ServerService {
      * @param status 服务器状态
      */
     public void updateInstanceStatus(final InstanceStatus status) {
-        jobNodeStorage.updateJobNode(serverNode.getLocalInstanceNode(), status.name());
+        jobNodeStorage.updateJobNode(instanceNode.getLocalInstanceNode(), status.name());
     }
     
     /**
      * 删除运行实例状态.
      */
     public void removeInstanceStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(serverNode.getLocalInstanceNode());
-    }
-    
-    /**
-     * 获取所有分片单元列表.
-     *
-     * @return 所有分片单元列表
-     */
-    public List<JobShardingUnit> getAllShardingUnits() {
-        List<String> servers = getAllServers();
-        List<JobShardingUnit> result = new LinkedList<>();
-        for (String each : servers) {
-            List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + each + "/" + ServerNode.INSTANCES_ROOT);
-            for (String jobInstanceId : jobInstances) {
-                result.add(new JobShardingUnit(each, jobInstanceId));
-            }
-        }
-        return result;
+        jobNodeStorage.removeJobNodeIfExisted(instanceNode.getLocalInstanceNode());
     }
     
     /**
@@ -98,26 +81,11 @@ public class ServerService {
      * @return 可分片的单元列表
      */
     public List<JobShardingUnit> getAvailableShardingUnits() {
-        List<String> servers = getAllServers();
         List<JobShardingUnit> result = new LinkedList<>();
-        for (String each : servers) {
-            List<String> jobInstances = getAvailableInstances(each);
-            for (String jobInstanceId : jobInstances) {
-                result.add(new JobShardingUnit(each, jobInstanceId));
-            }
-        }
-        return result;
-    }
-    
-    private List<String> getAvailableInstances(final String ip) {
-        List<String> result = new LinkedList<>();
-        if (ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverOperationNode.getServerNode(ip)))) {
-            return result;
-        }
-        List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
-        for (String each : jobInstances) {
-            if (jobNodeStorage.isJobNodeExisted(ServerNode.getInstanceNode(ip, each))) {
-                result.add(each);
+        for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
+            JobShardingUnit shardingUnit = new JobShardingUnit(each);
+            if (isServerEnabled(shardingUnit.getIp())) {
+                result.add(new JobShardingUnit(each));
             }
         }
         return result;
@@ -148,12 +116,30 @@ public class ServerService {
     /**
      * 判断作业服务器是否可用.
      * 
-     * @param ip 作业服务器IP地址.
+     * @param ip 作业服务器IP地址
      * @return 作业服务器是否可用
      */
     public boolean isAvailableServer(final String ip) {
-        return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverOperationNode.getServerNode(ip)))
-                && !jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT).isEmpty();
+        return isServerEnabled(ip) && hasOnlineInstances(ip);
+    }
+    
+    /**
+     * 判断服务器是否启用.
+     *
+     * @param ip 作业服务器IP地址
+     * @return 服务器是否启用
+     */
+    public boolean isServerEnabled(final String ip) {
+        return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip)));
+    }
+    
+    private boolean hasOnlineInstances(final String ip) {
+        for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
+            if (each.startsWith(ip)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -162,27 +148,7 @@ public class ServerService {
      * @return 当前服务器是否是等待执行的状态
      */
     public boolean isLocalhostServerReady() {
-        return isAvailableServer(localHostService.getIp()) && jobNodeStorage.isJobNodeExisted(serverNode.getLocalInstanceNode())
-                && InstanceStatus.READY.name().equals(jobNodeStorage.getJobNodeDataDirectly(serverNode.getLocalInstanceNode()));
-    }
-    
-    /**
-     * 判断当前服务器是否是启用状态.
-     *
-     * @return 当前服务器是否是启用状态
-     */
-    public boolean isLocalhostServerEnabled() {
-        return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverOperationNode.getServerNode()));
-    }
-    
-    /**
-     * 判断作业节点是否离线.
-     * 
-     * @param ip 作业服务器IP
-     * @param jobInstanceId 作业实例主键
-     * @return 作业节点是否离线
-     */
-    public boolean isOffline(final String ip, final String jobInstanceId) {
-        return !jobNodeStorage.isJobNodeExisted(ServerNode.getInstanceNode(ip, jobInstanceId));
+        return isAvailableServer(localHostService.getIp()) && jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstanceNode())
+                && InstanceStatus.READY.name().equals(jobNodeStorage.getJobNodeDataDirectly(instanceNode.getLocalInstanceNode()));
     }
 }

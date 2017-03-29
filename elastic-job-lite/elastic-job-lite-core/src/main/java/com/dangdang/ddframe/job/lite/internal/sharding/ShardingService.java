@@ -180,12 +180,8 @@ public class ShardingService {
      * 
      * @return 是包含有分片节点的不在线服务器
      */
+    // TODO 删除
     public boolean hasShardingInfoInOfflineServers() {
-        for (int i = 0; i < configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount(); i++) {
-            if (serverService.isOffline(jobNodeStorage.getJobNodeDataDirectly(ExecutionNode.getIpNode(i)), jobNodeStorage.getJobNodeDataDirectly(ExecutionNode.getInstanceNode(i)))) {
-                return true;
-            }
-        }
         return false;
     }
     
@@ -199,7 +195,7 @@ public class ShardingService {
             for (JobShardingResult each : shardingResults) {
                 for (int shardingItem : each.getShardingItems()) {
                     curatorTransactionFinal.create().withMode(CreateMode.EPHEMERAL)
-                            .forPath(jobNodePath.getFullPath(ExecutionNode.getIpNode(shardingItem)), each.getJobShardingUnit().getServerIp().getBytes()).and();
+                            .forPath(jobNodePath.getFullPath(ExecutionNode.getIpNode(shardingItem)), each.getJobShardingUnit().getIp().getBytes()).and();
                     curatorTransactionFinal.create().withMode(CreateMode.EPHEMERAL)
                             .forPath(jobNodePath.getFullPath(ExecutionNode.getInstanceNode(shardingItem)), each.getJobShardingUnit().getJobInstanceId().getBytes()).and();
                 }

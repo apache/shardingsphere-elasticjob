@@ -19,11 +19,12 @@ package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
+import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
-import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNode;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.Setter;
 import org.apache.curator.framework.CuratorFramework;
@@ -42,9 +43,11 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ConfigurationNode configNode;
     
+    private final InstanceNode instanceNode;
+    
     private final ServerNode serverNode;
     
-    private final ServerOperationNode serverOperationNode;
+    private final ExecutionNode executionNode;
     
     @Setter
     private int currentShardingTotalCount;
@@ -54,8 +57,9 @@ public class ShardingListenerManager extends AbstractListenerManager {
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         configNode = new ConfigurationNode(jobName);
+        instanceNode = new InstanceNode(jobName);
         serverNode = new ServerNode(jobName);
-        serverOperationNode = new ServerOperationNode(jobName);
+        executionNode = new ExecutionNode(jobName);
     }
     
     @Override
@@ -83,9 +87,21 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (serverNode.isInstancePath(path) && TreeCacheEvent.Type.NODE_UPDATED != event.getType() || serverOperationNode.isServerPath(path)) {
+            if (isInstanceChange(event, path) || isServerChange(path) || isShardingChange(event, path)) {
                 shardingService.setReshardingFlag();
             }
+        }
+        
+        private boolean isInstanceChange(final TreeCacheEvent event, final String path) {
+            return instanceNode.isInstancePath(path) && TreeCacheEvent.Type.NODE_UPDATED != event.getType();
+        }
+        
+        private boolean isServerChange(final String path) {
+            return serverNode.isServerPath(path);
+        }
+        
+        private boolean isShardingChange(final TreeCacheEvent event, final String path) {
+            return executionNode.isInstanceNode(path) && TreeCacheEvent.Type.NODE_REMOVED == event.getType();
         }
     }
 }

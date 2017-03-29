@@ -34,7 +34,9 @@ public final class ExecutionNode {
     
     public static final String IP = ROOT + "/%s/ip";
     
-    public static final String INSTANCE = ROOT + "/%s/instance";
+    static final String INSTANCE_APPENDIX = "instance";
+    
+    public static final String INSTANCE = ROOT + "/%s/" + INSTANCE_APPENDIX;
     
     static final String RUNNING_APPENDIX = "running";
     
@@ -62,6 +64,10 @@ public final class ExecutionNode {
     
     public static String getInstanceNode(final int item) {
         return String.format(INSTANCE, item);
+    }
+    
+    public boolean isInstanceNode(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(ROOT)) && path.endsWith(INSTANCE_APPENDIX);
     }
     
     /**

@@ -17,71 +17,59 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 
+import java.util.regex.Pattern;
+
 /**
- * Elastic Job服务器节点名称的常量类.
+ * Elastic Job服务器节点常量类.
  * 
  * @author zhangliang
  */
 public class ServerNode {
     
     /**
-     * 作业服务器信息根节点.
+     * 服务器信息根节点.
      */
     public static final String ROOT = "servers";
     
-    /**
-     * 作业实例信息根节点.
-     */
-    public static final String INSTANCES_ROOT = "instances";
-    
-    static final String INSTANCES = ROOT + "/%s/" + INSTANCES_ROOT + "/%s";
-    
-    private final String jobName;
+    private static final String SERVERS = ROOT + "/%s";
     
     private final String ip;
     
     private final JobNodePath jobNodePath;
     
     public ServerNode(final String jobName) {
-        this.jobName = jobName;
         ip = new LocalHostService().getIp();
         jobNodePath = new JobNodePath(jobName);
     }
     
-    /**
-     * 获取本地作业运行实例路径.
-     *
-     * @return 本地作业运行实例路径
-     */
-    public String getLocalInstanceNode() {
-        return String.format(INSTANCES, ip, JobRegistry.getInstance().getJobInstanceId(jobName));
+    String getServerNode() {
+        return getServerNode(ip);
     }
     
-    static String getInstanceNode(final String ip, final String jobInstanceId) {
-        return String.format(INSTANCES, ip, jobInstanceId);
+    String getServerNode(final String ip) {
+        return String.format(SERVERS, ip);
     }
     
     /**
-     * 判断给定路径是否为本地作业运行实例路径.
+     * 判断给定路径是否为作业服务器路径.
      *
      * @param path 待判断的路径
-     * @return 是否为本地作业运行实例路径
+     * @return 是否为作业服务器路径
      */
-    public boolean isLocalInstancePath(final String path) {
-        return path.equals(jobNodePath.getFullPath(String.format(INSTANCES, ip, JobRegistry.getInstance().getJobInstanceId(jobName))));
+    public boolean isLocalServerPath(final String path) {
+        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, ip)));
     }
     
     /**
-     * 判断给定路径是否为作业运行实例路径.
+     * 判断给定路径是否为作业服务器路径.
      *
      * @param path 待判断的路径
-     * @return 是否为作业运行实例路径
+     * @return 是否为作业服务器路径
      */
-    public boolean isInstancePath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.contains(INSTANCES_ROOT);
+    public boolean isServerPath(final String path) {
+        return Pattern.compile(jobNodePath.getFullPath(ServerNode.ROOT) + "/" + LocalHostService.IP_REGEX).matcher(path).matches();
     }
 }

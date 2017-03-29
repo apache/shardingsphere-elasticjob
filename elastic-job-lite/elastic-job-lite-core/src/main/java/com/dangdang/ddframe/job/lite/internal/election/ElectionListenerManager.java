@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.lite.internal.election;
 
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
-import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -44,17 +44,17 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     private final ElectionNode electionNode;
     
-    private final ServerNode serverNode;
+    private final InstanceNode instanceNode;
     
-    private final ServerOperationNode serverOperationNode;
+    private final ServerNode serverNode;
     
     public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         leaderElectionService = new LeaderElectionService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         electionNode = new ElectionNode(jobName);
+        instanceNode = new InstanceNode(jobName);
         serverNode = new ServerNode(jobName);
-        serverOperationNode = new ServerOperationNode(jobName);
     }
     
     @Override
@@ -94,7 +94,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
             }
             
             private boolean isServerEnabled() {
-                return serverOperationNode.isLocalServerPath(path) && !ServerStatus.DISABLED.name().equals(new String(event.getData().getData()));
+                return serverNode.isLocalServerPath(path) && !ServerStatus.DISABLED.name().equals(new String(event.getData().getData()));
             }
             
             boolean isServerOff() {
@@ -102,11 +102,11 @@ public class ElectionListenerManager extends AbstractListenerManager {
             }
             
             private boolean isServerDisabled() {
-                return serverOperationNode.isLocalServerPath(path) && ServerStatus.DISABLED.name().equals(new String(event.getData().getData()));
+                return serverNode.isLocalServerPath(path) && ServerStatus.DISABLED.name().equals(new String(event.getData().getData()));
             }
             
             private boolean isServerShutdown() {
-                return serverNode.isLocalInstancePath(path) && Type.NODE_REMOVED == event.getType();
+                return instanceNode.isLocalInstancePath(path) && Type.NODE_REMOVED == event.getType();
             }
         }
     }

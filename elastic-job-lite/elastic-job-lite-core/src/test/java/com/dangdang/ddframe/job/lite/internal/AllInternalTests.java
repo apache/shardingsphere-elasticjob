@@ -45,8 +45,8 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListenerTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceNodeTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNodeTest;
-import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNodeTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingServiceTest;
@@ -70,10 +70,10 @@ import org.junit.runners.Suite.SuiteClasses;
     ElectionNodeTest.class,
     ElectionListenerManagerTest.class, 
     ServerServiceTest.class, 
-    ServerNodeTest.class,
+    InstanceNodeTest.class,
     JobOperationListenerManagerTest.class, 
     ShardingServiceTest.class, 
-    ServerOperationNodeTest.class, 
+    ServerNodeTest.class, 
     ShardingListenerManagerTest.class, 
     ExecutionContextServiceTest.class, 
     ExecutionServiceTest.class, 

@@ -53,7 +53,6 @@ import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -166,7 +165,6 @@ public abstract class AbstractBaseStdJobTest {
     
     protected void assertRegCenterCommonInfoWithDisabled() {
         assertRegCenterCommonInfo();
-        assertFalse(leaderElectionService.isLeader());
     }
     
     private void assertRegCenterCommonInfo() {
@@ -179,12 +177,12 @@ public abstract class AbstractBaseStdJobTest {
             while (null != regCenter.get("/" + jobName + "/leader/election/host_instance")) {
                 BlockUtils.waitingShortTime();
             }
+            regCenter.persist("/" + jobName + "/servers/" + localHostService.getIp(), "");
         } else {
             assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(""));
             assertThat(regCenter.get("/" + jobName + "/leader/election/host_instance"), is(localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstanceId(jobName)));
         }
-        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/instances/" + JobRegistry.getInstance().getJobInstanceId(jobName)), 
-                CoreMatchers.is(InstanceStatus.READY.name()));
+        assertThat(regCenter.get("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstanceId(jobName)), CoreMatchers.is(InstanceStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");
     }
     

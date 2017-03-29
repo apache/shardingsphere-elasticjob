@@ -19,8 +19,8 @@ package com.dangdang.ddframe.job.lite.internal.election;
 
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager.LeaderElectionJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
-import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -44,10 +44,10 @@ public final class ElectionListenerManagerTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private ServerNode serverNode;
+    private InstanceNode instanceNode;
     
     @Mock
-    private ServerOperationNode serverOperationNode;
+    private ServerNode serverNode;
     
     @Mock
     private LeaderElectionService leaderElectionService;
@@ -62,8 +62,8 @@ public final class ElectionListenerManagerTest {
         MockitoAnnotations.initMocks(this);
         JobRegistry.getInstance().addJobInstanceId("test_job", "127.0.0.1@-@0");
         ReflectionUtils.setFieldValue(electionListenerManager, electionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
+        ReflectionUtils.setFieldValue(electionListenerManager, "instanceNode", instanceNode);
         ReflectionUtils.setFieldValue(electionListenerManager, "serverNode", serverNode);
-        ReflectionUtils.setFieldValue(electionListenerManager, "serverOperationNode", serverOperationNode);
         ReflectionUtils.setFieldValue(electionListenerManager, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(electionListenerManager, "serverService", serverService);
     }
@@ -130,7 +130,7 @@ public final class ElectionListenerManagerTest {
     @Test
     public void assertLeaderElectionJobListenerWhenJobShutdownAndIsLeader() {
         when(leaderElectionService.isLeader()).thenReturn(true);
-        when(serverNode.isLocalInstancePath("/test_job/server/mockedIP/instances/127.0.0.1@-@0")).thenReturn(true);
+        when(instanceNode.isLocalInstancePath("/test_job/server/mockedIP/instances/127.0.0.1@-@0")).thenReturn(true);
         electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/server/mockedIP/instances/127.0.0.1@-@0", null,
                 "READY".getBytes())), "/test_job/server/mockedIP/instances/127.0.0.1@-@0");

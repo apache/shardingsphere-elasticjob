@@ -114,16 +114,23 @@ public final class ShardingListenerManagerTest {
     }
     
     @Test
-    public void assertListenServersChangedJobListenerWhenIsServerStatusPathAndAdd() {
+    public void assertListenServersChangedJobListenerWhenIsInstanceChange() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/instances", null, "".getBytes())), "/test_job/servers/" + ip + "/instances");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/instances/xxx", null, "".getBytes())), "/test_job/instances/xxx");
         verify(shardingService).setReshardingFlag();
     }
     
     @Test
-    public void assertListenServersChangedJobListenerWhenIsServerStatusPathButUpdateAndIsServerDisabledPath() {
+    public void assertListenServersChangedJobListenerWhenIsServerChange() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip, null, "".getBytes())), "/test_job/servers/" + ip);
+        verify(shardingService).setReshardingFlag();
+    }
+    
+    @Test
+    public void assertListenServersChangedJobListenerWhenIsShardingChange() {
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
+                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/instance", null, "".getBytes())), "/test_job/execution/0/instance");
         verify(shardingService).setReshardingFlag();
     }
 }
