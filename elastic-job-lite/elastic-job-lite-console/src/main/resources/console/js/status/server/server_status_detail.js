@@ -5,6 +5,7 @@ $(function() {
     bindTriggerButtons();
     bindShutdownButtons();
     bindRemoveButtons();
+    renderBreadCrumbMenu();
 });
 
 function renderJobs() {
@@ -129,5 +130,11 @@ function bindRemoveButtons() {
     });
     $(document).on("click", "button[operation='remove']", function(event) {
         $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
+    });
+}
+
+function renderBreadCrumbMenu() {
+    $("#breadcrumb-server").click(function() {
+        $("#content").load("html/status/server/servers_status_overview.html");
     });
 }

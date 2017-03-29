@@ -15,9 +15,14 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.repository;
+package com.dangdang.ddframe.job.lite.console.repository.impl;
 
-import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfigurations;
+import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
+import com.dangdang.ddframe.job.lite.console.repository.ConfigurationsXmlRepository;
 
-public interface DataSourceConfigurationsXmlRepository extends XmlRepository<DataSourceConfigurations> {
+public class ConfigurationsXmlRepositoryImpl extends AbstractXmlRepositoryImpl<GlobalConfiguration> implements ConfigurationsXmlRepository {
+    
+    public ConfigurationsXmlRepositoryImpl(String fileName) {
+        super(fileName, GlobalConfiguration.class);
+    }
 }
