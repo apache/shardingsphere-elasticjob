@@ -38,8 +38,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    private final CoordinatorRegistryCenter regCenter;
-    
     private final ServerNode serverNode;
     
     private final ServerService serverService;
@@ -51,7 +49,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     public JobOperationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
-        this.regCenter = regCenter;
         serverNode = new ServerNode(jobName);
         serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);

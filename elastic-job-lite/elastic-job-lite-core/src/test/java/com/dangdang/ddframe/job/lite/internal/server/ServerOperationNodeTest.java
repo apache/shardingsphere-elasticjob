@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -32,19 +31,12 @@ public final class ServerOperationNodeTest {
     private ServerOperationNode serverOperationNode = new ServerOperationNode("test_job");
     
     @Test
-    public void assertGetDisabledNode() {
-        assertThat(serverOperationNode.getDisabledNode("host0"), is("servers/host0/operation/disabled"));
+    public void assertGetServerNode() {
+        assertThat(serverOperationNode.getServerNode("host0"), is("servers/host0"));
     }
     
     @Test
-    public void assertIsLocalServerDisabledPath() {
-        assertTrue(serverOperationNode.isLocalServerDisabledPath("/test_job/servers/" + localHostService.getIp() + "/operation/disabled"));
-    }
-    
-    @Test
-    public void assertIsServerDisabledPath() {
-        assertTrue(serverOperationNode.isServerDisabledPath("/test_job/servers/host0/operation/disabled"));
-        assertFalse(serverOperationNode.isServerDisabledPath("/otherJob/servers/host0/operation/status"));
-        assertFalse(serverOperationNode.isServerDisabledPath("/test_job/servers/host0/operation/status"));
+    public void assertIsLocalServerPath() {
+        assertTrue(serverOperationNode.isLocalServerPath("/test_job/servers/" + localHostService.getIp()));
     }
 }

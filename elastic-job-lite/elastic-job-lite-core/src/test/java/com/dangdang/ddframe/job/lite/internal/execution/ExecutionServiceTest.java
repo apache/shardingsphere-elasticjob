@@ -25,8 +25,8 @@ import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
-import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Before;
@@ -101,7 +101,7 @@ public final class ExecutionServiceTest {
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
         executionService.registerJobCompleted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
         verify(configService).load(true);
-        verify(serverService, times(0)).updateServerStatus(ServerStatus.READY);
+        verify(serverService, times(0)).updateInstanceStatus(InstanceStatus.READY);
     }
     
     @Test
@@ -109,7 +109,7 @@ public final class ExecutionServiceTest {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.registerJobCompleted(getShardingContext());
-        verify(serverService).updateServerStatus(ServerStatus.READY);
+        verify(serverService).updateInstanceStatus(InstanceStatus.READY);
         verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/completed");
         verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/completed");
         verify(jobNodeStorage).createJobNodeIfNeeded("execution/2/completed");

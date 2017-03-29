@@ -130,7 +130,6 @@ public final class ElectionListenerManagerTest {
     @Test
     public void assertLeaderElectionJobListenerWhenJobShutdownAndIsLeader() {
         when(leaderElectionService.isLeader()).thenReturn(true);
-        when(serverOperationNode.isServerDisabledPath("/test_job/server/mockedIP/operation/shutdown")).thenReturn(false);
         when(serverNode.isLocalInstancePath("/test_job/server/mockedIP/instances/127.0.0.1@-@0")).thenReturn(true);
         electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/server/mockedIP/instances/127.0.0.1@-@0", null,

@@ -28,7 +28,6 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.Setter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
  * 分片监听管理器.
@@ -84,17 +83,9 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (isServersCrashed(event, path) || serverOperationNode.isServerDisabledPath(path) || isServersShutdown(event, path)) {
+            if (serverNode.isInstancePath(path) && TreeCacheEvent.Type.NODE_UPDATED != event.getType() || serverOperationNode.isServerPath(path)) {
                 shardingService.setReshardingFlag();
             }
-        }
-        
-        private boolean isServersCrashed(final TreeCacheEvent event, final String path) {
-            return serverNode.isInstancePath(path) && Type.NODE_UPDATED != event.getType();
-        }
-    
-        private boolean isServersShutdown(final TreeCacheEvent event, final String path) {
-            return serverNode.isInstancePath(path) && Type.NODE_REMOVED == event.getType();
         }
     }
 }

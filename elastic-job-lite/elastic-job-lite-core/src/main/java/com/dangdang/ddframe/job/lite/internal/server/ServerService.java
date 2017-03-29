@@ -55,12 +55,8 @@ public class ServerService {
      * @param enabled 作业是否启用
      */
     public void persistServerOnline(final boolean enabled) {
-        if (enabled) {
-            jobNodeStorage.removeJobNodeIfExisted(serverOperationNode.getDisabledNode());
-        } else {
-            jobNodeStorage.fillJobNode(serverOperationNode.getDisabledNode(), "");
-        }
-        jobNodeStorage.fillEphemeralJobNode(serverNode.getLocalInstanceNode(), ServerStatus.READY.name());
+        jobNodeStorage.fillJobNode(serverOperationNode.getServerNode(), enabled ? "" : ServerStatus.DISABLED.name());
+        jobNodeStorage.fillEphemeralJobNode(serverNode.getLocalInstanceNode(), InstanceStatus.READY.name());
     }
     
     /**
@@ -68,7 +64,7 @@ public class ServerService {
      * 
      * @param status 服务器状态
      */
-    public void updateServerStatus(final ServerStatus status) {
+    public void updateInstanceStatus(final InstanceStatus status) {
         jobNodeStorage.updateJobNode(serverNode.getLocalInstanceNode(), status.name());
     }
     
@@ -115,7 +111,7 @@ public class ServerService {
     
     private List<String> getAvailableInstances(final String ip) {
         List<String> result = new LinkedList<>();
-        if (jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip))) {
+        if (ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverOperationNode.getServerNode(ip)))) {
             return result;
         }
         List<String> jobInstances = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT);
@@ -156,7 +152,7 @@ public class ServerService {
      * @return 作业服务器是否可用
      */
     public boolean isAvailableServer(final String ip) {
-        return !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode(ip))
+        return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverOperationNode.getServerNode(ip)))
                 && !jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT + "/" + ip + "/" + ServerNode.INSTANCES_ROOT).isEmpty();
     }
     
@@ -167,7 +163,7 @@ public class ServerService {
      */
     public boolean isLocalhostServerReady() {
         return isAvailableServer(localHostService.getIp()) && jobNodeStorage.isJobNodeExisted(serverNode.getLocalInstanceNode())
-                && ServerStatus.READY == ServerStatus.valueOf(jobNodeStorage.getJobNodeDataDirectly(serverNode.getLocalInstanceNode()));
+                && InstanceStatus.READY.name().equals(jobNodeStorage.getJobNodeDataDirectly(serverNode.getLocalInstanceNode()));
     }
     
     /**
@@ -176,7 +172,7 @@ public class ServerService {
      * @return 当前服务器是否是启用状态
      */
     public boolean isLocalhostServerEnabled() {
-        return !jobNodeStorage.isJobNodeExisted(serverOperationNode.getDisabledNode());
+        return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverOperationNode.getServerNode()));
     }
     
     /**

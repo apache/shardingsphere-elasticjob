@@ -30,6 +30,11 @@ import java.util.Enumeration;
  */
 public class LocalHostService {
     
+    /**
+     * IP地址的正则表达式.
+     */
+    public static final String IP_REGEX = "((\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3})";
+    
     private static volatile String cachedIpAddress;
     
     /**

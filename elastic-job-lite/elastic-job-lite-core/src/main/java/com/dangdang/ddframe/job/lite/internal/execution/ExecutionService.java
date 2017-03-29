@@ -20,8 +20,8 @@ package com.dangdang.ddframe.job.lite.internal.execution;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
-import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
@@ -62,7 +62,7 @@ public class ExecutionService {
      */
     public void registerJobBegin(final ShardingContexts shardingContexts) {
         if (!shardingContexts.getShardingItemParameters().isEmpty() && configService.load(true).isMonitorExecution()) {
-            serverService.updateServerStatus(ServerStatus.RUNNING);
+            serverService.updateInstanceStatus(InstanceStatus.RUNNING);
             for (int each : shardingContexts.getShardingItemParameters().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
             }
@@ -117,7 +117,7 @@ public class ExecutionService {
         if (!configService.load(true).isMonitorExecution()) {
             return;
         }
-        serverService.updateServerStatus(ServerStatus.READY);
+        serverService.updateInstanceStatus(InstanceStatus.READY);
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));

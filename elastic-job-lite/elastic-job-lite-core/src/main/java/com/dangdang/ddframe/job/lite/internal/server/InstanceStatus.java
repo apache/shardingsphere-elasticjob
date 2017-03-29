@@ -18,11 +18,11 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 /**
- * 服务器状态.
+ * 运行实例状态.
  * 
  * @author zhangliang
  */
-public enum ServerStatus {
+public enum InstanceStatus {
     
-    DISABLED
+    READY, RUNNING
 }

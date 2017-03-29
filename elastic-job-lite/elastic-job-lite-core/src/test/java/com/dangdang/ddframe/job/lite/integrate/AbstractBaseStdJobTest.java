@@ -36,6 +36,8 @@ import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFac
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceStatus;
+import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
@@ -172,17 +174,17 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(""));
         if (disabled) {
-            assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/operation/disabled"));
+            assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(ServerStatus.DISABLED.name()));
             while (null != regCenter.get("/" + jobName + "/leader/election/host_instance")) {
                 BlockUtils.waitingShortTime();
             }
         } else {
-            assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/operation/disabled"));
+            assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(""));
             assertThat(regCenter.get("/" + jobName + "/leader/election/host_instance"), is(localHostService.getIp() + "_" + JobRegistry.getInstance().getJobInstanceId(jobName)));
         }
-        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/instances/" + JobRegistry.getInstance().getJobInstanceId(jobName)), CoreMatchers.is("READY"));
+        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/instances/" + JobRegistry.getInstance().getJobInstanceId(jobName)), 
+                CoreMatchers.is(InstanceStatus.READY.name()));
         regCenter.remove("/" + jobName + "/leader/election");
     }
     

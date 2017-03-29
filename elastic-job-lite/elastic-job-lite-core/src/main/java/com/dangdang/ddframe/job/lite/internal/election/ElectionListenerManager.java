@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerOperationNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
+import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +94,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
             }
             
             private boolean isServerEnabled() {
-                return serverOperationNode.isLocalServerDisabledPath(path) && Type.NODE_REMOVED == event.getType();
+                return serverOperationNode.isLocalServerPath(path) && !ServerStatus.DISABLED.name().equals(new String(event.getData().getData()));
             }
             
             boolean isServerOff() {
@@ -101,7 +102,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
             }
             
             private boolean isServerDisabled() {
-                return serverOperationNode.isLocalServerDisabledPath(path) && Type.NODE_ADDED == event.getType();
+                return serverOperationNode.isLocalServerPath(path) && ServerStatus.DISABLED.name().equals(new String(event.getData().getData()));
             }
             
             private boolean isServerShutdown() {

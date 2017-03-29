@@ -20,20 +20,14 @@ package com.dangdang.ddframe.job.lite.internal.server;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.util.env.LocalHostService;
 
+import java.util.regex.Pattern;
+
 /**
  * Elastic Job服务器节点操作常量类.
  * 
  * @author zhangliang
  */
 public class ServerOperationNode {
-    
-    static final String OPERATION_ROOT = "operation/";
-    
-    static final String ROOT = ServerNode.ROOT + "/%s/" + OPERATION_ROOT;
-    
-    static final String DISABLED_APPENDIX = "disabled";
-    
-    static final String DISABLED = ROOT + DISABLED_APPENDIX;
     
     private final String ip;
     
@@ -44,31 +38,31 @@ public class ServerOperationNode {
         jobNodePath = new JobNodePath(jobName);
     }
     
-    String getDisabledNode() {
-        return getDisabledNode(ip);
+    String getServerNode() {
+        return getServerNode(ip);
     }
     
-    String getDisabledNode(final String ip) {
-        return String.format(DISABLED, ip);
+    String getServerNode(final String ip) {
+        return String.format(ServerNode.ROOT + "/%s", ip);
     }
         
     /**
-     * 判断给定路径是否为作业服务器禁用路径.
+     * 判断给定路径是否为作业服务器路径.
      *
      * @param path 待判断的路径
-     * @return 是否为作业服务器禁用路径
+     * @return 是否为作业服务器路径
      */
-    public boolean isLocalServerDisabledPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(String.format(ServerOperationNode.DISABLED, ip)));
+    public boolean isLocalServerPath(final String path) {
+        return path.equals(jobNodePath.getFullPath(String.format(ServerNode.ROOT + "/%s", ip)));
     }
     
     /**
-     * 判断给定路径是否为作业服务器禁用路径.
-     * 
+     * 判断给定路径是否为作业服务器路径.
+     *
      * @param path 待判断的路径
-     * @return 是否为作业服务器禁用路径
+     * @return 是否为作业服务器路径
      */
-    public boolean isServerDisabledPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(ServerNode.ROOT)) && path.endsWith(ServerOperationNode.OPERATION_ROOT + ServerOperationNode.DISABLED_APPENDIX);
+    public boolean isServerPath(final String path) {
+        return Pattern.compile(jobNodePath.getFullPath(ServerNode.ROOT) + "/" + LocalHostService.IP_REGEX).matcher(path).matches();
     }
 }
