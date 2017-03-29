@@ -126,11 +126,4 @@ public final class ShardingListenerManagerTest {
                 TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip, null, "".getBytes())), "/test_job/servers/" + ip);
         verify(shardingService).setReshardingFlag();
     }
-    
-    @Test
-    public void assertListenServersChangedJobListenerWhenIsShardingChange() {
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/instance", null, "".getBytes())), "/test_job/execution/0/instance");
-        verify(shardingService).setReshardingFlag();
-    }
 }

@@ -87,7 +87,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (isInstanceChange(event, path) || isServerChange(path) || isShardingChange(event, path)) {
+            if (isInstanceChange(event, path) || isServerChange(path)) {
                 shardingService.setReshardingFlag();
             }
         }
@@ -98,10 +98,6 @@ public class ShardingListenerManager extends AbstractListenerManager {
         
         private boolean isServerChange(final String path) {
             return serverNode.isServerPath(path);
-        }
-        
-        private boolean isShardingChange(final TreeCacheEvent event, final String path) {
-            return executionNode.isInstanceNode(path) && TreeCacheEvent.Type.NODE_REMOVED == event.getType();
         }
     }
 }

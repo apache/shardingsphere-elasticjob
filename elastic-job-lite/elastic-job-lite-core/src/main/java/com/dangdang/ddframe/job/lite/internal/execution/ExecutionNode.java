@@ -66,10 +66,6 @@ public final class ExecutionNode {
         return String.format(INSTANCE, item);
     }
     
-    public boolean isInstanceNode(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(ROOT)) && path.endsWith(INSTANCE_APPENDIX);
-    }
-    
     /**
      * 获取作业运行状态节点路径.
      * 

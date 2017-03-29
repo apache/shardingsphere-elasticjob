@@ -26,8 +26,10 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
@@ -49,6 +51,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
@@ -252,5 +255,27 @@ public final class ShardingServiceTest {
         verify(transactionDeleteBuilder).forPath("/test_job/leader/sharding/necessary");
         verify(transactionDeleteBuilder).forPath("/test_job/leader/sharding/processing");
         verify(curatorTransactionBridge, times(8)).and();
+    }
+    
+    @Test
+    public void assertHasShardingInfoInOfflineServers() {
+        when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("host0@-@0", "host0@-@1"));
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
+        when(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(0))).thenReturn("host0@-@0");
+        when(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(1))).thenReturn("host0@-@1");
+        when(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(2))).thenReturn("host0@-@2");
+        assertTrue(shardingService.hasShardingInfoInOfflineServers());
+    }
+    
+    @Test
+    public void assertHasNotShardingInfoInOfflineServers() {
+        when(jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)).thenReturn(Arrays.asList("host0@-@0", "host0@-@1"));
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
+        when(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(0))).thenReturn("host0@-@0");
+        when(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(1))).thenReturn("host0@-@1");
+        when(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(2))).thenReturn("host0@-@0");
+        assertFalse(shardingService.hasShardingInfoInOfflineServers());
     }
 }

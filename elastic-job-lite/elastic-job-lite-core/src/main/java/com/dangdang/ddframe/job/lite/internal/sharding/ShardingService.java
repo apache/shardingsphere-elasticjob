@@ -28,6 +28,7 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -180,8 +181,14 @@ public class ShardingService {
      * 
      * @return 是包含有分片节点的不在线服务器
      */
-    // TODO 删除
     public boolean hasShardingInfoInOfflineServers() {
+        List<String> onlineInstances = jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT);
+        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        for (int i = 0; i < shardingTotalCount; i++) {
+            if (!onlineInstances.contains(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(i)))) {
+                return true;
+            }
+        }
         return false;
     }
     
