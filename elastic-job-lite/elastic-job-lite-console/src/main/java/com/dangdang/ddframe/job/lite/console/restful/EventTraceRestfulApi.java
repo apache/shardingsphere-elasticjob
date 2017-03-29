@@ -17,15 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.console.restful;
 
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
-import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
-import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.lite.console.domain.DataSourceConfiguration;
-import com.dangdang.ddframe.job.lite.console.util.SessionDataSourceConfiguration;
-import com.google.common.base.Strings;
-import org.apache.commons.dbcp.BasicDataSource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
@@ -35,16 +31,22 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.apache.commons.dbcp.BasicDataSource;
+
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
+import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
+import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
+import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
+import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.console.util.SessionEventTraceDataSourceConfiguration;
+import com.google.common.base.Strings;
 
 @Path("/event-trace")
 public class EventTraceRestfulApi {
     
-    DataSourceConfiguration dataSourceConfiguration = SessionDataSourceConfiguration.getDataSourceConfiguration();
+    EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = SessionEventTraceDataSourceConfiguration.getEventTraceDataSourceConfiguration();
     
     @GET
     @Path("/execution")
@@ -66,10 +68,10 @@ public class EventTraceRestfulApi {
     
     private DataSource setUpEventTraceDataSource() {
         BasicDataSource result = new BasicDataSource();
-        result.setDriverClassName(dataSourceConfiguration.getDriver());
-        result.setUrl(dataSourceConfiguration.getUrl());
-        result.setUsername(dataSourceConfiguration.getUsername());
-        result.setPassword(dataSourceConfiguration.getPassword());
+        result.setDriverClassName(eventTraceDataSourceConfiguration.getDriver());
+        result.setUrl(eventTraceDataSourceConfiguration.getUrl());
+        result.setUsername(eventTraceDataSourceConfiguration.getUsername());
+        result.setPassword(eventTraceDataSourceConfiguration.getPassword());
         return result;
     }
     

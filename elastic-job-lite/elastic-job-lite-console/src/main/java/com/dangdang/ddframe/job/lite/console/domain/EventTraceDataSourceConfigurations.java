@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class DataSourceConfigurations {
+public final class EventTraceDataSourceConfigurations {
     
-    private Set<DataSourceConfiguration> dataSourceConfiguration = new LinkedHashSet<>();
+    private Set<EventTraceDataSourceConfiguration> eventTraceDataSourceConfiguration = new LinkedHashSet<>();
 }

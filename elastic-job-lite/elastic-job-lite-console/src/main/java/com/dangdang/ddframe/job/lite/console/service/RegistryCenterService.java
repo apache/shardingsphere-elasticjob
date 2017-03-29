@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.console.service;
 
+import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
-import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
 import com.google.common.base.Optional;
 
 public interface RegistryCenterService {
     
-    RegistryCenterConfigurations loadAll();
+    GlobalConfiguration loadAll();
     
     RegistryCenterConfiguration load(String name);
     

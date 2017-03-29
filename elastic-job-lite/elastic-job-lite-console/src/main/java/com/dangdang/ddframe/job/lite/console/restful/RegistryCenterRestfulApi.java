@@ -50,7 +50,7 @@ public class RegistryCenterRestfulApi {
         if (regCenterConfig.isPresent()) {
             setRegistryCenterNameToSession(regCenterConfig.get(), request.getSession());
         }
-        return regCenterService.loadAll().getRegistryCenterConfiguration();
+        return regCenterService.loadAll().getRegistryCenterConfigurations().getRegistryCenterConfiguration();
     }
     
     @POST

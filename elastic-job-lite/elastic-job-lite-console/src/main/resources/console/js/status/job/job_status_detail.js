@@ -3,6 +3,7 @@ $(function() {
     renderServers();
     renderExecution();
     bindButtons();
+    renderBreadCrumbMenu();
 });
 
 function renderServers() {
@@ -176,4 +177,10 @@ function executionStatusFormatter(value, row) {
             return "<span class='label label-warning'>待运行</span>";
             break;
     }
+}
+
+function renderBreadCrumbMenu() {
+    $("#breadcrumb-job").click(function() {
+        $("#content").load("html/status/job/jobs_status_overview.html");
+    });
 }
