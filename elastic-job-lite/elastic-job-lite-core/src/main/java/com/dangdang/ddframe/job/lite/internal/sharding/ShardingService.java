@@ -35,7 +35,6 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
@@ -56,8 +55,6 @@ public class ShardingService {
     private final String jobName;
     
     private final JobNodeStorage jobNodeStorage;
-    
-    private final LocalHostService localHostService = new LocalHostService();
     
     private final LeaderElectionService leaderElectionService;
     
@@ -143,7 +140,6 @@ public class ShardingService {
     
     private void clearShardingInfo(final int shardingTotalCount) {
         for (int i = 0; i < shardingTotalCount; i++) {
-            jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getIpNode(i));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getInstanceNode(i));
         }
     }
@@ -166,10 +162,9 @@ public class ShardingService {
      */
     public List<Integer> getLocalHostShardingItems() {
         List<Integer> result = new LinkedList<>();
-        String ip = localHostService.getIp();
         String instanceId = JobRegistry.getInstance().getJobInstanceId(jobName);
         for (int i = 0; i < configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount(); i++) {
-            if (ip.equals(jobNodeStorage.getJobNodeDataDirectly(ExecutionNode.getIpNode(i))) && instanceId.equals(jobNodeStorage.getJobNodeDataDirectly(ExecutionNode.getInstanceNode(i)))) {
+            if (instanceId.equals(jobNodeStorage.getJobNodeDataDirectly(ExecutionNode.getInstanceNode(i)))) {
                 result.add(i);
             }
         }
@@ -201,8 +196,6 @@ public class ShardingService {
         public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
             for (JobShardingResult each : shardingResults) {
                 for (int shardingItem : each.getShardingItems()) {
-                    curatorTransactionFinal.create().withMode(CreateMode.EPHEMERAL)
-                            .forPath(jobNodePath.getFullPath(ExecutionNode.getIpNode(shardingItem)), each.getJobShardingUnit().getIp().getBytes()).and();
                     curatorTransactionFinal.create().withMode(CreateMode.EPHEMERAL)
                             .forPath(jobNodePath.getFullPath(ExecutionNode.getInstanceNode(shardingItem)), each.getJobShardingUnit().getJobInstanceId().getBytes()).and();
                 }
