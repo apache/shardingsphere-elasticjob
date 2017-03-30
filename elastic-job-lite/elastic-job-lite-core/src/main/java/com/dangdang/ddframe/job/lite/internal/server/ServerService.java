@@ -17,18 +17,18 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 作业服务器节点服务.
+ * 作业服务器服务.
  * 
  * @author zhangliang
  * @author caohao
@@ -57,39 +57,6 @@ public class ServerService {
      */
     public void persistServerOnline(final boolean enabled) {
         jobNodeStorage.fillJobNode(serverNode.getServerNode(), enabled ? "" : ServerStatus.DISABLED.name());
-        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstanceNode(), InstanceStatus.READY.name());
-    }
-    
-    /**
-     * 在开始或结束执行作业时更新服务器状态.
-     * 
-     * @param status 服务器状态
-     */
-    public void updateInstanceStatus(final InstanceStatus status) {
-        jobNodeStorage.updateJobNode(instanceNode.getLocalInstanceNode(), status.name());
-    }
-    
-    /**
-     * 删除运行实例状态.
-     */
-    public void removeInstanceStatus() {
-        jobNodeStorage.removeJobNodeIfExisted(instanceNode.getLocalInstanceNode());
-    }
-    
-    /**
-     * 获取可分片的单元列表.
-     *
-     * @return 可分片的单元列表
-     */
-    public List<JobInstance> getAvailableShardingUnits() {
-        List<JobInstance> result = new LinkedList<>();
-        for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
-            JobInstance shardingUnit = new JobInstance(each);
-            if (isServerEnabled(shardingUnit.getIp())) {
-                result.add(new JobInstance(each));
-            }
-        }
-        return result;
     }
     
     /**

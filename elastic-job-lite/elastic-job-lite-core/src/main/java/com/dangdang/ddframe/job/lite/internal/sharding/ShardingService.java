@@ -25,8 +25,9 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -60,6 +61,8 @@ public class ShardingService {
     
     private final ServerService serverService;
     
+    private final InstanceService instanceService;
+    
     private final ExecutionService executionService;
 
     private final JobNodePath jobNodePath;
@@ -70,6 +73,7 @@ public class ShardingService {
         leaderService = new LeaderService(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         jobNodePath = new JobNodePath(jobName);
     }
@@ -95,7 +99,7 @@ public class ShardingService {
      * 如果当前无可用节点则不分片.
      */
     public void shardingIfNecessary() {
-        List<JobInstance> availableJobInstances = serverService.getAvailableShardingUnits();
+        List<JobInstance> availableJobInstances = instanceService.getAvailableJobInstances();
         LiteJobConfiguration liteJobConfig = configService.load(false);
         int shardingTotalCount = liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
         if (availableJobInstances.isEmpty()) {

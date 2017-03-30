@@ -20,8 +20,8 @@ package com.dangdang.ddframe.job.lite.internal.execution;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
-import com.dangdang.ddframe.job.lite.internal.server.InstanceStatus;
-import com.dangdang.ddframe.job.lite.internal.server.ServerService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
@@ -46,13 +46,13 @@ public class ExecutionService {
     
     private final LeaderService leaderService;
     
-    private final ServerService serverService;
+    private final InstanceService instanceService;
     
     public ExecutionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
-        serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
     }
     
     /**
@@ -62,7 +62,7 @@ public class ExecutionService {
      */
     public void registerJobBegin(final ShardingContexts shardingContexts) {
         if (!shardingContexts.getShardingItemParameters().isEmpty() && configService.load(true).isMonitorExecution()) {
-            serverService.updateInstanceStatus(InstanceStatus.RUNNING);
+            instanceService.updateStatus(InstanceStatus.RUNNING);
             for (int each : shardingContexts.getShardingItemParameters().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
             }
@@ -117,7 +117,7 @@ public class ExecutionService {
         if (!configService.load(true).isMonitorExecution()) {
             return;
         }
-        serverService.updateInstanceStatus(InstanceStatus.READY);
+        instanceService.updateStatus(InstanceStatus.READY);
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));

@@ -27,6 +27,7 @@ import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
@@ -57,6 +58,9 @@ public class SchedulerFacadeTest {
     private ServerService serverService;
     
     @Mock
+    private InstanceService instanceService;
+    
+    @Mock
     private ShardingService shardingService;
     
     @Mock
@@ -82,6 +86,7 @@ public class SchedulerFacadeTest {
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(schedulerFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(schedulerFacade, "executionService", executionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "monitorService", monitorService);
@@ -107,7 +112,7 @@ public class SchedulerFacadeTest {
     public void assertReleaseJobResource() {
         schedulerFacade.releaseJobResource();
         verify(monitorService).close();
-        verify(serverService).removeInstanceStatus();
+        verify(instanceService).removeStatus();
     }
     
     @Test

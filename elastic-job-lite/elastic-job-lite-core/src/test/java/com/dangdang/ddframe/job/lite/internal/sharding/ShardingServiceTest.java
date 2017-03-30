@@ -27,8 +27,9 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
@@ -76,6 +77,9 @@ public final class ShardingServiceTest {
     @Mock
     private ServerService serverService;
     
+    @Mock
+    private InstanceService instanceService;
+    
     private final ShardingService shardingService = new ShardingService(null, "test_job");
     
     @Before
@@ -86,6 +90,7 @@ public final class ShardingServiceTest {
         ReflectionUtils.setFieldValue(shardingService, "configService", configService);
         ReflectionUtils.setFieldValue(shardingService, "executionService", executionService);
         ReflectionUtils.setFieldValue(shardingService, "serverService", serverService);
+        ReflectionUtils.setFieldValue(shardingService, "instanceService", instanceService);
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
@@ -106,10 +111,10 @@ public final class ShardingServiceTest {
     public void assertShardingWhenUnnecessary() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
-        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.singletonList(new JobInstance("mockedIP@-@0")));
+        when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("mockedIP@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(false);
         shardingService.shardingIfNecessary();
-        verify(serverService).getAvailableShardingUnits();
+        verify(instanceService).getAvailableJobInstances();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
     }
     
@@ -117,9 +122,9 @@ public final class ShardingServiceTest {
     public void assertShardingWithoutAvailableServers() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
-        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.<JobInstance>emptyList());
+        when(instanceService.getAvailableJobInstances()).thenReturn(Collections.<JobInstance>emptyList());
         shardingService.shardingIfNecessary();
-        verify(serverService).getAvailableShardingUnits();
+        verify(instanceService).getAvailableJobInstances();
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/instance");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/instance");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/instance");
@@ -130,26 +135,26 @@ public final class ShardingServiceTest {
     public void assertShardingWhenIsNotLeaderAndIsShardingProcessing() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
-        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.singletonList(new JobInstance("mockedIP@-@0")));
+        when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("mockedIP@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true, true, false, false);
         when(leaderService.isLeaderUntilBlock()).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/processing")).thenReturn(true, false);
         shardingService.shardingIfNecessary();
-        verify(serverService).getAvailableShardingUnits();
+        verify(instanceService).getAvailableJobInstances();
         verify(jobNodeStorage, times(4)).isJobNodeExisted("leader/sharding/necessary");
         verify(jobNodeStorage, times(2)).isJobNodeExisted("leader/sharding/processing");
     }
     
     @Test
     public void assertShardingNecessaryWhenMonitorExecutionEnabled() {
-        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.singletonList(new JobInstance("ip1@-@0")));
+        when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("ip1@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
         when(executionService.hasRunningItems()).thenReturn(true, false);
         shardingService.shardingIfNecessary();
-        verify(serverService).getAvailableShardingUnits();
+        verify(instanceService).getAvailableJobInstances();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
         verify(leaderService).isLeaderUntilBlock();
         verify(configService).load(false);
@@ -163,13 +168,13 @@ public final class ShardingServiceTest {
     
     @Test
     public void assertShardingNecessaryWhenMonitorExecutionDisabled() throws Exception {
-        when(serverService.getAvailableShardingUnits()).thenReturn(Collections.singletonList(new JobInstance("ip1@-@0")));
+        when(instanceService.getAvailableJobInstances()).thenReturn(Collections.singletonList(new JobInstance("ip1@-@0")));
         when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).jobShardingStrategyClass(AverageAllocationJobShardingStrategy.class.getCanonicalName()).build());
         shardingService.shardingIfNecessary();
-        verify(serverService).getAvailableShardingUnits();
+        verify(instanceService).getAvailableJobInstances();
         verify(jobNodeStorage).isJobNodeExisted("leader/sharding/necessary");
         verify(leaderService).isLeaderUntilBlock();
         verify(configService).load(false);

@@ -19,6 +19,8 @@ package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -45,6 +47,8 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final ServerService serverService;
     
+    private final InstanceService instanceService;
+    
     private final ShardingService shardingService;
     
     private final ExecutionService executionService;
@@ -55,6 +59,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         instanceNode = new InstanceNode(jobName);
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
     }
@@ -75,6 +80,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
                 jobScheduleController.pauseJob();
             } else if (ConnectionState.RECONNECTED == newState) {
                 serverService.persistServerOnline(serverService.isServerEnabled(JobRegistry.getInstance().getJobInstance(jobName).getIp()));
+                instanceService.persistOnline();
                 executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
                 jobScheduleController.resumeJob();
             }
@@ -105,7 +111,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             if (instanceNode.isLocalInstancePath(path) && TreeCacheEvent.Type.NODE_REMOVED == event.getType()) {
-                serverService.removeInstanceStatus();
+                instanceService.removeStatus();
                 if (leaderService.isLeader()) {
                     leaderService.removeLeader();
                 }

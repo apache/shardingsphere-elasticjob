@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
-import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;

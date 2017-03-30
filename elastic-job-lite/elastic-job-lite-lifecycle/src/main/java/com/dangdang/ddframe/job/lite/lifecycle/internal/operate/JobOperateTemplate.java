@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.internal.operate;
 
-import com.dangdang.ddframe.job.lite.internal.server.InstanceNode;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;

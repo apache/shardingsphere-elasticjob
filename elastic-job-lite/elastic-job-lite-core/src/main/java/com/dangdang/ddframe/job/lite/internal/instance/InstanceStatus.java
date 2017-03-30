@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.server;
+package com.dangdang.ddframe.job.lite.internal.instance;
 
 /**
  * 运行实例状态.

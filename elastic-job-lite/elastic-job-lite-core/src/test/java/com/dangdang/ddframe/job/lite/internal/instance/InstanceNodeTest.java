@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.server;
+package com.dangdang.ddframe.job.lite.internal.instance;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;

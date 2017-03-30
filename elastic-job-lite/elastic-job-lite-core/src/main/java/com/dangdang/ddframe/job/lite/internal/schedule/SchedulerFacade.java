@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
@@ -44,6 +45,8 @@ public class SchedulerFacade {
     
     private final ServerService serverService;
     
+    private final InstanceService instanceService;
+    
     private final ShardingService shardingService;
     
     private final ExecutionService executionService;
@@ -58,6 +61,7 @@ public class SchedulerFacade {
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         monitorService = new MonitorService(regCenter, jobName);
@@ -76,6 +80,7 @@ public class SchedulerFacade {
         configService.persist(liteJobConfig);
         LiteJobConfiguration liteJobConfigFromZk = configService.load(false);
         serverService.persistServerOnline(!liteJobConfigFromZk.isDisabled());
+        instanceService.persistOnline();
         shardingService.setReshardingFlag();
         monitorService.listen();
         listenerManager.setCurrentShardingTotalCount(liteJobConfigFromZk.getTypeConfig().getCoreConfig().getShardingTotalCount());
@@ -89,7 +94,7 @@ public class SchedulerFacade {
      */
     public void releaseJobResource() {
         monitorService.close();
-        serverService.removeInstanceStatus();
+        instanceService.removeStatus();
     }
     
     /**

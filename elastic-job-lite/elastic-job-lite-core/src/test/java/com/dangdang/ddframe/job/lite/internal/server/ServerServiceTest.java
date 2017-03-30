@@ -18,6 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
@@ -60,40 +62,12 @@ public final class ServerServiceTest {
     public void assertPersistServerOnlineForDisabledServerWithLeaderElecting() {
         serverService.persistServerOnline(false);
         verify(jobNodeStorage).fillJobNode("servers/127.0.0.1", ServerStatus.DISABLED.name());
-        verify(jobNodeStorage).fillEphemeralJobNode("instances/127.0.0.1@-@0", InstanceStatus.READY.name());
     }
     
     @Test
     public void assertPersistServerOnlineForEnabledServer() {
         serverService.persistServerOnline(true);
         verify(jobNodeStorage).fillJobNode("servers/127.0.0.1", "");
-        verify(jobNodeStorage).fillEphemeralJobNode("instances/127.0.0.1@-@0", InstanceStatus.READY.name());
-    }
-    
-    @Test
-    public void assertProcessServerShutdown() {
-        serverService.removeInstanceStatus();
-        verify(jobNodeStorage).removeJobNodeIfExisted("instances/127.0.0.1@-@0");
-    }
-    
-    @Test
-    public void assertUpdateServerStatus() {
-        serverService.updateInstanceStatus(InstanceStatus.RUNNING);
-        verify(jobNodeStorage).updateJobNode("instances/127.0.0.1@-@0", InstanceStatus.RUNNING.name());
-    }
-    
-    @Test
-    public void assertRemoveServerStatus() {
-        serverService.removeInstanceStatus();
-        verify(jobNodeStorage).removeJobNodeIfExisted("instances/127.0.0.1@-@0");
-    }
-    
-    @Test
-    public void assertGetAvailableShardingServers() {
-        when(jobNodeStorage.getJobNodeChildrenKeys("servers")).thenReturn(Arrays.asList("host0", "host2", "host1", "host3", "host4"));
-        when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Arrays.asList("host0@-@0", "host2@-@0", "host3@-@0", "host4@-@0"));
-        when(jobNodeStorage.getJobNodeData("servers/host2")).thenReturn(ServerStatus.DISABLED.name());
-        assertThat(serverService.getAvailableShardingUnits(), is(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host3@-@0"), new JobInstance("host4@-@0"))));
     }
     
     @Test

@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.lite.internal.server;
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager.ConnectionLostListener;
@@ -55,6 +56,9 @@ public final class JobOperationListenerManagerTest {
     private ServerService serverService;
     
     @Mock
+    private InstanceService instanceService;
+    
+    @Mock
     private ShardingService shardingService;
     
     @Mock
@@ -72,6 +76,7 @@ public final class JobOperationListenerManagerTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "serverService", serverService);
+        ReflectionUtils.setFieldValue(jobOperationListenerManager, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "executionService", executionService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, jobOperationListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
@@ -182,6 +187,6 @@ public final class JobOperationListenerManagerTest {
         jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(
                 null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/instances/127.0.0.1@-@0", null, "".getBytes())), "/test_job/instances/127.0.0.1@-@0");
         verify(jobScheduleController).shutdown();
-        verify(serverService).removeInstanceStatus();
+        verify(instanceService).removeStatus();
     }
 }

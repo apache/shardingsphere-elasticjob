@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.server;
+package com.dangdang.ddframe.job.lite.internal.instance;
 
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
@@ -52,7 +52,7 @@ public class InstanceNode {
         return String.format(INSTANCES, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
     }
     
-    static String getInstanceNode(final String jobInstanceId) {
+    public static String getInstanceNode(final String jobInstanceId) {
         return String.format(INSTANCES, jobInstanceId);
     }
     
