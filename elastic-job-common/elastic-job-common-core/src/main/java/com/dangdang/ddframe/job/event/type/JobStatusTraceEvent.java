@@ -2,7 +2,6 @@ package com.dangdang.ddframe.job.event.type;
 
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.event.JobEvent;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 public class JobStatusTraceEvent implements JobEvent {
-    
-    private static LocalHostService localHostService = new LocalHostService();
     
     private String id = UUID.randomUUID().toString();
     

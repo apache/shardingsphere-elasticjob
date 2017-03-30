@@ -18,9 +18,9 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,15 +35,16 @@ import java.util.List;
  */
 public class ServerService {
     
+    private final String jobName;
+    
     private final JobNodeStorage jobNodeStorage;
     
     private final InstanceNode instanceNode;
     
     private final ServerNode serverNode;
     
-    private final LocalHostService localHostService = new LocalHostService();
-    
     public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         instanceNode = new InstanceNode(jobName);
         serverNode = new ServerNode(jobName);
@@ -148,7 +149,7 @@ public class ServerService {
      * @return 当前服务器是否是等待执行的状态
      */
     public boolean isLocalhostServerReady() {
-        return isAvailableServer(localHostService.getIp()) && jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstanceNode())
+        return isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()) && jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstanceNode())
                 && InstanceStatus.READY.name().equals(jobNodeStorage.getJobNodeDataDirectly(instanceNode.getLocalInstanceNode()));
     }
 }

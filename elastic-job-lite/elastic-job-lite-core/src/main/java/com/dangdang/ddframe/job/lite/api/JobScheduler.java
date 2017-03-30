@@ -67,8 +67,6 @@ public class JobScheduler {
     
     private final JobFacade jobFacade;
     
-    private final JobRegistry jobRegistry;
-    
     public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final ElasticJobListener... elasticJobListeners) {
         this(regCenter, liteJobConfig, new JobEventBus(), elasticJobListeners);
     }
@@ -80,22 +78,21 @@ public class JobScheduler {
     
     private JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
         jobName = liteJobConfig.getJobName();
+        JobRegistry.getInstance().addJobInstance(jobName, new JobInstance());
         jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
         jobFacade = new LiteJobFacade(regCenter, jobName, Arrays.asList(elasticJobListeners), jobEventBus);
-        jobRegistry = JobRegistry.getInstance();
     }
     
     /**
      * 初始化作业.
      */
     public void init() {
-        jobRegistry.addJobInstance(jobName, new JobInstance());
         jobExecutor.init();
         JobTypeConfiguration jobTypeConfig = jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig();
         JobScheduleController jobScheduleController = new JobScheduleController(
                 createScheduler(), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
         jobScheduleController.scheduleJob(jobTypeConfig.getCoreConfig().getCron());
-        jobRegistry.addJobScheduleController(jobName, jobScheduleController);
+        JobRegistry.getInstance().addJobScheduleController(jobName, jobScheduleController);
     }
     
     private JobDetail createJobDetail(final String jobClass) {
@@ -146,7 +143,7 @@ public class JobScheduler {
      * 停止作业调度.
      */
     public void shutdown() {
-        jobRegistry.removeJobScheduleController(jobName).shutdown();
+        JobRegistry.getInstance().removeJobScheduleController(jobName).shutdown();
         jobExecutor.close();
     }
     

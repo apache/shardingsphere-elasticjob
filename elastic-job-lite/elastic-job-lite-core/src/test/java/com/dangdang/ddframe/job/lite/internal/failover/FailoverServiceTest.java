@@ -17,13 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService.FailoverLeaderExecutionCallback;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -47,9 +47,6 @@ public final class FailoverServiceTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private LocalHostService localHostService;
-    
-    @Mock
     private ServerService serverService;
     
     @Mock
@@ -64,12 +61,10 @@ public final class FailoverServiceTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(failoverService, "jobNodeStorage", jobNodeStorage);
-        ReflectionUtils.setFieldValue(failoverService, "localHostService", localHostService);
         ReflectionUtils.setFieldValue(failoverService, "serverService", serverService);
         ReflectionUtils.setFieldValue(failoverService, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(failoverService, "jobName", "test_job");
-        when(localHostService.getIp()).thenReturn("mockedIP");
-        when(localHostService.getHostName()).thenReturn("mockedHostName");
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
     @Test
@@ -148,7 +143,7 @@ public final class FailoverServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage, times(2)).getJobNodeChildrenKeys("leader/failover/items");
         verify(serverService).isLocalhostServerReady();
-        verify(jobNodeStorage).fillEphemeralJobNode("execution/0/failover", "mockedIP");
+        verify(jobNodeStorage).fillEphemeralJobNode("execution/0/failover", "127.0.0.1");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/failover/items/0");
         verify(jobScheduleController).triggerJob();
     }
@@ -166,11 +161,10 @@ public final class FailoverServiceTest {
         when(jobNodeStorage.isJobNodeExisted("execution/0/failover")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("execution/1/failover")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("execution/2/failover")).thenReturn(false);
-        when(jobNodeStorage.getJobNodeDataDirectly("execution/0/failover")).thenReturn("mockedIP");
-        when(jobNodeStorage.getJobNodeDataDirectly("execution/1/failover")).thenReturn("otherIP");
+        when(jobNodeStorage.getJobNodeDataDirectly("execution/0/failover")).thenReturn("127.0.0.1");
+        when(jobNodeStorage.getJobNodeDataDirectly("execution/1/failover")).thenReturn("127.0.0.2");
         assertThat(failoverService.getLocalHostFailoverItems(), is(Collections.singletonList(0)));
         verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
-        verify(localHostService).getIp();
         verify(jobNodeStorage).isJobNodeExisted("execution/0/failover");
         verify(jobNodeStorage).isJobNodeExisted("execution/1/failover");
         verify(jobNodeStorage).getJobNodeDataDirectly("execution/0/failover");

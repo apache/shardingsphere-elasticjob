@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.state.ConnectionState;
@@ -47,8 +46,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final ExecutionService executionService;
     
-    private final LocalHostService localHostService;
-    
     public JobOperationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
@@ -56,7 +53,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
-        localHostService = new LocalHostService();
     }
     
     @Override
@@ -74,7 +70,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
             if (ConnectionState.LOST == newState) {
                 jobScheduleController.pauseJob();
             } else if (ConnectionState.RECONNECTED == newState) {
-                serverService.persistServerOnline(serverService.isServerEnabled(localHostService.getIp()));
+                serverService.persistServerOnline(serverService.isServerEnabled(JobRegistry.getInstance().getJobInstance(jobName).getIp()));
                 executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
                 jobScheduleController.resumeJob();
             }

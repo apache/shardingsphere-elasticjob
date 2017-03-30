@@ -21,17 +21,15 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 
-public final class LocalHostServiceTest {
-    
-    private final LocalHostService localHostService = new LocalHostService();
+public final class IpUtilsTest {
     
     @Test
     public void assertGetIp() {
-        assertNotNull(localHostService.getIp());
+        assertNotNull(IpUtils.getIp());
     }
     
     @Test
     public void assertGetHostName() {
-        assertNotNull(localHostService.getHostName());
+        assertNotNull(IpUtils.getHostName());
     }
 }

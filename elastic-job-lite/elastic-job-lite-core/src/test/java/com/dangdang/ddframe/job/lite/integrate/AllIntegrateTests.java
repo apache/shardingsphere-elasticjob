@@ -22,7 +22,6 @@ import com.dangdang.ddframe.job.lite.integrate.std.dataflow.StreamingDataflowEla
 import com.dangdang.ddframe.job.lite.integrate.std.dataflow.StreamingDataflowElasticJobForExecuteThrowsExceptionTest;
 import com.dangdang.ddframe.job.lite.integrate.std.dataflow.StreamingDataflowElasticJobForMultipleThreadsTest;
 import com.dangdang.ddframe.job.lite.integrate.std.dataflow.StreamingDataflowElasticJobForNotMonitorTest;
-import com.dangdang.ddframe.job.lite.integrate.std.dataflow.StreamingDataflowElasticJobForPausedTest;
 import com.dangdang.ddframe.job.lite.integrate.std.dataflow.StreamingDataflowElasticJobTest;
 import com.dangdang.ddframe.job.lite.integrate.std.script.ScriptElasticJobTest;
 import com.dangdang.ddframe.job.lite.integrate.std.simple.DisabledJobTest;
@@ -41,7 +40,6 @@ import org.junit.runners.Suite.SuiteClasses;
         StreamingDataflowElasticJobForMultipleThreadsTest.class, 
         StreamingDataflowElasticJobForExecuteFailureTest.class, 
         StreamingDataflowElasticJobForExecuteThrowsExceptionTest.class, 
-        StreamingDataflowElasticJobForPausedTest.class,
         ScriptElasticJobTest.class
     })
 public final class AllIntegrateTests {

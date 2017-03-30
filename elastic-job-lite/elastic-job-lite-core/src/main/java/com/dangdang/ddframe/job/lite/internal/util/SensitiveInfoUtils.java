@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.util;
 
-import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.IpUtils;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -54,7 +54,7 @@ public final class SensitiveInfoUtils {
             
             @Override
             public String apply(final String input) {
-                Matcher matcher = Pattern.compile(LocalHostService.IP_REGEX).matcher(input);
+                Matcher matcher = Pattern.compile(IpUtils.IP_REGEX).matcher(input);
                 String result = input;
                 while (matcher.find()) {
                     String realIp = matcher.group();

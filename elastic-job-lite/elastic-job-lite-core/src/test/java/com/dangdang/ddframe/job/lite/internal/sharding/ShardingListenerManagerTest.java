@@ -17,11 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.junit.Before;
@@ -47,12 +48,12 @@ public final class ShardingListenerManagerTest {
     @Mock
     private ExecutionService executionService;
     
-    private String ip = new LocalHostService().getIp();
-    
-    private final ShardingListenerManager shardingListenerManager = new ShardingListenerManager(null, "test_job");
+    private ShardingListenerManager shardingListenerManager;
     
     @Before
     public void setUp() throws NoSuchFieldException {
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+        shardingListenerManager = new ShardingListenerManager(null, "test_job");
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(shardingListenerManager, shardingListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
         ReflectionUtils.setFieldValue(shardingListenerManager, "shardingService", shardingService);
@@ -102,14 +103,14 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertListenServersChangedJobListenerWhenIsNotServerStatusPath() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + ip + "/other", null, "".getBytes())), "/test_job/servers/" + ip + "/other");
+                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/127.0.0.1/other", null, "".getBytes())), "/test_job/servers/127.0.0.1/other");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerStatusPathButUpdate() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip + "/status", null, "".getBytes())), "/test_job/servers/" + ip + "/status");
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/127.0.0.1/status", null, "".getBytes())), "/test_job/servers/127.0.0.1/status");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
@@ -123,7 +124,7 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerChange() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + ip, null, "".getBytes())), "/test_job/servers/" + ip);
+                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/127.0.0.1", null, "".getBytes())), "/test_job/servers/127.0.0.1");
         verify(shardingService).setReshardingFlag();
     }
 }

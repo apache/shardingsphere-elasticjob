@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy;
 
-import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.IpUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,15 +36,13 @@ public final class JobInstance {
     
     private static final String DELIMITER = "@-@";
     
-    private final LocalHostService localHostService = new LocalHostService();
-    
     /**
      * 作业实例主键.
      */
     private final String jobInstanceId;
     
     public JobInstance() {
-        jobInstanceId = localHostService.getIp() + DELIMITER + UUID.randomUUID().toString();
+        jobInstanceId = IpUtils.getIp() + DELIMITER + UUID.randomUUID().toString();
     }
     
     /**

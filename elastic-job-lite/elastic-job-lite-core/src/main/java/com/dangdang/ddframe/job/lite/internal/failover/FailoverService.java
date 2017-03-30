@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -41,8 +40,6 @@ import java.util.List;
 public class FailoverService {
     
     private final String jobName;
-    
-    private final LocalHostService localHostService = new LocalHostService();
     
     private final JobNodeStorage jobNodeStorage;
     
@@ -104,7 +101,7 @@ public class FailoverService {
     public List<Integer> getLocalHostFailoverItems() {
         List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT);
         List<Integer> result = new ArrayList<>(items.size());
-        String ip = localHostService.getIp();
+        String ip = JobRegistry.getInstance().getJobInstance(jobName).getIp();
         for (String each : items) {
             int item = Integer.parseInt(each);
             String node = FailoverNode.getExecutionFailoverNode(item);
@@ -150,7 +147,7 @@ public class FailoverService {
             }
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
             log.debug("Failover job '{}' begin, crashed item '{}'", jobName, crashedItem);
-            jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
+            jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), JobRegistry.getInstance().getJobInstance(jobName).getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             // TODO 不应使用triggerJob, 而是使用executor统一调度
             JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();

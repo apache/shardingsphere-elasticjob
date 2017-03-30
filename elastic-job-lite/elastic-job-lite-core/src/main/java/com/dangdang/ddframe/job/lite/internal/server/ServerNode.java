@@ -17,8 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.IpUtils;
 
 import java.util.regex.Pattern;
 
@@ -41,7 +42,7 @@ public class ServerNode {
     private final JobNodePath jobNodePath;
     
     public ServerNode(final String jobName) {
-        ip = new LocalHostService().getIp();
+        ip = JobRegistry.getInstance().getJobInstance(jobName).getIp();
         jobNodePath = new JobNodePath(jobName);
     }
     
@@ -70,6 +71,6 @@ public class ServerNode {
      * @return 是否为作业服务器路径
      */
     public boolean isServerPath(final String path) {
-        return Pattern.compile(jobNodePath.getFullPath(ServerNode.ROOT) + "/" + LocalHostService.IP_REGEX).matcher(path).matches();
+        return Pattern.compile(jobNodePath.getFullPath(ServerNode.ROOT) + "/" + IpUtils.IP_REGEX).matcher(path).matches();
     }
 }

@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +33,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class LeaderElectionService {
-    
-    private final LocalHostService localHostService = new LocalHostService();
     
     private final String jobName;
     
@@ -109,7 +106,8 @@ public class LeaderElectionService {
     
         @Override
         public void execute() {
-            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST_AND_INSTANCE) && (isForceElect || serverService.isAvailableServer(localHostService.getIp()))) {
+            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST_AND_INSTANCE)
+                    && (isForceElect || serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()))) {
                 jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST_AND_INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             }
         }

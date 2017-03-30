@@ -42,7 +42,6 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.hamcrest.CoreMatchers;
@@ -62,9 +61,6 @@ public abstract class AbstractBaseStdJobTest {
     
     @Getter(value = AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
-    
-    @Getter(AccessLevel.PROTECTED)
-    private final LocalHostService localHostService = new LocalHostService();
     
     @Getter(AccessLevel.PROTECTED)
     private final LiteJobConfiguration liteJobConfig;
@@ -173,13 +169,13 @@ public abstract class AbstractBaseStdJobTest {
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
         if (disabled) {
-            assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(ServerStatus.DISABLED.name()));
+            assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(ServerStatus.DISABLED.name()));
             while (null != regCenter.get("/" + jobName + "/leader/election/instance")) {
                 BlockUtils.waitingShortTime();
             }
-            regCenter.persist("/" + jobName + "/servers/" + localHostService.getIp(), "");
+            regCenter.persist("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp(), "");
         } else {
-            assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp()), is(""));
+            assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(""));
             assertThat(regCenter.get("/" + jobName + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         }
         assertThat(regCenter.get("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()), CoreMatchers.is(InstanceStatus.READY.name()));

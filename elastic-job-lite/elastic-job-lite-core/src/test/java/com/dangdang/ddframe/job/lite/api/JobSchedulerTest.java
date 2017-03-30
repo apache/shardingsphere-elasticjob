@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.lite.api;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
@@ -57,13 +58,12 @@ public final class JobSchedulerTest {
     @Mock
     private ElasticJobListenerCaller caller;
     
-    private LiteJobConfiguration liteJobConfig;
-    
     private JobScheduler jobScheduler;
     
     @Before
     public void initMocks() throws NoSuchFieldException {
-        liteJobConfig = LiteJobConfiguration.newBuilder(
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+        LiteJobConfiguration liteJobConfig = LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build(), TestSimpleJob.class.getCanonicalName())).build();
         jobScheduler = new JobScheduler(regCenter, liteJobConfig);
         MockitoAnnotations.initMocks(this);

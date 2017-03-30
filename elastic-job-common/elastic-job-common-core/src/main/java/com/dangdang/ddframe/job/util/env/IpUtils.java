@@ -17,6 +17,9 @@
 
 package com.dangdang.ddframe.job.util.env;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -28,7 +31,8 @@ import java.util.Enumeration;
  * 
  * @author zhangliang
  */
-public class LocalHostService {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class IpUtils {
     
     /**
      * IP地址的正则表达式.
@@ -47,7 +51,7 @@ public class LocalHostService {
      * 
      * @return 本机IP地址
      */
-    public String getIp() {
+    public static String getIp() {
         if (null != cachedIpAddress) {
             return cachedIpAddress;
         }
@@ -77,15 +81,15 @@ public class LocalHostService {
         return localIpAddress;
     }
     
-    private boolean isPublicIpAddress(final InetAddress ipAddress) {
+    private static boolean isPublicIpAddress(final InetAddress ipAddress) {
         return !ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && !isV6IpAddress(ipAddress);
     }
     
-    private boolean isLocalIpAddress(final InetAddress ipAddress) {
+    private static boolean isLocalIpAddress(final InetAddress ipAddress) {
         return ipAddress.isSiteLocalAddress() && !ipAddress.isLoopbackAddress() && !isV6IpAddress(ipAddress);
     }
     
-    private boolean isV6IpAddress(final InetAddress ipAddress) {
+    private static boolean isV6IpAddress(final InetAddress ipAddress) {
         return ipAddress.getHostAddress().contains(":");
     }
     
@@ -94,7 +98,7 @@ public class LocalHostService {
      * 
      * @return 本机Host名称
      */
-    public String getHostName() {
+    public static String getHostName() {
         try {
             return InetAddress.getLocalHost().getHostName();
         } catch (final UnknownHostException ex) {

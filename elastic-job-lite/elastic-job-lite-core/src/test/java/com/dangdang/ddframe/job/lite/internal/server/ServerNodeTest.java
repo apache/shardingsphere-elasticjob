@@ -17,7 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -26,17 +28,20 @@ import static org.junit.Assert.assertTrue;
 
 public final class ServerNodeTest {
     
-    private LocalHostService localHostService = new LocalHostService();
-    
     private ServerNode serverNode = new ServerNode("test_job");
+    
+    @BeforeClass
+    public static void setUp() {
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+    }
     
     @Test
     public void assertGetServerNode() {
-        assertThat(serverNode.getServerNode("host0"), is("servers/host0"));
+        assertThat(serverNode.getServerNode("127.0.0.1"), is("servers/127.0.0.1"));
     }
     
     @Test
     public void assertIsLocalServerPath() {
-        assertTrue(serverNode.isLocalServerPath("/test_job/servers/" + localHostService.getIp()));
+        assertTrue(serverNode.isLocalServerPath("/test_job/servers/127.0.0.1"));
     }
 }

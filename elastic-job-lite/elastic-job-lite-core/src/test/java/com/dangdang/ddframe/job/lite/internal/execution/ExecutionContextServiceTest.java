@@ -20,11 +20,12 @@ package com.dangdang.ddframe.job.lite.internal.execution;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,9 +50,6 @@ public final class ExecutionContextServiceTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private LocalHostService localHostService;
-    
-    @Mock
     private ConfigurationService configService;
     
     private final ExecutionContextService executionContextService = new ExecutionContextService(null, "test_job");
@@ -61,8 +59,7 @@ public final class ExecutionContextServiceTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(executionContextService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(executionContextService, "configService", configService);
-        when(localHostService.getIp()).thenReturn("mockedIP");
-        when(localHostService.getHostName()).thenReturn("mockedHostName");
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
     @Test

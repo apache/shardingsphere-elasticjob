@@ -28,7 +28,6 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -54,9 +53,6 @@ public final class ExecutionServiceTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private LocalHostService localHostService;
-    
-    @Mock
     private ConfigurationService configService;
     
     @Mock
@@ -77,8 +73,6 @@ public final class ExecutionServiceTest {
         ReflectionUtils.setFieldValue(executionService, "configService", configService);
         ReflectionUtils.setFieldValue(executionService, "serverService", serverService);
         ReflectionUtils.setFieldValue(executionService, "leaderElectionService", leaderElectionService);
-        when(localHostService.getIp()).thenReturn("mockedIP");
-        when(localHostService.getHostName()).thenReturn("mockedHostName");
     }
     
     @Test
