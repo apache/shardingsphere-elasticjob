@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.lite.console.repository.ConfigurationsXmlReposit
 
 public class ConfigurationsXmlRepositoryImpl extends AbstractXmlRepositoryImpl<GlobalConfiguration> implements ConfigurationsXmlRepository {
     
-    public ConfigurationsXmlRepositoryImpl(String fileName) {
-        super(fileName, GlobalConfiguration.class);
+    public ConfigurationsXmlRepositoryImpl() {
+        super("Configurations.xml", GlobalConfiguration.class);
     }
 }

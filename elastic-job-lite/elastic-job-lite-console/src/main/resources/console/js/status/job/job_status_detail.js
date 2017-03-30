@@ -1,5 +1,5 @@
 $(function() {
-    $("#job-name").text(getCurrentUrl("job-name"));
+    $("#job-name").text($("#index-job-name").text());
     renderInstanceTable();
     renderShardingTable();
     bindInstanceButtons();

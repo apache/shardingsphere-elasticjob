@@ -76,7 +76,8 @@ function bindButtons() {
 function bindDetailButton() {
     $(document).on("click", "button[operation='job-detail'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
-        window.location = "index.html?job-name=" + jobName + "&status-page=show";
+        $("#index-job-name").text(jobName);
+        $("#content").load("html/status/job/job_status_detail.html");
     });
 }
 
