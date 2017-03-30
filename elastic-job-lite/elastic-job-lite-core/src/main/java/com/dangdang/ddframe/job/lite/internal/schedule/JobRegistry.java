@@ -103,6 +103,6 @@ public final class JobRegistry {
      */
     public JobInstance getJobInstance(final String jobName) {
         JobInstance result = jobInstanceMap.get(jobName);
-        return null == result ? new JobInstance("0.0.0.0@-@0") : result;
+        return null == result ? new JobInstance(JobInstance.DEFAULT_INSTANCE_ID) : result;
     }
 }

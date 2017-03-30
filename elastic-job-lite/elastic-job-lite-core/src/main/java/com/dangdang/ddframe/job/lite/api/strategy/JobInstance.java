@@ -34,6 +34,11 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "jobInstanceId")
 public final class JobInstance {
     
+    /**
+     * 默认作业运行实例主键.
+     */
+    public static final String DEFAULT_INSTANCE_ID = "1.1.1.1@-@1";
+    
     private static final String DELIMITER = "@-@";
     
     /**
