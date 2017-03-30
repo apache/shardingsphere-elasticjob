@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
@@ -30,7 +30,7 @@ public final class FailoverNode {
     
     static final String FAILOVER = "failover";
     
-    static final String LEADER_ROOT = ElectionNode.ROOT + "/" + FAILOVER;
+    static final String LEADER_ROOT = LeaderNode.ROOT + "/" + FAILOVER;
     
     static final String ITEMS_ROOT = LEADER_ROOT + "/items";
     

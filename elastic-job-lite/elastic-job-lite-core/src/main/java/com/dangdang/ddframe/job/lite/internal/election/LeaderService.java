@@ -51,7 +51,7 @@ public class LeaderService {
      */
     public void electLeader() {
         log.debug("Elect a new leader now.");
-        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback());
+        jobNodeStorage.executeInLeader(LeaderNode.LATCH, new LeaderElectionExecutionCallback());
         log.debug("Leader election completed.");
     }
     
@@ -81,7 +81,7 @@ public class LeaderService {
      * @return 当前节点是否是主节点
      */
     public boolean isLeader() {
-        return JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_INSTANCE));
+        return JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(LeaderNode.INSTANCE));
     }
     
     /**
@@ -90,14 +90,14 @@ public class LeaderService {
      * @return 是否已经有主节点
      */
     public boolean hasLeader() {
-        return jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_INSTANCE);
+        return jobNodeStorage.isJobNodeExisted(LeaderNode.INSTANCE);
     }
     
     /**
      * 删除主节点供重新选举.
      */
     public void removeLeader() {
-        jobNodeStorage.removeJobNodeIfExisted(ElectionNode.LEADER_INSTANCE);
+        jobNodeStorage.removeJobNodeIfExisted(LeaderNode.INSTANCE);
     }
     
     @RequiredArgsConstructor
@@ -106,7 +106,7 @@ public class LeaderService {
         @Override
         public void execute() {
             if (!hasLeader()) {
-                jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+                jobNodeStorage.fillEphemeralJobNode(LeaderNode.INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             }
         }
     }

@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderNode;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 final class ShardingNode {
     
-    static final String LEADER_SHARDING_ROOT = ElectionNode.ROOT + "/sharding";
+    static final String LEADER_SHARDING_ROOT = LeaderNode.ROOT + "/sharding";
     
     static final String NECESSARY = LEADER_SHARDING_ROOT + "/necessary";
     

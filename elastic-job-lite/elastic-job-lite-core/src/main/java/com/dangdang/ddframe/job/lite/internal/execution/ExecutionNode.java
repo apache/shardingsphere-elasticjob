@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.execution;
 
-import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
@@ -44,7 +44,7 @@ public final class ExecutionNode {
     
     static final String MISFIRE = ROOT + "/%s/misfire";
     
-    static final String LEADER_ROOT = ElectionNode.ROOT + "/" + ROOT;
+    static final String LEADER_ROOT = LeaderNode.ROOT + "/" + ROOT;
     
     static final String NECESSARY = LEADER_ROOT + "/necessary";
     

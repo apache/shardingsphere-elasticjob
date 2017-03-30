@@ -21,8 +21,8 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManage
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNodeTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationServiceTest;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactoryTest;
-import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManagerTest;
-import com.dangdang.ddframe.job.lite.internal.election.ElectionNodeTest;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderNodeTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderServiceTest;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextServiceTest;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManagerTest;
@@ -67,8 +67,8 @@ import org.junit.runners.Suite.SuiteClasses;
         ConfigurationListenerManagerTest.class,
         LiteJobConfigurationGsonFactoryTest.class, 
         LeaderServiceTest.class, 
-        ElectionNodeTest.class,
-        ElectionListenerManagerTest.class, 
+        LeaderNodeTest.class,
+        LeaderListenerManagerTest.class, 
         ServerServiceTest.class, 
         InstanceNodeTest.class,
         JobOperationListenerManagerTest.class, 

@@ -29,15 +29,15 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 主节点选举监听管理器.
+ * 主节点监听管理器.
  * 
  * @author zhangliang
  */
-public class ElectionListenerManager extends AbstractListenerManager {
+public class LeaderListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    private final ElectionNode electionNode;
+    private final LeaderNode leaderNode;
     
     private final ServerNode serverNode;
     
@@ -45,10 +45,10 @@ public class ElectionListenerManager extends AbstractListenerManager {
     
     private final ServerService serverService;
     
-    public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+    public LeaderListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
-        electionNode = new ElectionNode(jobName);
+        leaderNode = new LeaderNode(jobName);
         serverNode = new ServerNode(jobName);
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
@@ -72,7 +72,7 @@ public class ElectionListenerManager extends AbstractListenerManager {
         }
         
         private boolean isLeaderCrashed(final TreeCacheEvent event, final String path) {
-            return electionNode.isLeaderInstancePath(path) && Type.NODE_REMOVED == event.getType();
+            return leaderNode.isLeaderInstancePath(path) && Type.NODE_REMOVED == event.getType();
         }
         
         private boolean isLocalServerEnabled(final TreeCacheEvent event, final String path) {

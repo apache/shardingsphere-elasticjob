@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.listener;
 
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
-import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManager;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class ListenerManager {
     
-    private final ElectionListenerManager electionListenerManager;
+    private final LeaderListenerManager leaderListenerManager;
     
     private final ShardingListenerManager shardingListenerManager;
     
@@ -51,7 +51,7 @@ public class ListenerManager {
     private final GuaranteeListenerManager guaranteeListenerManager;
     
     public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
-        electionListenerManager = new ElectionListenerManager(regCenter, jobName);
+        leaderListenerManager = new LeaderListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
         executionListenerManager = new ExecutionListenerManager(regCenter, jobName);
         failoverListenerManager = new FailoverListenerManager(regCenter, jobName);
@@ -64,7 +64,7 @@ public class ListenerManager {
      * 开启所有监听器.
      */
     public void startAllListeners() {
-        electionListenerManager.start();
+        leaderListenerManager.start();
         shardingListenerManager.start();
         executionListenerManager.start();
         failoverListenerManager.start();

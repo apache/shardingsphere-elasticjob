@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.listener;
 
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
-import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManager;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.verify;
 public class ListenerManagerTest {
     
     @Mock
-    private ElectionListenerManager electionListenerManager;
+    private LeaderListenerManager leaderListenerManager;
     
     @Mock
     private ShardingListenerManager shardingListenerManager;
@@ -63,7 +63,7 @@ public class ListenerManagerTest {
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        ReflectionUtils.setFieldValue(listenerManager, "electionListenerManager", electionListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "leaderListenerManager", leaderListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "executionListenerManager", executionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "failoverListenerManager", failoverListenerManager);
@@ -75,7 +75,7 @@ public class ListenerManagerTest {
     @Test
     public void assertStartAllListeners() {
         listenerManager.startAllListeners();
-        verify(electionListenerManager).start();
+        verify(leaderListenerManager).start();
         verify(shardingListenerManager).start();
         verify(executionListenerManager).start();
         verify(failoverListenerManager).start();

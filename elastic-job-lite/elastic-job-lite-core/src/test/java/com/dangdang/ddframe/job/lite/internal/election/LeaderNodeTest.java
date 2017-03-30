@@ -22,17 +22,17 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public final class ElectionNodeTest {
+public final class LeaderNodeTest {
     
-    private ElectionNode electionNode = new ElectionNode("test_job");
+    private LeaderNode leaderNode = new LeaderNode("test_job");
     
     @Test
     public void assertIsLeaderInstancePath() {
-        assertTrue(electionNode.isLeaderInstancePath("/test_job/leader/election/instance"));
+        assertTrue(leaderNode.isLeaderInstancePath("/test_job/leader/election/instance"));
     }
     
     @Test
     public void assertIsNotLeaderInstancePath() {
-        assertFalse(electionNode.isLeaderInstancePath("/test_job/leader/election/instance1"));
+        assertFalse(leaderNode.isLeaderInstancePath("/test_job/leader/election/instance1"));
     }
 }

@@ -20,30 +20,30 @@ package com.dangdang.ddframe.job.lite.internal.election;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
- * 选举节点路径.
+ * 主节点路径.
  * 
  * @author zhangliang
  */
-public final class ElectionNode {
+public final class LeaderNode {
     
     /**
-     * 选举节点根路径.
+     * 主节点根路径.
      */
     public static final String ROOT = "leader";
     
     static final String ELECTION_ROOT = ROOT + "/election";
     
-    static final String LEADER_INSTANCE = ELECTION_ROOT + "/instance";
+    static final String INSTANCE = ELECTION_ROOT + "/instance";
     
     static final String LATCH = ELECTION_ROOT + "/latch";
     
     private final JobNodePath jobNodePath;
     
-    ElectionNode(final String jobName) {
+    LeaderNode(final String jobName) {
         jobNodePath = new JobNodePath(jobName);
     }
     
     boolean isLeaderInstancePath(final String path) {
-        return jobNodePath.getFullPath(LEADER_INSTANCE).equals(path);
+        return jobNodePath.getFullPath(INSTANCE).equals(path);
     }
 }
