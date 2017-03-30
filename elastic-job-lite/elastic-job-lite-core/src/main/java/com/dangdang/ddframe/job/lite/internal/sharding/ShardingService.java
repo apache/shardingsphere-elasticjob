@@ -105,7 +105,7 @@ public class ShardingService {
         if (!isNeedSharding()) {
             return;
         }
-        if (!leaderElectionService.isLeader()) {
+        if (!leaderElectionService.isLeaderUntilBlock()) {
             blockUntilShardingCompleted();
             return;
         }
@@ -122,7 +122,7 @@ public class ShardingService {
     }
     
     private void blockUntilShardingCompleted() {
-        while (!leaderElectionService.isLeader() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
+        while (!leaderElectionService.isLeaderUntilBlock() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
             log.debug("Job '{}' sleep short time until sharding completed.", jobName);
             BlockUtils.waitingShortTime();
         }

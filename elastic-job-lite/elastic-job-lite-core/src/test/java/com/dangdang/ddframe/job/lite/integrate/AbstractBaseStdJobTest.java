@@ -156,7 +156,7 @@ public abstract class AbstractBaseStdJobTest {
     
     void assertRegCenterCommonInfoWithEnabled() {
         assertRegCenterCommonInfo();
-        assertTrue(leaderElectionService.isLeader());
+        assertTrue(leaderElectionService.isLeaderUntilBlock());
     }
     
     protected void assertRegCenterCommonInfoWithDisabled() {

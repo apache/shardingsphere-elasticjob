@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Elastic Job分片节点名称的常量类.
+ * 分片节点路径.
  * 
  * @author zhangliang
  */

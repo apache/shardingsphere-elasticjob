@@ -93,14 +93,14 @@ public final class LiteJobConfigurationGsonFactory {
                 case "jobShardingStrategyClass":
                     customizedValueMap.put("jobShardingStrategyClass", in.nextString());
                     break;
+                case "reconcileIntervalMinutes":
+                    customizedValueMap.put("reconcileIntervalMinutes", in.nextInt());
+                    break;
                 case "disabled":
                     customizedValueMap.put("disabled", in.nextBoolean());
                     break;
                 case "overwrite":
                     customizedValueMap.put("overwrite", in.nextBoolean());
-                    break;
-                case "reconcileIntervalMinutes":
-                    customizedValueMap.put("reconcileIntervalMinutes", in.nextInt());
                     break;
                 default:
                     in.skipValue();
@@ -123,14 +123,14 @@ public final class LiteJobConfigurationGsonFactory {
             if (customizedValueMap.containsKey("jobShardingStrategyClass")) {
                 builder.jobShardingStrategyClass((String) customizedValueMap.get("jobShardingStrategyClass"));
             }
+            if (customizedValueMap.containsKey("reconcileIntervalMinutes")) {
+                builder.reconcileIntervalMinutes((int) customizedValueMap.get("reconcileIntervalMinutes"));
+            }
             if (customizedValueMap.containsKey("disabled")) {
                 builder.disabled((boolean) customizedValueMap.get("disabled"));
             }
             if (customizedValueMap.containsKey("overwrite")) {
                 builder.overwrite((boolean) customizedValueMap.get("overwrite"));
-            }
-            if (customizedValueMap.containsKey("reconcileIntervalMinutes")) {
-                builder.reconcileIntervalMinutes((int) customizedValueMap.get("reconcileIntervalMinutes"));
             }
             return builder.build();
         }
@@ -141,9 +141,9 @@ public final class LiteJobConfigurationGsonFactory {
             out.name("maxTimeDiffSeconds").value(value.getMaxTimeDiffSeconds());
             out.name("monitorPort").value(value.getMonitorPort());
             out.name("jobShardingStrategyClass").value(value.getJobShardingStrategyClass());
+            out.name("reconcileIntervalMinutes").value(value.getReconcileIntervalMinutes());
             out.name("disabled").value(value.isDisabled());
             out.name("overwrite").value(value.isOverwrite());
-            out.name("reconcileIntervalMinutes").value(value.getReconcileIntervalMinutes());
         }
     }
 }

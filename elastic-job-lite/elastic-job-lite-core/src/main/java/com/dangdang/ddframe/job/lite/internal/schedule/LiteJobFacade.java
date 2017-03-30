@@ -107,6 +107,7 @@ public class LiteJobFacade implements JobFacade {
         }
     }
     
+    @Override
     public ShardingContexts getShardingContexts() {
         boolean isFailover = configService.load(true).isFailover();
         if (isFailover) {

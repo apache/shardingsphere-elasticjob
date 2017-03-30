@@ -77,7 +77,7 @@ public class ExecutionService {
         if (!jobNodeStorage.isJobNodeExisted(ExecutionNode.ROOT)) {
             return;
         }
-        if (leaderElectionService.isLeader()) {
+        if (leaderElectionService.isLeaderUntilBlock()) {
             jobNodeStorage.fillEphemeralJobNode(ExecutionNode.CLEANING, "");
             List<Integer> items = getAllItems();
             for (int each : items) {

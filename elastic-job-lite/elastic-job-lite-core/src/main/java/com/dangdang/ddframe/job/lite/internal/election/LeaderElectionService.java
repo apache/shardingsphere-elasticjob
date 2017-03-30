@@ -57,7 +57,9 @@ public class LeaderElectionService {
      * 选举主节点.
      */
     public void leaderElection() {
+        log.debug("Leader crashed, elect a new leader now.");
         jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback(false));
+        log.debug("Leader election completed.");
     }
     
     /**
@@ -69,13 +71,22 @@ public class LeaderElectionService {
      * 
      * @return 当前节点是否是主节点
      */
-    public Boolean isLeader() {
+    public Boolean isLeaderUntilBlock() {
         while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
             log.info("Leader node is electing, waiting for {} ms", 100);
             BlockUtils.waitingShortTime();
             leaderElection();
         }
-        return JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_HOST_AND_INSTANCE));
+        return isLeader();
+    }
+    
+    /**
+     * 判断当前节点是否是主节点.
+     *
+     * @return 当前节点是否是主节点
+     */
+    public boolean isLeader() {
+        return JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ElectionNode.LEADER_INSTANCE));
     }
     
     /**
@@ -83,20 +94,20 @@ public class LeaderElectionService {
      * 
      * <p>
      * 仅为选举监听使用.
-     * 程序中其他地方判断是否有主节点应使用{@code isLeader() }方法.
+     * 程序中其他地方判断是否有主节点应使用{@code isLeaderUntilBlock() }方法.
      * </p>
      * 
      * @return 是否已经有主节点
      */
     public boolean hasLeader() {
-        return jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST_AND_INSTANCE);
+        return jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_INSTANCE);
     }
     
     /**
      * 删除主节点供重新选举.
      */
     public void removeLeader() {
-        jobNodeStorage.removeJobNodeIfExisted(ElectionNode.LEADER_HOST_AND_INSTANCE);
+        jobNodeStorage.removeJobNodeIfExisted(ElectionNode.LEADER_INSTANCE);
     }
     
     @RequiredArgsConstructor
@@ -106,9 +117,9 @@ public class LeaderElectionService {
     
         @Override
         public void execute() {
-            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_HOST_AND_INSTANCE)
+            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_INSTANCE)
                     && (isForceElect || serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()))) {
-                jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_HOST_AND_INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+                jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             }
         }
     }

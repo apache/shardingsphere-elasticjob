@@ -20,20 +20,20 @@ package com.dangdang.ddframe.job.lite.internal.election;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
- * Elastic Job主服务器根节点名称的常量类.
+ * 选举节点路径.
  * 
  * @author zhangliang
  */
 public final class ElectionNode {
     
     /**
-     * Elastic Job主服务器根节点.
+     * 选举节点根路径.
      */
     public static final String ROOT = "leader";
     
     static final String ELECTION_ROOT = ROOT + "/election";
     
-    static final String LEADER_HOST_AND_INSTANCE = ELECTION_ROOT + "/instance";
+    static final String LEADER_INSTANCE = ELECTION_ROOT + "/instance";
     
     static final String LATCH = ELECTION_ROOT + "/latch";
     
@@ -43,7 +43,7 @@ public final class ElectionNode {
         jobNodePath = new JobNodePath(jobName);
     }
     
-    boolean isLeaderHostPath(final String path) {
-        return jobNodePath.getFullPath(LEADER_HOST_AND_INSTANCE).equals(path);
+    boolean isLeaderInstancePath(final String path) {
+        return jobNodePath.getFullPath(LEADER_INSTANCE).equals(path);
     }
 }

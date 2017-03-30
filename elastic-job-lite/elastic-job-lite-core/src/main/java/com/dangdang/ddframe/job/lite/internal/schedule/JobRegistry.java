@@ -102,6 +102,7 @@ public final class JobRegistry {
      * @return 作业运行实例
      */
     public JobInstance getJobInstance(final String jobName) {
-        return jobInstanceMap.get(jobName);
+        JobInstance result = jobInstanceMap.get(jobName);
+        return null == result ? new JobInstance("0.0.0.0@-@0") : result;
     }
 }

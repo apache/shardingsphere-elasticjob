@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
- * Elastic Job失效转移节点名称的常量类.
+ * 失效转移节点路径.
  * 
  * @author zhangliang
  */

@@ -63,11 +63,11 @@ public class ReconcileServiceTest {
                 TestSimpleJob.class.getCanonicalName())).reconcileIntervalMinutes(1).build());
         Mockito.when(shardingService.isNeedSharding()).thenReturn(false);
         Mockito.when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);
-        Mockito.when(leaderElectionService.isLeader()).thenReturn(true);
+        Mockito.when(leaderElectionService.isLeaderUntilBlock()).thenReturn(true);
         reconcileService.runOneIteration();
         Mockito.verify(shardingService).isNeedSharding();
         Mockito.verify(shardingService).hasShardingInfoInOfflineServers();
         Mockito.verify(shardingService).setReshardingFlag();
-        Mockito.verify(leaderElectionService).isLeader();
+        Mockito.verify(leaderElectionService).isLeaderUntilBlock();
     }
 }

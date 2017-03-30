@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
- * Elastic Job运行实例节点名称的常量类.
+ * 运行实例节点路径.
  * 
  * @author zhangliang
  */

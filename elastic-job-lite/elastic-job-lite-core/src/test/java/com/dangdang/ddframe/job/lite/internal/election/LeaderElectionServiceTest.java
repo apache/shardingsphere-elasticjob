@@ -99,13 +99,13 @@ public final class LeaderElectionServiceTest {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
         when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("127.0.0.1"));
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
-        assertTrue(leaderElectionService.isLeader());
+        assertTrue(leaderElectionService.isLeaderUntilBlock());
     }
     
     @Test
     public void assertIsNotLeader() {
         when(serverService.getAvailableServers()).thenReturn(Collections.<String>emptyList());
-        assertFalse(leaderElectionService.isLeader());
+        assertFalse(leaderElectionService.isLeaderUntilBlock());
     }
     
     @Test

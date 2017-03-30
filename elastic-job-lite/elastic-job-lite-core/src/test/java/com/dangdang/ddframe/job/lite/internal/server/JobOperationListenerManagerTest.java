@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
@@ -48,6 +49,9 @@ public final class JobOperationListenerManagerTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
+    private LeaderElectionService leaderElectionService;
+    
+    @Mock
     private ServerService serverService;
     
     @Mock
@@ -66,6 +70,7 @@ public final class JobOperationListenerManagerTest {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         jobOperationListenerManager = new JobOperationListenerManager(null, "test_job");
         MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(jobOperationListenerManager, "leaderElectionService", leaderElectionService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "serverService", serverService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "executionService", executionService);

@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
- * Elastic Job执行状态节点名称的常量类.
+ * 执行节点路径.
  * 
  * @author zhangliang
  */
