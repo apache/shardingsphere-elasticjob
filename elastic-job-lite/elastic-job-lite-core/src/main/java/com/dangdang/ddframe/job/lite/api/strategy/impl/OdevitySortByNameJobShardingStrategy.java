@@ -17,14 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 根据作业名的哈希值奇偶数决定IP升降序算法的分片策略.
@@ -45,11 +43,11 @@ public final class OdevitySortByNameJobShardingStrategy implements JobShardingSt
     private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
-    public Collection<JobShardingResult> sharding(final List<JobInstance> jobInstances, final JobShardingMetadata jobShardingMetadata) {
-        long jobNameHash = jobShardingMetadata.getJobName().hashCode();
+    public Map<JobInstance, List<Integer>> sharding(final List<JobInstance> jobInstances, final String jobName, final int shardingTotalCount) {
+        long jobNameHash = jobName.hashCode();
         if (0 == jobNameHash % 2) {
             Collections.reverse(jobInstances);
         }
-        return averageAllocationJobShardingStrategy.sharding(jobInstances, jobShardingMetadata);
+        return averageAllocationJobShardingStrategy.sharding(jobInstances, jobName, shardingTotalCount);
     }
 }

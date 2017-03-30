@@ -17,14 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -35,34 +35,28 @@ public final class RotateServerByNameJobShardingStrategyTest {
     
     @Test
     public void assertSharding1() {
-        Collection<JobShardingResult> expected = Arrays.asList(
-                new JobShardingResult(new JobInstance("host1@-@0"), Collections.singletonList(0)),
-                new JobShardingResult(new JobInstance("host2@-@0"), Collections.singletonList(1)),
-                new JobShardingResult(new JobInstance("host0@-@0"), Collections.<Integer>emptyList()));
-        assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(
-                new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), 
-                new JobShardingMetadata("1", 2)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new HashMap<>();
+        expected.put(new JobInstance("host1@-@0"), Collections.singletonList(0));
+        expected.put(new JobInstance("host2@-@0"), Collections.singletonList(1));
+        expected.put(new JobInstance("host0@-@0"), Collections.<Integer>emptyList());
+        assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "1", 2), is(expected));
     }
     
     @Test
     public void assertSharding2() {
-        Collection<JobShardingResult> expected = Arrays.asList(
-                new JobShardingResult(new JobInstance("host2@-@0"), Collections.singletonList(0)),
-                new JobShardingResult(new JobInstance("host0@-@0"), Collections.singletonList(1)),
-                new JobShardingResult(new JobInstance("host1@-@0"), Collections.<Integer>emptyList()));
-        assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(
-                new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")),
-                new JobShardingMetadata("2", 2)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new HashMap<>();
+        expected.put(new JobInstance("host2@-@0"), Collections.singletonList(0));
+        expected.put(new JobInstance("host0@-@0"), Collections.singletonList(1));
+        expected.put(new JobInstance("host1@-@0"), Collections.<Integer>emptyList());
+        assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "2", 2), is(expected));
     }
     
     @Test
     public void assertSharding3() {
-        Collection<JobShardingResult> expected = Arrays.asList(
-                new JobShardingResult(new JobInstance("host0@-@0"), Collections.singletonList(0)),
-                new JobShardingResult(new JobInstance("host1@-@0"), Collections.singletonList(1)),
-                new JobShardingResult(new JobInstance("host2@-@0"), Collections.<Integer>emptyList()));
-        assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(
-                new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")),
-                new JobShardingMetadata("3", 2)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new HashMap<>();
+        expected.put(new JobInstance("host0@-@0"), Collections.singletonList(0));
+        expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));
+        expected.put(new JobInstance("host2@-@0"), Collections.<Integer>emptyList());
+        assertThat(rotateServerByNameJobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "3", 2), is(expected));
     }
 }

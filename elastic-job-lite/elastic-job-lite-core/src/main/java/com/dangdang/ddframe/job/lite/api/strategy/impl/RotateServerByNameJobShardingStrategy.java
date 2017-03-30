@@ -17,14 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingResult;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingMetadata;
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 根据作业名的哈希值对服务器列表进行轮转的分片策略.
@@ -36,8 +34,8 @@ public class RotateServerByNameJobShardingStrategy implements JobShardingStrateg
     private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
-    public Collection<JobShardingResult> sharding(final List<JobInstance> jobInstances, final JobShardingMetadata jobShardingMetadata) {
-        return averageAllocationJobShardingStrategy.sharding(rotateServerList(jobInstances, jobShardingMetadata.getJobName()), jobShardingMetadata);
+    public Map<JobInstance, List<Integer>> sharding(final List<JobInstance> jobInstances, final String jobName, final int shardingTotalCount) {
+        return averageAllocationJobShardingStrategy.sharding(rotateServerList(jobInstances, jobName), jobName, shardingTotalCount);
     }
     
     private List<JobInstance> rotateServerList(final List<JobInstance> shardingUnits, final String jobName) {
