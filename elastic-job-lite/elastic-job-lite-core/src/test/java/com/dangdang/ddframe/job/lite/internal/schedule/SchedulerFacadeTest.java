@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
@@ -51,7 +51,7 @@ public class SchedulerFacadeTest {
     private ConfigurationService configService;
     
     @Mock
-    private LeaderElectionService leaderElectionService;
+    private LeaderService leaderService;
     
     @Mock
     private ServerService serverService;
@@ -80,7 +80,7 @@ public class SchedulerFacadeTest {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), false)).build());
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
-        ReflectionUtils.setFieldValue(schedulerFacade, "leaderElectionService", leaderElectionService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(schedulerFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(schedulerFacade, "executionService", executionService);
@@ -94,7 +94,7 @@ public class SchedulerFacadeTest {
                 TestDataflowJob.class.getCanonicalName(), false)).build());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
         verify(listenerManager).startAllListeners();
-        verify(leaderElectionService).leaderForceElection();
+        verify(leaderService).electLeader();
         verify(configService).persist(liteJobConfig);
         verify(serverService).persistServerOnline(true);
         verify(shardingService).setReshardingFlag();

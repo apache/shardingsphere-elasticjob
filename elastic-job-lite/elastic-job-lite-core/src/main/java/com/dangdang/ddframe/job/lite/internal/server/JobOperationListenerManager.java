@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
@@ -41,7 +41,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final InstanceNode instanceNode;
     
-    private final LeaderElectionService leaderElectionService;
+    private final LeaderService leaderService;
     
     private final ServerService serverService;
     
@@ -53,7 +53,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         super(regCenter, jobName);
         this.jobName = jobName;
         instanceNode = new InstanceNode(jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
@@ -106,8 +106,8 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
             if (instanceNode.isLocalInstancePath(path) && TreeCacheEvent.Type.NODE_REMOVED == event.getType()) {
                 serverService.removeInstanceStatus();
-                if (leaderElectionService.isLeader()) {
-                    leaderElectionService.removeLeader();
+                if (leaderService.isLeader()) {
+                    leaderService.removeLeader();
                 }
                 JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
                 if (null != jobScheduleController) {

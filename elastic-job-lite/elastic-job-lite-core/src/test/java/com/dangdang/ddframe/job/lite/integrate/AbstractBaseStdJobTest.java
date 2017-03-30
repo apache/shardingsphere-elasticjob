@@ -33,7 +33,7 @@ import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.fixture.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.InstanceStatus;
@@ -71,7 +71,7 @@ public abstract class AbstractBaseStdJobTest {
     
     private final int monitorPort;
     
-    private final LeaderElectionService leaderElectionService;
+    private final LeaderService leaderService;
     
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
@@ -101,7 +101,7 @@ public abstract class AbstractBaseStdJobTest {
             }
         });
         monitorPort = -1;
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
     }
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
@@ -109,7 +109,7 @@ public abstract class AbstractBaseStdJobTest {
         liteJobConfig = initJobConfig(elasticJobClass);
         jobScheduler = new JobScheduler(regCenter, liteJobConfig);
         disabled = false;
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
     }
     
     private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
@@ -156,7 +156,7 @@ public abstract class AbstractBaseStdJobTest {
     
     void assertRegCenterCommonInfoWithEnabled() {
         assertRegCenterCommonInfo();
-        assertTrue(leaderElectionService.isLeaderUntilBlock());
+        assertTrue(leaderService.isLeaderUntilBlock());
     }
     
     protected void assertRegCenterCommonInfoWithDisabled() {

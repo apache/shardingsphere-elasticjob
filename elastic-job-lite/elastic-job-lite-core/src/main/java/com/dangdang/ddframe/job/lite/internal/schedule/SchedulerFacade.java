@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.internal.schedule;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
@@ -40,7 +40,7 @@ public class SchedulerFacade {
     
     private final ConfigurationService configService;
     
-    private final LeaderElectionService leaderElectionService;
+    private final LeaderService leaderService;
     
     private final ServerService serverService;
     
@@ -56,7 +56,7 @@ public class SchedulerFacade {
     
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         configService = new ConfigurationService(regCenter, jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
@@ -72,7 +72,7 @@ public class SchedulerFacade {
      */
     public void registerStartUpInfo(final LiteJobConfiguration liteJobConfig) {
         listenerManager.startAllListeners();
-        leaderElectionService.leaderForceElection();
+        leaderService.electLeader();
         configService.persist(liteJobConfig);
         LiteJobConfiguration liteJobConfigFromZk = configService.load(false);
         serverService.persistServerOnline(!liteJobConfigFromZk.isDisabled());

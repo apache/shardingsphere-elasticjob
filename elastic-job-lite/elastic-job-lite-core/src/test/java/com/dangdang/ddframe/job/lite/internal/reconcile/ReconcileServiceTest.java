@@ -23,7 +23,7 @@ import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class ReconcileServiceTest {
     private ShardingService shardingService;
     
     @Mock
-    private LeaderElectionService leaderElectionService;
+    private LeaderService leaderService;
     
     private ReconcileService reconcileService;
     
@@ -54,7 +54,7 @@ public class ReconcileServiceTest {
         ReflectionUtils.setFieldValue(reconcileService, "lastReconcileTime", 1L);
         ReflectionUtils.setFieldValue(reconcileService, "configService", configService);
         ReflectionUtils.setFieldValue(reconcileService, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(reconcileService, "leaderElectionService", leaderElectionService);
+        ReflectionUtils.setFieldValue(reconcileService, "leaderService", leaderService);
     }
     
     @Test
@@ -63,11 +63,11 @@ public class ReconcileServiceTest {
                 TestSimpleJob.class.getCanonicalName())).reconcileIntervalMinutes(1).build());
         Mockito.when(shardingService.isNeedSharding()).thenReturn(false);
         Mockito.when(shardingService.hasShardingInfoInOfflineServers()).thenReturn(true);
-        Mockito.when(leaderElectionService.isLeaderUntilBlock()).thenReturn(true);
+        Mockito.when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         reconcileService.runOneIteration();
         Mockito.verify(shardingService).isNeedSharding();
         Mockito.verify(shardingService).hasShardingInfoInOfflineServers();
         Mockito.verify(shardingService).setReshardingFlag();
-        Mockito.verify(leaderElectionService).isLeaderUntilBlock();
+        Mockito.verify(leaderService).isLeaderUntilBlock();
     }
 }

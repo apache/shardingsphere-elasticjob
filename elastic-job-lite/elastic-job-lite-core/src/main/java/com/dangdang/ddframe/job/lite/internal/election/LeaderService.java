@@ -27,12 +27,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 选举主节点的服务.
+ * 主节点服务.
  * 
  * @author zhangliang
  */
 @Slf4j
-public class LeaderElectionService {
+public class LeaderService {
     
     private final String jobName;
     
@@ -40,25 +40,18 @@ public class LeaderElectionService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    public LeaderElectionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+    public LeaderService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
     }
     
     /**
-     * 强制选举主节点.
-     */
-    public void leaderForceElection() {
-        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback(true));
-    }
-    
-    /**
      * 选举主节点.
      */
-    public void leaderElection() {
-        log.debug("Leader crashed, elect a new leader now.");
-        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback(false));
+    public void electLeader() {
+        log.debug("Elect a new leader now.");
+        jobNodeStorage.executeInLeader(ElectionNode.LATCH, new LeaderElectionExecutionCallback());
         log.debug("Leader election completed.");
     }
     
@@ -71,11 +64,13 @@ public class LeaderElectionService {
      * 
      * @return 当前节点是否是主节点
      */
-    public Boolean isLeaderUntilBlock() {
-        while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
-            log.info("Leader node is electing, waiting for {} ms", 100);
+    public boolean isLeaderUntilBlock() {
+        while (!hasLeader()) {
+            log.info("Leader is electing, waiting for {} ms", 100);
             BlockUtils.waitingShortTime();
-            leaderElection();
+            if (serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
+                electLeader();
+            }
         }
         return isLeader();
     }
@@ -91,11 +86,6 @@ public class LeaderElectionService {
     
     /**
      * 判断是否已经有主节点.
-     * 
-     * <p>
-     * 仅为选举监听使用.
-     * 程序中其他地方判断是否有主节点应使用{@code isLeaderUntilBlock() }方法.
-     * </p>
      * 
      * @return 是否已经有主节点
      */
@@ -113,12 +103,9 @@ public class LeaderElectionService {
     @RequiredArgsConstructor
     class LeaderElectionExecutionCallback implements LeaderExecutionCallback {
         
-        private final boolean isForceElect;
-    
         @Override
         public void execute() {
-            if (!jobNodeStorage.isJobNodeExisted(ElectionNode.LEADER_INSTANCE)
-                    && (isForceElect || serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()))) {
+            if (!hasLeader()) {
                 jobNodeStorage.fillEphemeralJobNode(ElectionNode.LEADER_INSTANCE, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             }
         }

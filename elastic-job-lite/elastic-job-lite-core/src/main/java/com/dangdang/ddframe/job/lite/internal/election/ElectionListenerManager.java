@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.election;
 
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
@@ -34,19 +35,22 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  */
 public class ElectionListenerManager extends AbstractListenerManager {
     
+    private final String jobName;
+    
     private final ElectionNode electionNode;
     
     private final ServerNode serverNode;
     
-    private final LeaderElectionService leaderElectionService;
+    private final LeaderService leaderService;
     
     private final ServerService serverService;
     
     public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
+        this.jobName = jobName;
         electionNode = new ElectionNode(jobName);
         serverNode = new ServerNode(jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
     }
     
@@ -59,10 +63,11 @@ public class ElectionListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (isLeaderCrashed(event, path) && !serverService.getAvailableServers().isEmpty() || !leaderElectionService.hasLeader() && isLocalServerEnabled(event, path)) {
-                leaderElectionService.leaderElection();
-            } else if (leaderElectionService.isLeader() && isLocalServerDisabled(event, path)) {
-                leaderElectionService.removeLeader();
+            if (isLeaderCrashed(event, path) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())
+                    || !leaderService.hasLeader() && isLocalServerEnabled(event, path)) {
+                leaderService.electLeader();
+            } else if (leaderService.isLeader() && isLocalServerDisabled(event, path)) {
+                leaderService.removeLeader();
             }
         }
         

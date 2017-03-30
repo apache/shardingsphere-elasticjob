@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyFactory;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -54,7 +54,7 @@ public class ShardingService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    private final LeaderElectionService leaderElectionService;
+    private final LeaderService leaderService;
     
     private final ConfigurationService configService;
     
@@ -67,7 +67,7 @@ public class ShardingService {
     public ShardingService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
@@ -105,7 +105,7 @@ public class ShardingService {
         if (!isNeedSharding()) {
             return;
         }
-        if (!leaderElectionService.isLeaderUntilBlock()) {
+        if (!leaderService.isLeaderUntilBlock()) {
             blockUntilShardingCompleted();
             return;
         }
@@ -122,7 +122,7 @@ public class ShardingService {
     }
     
     private void blockUntilShardingCompleted() {
-        while (!leaderElectionService.isLeaderUntilBlock() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
+        while (!leaderService.isLeaderUntilBlock() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
             log.debug("Job '{}' sleep short time until sharding completed.", jobName);
             BlockUtils.waitingShortTime();
         }

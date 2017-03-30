@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.execution;
 
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.server.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -44,15 +44,15 @@ public class ExecutionService {
     
     private final ConfigurationService configService;
     
-    private final ServerService serverService;
+    private final LeaderService leaderService;
     
-    private final LeaderElectionService leaderElectionService;
+    private final ServerService serverService;
     
     public ExecutionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
     }
     
     /**
@@ -77,7 +77,7 @@ public class ExecutionService {
         if (!jobNodeStorage.isJobNodeExisted(ExecutionNode.ROOT)) {
             return;
         }
-        if (leaderElectionService.isLeaderUntilBlock()) {
+        if (leaderService.isLeaderUntilBlock()) {
             jobNodeStorage.fillEphemeralJobNode(ExecutionNode.CLEANING, "");
             List<Integer> items = getAllItems();
             for (int each : items) {
