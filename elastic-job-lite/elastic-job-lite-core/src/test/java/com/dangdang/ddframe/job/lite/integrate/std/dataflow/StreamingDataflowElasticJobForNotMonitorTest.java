@@ -51,6 +51,6 @@ public final class StreamingDataflowElasticJobForNotMonitorTest extends Abstract
         while (!StreamingDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }

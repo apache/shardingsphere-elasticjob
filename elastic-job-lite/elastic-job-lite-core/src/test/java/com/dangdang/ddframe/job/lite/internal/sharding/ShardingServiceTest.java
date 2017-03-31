@@ -133,12 +133,12 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT)).thenReturn(Arrays.asList("0", "1"));
         shardingService.shardingIfNecessary();
         verify(executionService, times(2)).hasRunningItems();
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/instance");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/0");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/instance");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/1");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/instance");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/2");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/instance");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/0");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/instance");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/1");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/instance");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/2");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
         verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
@@ -153,14 +153,14 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT)).thenReturn(Arrays.asList("0", "1", "2", "3"));
         shardingService.shardingIfNecessary();
         verify(executionService, times(0)).hasRunningItems();
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/instance");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/0");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/instance");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/1");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/instance");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/2");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/instance");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/0");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/instance");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/1");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/instance");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/2");
         verify(jobNodeStorage, times(0)).removeJobNodeIfExisted("execution/2");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/3");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/3");
         verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/processing", "");
         verify(jobNodeStorage).executeInTransaction(any(TransactionExecutionCallback.class));
     }
@@ -169,9 +169,9 @@ public final class ShardingServiceTest {
     public void assertGetLocalShardingItems() {
         when(configService.load(true)).thenReturn(
                 LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
-        when(jobNodeStorage.getJobNodeData("execution/0/instance")).thenReturn("127.0.0.1@-@0");
-        when(jobNodeStorage.getJobNodeData("execution/1/instance")).thenReturn("127.0.0.1@-@1");
-        when(jobNodeStorage.getJobNodeData("execution/2/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
+        when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
         assertThat(shardingService.getLocalShardingItems(), is(Arrays.asList(0, 2)));
     }
     
@@ -206,9 +206,9 @@ public final class ShardingServiceTest {
         when(curatorTransactionFinal.create()).thenReturn(transactionCreateBuilder);
         when(configService.load(true)).thenReturn(
                 LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
-        when(transactionCreateBuilder.forPath("/test_job/execution/0/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
-        when(transactionCreateBuilder.forPath("/test_job/execution/1/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
-        when(transactionCreateBuilder.forPath("/test_job/execution/2/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
+        when(transactionCreateBuilder.forPath("/test_job/sharding/0/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
+        when(transactionCreateBuilder.forPath("/test_job/sharding/1/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
+        when(transactionCreateBuilder.forPath("/test_job/sharding/2/instance", "host0@-@0".getBytes())).thenReturn(curatorTransactionBridge);
         when(curatorTransactionBridge.and()).thenReturn(curatorTransactionFinal);
         when(curatorTransactionFinal.delete()).thenReturn(transactionDeleteBuilder);
         when(transactionDeleteBuilder.forPath("/test_job/leader/sharding/necessary")).thenReturn(curatorTransactionBridge);

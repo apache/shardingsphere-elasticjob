@@ -30,7 +30,7 @@ public final class ExecutionNode {
     /**
      * 执行状态根节点.
      */
-    public static final String ROOT = "execution";
+    public static final String ROOT = "sharding";
     
     static final String INSTANCE_APPENDIX = "instance";
     

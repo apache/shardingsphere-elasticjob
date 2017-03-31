@@ -29,26 +29,26 @@ public final class ExecutionNodeTest {
     
     @Test
     public void assertGetRunningNode() {
-        assertThat(ExecutionNode.getRunningNode(0), is("execution/0/running"));
+        assertThat(ExecutionNode.getRunningNode(0), is("sharding/0/running"));
     }
     
     @Test
     public void assertGetCompletedNode() {
-        assertThat(ExecutionNode.getCompletedNode(0), is("execution/0/completed"));
+        assertThat(ExecutionNode.getCompletedNode(0), is("sharding/0/completed"));
     }
     
     @Test
     public void assertGetMisfireNode() {
-        assertThat(ExecutionNode.getMisfireNode(0), is("execution/0/misfire"));
+        assertThat(ExecutionNode.getMisfireNode(0), is("sharding/0/misfire"));
     }
     
     @Test
     public void assertGetItemWhenNotRunningItemPath() {
-        assertNull(executionNode.getItemByRunningItemPath("/test_job/execution/0/completed"));
+        assertNull(executionNode.getItemByRunningItemPath("/test_job/sharding/0/completed"));
     }
     
     @Test
     public void assertGetItemByRunningItemPath() {
-        assertThat(executionNode.getItemByRunningItemPath("/test_job/execution/0/running"), is(0));
+        assertThat(executionNode.getItemByRunningItemPath("/test_job/sharding/0/running"), is(0));
     }
 }

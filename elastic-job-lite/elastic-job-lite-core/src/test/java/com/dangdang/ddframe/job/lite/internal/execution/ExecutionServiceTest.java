@@ -96,12 +96,12 @@ public final class ExecutionServiceTest {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.registerJobCompleted(getShardingContext());
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/completed");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/completed");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/2/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/running");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/running");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/running");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/0/completed");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/1/completed");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/2/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
     }
     
     @Test
@@ -117,82 +117,82 @@ public final class ExecutionServiceTest {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         when(leaderService.isLeaderUntilBlock()).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("leader/execution/cleaning")).thenReturn(true, false);
+        when(jobNodeStorage.isJobNodeExisted("leader/sharding/cleaning")).thenReturn(true, false);
         executionService.cleanPreviousExecutionInfo();
         verify(leaderService).isLeaderUntilBlock();
-        verify(jobNodeStorage, times(2)).isJobNodeExisted("leader/execution/cleaning");
+        verify(jobNodeStorage, times(2)).isJobNodeExisted("leader/sharding/cleaning");
     }
     
     @Test
     public void assertCleanPreviousExecutionInfoWhenIsLeaderButNotNeedFixExecutionInfo() {
-        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
-        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(false);
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(false);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/cleaning", "");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/sharding/cleaning");
     }
     
     @Test
     public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesGreater() {
-        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
-        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/cleaning", "");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/sharding/cleaning");
     }
     
     @Test
     public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesLess() {
-        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
-        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("leader/sharding/necessary")).thenReturn(true);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/cleaning", "");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/sharding/cleaning");
     }
     
     @Test
     public void assertCleanPreviousExecutionInfoWhenNeedFixExecutionInfoForNewValuesEqual() {
-        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding")).thenReturn(true);
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
-        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
         when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
-        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
+        verify(jobNodeStorage).fillEphemeralJobNode("leader/sharding/cleaning", "");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("leader/sharding/cleaning");
     }
     
     @Test
     public void assertClearRunningInfo() {
         executionService.clearRunningInfo(Arrays.asList(0, 1, 2));
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/running");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/running");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
     }
     
     @Test
@@ -207,29 +207,29 @@ public final class ExecutionServiceTest {
     public void assertMisfireIfNotNecessary() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 4).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/2/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(false);
         assertFalse(executionService.misfireIfNecessary(Arrays.asList(0, 1, 2)));
         verify(configService).load(true);
-        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/2/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/1/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/2/running");
     }
     
     @Test
     public void assertMisfireIfNecessary() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 4).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(true);
         assertTrue(executionService.misfireIfNecessary(Arrays.asList(0, 1, 2)));
         verify(configService, times(2)).load(true);
-        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/misfire");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/misfire");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/2/misfire");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/1/running");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/0/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/1/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/2/misfire");
     }
     
     @Test
@@ -238,9 +238,9 @@ public final class ExecutionServiceTest {
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
         executionService.setMisfire(Arrays.asList(0, 1, 2));
         verify(configService).load(true);
-        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("execution/0/misfire");
-        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("execution/1/misfire");
-        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("execution/2/misfire");
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("sharding/0/misfire");
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("sharding/1/misfire");
+        verify(jobNodeStorage, times(0)).createJobNodeIfNeeded("sharding/2/misfire");
     }
     
     @Test
@@ -249,39 +249,39 @@ public final class ExecutionServiceTest {
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.setMisfire(Arrays.asList(0, 1, 2));
         verify(configService).load(true);
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/misfire");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/misfire");
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/2/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/0/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/1/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/2/misfire");
     }
     
     @Test
     public void assertGetMisfiredJobItems() {
-        when(jobNodeStorage.isJobNodeExisted("execution/0/misfire")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("execution/1/misfire")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("execution/2/misfire")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/misfire")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding/1/misfire")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding/2/misfire")).thenReturn(false);
         assertThat(executionService.getMisfiredJobItems(Arrays.asList(0, 1, 2)), is(Arrays.asList(0, 1)));
-        verify(jobNodeStorage).isJobNodeExisted("execution/0/misfire");
-        verify(jobNodeStorage).isJobNodeExisted("execution/1/misfire");
-        verify(jobNodeStorage).isJobNodeExisted("execution/2/misfire");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/0/misfire");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/1/misfire");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/2/misfire");
     }
     
     @Test
     public void assertClearMisfire() {
         executionService.clearMisfire(Arrays.asList(0, 1, 2));
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/misfire");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/misfire");
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/misfire");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/misfire");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/misfire");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/misfire");
     }
     
     @Test
     public void assertRemoveExecutionInfo() {
         executionService.removeExecutionInfo();
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding");
     }
     
     @Test
     public void assertIsCompleted() {
-        when(jobNodeStorage.isJobNodeExisted("execution/0/completed")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/completed")).thenReturn(true);
         assertTrue(executionService.isCompleted(0));
     }
     
@@ -291,75 +291,75 @@ public final class ExecutionServiceTest {
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
         assertFalse(executionService.hasRunningItems(Arrays.asList(0, 1, 2)));
         verify(configService).load(true);
-        verify(jobNodeStorage, times(0)).isJobNodeExisted("execution/0/running");
-        verify(jobNodeStorage, times(0)).isJobNodeExisted("execution/1/running");
-        verify(jobNodeStorage, times(0)).isJobNodeExisted("execution/2/running");
+        verify(jobNodeStorage, times(0)).isJobNodeExisted("sharding/0/running");
+        verify(jobNodeStorage, times(0)).isJobNodeExisted("sharding/1/running");
+        verify(jobNodeStorage, times(0)).isJobNodeExisted("sharding/2/running");
     }
     
     @Test
     public void assertHasRunningItems() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 4).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(true);
         assertTrue(executionService.hasRunningItems(Arrays.asList(0, 1, 2)));
         verify(configService).load(true);
-        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/1/running");
     }
     
     @Test
     public void assertNotHaveRunningItems() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 4).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/2/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(false);
         assertFalse(executionService.hasRunningItems(Arrays.asList(0, 1, 2)));
         verify(configService).load(true);
-        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/2/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/1/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/2/running");
     }
     
     @Test
     public void assertNotHaveRunningItemsWhenJNotMonitorExecutionForAll() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 4).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
-        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
         assertFalse(executionService.hasRunningItems());
         verify(configService).load(true);
-        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("sharding");
     }
     
     @Test
     public void assertHasRunningItemsForAll() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 4).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(true);
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(true);
         assertTrue(executionService.hasRunningItems());
         verify(configService).load(true);
-        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
-        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("sharding");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/1/running");
     }
     
     @Test
     public void assertNotHaveRunningItemsForAll() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 4).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(jobNodeStorage.isJobNodeExisted("execution/0/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/1/running")).thenReturn(false);
-        when(jobNodeStorage.isJobNodeExisted("execution/2/running")).thenReturn(false);
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(false);
+        when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(false);
         assertFalse(executionService.hasRunningItems());
         verify(configService).load(true);
-        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
-        verify(jobNodeStorage).isJobNodeExisted("execution/0/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/1/running");
-        verify(jobNodeStorage).isJobNodeExisted("execution/2/running");
+        verify(jobNodeStorage).getJobNodeChildrenKeys("sharding");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/0/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/1/running");
+        verify(jobNodeStorage).isJobNodeExisted("sharding/2/running");
     }
     
     private ShardingContexts getShardingContext() {

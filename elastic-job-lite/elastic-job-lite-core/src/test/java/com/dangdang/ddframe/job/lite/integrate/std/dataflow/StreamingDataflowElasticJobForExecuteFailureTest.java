@@ -50,6 +50,6 @@ public final class StreamingDataflowElasticJobForExecuteFailureTest extends Abst
         while (!StreamingDataflowElasticJobForExecuteFailure.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }
