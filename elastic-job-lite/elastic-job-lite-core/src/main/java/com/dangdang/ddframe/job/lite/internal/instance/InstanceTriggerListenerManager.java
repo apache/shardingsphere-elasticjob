@@ -15,41 +15,35 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.server;
+package com.dangdang.ddframe.job.lite.internal.instance;
 
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 作业控制监听管理器.
+ * 作业触发监听管理器.
  * 
  * @author zhangliang
  */
-public class JobOperationListenerManager extends AbstractListenerManager {
+public class InstanceTriggerListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    private final ServerService serverService;
+    private final InstanceNode instanceNode;
     
     private final InstanceService instanceService;
     
-    private final ShardingService shardingService;
-    
-    private final ExecutionService executionService;
-    
-    public JobOperationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+    public InstanceTriggerListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
-        serverService = new ServerService(regCenter, jobName);
+        instanceNode = new InstanceNode(jobName);
         instanceService = new InstanceService(regCenter, jobName);
-        shardingService = new ShardingService(regCenter, jobName);
-        executionService = new ExecutionService(regCenter, jobName);
     }
     
     @Override
@@ -61,18 +55,18 @@ public class JobOperationListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            // TODO trigger
-//            if (Type.NODE_ADDED != event.getType() || !serverNode.isLocalJobTriggerPath(path)) {
-//                return;
-//            }
-//            serverService.clearJobTriggerStatus();
-//            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-//            if (null == jobScheduleController) {
-//                return;
-//            }
-//            if (serverService.isLocalInstanceReady()) {
-//                jobScheduleController.triggerJob();
-//            }
+            if (!InstanceOperation.TRIGGER.name().equals(new String(event.getData().getData())) || !instanceNode.isLocalInstancePath(path) || Type.NODE_UPDATED != event.getType()) {
+                return;
+            }
+            instanceService.clearTriggerFlag();
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            if (null == jobScheduleController) {
+                return;
+            }
+            // TODO 目前是作业运行时不能触发, 未来改为堆积式触发
+            if (!JobRegistry.getInstance().isJobRunning(jobName)) {
+                jobScheduleController.triggerJob();
+            }
         }
     }
 }

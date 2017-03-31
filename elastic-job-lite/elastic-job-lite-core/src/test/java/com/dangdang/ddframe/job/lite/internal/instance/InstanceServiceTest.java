@@ -52,6 +52,12 @@ public final class InstanceServiceTest {
     }
     
     @Test
+    public void assertClearTriggerFlag() {
+        instanceService.clearTriggerFlag();
+        jobNodeStorage.updateJobNode("instances/127.0.0.1@-@0", "");
+    }
+    
+    @Test
     public void assertGetAvailableJobInstances() {
         when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);

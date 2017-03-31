@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManager;
-import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceTriggerListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
@@ -55,10 +55,10 @@ public class ListenerManagerTest {
     private FailoverListenerManager failoverListenerManager;
     
     @Mock
-    private JobOperationListenerManager jobOperationListenerManager;
+    private InstanceShutdownListenerManager instanceShutdownListenerManager;
     
     @Mock
-    private InstanceShutdownListenerManager instanceShutdownListenerManager;
+    private InstanceTriggerListenerManager instanceTriggerListenerManager;
     
     @Mock
     private ConfigurationListenerManager configurationListenerManager;
@@ -79,8 +79,8 @@ public class ListenerManagerTest {
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "executionListenerManager", executionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "failoverListenerManager", failoverListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "jobOperationListenerManager", jobOperationListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "instanceShutdownListenerManager", instanceShutdownListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "instanceTriggerListenerManager", instanceTriggerListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "configurationListenerManager", configurationListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "guaranteeListenerManager", guaranteeListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "regCenterConnectionStateListener", regCenterConnectionStateListener);
@@ -93,7 +93,6 @@ public class ListenerManagerTest {
         verify(shardingListenerManager).start();
         verify(executionListenerManager).start();
         verify(failoverListenerManager).start();
-        verify(jobOperationListenerManager).start();
         verify(instanceShutdownListenerManager).start();
         verify(configurationListenerManager).start();
         verify(guaranteeListenerManager).start();

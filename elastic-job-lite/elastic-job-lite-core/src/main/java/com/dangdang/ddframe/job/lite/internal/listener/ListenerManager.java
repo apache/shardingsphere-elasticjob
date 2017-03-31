@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManager;
-import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceTriggerListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -48,9 +48,9 @@ public class ListenerManager {
     
     private final FailoverListenerManager failoverListenerManager;
     
-    private final JobOperationListenerManager jobOperationListenerManager;
-    
     private final InstanceShutdownListenerManager instanceShutdownListenerManager;
+    
+    private final InstanceTriggerListenerManager instanceTriggerListenerManager;
     
     private final ConfigurationListenerManager configurationListenerManager;
 
@@ -64,8 +64,8 @@ public class ListenerManager {
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
         executionListenerManager = new ExecutionListenerManager(regCenter, jobName);
         failoverListenerManager = new FailoverListenerManager(regCenter, jobName);
-        jobOperationListenerManager = new JobOperationListenerManager(regCenter, jobName);
         instanceShutdownListenerManager = new InstanceShutdownListenerManager(regCenter, jobName);
+        instanceTriggerListenerManager = new InstanceTriggerListenerManager(regCenter, jobName);
         configurationListenerManager = new ConfigurationListenerManager(regCenter, jobName);
         guaranteeListenerManager = new GuaranteeListenerManager(regCenter, jobName, elasticJobListeners);
         regCenterConnectionStateListener = new RegistryCenterConnectionStateListener(regCenter, jobName);
@@ -79,8 +79,8 @@ public class ListenerManager {
         shardingListenerManager.start();
         executionListenerManager.start();
         failoverListenerManager.start();
-        jobOperationListenerManager.start();
         instanceShutdownListenerManager.start();
+        instanceTriggerListenerManager.start();
         configurationListenerManager.start();
         guaranteeListenerManager.start();
         jobNodeStorage.addConnectionStateListener(regCenterConnectionStateListener);

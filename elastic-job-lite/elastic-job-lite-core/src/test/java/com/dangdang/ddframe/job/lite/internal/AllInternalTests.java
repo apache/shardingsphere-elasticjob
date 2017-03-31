@@ -37,6 +37,7 @@ import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeServiceTest;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNodeTest;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceServiceTest;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceTriggerListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.JobListenerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.RegistryCenterConnectionStateListenerTest;
@@ -48,7 +49,6 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleControllerTest
 import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListenerTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacadeTest;
-import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNodeTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManagerTest;
@@ -76,9 +76,9 @@ import org.junit.runners.Suite.SuiteClasses;
         InstanceNodeTest.class,
         InstanceServiceTest.class,
         InstanceShutdownListenerManagerTest.class,
+        InstanceTriggerListenerManagerTest.class,
         ShardingServiceTest.class, 
         ServerNodeTest.class,
-        JobOperationListenerManagerTest.class,
         ShardingListenerManagerTest.class, 
         ExecutionContextServiceTest.class, 
         ExecutionServiceTest.class, 

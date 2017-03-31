@@ -59,6 +59,13 @@ public class InstanceService {
     }
     
     /**
+     * 清理作业触发标记.
+     */
+    public void clearTriggerFlag() {
+        jobNodeStorage.updateJobNode(instanceNode.getLocalInstanceNode(), "");
+    }
+    
+    /**
      * 获取可分片的作业运行实例.
      *
      * @return 可分片的作业运行实例
