@@ -1,17 +1,14 @@
 $(function() {
     $("#server-ip").text($("#index-server-ip").text());
     renderJobs();
-    bindTriggerButtons();
-    bindShutdownButtons();
-    bindRemoveButtons();
+    bindButtons();
     renderBreadCrumbMenu();
 });
 
 function renderJobs() {
     var ip = $("#server-ip").text();
-    var instanceId = $("#server-instance-id").text();
-    $("#jobs").bootstrapTable({
-        url: "/api/servers/" + ip + "/instances/" + instanceId,
+    $("#server-jobs").bootstrapTable({
+        url: "/api/servers/" + ip + "/jobs",
         cache: false,
         columns: 
         [{
@@ -19,14 +16,14 @@ function renderJobs() {
             title: "作业名",
             sortable: "true"
         }, {
+            field: "sharding",
+            title: "分片项"
+        }, {
             field: "status",
             title: "状态",
             sortable: "true",
             formatter: "statusFormatter"
         }, {
-            field: "sharding",
-            title: "分片项"
-        },{
             field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
@@ -36,99 +33,73 @@ function renderJobs() {
 
 function statusFormatter(value) {
     switch(value) {
-        case "RUNNING":
-            return "<span class='label label-primary'>运行中</span>";
+        case "OK":
+            return "<span class='label label-primary'>启用中</span>";
             break;
-        case "READY":
-            return "<span class='label label-info'>准备中</span>";
-            break;
+        // case "READY":
+        //     return "<span class='label label-info'>准备中</span>";
+        //     break;
         case "DISABLED":
             return "<span class='label label-warning'>禁用中</span>";
-            break;
-        case "CRASHED":
-            return "<span class='label label-danger'>宕机</span>";
-            break;
-        case "SHUTDOWN":
-            return "<span class='label label-danger'>停止</span>";
             break;
     }
 }
 
-function generateOperationButtons(val, row){
-    var triggerButton = "<button operation='trigger' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
+function generateOperationButtons(val, row) {
+    var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "'>禁用</button>";
+    var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "'>启用</button>";
     var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' job-name='" + row.jobName + "'>关闭</button>";
-    var removeButton = "<button operation='remove' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
-    var operationTd = triggerButton + "&nbsp;";
-    if ("DISABLED" !== row.status && "CRASHED" !== row.status && "SHUTDOWN" !== row.status) {
-        operationTd = triggerButton  + "&nbsp;";
-    }
-    if ("SHUTDOWN" !== row.status) {
-        operationTd = operationTd  + "&nbsp;" + shutdownButton;
-    }
-    if ("SHUTDOWN" === row.status || "CRASHED" === row.status) {
-        operationTd = removeButton;
+    var operationTd = "";
+    if ("DISABLED" === row.status) {
+        operationTd = enableButton + "&nbsp;" + shutdownButton;
+    } else {
+        operationTd = disableButton + "&nbsp;" + shutdownButton;
     }
     return operationTd;
 }
 
-function bindTriggerButtons() {
-    $(document).on("click", "button[operation='trigger'][data-toggle!='modal']", function(event) {
+function bindButtons() {
+    bindDisableButton();
+    bindEnableButton();
+    bindShutdownButton();
+}
+
+function bindDisableButton() {
+    $(document).on("click", "button[operation='disable']", function(event) {
         $.ajax({
-            url: "/api/jobs/trigger",
+            url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
             type: "POST",
-            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text(), instanceId : $("#server-instance-id").text()}),
-            contentType: "application/json",
-            dataType: "json",
-            success: function(){
-                $("#jobs").bootstrapTable("refresh");
+            success: function() {
+                $("#server-jobs").bootstrapTable("refresh");
                 showSuccessDialog();
             }
         });
     });
-    $(document).on("click", "button[operation='trigger'][data-toggle='modal']", function(event) {
-        $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
-    });
 }
 
-function bindShutdownButtons() {
-    $(document).on("click", "button[operation='shutdown']", function(event) {
+function bindEnableButton() {
+    $(document).on("click", "button[operation='enable']", function(event) {
         $.ajax({
-            url: "/api/jobs/shutdown",
-            type: "POST",
-            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text(), instanceId : $("#server-instance-id").text()}),
-            contentType: "application/json",
-            dataType: "json",
-            success: function(){
-                $("#jobs").bootstrapTable("refresh");
+            url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
+            type: "DELETE",
+            success: function() {
+                $("#server-jobs").bootstrapTable("refresh");
                 showSuccessDialog();
             }
         });
     });
-    $(document).on("click", "button[operation='shutdown']", function(event) {
-        $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
-    });
 }
 
-function bindRemoveButtons() {
-    $(document).on("click", "button[operation='remove']", function(event) {
+function bindShutdownButton() {
+    $(document).on("click", "button[operation='shutdown']", function(event) {
         $.ajax({
-            url: "/api/jobs/remove",
+            url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/shutdown",
             type: "POST",
-            data: JSON.stringify({jobName : $(event.currentTarget).attr("job-name"), ip : $("#server-ip").text(), instanceId : $("#server-instance-id").text()}),
-            contentType: "application/json",
-            dataType: "json",
-            success: function(data){
-                if (data.length > 0) {
-                    showFailureDialog("remove-job-failure-dialog");
-                } else {
-                    showSuccessDialog();
-                }
-                $("#jobs").bootstrapTable("refresh");
+            success: function(){
+                $("#server-jobs").bootstrapTable("refresh");
+                showSuccessDialog();
             }
         });
-    });
-    $(document).on("click", "button[operation='remove']", function(event) {
-        $("#chosen-job-name").text($(event.currentTarget).attr("job-name"));
     });
 }
 

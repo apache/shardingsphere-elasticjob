@@ -19,8 +19,6 @@ package com.dangdang.ddframe.job.lite.lifecycle.api;
 
 import com.google.common.base.Optional;
 
-import java.util.Collection;
-
 /**
  * 操作作业的API.
  *
@@ -35,9 +33,8 @@ public interface JobOperateAPI {
      *
      * @param jobName 作业名称
      * @param serverIp 作业服务器IP地址
-     * @param serverInstanceId 作业服务器实例ID
      */
-    void trigger(Optional<String> jobName, Optional<String> serverIp, Optional<String> serverInstanceId);
+    void trigger(Optional<String> jobName, Optional<String> serverIp);
     
     /**
      * 作业禁用.
@@ -46,37 +43,30 @@ public interface JobOperateAPI {
      *
      * @param jobName 作业名称
      * @param serverIp 作业服务器IP地址
-     * @param serverInstanceId 作业服务器实例ID
      */
-    void disable(Optional<String> jobName, Optional<String> serverIp, Optional<String> serverInstanceId);
+    void disable(Optional<String> jobName, Optional<String> serverIp);
     
     /**
      * 作业启用.
      *
      * @param jobName 作业名称
      * @param serverIp 作业服务器IP地址
-     * @param serverInstanceId 作业服务器实例ID
      */
-    void enable(Optional<String> jobName, Optional<String> serverIp, Optional<String> serverInstanceId);
+    void enable(Optional<String> jobName, Optional<String> serverIp);
     
     /**
      * 作业关闭.
      *
      * @param jobName 作业名称
      * @param serverIp 作业服务器IP地址
-     * @param serverInstanceId 作业服务器实例ID                 
      */
-    void shutdown(Optional<String> jobName, Optional<String> serverIp, Optional<String> serverInstanceId);
+    void shutdown(Optional<String> jobName, Optional<String> serverIp);
     
     /**
      * 作业删除.
      * 
-     * <p>只有停止运行的作业才能删除.</p>
-     * 
      * @param jobName 作业名称
      * @param serverIp 作业服务器IP地址
-     * @param serverInstanceId 作业服务器实例ID
-     * @return 因为未停止而导致未能成功删除的作业服务器实例ID列表
      */
-    Collection<String> remove(Optional<String> jobName, Optional<String> serverIp, Optional<String> serverInstanceId);
+    void remove(Optional<String> jobName, Optional<String> serverIp);
 }

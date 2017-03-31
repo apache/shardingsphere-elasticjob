@@ -152,7 +152,7 @@ function controlDropdownMenuStyle() {
 
 function refreshJobNavTag() {
     $.ajax({
-        url: "/api/jobs",
+        url: "/api/jobs/config",
         cache: false,
         success: function(data) {
             $("#job-nav-tag").text(data.length);

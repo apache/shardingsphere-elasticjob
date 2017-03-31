@@ -15,21 +15,40 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.service;
+package com.dangdang.ddframe.job.lite.lifecycle.domain;
 
-import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
-import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
-import com.google.common.base.Optional;
+import lombok.Getter;
+import lombok.Setter;
 
-public interface EventTraceDataSourceService {
+import java.io.Serializable;
+
+/**
+ * 作业实例对象.
+ *
+ * @author caohao
+ */
+@Getter
+@Setter
+public final class InstanceInfo implements Serializable {
     
-    GlobalConfiguration loadAll();
+    private static final long serialVersionUID = 4241736510750597679L;
     
-    EventTraceDataSourceConfiguration load(String name);
+    private String ip;
     
-    Optional<EventTraceDataSourceConfiguration> loadActivated();
+    private String instanceId;
     
-    boolean add(EventTraceDataSourceConfiguration config);
+    private InstanceStatus status;
     
-    void delete(String name);
+    private String sharding;
+    
+    /**
+     * 作业服务器状态.
+     *
+     * @author caohao
+     */
+    public enum InstanceStatus {
+        
+        READY, 
+        RUNNING 
+    }
 }

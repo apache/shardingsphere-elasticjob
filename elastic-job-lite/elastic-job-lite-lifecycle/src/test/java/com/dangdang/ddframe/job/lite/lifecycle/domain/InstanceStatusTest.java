@@ -15,21 +15,23 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.console.service;
+package com.dangdang.ddframe.job.lite.lifecycle.domain;
 
-import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
-import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
-import com.google.common.base.Optional;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo.InstanceStatus;
+import org.junit.Test;
 
-public interface EventTraceDataSourceService {
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public class InstanceStatusTest {
     
-    GlobalConfiguration loadAll();
+    @Test
+    public void assertGetServerStatusWhenIsShutdown() {
+        assertThat(InstanceStatus.valueOf("READY"), is(InstanceStatus.READY));
+    }
     
-    EventTraceDataSourceConfiguration load(String name);
-    
-    Optional<EventTraceDataSourceConfiguration> loadActivated();
-    
-    boolean add(EventTraceDataSourceConfiguration config);
-    
-    void delete(String name);
+    @Test
+    public void assertGetServerStatusWhenIsCrashed() {
+        assertThat(InstanceStatus.valueOf("RUNNING"), is(InstanceStatus.RUNNING));
+    }
 }

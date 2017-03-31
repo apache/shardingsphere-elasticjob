@@ -20,8 +20,7 @@ package com.dangdang.ddframe.job.lite.lifecycle;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobAPIFactoryTest;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionStatusTest;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobStatusTest;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefStatusTest;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerStatusTest;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceStatusTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.JobOperateAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactoryTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.JobStatisticsAPIImplTest;
@@ -36,8 +35,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
         JobAPIFactoryTest.class, 
         JobStatusTest.class,
-        ServerStatusTest.class, 
-        ServerBriefStatusTest.class, 
+        InstanceStatusTest.class, 
         ExecutionStatusTest.class, 
         RegistryCenterFactoryTest.class, 
         JobOperateAPIImplTest.class,

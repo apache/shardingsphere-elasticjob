@@ -10,7 +10,7 @@ $(function() {
 function renderInstanceTable() {
     var jobName = $("#job-name").text();
     $("#job-servers").bootstrapTable({
-        url: "/api/jobs/" + jobName + "/servers",
+        url: "/api/jobs/" + jobName + "/instances",
         cache: false,
         columns: [
         {
@@ -37,13 +37,10 @@ function renderInstanceTable() {
 function instanceStatusFormatter(value, row) {
     switch(value) {
         case "RUNNING":
-            return "<span class='label label-primary'>运行中</span>";
+            return "<span class='label label-success'>运行中</span>";
             break;
         case "READY":
             return "<span class='label label-info'>准备中</span>";
-            break;
-        default:
-            return "-";
             break;
     }
 }
@@ -58,13 +55,9 @@ function bindInstanceButtons() {
 
 function bindShutdownButton() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
-        var jobName = $("#job-name").text();
         $.ajax({
-            url: "/api/jobs/" + jobName + "/shutdown",
-            type: "POST",
-            data: JSON.stringify({jobName : jobName, ip : $(event.currentTarget).attr("ip"), instanceId : $(event.currentTarget).attr("instance-id")}),
-            contentType: "application/json",
-            dataType: "json",
+            url: "/api/servers/" + $(event.currentTarget).attr("ip") + "/instances/" + $(event.currentTarget).attr("instance-id"),
+            type: "DELETE",
             success: function() {
                 $("#job-servers").bootstrapTable("refresh");
                 showSuccessDialog();
@@ -115,20 +108,20 @@ function shardingStatusFormatter(value, row) {
 }
 
 function generateShardingOperationButtons(val, row) {
-    var triggerButton = "<button operation='trigger' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>触发</button>";
+    //var triggerButton = "<button operation='trigger' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>触发</button>";
     var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>禁用</button>";
     var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' instance-id='" + row.instanceId + "'>启用</button>";
     var operationTd = "";
     if ("DISABLED" === row.status) {
         operationTd = enableButton;
     } else {
-        operationTd = triggerButton + "&nbsp;" + disableButton;
+        operationTd = disableButton;
     }
     return operationTd;
 }
 
 function bindShardingButtons() {
-    bindTriggerButton();
+    // bindTriggerButton();
     bindDisableButton();
     bindEnableButton();
 }

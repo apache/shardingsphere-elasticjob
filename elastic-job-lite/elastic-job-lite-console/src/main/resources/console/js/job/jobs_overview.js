@@ -6,7 +6,7 @@ $(function() {
 
 function renderJobsOverview() {
     $("#jobs-overview-tbl").bootstrapTable({
-        url: "/api/jobs",
+        url: "/api/jobs/config",
         cache: false,
         showColumns: true,
         columns: 

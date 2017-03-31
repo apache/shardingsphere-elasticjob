@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.console;
 
-import com.dangdang.ddframe.job.lite.console.restful.LiteJobRestfulApi;
+import com.dangdang.ddframe.job.lite.console.restful.JobOperationRestfulApi;
 import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.dangdang.ddframe.job.security.WwwAuthFilter;
 import com.google.common.base.Optional;
@@ -44,6 +44,6 @@ public final class ConsoleBootstrap {
         RestfulServer restfulServer = new RestfulServer(PORT);
         restfulServer.addFilter(WwwAuthFilter.class, "/")
                      .addFilter(WwwAuthFilter.class, "*.html")
-                     .start(LiteJobRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
+                     .start(JobOperationRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
     }
 }

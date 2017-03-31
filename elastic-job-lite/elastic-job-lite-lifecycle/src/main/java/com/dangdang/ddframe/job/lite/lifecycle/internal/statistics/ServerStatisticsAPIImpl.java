@@ -19,17 +19,16 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 作业服务器状态展示的实现类.
@@ -43,69 +42,52 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
     
     @Override
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
-        Set<String> serverInstances = new HashSet<>();
-        Collection<String> aliveServers = new ArrayList<>();
-        Collection<String> crashedServers = new ArrayList<>();
+        ConcurrentHashMap<String, ServerBriefInfo> servers = new ConcurrentHashMap<>();
         List<String> jobs = regCenter.getChildrenKeys("/");
         for (String jobName : jobs) {
             JobNodePath jobNodePath = new JobNodePath(jobName);
-            List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
-            
-            for (String server : servers) {
-                List<String> jobInstances = regCenter.getChildrenKeys(jobNodePath.getServerNodePath(server));
-                for (String jobInstance : jobInstances) {
-                    String identifier = server + "-" + jobInstance;
-                    serverInstances.add(identifier);
-                    if (!regCenter.isExisted(jobNodePath.getServerInstanceNodePath(server, jobInstance, "shutdown")) 
-                            && regCenter.isExisted(jobNodePath.getServerInstanceNodePath(server, jobInstance, "status"))) {
-                        aliveServers.add(identifier);
-                    } else {
-                        crashedServers.add(identifier);
-                    }
+            for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
+                servers.putIfAbsent(each, new ServerBriefInfo(each));
+                if ("DISABLED".equalsIgnoreCase(regCenter.get(jobNodePath.getServerNodePath(each)))) {
+                    servers.get(each).getDisabledJobsNum().incrementAndGet();
                 }
             }
+            List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
+            for (String each : instances) {
+                String serverIp = each.split("@-@")[0];
+                ServerBriefInfo serverInfo = servers.get(serverIp);
+                serverInfo.getJobNames().add(jobName);
+                serverInfo.getInstances().add(each);
+                serverInfo.setJobsNum(serverInfo.getJobNames().size());
+                serverInfo.setInstancesNum(serverInfo.getInstances().size());
+            }
         }
-        List<ServerBriefInfo> result = new ArrayList<>(serverInstances.size());
-        for (String each : serverInstances) {
-            result.add(getServerBriefInfo(aliveServers, crashedServers, each));
-        }
+        List<ServerBriefInfo> result = new ArrayList<>(servers.values());
         Collections.sort(result);
         return result;
     }
     
-    private ServerBriefInfo getServerBriefInfo(final Collection<String> aliveServers, final Collection<String> crashedServers, final String key) {
-        ServerBriefInfo result = new ServerBriefInfo();
-        String serverIp = key.split("-")[0];
-        String instanceId = key.split("-")[1];
-        result.setServerIp(serverIp);
-        result.setStatus(ServerBriefInfo.ServerBriefStatus.getServerBriefStatus(aliveServers, crashedServers, serverIp, instanceId));
-        return result;
-    }
-    
     @Override
-    public Collection<ServerInfo> getJobs(final String serverIp, final String instanceId) {
+    public Collection<InstanceInfo> getInstances(final String serverIp) {
         List<String> jobs = regCenter.getChildrenKeys("/");
-        Collection<ServerInfo> result = new ArrayList<>(jobs.size());
+        Collection<InstanceInfo> result = new ArrayList<>(jobs.size());
         for (String each : jobs) {
             JobNodePath jobNodePath = new JobNodePath(each);
-            if (regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId))) {
-                result.add(getJob(serverIp, instanceId, each));
+            if (regCenter.isExisted(jobNodePath.getServerNodePath(serverIp))) {
+                result.add(getInstance(serverIp, each));
             }
         }
         return result;
     }
     
-    private ServerInfo getJob(final String serverIp, final String instanceId, final String jobName) {
-        ServerInfo result = new ServerInfo();
+    private InstanceInfo getInstance(final String serverIp, final String jobName) {
+        InstanceInfo result = new InstanceInfo();
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        result.setJobName(jobName);
         result.setIp(serverIp);
-        result.setInstanceId(instanceId);
-        result.setSharding(regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "sharding")));
-        String status = regCenter.get(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "status"));
-        boolean disabled = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "disabled"));
-        boolean shutdown = regCenter.isExisted(jobNodePath.getServerInstanceNodePath(serverIp, instanceId, "shutdown"));
-        result.setStatus(ServerInfo.ServerStatus.getServerStatus(status, disabled, shutdown));
+        result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
+        String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
+        boolean disabled = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
+        boolean shutdown = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
         return result;
     }
 }

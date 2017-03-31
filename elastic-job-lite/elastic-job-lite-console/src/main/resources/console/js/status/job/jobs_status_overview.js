@@ -54,13 +54,10 @@ function generateOperationButtons(val, row) {
     var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>关闭</button>";
     var operationTd = detailButton  + "&nbsp;";
     if ("OK" === row.status || "PARTIAL_ALIVE" === row.status) {
-        operationTd = operationTd + triggerButton + "&nbsp;";
+        operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
     }
     if ("DISABLED" === row.status) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
-    }
-    if ("OK" === row.status || "PARTIAL_ALIVE" === row.status) {
-        operationTd = operationTd + disableButton + "&nbsp;" + shutdownButton;
     }
     return operationTd;
 }
