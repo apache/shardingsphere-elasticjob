@@ -36,7 +36,6 @@ import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFac
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
@@ -44,7 +43,6 @@ import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -178,7 +176,7 @@ public abstract class AbstractBaseStdJobTest {
             assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(""));
             assertThat(regCenter.get("/" + jobName + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         }
-        assertThat(regCenter.get("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()), CoreMatchers.is(InstanceStatus.READY.name()));
+        assertTrue(regCenter.isExisted("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         regCenter.remove("/" + jobName + "/leader/election");
     }
     

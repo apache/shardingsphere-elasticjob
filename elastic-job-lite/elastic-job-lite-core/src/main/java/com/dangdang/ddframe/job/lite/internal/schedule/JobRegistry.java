@@ -39,6 +39,8 @@ public final class JobRegistry {
     
     private Map<String, JobInstance> jobInstanceMap = new ConcurrentHashMap<>();
     
+    private Map<String, Boolean> jobRunningMap = new ConcurrentHashMap<>();
+    
     /**
      * 获取作业注册表实例.
      * 
@@ -104,5 +106,26 @@ public final class JobRegistry {
     public JobInstance getJobInstance(final String jobName) {
         JobInstance result = jobInstanceMap.get(jobName);
         return null == result ? new JobInstance(JobInstance.DEFAULT_INSTANCE_ID) : result;
+    }
+    
+    /**
+     * 获取作业是否在运行.
+     * 
+     * @param jobName 作业名称
+     * @return 作业是否在运行
+     */
+    public boolean isJobRunning(final String jobName) {
+        Boolean result = jobRunningMap.get(jobName);
+        return null == result ? false : result;
+    }
+    
+    /**
+     * 设置作业是否在运行.
+     * 
+     * @param jobName 作业名称
+     * @param isRunning 作业是否在运行
+     */
+    public void setJobRunning(final String jobName, final boolean isRunning) {
+        jobRunningMap.put(jobName, isRunning);
     }
 }

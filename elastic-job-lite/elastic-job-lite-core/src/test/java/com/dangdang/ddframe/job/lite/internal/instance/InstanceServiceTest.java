@@ -14,9 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,15 +42,9 @@ public final class InstanceServiceTest {
     @Test
     public void assertPersistOnline() {
         instanceService.persistOnline();
-        verify(jobNodeStorage).fillEphemeralJobNode("instances/127.0.0.1@-@0", InstanceStatus.READY.name());
+        verify(jobNodeStorage).fillEphemeralJobNode("instances/127.0.0.1@-@0", "");
     }
-    
-    @Test
-    public void assertUpdateStatus() {
-        instanceService.updateStatus(InstanceStatus.RUNNING);
-        verify(jobNodeStorage).updateJobNode("instances/127.0.0.1@-@0", InstanceStatus.RUNNING.name());
-    }
-    
+        
     @Test
     public void assertRemoveStatus() {
         instanceService.removeStatus();
@@ -64,32 +56,5 @@ public final class InstanceServiceTest {
         when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
         assertThat(instanceService.getAvailableJobInstances(), is(Collections.singletonList(new JobInstance("127.0.0.1@-@0"))));
-    }
-    
-    @Test
-    public void assertIsLocalInstanceReadyWhenServerDisabled() {
-        assertFalse(instanceService.isLocalInstanceReady());
-    }
-    
-    @Test
-    public void assertIsLocalInstanceReadyWhenInstanceCrashed() {
-        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
-        assertFalse(instanceService.isLocalInstanceReady());
-    }
-    
-    @Test
-    public void assertIsLocalInstanceReadyWhenInstanceIsRunning() {
-        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("instances/127.0.0.1@-@0")).thenReturn(true);
-        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn(InstanceStatus.RUNNING.name());
-        assertFalse(instanceService.isLocalInstanceReady());
-    }
-    
-    @Test
-    public void assertIsLocalInstanceReadyWhenServerReady() {
-        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
-        when(jobNodeStorage.isJobNodeExisted("instances/127.0.0.1@-@0")).thenReturn(true);
-        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn(InstanceStatus.READY.name());
-        assertTrue(instanceService.isLocalInstanceReady());
     }
 }

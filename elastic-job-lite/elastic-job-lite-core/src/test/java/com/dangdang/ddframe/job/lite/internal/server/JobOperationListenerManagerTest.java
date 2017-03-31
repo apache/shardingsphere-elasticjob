@@ -144,7 +144,6 @@ public final class JobOperationListenerManagerTest {
         jobOperationListenerManager.new JobTriggerStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger", null, "".getBytes())),
                 "/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger");
-        verify(instanceService).isLocalInstanceReady();
         verify(jobScheduleController, times(0)).triggerJob();
     }
     
@@ -152,11 +151,9 @@ public final class JobOperationListenerManagerTest {
     @Ignore
     public void assertJobTriggerStatusJobListenerWhenIsAddAndIsJobLocalHostTriggerPathAndJobRegisterAndServerIsReady() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        when(instanceService.isLocalInstanceReady()).thenReturn(true);
         jobOperationListenerManager.new JobTriggerStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger", null, "".getBytes())),
                 "/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger");
-        verify(instanceService).isLocalInstanceReady();
         verify(jobScheduleController).triggerJob();
     }
 }

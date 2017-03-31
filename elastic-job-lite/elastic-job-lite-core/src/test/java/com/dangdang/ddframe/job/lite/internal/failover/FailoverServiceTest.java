@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.internal.failover;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService.FailoverLeaderExecutionCallback;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
@@ -47,9 +46,6 @@ public final class FailoverServiceTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private InstanceService instanceService;
-    
-    @Mock
     private ShardingService shardingService;
     
     @Mock
@@ -61,7 +57,6 @@ public final class FailoverServiceTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(failoverService, "jobNodeStorage", jobNodeStorage);
-        ReflectionUtils.setFieldValue(failoverService, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(failoverService, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(failoverService, "jobName", "test_job");
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
@@ -105,24 +100,22 @@ public final class FailoverServiceTest {
     public void assertFailoverIfUnnecessaryWhenServerIsNotReady() {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(instanceService.isLocalInstanceReady()).thenReturn(false);
         failoverService.failoverIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage).getJobNodeChildrenKeys("leader/failover/items");
-        verify(instanceService).isLocalInstanceReady();
         verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/failover/latch"), Matchers.<FailoverLeaderExecutionCallback>any());
     }
     
     @Test
     public void assertFailoverIfNecessary() {
+        JobRegistry.getInstance().setJobRunning("test_job", true);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(instanceService.isLocalInstanceReady()).thenReturn(true);
         failoverService.failoverIfNecessary();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage).getJobNodeChildrenKeys("leader/failover/items");
-        verify(instanceService).isLocalInstanceReady();
         verify(jobNodeStorage).executeInLeader(eq("leader/failover/latch"), Matchers.<FailoverLeaderExecutionCallback>any());
+        JobRegistry.getInstance().setJobRunning("test_job", false);
     }
     
     @Test
@@ -135,17 +128,17 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertFailoverLeaderExecutionCallbackIfNecessary() {
+        JobRegistry.getInstance().setJobRunning("test_job", true);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(instanceService.isLocalInstanceReady()).thenReturn(true);
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         failoverService.new FailoverLeaderExecutionCallback().execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage, times(2)).getJobNodeChildrenKeys("leader/failover/items");
-        verify(instanceService).isLocalInstanceReady();
         verify(jobNodeStorage).fillEphemeralJobNode("execution/0/failover", "127.0.0.1");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/failover/items/0");
         verify(jobScheduleController).triggerJob();
+        JobRegistry.getInstance().setJobRunning("test_job", false);
     }
     
     @Test

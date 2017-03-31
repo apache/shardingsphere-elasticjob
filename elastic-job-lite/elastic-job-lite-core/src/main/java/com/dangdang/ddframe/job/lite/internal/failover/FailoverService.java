@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.failover;
 
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -43,14 +42,11 @@ public class FailoverService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    private final InstanceService instanceService;
-    
     private final ShardingService shardingService;
     
     public FailoverService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
-        instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
     }
     
@@ -79,7 +75,8 @@ public class FailoverService {
     }
     
     private boolean needFailover() {
-        return jobNodeStorage.isJobNodeExisted(FailoverNode.ITEMS_ROOT) && !jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).isEmpty() && instanceService.isLocalInstanceReady();
+        return jobNodeStorage.isJobNodeExisted(FailoverNode.ITEMS_ROOT) && !jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).isEmpty()
+                && JobRegistry.getInstance().isJobRunning(jobName);
     }
     
     /**

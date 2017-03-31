@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
@@ -95,7 +94,6 @@ public final class ExecutionServiceTest {
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
         executionService.registerJobCompleted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
         verify(configService).load(true);
-        verify(instanceService, times(0)).updateStatus(InstanceStatus.READY);
     }
     
     @Test
@@ -103,7 +101,6 @@ public final class ExecutionServiceTest {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.registerJobCompleted(getShardingContext());
-        verify(instanceService).updateStatus(InstanceStatus.READY);
         verify(jobNodeStorage).createJobNodeIfNeeded("execution/0/completed");
         verify(jobNodeStorage).createJobNodeIfNeeded("execution/1/completed");
         verify(jobNodeStorage).createJobNodeIfNeeded("execution/2/completed");

@@ -17,11 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public final class JobRegistryTest {
@@ -39,5 +42,27 @@ public final class JobRegistryTest {
         JobRegistry.getInstance().addJobScheduleController("test_job_scheduler_for_remove", jobScheduleController);
         assertThat(JobRegistry.getInstance().removeJobScheduleController("test_job_scheduler_for_remove"), is(jobScheduleController));
         assertNull(JobRegistry.getInstance().getJobScheduleController("test_job_scheduler_for_add"));
+    }
+    
+    @Test
+    public void assertGetJobInstanceIfNull() {
+        assertThat(JobRegistry.getInstance().getJobInstance("null_job_instance"), is(new JobInstance(JobInstance.DEFAULT_INSTANCE_ID)));
+    }
+    
+    @Test
+    public void assertGetJobInstanceIfNotNull() {
+        JobRegistry.getInstance().addJobInstance("exist_job_instance", new JobInstance("127.0.0.1@-@0"));
+        assertThat(JobRegistry.getInstance().getJobInstance("exist_job_instance"), is(new JobInstance("127.0.0.1@-@0")));
+    }
+    
+    @Test
+    public void assertIsJobRunningIfNull() {
+        assertFalse(JobRegistry.getInstance().isJobRunning("null_job_instance"));
+    }
+    
+    @Test
+    public void assertIsJobRunningIfNotNull() {
+        JobRegistry.getInstance().setJobRunning("exist_job_instance", true);
+        assertTrue(JobRegistry.getInstance().isJobRunning("exist_job_instance"));
     }
 }

@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
@@ -71,8 +70,7 @@ public class ExecutionContextService {
     }
     
     private String buildTaskId(final LiteJobConfiguration liteJobConfig, final List<Integer> shardingItems) {
-        return Joiner.on("@-@").join(liteJobConfig.getJobName(), Joiner.on(",").join(shardingItems), 
-                InstanceStatus.READY.name(), JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()); 
+        return Joiner.on("@-@").join(liteJobConfig.getJobName(), Joiner.on(",").join(shardingItems), "READY", JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()); 
     }
     
     private void removeRunningIfMonitorExecution(final boolean monitorExecution, final List<Integer> shardingItems) {

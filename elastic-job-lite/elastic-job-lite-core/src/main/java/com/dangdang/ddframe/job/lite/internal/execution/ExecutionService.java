@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceStatus;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
@@ -40,6 +40,8 @@ import java.util.List;
  */
 public class ExecutionService {
     
+    private final String jobName;
+    
     private final JobNodeStorage jobNodeStorage;
     
     private final ConfigurationService configService;
@@ -49,6 +51,7 @@ public class ExecutionService {
     private final InstanceService instanceService;
     
     public ExecutionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
@@ -61,8 +64,8 @@ public class ExecutionService {
      * @param shardingContexts 分片上下文
      */
     public void registerJobBegin(final ShardingContexts shardingContexts) {
+        JobRegistry.getInstance().setJobRunning(jobName, true);
         if (!shardingContexts.getShardingItemParameters().isEmpty() && configService.load(true).isMonitorExecution()) {
-            instanceService.updateStatus(InstanceStatus.RUNNING);
             for (int each : shardingContexts.getShardingItemParameters().keySet()) {
                 jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
             }
@@ -114,10 +117,10 @@ public class ExecutionService {
      * @param shardingContexts 分片上下文
      */
     public void registerJobCompleted(final ShardingContexts shardingContexts) {
+        JobRegistry.getInstance().setJobRunning(jobName, false);
         if (!configService.load(true).isMonitorExecution()) {
             return;
         }
-        instanceService.updateStatus(InstanceStatus.READY);
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));

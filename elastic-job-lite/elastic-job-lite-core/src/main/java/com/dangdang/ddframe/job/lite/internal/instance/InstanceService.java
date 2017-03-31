@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.instance;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -33,8 +32,6 @@ import java.util.List;
  */
 public class InstanceService {
     
-    private final String jobName;
-    
     private final JobNodeStorage jobNodeStorage;
     
     private final InstanceNode instanceNode;
@@ -42,7 +39,6 @@ public class InstanceService {
     private final ServerService serverService;
     
     public InstanceService(final CoordinatorRegistryCenter regCenter, final String jobName) {
-        this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         instanceNode = new InstanceNode(jobName);
         serverService = new ServerService(regCenter, jobName);
@@ -52,16 +48,7 @@ public class InstanceService {
      * 持久化作业运行实例上线相关信息.
      */
     public void persistOnline() {
-        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstanceNode(), InstanceStatus.READY.name());
-    }
-    
-    /**
-     * 更新作业运行状态.
-     * 
-     * @param status 作业运行状态
-     */
-    public void updateStatus(final InstanceStatus status) {
-        jobNodeStorage.updateJobNode(instanceNode.getLocalInstanceNode(), status.name());
+        jobNodeStorage.fillEphemeralJobNode(instanceNode.getLocalInstanceNode(), "");
     }
     
     /**
@@ -85,16 +72,5 @@ public class InstanceService {
             }
         }
         return result;
-    }
-    
-    /**
-     * 判断当前服务器是否是等待执行的状态.
-     *
-     * @return 当前服务器是否是等待执行的状态
-     */
-    public boolean isLocalInstanceReady() {
-        String localInstanceNode = instanceNode.getLocalInstanceNode();
-        return serverService.isEnableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())
-                && jobNodeStorage.isJobNodeExisted(localInstanceNode) && InstanceStatus.READY.name().equals(jobNodeStorage.getJobNodeData(localInstanceNode));
     }
 }
