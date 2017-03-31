@@ -17,9 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.server;
 
-import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
@@ -41,10 +39,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    private final InstanceNode instanceNode;
-    
-    private final LeaderService leaderService;
-    
     private final ServerService serverService;
     
     private final InstanceService instanceService;
@@ -56,8 +50,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     public JobOperationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
-        instanceNode = new InstanceNode(jobName);
-        leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
@@ -68,7 +60,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     public void start() {
         addConnectionStateListener(new ConnectionLostListener());
         addDataListener(new JobTriggerStatusJobListener());
-        addDataListener(new JobShutdownStatusJobListener());
     }
     
     class ConnectionLostListener implements ConnectionStateListener {
@@ -103,23 +94,6 @@ public class JobOperationListenerManager extends AbstractListenerManager {
 //            if (serverService.isLocalInstanceReady()) {
 //                jobScheduleController.triggerJob();
 //            }
-        }
-    }
-    
-    class JobShutdownStatusJobListener extends AbstractJobListener {
-        
-        @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (instanceNode.isLocalInstancePath(path) && TreeCacheEvent.Type.NODE_REMOVED == event.getType()) {
-                instanceService.removeStatus();
-                if (leaderService.isLeader()) {
-                    leaderService.removeLeader();
-                }
-                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-                if (null != jobScheduleController) {
-                    jobScheduleController.shutdown();
-                }
-            }
         }
     }
 }

@@ -53,13 +53,7 @@ public class InstanceNode {
         return path.startsWith(jobNodePath.getFullPath(InstanceNode.ROOT));
     }
     
-    /**
-     * 判断给定路径是否为本地作业运行实例路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为本地作业运行实例路径
-     */
-    public boolean isLocalInstancePath(final String path) {
+    boolean isLocalInstancePath(final String path) {
         return path.equals(jobNodePath.getFullPath(String.format(INSTANCES, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())));
     }
     

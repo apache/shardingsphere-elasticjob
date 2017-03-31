@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -50,9 +49,6 @@ public final class JobOperationListenerManagerTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private LeaderService leaderService;
-    
-    @Mock
     private ServerService serverService;
     
     @Mock
@@ -74,7 +70,6 @@ public final class JobOperationListenerManagerTest {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         jobOperationListenerManager = new JobOperationListenerManager(null, "test_job");
         MockitoAnnotations.initMocks(this);
-        ReflectionUtils.setFieldValue(jobOperationListenerManager, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "serverService", serverService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(jobOperationListenerManager, "shardingService", shardingService);
@@ -86,7 +81,7 @@ public final class JobOperationListenerManagerTest {
     public void assertStart() {
         jobOperationListenerManager.start();
         verify(jobNodeStorage).addConnectionStateListener(Matchers.<ConnectionLostListener>any());
-        verify(jobNodeStorage, times(2)).addDataListener(Matchers.<TreeCacheListener>any());
+        verify(jobNodeStorage).addDataListener(Matchers.<TreeCacheListener>any());
     }
     
     @Test
@@ -163,30 +158,5 @@ public final class JobOperationListenerManagerTest {
                 "/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger");
         verify(instanceService).isLocalInstanceReady();
         verify(jobScheduleController).triggerJob();
-    }
-    
-    @Test
-    public void assertJobShutdownStatusJobListenerWhenIsNotJobShutdownPath() {
-        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/" + "127.0.0.1" + "/127.0.0.1@-@0/other", null, "".getBytes())),
-                "/test_job/servers/" + "127.0.0.1" + "/127.0.0.1@-@0/other");
-        verify(jobScheduleController, times(0)).shutdown();
-    }
-    
-    @Test
-    public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathButJobIsNotExisted() {
-        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0", null, "RUNNING".getBytes())),
-                "/test_job/servers/" + "127.0.0.1" + "/127.0.0.1@-@0");
-        verify(jobScheduleController, times(0)).shutdown();
-    }
-    
-    @Test
-    public void assertJobShutdownStatusJobListenerWhenIsJobShutdownPathAndAdd() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        jobOperationListenerManager.new JobShutdownStatusJobListener().dataChanged(
-                null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/instances/127.0.0.1@-@0", null, "".getBytes())), "/test_job/instances/127.0.0.1@-@0");
-        verify(jobScheduleController).shutdown();
-        verify(instanceService).removeStatus();
     }
 }

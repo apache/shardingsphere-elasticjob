@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManager;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -46,6 +47,8 @@ public class ListenerManager {
     
     private final JobOperationListenerManager jobOperationListenerManager;
     
+    private final InstanceShutdownListenerManager instanceShutdownListenerManager;
+    
     private final ConfigurationListenerManager configurationListenerManager;
 
     private final GuaranteeListenerManager guaranteeListenerManager;
@@ -56,6 +59,7 @@ public class ListenerManager {
         executionListenerManager = new ExecutionListenerManager(regCenter, jobName);
         failoverListenerManager = new FailoverListenerManager(regCenter, jobName);
         jobOperationListenerManager = new JobOperationListenerManager(regCenter, jobName);
+        instanceShutdownListenerManager = new InstanceShutdownListenerManager(regCenter, jobName);
         configurationListenerManager = new ConfigurationListenerManager(regCenter, jobName);
         guaranteeListenerManager = new GuaranteeListenerManager(regCenter, jobName, elasticJobListeners);
     }
@@ -69,6 +73,7 @@ public class ListenerManager {
         executionListenerManager.start();
         failoverListenerManager.start();
         jobOperationListenerManager.start();
+        instanceShutdownListenerManager.start();
         configurationListenerManager.start();
         guaranteeListenerManager.start();
     }

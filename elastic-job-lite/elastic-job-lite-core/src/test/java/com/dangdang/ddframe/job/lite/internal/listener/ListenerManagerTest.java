@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManager;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
 import org.junit.Before;
@@ -53,6 +54,9 @@ public class ListenerManagerTest {
     private JobOperationListenerManager jobOperationListenerManager;
     
     @Mock
+    private InstanceShutdownListenerManager instanceShutdownListenerManager;
+    
+    @Mock
     private ConfigurationListenerManager configurationListenerManager;
     
     @Mock
@@ -68,6 +72,7 @@ public class ListenerManagerTest {
         ReflectionUtils.setFieldValue(listenerManager, "executionListenerManager", executionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "failoverListenerManager", failoverListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "jobOperationListenerManager", jobOperationListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "instanceShutdownListenerManager", instanceShutdownListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "configurationListenerManager", configurationListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "guaranteeListenerManager", guaranteeListenerManager);
     }
@@ -80,6 +85,7 @@ public class ListenerManagerTest {
         verify(executionListenerManager).start();
         verify(failoverListenerManager).start();
         verify(jobOperationListenerManager).start();
+        verify(instanceShutdownListenerManager).start();
         verify(configurationListenerManager).start();
         verify(guaranteeListenerManager).start();
     }
