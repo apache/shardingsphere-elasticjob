@@ -79,7 +79,7 @@ public class SchedulerFacade {
         leaderService.electLeader();
         configService.persist(liteJobConfig);
         LiteJobConfiguration liteJobConfigFromZk = configService.load(false);
-        serverService.persistServerOnline(!liteJobConfigFromZk.isDisabled());
+        serverService.persistOnline(!liteJobConfigFromZk.isDisabled());
         instanceService.persistOnline();
         shardingService.setReshardingFlag();
         monitorService.listen();

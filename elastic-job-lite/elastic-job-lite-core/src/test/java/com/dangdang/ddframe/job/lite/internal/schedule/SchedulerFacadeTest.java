@@ -101,7 +101,7 @@ public class SchedulerFacadeTest {
         verify(listenerManager).startAllListeners();
         verify(leaderService).electLeader();
         verify(configService).persist(liteJobConfig);
-        verify(serverService).persistServerOnline(true);
+        verify(serverService).persistOnline(true);
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
         verify(configService).load(false);

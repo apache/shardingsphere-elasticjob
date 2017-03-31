@@ -44,16 +44,13 @@ public class InstanceNode {
     }
     
     /**
-     * 获取本地作业运行实例路径.
+     * 判断给定路径是否为作业运行实例路径.
      *
-     * @return 本地作业运行实例路径
+     * @param path 待判断的路径
+     * @return 是否为作业运行实例路径
      */
-    public String getLocalInstanceNode() {
-        return String.format(INSTANCES, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
-    }
-    
-    public static String getInstanceNode(final String jobInstanceId) {
-        return String.format(INSTANCES, jobInstanceId);
+    public boolean isInstancePath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(InstanceNode.ROOT));
     }
     
     /**
@@ -66,13 +63,7 @@ public class InstanceNode {
         return path.equals(jobNodePath.getFullPath(String.format(INSTANCES, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())));
     }
     
-    /**
-     * 判断给定路径是否为作业运行实例路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为作业运行实例路径
-     */
-    public boolean isInstancePath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(InstanceNode.ROOT));
+    String getLocalInstanceNode() {
+        return String.format(INSTANCES, JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
     }
 }

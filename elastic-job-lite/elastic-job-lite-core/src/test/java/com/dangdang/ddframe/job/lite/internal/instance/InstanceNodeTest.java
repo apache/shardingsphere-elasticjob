@@ -32,29 +32,9 @@ public final class InstanceNodeTest {
     private static InstanceNode instanceNode;
     
     @BeforeClass
-    public static void setUp() throws NoSuchFieldException {
+    public static void setUp() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         instanceNode = new InstanceNode("test_job");
-    }
-    
-    @Test
-    public void assertGetLocalInstanceNode() {
-        assertThat(instanceNode.getLocalInstanceNode(), is("instances/127.0.0.1@-@0"));
-    }
-    
-    @Test
-    public void assertGetInstanceNode() {
-        assertThat(InstanceNode.getInstanceNode("host0@-@0"), is("instances/host0@-@0"));
-    }
-    
-    @Test
-    public void assertIsLocalInstancePath() {
-        assertTrue(instanceNode.isLocalInstancePath("/test_job/instances/127.0.0.1@-@0"));
-    }
-    
-    @Test
-    public void assertIsNotLocalInstancePath() {
-        assertFalse(instanceNode.isLocalInstancePath("/test_job/instances/other_job_instance_id"));
     }
     
     @Test
@@ -65,5 +45,20 @@ public final class InstanceNodeTest {
     @Test
     public void assertIsNotInstancePath() {
         assertFalse(instanceNode.isInstancePath("/test_job/other/127.0.0.1@-@0"));
+    }
+    
+    @Test
+    public void assertIsLocalInstancePath() {
+        assertTrue(instanceNode.isLocalInstancePath("/test_job/instances/127.0.0.1@-@0"));
+    }
+    
+    @Test
+    public void assertIsNotLocalInstancePath() {
+        assertFalse(instanceNode.isLocalInstancePath("/test_job/instances/127.0.0.2@-@0"));
+    }
+    
+    @Test
+    public void assertGetLocalInstancePath() {
+        assertThat(instanceNode.getLocalInstanceNode(), is("instances/127.0.0.1@-@0"));
     }
 }

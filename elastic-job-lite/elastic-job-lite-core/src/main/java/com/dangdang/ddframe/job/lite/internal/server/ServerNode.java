@@ -46,24 +46,6 @@ public class ServerNode {
         jobNodePath = new JobNodePath(jobName);
     }
     
-    String getServerNode() {
-        return getServerNode(ip);
-    }
-    
-    String getServerNode(final String ip) {
-        return String.format(SERVERS, ip);
-    }
-    
-    /**
-     * 判断给定路径是否为作业服务器路径.
-     *
-     * @param path 待判断的路径
-     * @return 是否为作业服务器路径
-     */
-    public boolean isLocalServerPath(final String path) {
-        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, ip)));
-    }
-    
     /**
      * 判断给定路径是否为作业服务器路径.
      *
@@ -72,5 +54,19 @@ public class ServerNode {
      */
     public boolean isServerPath(final String path) {
         return Pattern.compile(jobNodePath.getFullPath(ServerNode.ROOT) + "/" + IpUtils.IP_REGEX).matcher(path).matches();
+    }
+    
+    /**
+     * 判断给定路径是否为本地作业服务器路径.
+     *
+     * @param path 待判断的路径
+     * @return 是否为本地作业服务器路径
+     */
+    public boolean isLocalServerPath(final String path) {
+        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, ip)));
+    }
+    
+    String getServerNode(final String ip) {
+        return String.format(SERVERS, ip);
     }
 }

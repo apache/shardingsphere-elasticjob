@@ -100,9 +100,9 @@ public final class JobOperationListenerManagerTest {
     public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsNotPausedManually() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
-        when(serverService.isServerEnabled("127.0.0.1")).thenReturn(true);
+        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
-        verify(serverService).persistServerOnline(true);
+        verify(serverService).persistOnline(true);
         verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
         verify(jobScheduleController).resumeJob();
     }
@@ -149,7 +149,7 @@ public final class JobOperationListenerManagerTest {
         jobOperationListenerManager.new JobTriggerStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger", null, "".getBytes())),
                 "/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger");
-        verify(serverService).isLocalhostServerReady();
+        verify(instanceService).isLocalInstanceReady();
         verify(jobScheduleController, times(0)).triggerJob();
     }
     
@@ -157,11 +157,11 @@ public final class JobOperationListenerManagerTest {
     @Ignore
     public void assertJobTriggerStatusJobListenerWhenIsAddAndIsJobLocalHostTriggerPathAndJobRegisterAndServerIsReady() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        when(serverService.isLocalhostServerReady()).thenReturn(true);
+        when(instanceService.isLocalInstanceReady()).thenReturn(true);
         jobOperationListenerManager.new JobTriggerStatusJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger", null, "".getBytes())),
                 "/test_job/servers/" + "127.0.0.1" + "/instances/127.0.0.1@-@0/trigger");
-        verify(serverService).isLocalhostServerReady();
+        verify(instanceService).isLocalInstanceReady();
         verify(jobScheduleController).triggerJob();
     }
     

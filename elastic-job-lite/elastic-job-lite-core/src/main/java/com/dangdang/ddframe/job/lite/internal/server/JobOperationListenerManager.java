@@ -79,7 +79,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
             if (ConnectionState.LOST == newState) {
                 jobScheduleController.pauseJob();
             } else if (ConnectionState.RECONNECTED == newState) {
-                serverService.persistServerOnline(serverService.isServerEnabled(JobRegistry.getInstance().getJobInstance(jobName).getIp()));
+                serverService.persistOnline(serverService.isEnableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()));
                 instanceService.persistOnline();
                 executionService.clearRunningInfo(shardingService.getLocalHostShardingItems());
                 jobScheduleController.resumeJob();
@@ -100,7 +100,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
 //            if (null == jobScheduleController) {
 //                return;
 //            }
-//            if (serverService.isLocalhostServerReady()) {
+//            if (serverService.isLocalInstanceReady()) {
 //                jobScheduleController.triggerJob();
 //            }
         }

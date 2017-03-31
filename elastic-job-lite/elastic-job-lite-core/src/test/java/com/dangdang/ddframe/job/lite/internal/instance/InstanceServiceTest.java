@@ -3,7 +3,6 @@ package com.dangdang.ddframe.job.lite.internal.instance;
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
-import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,9 +11,12 @@ import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,11 +61,35 @@ public final class InstanceServiceTest {
     
     @Test
     public void assertGetAvailableJobInstances() {
-        when(serverService.isServerEnabled("host0")).thenReturn(true);
-        when(serverService.isServerEnabled("host3")).thenReturn(true);
-        when(serverService.isServerEnabled("host4")).thenReturn(true);
-        when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Arrays.asList("host0@-@0", "host2@-@0", "host3@-@0", "host4@-@0"));
-        when(jobNodeStorage.getJobNodeData("servers/host2")).thenReturn(ServerStatus.DISABLED.name());
-        assertThat(instanceService.getAvailableJobInstances(), is(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host3@-@0"), new JobInstance("host4@-@0"))));
+        when(jobNodeStorage.getJobNodeChildrenKeys("instances")).thenReturn(Arrays.asList("127.0.0.1@-@0", "127.0.0.2@-@0"));
+        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
+        assertThat(instanceService.getAvailableJobInstances(), is(Collections.singletonList(new JobInstance("127.0.0.1@-@0"))));
+    }
+    
+    @Test
+    public void assertIsLocalInstanceReadyWhenServerDisabled() {
+        assertFalse(instanceService.isLocalInstanceReady());
+    }
+    
+    @Test
+    public void assertIsLocalInstanceReadyWhenInstanceCrashed() {
+        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
+        assertFalse(instanceService.isLocalInstanceReady());
+    }
+    
+    @Test
+    public void assertIsLocalInstanceReadyWhenInstanceIsRunning() {
+        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("instances/127.0.0.1@-@0")).thenReturn(true);
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn(InstanceStatus.RUNNING.name());
+        assertFalse(instanceService.isLocalInstanceReady());
+    }
+    
+    @Test
+    public void assertIsLocalInstanceReadyWhenServerReady() {
+        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
+        when(jobNodeStorage.isJobNodeExisted("instances/127.0.0.1@-@0")).thenReturn(true);
+        when(jobNodeStorage.getJobNodeData("instances/127.0.0.1@-@0")).thenReturn(InstanceStatus.READY.name());
+        assertTrue(instanceService.isLocalInstanceReady());
     }
 }

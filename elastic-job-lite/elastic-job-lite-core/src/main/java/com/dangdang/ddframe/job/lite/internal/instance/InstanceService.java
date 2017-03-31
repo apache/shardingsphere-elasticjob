@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.instance;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -32,6 +33,8 @@ import java.util.List;
  */
 public class InstanceService {
     
+    private final String jobName;
+    
     private final JobNodeStorage jobNodeStorage;
     
     private final InstanceNode instanceNode;
@@ -39,6 +42,7 @@ public class InstanceService {
     private final ServerService serverService;
     
     public InstanceService(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         instanceNode = new InstanceNode(jobName);
         serverService = new ServerService(regCenter, jobName);
@@ -68,18 +72,29 @@ public class InstanceService {
     }
     
     /**
-     * 获取可分片的单元列表.
+     * 获取可分片的作业运行实例.
      *
-     * @return 可分片的单元列表
+     * @return 可分片的作业运行实例
      */
     public List<JobInstance> getAvailableJobInstances() {
         List<JobInstance> result = new LinkedList<>();
         for (String each : jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT)) {
-            JobInstance shardingUnit = new JobInstance(each);
-            if (serverService.isServerEnabled(shardingUnit.getIp())) {
+            JobInstance jobInstance = new JobInstance(each);
+            if (serverService.isEnableServer(jobInstance.getIp())) {
                 result.add(new JobInstance(each));
             }
         }
         return result;
+    }
+    
+    /**
+     * 判断当前服务器是否是等待执行的状态.
+     *
+     * @return 当前服务器是否是等待执行的状态
+     */
+    public boolean isLocalInstanceReady() {
+        String localInstanceNode = instanceNode.getLocalInstanceNode();
+        return serverService.isEnableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())
+                && jobNodeStorage.isJobNodeExisted(localInstanceNode) && InstanceStatus.READY.name().equals(jobNodeStorage.getJobNodeData(localInstanceNode));
     }
 }

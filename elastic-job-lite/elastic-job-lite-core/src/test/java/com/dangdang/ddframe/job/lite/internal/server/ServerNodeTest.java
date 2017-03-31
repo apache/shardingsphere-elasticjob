@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -36,12 +37,27 @@ public final class ServerNodeTest {
     }
     
     @Test
-    public void assertGetServerNode() {
-        assertThat(serverNode.getServerNode("127.0.0.1"), is("servers/127.0.0.1"));
+    public void assertIsServerPath() {
+        assertTrue(serverNode.isServerPath("/test_job/servers/127.0.0.1"));
+    }
+    
+    @Test
+    public void assertIsNotServerPath() {
+        assertFalse(serverNode.isServerPath("/test_job/servers/255.255.255.256"));
     }
     
     @Test
     public void assertIsLocalServerPath() {
         assertTrue(serverNode.isLocalServerPath("/test_job/servers/127.0.0.1"));
+    }
+    
+    @Test
+    public void assertIsNotLocalServerPath() {
+        assertFalse(serverNode.isLocalServerPath("/test_job/servers/127.0.0.2"));
+    }
+    
+    @Test
+    public void assertGetServerNode() {
+        assertThat(serverNode.getServerNode("127.0.0.1"), is("servers/127.0.0.1"));
     }
 }

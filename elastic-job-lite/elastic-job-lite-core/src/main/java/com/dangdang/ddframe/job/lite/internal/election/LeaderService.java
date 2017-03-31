@@ -65,7 +65,7 @@ public class LeaderService {
      * @return 当前节点是否是主节点
      */
     public boolean isLeaderUntilBlock() {
-        while (!hasLeader() && !serverService.getAvailableServers().isEmpty()) {
+        while (!hasLeader() && serverService.hasAvailableServers()) {
             log.info("Leader is electing, waiting for {} ms", 100);
             BlockUtils.waitingShortTime();
             if (serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {

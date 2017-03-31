@@ -33,8 +33,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.Collections;
-
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -87,7 +85,6 @@ public final class LeaderListenerManagerTest {
     
     @Test
     public void assertLeaderElectionWhenRemoveLeaderInstancePathWithoutAvailableServers() {
-        when(serverService.getAvailableServers()).thenReturn(Collections.<String>emptyList());
         String path = "/test_job/leader/election/instance";
         leaderListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData(path, null, "127.0.0.1".getBytes())), path);
         verify(leaderService, times(0)).electLeader();

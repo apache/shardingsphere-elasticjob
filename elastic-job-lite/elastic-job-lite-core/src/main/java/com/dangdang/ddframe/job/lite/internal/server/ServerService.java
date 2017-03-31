@@ -18,13 +18,10 @@
 package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceStatus;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,46 +36,36 @@ public class ServerService {
     
     private final JobNodeStorage jobNodeStorage;
     
-    private final InstanceNode instanceNode;
-    
     private final ServerNode serverNode;
     
     public ServerService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
-        instanceNode = new InstanceNode(jobName);
         serverNode = new ServerNode(jobName);
     }
     
     /**
-     * 持久化作业服务器上线相关信息.
+     * 持久化作业服务器上线信息.
      * 
      * @param enabled 作业是否启用
      */
-    public void persistServerOnline(final boolean enabled) {
-        jobNodeStorage.fillJobNode(serverNode.getServerNode(), enabled ? "" : ServerStatus.DISABLED.name());
+    public void persistOnline(final boolean enabled) {
+        jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp()), enabled ? "" : ServerStatus.DISABLED.name());
     }
     
     /**
-     * 获取可用的作业服务器列表.
+     * 获取是否还有可用的作业服务器.
      * 
-     * @return 可用的作业服务器列表
+     * @return 是否还有可用的作业服务器
      */
-    public List<String> getAvailableServers() {
-        List<String> servers = getAllServers();
-        List<String> result = new ArrayList<>(servers.size());
+    public boolean hasAvailableServers() {
+        List<String> servers = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT);
         for (String each : servers) {
             if (isAvailableServer(each)) {
-                result.add(each);
+                return true;
             }
         }
-        return result;
-    }
-    
-    private List<String> getAllServers() {
-        List<String> result = jobNodeStorage.getJobNodeChildrenKeys(ServerNode.ROOT);
-        Collections.sort(result);
-        return result;
+        return false;
     }
     
     /**
@@ -88,17 +75,7 @@ public class ServerService {
      * @return 作业服务器是否可用
      */
     public boolean isAvailableServer(final String ip) {
-        return isServerEnabled(ip) && hasOnlineInstances(ip);
-    }
-    
-    /**
-     * 判断服务器是否启用.
-     *
-     * @param ip 作业服务器IP地址
-     * @return 服务器是否启用
-     */
-    public boolean isServerEnabled(final String ip) {
-        return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip)));
+        return isEnableServer(ip) && hasOnlineInstances(ip);
     }
     
     private boolean hasOnlineInstances(final String ip) {
@@ -111,12 +88,12 @@ public class ServerService {
     }
     
     /**
-     * 判断当前服务器是否是等待执行的状态.
-     * 
-     * @return 当前服务器是否是等待执行的状态
+     * 判断服务器是否启用.
+     *
+     * @param ip 作业服务器IP地址
+     * @return 服务器是否启用
      */
-    public boolean isLocalhostServerReady() {
-        return isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()) && jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstanceNode())
-                && InstanceStatus.READY.name().equals(jobNodeStorage.getJobNodeDataDirectly(instanceNode.getLocalInstanceNode()));
+    public boolean isEnableServer(final String ip) {
+        return !ServerStatus.DISABLED.name().equals(jobNodeStorage.getJobNodeData(serverNode.getServerNode(ip)));
     }
 }
