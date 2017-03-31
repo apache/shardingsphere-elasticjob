@@ -94,7 +94,7 @@ public final class JobOperationListenerManagerTest {
     @Test
     public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsNotPausedManually() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
         jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
         verify(serverService).persistOnline(true);

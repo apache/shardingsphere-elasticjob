@@ -74,7 +74,7 @@ public class FailoverListenerManager extends AbstractListenerManager {
             return;
         }
         failoverService.setCrashedFailoverFlag(item);
-        if (!executionService.hasRunningItems(shardingService.getLocalHostShardingItems())) {
+        if (!executionService.hasRunningItems(shardingService.getLocalShardingItems())) {
             failoverService.failoverIfNecessary();
         }
     }

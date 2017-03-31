@@ -44,6 +44,6 @@ public final class JobTriggerListener extends TriggerListenerSupport {
     
     @Override
     public void triggerMisfired(final Trigger trigger) {
-        executionService.setMisfire(shardingService.getLocalHostShardingItems());
+        executionService.setMisfire(shardingService.getLocalShardingItems());
     }
 }

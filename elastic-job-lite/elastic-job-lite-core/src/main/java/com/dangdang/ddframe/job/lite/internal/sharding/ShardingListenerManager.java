@@ -19,11 +19,10 @@ package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.Setter;
@@ -47,8 +46,6 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
-    private final ExecutionNode executionNode;
-    
     @Setter
     private int currentShardingTotalCount;
     
@@ -59,7 +56,6 @@ public class ShardingListenerManager extends AbstractListenerManager {
         configNode = new ConfigurationNode(jobName);
         instanceNode = new InstanceNode(jobName);
         serverNode = new ServerNode(jobName);
-        executionNode = new ExecutionNode(jobName);
     }
     
     @Override

@@ -173,12 +173,12 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertGetLocalHostTakeOffItems() {
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(0, 1, 2));
+        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1, 2));
         when(jobNodeStorage.isJobNodeExisted("execution/0/failover")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("execution/1/failover")).thenReturn(true);
         when(jobNodeStorage.isJobNodeExisted("execution/2/failover")).thenReturn(false);
         assertThat(failoverService.getLocalHostTakeOffItems(), is(Arrays.asList(0, 1)));
-        verify(shardingService).getLocalHostShardingItems();
+        verify(shardingService).getLocalShardingItems();
         verify(jobNodeStorage).isJobNodeExisted("execution/0/failover");
         verify(jobNodeStorage).isJobNodeExisted("execution/1/failover");
         verify(jobNodeStorage).isJobNodeExisted("execution/2/failover");

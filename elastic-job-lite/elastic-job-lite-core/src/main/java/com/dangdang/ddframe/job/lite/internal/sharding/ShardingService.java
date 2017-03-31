@@ -25,10 +25,9 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
-import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
@@ -37,7 +36,6 @@ import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
-import org.apache.zookeeper.CreateMode;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -59,8 +57,6 @@ public class ShardingService {
     
     private final ConfigurationService configService;
     
-    private final ServerService serverService;
-    
     private final InstanceService instanceService;
     
     private final ExecutionService executionService;
@@ -72,7 +68,6 @@ public class ShardingService {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
-        serverService = new ServerService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         jobNodePath = new JobNodePath(jobName);
@@ -96,30 +91,28 @@ public class ShardingService {
     
     /**
      * 如果需要分片且当前节点为主节点, 则作业分片.
+     * 
+     * <p>
      * 如果当前无可用节点则不分片.
+     * </p>
      */
     public void shardingIfNecessary() {
         List<JobInstance> availableJobInstances = instanceService.getAvailableJobInstances();
-        LiteJobConfiguration liteJobConfig = configService.load(false);
-        int shardingTotalCount = liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
-        if (availableJobInstances.isEmpty()) {
-            clearShardingInfo(shardingTotalCount);
-            return;
-        }
-        if (!isNeedSharding()) {
+        if (!isNeedSharding() || availableJobInstances.isEmpty()) {
             return;
         }
         if (!leaderService.isLeaderUntilBlock()) {
             blockUntilShardingCompleted();
             return;
         }
+        LiteJobConfiguration liteJobConfig = configService.load(false);
+        int shardingTotalCount = liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
         if (liteJobConfig.isMonitorExecution()) {
             waitingOtherJobCompleted();
         }
         log.debug("Job '{}' sharding begin.", jobName);
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
-        clearShardingInfo(shardingTotalCount);
-        createShardingItemsIfNecessary(shardingTotalCount);
+        resetShardingInfo(shardingTotalCount);
         JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(availableJobInstances, jobName, shardingTotalCount)));
         log.debug("Job '{}' sharding complete.", jobName);
@@ -139,33 +132,30 @@ public class ShardingService {
         }
     }
     
-    private void clearShardingInfo(final int shardingTotalCount) {
+    private void resetShardingInfo(final int shardingTotalCount) {
         for (int i = 0; i < shardingTotalCount; i++) {
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getInstanceNode(i));
-        }
-    }
-    
-    private void createShardingItemsIfNecessary(final int shardingTotalCount) {
-        for (int i = 0; i < shardingTotalCount; i++) {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.ROOT + "/" + i);
         }
-        for (String each : jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT)) {
-            if (Integer.parseInt(each) >= shardingTotalCount) {
-                jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.ROOT + "/" + each);
+        int actualShardingTotalCount = jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT).size();
+        if (actualShardingTotalCount > shardingTotalCount) {
+            for (int i = shardingTotalCount; i < actualShardingTotalCount; i++) {
+                jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.ROOT + "/" + i);
             }
         }
     }
     
     /**
-     * 获取运行在本作业服务器的分片序列号.
+     * 获取运行在本作业实例的分片项集合.
      * 
-     * @return 运行在本作业服务器的分片序列号
+     * @return 运行在本作业实例的分片项集合
      */
-    public List<Integer> getLocalHostShardingItems() {
+    public List<Integer> getLocalShardingItems() {
         List<Integer> result = new LinkedList<>();
         String instanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
-        for (int i = 0; i < configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount(); i++) {
-            if (instanceId.equals(jobNodeStorage.getJobNodeDataDirectly(ExecutionNode.getInstanceNode(i)))) {
+        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        for (int i = 0; i < shardingTotalCount; i++) {
+            if (instanceId.equals(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(i)))) {
                 result.add(i);
             }
         }
@@ -197,8 +187,7 @@ public class ShardingService {
         public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
             for (Map.Entry<JobInstance, List<Integer>> entry : shardingResults.entrySet()) {
                 for (int shardingItem : entry.getValue()) {
-                    curatorTransactionFinal.create().withMode(CreateMode.EPHEMERAL)
-                            .forPath(jobNodePath.getFullPath(ExecutionNode.getInstanceNode(shardingItem)), entry.getKey().getJobInstanceId().getBytes()).and();
+                    curatorTransactionFinal.create().forPath(jobNodePath.getFullPath(ExecutionNode.getInstanceNode(shardingItem)), entry.getKey().getJobInstanceId().getBytes()).and();
                 }
             }
             curatorTransactionFinal.delete().forPath(jobNodePath.getFullPath(ShardingNode.NECESSARY)).and();

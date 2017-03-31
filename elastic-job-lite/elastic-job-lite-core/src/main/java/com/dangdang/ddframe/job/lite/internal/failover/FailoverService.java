@@ -119,7 +119,7 @@ public class FailoverService {
      * @return 运行在本作业服务器的被失效转移的序列号
      */
     public List<Integer> getLocalHostTakeOffItems() {
-        List<Integer> shardingItems = shardingService.getLocalHostShardingItems();
+        List<Integer> shardingItems = shardingService.getLocalShardingItems();
         List<Integer> result = new ArrayList<>(shardingItems.size());
         for (int each : shardingItems) {
             if (jobNodeStorage.isJobNodeExisted(FailoverNode.getExecutionFailoverNode(each))) {

@@ -54,9 +54,9 @@ public final class JobTriggerListenerTest {
     
     @Test
     public void assertTriggerMisfired() {
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Collections.singletonList(0));
+        when(shardingService.getLocalShardingItems()).thenReturn(Collections.singletonList(0));
         jobTriggerListener.triggerMisfired(null);
-        verify(shardingService).getLocalHostShardingItems();
+        verify(shardingService).getLocalShardingItems();
         verify(executionService).setMisfire(Collections.singletonList(0));
     }
 }
