@@ -22,13 +22,11 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager.ConnectionLostListener;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-import org.apache.curator.framework.state.ConnectionState;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -37,11 +35,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.Arrays;
-
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public final class JobOperationListenerManagerTest {
     
@@ -80,34 +75,7 @@ public final class JobOperationListenerManagerTest {
     @Test
     public void assertStart() {
         jobOperationListenerManager.start();
-        verify(jobNodeStorage).addConnectionStateListener(Matchers.<ConnectionLostListener>any());
         verify(jobNodeStorage).addDataListener(Matchers.<TreeCacheListener>any());
-    }
-    
-    @Test
-    public void assertConnectionLostListenerWhenConnectionStateIsLost() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.LOST);
-        verify(jobScheduleController).pauseJob();
-    }
-    
-    @Test
-    public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsNotPausedManually() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
-        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
-        jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.RECONNECTED);
-        verify(serverService).persistOnline(true);
-        verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
-        verify(jobScheduleController).resumeJob();
-    }
-    
-    @Test
-    public void assertConnectionLostListenerWhenConnectionStateIsOther() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        jobOperationListenerManager.new ConnectionLostListener().stateChanged(null, ConnectionState.CONNECTED);
-        verify(jobScheduleController, times(0)).pauseJob();
-        verify(jobScheduleController, times(0)).resumeJob();
     }
     
     @Test

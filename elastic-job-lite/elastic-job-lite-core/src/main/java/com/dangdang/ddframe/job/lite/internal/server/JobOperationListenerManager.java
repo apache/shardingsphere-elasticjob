@@ -21,14 +21,10 @@ import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.state.ConnectionState;
-import org.apache.curator.framework.state.ConnectionStateListener;
 
 /**
  * 作业控制监听管理器.
@@ -58,24 +54,7 @@ public class JobOperationListenerManager extends AbstractListenerManager {
     
     @Override
     public void start() {
-        addConnectionStateListener(new ConnectionLostListener());
         addDataListener(new JobTriggerStatusJobListener());
-    }
-    
-    class ConnectionLostListener implements ConnectionStateListener {
-        
-        @Override
-        public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-            if (ConnectionState.LOST == newState) {
-                jobScheduleController.pauseJob();
-            } else if (ConnectionState.RECONNECTED == newState) {
-                serverService.persistOnline(serverService.isEnableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()));
-                instanceService.persistOnline();
-                executionService.clearRunningInfo(shardingService.getLocalShardingItems());
-                jobScheduleController.resumeJob();
-            }
-        }
     }
     
     class JobTriggerStatusJobListener extends AbstractJobListener {

@@ -26,6 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManager;
 import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
+import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
@@ -36,6 +37,8 @@ import java.util.List;
  * @author zhangliang
  */
 public class ListenerManager {
+    
+    private final JobNodeStorage jobNodeStorage;
     
     private final LeaderListenerManager leaderListenerManager;
     
@@ -53,7 +56,10 @@ public class ListenerManager {
 
     private final GuaranteeListenerManager guaranteeListenerManager;
     
+    private final RegistryCenterConnectionStateListener regCenterConnectionStateListener;
+    
     public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+        jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         leaderListenerManager = new LeaderListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
         executionListenerManager = new ExecutionListenerManager(regCenter, jobName);
@@ -62,6 +68,7 @@ public class ListenerManager {
         instanceShutdownListenerManager = new InstanceShutdownListenerManager(regCenter, jobName);
         configurationListenerManager = new ConfigurationListenerManager(regCenter, jobName);
         guaranteeListenerManager = new GuaranteeListenerManager(regCenter, jobName, elasticJobListeners);
+        regCenterConnectionStateListener = new RegistryCenterConnectionStateListener(regCenter, jobName);
     }
     
     /**
@@ -76,6 +83,7 @@ public class ListenerManager {
         instanceShutdownListenerManager.start();
         configurationListenerManager.start();
         guaranteeListenerManager.start();
+        jobNodeStorage.addConnectionStateListener(regCenterConnectionStateListener);
     }
     
     /**
