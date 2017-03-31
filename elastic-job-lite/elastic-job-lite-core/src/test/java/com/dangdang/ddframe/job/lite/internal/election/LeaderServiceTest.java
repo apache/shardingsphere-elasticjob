@@ -29,6 +29,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
+import java.util.Collections;
+
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -61,9 +64,34 @@ public final class LeaderServiceTest {
     }
     
     @Test
-    public void assertIsLeaderUntilBlock() {
-        when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, false, true);
-        when(serverService.isAvailableServer("127.0.0.1")).thenReturn(false, true);
+    public void assertIsLeaderUntilBlockWithLeader() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(true);
+        when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
+        assertTrue(leaderService.isLeaderUntilBlock());
+        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+    }
+    
+    @Test
+    public void assertIsLeaderUntilBlockWithoutLeaderAndAvailableServers() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false);
+        when(serverService.getAvailableServers()).thenReturn(Collections.<String>emptyList());
+        assertFalse(leaderService.isLeaderUntilBlock());
+        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+    }
+    
+    @Test
+    public void assertIsLeaderUntilBlockWithoutLeaderWithAvailableServers() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
+        when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("127.0.0.2"));
+        assertFalse(leaderService.isLeaderUntilBlock());
+        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+    }
+    
+    @Test
+    public void assertIsLeaderUntilBlockWhenHasLeader() {
+        when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
+        when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("127.0.0.1"));
+        when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeaderUntilBlock());
         verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
