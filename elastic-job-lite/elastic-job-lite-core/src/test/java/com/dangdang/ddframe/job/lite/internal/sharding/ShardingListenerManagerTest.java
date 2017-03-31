@@ -78,7 +78,6 @@ public final class ShardingListenerManagerTest {
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
         verify(shardingService, times(0)).setReshardingFlag();
-        verify(executionService, times(0)).setNeedFixExecutionInfoFlag();
     }
     
     @Test
@@ -87,7 +86,6 @@ public final class ShardingListenerManagerTest {
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
         verify(shardingService, times(0)).setReshardingFlag();
-        verify(executionService, times(0)).setNeedFixExecutionInfoFlag();
     }
     
     @Test
@@ -97,7 +95,6 @@ public final class ShardingListenerManagerTest {
                 TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
         assertThat((Integer) ReflectionUtils.getFieldValue(shardingListenerManager, ShardingListenerManager.class.getDeclaredField("currentShardingTotalCount")), is(3));
         verify(shardingService).setReshardingFlag();
-        verify(executionService).setNeedFixExecutionInfoFlag();
     }
     
     @Test

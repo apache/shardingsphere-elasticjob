@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.internal.execution;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -48,14 +47,11 @@ public class ExecutionService {
     
     private final LeaderService leaderService;
     
-    private final InstanceService instanceService;
-    
     public ExecutionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
-        instanceService = new InstanceService(regCenter, jobName);
     }
     
     /**
@@ -77,7 +73,7 @@ public class ExecutionService {
      * 只会在主节点进行.
      */
     public void cleanPreviousExecutionInfo() {
-        if (!jobNodeStorage.isJobNodeExisted(ExecutionNode.ROOT)) {
+        if (!configService.load(true).isMonitorExecution()) {
             return;
         }
         if (leaderService.isLeaderUntilBlock()) {
@@ -86,29 +82,11 @@ public class ExecutionService {
             for (int each : items) {
                 jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getCompletedNode(each));
             }
-            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.NECESSARY)) {
-                fixExecutionInfo(items);
-            }
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.CLEANING);
         }
         while (jobNodeStorage.isJobNodeExisted(ExecutionNode.CLEANING)) {
             BlockUtils.waitingShortTime();
         }
-    }
-    
-    private void fixExecutionInfo(final List<Integer> items) {
-        int newShardingTotalCount = configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount();
-        int currentShardingTotalCount = items.size();
-        if (newShardingTotalCount > currentShardingTotalCount) {
-            for (int i = currentShardingTotalCount; i < newShardingTotalCount; i++) {
-                jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.ROOT + "/" + i);
-            }
-        } else if (newShardingTotalCount < currentShardingTotalCount) {
-            for (int i = newShardingTotalCount; i < currentShardingTotalCount; i++) {
-                jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.ROOT + "/" + i);
-            }
-        }
-        jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.NECESSARY);
     }
     
     /**
@@ -125,13 +103,6 @@ public class ExecutionService {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));
         }
-    }
-    
-    /**
-     * 设置修复运行时分片信息标记的状态标志位.
-     */
-    public void setNeedFixExecutionInfoFlag() {
-        jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.NECESSARY);
     }
     
     /**

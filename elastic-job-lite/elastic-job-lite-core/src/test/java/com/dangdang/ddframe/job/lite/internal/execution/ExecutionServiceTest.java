@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
@@ -58,9 +57,6 @@ public final class ExecutionServiceTest {
     private LeaderService leaderService;
     
     @Mock
-    private InstanceService instanceService;
-    
-    @Mock
     private JobScheduleController jobScheduleController;
     
     private final ExecutionService executionService = new ExecutionService(null, "test_job");
@@ -71,7 +67,6 @@ public final class ExecutionServiceTest {
         ReflectionUtils.setFieldValue(executionService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(executionService, "configService", configService);
         ReflectionUtils.setFieldValue(executionService, "leaderService", leaderService);
-        ReflectionUtils.setFieldValue(executionService, "instanceService", instanceService);
     }
     
     @Test
@@ -111,19 +106,19 @@ public final class ExecutionServiceTest {
     
     @Test
     public void assertCleanPreviousExecutionInfoWhenNotMonitorExecution() {
-        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(false);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).isJobNodeExisted("execution");
         verify(leaderService, times(0)).isLeaderUntilBlock();
     }
     
     @Test
     public void assertCleanPreviousExecutionInfoWhenIsNotLeader() {
-        when(jobNodeStorage.isJobNodeExisted("execution")).thenReturn(true);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         when(leaderService.isLeaderUntilBlock()).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("leader/execution/cleaning")).thenReturn(true, false);
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).isJobNodeExisted("execution");
         verify(leaderService).isLeaderUntilBlock();
         verify(jobNodeStorage, times(2)).isJobNodeExisted("leader/execution/cleaning");
     }
@@ -134,17 +129,14 @@ public final class ExecutionServiceTest {
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
         when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(false);
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).isJobNodeExisted("execution");
-        verify(leaderService).isLeaderUntilBlock();
         verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
-        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
-        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
-        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test
@@ -153,22 +145,14 @@ public final class ExecutionServiceTest {
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
         when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
-        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 4).build(),
-                TestSimpleJob.class.getCanonicalName())).build());
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).isJobNodeExisted("execution");
-        verify(leaderService).isLeaderUntilBlock();
         verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
-        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
-        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
-        verify(configService).load(false);
-        verify(jobNodeStorage).createJobNodeIfNeeded("execution/3");
-        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
-        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test
@@ -177,22 +161,14 @@ public final class ExecutionServiceTest {
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
         when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
-        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 2).build(),
-                TestSimpleJob.class.getCanonicalName())).build());
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).isJobNodeExisted("execution");
-        verify(leaderService).isLeaderUntilBlock();
         verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
-        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
-        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
-        verify(configService).load(false);
-        verify(jobNodeStorage).removeJobNodeIfExisted("execution/2");
-        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
-        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
     }
     
     @Test
@@ -201,27 +177,14 @@ public final class ExecutionServiceTest {
         when(leaderService.isLeaderUntilBlock()).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("execution")).thenReturn(Arrays.asList("0", "1", "2"));
         when(jobNodeStorage.isJobNodeExisted("leader/execution/necessary")).thenReturn(true);
-        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
-                TestSimpleJob.class.getCanonicalName())).build());
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+                TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         executionService.cleanPreviousExecutionInfo();
-        verify(jobNodeStorage).isJobNodeExisted("execution");
-        verify(leaderService).isLeaderUntilBlock();
         verify(jobNodeStorage).fillEphemeralJobNode("leader/execution/cleaning", "");
-        verify(jobNodeStorage).getJobNodeChildrenKeys("execution");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/0/completed");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/1/completed");
         verify(jobNodeStorage).removeJobNodeIfExisted("execution/2/completed");
-        verify(jobNodeStorage).isJobNodeExisted("leader/execution/necessary");
-        verify(configService).load(false);
-        verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/necessary");
         verify(jobNodeStorage).removeJobNodeIfExisted("leader/execution/cleaning");
-        verify(jobNodeStorage).isJobNodeExisted("leader/execution/cleaning");
-    }
-    
-    @Test
-    public void assertSetNeedFixExecutionInfoFlag() {
-        executionService.setNeedFixExecutionInfoFlag();
-        verify(jobNodeStorage).createJobNodeIfNeeded("leader/execution/necessary");
     }
     
     @Test

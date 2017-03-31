@@ -72,7 +72,6 @@ public class ShardingListenerManager extends AbstractListenerManager {
                 int newShardingTotalCount = LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getTypeConfig().getCoreConfig().getShardingTotalCount();
                 if (newShardingTotalCount != currentShardingTotalCount) {
                     shardingService.setReshardingFlag();
-                    executionService.setNeedFixExecutionInfoFlag();
                     currentShardingTotalCount = newShardingTotalCount;
                 }
             }

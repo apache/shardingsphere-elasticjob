@@ -46,8 +46,6 @@ public final class ExecutionNode {
     
     static final String LEADER_ROOT = LeaderNode.ROOT + "/" + ROOT;
     
-    static final String NECESSARY = LEADER_ROOT + "/necessary";
-    
     static final String CLEANING = LEADER_ROOT + "/cleaning";
     
     private final JobNodePath jobNodePath;
