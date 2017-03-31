@@ -33,7 +33,6 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.google.common.collect.Lists;
 import org.junit.Before;
@@ -55,9 +54,6 @@ public class LiteJobFacadeTest {
     
     @Mock
     private ConfigurationService configService;
-    
-    @Mock
-    private ServerService serverService;
     
     @Mock
     private ShardingService shardingService;
@@ -84,7 +80,6 @@ public class LiteJobFacadeTest {
         MockitoAnnotations.initMocks(this);
         liteJobFacade = new LiteJobFacade(null, "test_job", Collections.<ElasticJobListener>singletonList(new TestElasticJobListener(caller)), eventBus);
         ReflectionUtils.setFieldValue(liteJobFacade, "configService", configService);
-        ReflectionUtils.setFieldValue(liteJobFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(liteJobFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(liteJobFacade, "executionContextService", executionContextService);
         ReflectionUtils.setFieldValue(liteJobFacade, "executionService", executionService);
@@ -178,6 +173,18 @@ public class LiteJobFacadeTest {
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(shardingService.getLocalShardingItems()).thenReturn(Lists.newArrayList(0, 1));
         when(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1))).thenReturn(shardingContexts);
+        assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
+        verify(shardingService).shardingIfNecessary();
+    }
+    
+    @Test
+    public void assertGetShardingContextWhenHasDisabledItems() {
+        ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class.getCanonicalName())).build());
+        when(shardingService.getLocalShardingItems()).thenReturn(Lists.newArrayList(0, 1));
+        when(executionService.getDisabledItems(Lists.newArrayList(0, 1))).thenReturn(Collections.singletonList(1));
+        when(executionContextService.getJobShardingContext(Lists.newArrayList(0))).thenReturn(shardingContexts);
         assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
         verify(shardingService).shardingIfNecessary();
     }

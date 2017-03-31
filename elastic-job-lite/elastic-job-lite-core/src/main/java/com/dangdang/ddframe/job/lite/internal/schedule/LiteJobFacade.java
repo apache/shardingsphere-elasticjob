@@ -33,7 +33,6 @@ import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextService;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverService;
-import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Strings;
@@ -54,8 +53,6 @@ public class LiteJobFacade implements JobFacade {
     
     private final ShardingService shardingService;
     
-    private final ServerService serverService;
-    
     private final ExecutionContextService executionContextService;
     
     private final ExecutionService executionService;
@@ -69,7 +66,6 @@ public class LiteJobFacade implements JobFacade {
     public LiteJobFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners, final JobEventBus jobEventBus) {
         configService = new ConfigurationService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
-        serverService = new ServerService(regCenter, jobName);
         executionContextService = new ExecutionContextService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         failoverService = new FailoverService(regCenter, jobName);
@@ -121,6 +117,7 @@ public class LiteJobFacade implements JobFacade {
         if (isFailover) {
             shardingItems.removeAll(failoverService.getLocalHostTakeOffItems());
         }
+        shardingItems.removeAll(executionService.getDisabledItems(shardingItems));
         return executionContextService.getJobShardingContext(shardingItems);
     }
     

@@ -44,6 +44,8 @@ public final class ExecutionNode {
     
     static final String MISFIRE = ROOT + "/%s/misfire";
     
+    static final String DISABLED = ROOT + "/%s/disabled";
+    
     static final String LEADER_ROOT = LeaderNode.ROOT + "/" + ROOT;
     
     static final String CLEANING = LEADER_ROOT + "/cleaning";
@@ -74,6 +76,10 @@ public final class ExecutionNode {
     
     static String getMisfireNode(final int item) {
         return String.format(MISFIRE, item);
+    }
+    
+    static String getDisabledNode(final int item) {
+        return String.format(DISABLED, item);
     }
     
     /**

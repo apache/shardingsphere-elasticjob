@@ -176,6 +176,22 @@ public class ExecutionService {
     }
     
     /**
+     * 获取禁用的任务分片项.
+     *
+     * @param items 需要获取禁用的任务分片项
+     * @return 禁用的任务分片项
+     */
+    public List<Integer> getDisabledItems(final List<Integer> items) {
+        List<Integer> result = new ArrayList<>(items.size());
+        for (int each : items) {
+            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getDisabledNode(each))) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+    
+    /**
      * 删除作业执行时信息.
      */
     public void removeExecutionInfo() {
