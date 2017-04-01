@@ -31,11 +31,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class JobNodePath {
     
-    /**
-     * 作业立刻触发节点名称.
-     */
-    public static final String TRIGGER_NODE = "trigger";
-    
     private static final String LEADER_HOST_NODE = "leader/election/instance";
     
     private static final String CONFIG_NODE = "config";

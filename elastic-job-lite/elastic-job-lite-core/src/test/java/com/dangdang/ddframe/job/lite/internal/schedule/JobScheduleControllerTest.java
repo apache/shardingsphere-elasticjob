@@ -62,6 +62,58 @@ public final class JobScheduleControllerTest {
     }
     
     @Test
+    public void assertPauseJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+        when(scheduler.isShutdown()).thenReturn(true);
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        jobScheduleController.pauseJob();
+        verify(scheduler, times(0)).pauseAll();
+    }
+    
+    @Test(expected = JobSystemException.class)
+    public void assertPauseJobFailure() throws NoSuchFieldException, SchedulerException {
+        doThrow(SchedulerException.class).when(scheduler).pauseAll();
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        try {
+            jobScheduleController.pauseJob();
+        } finally {
+            verify(scheduler).pauseAll();
+        }
+    }
+    
+    @Test
+    public void assertPauseJobSuccess() throws NoSuchFieldException, SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        jobScheduleController.pauseJob();
+        verify(scheduler).pauseAll();
+    }
+    
+    @Test
+    public void assertResumeJobIfShutdown() throws NoSuchFieldException, SchedulerException {
+        when(scheduler.isShutdown()).thenReturn(true);
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        jobScheduleController.resumeJob();
+        verify(scheduler, times(0)).resumeAll();
+    }
+    
+    @Test(expected = JobSystemException.class)
+    public void assertResumeJobFailure() throws NoSuchFieldException, SchedulerException {
+        doThrow(SchedulerException.class).when(scheduler).resumeAll();
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        try {
+            jobScheduleController.resumeJob();
+        } finally {
+            verify(scheduler).resumeAll();
+        }
+    }
+    
+    @Test
+    public void assertResumeJobSuccess() throws NoSuchFieldException, SchedulerException {
+        ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
+        jobScheduleController.resumeJob();
+        verify(scheduler).resumeAll();
+    }
+    
+    @Test
     public void assertTriggerJobIfShutdown() throws NoSuchFieldException, SchedulerException {
         JobKey jobKey = new JobKey("test_job");
         when(jobDetail.getKey()).thenReturn(jobKey);
@@ -92,7 +144,6 @@ public final class JobScheduleControllerTest {
     public void assertTriggerJobSuccess() throws NoSuchFieldException, SchedulerException {
         JobKey jobKey = new JobKey("test_job");
         when(jobDetail.getKey()).thenReturn(jobKey);
-        when(scheduler.isShutdown()).thenReturn(false);
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         ReflectionUtils.setFieldValue(jobScheduleController, "jobDetail", jobDetail);
         jobScheduleController.triggerJob();
@@ -124,7 +175,6 @@ public final class JobScheduleControllerTest {
     @Test
     public void assertShutdownSuccess() throws NoSuchFieldException, SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        when(scheduler.isShutdown()).thenReturn(false);
         jobScheduleController.shutdown();
         verify(schedulerFacade).releaseJobResource();
         verify(scheduler).shutdown();
@@ -158,7 +208,6 @@ public final class JobScheduleControllerTest {
                 LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new CronTriggerImpl());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        when(scheduler.isShutdown()).thenReturn(false);
         jobScheduleController.rescheduleJob("0/1 * * * * ?");
         verify(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), Matchers.<Trigger>any());
     }
@@ -168,7 +217,6 @@ public final class JobScheduleControllerTest {
         when(schedulerFacade.loadJobConfiguration()).thenReturn(
                 LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
-        when(scheduler.isShutdown()).thenReturn(false);
         jobScheduleController.rescheduleJob("0/1 * * * * ?");
         verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), Matchers.<Trigger>any());
     }
