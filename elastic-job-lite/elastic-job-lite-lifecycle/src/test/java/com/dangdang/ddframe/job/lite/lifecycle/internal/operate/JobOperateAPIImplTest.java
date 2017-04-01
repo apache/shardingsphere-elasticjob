@@ -149,8 +149,10 @@ public final class JobOperateAPIImplTest {
         verify(regCenter).getChildrenKeys("/test_job/servers");
         verify(regCenter).remove("/test_job/servers/ip1");
         verify(regCenter).remove("/test_job/servers/ip2");
+        verify(regCenter).remove("/test_job");
         assertFalse(regCenter.isExisted("/test_job/servers/ip1"));
         assertFalse(regCenter.isExisted("/test_job/servers/ip2"));
+        assertFalse(regCenter.isExisted("/test_job"));
     }
 
     @Test

@@ -53,12 +53,14 @@ function statusFormatter(value, row) {
 }
 
 function generateOperationButtons(val, row) {
+    var modifyButton = "<button operation='modify-job' class='btn-xs btn-primary' job-name='" + row.jobName + "'>修改</button>";
     var shardingStatusButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "'>分片状态</button>";
     var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
     var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "'>禁用</button>";
     var enableButton = "<button operation='enable-job' class='btn-xs btn-primary' job-name='" + row.jobName + "'>启用</button>";
     var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
-    var operationTd = shardingStatusButton  + "&nbsp;";
+    var removeButton = "<button operation='remove-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
+    var operationTd = modifyButton + "&nbsp;" + shardingStatusButton  + "&nbsp;";
     if ("OK" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
     }
@@ -66,17 +68,37 @@ function generateOperationButtons(val, row) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
     }
     if ("CRASHED" === row.status) {
-        operationTd = "";
+        operationTd =removeButton;
     }
     return operationTd;
 }
 
 function bindButtons() {
+    bindModifyButton();
     bindShardingStatusButton();
     bindTriggerButton();
     bindShutdownButton();
     bindDisableButton();
     bindEnableButton();
+    bindRemoveButton();
+}
+
+function bindModifyButton() {
+    $(document).on("click", "button[operation='modify-job'][data-toggle!='modal']", function(event) {
+        var jobName = $(event.currentTarget).attr("job-name");
+        $.ajax({
+            url: "/api/jobs/config/" + jobName,
+            success: function(data) {
+                if (null !== data) {
+                    $(".box-body").remove();
+                    $('#update-job-body').load('html/status/job/job_config.html', null, function() {
+                        $('#data-update-job').modal({backdrop : 'static', keyboard : true});
+                        renderJob(data);
+                    });
+                }
+            }
+        });
+    });
 }
 
 function bindShardingStatusButton() {
@@ -141,4 +163,54 @@ function bindShutdownButton() {
             }
         });
     });
+}
+
+function bindRemoveButton() {
+    $(document).on("click", "button[operation='remove-job'][data-toggle!='modal']", function(event) {
+        var jobName = $(event.currentTarget).attr("job-name");
+        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        $(document).off("click", "#delete-confirm-dialog-confirm-btn");
+        $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
+            $.ajax({
+                url: "/api/jobs/config/" + jobName,
+                type: "DELETE",
+                success: function() {
+                    showSuccessDialog();
+                    $("#jobs-status-overview-tbl").bootstrapTable("refresh");
+                    $("#delete-confirm-dialog").modal("hide");
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
+                    refreshJobNavTag();
+                }
+            });
+        });
+    });
+}
+
+function renderJob(data) {
+    $("#job-name").attr("value", data.jobName);
+    $("#job-type").attr("value", data.jobType);
+    $("#job-class").attr("value", data.jobClass);
+    $("#sharding-total-count").attr("value", data.shardingTotalCount);
+    $("#cron").attr("value", data.cron);
+    $("#sharding-item-parameters").text(data.shardingItemParameters);
+    $("#job-parameter").attr("value", data.jobParameter);
+    $("#monitor-execution").attr("checked", data.monitorExecution);
+    $("#failover").attr("checked", data.failover);
+    $("#misfire").attr("checked", data.misfire);
+    $("#streaming-process").attr("checked", data.streamingProcess);
+    $("#max-time-diff-seconds").attr("value", data.maxTimeDiffSeconds);
+    $("#monitor-port").attr("value", data.monitorPort);
+    $("#job-sharding-strategy-class").attr("value", data.jobShardingStrategyClass);
+    $("#executor-service-handler").attr("value", data.jobProperties["executor_service_handler"]);
+    $("#job-exception-handler").attr("value", data.jobProperties["job_exception_handler"]);
+    $("#reconcile-cycle-time").attr("value", data.reconcileCycleTime);
+    $("#description").text(data.description);
+    $("#script-command-line").attr("value", data.scriptCommandLine);
+    if ("DATAFLOW" === $("#job-type").val()) {
+        $("#streaming-process-group").show();
+    }
+    if ("SCRIPT" === $("#job-type").val()) {
+        $("#script-commandLine-group").show();
+    }
 }

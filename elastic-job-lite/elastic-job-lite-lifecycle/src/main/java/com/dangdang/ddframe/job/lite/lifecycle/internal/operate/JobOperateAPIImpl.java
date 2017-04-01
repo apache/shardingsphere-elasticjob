@@ -132,6 +132,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             for (String each : servers) {
                 regCenter.remove(jobNodePath.getServerNodePath(each));
             }
+            regCenter.remove("/" + jobName.get());
         } else if (serverIp.isPresent()) {
             List<String> jobNames = regCenter.getChildrenKeys("/");
             for (String each : jobNames) {

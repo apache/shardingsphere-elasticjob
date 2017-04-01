@@ -42,7 +42,7 @@ function bindSubmitJobSettingsForm() {
                 success: function() {
                     showSuccessDialog();
                     $("#data-update-job").modal("hide");
-                    $("#content").load("html/job/jobs_overview.html");
+                    $("#jobs-status-overview-tbl").bootstrapTable("refresh");
                 }
             });
         }
