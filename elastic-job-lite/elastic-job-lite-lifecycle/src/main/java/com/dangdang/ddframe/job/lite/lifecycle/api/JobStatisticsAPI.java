@@ -17,9 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.api;
 
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo;
 
 import java.util.Collection;
 
@@ -54,18 +53,10 @@ public interface JobStatisticsAPI {
     Collection<JobBriefInfo> getJobsBriefInfo(String ip);
     
     /**
-     * 获取所有作业实例信息.
-     *
-     * @param jobName 作业名称
-     * @return 作业实例集合
-     */
-    Collection<InstanceInfo> getInstances(String jobName);
-    
-    /**
      * 获取作业运行时信息.
      *
      * @param jobName 作业名称
      * @return 作业运行时信息集合
      */
-    Collection<ExecutionInfo> getExecutionInfo(String jobName);
+    Collection<ShardingInfo> getShardingInfo(String jobName);
 }

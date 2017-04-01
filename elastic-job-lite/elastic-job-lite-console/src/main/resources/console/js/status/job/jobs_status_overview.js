@@ -13,8 +13,8 @@ function renderJobsOverview() {
             title: "作业名",
             sortable: "true"
         }, {
-            field: "shardingTotalCount",
-            title: "分片总数",
+            field: "shardingItems",
+            title: "分片项",
             sortable: "true"
         }, {
             field: "cron",
@@ -28,10 +28,6 @@ function renderJobsOverview() {
             field: "status",
             title: "运行状态",
             formatter: "statusFormatter",
-            sortable: "true"
-        }, {
-            field: "normalShardingCount",
-            title: "分片状态",
             sortable: "true"
         }, {
             field: "operation",
@@ -49,18 +45,21 @@ function statusFormatter(value, row) {
         case "DISABLED":
             return "<span class='label label-warning'>被禁用</span>";
             break;
+        case "PARTIAL_ALIVE":
+            return "<span class='label label-warning'>部分可用</span>";
+            break;
         case "CRASHED":
-            return "<span class='label label-danger'>宕机</span>";
+            return "<span class='label'>下线</span>";
             break;
     }
 }
 
 function generateOperationButtons(val, row) {
-    var detailButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "'>详情</button>";
+    var detailButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "'>分片状态</button>";
     var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
     var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "'>禁用</button>";
     var enableButton = "<button operation='enable-job' class='btn-xs btn-primary' job-name='" + row.jobName + "'>启用</button>";
-    var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>关闭</button>";
+    var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
     var operationTd = detailButton  + "&nbsp;";
     if ("OK" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;

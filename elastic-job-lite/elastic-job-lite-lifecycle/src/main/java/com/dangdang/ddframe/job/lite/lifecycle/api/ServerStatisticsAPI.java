@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.lifecycle.api;
 
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
 
 import java.util.Collection;
 
@@ -35,12 +34,4 @@ public interface ServerStatisticsAPI {
      * @return 作业服务器简明信息集合
      */
     Collection<ServerBriefInfo> getAllServersBriefInfo();
-    
-    /**
-     * 获取作业服务器部署的作业.
-     *
-     * @param serverIp 作业服务器IP
-     * @return 作业服务器部署的作业
-     */
-    Collection<InstanceInfo> getInstances(String serverIp);
 }

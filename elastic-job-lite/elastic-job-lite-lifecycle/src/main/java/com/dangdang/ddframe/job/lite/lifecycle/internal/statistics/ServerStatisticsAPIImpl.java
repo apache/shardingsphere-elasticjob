@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefInfo;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.RequiredArgsConstructor;
@@ -64,30 +63,6 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
         }
         List<ServerBriefInfo> result = new ArrayList<>(servers.values());
         Collections.sort(result);
-        return result;
-    }
-    
-    @Override
-    public Collection<InstanceInfo> getInstances(final String serverIp) {
-        List<String> jobs = regCenter.getChildrenKeys("/");
-        Collection<InstanceInfo> result = new ArrayList<>(jobs.size());
-        for (String each : jobs) {
-            JobNodePath jobNodePath = new JobNodePath(each);
-            if (regCenter.isExisted(jobNodePath.getServerNodePath(serverIp))) {
-                result.add(getInstance(serverIp, each));
-            }
-        }
-        return result;
-    }
-    
-    private InstanceInfo getInstance(final String serverIp, final String jobName) {
-        InstanceInfo result = new InstanceInfo();
-        JobNodePath jobNodePath = new JobNodePath(jobName);
-        result.setIp(serverIp);
-        result.setSharding(regCenter.get(jobNodePath.getServerNodePath(serverIp, "sharding")));
-        String status = regCenter.get(jobNodePath.getServerNodePath(serverIp, "status"));
-        boolean disabled = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "disabled"));
-        boolean shutdown = regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, "shutdown"));
         return result;
     }
 }

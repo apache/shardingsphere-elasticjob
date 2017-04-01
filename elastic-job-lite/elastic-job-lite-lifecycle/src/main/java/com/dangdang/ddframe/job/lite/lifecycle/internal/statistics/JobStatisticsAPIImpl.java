@@ -21,10 +21,10 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo.JobStatus;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo.ShardingStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
 import lombok.RequiredArgsConstructor;
@@ -130,48 +130,28 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     }
     
     @Override
-    public Collection<InstanceInfo> getInstances(final String jobName) {
-        JobNodePath jobNodePath = new JobNodePath(jobName);
-        List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
-        ArrayList<InstanceInfo> result = new ArrayList<>(instances.size());
-        for (String each : instances) {
-            result.add(getInstance(each));
-        }
-        return result;
-    }
-    
-    private InstanceInfo getInstance(final String instanceId) {
-        InstanceInfo result = new InstanceInfo();
-        result.setIp(instanceId.split("@-@")[0]);
-        result.setInstanceId(instanceId);
-        return result;
-    }
-    
-    @Override
-    public Collection<ExecutionInfo> getExecutionInfo(final String jobName) {
+    public Collection<ShardingInfo> getShardingInfo(final String jobName) {
         String executionRootPath = new JobNodePath(jobName).getShardingNodePath();
         if (!regCenter.isExisted(executionRootPath)) {
             return Collections.emptyList();
         }
         List<String> items = regCenter.getChildrenKeys(executionRootPath);
-        List<ExecutionInfo> result = new ArrayList<>(items.size());
+        List<ShardingInfo> result = new ArrayList<>(items.size());
         for (String each : items) {
-            result.add(getExecutionInfo(jobName, each));
+            result.add(getShardingInfo(jobName, each));
         }
         Collections.sort(result);
         return result;
     }
     
-    private ExecutionInfo getExecutionInfo(final String jobName, final String item) {
-        ExecutionInfo result = new ExecutionInfo();
+    private ShardingInfo getShardingInfo(final String jobName, final String item) {
+        ShardingInfo result = new ShardingInfo();
         result.setItem(Integer.parseInt(item));
         JobNodePath jobNodePath = new JobNodePath(jobName);
         boolean running = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "running"));
         boolean completed = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "completed"));
-        result.setStatus(ExecutionInfo.ExecutionStatus.getExecutionStatus(running, completed));
-        if (regCenter.isExisted(jobNodePath.getShardingNodePath(item, "failover"))) {
-            result.setFailoverIp(regCenter.get(jobNodePath.getShardingNodePath(item, "failover")));
-        }
+        result.setFailover(regCenter.isExisted(jobNodePath.getShardingNodePath(item, "failover")));
+        result.setStatus(ShardingStatus.getShardingStatus(running, completed));
         return result;
     }
 }

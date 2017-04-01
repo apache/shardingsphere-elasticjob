@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.console.restful;
 
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
 import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefInfo;
 import com.google.common.base.Optional;
@@ -91,19 +90,5 @@ public class ServerOperationRestfulApi {
     @Path("/{serverIp}/jobs/{jobName}/shutdown")
     public void shutdownServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.of(serverIp));
-    }
-    
-    @GET
-    @Path("/{ip}/instances/{instanceId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<InstanceInfo> getInstances(@PathParam("ip") final String ip, @PathParam("instanceId") final String instanceId) {
-        return jobAPIService.getServerStatisticsAPI().getInstances(ip);
-    }
-    
-    @GET
-    @Path("/{ip}/instances")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<InstanceInfo> getInstances(@PathParam("ip") final String ip) {
-        return jobAPIService.getServerStatisticsAPI().getInstances(ip);
     }
 }

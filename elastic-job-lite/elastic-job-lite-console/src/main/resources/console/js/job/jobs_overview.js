@@ -102,9 +102,6 @@ function renderJob(data) {
     $("#job-exception-handler").attr("value", data.jobProperties["job_exception_handler"]);
     $("#reconcile-cycle-time").attr("value", data.reconcileCycleTime);
     $("#description").text(data.description);
-    if (!data.monitorExecution) {
-        $("#execution-info-tab").addClass("disabled");
-    }
     $("#script-command-line").attr("value", data.scriptCommandLine);
     if ("DATAFLOW" === $("#job-type").val()) {
         $("#streaming-process-group").show();

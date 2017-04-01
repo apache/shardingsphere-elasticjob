@@ -2,24 +2,13 @@
     <section class="content-header">
         <h4>作业名称：<span id="job-name"></span></h4>
         <ol class="breadcrumb">
-            <li class="active"><i class="fa fa-tasks"></i> 作业状态</li>
+            <li class="active"><i class="fa fa-tasks"></i>作业操作</li>
             <li><a href="#" id="breadcrumb-job">作业维度</a></li>
-            <li class="active">作业状态详情</li>
+            <li class="active">作业分片详情</li>
         </ol>
     </section>
     <section class="content">
-        <ul class="nav nav-tabs" role="tablist">
-            <li id="servers-tab" role="presentation" class="active"><a href="#servers" aria-controls="servers" role="tab" data-toggle="tab">实例详情</a></li>
-            <li id="execution-info-tab" role="presentation"><a href="#execution-info" aria-controls="execution-info" role="tab" data-toggle="tab">分片详情</a></li>
-        </ul>
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="servers">
-                <table id="job-servers" data-search="true" data-show-refresh="true" data-show-toggle="true" data-show-columns="true" data-striped="true"/></table>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="execution-info">
-                <table id="execution" data-search="true" data-show-refresh="true" data-show-toggle="true" data-show-columns="true" data-striped="true"/></table>
-            </div>
-        </div>
+        <table id="sharding" data-search="true" data-show-refresh="true" data-show-toggle="true" data-show-columns="true" data-striped="true"/></table>
     </section>
 </div>
 

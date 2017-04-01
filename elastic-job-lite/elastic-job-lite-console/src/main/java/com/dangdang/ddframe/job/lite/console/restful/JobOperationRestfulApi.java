@@ -19,9 +19,8 @@ package com.dangdang.ddframe.job.lite.console.restful;
 
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
 import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
 import com.google.common.base.Optional;
 
 import javax.ws.rs.Consumes;
@@ -73,16 +72,9 @@ public class JobOperationRestfulApi {
     }
     
     @GET
-    @Path("/{jobName}/instances")
+    @Path("/{jobName}/sharding")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<InstanceInfo> getServers(@PathParam("jobName") final String jobName) {
-        return jobAPIService.getJobStatisticsAPI().getInstances(jobName);
-    }
-    
-    @GET
-    @Path("/{jobName}/execution")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ExecutionInfo> getExecutionInfo(@PathParam("jobName") final String jobName) {
-        return jobAPIService.getJobStatisticsAPI().getExecutionInfo(jobName);
+    public Collection<ShardingInfo> getShardingInfo(@PathParam("jobName") final String jobName) {
+        return jobAPIService.getJobStatisticsAPI().getShardingInfo(jobName);
     }
 }

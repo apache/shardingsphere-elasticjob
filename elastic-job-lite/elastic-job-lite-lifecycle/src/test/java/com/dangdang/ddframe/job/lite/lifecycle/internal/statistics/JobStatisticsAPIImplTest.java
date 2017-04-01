@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -91,70 +94,39 @@ public final class JobStatisticsAPIImplTest {
             assertThat(each.getShardingItems(), is(Joiner.on(",").join(shardingItems)));
         }
     }
-//    
-//    @Test
-//    public void assertGetServers() {
-//        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-//        when(regCenter.get("/test_job/servers/ip1/instances/defaultInstance/sharding")).thenReturn("0,1");
-//        when(regCenter.get("/test_job/servers/ip2/instances/defaultInstance/sharding")).thenReturn("2,3");
-//        when(regCenter.get("/test_job/servers/ip1/instances/defaultInstance/status")).thenReturn("RUNNING");
-//        when(regCenter.get("/test_job/servers/ip2/instances/defaultInstance/status")).thenReturn("READY");
-//        int i = 0;
-//        for (InstanceInfo each : jobStatisticsAPI.getInstances("test_job")) {
-//            i++;
-//            assertThat(each.getIp(), is("ip" + i));
-//            switch (i) {
-//                case 1:
-//                    assertThat(each.getStatus(), is(InstanceStatus.RUNNING));
-//                    break;
-//                case 2:
-//                    assertThat(each.getStatus(), is(InstanceStatus.READY));
-//                    break;
-//                default:
-//                    fail();
-//            }
-//        }
-//    }
-//    
-//    @Test
-//    public void assertGetExecutionInfoWithoutMonitorExecution() {
-//        when(regCenter.isExisted("/test_job/execution")).thenReturn(false);
-//        assertTrue(jobStatisticsAPI.getExecutionInfo("test_job").isEmpty());
-//    }
-//    
-//    @Test
-//    public void assertGetExecutionInfoWithMonitorExecution() {
-//        when(regCenter.isExisted("/test_job/execution")).thenReturn(true);
-//        when(regCenter.getChildrenKeys("/test_job/execution")).thenReturn(Arrays.asList("0", "1", "2"));
-//        when(regCenter.isExisted("/test_job/execution/0/running")).thenReturn(true);
-//        when(regCenter.isExisted("/test_job/execution/1/running")).thenReturn(false);
-//        when(regCenter.isExisted("/test_job/execution/1/completed")).thenReturn(true);
-//        when(regCenter.isExisted("/test_job/execution/2/running")).thenReturn(false);
-//        when(regCenter.isExisted("/test_job/execution/2/completed")).thenReturn(false);
-//        when(regCenter.isExisted("/test_job/execution/0/failover")).thenReturn(false);
-//        when(regCenter.isExisted("/test_job/execution/1/failover")).thenReturn(false);
-//        when(regCenter.isExisted("/test_job/execution/2/failover")).thenReturn(true);
-//        when(regCenter.get("/test_job/execution/2/failover")).thenReturn("ip0");
-//        int i = 0;
-//        for (ExecutionInfo each : jobStatisticsAPI.getExecutionInfo("test_job")) {
-//            i++;
-//            assertThat(each.getItem(), is(i - 1));
-//            switch (i) {
-//                case 1:
-//                    assertNull(each.getFailoverIp());
-//                    assertThat(each.getStatus(), is(ExecutionInfo.ExecutionStatus.RUNNING));
-//                    break;
-//                case 2:
-//                    assertNull(each.getFailoverIp());
-//                    assertThat(each.getStatus(), is(ExecutionInfo.ExecutionStatus.COMPLETED));
-//                    break;
-//                case 3:
-//                    assertThat(each.getFailoverIp(), is("ip0"));
-//                    assertThat(each.getStatus(), is(ExecutionInfo.ExecutionStatus.PENDING));
-//                    break;
-//                default:
-//                    fail();
-//            }
-//        }
-//    }
+    
+    @Test
+    public void assertGetShardingInfo() {
+        when(regCenter.isExisted("/test_job/sharding")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(regCenter.isExisted("/test_job/sharding/0/running")).thenReturn(true);
+        when(regCenter.isExisted("/test_job/sharding/1/running")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/sharding/1/completed")).thenReturn(true);
+        when(regCenter.isExisted("/test_job/sharding/2/running")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/sharding/2/completed")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/sharding/0/failover")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/sharding/1/failover")).thenReturn(false);
+        when(regCenter.isExisted("/test_job/sharding/2/failover")).thenReturn(true);
+        int i = 0;
+        for (ShardingInfo each : jobStatisticsAPI.getShardingInfo("test_job")) {
+            i++;
+            assertThat(each.getItem(), is(i - 1));
+            switch (i) {
+                case 1:
+                    assertFalse(each.isFailover());
+                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.RUNNING));
+                    break;
+                case 2:
+                    assertFalse(each.isFailover());
+                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.COMPLETED));
+                    break;
+                case 3:
+                    assertTrue(each.isFailover());
+                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.PENDING));
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 }

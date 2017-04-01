@@ -17,21 +17,26 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.domain;
 
-import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo.InstanceStatus;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo.ShardingStatus;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class InstanceStatusTest {
+public final class ShardingStatusTest {
     
     @Test
-    public void assertGetServerStatusWhenIsShutdown() {
-        assertThat(InstanceStatus.valueOf("READY"), is(InstanceStatus.READY));
+    public void assertGetShardingStatusWhenIsRunning() {
+        assertThat(ShardingStatus.getShardingStatus(true, false), is(ShardingStatus.RUNNING));
     }
     
     @Test
-    public void assertGetServerStatusWhenIsCrashed() {
-        assertThat(InstanceStatus.valueOf("RUNNING"), is(InstanceStatus.RUNNING));
+    public void assertGetShardingStatusWhenIsCompleted() {
+        assertThat(ShardingStatus.getShardingStatus(false, true), is(ShardingStatus.COMPLETED));
+    }
+    
+    @Test
+    public void assertGetShardingStatusWhenIsPending() {
+        assertThat(ShardingStatus.getShardingStatus(false, false), is(ShardingStatus.PENDING));
     }
 }
