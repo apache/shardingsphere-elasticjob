@@ -36,21 +36,6 @@ public final class JobNodePath {
      */
     public static final String TRIGGER_NODE = "trigger";
     
-    /**
-     * 作业禁用节点名称.
-     */
-    public static final String DISABLED_NODE = "disabled";
-    
-    /**
-     * 作业关闭节点名称.
-     */
-    public static final String SHUTDOWN_NODE = "shutdown";
-    
-    /**
-     * 作业状态节点名称.
-     */
-    public static final String STATUS_NODE = "status";
-    
     private static final String LEADER_HOST_NODE = "leader/election/instance";
     
     private static final String CONFIG_NODE = "config";
@@ -59,7 +44,7 @@ public final class JobNodePath {
     
     private static final String INSTANCES_NODE = "instances";
     
-    private static final String EXECUTION_NODE = "execution";
+    private static final String SHARDING_NODE = "sharding";
     
     private final String jobName;
     
@@ -141,22 +126,22 @@ public final class JobNodePath {
     }
     
     /**
-     * 获取运行节点根路径.
+     * 获取分片节点根路径.
      *
      * @return 运行节点根路径
      */
-    public String getExecutionNodePath() {
-        return String.format("/%s/%s", jobName, EXECUTION_NODE);
+    public String getShardingNodePath() {
+        return String.format("/%s/%s", jobName, SHARDING_NODE);
     }
     
     /**
-     * 获取运行节点路径.
+     * 获取分片节点路径.
      *
      * @param item 分片项
      * @param nodeName 子节点名称
      * @return 运行节点路径
      */
-    public String getExecutionNodePath(final String item, final String nodeName) {
-        return String.format("%s/%s/%s", getExecutionNodePath(), item, nodeName);
+    public String getShardingNodePath(final String item, final String nodeName) {
+        return String.format("%s/%s/%s", getShardingNodePath(), item, nodeName);
     }
 }

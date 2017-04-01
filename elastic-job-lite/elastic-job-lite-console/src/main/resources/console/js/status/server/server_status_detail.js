@@ -16,7 +16,7 @@ function renderJobs() {
             title: "作业名",
             sortable: "true"
         }, {
-            field: "sharding",
+            field: "shardingItems",
             title: "分片项"
         }, {
             field: "status",
@@ -36,9 +36,6 @@ function statusFormatter(value) {
         case "OK":
             return "<span class='label label-primary'>启用中</span>";
             break;
-        // case "READY":
-        //     return "<span class='label label-info'>准备中</span>";
-        //     break;
         case "DISABLED":
             return "<span class='label label-warning'>禁用中</span>";
             break;

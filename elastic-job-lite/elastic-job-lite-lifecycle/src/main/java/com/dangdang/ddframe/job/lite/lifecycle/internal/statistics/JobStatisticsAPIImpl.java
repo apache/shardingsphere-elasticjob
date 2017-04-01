@@ -23,10 +23,10 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo.InstanceStatus;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo.JobStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Joiner;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -57,7 +57,30 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         result.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
         result.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
+        result.setShardingItems(getJobShardingItems(jobName));
+        result.setStatus(getJobStatus(jobName));
         return result;
+    }
+    
+    private JobStatus getJobStatus(final String jobName) {
+        JobNodePath jobNodePath = new JobNodePath(jobName);
+        List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+        if (servers.isEmpty()) {
+            return JobStatus.CRASHED;
+        }
+        for (String each : servers) {
+            String status = regCenter.get(jobNodePath.getServerNodePath(each)); 
+            if ("DISABLED".equalsIgnoreCase(status)) {
+                return JobStatus.DISABLED;
+            }
+        }
+        return JobStatus.OK;
+    }
+    
+    private String getJobShardingItems(final String jobName) {
+        List<String> shardingItems = regCenter.getChildrenKeys(new JobNodePath(jobName).getShardingNodePath());
+        Collections.sort(shardingItems);
+        return Joiner.on(",").join(shardingItems);
     }
     
     @Override
@@ -79,7 +102,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         List<String> jobNames = regCenter.getChildrenKeys("/");
         List<JobBriefInfo> result = new ArrayList<>(jobNames.size());
         for (String each : jobNames) {
-            JobBriefInfo jobBriefInfo = getJobBriefInfo(each, ip);
+            JobBriefInfo jobBriefInfo = getJobBriefInfoByJobNameAndIp(each, ip);
             if (null != jobBriefInfo) {
                 result.add(jobBriefInfo);
             }
@@ -88,14 +111,15 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         return result;
     }
     
-    private JobBriefInfo getJobBriefInfo(final String jobName, final String ip) {
+    private JobBriefInfo getJobBriefInfoByJobNameAndIp(final String jobName, final String ip) {
         JobBriefInfo result = new JobBriefInfo();
         result.setJobName(jobName);
-        result.setStatus(getJobStatus(jobName, ip));
+        result.setStatus(getJobStatusByJobNameAndIp(jobName, ip));
+        result.setShardingItems(getJobShardingItems(jobName));
         return result;
     }
     
-    private JobBriefInfo.JobStatus getJobStatus(final String jobName, final String ip) {
+    private JobStatus getJobStatusByJobNameAndIp(final String jobName, final String ip) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         String status = regCenter.get(jobNodePath.getServerNodePath(ip));
         if ("DISABLED".equalsIgnoreCase(status)) {
@@ -111,23 +135,21 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
         ArrayList<InstanceInfo> result = new ArrayList<>(instances.size());
         for (String each : instances) {
-            result.add(getJobServer(jobName, each.split("@-@")[0], each));
+            result.add(getInstance(each));
         }
         return result;
     }
     
-    private InstanceInfo getJobServer(final String jobName, final String serverIp, final String instanceId) {
+    private InstanceInfo getInstance(final String instanceId) {
         InstanceInfo result = new InstanceInfo();
-        JobNodePath jobNodePath = new JobNodePath(jobName);
-        result.setIp(serverIp);
+        result.setIp(instanceId.split("@-@")[0]);
         result.setInstanceId(instanceId);
-        result.setStatus(InstanceStatus.valueOf(regCenter.get(jobNodePath.getInstanceNodePath(instanceId))));
         return result;
     }
     
     @Override
     public Collection<ExecutionInfo> getExecutionInfo(final String jobName) {
-        String executionRootPath = new JobNodePath(jobName).getExecutionNodePath();
+        String executionRootPath = new JobNodePath(jobName).getShardingNodePath();
         if (!regCenter.isExisted(executionRootPath)) {
             return Collections.emptyList();
         }
@@ -144,11 +166,11 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         ExecutionInfo result = new ExecutionInfo();
         result.setItem(Integer.parseInt(item));
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        boolean running = regCenter.isExisted(jobNodePath.getExecutionNodePath(item, "running"));
-        boolean completed = regCenter.isExisted(jobNodePath.getExecutionNodePath(item, "completed"));
+        boolean running = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "running"));
+        boolean completed = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "completed"));
         result.setStatus(ExecutionInfo.ExecutionStatus.getExecutionStatus(running, completed));
-        if (regCenter.isExisted(jobNodePath.getExecutionNodePath(item, "failover"))) {
-            result.setFailoverIp(regCenter.get(jobNodePath.getExecutionNodePath(item, "failover")));
+        if (regCenter.isExisted(jobNodePath.getShardingNodePath(item, "failover"))) {
+            result.setFailoverIp(regCenter.get(jobNodePath.getShardingNodePath(item, "failover")));
         }
         return result;
     }

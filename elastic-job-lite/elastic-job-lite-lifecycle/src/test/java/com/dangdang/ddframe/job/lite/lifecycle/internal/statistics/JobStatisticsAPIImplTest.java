@@ -21,13 +21,16 @@ import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -74,19 +77,18 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job_2/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job_2", "desc2"));
         when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
-        when(regCenter.getChildrenKeys("/test_job_1/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
-        when(regCenter.getChildrenKeys("/test_job_2/instances")).thenReturn(Arrays.asList("ip3@-@defaultInstance", "ip4@-@defaultInstance"));
-        when(regCenter.get("/test_job_1/instances/ip1@-@defaultInstance")).thenReturn("RUNNING");
-        when(regCenter.get("/test_job_1/instances/ip2@-@defaultInstance")).thenReturn("READY");
-        when(regCenter.get("/test_job_2/instances/ip3@-@defaultInstance")).thenReturn("READY");
-        when(regCenter.get("/test_job_2/instances/ip4@-@defaultInstance")).thenReturn("READY");
+        when(regCenter.getChildrenKeys("/test_job_1/sharding")).thenReturn(Arrays.asList("1"));
+        when(regCenter.getChildrenKeys("/test_job_2/sharding")).thenReturn(Arrays.asList("1", "2"));
         int i = 0;
+        List<String> shardingItems = new ArrayList<>();
         for (JobBriefInfo each : jobStatisticsAPI.getAllJobsBriefInfo()) {
             i++;
             assertThat(each.getJobName(), is("test_job_" + i));
             assertThat(each.getDescription(), is("desc" + i));
             assertThat(each.getCron(), is("0/1 * * * * ?"));
             assertThat(each.getJobType(), is("SIMPLE"));
+            shardingItems.add(String.valueOf(i));
+            assertThat(each.getShardingItems(), is(Joiner.on(",").join(shardingItems)));
         }
     }
 //    

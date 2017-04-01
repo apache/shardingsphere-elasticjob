@@ -18,7 +18,7 @@ function renderServersOverview() {
             sortable: "true"
         }, {
             field: "jobsNum",
-            title: "作业数量",
+            title: "运行作业数量",
             sortable: "true"
         }, {
             field: "disabledJobsNum",
@@ -113,13 +113,17 @@ function bindShutdownServerButton() {
 function bindRemoveServerButton() {
     $(document).on("click", "button[operation='remove-server'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
-        $.ajax({
-            url: "/api/servers/" + serverIp,
-            type: "DELETE",
-            success: function() {
-                showSuccessDialog();
-                $("#servers-overview-tbl").bootstrapTable("refresh");
-            }
+        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        $(document).off("click", "#delete-confirm-dialog-confirm-btn");
+        $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
+            $.ajax({
+                url: "/api/servers/" + serverIp,
+                type: "DELETE",
+                success: function () {
+                    showSuccessDialog();
+                    $("#servers-overview-tbl").bootstrapTable("refresh");
+                }
+            });
         });
     });
 }

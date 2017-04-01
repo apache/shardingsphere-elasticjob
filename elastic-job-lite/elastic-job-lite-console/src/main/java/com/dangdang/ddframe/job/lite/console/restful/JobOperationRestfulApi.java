@@ -71,21 +71,6 @@ public class JobOperationRestfulApi {
     public void shutdownJob(@PathParam("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.<String>absent());
     }
-//    
-//    @POST
-//    @Path("/disable")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public void disableShardingJob(final InstanceInfo jobServer) {
-//        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
-//    }
-//    
-//    @DELETE
-//    @Path("/disable")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public void enableShardingJob(final InstanceInfo jobServer) {
-//        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
-//    }
-//
     
     @GET
     @Path("/{jobName}/instances")

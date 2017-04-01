@@ -18,16 +18,16 @@ function renderRegCenterForDashboardNav() {
                 $("#activated-reg-center").text(data[index].name);
             }
         }
-        var activatedRegCenter = $("#activated-reg-center").text();
-        var $registryCenterDimension = $("#registry-center-dimension");
-        $registryCenterDimension.empty();
+        var activatedRegCenter = $("#activated-reg-center");
+        var registryCenterDimension = $("#registry-center-dimension");
+        registryCenterDimension.empty();
         for (index = 0; index < data.length; index++) {
             var regName = data[index].name;
             var liContent = "<a href='#' reg-name='" + regName + "' data-loading-text='切换中...'>" + regName + "</a>";
             if (activatedRegCenter && activatedRegCenter === regName) {
-                $registryCenterDimension.append("<li class='open'>" + liContent + "</li>");
+                registryCenterDimension.append("<li class='open'>" + liContent + "</li>");
             } else {
-                $registryCenterDimension.append("<li>" + liContent + "</li>");
+                registryCenterDimension.append("<li>" + liContent + "</li>");
             }
         }
     });
@@ -41,16 +41,16 @@ function renderDataSourceForDashboardNav() {
                 $("#activated-data-source").text(data[index].name);
             }
         }
-        var activatedDataSource = $("#activated-data-source").text();
-        var $dataSourceDimension = $("#data-source-dimension");
-        $dataSourceDimension.empty();
+        var activatedDataSource = $("#activated-data-source");
+        var dataSourceDimension = $("#data-source-dimension");
+        dataSourceDimension.empty();
         for (index = 0; index < data.length; index++) {
             var dataSourceName = data[index].name;
             var liContent = "<a href='#' data-source-name='" + dataSourceName + "' data-loading-text='切换中...'>" + dataSourceName + "</a>";
             if (activatedDataSource && activatedDataSource === dataSourceName) {
-                $dataSourceDimension.append("<li class='open'>" + liContent + "</li>");
+                dataSourceDimension.append("<li class='open'>" + liContent + "</li>");
             } else {
-                $dataSourceDimension.append("<li>" + liContent + "</li>");
+                dataSourceDimension.append("<li>" + liContent + "</li>");
             }
         }
     });
@@ -152,7 +152,7 @@ function controlDropdownMenuStyle() {
 
 function refreshJobNavTag() {
     $.ajax({
-        url: "/api/jobs/config",
+        url: "/api/jobs",
         cache: false,
         success: function(data) {
             $("#job-nav-tag").text(data.length);

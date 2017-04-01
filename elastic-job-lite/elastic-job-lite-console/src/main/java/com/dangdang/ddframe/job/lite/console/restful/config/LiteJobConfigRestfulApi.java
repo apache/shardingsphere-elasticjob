@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.console.restful.config;
 
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
 import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
 import com.google.common.base.Optional;
 
@@ -31,18 +30,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
 
 @Path("/jobs/config")
 public class LiteJobConfigRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
-    
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Collection<JobBriefInfo> getAllJobsBriefInfo() {
-        return jobAPIService.getJobStatisticsAPI().getAllJobsBriefInfo();
-    }
     
     @GET
     @Path("/{jobName}")

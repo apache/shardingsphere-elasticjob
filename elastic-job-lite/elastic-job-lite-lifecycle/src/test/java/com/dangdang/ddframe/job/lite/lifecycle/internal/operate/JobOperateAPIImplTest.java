@@ -125,6 +125,7 @@ public final class JobOperateAPIImplTest {
         when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("localhost@-@defaultInstance"));
         jobOperateAPI.shutdown(Optional.of("test_job"), Optional.of("localhost"));
         verify(regCenter).remove("/test_job/instances/localhost@-@defaultInstance");
+        verify(regCenter).remove("/test_job/servers/localhost");
     }
 
     @Test
@@ -134,7 +135,7 @@ public final class JobOperateAPIImplTest {
         jobOperateAPI.shutdown(Optional.of("test_job"), Optional.<String>absent());
         verify(regCenter).getChildrenKeys("/test_job/instances");
         verify(regCenter).remove("/test_job/instances/ip1@-@defaultInstance");
-        verify(regCenter).remove("/test_job/instances/ip2@-@defaultInstance");
+        verify(regCenter).remove("/test_job/servers/ip1");
     }
 
     @Test
@@ -146,6 +147,8 @@ public final class JobOperateAPIImplTest {
         verify(regCenter).getChildrenKeys("/");
         verify(regCenter).remove("/test_job1/instances/localhost@-@defaultInstance");
         verify(regCenter).remove("/test_job2/instances/localhost@-@defaultInstance");
+        verify(regCenter).remove("/test_job1/servers/localhost");
+        verify(regCenter).remove("/test_job2/servers/localhost");
     }
 
     @Test

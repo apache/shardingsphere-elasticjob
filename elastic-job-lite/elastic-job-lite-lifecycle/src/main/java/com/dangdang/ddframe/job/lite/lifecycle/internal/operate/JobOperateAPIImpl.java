@@ -91,12 +91,14 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
             for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
                 if (serverIp.get().equals(each.split("@-@")[0])) {
                     regCenter.remove(jobNodePath.getInstanceNodePath(each));
+                    regCenter.remove(jobNodePath.getServerNodePath(each.split("@-@")[0]));
                 }
             }
         } else if (jobName.isPresent()) {
             JobNodePath jobNodePath = new JobNodePath(jobName.get());
             for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
                 regCenter.remove(jobNodePath.getInstanceNodePath(each));
+                regCenter.remove(jobNodePath.getServerNodePath(each.split("@-@")[0]));
             }
         } else if (serverIp.isPresent()) {
             List<String> jobNames = regCenter.getChildrenKeys("/");
@@ -108,6 +110,7 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
                         regCenter.remove(jobNodePath.getInstanceNodePath(each));
                     }
                 }
+                regCenter.remove(jobNodePath.getServerNodePath(serverIp.get()));
             }
         }
     }

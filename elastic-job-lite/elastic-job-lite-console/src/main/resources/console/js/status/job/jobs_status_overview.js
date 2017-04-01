@@ -13,14 +13,26 @@ function renderJobsOverview() {
             title: "作业名",
             sortable: "true"
         }, {
+            field: "shardingTotalCount",
+            title: "分片总数",
+            sortable: "true"
+        }, {
+            field: "cron",
+            title: "cron表达式",
+            sortable: "true"
+        }, {
+            field: "description",
+            title: "描述",
+            sortable: "true"
+        }, {
             field: "status",
             title: "运行状态",
             formatter: "statusFormatter",
             sortable: "true"
         }, {
-            field: "description",
-            title: "描述",
-            sortable: true
+            field: "normalShardingCount",
+            title: "分片状态",
+            sortable: "true"
         }, {
             field: "operation",
             title: "操作",
@@ -32,16 +44,13 @@ function renderJobsOverview() {
 function statusFormatter(value, row) {
     switch(value) {
         case "OK":
-            return "<span class='label label-success'>全部正常</span>";
+            return "<span class='label label-success'>正常</span>";
             break;
         case "DISABLED":
-            return "<span class='label label-info'>全部禁用</span>";
+            return "<span class='label label-warning'>被禁用</span>";
             break;
-        case "PARTIAL_ALIVE":
-            return "<span class='label label-warning'>部分宕机</span>";
-            break;
-        case "ALL_CRASHED":
-            return "<span class='label label-danger'>全部宕机</span>";
+        case "CRASHED":
+            return "<span class='label label-danger'>宕机</span>";
             break;
     }
 }
@@ -53,11 +62,14 @@ function generateOperationButtons(val, row) {
     var enableButton = "<button operation='enable-job' class='btn-xs btn-primary' job-name='" + row.jobName + "'>启用</button>";
     var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>关闭</button>";
     var operationTd = detailButton  + "&nbsp;";
-    if ("OK" === row.status || "PARTIAL_ALIVE" === row.status) {
+    if ("OK" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
     }
     if ("DISABLED" === row.status) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
+    }
+    if ("CRASHED" === row.status) {
+        operationTd = "";
     }
     return operationTd;
 }

@@ -25,7 +25,7 @@ import java.io.Serializable;
 /**
  * 作业简明信息对象.
  *
- * @author zhangliang
+ * @author caohao
  */
 @Getter
 @Setter
@@ -40,8 +40,10 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     private JobStatus status;
     
     private String description;
-
+    
     private String cron;
+    
+    private String shardingItems;
     
     @Override
     public int compareTo(final JobBriefInfo o) {
@@ -51,38 +53,11 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     /**
      * 作业状态.
      *
-     * @author zhangliang
+     * @author caohao
      */
     public enum JobStatus {
-        
         OK, 
-        PARTIAL_ALIVE,
-        DISABLED, 
-        ALL_CRASHED;
-        
-        /**
-         * 获取作业状态.
-         * 
-         * @param okCount 作业成功总数
-         * @param crashedCount 作业崩溃总数
-         * @param disabledCount 作业禁用总数
-         * @param serverCount 作业服务器总数
-         * @return 作业状态
-         */
-        public static JobStatus getJobStatus(final int okCount, final int crashedCount, final int disabledCount, final int serverCount) {
-            if (okCount == serverCount) {
-                return OK;
-            }
-            if (crashedCount == serverCount) {
-                return ALL_CRASHED;
-            }
-            if (crashedCount > 0) {
-                return PARTIAL_ALIVE;
-            }
-            if (disabledCount > 0) {
-                return DISABLED;
-            }
-            return OK;
-        }
+        CRASHED,
+        DISABLED 
     }
 }
