@@ -18,7 +18,9 @@
 package com.dangdang.ddframe.job.lite.internal.listener;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 
 /**
@@ -30,12 +32,16 @@ public abstract class AbstractJobListener implements TreeCacheListener {
     
     @Override
     public final void childEvent(final CuratorFramework client, final TreeCacheEvent event) throws Exception {
-        String path = null == event.getData() ? "" : event.getData().getPath();
+        ChildData childData = event.getData();
+        if (null == childData) {
+            return;
+        }
+        String path = childData.getPath();
         if (path.isEmpty()) {
             return;
         }
-        dataChanged(client, event, path);
+        dataChanged(path, event.getType(), null == childData.getData() ? "" : new String(childData.getData()));
     }
     
-    protected abstract void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path);
+    protected abstract void dataChanged(final String path, final Type eventType, final String data);
 }

@@ -23,8 +23,6 @@ import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
@@ -58,8 +56,8 @@ public class InstanceShutdownListenerManager extends AbstractListenerManager {
     class InstanceShutdownStatusJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (instanceNode.isLocalInstancePath(path) && Type.NODE_REMOVED == event.getType()) {
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (instanceNode.isLocalInstancePath(path) && Type.NODE_REMOVED == eventType) {
                 instanceService.removeStatus();
                 if (leaderService.isLeader()) {
                     leaderService.removeLeader();

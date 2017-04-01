@@ -19,12 +19,10 @@ package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -45,9 +43,6 @@ public final class ShardingListenerManagerTest {
     @Mock
     private ShardingService shardingService;
     
-    @Mock
-    private ExecutionService executionService;
-    
     private ShardingListenerManager shardingListenerManager;
     
     @Before
@@ -57,7 +52,6 @@ public final class ShardingListenerManagerTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(shardingListenerManager, shardingListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
         ReflectionUtils.setFieldValue(shardingListenerManager, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(shardingListenerManager, "executionService", executionService);
     }
     
     @Test
@@ -68,60 +62,52 @@ public final class ShardingListenerManagerTest {
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsNotConfigPath() {
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config/other", null, "".getBytes())), "/test_job/config/other");
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_ADDED, "");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathButCurrentShardingTotalCountIsZero() {
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsEqualToNewShardingTotalCount() {
         shardingListenerManager.setCurrentShardingTotalCount(3);
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsNotEqualToNewShardingTotalCount() throws NoSuchFieldException {
         shardingListenerManager.setCurrentShardingTotalCount(5);
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
         assertThat((Integer) ReflectionUtils.getFieldValue(shardingListenerManager, ShardingListenerManager.class.getDeclaredField("currentShardingTotalCount")), is(3));
         verify(shardingService).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsNotServerStatusPath() {
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/servers/127.0.0.1/other", null, "".getBytes())), "/test_job/servers/127.0.0.1/other");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1/other", Type.NODE_ADDED, "");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerStatusPathButUpdate() {
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/127.0.0.1/status", null, "".getBytes())), "/test_job/servers/127.0.0.1/status");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1/status", Type.NODE_UPDATED, "");
         verify(shardingService, times(0)).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsInstanceChange() {
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/instances/xxx", null, "".getBytes())), "/test_job/instances/xxx");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_ADDED, "");
         verify(shardingService).setReshardingFlag();
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerChange() {
-        shardingListenerManager.new ListenServersChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/servers/127.0.0.1", null, "".getBytes())), "/test_job/servers/127.0.0.1");
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, "");
         verify(shardingService).setReshardingFlag();
     }
 }

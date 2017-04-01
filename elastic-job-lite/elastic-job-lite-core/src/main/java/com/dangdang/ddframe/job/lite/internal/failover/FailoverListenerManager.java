@@ -26,8 +26,6 @@ import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
@@ -69,8 +67,8 @@ public class FailoverListenerManager extends AbstractListenerManager {
         addDataListener(new FailoverSettingsChangedJobListener());
     }
     
-    private void failover(final Integer item, final TreeCacheEvent event) {
-        if (!isJobCrashAndNeedFailover(item, event)) {
+    private void failover(final Integer item, final Type eventType) {
+        if (!isJobCrashAndNeedFailover(item, eventType)) {
             return;
         }
         failoverService.setCrashedFailoverFlag(item);
@@ -79,32 +77,31 @@ public class FailoverListenerManager extends AbstractListenerManager {
         }
     }
     
-    private boolean isJobCrashAndNeedFailover(final Integer item, final TreeCacheEvent event) {
-        return null != item && Type.NODE_REMOVED == event.getType() && !executionService.isCompleted(item) && configService.load(true).isFailover();
+    private boolean isJobCrashAndNeedFailover(final Integer item, final Type eventType) {
+        return null != item && Type.NODE_REMOVED == eventType && !executionService.isCompleted(item) && configService.load(true).isFailover();
     }
     
     class JobCrashedJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            failover(executionNode.getItemByRunningItemPath(path), event);
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            failover(executionNode.getItemByRunningItemPath(path), eventType);
         }
     }
     
     class FailoverJobCrashedJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            failover(failoverNode.getItemByExecutionFailoverPath(path), event);
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            failover(failoverNode.getItemByExecutionFailoverPath(path), eventType);
         }
     }
     
     class FailoverSettingsChangedJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType()
-                    && !LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).isFailover()) {
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !LiteJobConfigurationGsonFactory.fromJson(data).isFailover()) {
                 failoverService.removeFailoverInfo();
             }
         }

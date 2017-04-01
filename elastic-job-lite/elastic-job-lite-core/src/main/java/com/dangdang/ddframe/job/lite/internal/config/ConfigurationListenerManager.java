@@ -21,8 +21,6 @@ import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
@@ -51,10 +49,10 @@ public class ConfigurationListenerManager extends AbstractListenerManager {
     class CronSettingAndJobEventChangedJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType() && null != JobRegistry.getInstance().getJobScheduleController(jobName)) {
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && null != JobRegistry.getInstance().getJobScheduleController(jobName)) {
                 JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(
-                        LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).getTypeConfig().getCoreConfig().getCron());
+                        LiteJobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getCron());
             }
         }
     }

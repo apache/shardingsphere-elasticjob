@@ -5,8 +5,7 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,8 +52,7 @@ public final class InstanceShutdownListenerManagerTest {
     
     @Test
     public void assertIsNotLocalInstancePath() {
-        String path = "/test_job/instances/127.0.0.2@-@0";
-        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData(path, null, "".getBytes())), path);
+        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.2@-@0", Type.NODE_REMOVED, "");
         verify(instanceService, times(0)).removeStatus();
         verify(jobScheduleController, times(0)).shutdown();
     }
@@ -62,15 +60,14 @@ public final class InstanceShutdownListenerManagerTest {
     @Test
     public void assertUpdateLocalInstancePath() {
         String path = "/test_job/instances/127.0.0.1@-@0";
-        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData(path, null, "".getBytes())), path);
+        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, "");
         verify(instanceService, times(0)).removeStatus();
         verify(jobScheduleController, times(0)).shutdown();
     }
     
     @Test
     public void assertRemoveLocalInstancePathAndIsNotLeaderAndJobControllerIsNull() {
-        String path = "/test_job/instances/127.0.0.1@-@0";
-        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData(path, null, "".getBytes())), path);
+        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
         verify(instanceService).removeStatus();
         verify(leaderService, times(0)).removeLeader();
         verify(jobScheduleController, times(0)).shutdown();
@@ -80,8 +77,7 @@ public final class InstanceShutdownListenerManagerTest {
     public void assertRemoveLocalInstancePathAndIsLeader() {
         when(leaderService.isLeader()).thenReturn(true);
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        String path = "/test_job/instances/127.0.0.1@-@0";
-        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_REMOVED, new ChildData(path, null, "".getBytes())), path);
+        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
         verify(instanceService).removeStatus();
         verify(leaderService).removeLeader();
         verify(jobScheduleController).shutdown();

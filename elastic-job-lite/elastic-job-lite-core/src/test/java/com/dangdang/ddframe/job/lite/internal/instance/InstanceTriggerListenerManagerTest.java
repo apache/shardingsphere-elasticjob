@@ -4,8 +4,7 @@ import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,32 +46,25 @@ public final class InstanceTriggerListenerManagerTest {
     
     @Test
     public void assertNotTriggerWhenIsNotTriggerOperation() {
-        String path = "/test_job/instances/127.0.0.1@-@0";
-        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged(null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData(path, null, "".getBytes())), path);
+        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, "");
         verify(instanceService, times(0)).clearTriggerFlag();
     }
     
     @Test
     public void assertNotTriggerWhenIsNotLocalInstancePath() {
-        String path = "/test_job/instances/127.0.0.2@-@0";
-        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged(
-                null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData(path, null, InstanceOperation.TRIGGER.name().getBytes())), path);
+        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.2@-@0", Type.NODE_UPDATED, InstanceOperation.TRIGGER.name());
         verify(instanceService, times(0)).clearTriggerFlag();
     }
     
     @Test
     public void assertNotTriggerWhenIsNotUpdate() {
-        String path = "/test_job/instances/127.0.0.1@-@0";
-        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged(
-                null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_ADDED, new ChildData(path, null, InstanceOperation.TRIGGER.name().getBytes())), path);
+        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_ADDED, InstanceOperation.TRIGGER.name());
         verify(instanceService, times(0)).clearTriggerFlag();
     }
     
     @Test
     public void assertTriggerWhenJobScheduleControllerIsNull() {
-        String path = "/test_job/instances/127.0.0.1@-@0";
-        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged(
-                null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData(path, null, InstanceOperation.TRIGGER.name().getBytes())), path);
+        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, InstanceOperation.TRIGGER.name());
         verify(instanceService).clearTriggerFlag();
         verify(jobScheduleController, times(0)).triggerJob();
     }
@@ -82,8 +74,7 @@ public final class InstanceTriggerListenerManagerTest {
         String path = "/test_job/instances/127.0.0.1@-@0";
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         JobRegistry.getInstance().setJobRunning("test_job", true);
-        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged(
-                null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData(path, null, InstanceOperation.TRIGGER.name().getBytes())), path);
+        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, InstanceOperation.TRIGGER.name());
         verify(instanceService).clearTriggerFlag();
         verify(jobScheduleController, times(0)).triggerJob();
         JobRegistry.getInstance().setJobRunning("test_job", false);
@@ -93,8 +84,7 @@ public final class InstanceTriggerListenerManagerTest {
     public void assertTriggerWhenJobIsNotRunning() {
         String path = "/test_job/instances/127.0.0.1@-@0";
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged(
-                null, new TreeCacheEvent(TreeCacheEvent.Type.NODE_UPDATED, new ChildData(path, null, InstanceOperation.TRIGGER.name().getBytes())), path);
+        instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, InstanceOperation.TRIGGER.name());
         verify(instanceService).clearTriggerFlag();
         verify(jobScheduleController).triggerJob();
     }

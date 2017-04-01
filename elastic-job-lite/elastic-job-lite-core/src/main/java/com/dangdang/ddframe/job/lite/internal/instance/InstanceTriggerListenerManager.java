@@ -22,8 +22,6 @@ import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
@@ -54,8 +52,8 @@ public class InstanceTriggerListenerManager extends AbstractListenerManager {
     class JobTriggerStatusJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (!InstanceOperation.TRIGGER.name().equals(new String(event.getData().getData())) || !instanceNode.isLocalInstancePath(path) || Type.NODE_UPDATED != event.getType()) {
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (!InstanceOperation.TRIGGER.name().equals(data) || !instanceNode.isLocalInstancePath(path) || Type.NODE_UPDATED != eventType) {
                 return;
             }
             instanceService.clearTriggerFlag();

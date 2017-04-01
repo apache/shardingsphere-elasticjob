@@ -24,8 +24,6 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
@@ -62,25 +60,25 @@ public class LeaderListenerManager extends AbstractListenerManager {
     class LeaderElectionJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (isLeaderCrashed(event, path) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())
-                    || !leaderService.hasLeader() && isLocalServerEnabled(event, path)) {
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (isLeaderCrashed(path, eventType) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())
+                    || !leaderService.hasLeader() && isLocalServerEnabled(path, data)) {
                 leaderService.electLeader();
-            } else if (leaderService.isLeader() && isLocalServerDisabled(event, path)) {
+            } else if (leaderService.isLeader() && isLocalServerDisabled(path, data)) {
                 leaderService.removeLeader();
             }
         }
         
-        private boolean isLeaderCrashed(final TreeCacheEvent event, final String path) {
-            return leaderNode.isLeaderInstancePath(path) && Type.NODE_REMOVED == event.getType();
+        private boolean isLeaderCrashed(final String path, final Type eventType) {
+            return leaderNode.isLeaderInstancePath(path) && Type.NODE_REMOVED == eventType;
         }
         
-        private boolean isLocalServerEnabled(final TreeCacheEvent event, final String path) {
-            return serverNode.isLocalServerPath(path) && !ServerStatus.DISABLED.name().equals(new String(event.getData().getData()));
+        private boolean isLocalServerEnabled(final String path, final String data) {
+            return serverNode.isLocalServerPath(path) && !ServerStatus.DISABLED.name().equals(data);
         }
         
-        private boolean isLocalServerDisabled(final TreeCacheEvent event, final String path) {
-            return serverNode.isLocalServerPath(path) && ServerStatus.DISABLED.name().equals(new String(event.getData().getData()));
+        private boolean isLocalServerDisabled(final String path, final String data) {
+            return serverNode.isLocalServerPath(path) && ServerStatus.DISABLED.name().equals(data);
         }
     }
 }
