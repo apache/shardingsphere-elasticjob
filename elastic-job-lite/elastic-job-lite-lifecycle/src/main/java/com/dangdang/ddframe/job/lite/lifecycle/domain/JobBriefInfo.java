@@ -58,6 +58,7 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     public enum JobStatus {
         OK, 
         CRASHED,
-        DISABLED 
+        DISABLED,
+        SHARDING_ERROR 
     }
 }

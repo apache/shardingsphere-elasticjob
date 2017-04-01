@@ -32,7 +32,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 作业状态展示的实现类.
@@ -64,17 +66,30 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     
     private JobStatus getJobStatus(final String jobName) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
-        List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
-        if (servers.isEmpty()) {
+        List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
+        if (instances.isEmpty()) {
             return JobStatus.CRASHED;
         }
-        for (String each : servers) {
-            String status = regCenter.get(jobNodePath.getServerNodePath(each)); 
-            if ("DISABLED".equalsIgnoreCase(status)) {
-                return JobStatus.DISABLED;
+        Set<String> shardingInstanceServerIps = new HashSet<>();
+        for (String each : regCenter.getChildrenKeys(jobNodePath.getShardingNodePath())) {
+            String instanceId = regCenter.get(jobNodePath.getShardingNodePath(each, "instance"));
+            if (!instanceId.isEmpty()) {
+                shardingInstanceServerIps.add(instanceId.split("@-@")[0]);
             }
         }
-        return JobStatus.OK;
+        Set<String> serverIps = new HashSet<>();
+        Set<String> disabledServerIps = new HashSet<>();
+        for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
+            if ("DISABLED".equals(regCenter.get(jobNodePath.getServerNodePath(each)))) {
+                disabledServerIps.add(each);
+            } else {
+                serverIps.add(each);
+            }
+        }
+        if (disabledServerIps.equals(shardingInstanceServerIps)) {
+            return JobStatus.DISABLED;
+        }
+        return serverIps.equals(shardingInstanceServerIps) ? JobStatus.OK : JobStatus.SHARDING_ERROR;
     }
     
     private String getJobShardingItems(final String jobName) {

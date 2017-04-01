@@ -43,28 +43,26 @@ function statusFormatter(value, row) {
             return "<span class='label label-success'>正常</span>";
             break;
         case "DISABLED":
-            return "<span class='label label-warning'>被禁用</span>";
-            break;
-        case "PARTIAL_ALIVE":
-            return "<span class='label label-warning'>部分可用</span>";
+        case "SHARDING_ERROR":
+            return "<span class='label label-warning'>分片错误</span>";
             break;
         case "CRASHED":
-            return "<span class='label'>下线</span>";
+            return "<span class='label label-default'>已下线</span>";
             break;
     }
 }
 
 function generateOperationButtons(val, row) {
-    var detailButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "'>分片状态</button>";
+    var shardingStatusButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "'>分片状态</button>";
     var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
     var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "'>禁用</button>";
     var enableButton = "<button operation='enable-job' class='btn-xs btn-primary' job-name='" + row.jobName + "'>启用</button>";
     var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
-    var operationTd = detailButton  + "&nbsp;";
+    var operationTd = shardingStatusButton  + "&nbsp;";
     if ("OK" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
     }
-    if ("DISABLED" === row.status) {
+    if ("DISABLED" === row.status || "SHARDING_ERR" === row.status) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
     }
     if ("CRASHED" === row.status) {
@@ -74,14 +72,14 @@ function generateOperationButtons(val, row) {
 }
 
 function bindButtons() {
-    bindDetailButton();
+    bindShardingStatusButton();
     bindTriggerButton();
     bindShutdownButton();
     bindDisableButton();
     bindEnableButton();
 }
 
-function bindDetailButton() {
+function bindShardingStatusButton() {
     $(document).on("click", "button[operation='job-detail'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $("#index-job-name").text(jobName);
