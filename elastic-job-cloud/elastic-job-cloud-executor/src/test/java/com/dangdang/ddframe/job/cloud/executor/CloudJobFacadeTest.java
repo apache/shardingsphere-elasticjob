@@ -106,7 +106,7 @@ public class CloudJobFacadeTest {
     
     @Test
     public void assertMisfireIfNecessary() {
-        jobFacade.misfireIfNecessary(null);
+        jobFacade.misfireIfRunning(null);
     }
     
     @Test

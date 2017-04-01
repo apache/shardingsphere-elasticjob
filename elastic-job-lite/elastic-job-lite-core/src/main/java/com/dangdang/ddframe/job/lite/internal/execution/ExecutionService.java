@@ -24,8 +24,6 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -122,31 +120,55 @@ public class ExecutionService {
     }
     
     /**
-     * 如果满足条件，设置任务被错过执行的标记.
-     * 
-     * @param items 需要设置错过执行的任务分片项
-     * @return 是否满足misfire条件
+     * 判断分片项中是否还有执行中的作业.
+     *
+     * @param items 需要判断的分片项列表
+     * @return 分片项中是否还有执行中的作业
      */
-    public boolean misfireIfNecessary(final Collection<Integer> items) {
-        if (hasRunningItems(items)) {
-            setMisfire(items);
-            return true;
+    public boolean hasRunningItems(final Collection<Integer> items) {
+        if (!configService.load(true).isMonitorExecution()) {
+            return false;
+        }
+        for (int each : items) {
+            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getRunningNode(each))) {
+                return true;
+            }
         }
         return false;
     }
     
     /**
-     * 设置任务被错过执行的标记.
+     * 判断是否还有执行中的作业.
+     *
+     * @return 是否还有执行中的作业
+     */
+    public boolean hasRunningItems() {
+        return hasRunningItems(getAllItems());
+    }
+    
+    private List<Integer> getAllItems() {
+        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        List<Integer> result = new ArrayList<>(shardingTotalCount);
+        for (int i = 0; i < shardingTotalCount; i++) {
+            result.add(i);
+        }
+        return result;
+    }
+    
+    /**
+     * 如果当前分片项仍在运行则设置任务被错过执行的标记.
      * 
      * @param items 需要设置错过执行的任务分片项
+     * @return 是否错过本次执行
      */
-    public void setMisfire(final Collection<Integer> items) {
-        if (!configService.load(true).isMonitorExecution()) {
-            return;
+    public boolean misfireIfRunning(final Collection<Integer> items) {
+        if (!hasRunningItems(items)) {
+            return false;
         }
         for (int each : items) {
             jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getMisfireNode(each));
         }
+        return true;
     }
     
     /**
@@ -200,42 +222,5 @@ public class ExecutionService {
      */
     public boolean isCompleted(final int item) {
         return jobNodeStorage.isJobNodeExisted(ExecutionNode.getCompletedNode(item));
-    }
-    
-    /**
-     * 判断分片项中是否还有执行中的作业.
-     * 
-     * @param items 需要判断的分片项列表
-     * @return 分片项中是否还有执行中的作业
-     */
-    public boolean hasRunningItems(final Collection<Integer> items) {
-        if (!configService.load(true).isMonitorExecution()) {
-            return false;
-        }
-        for (int each : items) {
-            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getRunningNode(each))) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * 判断是否还有执行中的作业.
-     * 
-     * @return 是否还有执行中的作业
-     */
-    public boolean hasRunningItems() {
-        return hasRunningItems(getAllItems());
-    }
-    
-    private List<Integer> getAllItems() {
-        return Lists.transform(jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT), new Function<String, Integer>() {
-            
-            @Override
-            public Integer apply(final String input) {
-                return Integer.parseInt(input);
-            }
-        });
     }
 }

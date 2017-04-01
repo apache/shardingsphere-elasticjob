@@ -152,7 +152,6 @@ public final class ShardingServiceTest {
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
         when(jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT)).thenReturn(Arrays.asList("0", "1", "2", "3"));
         shardingService.shardingIfNecessary();
-        verify(executionService, times(0)).hasRunningItems();
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/instance");
         verify(jobNodeStorage).createJobNodeIfNeeded("sharding/0");
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/instance");

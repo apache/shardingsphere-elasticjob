@@ -105,11 +105,9 @@ public class ShardingService {
             blockUntilShardingCompleted();
             return;
         }
+        waitingOtherJobCompleted();
         LiteJobConfiguration liteJobConfig = configService.load(false);
         int shardingTotalCount = liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
-        if (liteJobConfig.isMonitorExecution()) {
-            waitingOtherJobCompleted();
-        }
         log.debug("Job '{}' sharding begin.", jobName);
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         resetShardingInfo(shardingTotalCount);

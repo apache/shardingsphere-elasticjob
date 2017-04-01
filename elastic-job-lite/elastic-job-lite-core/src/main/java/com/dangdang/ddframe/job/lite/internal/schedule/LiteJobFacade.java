@@ -122,8 +122,8 @@ public class LiteJobFacade implements JobFacade {
     }
     
     @Override
-    public boolean misfireIfNecessary(final Collection<Integer> shardingItems) {
-        return executionService.misfireIfNecessary(shardingItems);
+    public boolean misfireIfRunning(final Collection<Integer> shardingItems) {
+        return executionService.misfireIfRunning(shardingItems);
     }
     
     @Override

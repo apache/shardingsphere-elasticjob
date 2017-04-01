@@ -32,7 +32,7 @@ final class ElasticJobVerify {
     
     public static void prepareForIsNotMisfire(final JobFacade jobFacade, final ShardingContexts shardingContexts) {
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
+        when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
     }
     
@@ -44,7 +44,7 @@ final class ElasticJobVerify {
         }
         verify(jobFacade).getShardingContexts();
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), JobStatusTraceEvent.State.TASK_STAGING, "Job 'test_job' execute begin.");
-        verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
+        verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade).cleanPreviousExecutionInfo();
         verify(jobFacade).beforeJobExecuted(shardingContexts);
         verify(jobFacade).registerJobBegin(shardingContexts);

@@ -104,7 +104,7 @@ public abstract class AbstractElasticJobExecutor {
         if (shardingContexts.isAllowSendJobEvent()) {
             jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobName));
         }
-        if (jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())) {
+        if (jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())) {
             if (shardingContexts.isAllowSendJobEvent()) {
                 jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format(
                         "Previous job '%s' - shardingItems '%s' is still running, misfired job will start after previous job completed.", jobName, 

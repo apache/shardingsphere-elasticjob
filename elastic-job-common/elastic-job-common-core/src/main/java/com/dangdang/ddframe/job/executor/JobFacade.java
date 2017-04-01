@@ -78,7 +78,7 @@ public interface JobFacade {
      * @param shardingItems 需要设置错过执行的任务分片项
      * @return 是否满足misfire条件
      */
-    boolean misfireIfNecessary(Collection<Integer> shardingItems);
+    boolean misfireIfRunning(Collection<Integer> shardingItems);
     
     /**
      * 清除任务被错过执行的标记.

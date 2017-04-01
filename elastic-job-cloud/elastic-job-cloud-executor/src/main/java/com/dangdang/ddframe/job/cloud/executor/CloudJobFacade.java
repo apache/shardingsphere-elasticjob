@@ -72,7 +72,7 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public boolean misfireIfNecessary(final Collection<Integer> shardingItems) {
+    public boolean misfireIfRunning(final Collection<Integer> shardingItems) {
         return false;
     }
     

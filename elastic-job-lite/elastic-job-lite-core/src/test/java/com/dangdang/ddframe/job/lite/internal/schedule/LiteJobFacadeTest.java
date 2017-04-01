@@ -190,9 +190,9 @@ public class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertMisfireIfNecessary() {
-        when(executionService.misfireIfNecessary(Arrays.asList(0, 1))).thenReturn(true);
-        assertThat(liteJobFacade.misfireIfNecessary(Arrays.asList(0, 1)), is(true));
+    public void assertMisfireIfRunning() {
+        when(executionService.misfireIfRunning(Arrays.asList(0, 1))).thenReturn(true);
+        assertThat(liteJobFacade.misfireIfRunning(Arrays.asList(0, 1)), is(true));
     }
     
     @Test
