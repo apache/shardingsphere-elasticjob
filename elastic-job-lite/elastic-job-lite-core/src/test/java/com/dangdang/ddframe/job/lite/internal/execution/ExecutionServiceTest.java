@@ -70,12 +70,6 @@ public final class ExecutionServiceTest {
     }
     
     @Test
-    public void assertRegisterJobBeginWhenNotAssignAnyItem() {
-        executionService.registerJobBegin(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
-        verify(configService, times(0)).load(true);
-    }
-    
-    @Test
     public void assertRegisterJobBeginWhenNotMonitorExecution() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
@@ -282,12 +276,6 @@ public final class ExecutionServiceTest {
         verify(jobNodeStorage).isJobNodeExisted("sharding/0/disabled");
         verify(jobNodeStorage).isJobNodeExisted("sharding/1/disabled");
         verify(jobNodeStorage).isJobNodeExisted("sharding/2/disabled");
-    }
-    
-    @Test
-    public void assertRemoveExecutionInfo() {
-        executionService.removeExecutionInfo();
-        verify(jobNodeStorage).removeJobNodeIfExisted("sharding");
     }
     
     @Test

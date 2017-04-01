@@ -25,7 +25,6 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManagerTest
 import com.dangdang.ddframe.job.lite.internal.election.LeaderNodeTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderServiceTest;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextServiceTest;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNodeTest;
 import com.dangdang.ddframe.job.lite.internal.execution.ExecutionServiceTest;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutorTest;
@@ -83,7 +82,6 @@ import org.junit.runners.Suite.SuiteClasses;
         ExecutionContextServiceTest.class, 
         ExecutionServiceTest.class, 
         ExecutionNodeTest.class,
-        ExecutionListenerManagerTest.class, 
         FailoverServiceTest.class, 
         FailoverNodeTest.class,
         FailoverListenerManagerTest.class, 

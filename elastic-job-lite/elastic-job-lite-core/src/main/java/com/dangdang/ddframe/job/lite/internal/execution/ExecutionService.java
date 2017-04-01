@@ -61,10 +61,11 @@ public class ExecutionService {
      */
     public void registerJobBegin(final ShardingContexts shardingContexts) {
         JobRegistry.getInstance().setJobRunning(jobName, true);
-        if (!shardingContexts.getShardingItemParameters().isEmpty() && configService.load(true).isMonitorExecution()) {
-            for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-                jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
-            }
+        if (!configService.load(true).isMonitorExecution()) {
+            return;
+        }
+        for (int each : shardingContexts.getShardingItemParameters().keySet()) {
+            jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
         }
     }
     
@@ -189,13 +190,6 @@ public class ExecutionService {
             }
         }
         return result;
-    }
-    
-    /**
-     * 删除作业执行时信息.
-     */
-    public void removeExecutionInfo() {
-        jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.ROOT);
     }
     
     /**

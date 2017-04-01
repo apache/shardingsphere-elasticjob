@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.internal.listener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManager;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManager;
@@ -49,9 +48,6 @@ public class ListenerManagerTest {
     private ShardingListenerManager shardingListenerManager;
     
     @Mock
-    private ExecutionListenerManager executionListenerManager;
-    
-    @Mock
     private FailoverListenerManager failoverListenerManager;
     
     @Mock
@@ -77,7 +73,6 @@ public class ListenerManagerTest {
         ReflectionUtils.setFieldValue(listenerManager, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(listenerManager, "leaderListenerManager", leaderListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "executionListenerManager", executionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "failoverListenerManager", failoverListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "instanceShutdownListenerManager", instanceShutdownListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "instanceTriggerListenerManager", instanceTriggerListenerManager);
@@ -91,7 +86,6 @@ public class ListenerManagerTest {
         listenerManager.startAllListeners();
         verify(leaderListenerManager).start();
         verify(shardingListenerManager).start();
-        verify(executionListenerManager).start();
         verify(failoverListenerManager).start();
         verify(instanceShutdownListenerManager).start();
         verify(configurationListenerManager).start();
