@@ -105,13 +105,4 @@ public class SchedulerFacade {
     public LiteJobConfiguration loadJobConfiguration() {
         return configService.load(false);
     }
-    
-    /**
-     * 获取作业触发监听器.
-     * 
-     * @return 作业触发监听器
-     */
-    public JobTriggerListener newJobTriggerListener() {
-        return new JobTriggerListener(executionService, shardingService);
-    }
 }

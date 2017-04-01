@@ -101,8 +101,8 @@ public class ExecutionService {
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
             jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));
+            jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
         }
     }
     

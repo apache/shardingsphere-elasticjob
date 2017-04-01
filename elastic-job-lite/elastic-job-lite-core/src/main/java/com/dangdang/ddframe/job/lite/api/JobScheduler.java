@@ -89,8 +89,7 @@ public class JobScheduler {
     public void init() {
         jobExecutor.init();
         JobTypeConfiguration jobTypeConfig = jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig();
-        JobScheduleController jobScheduleController = new JobScheduleController(
-                createScheduler(), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
+        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
         jobScheduleController.scheduleJob(jobTypeConfig.getCoreConfig().getCron());
         JobRegistry.getInstance().addJobScheduleController(jobName, jobScheduleController);
     }
@@ -121,7 +120,6 @@ public class JobScheduler {
             StdSchedulerFactory factory = new StdSchedulerFactory();
             factory.initialize(getBaseQuartzProperties());
             result = factory.getScheduler();
-            result.getListenerManager().addTriggerListener(jobExecutor.getSchedulerFacade().newJobTriggerListener());
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }

@@ -26,7 +26,6 @@ import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
@@ -37,9 +36,6 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -69,7 +65,6 @@ public final class JobSchedulerTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(jobScheduler, "jobExecutor", jobExecutor);
         when(jobExecutor.getSchedulerFacade()).thenReturn(schedulerFacade);
-        when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         when(schedulerFacade.loadJobConfiguration()).thenReturn(liteJobConfig);
     }
     
@@ -78,10 +73,7 @@ public final class JobSchedulerTest {
         jobScheduler.init();
         verify(jobExecutor).init();
         Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), JobScheduleController.class.getDeclaredField("scheduler"));
-        assertThat(scheduler.getListenerManager().getTriggerListeners().size(), is(1));
-        assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
-        verify(schedulerFacade).newJobTriggerListener();
     }
     
     @Test

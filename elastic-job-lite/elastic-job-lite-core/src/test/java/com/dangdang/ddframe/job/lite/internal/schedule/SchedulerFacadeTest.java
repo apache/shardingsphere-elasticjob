@@ -41,7 +41,6 @@ import org.unitils.util.ReflectionUtils;
 import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -120,10 +119,5 @@ public class SchedulerFacadeTest {
         LiteJobConfiguration expected = LiteJobConfiguration.newBuilder(null).build();
         when(configService.load(false)).thenReturn(expected);
         assertThat(schedulerFacade.loadJobConfiguration(), is(expected));
-    }
-    
-    @Test
-    public void assertNewJobTriggerListener() {
-        assertThat(schedulerFacade.newJobTriggerListener(), instanceOf(JobTriggerListener.class));
     }
 }
