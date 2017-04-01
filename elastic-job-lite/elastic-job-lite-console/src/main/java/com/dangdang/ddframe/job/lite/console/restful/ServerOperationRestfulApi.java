@@ -99,4 +99,11 @@ public class ServerOperationRestfulApi {
     public Collection<InstanceInfo> getInstances(@PathParam("ip") final String ip, @PathParam("instanceId") final String instanceId) {
         return jobAPIService.getServerStatisticsAPI().getInstances(ip);
     }
+    
+    @GET
+    @Path("/{ip}/instances")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Collection<InstanceInfo> getInstances(@PathParam("ip") final String ip) {
+        return jobAPIService.getServerStatisticsAPI().getInstances(ip);
+    }
 }
