@@ -19,10 +19,9 @@ package com.dangdang.ddframe.job.lite.console.restful;
 
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
 import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -42,10 +41,9 @@ public class ServerRestfulApi {
     }
     
     @GET
-    @Path("/{ip}/instances/{instanceId}")
+    @Path("/{ip}/instances")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Collection<ServerInfo> getJobs(@PathParam("ip") final String ip, @PathParam("instanceId") final String instanceId) {
-        return jobAPIService.getServerStatisticsAPI().getJobs(ip, instanceId);
+    public Collection<InstanceInfo> getJobs(@PathParam("ip") final String ip) {
+        return jobAPIService.getServerStatisticsAPI().getInstances(ip);
     }
 }

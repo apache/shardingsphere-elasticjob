@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.lite.console.restful;
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
 import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.InstanceInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerInfo;
@@ -64,56 +65,56 @@ public class LiteJobRestfulApi {
     @DELETE
     @Path("/config/{jobName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<String> removeJob(@PathParam("jobName") final String jobName) {
-        return jobAPIService.getJobOperatorAPI().remove(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
+    public void removeJob(@PathParam("jobName") final String jobName) {
+        jobAPIService.getJobOperatorAPI().remove(Optional.of(jobName), Optional.<String>absent());
     }
     
     @POST
     @Path("/{jobName}/trigger")
     public void triggerJob(@PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobName), Optional.<String>absent());
     }
     
     @POST
     @Path("/{jobName}/disable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void disableJob(@PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobName), Optional.<String>absent());
     }
     
     @DELETE
     @Path("/{jobName}/disable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void enableJob(@PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobName), Optional.<String>absent());
     }
     
     @POST
     @Path("/{jobName}/shutdown")
     @Consumes(MediaType.APPLICATION_JSON)
     public void shutdownJob(@PathParam("jobName") final String jobName) {
-        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.<String>absent(), Optional.<String>absent());
+        jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.<String>absent());
     }
     
     @POST
     @Path("/disable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void disableShardingJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
+        jobAPIService.getJobOperatorAPI().disable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
     }
     
     @DELETE
     @Path("/disable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void enableShardingJob(final ServerInfo jobServer) {
-        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()), Optional.of(jobServer.getInstanceId()));
+        jobAPIService.getJobOperatorAPI().enable(Optional.of(jobServer.getJobName()), Optional.of(jobServer.getIp()));
     }
     
     @GET
     @Path("/{jobName}/servers")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<ServerInfo> getServers(@PathParam("jobName") final String jobName) {
-        return jobAPIService.getJobStatisticsAPI().getServers(jobName);
+    public Collection<InstanceInfo> getInstances(@PathParam("jobName") final String jobName) {
+        return jobAPIService.getJobStatisticsAPI().getInstances(jobName);
     }
     
     @GET
