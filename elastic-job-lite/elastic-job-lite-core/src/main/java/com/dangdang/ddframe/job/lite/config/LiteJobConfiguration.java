@@ -150,7 +150,7 @@ public class LiteJobConfiguration implements JobRootConfiguration {
          * 默认使用{@code com.dangdang.ddframe.job.plugin.sharding.strategy.AverageAllocationJobShardingStrategy}.
          * </p>
          *
-         * @param jobShardingStrategyClass 作业辅助监控端口
+         * @param jobShardingStrategyClass 作业分片策略实现类全路径
          *
          * @return 作业配置构建器
          */
