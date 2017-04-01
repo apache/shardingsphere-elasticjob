@@ -93,7 +93,7 @@ function bindTriggerButton() {
     $(document).on("click", "button[operation='trigger-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
-            url: "/api/jobs/trigger/" + jobName,
+            url: "/api/jobs/" + jobName + "/trigger",
             type: "POST",
             success: function() {
                 showSuccessDialog();

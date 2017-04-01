@@ -43,34 +43,17 @@ public final class JobOperateAPIImplTest {
         MockitoAnnotations.initMocks(this);
         jobOperateAPI = new JobOperateAPIImpl(regCenter);
     }
-//    
-//    @Test
-//    public void assertTriggerWithJobNameAndServerIp() {
-//        jobOperateAPI.trigger(Optional.of("test_job"), Optional.of("localhost"), Optional.of("defaultInstance"));
-//        verify(regCenter).persist("/test_job/servers/localhost/instances/defaultInstance/trigger", "");
-//    }
-//    
-//    @Test
-//    public void assertTriggerWithJobName() {
-//        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
-//        when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
-//        jobOperateAPI.trigger(Optional.of("test_job"), Optional.<String>absent(), Optional.<String>absent());
-//        verify(regCenter).getChildrenKeys("/test_job/servers");
-//        verify(regCenter).persist("/test_job/servers/ip1/instances/defaultInstance/trigger", "");
-//        verify(regCenter).persist("/test_job/servers/ip2/instances/defaultInstance/trigger", "");
-//    }
-//    
-//    @Test
-//    public void assertTriggerWithServerIp() {
-//        when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-//        jobOperateAPI.trigger(Optional.<String>absent(), Optional.of("localhost"), Optional.of("defaultInstance"));
-//        when(regCenter.getChildrenKeys("/test_job1/servers/localhost/instances")).thenReturn(Arrays.asList("defaultInstance"));
-//        when(regCenter.getChildrenKeys("/test_job1/servers/localhost/instances")).thenReturn(Arrays.asList("defaultInstance"));
-//        verify(regCenter).getChildrenKeys("/");
-//        verify(regCenter).persist("/test_job1/servers/localhost/instances/defaultInstance/trigger", "");
-//        verify(regCenter).persist("/test_job2/servers/localhost/instances/defaultInstance/trigger", "");
-//    }
-
+    
+    @Test
+    public void assertTriggerWithJobName() {
+        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
+        when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
+        jobOperateAPI.trigger(Optional.of("test_job"), Optional.<String>absent());
+        verify(regCenter).getChildrenKeys("/test_job/instances");
+        verify(regCenter).persist("/test_job/instances/ip1@-@defaultInstance", "TRIGGER");
+        verify(regCenter).persist("/test_job/instances/ip2@-@defaultInstance", "TRIGGER");
+    }
+    
     @Test
     public void assertDisableWithJobNameAndServerIp() {
         jobOperateAPI.disable(Optional.of("test_job"), Optional.of("localhost"));

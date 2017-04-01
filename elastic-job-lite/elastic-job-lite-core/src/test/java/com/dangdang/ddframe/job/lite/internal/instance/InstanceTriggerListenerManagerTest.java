@@ -71,7 +71,6 @@ public final class InstanceTriggerListenerManagerTest {
     
     @Test
     public void assertTriggerWhenJobIsRunning() {
-        String path = "/test_job/instances/127.0.0.1@-@0";
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         JobRegistry.getInstance().setJobRunning("test_job", true);
         instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, InstanceOperation.TRIGGER.name());
@@ -82,7 +81,6 @@ public final class InstanceTriggerListenerManagerTest {
     
     @Test
     public void assertTriggerWhenJobIsNotRunning() {
-        String path = "/test_job/instances/127.0.0.1@-@0";
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         instanceTriggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, InstanceOperation.TRIGGER.name());
         verify(instanceService).clearTriggerFlag();
