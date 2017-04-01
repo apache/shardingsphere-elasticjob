@@ -8,19 +8,16 @@ weight=1
 
 ## 2.0.6-SNAPSHOT
 
-### 兼容性提示
-
-1. 新Elastic-Job Lite的数据结构和原有结构并不兼容。在升级Elastic-Job 2.0.6版本时，请清理Zookeeper中相关作业节点的server节点下的所有数据。
-
 ### 新功能
 
 1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) Elastic-Job-Lite自诊断并修复分布式不稳定造成的问题
-1. [ISSUE #248](https://github.com/dangdangdotcom/elastic-job/issues/248) Elastic-Job-Lite同一台作业服务器可以通过不同的作业实例名称运行多个相同的作业实例
+1. [ISSUE #248](https://github.com/dangdangdotcom/elastic-job/issues/248) Elastic-Job-Lite同一台作业服务器可以行多个相同作业名称的JVM实例(Cloud Native)
 1. [ISSUE #249](https://github.com/dangdangdotcom/elastic-job/issues/249) Elastic-Job-Lite运维界面支持事件追踪查询
 
 ### 功能提升
 
 1. [ISSUE #240](https://github.com/dangdangdotcom/elastic-job/issues/240) Elastic-Job-Lite运维界面重构
+1. [ISSUE #262](https://github.com/dangdangdotcom/elastic-job/issues/262) Elastic-Job-Lite控制台删除作业配置
 
 ### 缺陷修正
 
@@ -28,6 +25,11 @@ weight=1
 1. [ISSUE #238](https://github.com/dangdangdotcom/elastic-job/issues/238) IP正则表达式错误
 1. [ISSUE #246](https://github.com/dangdangdotcom/elastic-job/issues/246) 通过JobOperateAPI.remove()后，再JobScheduler.init()创建相同作业后多次触发执行
 1. [ISSUE #250](https://github.com/dangdangdotcom/elastic-job/issues/250) Misfire任务多触发一次
+
+### 结构调整
+
+1. [ISSUE #263](https://github.com/dangdangdotcom/elastic-job/issues/263) Elastic-Job-Lite作业操作API重新梳理
+1. [ISSUE #264](https://github.com/dangdangdotcom/elastic-job/issues/264) Elastic-Job-Lite数据存储结构调整，升级后请清理Zookeeper中相关作业节点的server节点下的所有数据
 
 ## 2.0.5
 
