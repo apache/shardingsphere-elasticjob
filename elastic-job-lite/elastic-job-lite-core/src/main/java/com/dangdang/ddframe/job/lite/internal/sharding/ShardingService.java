@@ -23,8 +23,6 @@ import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyFactory;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -132,13 +130,13 @@ public class ShardingService {
     
     private void resetShardingInfo(final int shardingTotalCount) {
         for (int i = 0; i < shardingTotalCount; i++) {
-            jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getInstanceNode(i));
-            jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.ROOT + "/" + i);
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getInstanceNode(i));
+            jobNodeStorage.createJobNodeIfNeeded(ShardingNode.ROOT + "/" + i);
         }
-        int actualShardingTotalCount = jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT).size();
+        int actualShardingTotalCount = jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT).size();
         if (actualShardingTotalCount > shardingTotalCount) {
             for (int i = shardingTotalCount; i < actualShardingTotalCount; i++) {
-                jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.ROOT + "/" + i);
+                jobNodeStorage.removeJobNodeIfExisted(ShardingNode.ROOT + "/" + i);
             }
         }
     }
@@ -153,7 +151,7 @@ public class ShardingService {
         String instanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
         int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
-            if (instanceId.equals(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(i)))) {
+            if (instanceId.equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 result.add(i);
             }
         }
@@ -169,7 +167,7 @@ public class ShardingService {
         List<String> onlineInstances = jobNodeStorage.getJobNodeChildrenKeys(InstanceNode.ROOT);
         int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
-            if (!onlineInstances.contains(jobNodeStorage.getJobNodeData(ExecutionNode.getInstanceNode(i)))) {
+            if (!onlineInstances.contains(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 return true;
             }
         }
@@ -185,7 +183,7 @@ public class ShardingService {
         public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
             for (Map.Entry<JobInstance, List<Integer>> entry : shardingResults.entrySet()) {
                 for (int shardingItem : entry.getValue()) {
-                    curatorTransactionFinal.create().forPath(jobNodePath.getFullPath(ExecutionNode.getInstanceNode(shardingItem)), entry.getKey().getJobInstanceId().getBytes()).and();
+                    curatorTransactionFinal.create().forPath(jobNodePath.getFullPath(ShardingNode.getInstanceNode(shardingItem)), entry.getKey().getJobInstanceId().getBytes()).and();
                 }
             }
             curatorTransactionFinal.delete().forPath(jobNodePath.getFullPath(ShardingNode.NECESSARY)).and();

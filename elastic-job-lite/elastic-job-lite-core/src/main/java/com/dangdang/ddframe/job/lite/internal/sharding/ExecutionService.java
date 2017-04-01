@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.execution;
+package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
@@ -63,7 +63,7 @@ public class ExecutionService {
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.fillEphemeralJobNode(ExecutionNode.getRunningNode(each), "");
+            jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), "");
         }
     }
     
@@ -76,14 +76,14 @@ public class ExecutionService {
             return;
         }
         if (leaderService.isLeaderUntilBlock()) {
-            jobNodeStorage.fillEphemeralJobNode(ExecutionNode.CLEANING, "");
+            jobNodeStorage.fillEphemeralJobNode(ShardingNode.CLEANING, "");
             List<Integer> items = getAllItems();
             for (int each : items) {
-                jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getCompletedNode(each));
+                jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getCompletedNode(each));
             }
-            jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.CLEANING);
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.CLEANING);
         }
-        while (jobNodeStorage.isJobNodeExisted(ExecutionNode.CLEANING)) {
+        while (jobNodeStorage.isJobNodeExisted(ShardingNode.CLEANING)) {
             BlockUtils.waitingShortTime();
         }
     }
@@ -99,8 +99,8 @@ public class ExecutionService {
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));
-            jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getCompletedNode(each));
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
+            jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getCompletedNode(each));
         }
     }
     
@@ -115,7 +115,7 @@ public class ExecutionService {
      */
     public void clearRunningInfo(final List<Integer> items) {
         for (int each : items) {
-            jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getRunningNode(each));
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
         }
     }
     
@@ -130,7 +130,7 @@ public class ExecutionService {
             return false;
         }
         for (int each : items) {
-            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getRunningNode(each))) {
+            if (jobNodeStorage.isJobNodeExisted(ShardingNode.getRunningNode(each))) {
                 return true;
             }
         }
@@ -166,7 +166,7 @@ public class ExecutionService {
             return false;
         }
         for (int each : items) {
-            jobNodeStorage.createJobNodeIfNeeded(ExecutionNode.getMisfireNode(each));
+            jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getMisfireNode(each));
         }
         return true;
     }
@@ -180,7 +180,7 @@ public class ExecutionService {
     public List<Integer> getMisfiredJobItems(final Collection<Integer> items) {
         List<Integer> result = new ArrayList<>(items.size());
         for (int each : items) {
-            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getMisfireNode(each))) {
+            if (jobNodeStorage.isJobNodeExisted(ShardingNode.getMisfireNode(each))) {
                 result.add(each);
             }
         }
@@ -194,7 +194,7 @@ public class ExecutionService {
      */
     public void clearMisfire(final Collection<Integer> items) {
         for (int each : items) {
-            jobNodeStorage.removeJobNodeIfExisted(ExecutionNode.getMisfireNode(each));
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getMisfireNode(each));
         }
     }
     
@@ -207,7 +207,7 @@ public class ExecutionService {
     public List<Integer> getDisabledItems(final List<Integer> items) {
         List<Integer> result = new ArrayList<>(items.size());
         for (int each : items) {
-            if (jobNodeStorage.isJobNodeExisted(ExecutionNode.getDisabledNode(each))) {
+            if (jobNodeStorage.isJobNodeExisted(ShardingNode.getDisabledNode(each))) {
                 result.add(each);
             }
         }
@@ -221,6 +221,6 @@ public class ExecutionService {
      * @return 该分片是否已完成
      */
     public boolean isCompleted(final int item) {
-        return jobNodeStorage.isJobNodeExisted(ExecutionNode.getCompletedNode(item));
+        return jobNodeStorage.isJobNodeExisted(ShardingNode.getCompletedNode(item));
     }
 }

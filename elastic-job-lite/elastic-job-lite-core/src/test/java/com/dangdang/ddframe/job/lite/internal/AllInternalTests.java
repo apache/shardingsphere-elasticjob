@@ -24,9 +24,9 @@ import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFac
 import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderNodeTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderServiceTest;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionContextServiceTest;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNodeTest;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionServiceTest;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionContextServiceTest;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNodeTest;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionServiceTest;
 import com.dangdang.ddframe.job.lite.internal.executor.JobExecutorTest;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverNodeTest;
@@ -80,7 +80,7 @@ import org.junit.runners.Suite.SuiteClasses;
         ShardingListenerManagerTest.class, 
         ExecutionContextServiceTest.class, 
         ExecutionServiceTest.class, 
-        ExecutionNodeTest.class,
+        ShardingNodeTest.class,
         FailoverServiceTest.class, 
         FailoverNodeTest.class,
         FailoverListenerManagerTest.class, 

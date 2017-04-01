@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNode;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
@@ -96,7 +96,7 @@ public class FailoverService {
      * @return 运行在本作业服务器的失效转移序列号
      */
     public List<Integer> getLocalHostFailoverItems() {
-        List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT);
+        List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT);
         List<Integer> result = new ArrayList<>(items.size());
         String ip = JobRegistry.getInstance().getJobInstance(jobName).getIp();
         for (String each : items) {
@@ -130,7 +130,7 @@ public class FailoverService {
      * 删除作业失效转移信息.
      */
     public void removeFailoverInfo() {
-        for (String each : jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT)) {
+        for (String each : jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)) {
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(Integer.parseInt(each)));
         }
     }

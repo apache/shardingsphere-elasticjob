@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.execution;
+package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
@@ -87,7 +87,7 @@ public class ExecutionContextService {
     }
     
     private boolean isRunning(final int shardingItem) {
-        return jobNodeStorage.isJobNodeExisted(ExecutionNode.getRunningNode(shardingItem));
+        return jobNodeStorage.isJobNodeExisted(ShardingNode.getRunningNode(shardingItem));
     }
     
     private Map<Integer, String> getAssignedShardingItemParameterMap(final List<Integer> shardingItems, final Map<Integer, String> shardingItemParameterMap) {

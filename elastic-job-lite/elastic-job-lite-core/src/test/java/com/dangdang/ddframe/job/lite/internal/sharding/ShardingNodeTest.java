@@ -15,7 +15,7 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.execution;
+package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import org.junit.Test;
 
@@ -23,32 +23,32 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-public final class ExecutionNodeTest {
+public final class ShardingNodeTest {
     
-    private ExecutionNode executionNode = new ExecutionNode("test_job");
+    private ShardingNode shardingNode = new ShardingNode("test_job");
     
     @Test
     public void assertGetRunningNode() {
-        assertThat(ExecutionNode.getRunningNode(0), is("sharding/0/running"));
+        assertThat(ShardingNode.getRunningNode(0), is("sharding/0/running"));
     }
     
     @Test
     public void assertGetCompletedNode() {
-        assertThat(ExecutionNode.getCompletedNode(0), is("sharding/0/completed"));
+        assertThat(ShardingNode.getCompletedNode(0), is("sharding/0/completed"));
     }
     
     @Test
     public void assertGetMisfireNode() {
-        assertThat(ExecutionNode.getMisfireNode(0), is("sharding/0/misfire"));
+        assertThat(ShardingNode.getMisfireNode(0), is("sharding/0/misfire"));
     }
     
     @Test
     public void assertGetItemWhenNotRunningItemPath() {
-        assertNull(executionNode.getItemByRunningItemPath("/test_job/sharding/0/completed"));
+        assertNull(shardingNode.getItemByRunningItemPath("/test_job/sharding/0/completed"));
     }
     
     @Test
     public void assertGetItemByRunningItemPath() {
-        assertThat(executionNode.getItemByRunningItemPath("/test_job/sharding/0/running"), is(0));
+        assertThat(shardingNode.getItemByRunningItemPath("/test_job/sharding/0/running"), is(0));
     }
 }

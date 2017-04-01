@@ -20,10 +20,10 @@ package com.dangdang.ddframe.job.lite.internal.failover;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNode;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
@@ -45,7 +45,7 @@ public class FailoverListenerManager extends AbstractListenerManager {
     
     private final ConfigurationNode configNode;
     
-    private final ExecutionNode executionNode;
+    private final ShardingNode shardingNode;
     
     private final FailoverNode failoverNode;
     
@@ -56,7 +56,7 @@ public class FailoverListenerManager extends AbstractListenerManager {
         shardingService = new ShardingService(regCenter, jobName);
         failoverService = new FailoverService(regCenter, jobName);
         configNode = new ConfigurationNode(jobName);
-        executionNode = new ExecutionNode(jobName);
+        shardingNode = new ShardingNode(jobName);
         failoverNode = new FailoverNode(jobName);
     }
     
@@ -85,7 +85,7 @@ public class FailoverListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            failover(executionNode.getItemByRunningItemPath(path), eventType);
+            failover(shardingNode.getItemByRunningItemPath(path), eventType);
         }
     }
     
