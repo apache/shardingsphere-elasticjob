@@ -41,7 +41,6 @@ import java.util.Map;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public final class ExecutionContextServiceTest {
@@ -69,7 +68,6 @@ public final class ExecutionContextServiceTest {
         ShardingContexts shardingContexts = executionContextService.getJobShardingContext(Collections.<Integer>emptyList());
         assertTrue(shardingContexts.getTaskId().startsWith("test_job@-@@-@READY@-@"));
         assertThat(shardingContexts.getShardingTotalCount(), is(3));
-        verify(configService).load(false);
     }
     
     @Test
@@ -81,7 +79,6 @@ public final class ExecutionContextServiceTest {
         map.put(1, "B");
         ShardingContexts expected = new ShardingContexts("fake_task_id", "test_job", 3, "", map);
         assertShardingContext(executionContextService.getJobShardingContext(Arrays.asList(0, 1)), expected);
-        verify(configService).load(false);
     }
     
     @Test
@@ -94,9 +91,6 @@ public final class ExecutionContextServiceTest {
         map.put(0, "A");
         ShardingContexts expected = new ShardingContexts("fake_task_id", "test_job", 3, "", map);
         assertShardingContext(executionContextService.getJobShardingContext(Lists.newArrayList(0, 1)), expected);
-        verify(configService).load(false);
-        verify(jobNodeStorage).isJobNodeExisted("sharding/0/running");
-        verify(jobNodeStorage).isJobNodeExisted("sharding/1/running");
     }
     
     private void assertShardingContext(final ShardingContexts actual, final ShardingContexts expected) {

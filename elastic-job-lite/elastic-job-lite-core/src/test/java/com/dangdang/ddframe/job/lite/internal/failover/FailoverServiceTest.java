@@ -98,6 +98,7 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertFailoverIfUnnecessaryWhenServerIsNotReady() {
+        JobRegistry.getInstance().setJobRunning("test_job", true);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
         failoverService.failoverIfNecessary();
@@ -108,7 +109,7 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertFailoverIfNecessary() {
-        JobRegistry.getInstance().setJobRunning("test_job", true);
+        JobRegistry.getInstance().setJobRunning("test_job", false);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
         failoverService.failoverIfNecessary();
@@ -120,6 +121,7 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertFailoverLeaderExecutionCallbackIfNotNecessary() {
+        JobRegistry.getInstance().setJobRunning("test_job", false);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(false);
         failoverService.new FailoverLeaderExecutionCallback().execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
@@ -128,7 +130,7 @@ public final class FailoverServiceTest {
     
     @Test
     public void assertFailoverLeaderExecutionCallbackIfNecessary() {
-        JobRegistry.getInstance().setJobRunning("test_job", true);
+        JobRegistry.getInstance().setJobRunning("test_job", false);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);

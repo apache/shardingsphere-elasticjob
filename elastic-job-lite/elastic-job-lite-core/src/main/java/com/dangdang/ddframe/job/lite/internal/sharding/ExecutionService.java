@@ -51,7 +51,7 @@ public class ExecutionService {
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
     }
-    
+        
     /**
      * 注册作业启动信息.
      * 
@@ -64,6 +64,22 @@ public class ExecutionService {
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
             jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), "");
+        }
+    }
+    
+    /**
+     * 注册作业完成信息.
+     * 
+     * @param shardingContexts 分片上下文
+     */
+    public void registerJobCompleted(final ShardingContexts shardingContexts) {
+        JobRegistry.getInstance().setJobRunning(jobName, false);
+        if (!configService.load(true).isMonitorExecution()) {
+            return;
+        }
+        for (int each : shardingContexts.getShardingItemParameters().keySet()) {
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
+            jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getCompletedNode(each));
         }
     }
     
@@ -85,22 +101,6 @@ public class ExecutionService {
         }
         while (jobNodeStorage.isJobNodeExisted(ShardingNode.CLEANING)) {
             BlockUtils.waitingShortTime();
-        }
-    }
-    
-    /**
-     * 注册作业完成信息.
-     * 
-     * @param shardingContexts 分片上下文
-     */
-    public void registerJobCompleted(final ShardingContexts shardingContexts) {
-        JobRegistry.getInstance().setJobRunning(jobName, false);
-        if (!configService.load(true).isMonitorExecution()) {
-            return;
-        }
-        for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
-            jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getCompletedNode(each));
         }
     }
     
