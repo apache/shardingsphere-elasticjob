@@ -7,6 +7,4 @@ weight=15
 
 # Elastic-Job-Lite操作手册
 
-## RESTFul API
-
 ## Java API
