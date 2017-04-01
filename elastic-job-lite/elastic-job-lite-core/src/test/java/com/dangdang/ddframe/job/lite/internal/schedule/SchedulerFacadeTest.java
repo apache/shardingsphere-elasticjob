@@ -26,7 +26,6 @@ import com.dangdang.ddframe.job.lite.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
@@ -63,9 +62,6 @@ public class SchedulerFacadeTest {
     private ShardingService shardingService;
     
     @Mock
-    private ExecutionService executionService;
-    
-    @Mock
     private MonitorService monitorService;
     
     @Mock
@@ -87,7 +83,6 @@ public class SchedulerFacadeTest {
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
         ReflectionUtils.setFieldValue(schedulerFacade, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(schedulerFacade, "shardingService", shardingService);
-        ReflectionUtils.setFieldValue(schedulerFacade, "executionService", executionService);
         ReflectionUtils.setFieldValue(schedulerFacade, "monitorService", monitorService);
         ReflectionUtils.setFieldValue(schedulerFacade, "listenerManager", listenerManager);
     }
@@ -104,7 +99,6 @@ public class SchedulerFacadeTest {
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
         verify(configService).load(false);
-        verify(listenerManager).setCurrentShardingTotalCount(3);
     }
     
     @Test

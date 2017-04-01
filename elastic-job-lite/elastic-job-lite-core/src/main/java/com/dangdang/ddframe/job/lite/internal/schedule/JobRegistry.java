@@ -41,6 +41,8 @@ public final class JobRegistry {
     
     private Map<String, Boolean> jobRunningMap = new ConcurrentHashMap<>();
     
+    private Map<String, Integer> currentShardingTotalCountMap = new ConcurrentHashMap<>();
+    
     /**
      * 获取作业注册表实例.
      * 
@@ -127,5 +129,26 @@ public final class JobRegistry {
      */
     public void setJobRunning(final String jobName, final boolean isRunning) {
         jobRunningMap.put(jobName, isRunning);
+    }
+    
+    /**
+     * 获取当前分片总数.
+     *
+     * @param jobName 作业名称
+     * @return 当前分片总数
+     */
+    public int getCurrentShardingTotalCount(final String jobName) {
+        Integer result = currentShardingTotalCountMap.get(jobName);
+        return null == result ? 0 : result;
+    }
+    
+    /**
+     * 设置当前分片总数.
+     *
+     * @param jobName 作业名称
+     * @param currentShardingTotalCount 当前分片总数
+     */
+    public void setCurrentShardingTotalCount(final String jobName, final int currentShardingTotalCount) {
+        currentShardingTotalCountMap.put(jobName, currentShardingTotalCount);
     }
 }

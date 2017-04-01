@@ -92,10 +92,4 @@ public class ListenerManagerTest {
         verify(guaranteeListenerManager).start();
         verify(jobNodeStorage).addConnectionStateListener(regCenterConnectionStateListener);
     }
-    
-    @Test
-    public void assertSetCurrentShardingTotalCount() {
-        listenerManager.setCurrentShardingTotalCount(10);
-        verify(shardingListenerManager).setCurrentShardingTotalCount(10);
-    }
 }

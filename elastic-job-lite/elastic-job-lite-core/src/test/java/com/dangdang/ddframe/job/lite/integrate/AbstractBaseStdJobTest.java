@@ -41,6 +41,7 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
+import com.dangdang.ddframe.job.util.env.IpUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.junit.After;
@@ -162,6 +163,8 @@ public abstract class AbstractBaseStdJobTest {
     }
     
     private void assertRegCenterCommonInfo() {
+        assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(jobName), is(3));
+        assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), is(IpUtils.getIp()));
         LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(regCenter.get("/" + jobName + "/config"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));

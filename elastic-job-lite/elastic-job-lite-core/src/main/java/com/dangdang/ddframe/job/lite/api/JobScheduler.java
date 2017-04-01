@@ -89,6 +89,7 @@ public class JobScheduler {
     public void init() {
         jobExecutor.init();
         JobTypeConfiguration jobTypeConfig = jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig();
+        JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, jobTypeConfig.getCoreConfig().getShardingTotalCount());
         JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
         jobScheduleController.scheduleJob(jobTypeConfig.getCoreConfig().getCron());
         JobRegistry.getInstance().addJobScheduleController(jobName, jobScheduleController);

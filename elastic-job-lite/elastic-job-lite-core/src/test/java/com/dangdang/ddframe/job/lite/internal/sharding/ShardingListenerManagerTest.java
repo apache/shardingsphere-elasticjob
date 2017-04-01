@@ -30,8 +30,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -74,17 +72,18 @@ public final class ShardingListenerManagerTest {
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsEqualToNewShardingTotalCount() {
-        shardingListenerManager.setCurrentShardingTotalCount(3);
+        JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 3);
         shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
         verify(shardingService, times(0)).setReshardingFlag();
+        JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 0);
     }
     
     @Test
     public void assertShardingTotalCountChangedJobListenerWhenIsConfigPathAndCurrentShardingTotalCountIsNotEqualToNewShardingTotalCount() throws NoSuchFieldException {
-        shardingListenerManager.setCurrentShardingTotalCount(5);
-        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
-        assertThat((Integer) ReflectionUtils.getFieldValue(shardingListenerManager, ShardingListenerManager.class.getDeclaredField("currentShardingTotalCount")), is(3));
+        JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 5);
+        shardingListenerManager.new ShardingTotalCountChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
         verify(shardingService).setReshardingFlag();
+        JobRegistry.getInstance().setCurrentShardingTotalCount("test_job", 0);
     }
     
     @Test

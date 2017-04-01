@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener;
 
+import com.google.common.base.Charsets;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
@@ -40,7 +41,7 @@ public abstract class AbstractJobListener implements TreeCacheListener {
         if (path.isEmpty()) {
             return;
         }
-        dataChanged(path, event.getType(), null == childData.getData() ? "" : new String(childData.getData()));
+        dataChanged(path, event.getType(), null == childData.getData() ? "" : new String(childData.getData(), Charsets.UTF_8));
     }
     
     protected abstract void dataChanged(final String path, final Type eventType, final String data);

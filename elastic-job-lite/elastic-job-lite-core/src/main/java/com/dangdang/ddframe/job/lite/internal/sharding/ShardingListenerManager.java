@@ -22,10 +22,9 @@ import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFac
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import lombok.Setter;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
@@ -35,7 +34,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  */
 public class ShardingListenerManager extends AbstractListenerManager {
     
-    private final ShardingService shardingService;
+    private final String jobName;
     
     private final ConfigurationNode configNode;
     
@@ -43,15 +42,15 @@ public class ShardingListenerManager extends AbstractListenerManager {
     
     private final ServerNode serverNode;
     
-    @Setter
-    private int currentShardingTotalCount;
+    private final ShardingService shardingService;
     
     public ShardingListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
-        shardingService = new ShardingService(regCenter, jobName);
+        this.jobName = jobName;
         configNode = new ConfigurationNode(jobName);
         instanceNode = new InstanceNode(jobName);
         serverNode = new ServerNode(jobName);
+        shardingService = new ShardingService(regCenter, jobName);
     }
     
     @Override
@@ -63,12 +62,12 @@ public class ShardingListenerManager extends AbstractListenerManager {
     class ShardingTotalCountChangedJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final String path, final TreeCacheEvent.Type eventType, final String data) {
-            if (configNode.isConfigPath(path) && 0 != currentShardingTotalCount) {
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (configNode.isConfigPath(path) && 0 != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
                 int newShardingTotalCount = LiteJobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getShardingTotalCount();
-                if (newShardingTotalCount != currentShardingTotalCount) {
+                if (newShardingTotalCount != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
                     shardingService.setReshardingFlag();
-                    currentShardingTotalCount = newShardingTotalCount;
+                    JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, newShardingTotalCount);
                 }
             }
         }
@@ -84,7 +83,7 @@ public class ShardingListenerManager extends AbstractListenerManager {
         }
         
         private boolean isInstanceChange(final Type eventType, final String path) {
-            return instanceNode.isInstancePath(path) && TreeCacheEvent.Type.NODE_UPDATED != eventType;
+            return instanceNode.isInstancePath(path) && Type.NODE_UPDATED != eventType;
         }
         
         private boolean isServerChange(final String path) {

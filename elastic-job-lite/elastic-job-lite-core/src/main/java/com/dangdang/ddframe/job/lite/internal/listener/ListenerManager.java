@@ -80,13 +80,4 @@ public class ListenerManager {
         guaranteeListenerManager.start();
         jobNodeStorage.addConnectionStateListener(regCenterConnectionStateListener);
     }
-    
-    /**
-     * 设置当前分片总数.
-     * 
-     * @param currentShardingTotalCount 当前分片总数
-     */
-    public void setCurrentShardingTotalCount(final int currentShardingTotalCount) {
-        shardingListenerManager.setCurrentShardingTotalCount(currentShardingTotalCount);
-    }
 }

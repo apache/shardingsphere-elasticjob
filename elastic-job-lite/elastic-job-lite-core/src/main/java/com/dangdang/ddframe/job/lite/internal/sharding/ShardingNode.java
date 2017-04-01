@@ -18,14 +18,12 @@
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.lite.internal.election.LeaderNode;
-import lombok.RequiredArgsConstructor;
 
 /**
  * 分片节点路径.
  * 
  * @author zhangliang
  */
-@RequiredArgsConstructor
 final class ShardingNode {
     
     static final String LEADER_SHARDING_ROOT = LeaderNode.ROOT + "/sharding";
