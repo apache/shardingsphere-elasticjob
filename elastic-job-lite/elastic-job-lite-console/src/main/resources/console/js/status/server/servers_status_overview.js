@@ -97,21 +97,29 @@ function bindEnableServerButton() {
 }
 
 function bindShutdownServerButton() {
-    $(document).on("click", "button[operation='shutdown-server'][data-toggle!='modal']", function(event) {
+    $(document).on("click", "button[operation='shutdown-server']", function(event) {
+        $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
-        $.ajax({
-            url: "/api/servers/" + serverIp + "/shutdown",
-            type: "POST",
-            success: function() {
-                showSuccessDialog();
-                $("#servers-overview-tbl").bootstrapTable("refresh");
-            }
+        $(document).off("click", "#shutdown-confirm-dialog-confirm-btn");
+        $(document).on("click", "#shutdown-confirm-dialog-confirm-btn", function() {
+            $.ajax({
+                url: "/api/servers/" + serverIp + "/shutdown",
+                type: "POST",
+                success: function () {
+                    showSuccessDialog();
+                    $("#shutdown-confirm-dialog").modal("hide");
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
+                    $("#servers-overview-tbl").bootstrapTable("refresh");
+                }
+            });
         });
     });
 }
 
 function bindRemoveServerButton() {
-    $(document).on("click", "button[operation='remove-server'][data-toggle!='modal']", function(event) {
+    $(document).on("click", "button[operation='remove-server']", function(event) {
+        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
@@ -121,6 +129,9 @@ function bindRemoveServerButton() {
                 type: "DELETE",
                 success: function () {
                     showSuccessDialog();
+                    $("#delete-confirm-dialog").modal("hide");
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
                     $("#servers-overview-tbl").bootstrapTable("refresh");
                 }
             });

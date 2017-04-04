@@ -64,7 +64,7 @@ function generateOperationButtons(val, row) {
     if ("OK" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
     }
-    if ("DISABLED" === row.status || "SHARDING_ERR" === row.status) {
+    if ("DISABLED" === row.status || "SHARDING_ERROR" === row.status) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
     }
     if ("CRASHED" === row.status) {
@@ -152,21 +152,28 @@ function bindEnableButton() {
 }
 
 function bindShutdownButton() {
-    $(document).on("click", "button[operation='shutdown-job'][data-toggle!='modal']", function(event) {
+    $(document).on("click", "button[operation='shutdown-job']", function(event) {
+        $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var jobName = $(event.currentTarget).attr("job-name");
-        $.ajax({
-            url: "/api/jobs/" + jobName + "/shutdown",
-            type: "POST",
-            success: function() {
-                showSuccessDialog();
-                $("#jobs-status-overview-tbl").bootstrapTable("refresh");
-            }
+        $(document).off("click", "#shutdown-confirm-dialog-confirm-btn");
+        $(document).on("click", "#shutdown-confirm-dialog-confirm-btn", function() {
+            $.ajax({
+                url: "/api/jobs/" + jobName + "/shutdown",
+                type: "POST",
+                success: function () {
+                    showSuccessDialog();
+                    $("#shutdown-confirm-dialog").modal("hide");
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
+                    $("#jobs-status-overview-tbl").bootstrapTable("refresh");
+                }
+            });
         });
     });
 }
 
 function bindRemoveButton() {
-    $(document).on("click", "button[operation='remove-job'][data-toggle!='modal']", function(event) {
+    $(document).on("click", "button[operation='remove-job']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
@@ -176,11 +183,11 @@ function bindRemoveButton() {
                 type: "DELETE",
                 success: function() {
                     showSuccessDialog();
-                    $("#jobs-status-overview-tbl").bootstrapTable("refresh");
                     $("#delete-confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     refreshJobNavTag();
+                    $("#jobs-status-overview-tbl").bootstrapTable("refresh");
                 }
             });
         });

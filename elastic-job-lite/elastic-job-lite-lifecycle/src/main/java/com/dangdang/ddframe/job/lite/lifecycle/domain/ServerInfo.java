@@ -26,7 +26,7 @@ import java.io.Serializable;
 /**
  * 作业服务器对象.
  *
- * @author zhangliang
+ * @author caohao
  */
 @Getter
 @Setter
@@ -47,12 +47,10 @@ public final class ServerInfo implements Serializable {
     /**
      * 作业服务器状态.
      *
-     * @author zhangliang
+     * @author caohao
      */
     public enum ServerStatus {
         
-        READY, 
-        RUNNING, 
         DISABLED,
         CRASHED, 
         SHUTDOWN;
