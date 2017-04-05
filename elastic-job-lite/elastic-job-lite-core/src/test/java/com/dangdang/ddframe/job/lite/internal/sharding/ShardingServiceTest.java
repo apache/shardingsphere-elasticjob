@@ -27,6 +27,7 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
 import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
@@ -70,6 +71,9 @@ public final class ShardingServiceTest {
     private ExecutionService executionService;
     
     @Mock
+    private ServerService serverService;
+    
+    @Mock
     private InstanceService instanceService;
     
     private final ShardingService shardingService = new ShardingService(null, "test_job");
@@ -82,6 +86,7 @@ public final class ShardingServiceTest {
         ReflectionUtils.setFieldValue(shardingService, "configService", configService);
         ReflectionUtils.setFieldValue(shardingService, "executionService", executionService);
         ReflectionUtils.setFieldValue(shardingService, "instanceService", instanceService);
+        ReflectionUtils.setFieldValue(shardingService, "serverService", serverService);
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
@@ -163,7 +168,13 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertGetLocalShardingItems() {
+    public void assertGetLocalShardingItemsWithDisabledServer() {
+        assertThat(shardingService.getLocalShardingItems(), is(Collections.<Integer>emptyList()));
+    }
+    
+    @Test
+    public void assertGetLocalShardingItemsWithEnabledServer() {
+        when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         when(configService.load(true)).thenReturn(
                 LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");

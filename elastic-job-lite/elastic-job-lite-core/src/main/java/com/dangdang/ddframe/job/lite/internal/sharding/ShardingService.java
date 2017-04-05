@@ -26,6 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
@@ -35,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +59,8 @@ public class ShardingService {
     
     private final InstanceService instanceService;
     
+    private final ServerService serverService;
+    
     private final ExecutionService executionService;
 
     private final JobNodePath jobNodePath;
@@ -67,6 +71,7 @@ public class ShardingService {
         leaderService = new LeaderService(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         jobNodePath = new JobNodePath(jobName);
     }
@@ -147,11 +152,13 @@ public class ShardingService {
      * @return 运行在本作业实例的分片项集合
      */
     public List<Integer> getLocalShardingItems() {
+        if (!serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
+            return Collections.emptyList();
+        }
         List<Integer> result = new LinkedList<>();
-        String instanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
         int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
         for (int i = 0; i < shardingTotalCount; i++) {
-            if (instanceId.equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
+            if (JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 result.add(i);
             }
         }
