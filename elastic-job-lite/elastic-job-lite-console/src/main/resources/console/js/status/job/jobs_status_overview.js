@@ -43,7 +43,7 @@ function statusFormatter(value, row) {
             return "<span class='label label-success'>正常</span>";
             break;
         case "DISABLED":
-            return "<span class='label label-warning'>被禁用</span>";
+            return "<span class='label label-warning'>已禁用</span>";
             break;
         case "SHARDING_ERROR":
             return "<span class='label label-warning'>分片错误</span>";

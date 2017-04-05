@@ -34,10 +34,10 @@ function renderJobs() {
 function statusFormatter(value) {
     switch(value) {
         case "OK":
-            return "<span class='label label-success'>正常</span>";
+            return "<span class='label label-success'>已启用</span>";
             break;
         case "DISABLED":
-            return "<span class='label label-warning'>被禁用</span>";
+            return "<span class='label label-warning'>已禁用</span>";
             break;
     }
 }
