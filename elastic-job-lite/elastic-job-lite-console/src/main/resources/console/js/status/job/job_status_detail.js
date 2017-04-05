@@ -14,6 +14,9 @@ function renderShardingTable() {
                 field: "item",
                 title: "分片项"
             }, {
+                field: "serverIp",
+                title: "服务器IP"
+            }, {
                 field: "status",
                 title: "状态",
                 formatter: "shardingStatusFormatter"

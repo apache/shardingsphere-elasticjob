@@ -10,21 +10,23 @@ weight=15
 
 ## Java API
 
-### 1. 操作类API
+### 1. 配置类API
 
-#### a. `JobSettingsAPI` 作业配置的API.
+#### `JobSettingsAPI` 作业配置的API
 
 ##### `JobSettings getJobSettings(String jobName)` 获取作业设置.
 
 * **Parameters:** `jobName` — 作业名称
  
-* **Returns:** 作业设置对象.
+* **Returns:** 作业设置对象
 
 ##### `void updateJobSettings(JobSettings jobSettings)` 更新作业设置.
 
 * **Parameters:** `jobSettings` — 作业设置对象
 
-#### b. `JobOperateAPI` 操作作业的API.
+### 2. 操作类API
+
+#### `JobOperateAPI` 操作作业的API
 
 ##### `void trigger(Optional<String> jobName, Optional<String> serverIp)` 作业立刻执行.作业在不与上次运行中作业冲突的情况下才会启动, 并在启动后自动清理此标记.
 
@@ -50,42 +52,42 @@ weight=15
   * `jobName` — 作业名称
   * `serverIp` — 作业服务器IP地址
 
-##### `void shutdown(Optional<String> jobName, Optional<String> serverIp)` 作业删除.
+##### `void remove(Optional<String> jobName, Optional<String> serverIp)` 作业删除.
 
 * **Parameters:**
   * `jobName` — 作业名称
   * `serverIp` — 作业服务器IP地址
 
-### 2. 统计类API
+### 3. 统计类API
 
-#### a. `JobStatisticsAPI` 作业状态展示的API.
+#### 3.1 `JobStatisticsAPI` 作业状态展示的API
 
 ##### `JobBriefInfo getJobBriefInfo(String jobName)` 获取作业简明信息.
 
 * **Parameters:** `jobName` — 作业名称
  
-* **Returns:** 作业简明信息.
+* **Returns:** 作业简明信息
 
 ##### `Collection<JobBriefInfo> getAllJobsBriefInfo()` 获取所有作业简明信息.
 
-* **Returns:** 作业简明信息集合.
+* **Returns:** 作业简明信息集合
 
 ##### `Collection<JobBriefInfo> getJobsBriefInfo(String ip)` 获取该IP下所有作业简明信息.
 
 * **Parameters:** `ip` — 服务器IP
  
-* **Returns:** 作业简明信息集合.
+* **Returns:** 作业简明信息集合
 
-#### b. `ServerStatisticsAPI` 作业服务器状态展示的API.
+#### 3.2 `ServerStatisticsAPI` 作业服务器状态展示的API
 
 ##### `Collection<ServerBriefInfo> getAllServersBriefInfo()` 获取所有作业服务器简明信息.
 
 * **Returns:** 作业服务器简明信息集合
 
-#### c. `ShardingStatisticsAPI` 作业分片状态展示的API.
+#### 3.3 `ShardingStatisticsAPI` 作业分片状态展示的API
 
 ##### `Collection<ShardingInfo> getShardingInfo(String jobName)` 获取作业分片信息集合.
 
 * **Parameters:** `jobName` — 作业名称
  
-* **Returns:** 作业分片信息集合.
+* **Returns:** 作业分片信息集合

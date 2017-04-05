@@ -35,6 +35,8 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
     
     private int item;
     
+    private String serverIp;
+    
     private ShardingStatus status;
     
     private boolean failover;

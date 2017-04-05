@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 作业服务器状态展示的实现类.
+ * 作业分片状态展示的实现类.
  *
  * @author caohao
  */
@@ -41,11 +41,11 @@ public final class ShardingStatisticsAPIImpl implements ShardingStatisticsAPI {
     
     @Override
     public Collection<ShardingInfo> getShardingInfo(final String jobName) {
-        String executionRootPath = new JobNodePath(jobName).getShardingNodePath();
-        if (!regCenter.isExisted(executionRootPath)) {
+        String shardingRootPath = new JobNodePath(jobName).getShardingNodePath();
+        if (!regCenter.isExisted(shardingRootPath)) {
             return Collections.emptyList();
         }
-        List<String> items = regCenter.getChildrenKeys(executionRootPath);
+        List<String> items = regCenter.getChildrenKeys(shardingRootPath);
         List<ShardingInfo> result = new ArrayList<>(items.size());
         for (String each : items) {
             result.add(getShardingInfo(jobName, each));
@@ -58,10 +58,14 @@ public final class ShardingStatisticsAPIImpl implements ShardingStatisticsAPI {
         ShardingInfo result = new ShardingInfo();
         result.setItem(Integer.parseInt(item));
         JobNodePath jobNodePath = new JobNodePath(jobName);
+        String instanceId = regCenter.get(jobNodePath.getShardingNodePath(item, "instance"));
         boolean running = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "running"));
         boolean completed = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "completed"));
         result.setFailover(regCenter.isExisted(jobNodePath.getShardingNodePath(item, "failover")));
         result.setStatus(ShardingStatus.getShardingStatus(running, completed));
+        if (null != instanceId) {
+            result.setServerIp(instanceId.split("@-@")[0]);
+        }
         return result;
     }
 }

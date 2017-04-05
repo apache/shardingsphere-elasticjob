@@ -51,6 +51,9 @@ public final class ShardingStatisticsAPIImplTest {
         when(regCenter.isExisted("/test_job/sharding")).thenReturn(true);
         when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1", "2"));
         when(regCenter.isExisted("/test_job/sharding/0/running")).thenReturn(true);
+        when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
+        when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
+        when(regCenter.get("/test_job/sharding/2/instance")).thenReturn("ip3@-@defaultInstance");
         when(regCenter.isExisted("/test_job/sharding/1/running")).thenReturn(false);
         when(regCenter.isExisted("/test_job/sharding/1/completed")).thenReturn(true);
         when(regCenter.isExisted("/test_job/sharding/2/running")).thenReturn(false);
@@ -66,14 +69,17 @@ public final class ShardingStatisticsAPIImplTest {
                 case 1:
                     assertFalse(each.isFailover());
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.RUNNING));
+                    assertThat(each.getServerIp(), is("ip1"));
                     break;
                 case 2:
                     assertFalse(each.isFailover());
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.COMPLETED));
+                    assertThat(each.getServerIp(), is("ip2"));
                     break;
                 case 3:
                     assertTrue(each.isFailover());
                     assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.PENDING));
+                    assertThat(each.getServerIp(), is("ip3"));
                     break;
                 default:
                     break;

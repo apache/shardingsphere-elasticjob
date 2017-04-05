@@ -45,7 +45,7 @@ function statusFormatter(value) {
 function generateOperationButtons(val, row) {
     var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "'>禁用</button>";
     var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "'>启用</button>";
-    var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' job-name='" + row.jobName + "'>关闭</button>";
+    var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
     var operationTd = "";
     if ("DISABLED" === row.status) {
         operationTd = enableButton + "&nbsp;" + shutdownButton;
