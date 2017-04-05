@@ -13,8 +13,8 @@ function renderJobsOverview() {
             title: "作业名",
             sortable: "true"
         }, {
-            field: "shardingItems",
-            title: "分片项",
+            field: "shardingTotalCount",
+            title: "分片总数",
             sortable: "true"
         }, {
             field: "cron",
@@ -166,7 +166,6 @@ function bindShutdownButton() {
                 url: "/api/jobs/" + jobName + "/shutdown",
                 type: "POST",
                 success: function () {
-                    showSuccessDialog();
                     $("#shutdown-confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
@@ -187,7 +186,6 @@ function bindRemoveButton() {
                 url: "/api/jobs/config/" + jobName,
                 type: "DELETE",
                 success: function() {
-                    showSuccessDialog();
                     $("#delete-confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");

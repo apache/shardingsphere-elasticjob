@@ -106,7 +106,6 @@ function bindShutdownServerButton() {
                 url: "/api/servers/" + serverIp + "/shutdown",
                 type: "POST",
                 success: function () {
-                    showSuccessDialog();
                     $("#shutdown-confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
@@ -128,7 +127,6 @@ function bindRemoveServerButton() {
                 url: "/api/servers/" + serverIp,
                 type: "DELETE",
                 success: function () {
-                    showSuccessDialog();
                     $("#delete-confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");

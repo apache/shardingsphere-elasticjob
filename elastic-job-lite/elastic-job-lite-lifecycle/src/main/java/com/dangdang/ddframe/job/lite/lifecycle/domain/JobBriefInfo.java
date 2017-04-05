@@ -45,6 +45,8 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     
     private String shardingItems;
     
+    private int shardingTotalCount;
+    
     @Override
     public int compareTo(final JobBriefInfo o) {
         return getJobName().compareTo(o.getJobName());

@@ -58,6 +58,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
         result.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
         result.setShardingItems(getJobShardingItems(jobName));
+        result.setShardingTotalCount(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
         result.setStatus(getJobStatus(jobName));
         return result;
     }
@@ -71,7 +72,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         Set<String> shardingInstances = new HashSet<>();
         for (String each : regCenter.getChildrenKeys(jobNodePath.getShardingNodePath())) {
             String instanceId = regCenter.get(jobNodePath.getShardingNodePath(each, "instance"));
-            if (!instanceId.isEmpty()) {
+            if (null != instanceId && !instanceId.isEmpty()) {
                 shardingInstances.add(instanceId);
             }
         }
