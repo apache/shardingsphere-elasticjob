@@ -40,6 +40,8 @@ public class SchedulerFacade {
     
     private final CoordinatorRegistryCenter regCenter;
     
+    private final String jobName;
+    
     private final ConfigurationService configService;
     
     private final LeaderService leaderService;
@@ -54,10 +56,23 @@ public class SchedulerFacade {
     
     private final ReconcileService reconcileService;
     
-    private final ListenerManager listenerManager;
+    private ListenerManager listenerManager;
+    
+    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.regCenter = regCenter;
+        this.jobName = jobName;
+        configService = new ConfigurationService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        monitorService = new MonitorService(regCenter, jobName);
+        reconcileService = new ReconcileService(regCenter, jobName);
+    }
     
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         this.regCenter = regCenter;
+        this.jobName = jobName;
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
@@ -69,7 +84,7 @@ public class SchedulerFacade {
     }
     
     /**
-     * 注册Elastic-Job启动信息.
+     * 注册作业启动信息.
      * 
      * @param liteJobConfig 作业配置
      */
@@ -86,5 +101,20 @@ public class SchedulerFacade {
         if (!reconcileService.isRunning()) {
             reconcileService.startAsync();
         }
+    }
+    
+    /**
+     * 终止作业调度.
+     */
+    public void shutdownInstance() {
+        if (leaderService.isLeader()) {
+            leaderService.removeLeader();
+        }
+        monitorService.close();
+        // TODO cannot mock, use power mock
+//        if (reconcileService.isRunning()) {
+//            reconcileService.stopAsync();
+//        }
+        JobRegistry.getInstance().shutdown(jobName);
     }
 }

@@ -17,11 +17,9 @@
 
 package com.dangdang.ddframe.job.lite.internal.instance;
 
-import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
-import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
@@ -32,20 +30,14 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  */
 public class ShutdownListenerManager extends AbstractListenerManager {
     
-    private final String jobName;
-    
     private final InstanceNode instanceNode;
     
-    private final LeaderService leaderService;
-    
-    private final MonitorService monitorService;
+    private final SchedulerFacade schedulerFacade;
     
     public ShutdownListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
-        this.jobName = jobName;
         instanceNode = new InstanceNode(jobName);
-        leaderService = new LeaderService(regCenter, jobName);
-        monitorService = new MonitorService(regCenter, jobName);
+        schedulerFacade = new SchedulerFacade(regCenter, jobName);
     }
     
     @Override
@@ -58,15 +50,7 @@ public class ShutdownListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
             if (instanceNode.isLocalInstancePath(path) && Type.NODE_REMOVED == eventType) {
-                if (leaderService.isLeader()) {
-                    leaderService.removeLeader();
-                }
-                monitorService.close();
-                // TODO cannot mock, use power mock
-//                if (reconcileService.isRunning()) {
-//                    reconcileService.stopAsync();
-//                }
-                JobRegistry.getInstance().shutdown(jobName);
+                schedulerFacade.shutdownInstance();
             }
         }
     }

@@ -40,6 +40,7 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +48,9 @@ public class SchedulerFacadeTest {
     
     @Mock
     private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
+    private JobScheduleController jobScheduleController;
     
     @Mock
     private ConfigurationService configService;
@@ -103,5 +107,24 @@ public class SchedulerFacadeTest {
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
         verify(configService).load(false);
+    }
+    
+    @Test
+    public void assertShutdownInstanceIfNotLeader() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        schedulerFacade.shutdownInstance();
+        verify(leaderService, times(0)).removeLeader();
+        verify(monitorService).close();
+        verify(jobScheduleController).shutdown();
+    }
+    
+    @Test
+    public void assertShutdownInstanceIfLeader() {
+        when(leaderService.isLeader()).thenReturn(true);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        schedulerFacade.shutdownInstance();
+        verify(leaderService).removeLeader();
+        verify(monitorService).close();
+        verify(jobScheduleController).shutdown();
     }
 }

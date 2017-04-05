@@ -35,7 +35,6 @@ import com.dangdang.ddframe.job.lite.integrate.fixture.IgnoreJobExceptionHandler
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
@@ -142,11 +141,9 @@ public abstract class AbstractBaseStdJobTest {
     
     @After
     public void tearDown() throws SchedulerException, NoSuchFieldException {
-        JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-        if (null != jobScheduleController) {
-            JobRegistry.getInstance().getJobScheduleController(jobName).shutdown();
-        }
+        jobScheduler.getSchedulerFacade().shutdownInstance();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
+        
     }
     
     protected void initJob() {

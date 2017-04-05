@@ -36,6 +36,7 @@ import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import lombok.Getter;
 import lombok.Setter;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -69,6 +70,8 @@ public class JobScheduler {
     
     private final CoordinatorRegistryCenter regCenter;
     
+    // TODO 为测试使用,测试用例不能反复new monitor service,以后需要把MonitorService重构为单例
+    @Getter
     private final SchedulerFacade schedulerFacade;
     
     private final JobFacade jobFacade;
@@ -108,7 +111,7 @@ public class JobScheduler {
     public void init() {
         schedulerFacade.registerStartUpInfo(liteJobConfig);
         JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(liteJobConfig.getTypeConfig().getJobClass()), schedulerFacade, jobName);
+        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(liteJobConfig.getTypeConfig().getJobClass()), jobName);
         jobScheduleController.scheduleJob(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
         JobRegistry.getInstance().registerJob(jobName, jobScheduleController, regCenter);
     }

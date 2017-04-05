@@ -39,8 +39,6 @@ public class JobScheduleController {
     
     private final JobDetail jobDetail;
     
-    private final SchedulerFacade schedulerFacade;
-    
     private final String triggerIdentity;
     
     /**

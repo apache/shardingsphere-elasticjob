@@ -41,9 +41,6 @@ import static org.mockito.Mockito.when;
 public final class JobScheduleControllerTest {
     
     @Mock
-    private SchedulerFacade schedulerFacade;
-    
-    @Mock
     private Scheduler scheduler;
     
     @Mock
@@ -54,7 +51,7 @@ public final class JobScheduleControllerTest {
     @Before
     public void initMocks() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        jobScheduleController = new JobScheduleController(scheduler, jobDetail, schedulerFacade, "test_job_Trigger");
+        jobScheduleController = new JobScheduleController(scheduler, jobDetail, "test_job_Trigger");
     }
     
     @Test
