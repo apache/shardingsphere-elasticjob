@@ -32,6 +32,7 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobShutdownHookPlugin;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -46,7 +47,6 @@ import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Arrays;
 import java.util.List;
@@ -154,7 +154,7 @@ public class JobScheduler {
         result.put("org.quartz.threadPool.threadCount", "1");
         result.put("org.quartz.scheduler.instanceName", jobName);
         result.put("org.quartz.jobStore.misfireThreshold", "1");
-        result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
+        result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
         result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
         return result;
     }

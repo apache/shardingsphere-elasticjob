@@ -50,6 +50,14 @@ public final class JobRegistryTest {
     }
     
     @Test
+    public void assertGetRegCenter() {
+        JobScheduleController jobScheduleController = mock(JobScheduleController.class);
+        CoordinatorRegistryCenter regCenter = mock(CoordinatorRegistryCenter.class);
+        JobRegistry.getInstance().registerJob("test_job_scheduler_for_add", jobScheduleController, regCenter);
+        assertThat(JobRegistry.getInstance().getRegCenter("test_job_scheduler_for_add"), is(regCenter));
+    }
+    
+    @Test
     public void assertIsJobRunningIfNull() {
         assertFalse(JobRegistry.getInstance().isJobRunning("null_job_instance"));
     }

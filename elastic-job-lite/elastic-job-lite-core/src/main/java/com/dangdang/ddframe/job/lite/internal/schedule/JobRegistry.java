@@ -86,6 +86,16 @@ public final class JobRegistry {
     }
     
     /**
+     * 获取作业注册中心.
+     *
+     * @param jobName 作业名称
+     * @return 作业注册中心
+     */
+    public CoordinatorRegistryCenter getRegCenter(final String jobName) {
+        return regCenterMap.get(jobName);
+    }
+    
+    /**
      * 添加作业实例.
      *
      * @param jobName 作业名称
