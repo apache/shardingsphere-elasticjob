@@ -73,7 +73,7 @@ function generateOperationButtons(val, row) {
         operationTd = operationTd + "&nbsp;" + shutdownButton;
     }
     if ("CRASHED" === row.status) {
-        operationTd =removeButton;
+        operationTd = modifyButton + "&nbsp;" + removeButton;
     }
     return operationTd;
 }
