@@ -46,8 +46,8 @@ public final class InstanceServiceTest {
     }
         
     @Test
-    public void assertRemoveStatus() {
-        instanceService.removeStatus();
+    public void assertRemoveInstance() {
+        instanceService.removeInstance();
         verify(jobNodeStorage).removeJobNodeIfExisted("instances/127.0.0.1@-@0");
     }
     

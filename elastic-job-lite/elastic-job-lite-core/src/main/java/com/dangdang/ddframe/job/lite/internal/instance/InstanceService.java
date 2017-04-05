@@ -54,7 +54,7 @@ public class InstanceService {
     /**
      * 删除作业运行状态.
      */
-    public void removeStatus() {
+    public void removeInstance() {
         jobNodeStorage.removeJobNodeIfExisted(instanceNode.getLocalInstanceNode());
     }
     

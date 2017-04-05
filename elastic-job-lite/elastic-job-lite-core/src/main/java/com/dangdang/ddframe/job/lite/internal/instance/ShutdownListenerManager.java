@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
@@ -58,14 +57,11 @@ public class ShutdownListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
             if (instanceNode.isLocalInstancePath(path) && Type.NODE_REMOVED == eventType) {
-                instanceService.removeStatus();
+                instanceService.removeInstance();
                 if (leaderService.isLeader()) {
                     leaderService.removeLeader();
                 }
-                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-                if (null != jobScheduleController) {
-                    jobScheduleController.shutdown();
-                }
+                JobRegistry.getInstance().shutdown(jobName);
             }
         }
     }

@@ -22,10 +22,10 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public final class JobRegistryTest {
     
@@ -34,14 +34,6 @@ public final class JobRegistryTest {
         JobScheduleController jobScheduleController = mock(JobScheduleController.class);
         JobRegistry.getInstance().addJobScheduleController("test_job_scheduler_for_add", jobScheduleController);
         assertThat(JobRegistry.getInstance().getJobScheduleController("test_job_scheduler_for_add"), is(jobScheduleController));
-    }
-    
-    @Test
-    public void assertRemoveJobScheduleController() {
-        JobScheduleController jobScheduleController = mock(JobScheduleController.class);
-        JobRegistry.getInstance().addJobScheduleController("test_job_scheduler_for_remove", jobScheduleController);
-        assertThat(JobRegistry.getInstance().removeJobScheduleController("test_job_scheduler_for_remove"), is(jobScheduleController));
-        assertNull(JobRegistry.getInstance().getJobScheduleController("test_job_scheduler_for_add"));
     }
     
     @Test
@@ -75,5 +67,14 @@ public final class JobRegistryTest {
     public void assertGetCurrentShardingTotalCountIfNotNull() {
         JobRegistry.getInstance().setCurrentShardingTotalCount("exist_job_instance", 10);
         assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount("exist_job_instance"), is(10));
+    }
+    
+    @Test
+    public void assertShutdown() {
+        JobScheduleController jobScheduleController = mock(JobScheduleController.class);
+        JobRegistry.getInstance().addJobScheduleController("test_job_for_shutdown", jobScheduleController);
+        JobRegistry.getInstance().addJobScheduleController("test_job_for_shutdown_other", jobScheduleController);
+        JobRegistry.getInstance().shutdown("test_job_for_shutdown");
+        verify(jobScheduleController).shutdown();
     }
 }

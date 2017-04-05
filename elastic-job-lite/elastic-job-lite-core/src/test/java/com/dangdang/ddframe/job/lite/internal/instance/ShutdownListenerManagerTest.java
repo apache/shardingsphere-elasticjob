@@ -53,7 +53,7 @@ public final class ShutdownListenerManagerTest {
     @Test
     public void assertIsNotLocalInstancePath() {
         shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.2@-@0", Type.NODE_REMOVED, "");
-        verify(instanceService, times(0)).removeStatus();
+        verify(instanceService, times(0)).removeInstance();
         verify(jobScheduleController, times(0)).shutdown();
     }
     
@@ -61,14 +61,14 @@ public final class ShutdownListenerManagerTest {
     public void assertUpdateLocalInstancePath() {
         String path = "/test_job/instances/127.0.0.1@-@0";
         shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, "");
-        verify(instanceService, times(0)).removeStatus();
+        verify(instanceService, times(0)).removeInstance();
         verify(jobScheduleController, times(0)).shutdown();
     }
     
     @Test
     public void assertRemoveLocalInstancePathAndIsNotLeaderAndJobControllerIsNull() {
         shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
-        verify(instanceService).removeStatus();
+        verify(instanceService).removeInstance();
         verify(leaderService, times(0)).removeLeader();
         verify(jobScheduleController, times(0)).shutdown();
     }
@@ -78,7 +78,7 @@ public final class ShutdownListenerManagerTest {
         when(leaderService.isLeader()).thenReturn(true);
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
         shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
-        verify(instanceService).removeStatus();
+        verify(instanceService).removeInstance();
         verify(leaderService).removeLeader();
         verify(jobScheduleController).shutdown();
     }

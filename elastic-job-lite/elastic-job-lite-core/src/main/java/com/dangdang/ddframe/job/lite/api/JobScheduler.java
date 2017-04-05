@@ -142,7 +142,7 @@ public class JobScheduler {
      * 停止作业调度.
      */
     public void shutdown() {
-        JobRegistry.getInstance().removeJobScheduleController(jobName).shutdown();
+        JobRegistry.getInstance().shutdown(jobName);
         jobExecutor.close();
     }
     
