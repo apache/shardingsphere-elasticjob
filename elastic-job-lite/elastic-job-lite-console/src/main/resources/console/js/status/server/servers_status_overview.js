@@ -43,7 +43,7 @@ function bindOperationButtons() {
 function generateOperationButtons(val, row) {
     var detailButton = "<button operation='server-detail' class='btn-xs btn-info' server-ip='" + row.serverIp + "'>详情</button>";
     var disableButton = "<button operation='disable-server' class='btn-xs btn-warning' server-ip='" + row.serverIp + "'>禁用</button>";
-    var enableButton = "<button operation='enable-server' class='btn-xs btn-primary' server-ip='" + row.serverIp + "'>启用</button>";
+    var enableButton = "<button operation='enable-server' class='btn-xs btn-success' server-ip='" + row.serverIp + "'>启用</button>";
     var shutdownButton = "<button operation='shutdown-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "'>终止</button>";
     var removeButton = "<button operation='remove-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "'>删除</button>";
     var operationTd = "";

@@ -70,26 +70,22 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         if (instances.isEmpty()) {
             return JobStatus.CRASHED;
         }
-        Set<String> shardingInstanceServerIps = new HashSet<>();
+        Set<String> shardingInstances = new HashSet<>();
         for (String each : regCenter.getChildrenKeys(jobNodePath.getShardingNodePath())) {
             String instanceId = regCenter.get(jobNodePath.getShardingNodePath(each, "instance"));
             if (!instanceId.isEmpty()) {
-                shardingInstanceServerIps.add(instanceId.split("@-@")[0]);
+                shardingInstances.add(instanceId);
             }
         }
-        Set<String> serverIps = new HashSet<>();
-        Set<String> disabledServerIps = new HashSet<>();
+        if (!instances.containsAll(shardingInstances)) {
+            return JobStatus.SHARDING_ERROR;
+        }
         for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
             if ("DISABLED".equals(regCenter.get(jobNodePath.getServerNodePath(each)))) {
-                disabledServerIps.add(each);
-            } else {
-                serverIps.add(each);
+                return JobStatus.DISABLED;
             }
         }
-        if (disabledServerIps.equals(shardingInstanceServerIps)) {
-            return JobStatus.DISABLED;
-        }
-        return serverIps.equals(shardingInstanceServerIps) ? JobStatus.OK : JobStatus.SHARDING_ERROR;
+        return JobStatus.OK;
     }
     
     private String getJobShardingItems(final String jobName) {

@@ -43,6 +43,8 @@ function statusFormatter(value, row) {
             return "<span class='label label-success'>正常</span>";
             break;
         case "DISABLED":
+            return "<span class='label label-warning'>被禁用</span>";
+            break;
         case "SHARDING_ERROR":
             return "<span class='label label-warning'>分片错误</span>";
             break;
@@ -57,15 +59,18 @@ function generateOperationButtons(val, row) {
     var shardingStatusButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "'>分片状态</button>";
     var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
     var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "'>禁用</button>";
-    var enableButton = "<button operation='enable-job' class='btn-xs btn-primary' job-name='" + row.jobName + "'>启用</button>";
+    var enableButton = "<button operation='enable-job' class='btn-xs btn-success' job-name='" + row.jobName + "'>启用</button>";
     var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
     var removeButton = "<button operation='remove-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
     var operationTd = modifyButton + "&nbsp;" + shardingStatusButton  + "&nbsp;";
     if ("OK" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
     }
-    if ("DISABLED" === row.status || "SHARDING_ERROR" === row.status) {
+    if ("DISABLED" === row.status) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
+    }
+    if ("SHARDING_ERROR" === row.status) {
+        operationTd = operationTd + "&nbsp;" + shutdownButton;
     }
     if ("CRASHED" === row.status) {
         operationTd =removeButton;
