@@ -14,15 +14,15 @@ function renderServersOverview() {
             sortable: "true"
         }, {
             field: "instancesNum",
-            title: "实例数量",
+            title: "实例数",
             sortable: "true"
         }, {
             field: "jobsNum",
-            title: "运行作业数量",
+            title: "作业总数",
             sortable: "true"
         }, {
             field: "disabledJobsNum",
-            title: "禁用作业数量",
+            title: "禁用作业数",
             sortable: "true"
         }, {
             field: "operation",
