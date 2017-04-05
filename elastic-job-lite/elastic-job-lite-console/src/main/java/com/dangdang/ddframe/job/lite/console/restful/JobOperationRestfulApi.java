@@ -75,6 +75,6 @@ public class JobOperationRestfulApi {
     @Path("/{jobName}/sharding")
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ShardingInfo> getShardingInfo(@PathParam("jobName") final String jobName) {
-        return jobAPIService.getJobStatisticsAPI().getShardingInfo(jobName);
+        return jobAPIService.getShardingStatisticsAPI().getShardingInfo(jobName);
     }
 }

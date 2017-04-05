@@ -25,6 +25,7 @@ import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
+import com.dangdang.ddframe.job.lite.lifecycle.api.ShardingStatisticsAPI;
 import com.google.common.base.Optional;
 
 public final class JobAPIServiceImpl implements JobAPIService {
@@ -45,6 +46,12 @@ public final class JobAPIServiceImpl implements JobAPIService {
     public ServerStatisticsAPI getServerStatisticsAPI() {
         RegistryCenterConfiguration regCenterConfig = SessionRegistryCenterConfiguration.getRegistryCenterConfiguration();
         return JobAPIFactory.createServerStatisticsAPI(regCenterConfig.getZkAddressList(), regCenterConfig.getNamespace(), Optional.fromNullable(regCenterConfig.getDigest()));
+    }
+    
+    @Override
+    public ShardingStatisticsAPI getShardingStatisticsAPI() {
+        RegistryCenterConfiguration regCenterConfig = SessionRegistryCenterConfiguration.getRegistryCenterConfiguration();
+        return JobAPIFactory.createShardingStatisticsAPI(regCenterConfig.getZkAddressList(), regCenterConfig.getNamespace(), Optional.fromNullable(regCenterConfig.getDigest()));
     }
     
     @Override

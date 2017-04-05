@@ -24,7 +24,7 @@ import java.util.Collection;
 /**
  * 作业服务器状态展示的API.
  *
- * @author zhangliang
+ * @author caohao
  */
 public interface ServerStatisticsAPI {
     

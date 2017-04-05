@@ -17,37 +17,22 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle.api;
 
-import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo;
 
 import java.util.Collection;
 
 /**
- * 作业状态展示的API.
+ * 作业分片状态展示的API.
  *
  * @author caohao
  */
-public interface JobStatisticsAPI {
+public interface ShardingStatisticsAPI {
     
     /**
-     * 获取作业简明信息.
+     * 获取作业运行时信息.
      *
      * @param jobName 作业名称
-     * @return 作业简明信息.
+     * @return 作业运行时信息集合
      */
-    JobBriefInfo getJobBriefInfo(String jobName);
-    
-    /**
-     * 获取所有作业简明信息.
-     *
-     * @return 作业简明信息集合.
-     */
-    Collection<JobBriefInfo> getAllJobsBriefInfo();
-    
-    /**
-     * 获取该IP下所有作业简明信息.
-     *
-     * @param ip 服务器IP
-     * @return 作业简明信息集合.
-     */
-    Collection<JobBriefInfo> getJobsBriefInfo(String ip);
+    Collection<ShardingInfo> getShardingInfo(String jobName);
 }

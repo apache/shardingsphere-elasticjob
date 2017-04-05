@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
@@ -33,8 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -95,38 +92,4 @@ public final class JobStatisticsAPIImplTest {
         }
     }
     
-    @Test
-    public void assertGetShardingInfo() {
-        when(regCenter.isExisted("/test_job/sharding")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/test_job/sharding")).thenReturn(Arrays.asList("0", "1", "2"));
-        when(regCenter.isExisted("/test_job/sharding/0/running")).thenReturn(true);
-        when(regCenter.isExisted("/test_job/sharding/1/running")).thenReturn(false);
-        when(regCenter.isExisted("/test_job/sharding/1/completed")).thenReturn(true);
-        when(regCenter.isExisted("/test_job/sharding/2/running")).thenReturn(false);
-        when(regCenter.isExisted("/test_job/sharding/2/completed")).thenReturn(false);
-        when(regCenter.isExisted("/test_job/sharding/0/failover")).thenReturn(false);
-        when(regCenter.isExisted("/test_job/sharding/1/failover")).thenReturn(false);
-        when(regCenter.isExisted("/test_job/sharding/2/failover")).thenReturn(true);
-        int i = 0;
-        for (ShardingInfo each : jobStatisticsAPI.getShardingInfo("test_job")) {
-            i++;
-            assertThat(each.getItem(), is(i - 1));
-            switch (i) {
-                case 1:
-                    assertFalse(each.isFailover());
-                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.RUNNING));
-                    break;
-                case 2:
-                    assertFalse(each.isFailover());
-                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.COMPLETED));
-                    break;
-                case 3:
-                    assertTrue(each.isFailover());
-                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.PENDING));
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 }
