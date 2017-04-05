@@ -16,8 +16,8 @@ function renderJobs() {
             title: "作业名",
             sortable: "true"
         }, {
-            field: "shardingItems",
-            title: "分片项"
+            field: "instanceCount",
+            title: "实例数"
         }, {
             field: "status",
             title: "状态",

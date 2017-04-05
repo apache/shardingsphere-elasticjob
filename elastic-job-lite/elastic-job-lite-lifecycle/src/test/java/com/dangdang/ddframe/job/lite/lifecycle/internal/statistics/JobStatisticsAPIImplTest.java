@@ -21,7 +21,6 @@ import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +71,7 @@ public final class JobStatisticsAPIImplTest {
         assertThat(jobBrief.getDescription(), is("desc"));
         assertThat(jobBrief.getCron(), is("0/1 * * * * ?"));
         assertThat(jobBrief.getJobType(), is("SIMPLE"));
-        assertThat(jobBrief.getShardingItems(), is("0,1,2"));
+        assertThat(jobBrief.getInstanceCount(), is(2));
         assertThat(jobBrief.getShardingTotalCount(), is(3));
     }
     
@@ -83,8 +82,10 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job_2/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job_2", "desc2"));
         when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
-        when(regCenter.getChildrenKeys("/test_job_1/sharding")).thenReturn(Arrays.asList("1"));
-        when(regCenter.getChildrenKeys("/test_job_2/sharding")).thenReturn(Arrays.asList("1", "2"));
+        when(regCenter.getChildrenKeys("/test_job_1/sharding")).thenReturn(Arrays.asList("0"));
+        when(regCenter.getChildrenKeys("/test_job_2/sharding")).thenReturn(Arrays.asList("0", "1"));
+        when(regCenter.getChildrenKeys("/test_job_1/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job_2/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         int i = 0;
         List<String> shardingItems = new ArrayList<>();
         for (JobBriefInfo each : jobStatisticsAPI.getAllJobsBriefInfo()) {
@@ -94,7 +95,7 @@ public final class JobStatisticsAPIImplTest {
             assertThat(each.getCron(), is("0/1 * * * * ?"));
             assertThat(each.getJobType(), is("SIMPLE"));
             shardingItems.add(String.valueOf(i));
-            assertThat(each.getShardingItems(), is(Joiner.on(",").join(shardingItems)));
+            assertThat(each.getInstanceCount(), is(i));
             assertThat(each.getShardingTotalCount(), is(3));
         }
     }

@@ -43,7 +43,7 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
     
     private String cron;
     
-    private String shardingItems;
+    private int instanceCount;
     
     private int shardingTotalCount;
     

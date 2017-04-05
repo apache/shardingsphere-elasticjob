@@ -24,7 +24,6 @@ import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo.JobStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.google.common.base.Joiner;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         result.setJobType(liteJobConfig.getTypeConfig().getJobType().name());
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
         result.setCron(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
-        result.setShardingItems(getJobShardingItems(jobName));
+        result.setInstanceCount(getJobInstanceCount(jobName));
         result.setShardingTotalCount(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
         result.setStatus(getJobStatus(jobName));
         return result;
@@ -87,10 +86,8 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         return JobStatus.OK;
     }
     
-    private String getJobShardingItems(final String jobName) {
-        List<String> shardingItems = regCenter.getChildrenKeys(new JobNodePath(jobName).getShardingNodePath());
-        Collections.sort(shardingItems);
-        return Joiner.on(",").join(shardingItems);
+    private int getJobInstanceCount(final String jobName) {
+        return regCenter.getChildrenKeys(new JobNodePath(jobName).getInstancesNodePath()).size();
     }
     
     @Override
@@ -125,7 +122,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         JobBriefInfo result = new JobBriefInfo();
         result.setJobName(jobName);
         result.setStatus(getJobStatusByJobNameAndIp(jobName, ip));
-        result.setShardingItems(getJobShardingItems(jobName));
+        result.setInstanceCount(getJobInstanceCountByJobNameAndIp(jobName, ip));
         return result;
     }
     
@@ -137,5 +134,18 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         } else {
             return JobStatus.OK;
         }
+    }
+    
+    
+    private int getJobInstanceCountByJobNameAndIp(final String jobName, final String ip) {
+        int instanceCount = 0;
+        JobNodePath jobNodePath = new JobNodePath(jobName);
+        List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
+        for (String each : instances) {
+            if (ip.equals(each.split("@-@")[0])) {
+                instanceCount++;
+            }
+        }
+        return instanceCount;
     }
 }
