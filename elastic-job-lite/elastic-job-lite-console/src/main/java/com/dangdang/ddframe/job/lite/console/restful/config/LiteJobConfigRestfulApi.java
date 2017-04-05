@@ -52,6 +52,7 @@ public class LiteJobConfigRestfulApi {
     @DELETE
     @Path("/{jobName}")
     public void removeJob(@PathParam("jobName") final String jobName) {
+        jobAPIService.getJobSettingsAPI().removeJobSettings(jobName);
         jobAPIService.getJobOperatorAPI().remove(Optional.of(jobName), Optional.<String>absent());
     }
 }

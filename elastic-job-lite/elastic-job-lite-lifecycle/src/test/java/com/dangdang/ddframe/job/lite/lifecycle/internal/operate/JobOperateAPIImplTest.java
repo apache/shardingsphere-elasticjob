@@ -27,6 +27,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -140,15 +141,15 @@ public final class JobOperateAPIImplTest {
 
     @Test
     public void assertRemoveWithJobName() {
+        when(regCenter.isExisted("/test_job")).thenReturn(true);
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         jobOperateAPI.remove(Optional.of("test_job"), Optional.<String>absent());
         verify(regCenter).getChildrenKeys("/test_job/servers");
         verify(regCenter).remove("/test_job/servers/ip1");
         verify(regCenter).remove("/test_job/servers/ip2");
-        verify(regCenter).remove("/test_job");
         assertFalse(regCenter.isExisted("/test_job/servers/ip1"));
         assertFalse(regCenter.isExisted("/test_job/servers/ip2"));
-        assertFalse(regCenter.isExisted("/test_job"));
+        assertTrue(regCenter.isExisted("/test_job"));
     }
 
     @Test

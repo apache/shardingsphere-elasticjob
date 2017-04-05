@@ -74,10 +74,10 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         result.setJobShardingStrategyClass(liteJobConfig.getJobShardingStrategyClass());
         result.setDescription(liteJobConfig.getTypeConfig().getCoreConfig().getDescription());
         result.setReconcileIntervalMinutes(liteJobConfig.getReconcileIntervalMinutes());
-        result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(), 
+        result.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.getKey(),
                 liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER));
         result.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), liteJobConfig.getTypeConfig().getCoreConfig().getJobProperties().get(JobPropertiesEnum.JOB_EXCEPTION_HANDLER));
-    } 
+    }
     
     private void buildDataflowJobSettings(final JobSettings result, final DataflowJobConfiguration config) {
         result.setStreamingProcess(config.isStreamingProcess());
@@ -94,5 +94,10 @@ public final class JobSettingsAPIImpl implements JobSettingsAPI {
         Preconditions.checkArgument(jobSettings.getShardingTotalCount() > 0, "shardingTotalCount should larger than zero.");
         JobNodePath jobNodePath = new JobNodePath(jobSettings.getJobName());
         regCenter.update(jobNodePath.getConfigNodePath(), LiteJobConfigurationGsonFactory.toJsonForObject(jobSettings));
+    }
+    
+    @Override
+    public void removeJobSettings(final String jobName) {
+        regCenter.remove("/" + jobName);
     }
 }

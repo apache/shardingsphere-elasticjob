@@ -24,6 +24,10 @@ weight=15
 
 * **Parameters:** `jobSettings` — 作业设置对象
 
+##### `void removeJobSettings(String jobName)` 删除作业设置.
+
+* **Parameters:** `jobName` — 作业名称
+ 
 ### 2. 操作类API
 
 #### `JobOperateAPI` 操作作业的API
