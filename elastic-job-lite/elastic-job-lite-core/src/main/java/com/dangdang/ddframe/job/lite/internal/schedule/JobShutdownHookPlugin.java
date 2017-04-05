@@ -26,6 +26,9 @@ public final class JobShutdownHookPlugin extends ShutdownHookPlugin {
     @Override
     public void shutdown() {
         CoordinatorRegistryCenter regCenter = JobRegistry.getInstance().getRegCenter(jobName);
+        if (null == regCenter) {
+            return;
+        }
         LeaderService leaderService = new LeaderService(regCenter, jobName);
         if (leaderService.isLeader()) {
             leaderService.removeLeader();
