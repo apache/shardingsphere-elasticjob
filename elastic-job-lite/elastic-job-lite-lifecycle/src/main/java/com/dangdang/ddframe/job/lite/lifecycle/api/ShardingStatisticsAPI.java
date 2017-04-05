@@ -29,10 +29,10 @@ import java.util.Collection;
 public interface ShardingStatisticsAPI {
     
     /**
-     * 获取作业运行时信息.
+     * 获取作业分片信息集合.
      *
      * @param jobName 作业名称
-     * @return 作业运行时信息集合
+     * @return 作业分片信息集合
      */
     Collection<ShardingInfo> getShardingInfo(String jobName);
 }
