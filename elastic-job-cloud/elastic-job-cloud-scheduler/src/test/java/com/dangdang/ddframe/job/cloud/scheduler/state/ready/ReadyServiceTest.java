@@ -17,23 +17,22 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.state.ready;
 
-import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
-import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
+import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -44,8 +43,8 @@ import java.util.Map;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -116,7 +115,6 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddTransientWithOverJobQueueSize() {
-        when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(mockedReadyQueue);
         when(regCenter.getNumChildren(ReadyNode.ROOT)).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
         readyService.addTransient("test_job");
         verify(regCenter, times(0)).persist("/state/ready/test_job", "1");
@@ -124,7 +122,6 @@ public final class ReadyServiceTest {
     
     @Test
     public void assertAddDaemonWithOverJobQueueSize() {
-        when(regCenter.getChildrenKeys(ReadyNode.ROOT)).thenReturn(mockedReadyQueue);
         when(regCenter.getNumChildren(ReadyNode.ROOT)).thenReturn(BootstrapEnvironment.getInstance().getFrameworkConfiguration().getJobStateQueueSize() + 1);
         readyService.addDaemon("test_job");
         verify(regCenter, times(0)).persist("/state/ready/test_job", "1");
@@ -149,7 +146,6 @@ public final class ReadyServiceTest {
     @Test
     public void assertAddDaemonWithoutRootNode() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
-        when(regCenter.isExisted("/state/ready")).thenReturn(false);
         readyService.addDaemon("test_job");
         verify(regCenter).persist("/state/ready/test_job", "1");
     }
@@ -157,8 +153,6 @@ public final class ReadyServiceTest {
     @Test
     public void assertAddDaemonWithSameJobName() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
-        when(regCenter.isExisted("/state/ready")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("other_job@-@111", "test_job@-@111"));
         readyService.addDaemon("test_job");
         verify(regCenter).persist((String) any(), eq("1"));
     }
@@ -166,7 +160,6 @@ public final class ReadyServiceTest {
     @Test
     public void assertAddRunningDaemon() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
-        when(regCenter.isExisted("/state/ready")).thenReturn(false);
         when(runningService.isJobRunning("test_job")).thenReturn(true);
         readyService.addDaemon("test_job");
         verify(regCenter, never()).persist((String) any(), eq("1"));
@@ -175,8 +168,6 @@ public final class ReadyServiceTest {
     @Test
     public void assertAddDaemonWithoutSameJobName() {
         when(configService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job", CloudJobExecutionType.DAEMON)));
-        when(regCenter.isExisted("/state/ready")).thenReturn(true);
-        when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("other_job@-@111", "other_job@-@222"));
         readyService.addDaemon("test_job");
         verify(regCenter).persist("/state/ready/test_job", "1");
     }
@@ -214,15 +205,10 @@ public final class ReadyServiceTest {
     public void assertGetAllEligibleJobContextsWithRootNode() {
         when(regCenter.isExisted("/state/ready")).thenReturn(true);
         when(regCenter.getChildrenKeys("/state/ready")).thenReturn(Arrays.asList("not_existed_job", "running_job", "ineligible_job", "eligible_job"));
-        when(regCenter.getDirectly("/state/ready/running_job")).thenReturn("1");
-        when(regCenter.getDirectly("/state/ready/ineligible_job")).thenReturn("1");
-        when(regCenter.getDirectly("/state/ready/eligible_job")).thenReturn("2");
         when(configService.load("not_existed_job")).thenReturn(Optional.<CloudJobConfiguration>absent());
         when(configService.load("running_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("running_job")));
-        when(configService.load("ineligible_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job")));
         when(configService.load("eligible_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("eligible_job")));
         when(runningService.isJobRunning("running_job")).thenReturn(true);
-        when(runningService.isJobRunning("ineligible_job")).thenReturn(false);
         when(runningService.isJobRunning("eligible_job")).thenReturn(false);
         assertThat(readyService.getAllEligibleJobContexts(Collections.singletonList(
                 JobContext.from(CloudJobConfigurationBuilder.createCloudJobConfiguration("ineligible_job"), ExecutionType.READY))).size(), is(1));

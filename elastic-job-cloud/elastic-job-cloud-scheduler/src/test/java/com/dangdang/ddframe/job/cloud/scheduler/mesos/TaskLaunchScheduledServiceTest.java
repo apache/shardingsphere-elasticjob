@@ -44,9 +44,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,8 +54,7 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -96,14 +95,14 @@ public final class TaskLaunchScheduledServiceTest {
         Map<String, VMAssignmentResult> vmAssignmentResultMap = new HashMap<>();
         vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.<VirtualMachineLease>newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
                 Sets.newHashSet(mockTaskAssignmentResult("failover_job", ExecutionType.FAILOVER))));
-        when(taskScheduler.scheduleOnce(anyListOf(TaskRequest.class), anyListOf(VirtualMachineLease.class))).thenReturn(new SchedulingResult(vmAssignmentResultMap));
+        when(taskScheduler.scheduleOnce(ArgumentMatchers.<TaskRequest>anyList(), ArgumentMatchers.<VirtualMachineLease>anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
         when(facadeService.load("failover_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("failover_job")));
         when(facadeService.getFailoverTaskId(any(MetaInfo.class))).thenReturn(Optional.of(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", "failover_job",  ExecutionType.FAILOVER.name())));
         when(taskScheduler.getTaskAssigner()).thenReturn(mock(Action2.class));
         taskLaunchScheduledService.runOneIteration();
-        verify(facadeService).removeLaunchTasksFromQueue(anyListOf(TaskContext.class));
+        verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.<TaskContext>anyList());
         verify(facadeService).loadAppConfig("test_app");
-        verify(jobEventBus).post(Matchers.<JobStatusTraceEvent>any());
+        verify(jobEventBus).post(ArgumentMatchers.<JobStatusTraceEvent>any());
     }
     
     @Test
@@ -113,27 +112,20 @@ public final class TaskLaunchScheduledServiceTest {
         Map<String, VMAssignmentResult> vmAssignmentResultMap = new HashMap<>();
         vmAssignmentResultMap.put("rs1", new VMAssignmentResult("localhost", Lists.<VirtualMachineLease>newArrayList(new VMLeaseObject(OfferBuilder.createOffer("offer_0"))),
                 Sets.newHashSet(mockTaskAssignmentResult("script_job", ExecutionType.READY))));
-        when(taskScheduler.scheduleOnce(anyListOf(TaskRequest.class), anyListOf(VirtualMachineLease.class))).thenReturn(new SchedulingResult(vmAssignmentResultMap));
+        when(taskScheduler.scheduleOnce(ArgumentMatchers.<TaskRequest>anyList(), ArgumentMatchers.<VirtualMachineLease>anyList())).thenReturn(new SchedulingResult(vmAssignmentResultMap));
         when(facadeService.loadAppConfig("test_app")).thenReturn(Optional.of(CloudAppConfigurationBuilder.createCloudAppConfiguration("test_app")));
         when(facadeService.load("script_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createScriptCloudJobConfiguration("script_job", 1)));
         when(taskScheduler.getTaskAssigner()).thenReturn(mock(Action2.class));
         taskLaunchScheduledService.runOneIteration();
-        verify(facadeService).removeLaunchTasksFromQueue(anyListOf(TaskContext.class));
+        verify(facadeService).removeLaunchTasksFromQueue(ArgumentMatchers.<TaskContext>anyList());
         verify(facadeService).isRunning(TaskContext.from(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", "script_job", ExecutionType.READY)));
         verify(facadeService).loadAppConfig("test_app");
-        verify(jobEventBus).post(Matchers.<JobStatusTraceEvent>any());
+        verify(jobEventBus).post(ArgumentMatchers.<JobStatusTraceEvent>any());
     }
     
     private TaskAssignmentResult mockTaskAssignmentResult(final String taskName, final ExecutionType executionType) {
         TaskAssignmentResult result = mock(TaskAssignmentResult.class);
-        TaskRequest taskRequest = new JobTaskRequest(
-                new TaskContext(taskName, Lists.newArrayList(0), executionType, "unassigned-slave"), CloudJobConfigurationBuilder.createCloudJobConfiguration(taskName));
         when(result.getTaskId()).thenReturn(String.format("%s@-@0@-@%s@-@unassigned-slave@-@0", taskName, executionType.name()));
-        when(result.getHostname()).thenReturn("localhost");
-        when(result.getAssignedPorts()).thenReturn(Lists.newArrayList(1234));
-        when(result.getRequest()).thenReturn(taskRequest);
-        when(result.isSuccessful()).thenReturn(true);
-        when(result.getFitness()).thenReturn(1.0);
         return result; 
     }
     

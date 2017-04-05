@@ -27,7 +27,7 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
@@ -60,25 +60,25 @@ public final class RescheduleListenerManagerTest {
     @Test
     public void assertStart() {
         rescheduleListenerManager.start();
-        verify(jobNodeStorage).addDataListener(Matchers.<CronSettingAndJobEventChangedJobListener>any());
+        verify(jobNodeStorage).addDataListener(ArgumentMatchers.<CronSettingAndJobEventChangedJobListener>any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsNotCronPath() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
-        verify(jobScheduleController, times(0)).rescheduleJob(Matchers.<String>any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.<String>any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathButNotUpdate() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
-        verify(jobScheduleController, times(0)).rescheduleJob(Matchers.<String>any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.<String>any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateButCannotFindJob() {
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
-        verify(jobScheduleController, times(0)).rescheduleJob(Matchers.<String>any());
+        verify(jobScheduleController, times(0)).rescheduleJob(ArgumentMatchers.<String>any());
     }
     
     @Test

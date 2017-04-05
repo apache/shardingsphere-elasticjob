@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
@@ -55,7 +55,7 @@ public final class ShardingListenerManagerTest {
     @Test
     public void assertStart() {
         shardingListenerManager.start();
-        verify(jobNodeStorage, times(2)).addDataListener(Matchers.<AbstractJobListener>any());
+        verify(jobNodeStorage, times(2)).addDataListener(ArgumentMatchers.<AbstractJobListener>any());
     }
     
     @Test

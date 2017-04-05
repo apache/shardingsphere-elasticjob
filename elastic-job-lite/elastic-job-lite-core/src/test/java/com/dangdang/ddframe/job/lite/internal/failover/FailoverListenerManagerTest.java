@@ -23,14 +23,14 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
@@ -73,7 +73,7 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertStart() {
         failoverListenerManager.start();
-        verify(jobNodeStorage, times(3)).addDataListener(Matchers.<AbstractJobListener>any());
+        verify(jobNodeStorage, times(3)).addDataListener(ArgumentMatchers.<AbstractJobListener>any());
     }
     
     @Test

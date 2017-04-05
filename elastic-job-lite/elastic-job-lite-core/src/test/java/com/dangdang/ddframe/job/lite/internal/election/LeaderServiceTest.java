@@ -24,14 +24,14 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,7 +58,7 @@ public final class LeaderServiceTest {
     @Test
     public void assertElectLeader() {
         leaderService.electLeader();
-        verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+        verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test
@@ -66,21 +66,21 @@ public final class LeaderServiceTest {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeaderUntilBlock());
-        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test
     public void assertIsLeaderUntilBlockWithoutLeaderAndAvailableServers() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false);
         assertFalse(leaderService.isLeaderUntilBlock());
-        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test
     public void assertIsLeaderUntilBlockWithoutLeaderWithAvailableServers() {
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
         assertFalse(leaderService.isLeaderUntilBlock());
-        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+        verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test
@@ -90,7 +90,7 @@ public final class LeaderServiceTest {
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeaderUntilBlock());
-        verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), Matchers.<LeaderElectionExecutionCallback>any());
+        verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
     }
     
     @Test

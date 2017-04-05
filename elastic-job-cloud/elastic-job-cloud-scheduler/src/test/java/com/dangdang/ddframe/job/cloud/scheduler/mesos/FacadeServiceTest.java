@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -262,7 +262,6 @@ public final class FacadeServiceTest {
         facadeService.recordFailoverTask(taskContext);
         verify(failoverService).add(taskContext);
         facadeService.getFailoverTaskId(taskContext.getMetaInfo());
-        when(facadeService.getFailoverTaskId(taskContext.getMetaInfo())).thenReturn(Optional.of(taskNode.getTaskNodePath()));
         verify(failoverService).getTaskId(taskContext.getMetaInfo());
     }
 }

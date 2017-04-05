@@ -9,7 +9,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
@@ -42,7 +42,7 @@ public final class ShutdownListenerManagerTest {
     @Test
     public void assertStart() {
         shutdownListenerManager.start();
-        verify(jobNodeStorage).addDataListener(Matchers.<TreeCacheListener>any());
+        verify(jobNodeStorage).addDataListener(ArgumentMatchers.<TreeCacheListener>any());
     }
     
     @Test

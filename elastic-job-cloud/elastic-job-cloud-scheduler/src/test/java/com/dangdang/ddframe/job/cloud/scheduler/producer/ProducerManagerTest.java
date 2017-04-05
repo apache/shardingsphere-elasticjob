@@ -41,7 +41,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -114,7 +114,6 @@ public final class ProducerManagerTest {
     @Test(expected = AppConfigurationException.class)
     public void assertRegisterWithoutApp() {
         when(appConfigService.load("test_app")).thenReturn(Optional.<CloudAppConfiguration>absent());
-        when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
         producerManager.register(transientJobConfig);
     }
     
@@ -194,7 +193,6 @@ public final class ProducerManagerTest {
     
     @Test
     public void assertImplicitReconcile() {
-        when(runningService.getAllRunningDaemonTasks()).thenReturn(Collections.<TaskContext>emptySet());
         producerManager.implicitReconcile();
         verify(schedulerDriver).reconcileTasks(Collections.<Protos.TaskStatus>emptyList());
     }

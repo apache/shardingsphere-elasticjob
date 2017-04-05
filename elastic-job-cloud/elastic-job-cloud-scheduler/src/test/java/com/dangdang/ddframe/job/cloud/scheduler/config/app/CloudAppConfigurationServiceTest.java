@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -71,8 +71,6 @@ public final class CloudAppConfigurationServiceTest {
     public void assertLoadAllWithRootNode() {
         when(regCenter.isExisted("/config/app")).thenReturn(true);
         when(regCenter.getChildrenKeys(CloudAppConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_app_1", "test_app_2"));
-        when(regCenter.isExisted("/config/app/test_app_1")).thenReturn(true);
-        when(regCenter.isExisted("/config/app/test_app_2")).thenReturn(false);
         when(regCenter.get("/config/app/test_app_1")).thenReturn(CloudAppJsonConstants.getAppJson("test_app_1"));
         Collection<CloudAppConfiguration> actual = configService.loadAll();
         assertThat(actual.size(), is(1));
@@ -85,14 +83,12 @@ public final class CloudAppConfigurationServiceTest {
     
     @Test
     public void assertLoadWithoutConfig() {
-        when(regCenter.isExisted("/config/app/test_app")).thenReturn(false);
         Optional<CloudAppConfiguration> actual = configService.load("test_app");
         assertFalse(actual.isPresent());
     }
     
     @Test
     public void assertLoadWithConfig() {
-        when(regCenter.isExisted("/config/app/test_app")).thenReturn(true);
         when(regCenter.get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         Optional<CloudAppConfiguration> actual = configService.load("test_app");
         assertTrue(actual.isPresent());

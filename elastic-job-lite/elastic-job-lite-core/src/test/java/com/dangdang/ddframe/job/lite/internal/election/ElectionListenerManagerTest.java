@@ -27,7 +27,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
@@ -65,7 +65,7 @@ public final class ElectionListenerManagerTest {
     @Test
     public void assertStart() {
         electionListenerManager.start();
-        verify(jobNodeStorage).addDataListener(Matchers.<LeaderElectionJobListener>any());
+        verify(jobNodeStorage).addDataListener(ArgumentMatchers.<LeaderElectionJobListener>any());
     }
     
     @Test
