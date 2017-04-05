@@ -7,6 +7,7 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.state.ConnectionState;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public final class RegistryCenterConnectionStateListenerTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
     
     @Mock
     private ServerService serverService;
@@ -52,14 +56,14 @@ public final class RegistryCenterConnectionStateListenerTest {
     
     @Test
     public void assertConnectionLostListenerWhenConnectionStateIsLost() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         regCenterConnectionStateListener.stateChanged(null, ConnectionState.LOST);
         verify(jobScheduleController).pauseJob();
     }
     
     @Test
     public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsNotPausedManually() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
         regCenterConnectionStateListener.stateChanged(null, ConnectionState.RECONNECTED);
@@ -70,7 +74,7 @@ public final class RegistryCenterConnectionStateListenerTest {
     
     @Test
     public void assertConnectionLostListenerWhenConnectionStateIsOther() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         regCenterConnectionStateListener.stateChanged(null, ConnectionState.CONNECTED);
         verify(jobScheduleController, times(0)).pauseJob();
         verify(jobScheduleController, times(0)).resumeJob();

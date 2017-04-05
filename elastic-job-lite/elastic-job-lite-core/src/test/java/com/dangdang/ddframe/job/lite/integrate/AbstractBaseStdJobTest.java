@@ -182,9 +182,4 @@ public abstract class AbstractBaseStdJobTest {
         assertTrue(regCenter.isExisted("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         regCenter.remove("/" + jobName + "/leader/election");
     }
-    
-    void assertRegCenterListenerInfo() {
-        assertThat(regCenter.get("/" + jobName + "/listener/once"), is("test"));
-        assertThat(regCenter.get("/" + jobName + "/listener/every"), is("test"));
-    }
 }

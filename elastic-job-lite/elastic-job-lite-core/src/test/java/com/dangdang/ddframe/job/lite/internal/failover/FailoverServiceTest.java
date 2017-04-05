@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -41,6 +42,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public final class FailoverServiceTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -133,7 +137,7 @@ public final class FailoverServiceTest {
         JobRegistry.getInstance().setJobRunning("test_job", false);
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(true);
         when(jobNodeStorage.getJobNodeChildrenKeys("leader/failover/items")).thenReturn(Arrays.asList("0", "1", "2"));
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         failoverService.new FailoverLeaderExecutionCallback().execute();
         verify(jobNodeStorage).isJobNodeExisted("leader/failover/items");
         verify(jobNodeStorage, times(2)).getJobNodeChildrenKeys("leader/failover/items");

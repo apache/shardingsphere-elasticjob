@@ -73,7 +73,6 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     protected AbstractBeanDefinition parseInternal(final Element element, final ParserContext parserContext) {
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(SpringJobScheduler.class);
         factory.setInitMethodName("init");
-        factory.setDestroyMethodName("shutdown");
         if ("".equals(element.getAttribute(CLASS_ATTRIBUTE))) {
             factory.addConstructorArgValue(null);
         } else {

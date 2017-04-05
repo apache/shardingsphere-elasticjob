@@ -38,6 +38,8 @@ import java.util.List;
  */
 public class SchedulerFacade {
     
+    private final CoordinatorRegistryCenter regCenter;
+    
     private final ConfigurationService configService;
     
     private final LeaderService leaderService;
@@ -50,11 +52,12 @@ public class SchedulerFacade {
     
     private final MonitorService monitorService;
     
-    private final ListenerManager listenerManager;
-    
     private final ReconcileService reconcileService;
     
+    private final ListenerManager listenerManager;
+    
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+        this.regCenter = regCenter;
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
@@ -71,6 +74,7 @@ public class SchedulerFacade {
      * @param liteJobConfig 作业配置
      */
     public void registerStartUpInfo(final LiteJobConfiguration liteJobConfig) {
+        regCenter.addCacheData("/" + liteJobConfig.getJobName());
         listenerManager.startAllListeners();
         leaderService.electLeader();
         configService.persist(liteJobConfig);
@@ -82,22 +86,5 @@ public class SchedulerFacade {
         if (!reconcileService.isRunning()) {
             reconcileService.startAsync();
         }
-    }
-    
-    /**
-     * 释放作业占用的资源.
-     */
-    public void releaseJobResource() {
-        monitorService.close();
-        instanceService.removeInstance();
-    }
-    
-    /**
-     * 读取作业配置.
-     *
-     * @return 作业配置
-     */
-    public LiteJobConfiguration loadJobConfiguration() {
-        return configService.load(false);
     }
 }

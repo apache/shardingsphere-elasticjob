@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -36,6 +37,8 @@ public final class JobRegistry {
     private static volatile JobRegistry instance;
     
     private Map<String, JobScheduleController> schedulerMap = new ConcurrentHashMap<>();
+    
+    private Map<String, CoordinatorRegistryCenter> regCenterMap = new ConcurrentHashMap<>();
     
     private Map<String, JobInstance> jobInstanceMap = new ConcurrentHashMap<>();
     
@@ -64,9 +67,12 @@ public final class JobRegistry {
      * 
      * @param jobName 作业名称
      * @param jobScheduleController 作业调度控制器
+     * @param regCenter 注册中心
      */
-    public void addJobScheduleController(final String jobName, final JobScheduleController jobScheduleController) {
+    public void registerJob(final String jobName, final JobScheduleController jobScheduleController, final CoordinatorRegistryCenter regCenter) {
         schedulerMap.put(jobName, jobScheduleController);
+        regCenterMap.put(jobName, regCenter);
+        regCenter.addCacheData("/" + jobName);
     }
     
     /**
@@ -151,6 +157,10 @@ public final class JobRegistry {
         JobScheduleController scheduleController = schedulerMap.remove(jobName);
         if (null != scheduleController) {
             scheduleController.shutdown();
+        }
+        CoordinatorRegistryCenter regCenter = regCenterMap.remove(jobName);
+        if (null != regCenter) {
+            regCenter.evictCacheData("/" + jobName);
         }
         jobInstanceMap.remove(jobName);
         jobRunningMap.remove(jobName);

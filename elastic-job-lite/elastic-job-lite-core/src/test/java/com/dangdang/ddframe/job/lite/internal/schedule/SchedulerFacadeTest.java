@@ -31,6 +31,7 @@ import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,12 +40,13 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class SchedulerFacadeTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
     
     @Mock
     private ConfigurationService configService;
@@ -78,6 +80,7 @@ public class SchedulerFacadeTest {
         schedulerFacade = new SchedulerFacade(null, "test_job", Collections.<ElasticJobListener>emptyList());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), false)).build());
+        ReflectionUtils.setFieldValue(schedulerFacade, "regCenter", regCenter);
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);
@@ -92,6 +95,7 @@ public class SchedulerFacadeTest {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), false)).build());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
+        verify(regCenter).addCacheData("/test_job");
         verify(listenerManager).startAllListeners();
         verify(leaderService).electLeader();
         verify(configService).persist(liteJobConfig);
@@ -99,19 +103,5 @@ public class SchedulerFacadeTest {
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
         verify(configService).load(false);
-    }
-    
-    @Test
-    public void assertReleaseJobResource() {
-        schedulerFacade.releaseJobResource();
-        verify(monitorService).close();
-        verify(instanceService).removeInstance();
-    }
-    
-    @Test
-    public void assertLoadJobConfiguration() {
-        LiteJobConfiguration expected = LiteJobConfiguration.newBuilder(null).build();
-        when(configService.load(false)).thenReturn(expected);
-        assertThat(schedulerFacade.loadJobConfiguration(), is(expected));
     }
 }

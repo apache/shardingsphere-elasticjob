@@ -4,6 +4,7 @@ import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.junit.Before;
@@ -17,6 +18,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public final class TriggerListenerManagerTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -71,7 +75,7 @@ public final class TriggerListenerManagerTest {
     
     @Test
     public void assertTriggerWhenJobIsRunning() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         JobRegistry.getInstance().setJobRunning("test_job", true);
         triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, InstanceOperation.TRIGGER.name());
         verify(instanceService).clearTriggerFlag();
@@ -81,7 +85,7 @@ public final class TriggerListenerManagerTest {
     
     @Test
     public void assertTriggerWhenJobIsNotRunning() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         triggerListenerManager.new JobTriggerStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, InstanceOperation.TRIGGER.name());
         verify(instanceService).clearTriggerFlag();
         verify(jobScheduleController).triggerJob();

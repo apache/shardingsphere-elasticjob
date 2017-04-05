@@ -17,17 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal;
 
-import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNodeTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationServiceTest;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactoryTest;
+import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderNodeTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderServiceTest;
-import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionContextServiceTest;
-import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNodeTest;
-import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionServiceTest;
-import com.dangdang.ddframe.job.lite.internal.executor.JobExecutorTest;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverNodeTest;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverServiceTest;
@@ -49,7 +45,10 @@ import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacadeTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerNodeTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerServiceTest;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionContextServiceTest;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNodeTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingServiceTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePathTest;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorageTest;
@@ -94,7 +93,6 @@ import org.junit.runners.Suite.SuiteClasses;
         GuaranteeServiceTest.class, 
         SchedulerFacadeTest.class,
         LiteJobFacadeTest.class, 
-        JobExecutorTest.class,
         ReconcileServiceTest.class,
         RegistryCenterConnectionStateListenerTest.class
     })

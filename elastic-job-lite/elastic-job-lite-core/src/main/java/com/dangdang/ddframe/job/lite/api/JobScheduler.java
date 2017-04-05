@@ -19,20 +19,21 @@ package com.dangdang.ddframe.job.lite.api;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
-import com.dangdang.ddframe.job.config.JobTypeConfiguration;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.JobFacade;
+import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
+import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
+import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import lombok.Setter;
@@ -47,6 +48,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -63,7 +65,11 @@ public class JobScheduler {
     
     private final String jobName;
     
-    private final JobExecutor jobExecutor;
+    private final LiteJobConfiguration liteJobConfig;
+    
+    private final CoordinatorRegistryCenter regCenter;
+    
+    private final SchedulerFacade schedulerFacade;
     
     private final JobFacade jobFacade;
     
@@ -79,20 +85,32 @@ public class JobScheduler {
     private JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
         jobName = liteJobConfig.getJobName();
         JobRegistry.getInstance().addJobInstance(jobName, new JobInstance());
-        jobExecutor = new JobExecutor(regCenter, liteJobConfig, elasticJobListeners);
+        this.liteJobConfig = liteJobConfig;
+        this.regCenter = regCenter;
+        List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
+        setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
+        schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig.getJobName(), elasticJobListenerList);
         jobFacade = new LiteJobFacade(regCenter, jobName, Arrays.asList(elasticJobListeners), jobEventBus);
+    }
+    
+    private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
+        GuaranteeService guaranteeService = new GuaranteeService(regCenter, liteJobConfig.getJobName());
+        for (ElasticJobListener each : elasticJobListeners) {
+            if (each instanceof AbstractDistributeOnceElasticJobListener) {
+                ((AbstractDistributeOnceElasticJobListener) each).setGuaranteeService(guaranteeService);
+            }
+        }
     }
     
     /**
      * 初始化作业.
      */
     public void init() {
-        jobExecutor.init();
-        JobTypeConfiguration jobTypeConfig = jobExecutor.getSchedulerFacade().loadJobConfiguration().getTypeConfig();
-        JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, jobTypeConfig.getCoreConfig().getShardingTotalCount());
-        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(jobTypeConfig.getJobClass()), jobExecutor.getSchedulerFacade(), jobName);
-        jobScheduleController.scheduleJob(jobTypeConfig.getCoreConfig().getCron());
-        JobRegistry.getInstance().addJobScheduleController(jobName, jobScheduleController);
+        schedulerFacade.registerStartUpInfo(liteJobConfig);
+        JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(liteJobConfig.getTypeConfig().getJobClass()), schedulerFacade, jobName);
+        jobScheduleController.scheduleJob(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
+        JobRegistry.getInstance().registerJob(jobName, jobScheduleController, regCenter);
     }
     
     private JobDetail createJobDetail(final String jobClass) {
@@ -136,14 +154,6 @@ public class JobScheduler {
         result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
         result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
         return result;
-    }
-    
-    /**
-     * 停止作业调度.
-     */
-    public void shutdown() {
-        JobRegistry.getInstance().shutdown(jobName);
-        jobExecutor.close();
     }
     
     /**

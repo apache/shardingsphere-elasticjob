@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCall
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
-import com.dangdang.ddframe.job.lite.internal.executor.JobExecutor;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
@@ -38,7 +37,6 @@ import org.unitils.util.ReflectionUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public final class JobSchedulerTest {
     
@@ -46,39 +44,31 @@ public final class JobSchedulerTest {
     private CoordinatorRegistryCenter regCenter;
     
     @Mock
-    private JobExecutor jobExecutor;
-    
-    @Mock
     private SchedulerFacade schedulerFacade;
     
     @Mock
     private ElasticJobListenerCaller caller;
+    
+    private LiteJobConfiguration liteJobConfig;
     
     private JobScheduler jobScheduler;
     
     @Before
     public void initMocks() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        LiteJobConfiguration liteJobConfig = LiteJobConfiguration.newBuilder(
+        liteJobConfig = LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "* * 0/10 * * ? 2050", 3).build(), TestSimpleJob.class.getCanonicalName())).build();
         jobScheduler = new JobScheduler(regCenter, liteJobConfig);
         MockitoAnnotations.initMocks(this);
-        ReflectionUtils.setFieldValue(jobScheduler, "jobExecutor", jobExecutor);
-        when(jobExecutor.getSchedulerFacade()).thenReturn(schedulerFacade);
-        when(schedulerFacade.loadJobConfiguration()).thenReturn(liteJobConfig);
+        ReflectionUtils.setFieldValue(jobScheduler, "regCenter", regCenter);
+        ReflectionUtils.setFieldValue(jobScheduler, "schedulerFacade", schedulerFacade);
     }
     
     @Test
     public void assertInit() throws NoSuchFieldException, SchedulerException {
         jobScheduler.init();
-        verify(jobExecutor).init();
+        verify(schedulerFacade).registerStartUpInfo(liteJobConfig);
         Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), JobScheduleController.class.getDeclaredField("scheduler"));
         assertTrue(scheduler.isStarted());
-    }
-    
-    @Test
-    public void assertShutdown() {
-        jobScheduler.init();
-        jobScheduler.shutdown();
     }
 }

@@ -19,7 +19,6 @@ package com.dangdang.ddframe.job.lite.integrate;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import org.junit.After;
 import org.junit.Before;
 
 public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobTest {
@@ -36,10 +35,5 @@ public abstract class AbstractBaseStdJobAutoInitTest extends AbstractBaseStdJobT
         setLiteJobConfig(getLiteJobConfig());
         initJob();
         assertRegCenterCommonInfoWithEnabled();
-    }
-    
-    @After
-    public void assertAfterJobRun() {
-        assertRegCenterListenerInfo();
     }
 }

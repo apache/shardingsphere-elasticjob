@@ -17,11 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.config.JobCoreConfiguration;
-import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -156,7 +152,6 @@ public final class JobScheduleControllerTest {
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         when(scheduler.isShutdown()).thenReturn(true);
         jobScheduleController.shutdown();
-        verify(schedulerFacade).releaseJobResource();
         verify(scheduler, times(0)).shutdown();
     }
     
@@ -167,7 +162,6 @@ public final class JobScheduleControllerTest {
         try {
             jobScheduleController.shutdown();
         } finally {
-            verify(schedulerFacade).releaseJobResource();
             verify(scheduler).shutdown();
         }
     }
@@ -176,7 +170,6 @@ public final class JobScheduleControllerTest {
     public void assertShutdownSuccess() throws NoSuchFieldException, SchedulerException {
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         jobScheduleController.shutdown();
-        verify(schedulerFacade).releaseJobResource();
         verify(scheduler).shutdown();
     }
     
@@ -190,8 +183,6 @@ public final class JobScheduleControllerTest {
     
     @Test(expected = JobSystemException.class)
     public void assertRescheduleJobFailure() throws NoSuchFieldException, SchedulerException {
-        when(schedulerFacade.loadJobConfiguration()).thenReturn(
-                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new CronTriggerImpl());
         doThrow(SchedulerException.class).when(scheduler).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), Matchers.<Trigger>any());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
@@ -204,8 +195,6 @@ public final class JobScheduleControllerTest {
     
     @Test
     public void assertRescheduleJobSuccess() throws NoSuchFieldException, SchedulerException {
-        when(schedulerFacade.loadJobConfiguration()).thenReturn(
-                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(scheduler.getTrigger(TriggerKey.triggerKey("test_job_Trigger"))).thenReturn(new CronTriggerImpl());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         jobScheduleController.rescheduleJob("0/1 * * * * ?");
@@ -214,8 +203,6 @@ public final class JobScheduleControllerTest {
     
     @Test
     public void assertRescheduleJobWhenTriggerIsNull() throws NoSuchFieldException, SchedulerException {
-        when(schedulerFacade.loadJobConfiguration()).thenReturn(
-                LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
         ReflectionUtils.setFieldValue(jobScheduleController, "scheduler", scheduler);
         jobScheduleController.rescheduleJob("0/1 * * * * ?");
         verify(scheduler, times(0)).rescheduleJob(eq(TriggerKey.triggerKey("test_job_Trigger")), Matchers.<Trigger>any());

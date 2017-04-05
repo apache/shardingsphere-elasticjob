@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManager.C
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public final class RescheduleListenerManagerTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -79,7 +83,7 @@ public final class RescheduleListenerManagerTest {
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateAndFindJob() {
-        JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
         verify(jobScheduleController).rescheduleJob("0/1 * * * * ?");
     }

@@ -76,15 +76,7 @@ public class JobScheduleController {
     }
     
     private CronTrigger createTrigger(final String cron) {
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cron);
-        if (schedulerFacade.loadJobConfiguration().getTypeConfig().getCoreConfig().isMisfire()) {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
-        } else {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
-        }
-        return TriggerBuilder.newTrigger()
-                .withIdentity(triggerIdentity)
-                .withSchedule(cronScheduleBuilder).build();
+        return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
     }
     
     /**
@@ -130,7 +122,6 @@ public class JobScheduleController {
      * 关闭调度器.
      */
     public void shutdown() {
-        schedulerFacade.releaseJobResource();
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.shutdown();

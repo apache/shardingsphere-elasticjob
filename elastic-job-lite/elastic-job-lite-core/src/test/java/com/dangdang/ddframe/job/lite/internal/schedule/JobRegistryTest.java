@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -30,9 +31,10 @@ import static org.mockito.Mockito.verify;
 public final class JobRegistryTest {
     
     @Test
-    public void assertAddJobScheduler() {
+    public void assertRegisterJob() {
         JobScheduleController jobScheduleController = mock(JobScheduleController.class);
-        JobRegistry.getInstance().addJobScheduleController("test_job_scheduler_for_add", jobScheduleController);
+        CoordinatorRegistryCenter regCenter = mock(CoordinatorRegistryCenter.class);
+        JobRegistry.getInstance().registerJob("test_job_scheduler_for_add", jobScheduleController, regCenter);
         assertThat(JobRegistry.getInstance().getJobScheduleController("test_job_scheduler_for_add"), is(jobScheduleController));
     }
     
@@ -72,9 +74,11 @@ public final class JobRegistryTest {
     @Test
     public void assertShutdown() {
         JobScheduleController jobScheduleController = mock(JobScheduleController.class);
-        JobRegistry.getInstance().addJobScheduleController("test_job_for_shutdown", jobScheduleController);
-        JobRegistry.getInstance().addJobScheduleController("test_job_for_shutdown_other", jobScheduleController);
+        CoordinatorRegistryCenter regCenter = mock(CoordinatorRegistryCenter.class);
+        JobRegistry.getInstance().registerJob("test_job_for_shutdown", jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerJob("test_job_for_shutdown_other", jobScheduleController, regCenter);
         JobRegistry.getInstance().shutdown("test_job_for_shutdown");
         verify(jobScheduleController).shutdown();
+        verify(regCenter).evictCacheData("/test_job_for_shutdown");
     }
 }
