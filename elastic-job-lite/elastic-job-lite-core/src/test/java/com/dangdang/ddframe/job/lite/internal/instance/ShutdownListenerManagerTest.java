@@ -18,7 +18,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public final class InstanceShutdownListenerManagerTest {
+public final class ShutdownListenerManagerTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -32,27 +32,27 @@ public final class InstanceShutdownListenerManagerTest {
     @Mock
     private JobScheduleController jobScheduleController;
     
-    private InstanceShutdownListenerManager instanceShutdownListenerManager;
+    private ShutdownListenerManager shutdownListenerManager;
     
     @Before
     public void setUp() throws NoSuchFieldException {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
-        instanceShutdownListenerManager = new InstanceShutdownListenerManager(null, "test_job");
+        shutdownListenerManager = new ShutdownListenerManager(null, "test_job");
         MockitoAnnotations.initMocks(this);
-        ReflectionUtils.setFieldValue(instanceShutdownListenerManager, "instanceService", instanceService);
-        ReflectionUtils.setFieldValue(instanceShutdownListenerManager, "leaderService", leaderService);
-        ReflectionUtils.setFieldValue(instanceShutdownListenerManager, instanceShutdownListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
+        ReflectionUtils.setFieldValue(shutdownListenerManager, "instanceService", instanceService);
+        ReflectionUtils.setFieldValue(shutdownListenerManager, "leaderService", leaderService);
+        ReflectionUtils.setFieldValue(shutdownListenerManager, shutdownListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
     }
     
     @Test
     public void assertStart() {
-        instanceShutdownListenerManager.start();
+        shutdownListenerManager.start();
         verify(jobNodeStorage).addDataListener(Matchers.<TreeCacheListener>any());
     }
     
     @Test
     public void assertIsNotLocalInstancePath() {
-        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.2@-@0", Type.NODE_REMOVED, "");
+        shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.2@-@0", Type.NODE_REMOVED, "");
         verify(instanceService, times(0)).removeStatus();
         verify(jobScheduleController, times(0)).shutdown();
     }
@@ -60,14 +60,14 @@ public final class InstanceShutdownListenerManagerTest {
     @Test
     public void assertUpdateLocalInstancePath() {
         String path = "/test_job/instances/127.0.0.1@-@0";
-        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, "");
+        shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, "");
         verify(instanceService, times(0)).removeStatus();
         verify(jobScheduleController, times(0)).shutdown();
     }
     
     @Test
     public void assertRemoveLocalInstancePathAndIsNotLeaderAndJobControllerIsNull() {
-        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
+        shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
         verify(instanceService).removeStatus();
         verify(leaderService, times(0)).removeLeader();
         verify(jobScheduleController, times(0)).shutdown();
@@ -77,7 +77,7 @@ public final class InstanceShutdownListenerManagerTest {
     public void assertRemoveLocalInstancePathAndIsLeader() {
         when(leaderService.isLeader()).thenReturn(true);
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        instanceShutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
+        shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_REMOVED, "");
         verify(instanceService).removeStatus();
         verify(leaderService).removeLeader();
         verify(jobScheduleController).shutdown();

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.instance;
 
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -25,11 +26,11 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 作业触发监听管理器.
+ * 运行实例关闭监听管理器.
  * 
  * @author zhangliang
  */
-public class InstanceTriggerListenerManager extends AbstractListenerManager {
+public class ShutdownListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
@@ -37,33 +38,34 @@ public class InstanceTriggerListenerManager extends AbstractListenerManager {
     
     private final InstanceService instanceService;
     
-    public InstanceTriggerListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+    private final LeaderService leaderService;
+    
+    public ShutdownListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
         instanceNode = new InstanceNode(jobName);
         instanceService = new InstanceService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
     }
     
     @Override
     public void start() {
-        addDataListener(new JobTriggerStatusJobListener());
+        addDataListener(new InstanceShutdownStatusJobListener());
     }
     
-    class JobTriggerStatusJobListener extends AbstractJobListener {
+    class InstanceShutdownStatusJobListener extends AbstractJobListener {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!InstanceOperation.TRIGGER.name().equals(data) || !instanceNode.isLocalInstancePath(path) || Type.NODE_UPDATED != eventType) {
-                return;
-            }
-            instanceService.clearTriggerFlag();
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-            if (null == jobScheduleController) {
-                return;
-            }
-            // TODO 目前是作业运行时不能触发, 未来改为堆积式触发
-            if (!JobRegistry.getInstance().isJobRunning(jobName)) {
-                jobScheduleController.triggerJob();
+            if (instanceNode.isLocalInstancePath(path) && Type.NODE_REMOVED == eventType) {
+                instanceService.removeStatus();
+                if (leaderService.isLeader()) {
+                    leaderService.removeLeader();
+                }
+                JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+                if (null != jobScheduleController) {
+                    jobScheduleController.shutdown();
+                }
             }
         }
     }

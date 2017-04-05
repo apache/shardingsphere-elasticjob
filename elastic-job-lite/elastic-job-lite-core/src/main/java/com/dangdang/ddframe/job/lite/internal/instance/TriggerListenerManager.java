@@ -15,44 +15,55 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.lite.internal.config;
+package com.dangdang.ddframe.job.lite.internal.instance;
 
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 配置文件监听管理器.
+ * 作业触发监听管理器.
  * 
- * @author caohao
  * @author zhangliang
  */
-public class ConfigurationListenerManager extends AbstractListenerManager {
-    
-    private final ConfigurationNode configNode;
+public class TriggerListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
-    public ConfigurationListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+    private final InstanceNode instanceNode;
+    
+    private final InstanceService instanceService;
+    
+    public TriggerListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
-        configNode = new ConfigurationNode(jobName);
+        instanceNode = new InstanceNode(jobName);
+        instanceService = new InstanceService(regCenter, jobName);
     }
     
     @Override
     public void start() {
-        addDataListener(new CronSettingAndJobEventChangedJobListener());
+        addDataListener(new JobTriggerStatusJobListener());
     }
     
-    class CronSettingAndJobEventChangedJobListener extends AbstractJobListener {
+    class JobTriggerStatusJobListener extends AbstractJobListener {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && null != JobRegistry.getInstance().getJobScheduleController(jobName)) {
-                JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(
-                        LiteJobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getCron());
+            if (!InstanceOperation.TRIGGER.name().equals(data) || !instanceNode.isLocalInstancePath(path) || Type.NODE_UPDATED != eventType) {
+                return;
+            }
+            instanceService.clearTriggerFlag();
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            if (null == jobScheduleController) {
+                return;
+            }
+            // TODO 目前是作业运行时不能触发, 未来改为堆积式触发
+            if (!JobRegistry.getInstance().isJobRunning(jobName)) {
+                jobScheduleController.triggerJob();
             }
         }
     }

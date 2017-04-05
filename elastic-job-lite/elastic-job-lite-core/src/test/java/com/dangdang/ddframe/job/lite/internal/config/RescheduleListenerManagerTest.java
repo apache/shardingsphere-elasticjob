@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager.CronSettingAndJobEventChangedJobListener;
+import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManager.CronSettingAndJobEventChangedJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -34,7 +34,7 @@ import org.unitils.util.ReflectionUtils;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public final class ConfigurationListenerManagerTest {
+public final class RescheduleListenerManagerTest {
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -45,42 +45,42 @@ public final class ConfigurationListenerManagerTest {
     @Mock
     private JobEventBus jobEventBus;
     
-    private final ConfigurationListenerManager configurationListenerManager = new ConfigurationListenerManager(null, "test_job");
+    private final RescheduleListenerManager rescheduleListenerManager = new RescheduleListenerManager(null, "test_job");
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
-        ReflectionUtils.setFieldValue(configurationListenerManager, configurationListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
+        ReflectionUtils.setFieldValue(rescheduleListenerManager, rescheduleListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
     }
     
     @Test
     public void assertStart() {
-        configurationListenerManager.start();
+        rescheduleListenerManager.start();
         verify(jobNodeStorage).addDataListener(Matchers.<CronSettingAndJobEventChangedJobListener>any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsNotCronPath() {
-        configurationListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
+        rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
         verify(jobScheduleController, times(0)).rescheduleJob(Matchers.<String>any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathButNotUpdate() {
-        configurationListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
+        rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
         verify(jobScheduleController, times(0)).rescheduleJob(Matchers.<String>any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateButCannotFindJob() {
-        configurationListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
+        rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
         verify(jobScheduleController, times(0)).rescheduleJob(Matchers.<String>any());
     }
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateAndFindJob() {
         JobRegistry.getInstance().addJobScheduleController("test_job", jobScheduleController);
-        configurationListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
+        rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
         verify(jobScheduleController).rescheduleJob("0/1 * * * * ?");
     }
 }

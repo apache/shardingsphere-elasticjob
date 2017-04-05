@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.lite.internal.listener;
 
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManager;
+import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManager;
+import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManager;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceTriggerListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.ShutdownListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.TriggerListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class ListenerManagerTest {
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private LeaderListenerManager leaderListenerManager;
+    private ElectionListenerManager electionListenerManager;
     
     @Mock
     private ShardingListenerManager shardingListenerManager;
@@ -51,13 +51,13 @@ public class ListenerManagerTest {
     private FailoverListenerManager failoverListenerManager;
     
     @Mock
-    private InstanceShutdownListenerManager instanceShutdownListenerManager;
+    private ShutdownListenerManager shutdownListenerManager;
     
     @Mock
-    private InstanceTriggerListenerManager instanceTriggerListenerManager;
+    private TriggerListenerManager triggerListenerManager;
     
     @Mock
-    private ConfigurationListenerManager configurationListenerManager;
+    private RescheduleListenerManager rescheduleListenerManager;
     
     @Mock
     private GuaranteeListenerManager guaranteeListenerManager;
@@ -71,12 +71,12 @@ public class ListenerManagerTest {
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(listenerManager, "jobNodeStorage", jobNodeStorage);
-        ReflectionUtils.setFieldValue(listenerManager, "leaderListenerManager", leaderListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "electionListenerManager", electionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "failoverListenerManager", failoverListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "instanceShutdownListenerManager", instanceShutdownListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "instanceTriggerListenerManager", instanceTriggerListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "configurationListenerManager", configurationListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "shutdownListenerManager", shutdownListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "triggerListenerManager", triggerListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "rescheduleListenerManager", rescheduleListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "guaranteeListenerManager", guaranteeListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "regCenterConnectionStateListener", regCenterConnectionStateListener);
     }
@@ -84,11 +84,11 @@ public class ListenerManagerTest {
     @Test
     public void assertStartAllListeners() {
         listenerManager.startAllListeners();
-        verify(leaderListenerManager).start();
+        verify(electionListenerManager).start();
         verify(shardingListenerManager).start();
         verify(failoverListenerManager).start();
-        verify(instanceShutdownListenerManager).start();
-        verify(configurationListenerManager).start();
+        verify(shutdownListenerManager).start();
+        verify(rescheduleListenerManager).start();
         verify(guaranteeListenerManager).start();
         verify(jobNodeStorage).addConnectionStateListener(regCenterConnectionStateListener);
     }

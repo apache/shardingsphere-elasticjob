@@ -18,12 +18,12 @@
 package com.dangdang.ddframe.job.lite.internal.listener;
 
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManager;
+import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManager;
+import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManager;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceTriggerListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.ShutdownListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.TriggerListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -39,17 +39,17 @@ public class ListenerManager {
     
     private final JobNodeStorage jobNodeStorage;
     
-    private final LeaderListenerManager leaderListenerManager;
+    private final ElectionListenerManager electionListenerManager;
     
     private final ShardingListenerManager shardingListenerManager;
     
     private final FailoverListenerManager failoverListenerManager;
     
-    private final InstanceShutdownListenerManager instanceShutdownListenerManager;
+    private final ShutdownListenerManager shutdownListenerManager;
     
-    private final InstanceTriggerListenerManager instanceTriggerListenerManager;
+    private final TriggerListenerManager triggerListenerManager;
     
-    private final ConfigurationListenerManager configurationListenerManager;
+    private final RescheduleListenerManager rescheduleListenerManager;
 
     private final GuaranteeListenerManager guaranteeListenerManager;
     
@@ -57,12 +57,12 @@ public class ListenerManager {
     
     public ListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
-        leaderListenerManager = new LeaderListenerManager(regCenter, jobName);
+        electionListenerManager = new ElectionListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
         failoverListenerManager = new FailoverListenerManager(regCenter, jobName);
-        instanceShutdownListenerManager = new InstanceShutdownListenerManager(regCenter, jobName);
-        instanceTriggerListenerManager = new InstanceTriggerListenerManager(regCenter, jobName);
-        configurationListenerManager = new ConfigurationListenerManager(regCenter, jobName);
+        shutdownListenerManager = new ShutdownListenerManager(regCenter, jobName);
+        triggerListenerManager = new TriggerListenerManager(regCenter, jobName);
+        rescheduleListenerManager = new RescheduleListenerManager(regCenter, jobName);
         guaranteeListenerManager = new GuaranteeListenerManager(regCenter, jobName, elasticJobListeners);
         regCenterConnectionStateListener = new RegistryCenterConnectionStateListener(regCenter, jobName);
     }
@@ -71,12 +71,12 @@ public class ListenerManager {
      * 开启所有监听器.
      */
     public void startAllListeners() {
-        leaderListenerManager.start();
+        electionListenerManager.start();
         shardingListenerManager.start();
         failoverListenerManager.start();
-        instanceShutdownListenerManager.start();
-        instanceTriggerListenerManager.start();
-        configurationListenerManager.start();
+        shutdownListenerManager.start();
+        triggerListenerManager.start();
+        rescheduleListenerManager.start();
         guaranteeListenerManager.start();
         jobNodeStorage.addConnectionStateListener(regCenterConnectionStateListener);
     }

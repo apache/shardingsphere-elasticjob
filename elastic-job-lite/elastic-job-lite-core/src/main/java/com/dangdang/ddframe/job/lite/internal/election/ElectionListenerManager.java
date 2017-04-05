@@ -27,11 +27,11 @@ import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
- * 主节点监听管理器.
+ * 主节点选举监听管理器.
  * 
  * @author zhangliang
  */
-public class LeaderListenerManager extends AbstractListenerManager {
+public class ElectionListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     
@@ -43,7 +43,7 @@ public class LeaderListenerManager extends AbstractListenerManager {
     
     private final ServerService serverService;
     
-    public LeaderListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
+    public ElectionListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
         leaderNode = new LeaderNode(jobName);

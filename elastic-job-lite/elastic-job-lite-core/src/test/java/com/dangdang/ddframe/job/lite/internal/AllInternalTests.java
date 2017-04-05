@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.internal;
 
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNodeTest;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationServiceTest;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactoryTest;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderNodeTest;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionContextServiceTest;
@@ -35,8 +35,8 @@ import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeNodeTest;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeServiceTest;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNodeTest;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceServiceTest;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceShutdownListenerManagerTest;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceTriggerListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.instance.ShutdownListenerManagerTest;
+import com.dangdang.ddframe.job.lite.internal.instance.TriggerListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.JobListenerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.listener.RegistryCenterConnectionStateListenerTest;
@@ -65,16 +65,16 @@ import org.junit.runners.Suite.SuiteClasses;
         SensitiveInfoUtilsTest.class,
         ConfigurationServiceTest.class, 
         ConfigurationNodeTest.class,
-        ConfigurationListenerManagerTest.class,
+        RescheduleListenerManagerTest.class,
         LiteJobConfigurationGsonFactoryTest.class, 
         LeaderServiceTest.class, 
         LeaderNodeTest.class,
-        LeaderListenerManagerTest.class, 
+        ElectionListenerManagerTest.class, 
         ServerServiceTest.class, 
         InstanceNodeTest.class,
         InstanceServiceTest.class,
-        InstanceShutdownListenerManagerTest.class,
-        InstanceTriggerListenerManagerTest.class,
+        ShutdownListenerManagerTest.class,
+        TriggerListenerManagerTest.class,
         ShardingServiceTest.class, 
         ServerNodeTest.class,
         ShardingListenerManagerTest.class, 
