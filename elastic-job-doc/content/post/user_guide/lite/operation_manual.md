@@ -8,7 +8,7 @@ weight=15
 
 # Elastic-Job-Lite操作手册
 
-## Java API
+## Java API(孵化中)
 
 ### 1. 配置类API
 
