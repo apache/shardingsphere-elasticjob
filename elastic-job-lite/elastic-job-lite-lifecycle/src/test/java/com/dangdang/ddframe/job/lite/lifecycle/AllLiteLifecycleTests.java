@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.lite.lifecycle;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobAPIFactoryTest;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingStatusTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.JobOperateAPIImplTest;
+import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.ShardingOperateAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactoryTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.settings.JobSettingsAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.JobStatisticsAPIImplTest;
@@ -38,6 +39,7 @@ import org.junit.runners.Suite.SuiteClasses;
         ShardingStatusTest.class, 
         RegistryCenterFactoryTest.class, 
         JobOperateAPIImplTest.class,
+        ShardingOperateAPIImplTest.class,
         JobStatisticsAPIImplTest.class,
         ServerStatisticsAPIImplTest.class,
         ShardingStatisticsAPIImplTest.class

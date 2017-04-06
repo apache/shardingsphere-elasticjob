@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.JobBriefInfo.JobStatus;
 import com.dangdang.ddframe.job.lite.lifecycle.fixture.LifecycleJsonConstants;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.collect.Lists;
@@ -53,6 +54,12 @@ public final class JobStatisticsAPIImplTest {
     }
     
     @Test
+    public void assertGetJobsTotalCount() {
+        when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
+        assertThat(jobStatisticsAPI.getJobsTotalCount(), is(2));
+    }
+    
+    @Test
     public void assertGetJobBriefInfo() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Lists.newArrayList("test_job"));
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
@@ -68,7 +75,6 @@ public final class JobStatisticsAPIImplTest {
         assertThat(jobBrief.getJobName(), is("test_job"));
         assertThat(jobBrief.getDescription(), is("desc"));
         assertThat(jobBrief.getCron(), is("0/1 * * * * ?"));
-        assertThat(jobBrief.getJobType(), is("SIMPLE"));
         assertThat(jobBrief.getInstanceCount(), is(2));
         assertThat(jobBrief.getShardingTotalCount(), is(3));
     }
@@ -80,8 +86,6 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job_2/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job_2", "desc2"));
         when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.getChildrenKeys("/test_job_2/servers")).thenReturn(Arrays.asList("ip3", "ip4"));
-        when(regCenter.getChildrenKeys("/test_job_1/sharding")).thenReturn(Arrays.asList("0"));
-        when(regCenter.getChildrenKeys("/test_job_2/sharding")).thenReturn(Arrays.asList("0", "1"));
         when(regCenter.getChildrenKeys("/test_job_1/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job_2/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         int i = 0;
@@ -90,10 +94,30 @@ public final class JobStatisticsAPIImplTest {
             assertThat(each.getJobName(), is("test_job_" + i));
             assertThat(each.getDescription(), is("desc" + i));
             assertThat(each.getCron(), is("0/1 * * * * ?"));
-            assertThat(each.getJobType(), is("SIMPLE"));
             assertThat(each.getInstanceCount(), is(i));
             assertThat(each.getShardingTotalCount(), is(3));
+            assertThat(each.getStatus(), is(JobStatus.OK));
         }
     }
     
+    @Test
+    public void getJobsBriefInfoByIp() {
+        when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
+        when(regCenter.get("/test_job_1/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job_1", "desc1"));
+        when(regCenter.get("/test_job_2/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job_2", "desc2"));
+        when(regCenter.getChildrenKeys("/test_job_1/servers")).thenReturn(Arrays.asList("ip1"));
+        when(regCenter.isExisted("/test_job_1/servers/ip1")).thenReturn(true);
+        when(regCenter.getChildrenKeys("/test_job_1/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance"));
+        int i = 0;
+        for (JobBriefInfo each : jobStatisticsAPI.getJobsBriefInfo("ip1")) {
+            assertThat(each.getJobName(), is("test_job_" + ++i));
+            if (i == 1) {
+                assertThat(each.getStatus(), is(JobStatus.OK));
+                assertThat(each.getInstanceCount(), is(1));
+            } else {
+                assertThat(each.getInstanceCount(), is(0));
+                assertThat(each.getStatus(), is(JobStatus.CRASHED));
+            }
+        }
+    }
 }
