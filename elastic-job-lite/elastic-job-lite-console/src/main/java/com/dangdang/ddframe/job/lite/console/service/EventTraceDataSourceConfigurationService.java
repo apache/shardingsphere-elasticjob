@@ -18,7 +18,7 @@
 package com.dangdang.ddframe.job.lite.console.service;
 
 import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
-import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
+import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfigurations;
 import com.google.common.base.Optional;
 
 /**
@@ -29,11 +29,11 @@ import com.google.common.base.Optional;
 public interface EventTraceDataSourceConfigurationService {
     
     /**
-     * 读取全局配置.
-     * 
-     * @return 全局配置
+     * 读取全部事件追踪数据源配置.
+     *
+     * @return 全部事件追踪数据源配置
      */
-    GlobalConfiguration loadAll();
+    EventTraceDataSourceConfigurations loadAll();
     
     /**
      * 读取事件追踪数据源配置.
@@ -47,10 +47,10 @@ public interface EventTraceDataSourceConfigurationService {
      * 查找事件追踪数据源配置.
      *
      * @param name 配置名称
-     * @param configs 全局配置
+     * @param configs 全部事件追踪数据源配置
      * @return 事件追踪数据源配置
      */
-    EventTraceDataSourceConfiguration find(final String name, final GlobalConfiguration configs);
+    EventTraceDataSourceConfiguration find(final String name, final EventTraceDataSourceConfigurations configs);
     
     /**
      * 读取已连接的事件追踪数据源配置.

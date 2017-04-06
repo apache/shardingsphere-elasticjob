@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.console.service;
 
-import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
+import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
 import com.google.common.base.Optional;
 
 /**
@@ -29,11 +29,11 @@ import com.google.common.base.Optional;
 public interface RegistryCenterConfigurationService {
     
     /**
-     * 读取全局配置.
+     * 读取全部注册中心配置.
      *
-     * @return 全局配置
+     * @return 全部注册中心配置
      */
-    GlobalConfiguration loadAll();
+    RegistryCenterConfigurations loadAll();
     
     /**
      * 读取注册中心配置.
@@ -47,10 +47,10 @@ public interface RegistryCenterConfigurationService {
      * 查找注册中心配置.
      * 
      * @param name 配置名称
-     * @param configs 全局配置
+     * @param configs 全部注册中心配置
      * @return 注册中心配置
      */
-    RegistryCenterConfiguration find(final String name, final GlobalConfiguration configs);
+    RegistryCenterConfiguration find(final String name, final RegistryCenterConfigurations configs);
     
     /**
      * 读取已连接的注册中心配置.

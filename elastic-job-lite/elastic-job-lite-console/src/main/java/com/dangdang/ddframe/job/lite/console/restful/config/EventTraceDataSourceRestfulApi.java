@@ -61,7 +61,7 @@ public final class EventTraceDataSourceRestfulApi {
         if (dataSourceConfig.isPresent()) {
             setDataSourceNameToSession(dataSourceConfig.get(), request.getSession());
         }
-        return eventTraceDataSourceConfigurationService.loadAll().getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration();
+        return eventTraceDataSourceConfigurationService.loadAll().getEventTraceDataSourceConfiguration();
     }
     
     /**

@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.lite.console.service.impl;
 import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfigurations;
 import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
+import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
 import com.dangdang.ddframe.job.lite.console.repository.ConfigurationsXmlRepository;
 import com.dangdang.ddframe.job.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
 import com.dangdang.ddframe.job.lite.console.service.EventTraceDataSourceConfigurationService;
@@ -35,25 +36,21 @@ public final class EventTraceDataSourceConfigurationServiceImpl implements Event
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
     
     @Override
-    public GlobalConfiguration loadAll() {
-        GlobalConfiguration globalConfiguration = configurationsXmlRepository.load();
-        if (null == globalConfiguration.getEventTraceDataSourceConfigurations()) {
-            globalConfiguration.setEventTraceDataSourceConfigurations(new EventTraceDataSourceConfigurations());
-        }
-        return globalConfiguration;
+    public EventTraceDataSourceConfigurations loadAll() {
+        return loadGlobal().getEventTraceDataSourceConfigurations();
     }
     
     @Override
     public EventTraceDataSourceConfiguration load(final String name) {
-        GlobalConfiguration configs = loadAll();
-        EventTraceDataSourceConfiguration result = find(name, configs);
+        GlobalConfiguration configs = loadGlobal();
+        EventTraceDataSourceConfiguration result = find(name, configs.getEventTraceDataSourceConfigurations());
         setActivated(configs, result);
         return result;
     }
     
     @Override
-    public EventTraceDataSourceConfiguration find(final String name, final GlobalConfiguration configs) {
-        for (EventTraceDataSourceConfiguration each : configs.getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration()) {
+    public EventTraceDataSourceConfiguration find(final String name, final EventTraceDataSourceConfigurations configs) {
+        for (EventTraceDataSourceConfiguration each : configs.getEventTraceDataSourceConfiguration()) {
             if (name.equals(each.getName())) {
                 return each;
             }
@@ -74,12 +71,7 @@ public final class EventTraceDataSourceConfigurationServiceImpl implements Event
     
     @Override
     public Optional<EventTraceDataSourceConfiguration> loadActivated() {
-        GlobalConfiguration configs = loadAll();
-        EventTraceDataSourceConfiguration result = findActivatedDataSourceConfiguration(configs);
-        if (null == result) {
-            return Optional.absent();
-        }
-        return Optional.of(result);
+        return Optional.fromNullable(findActivatedDataSourceConfiguration(loadGlobal()));
     }
     
     private EventTraceDataSourceConfiguration findActivatedDataSourceConfiguration(final GlobalConfiguration configs) {
@@ -93,7 +85,7 @@ public final class EventTraceDataSourceConfigurationServiceImpl implements Event
     
     @Override
     public boolean add(final EventTraceDataSourceConfiguration config) {
-        GlobalConfiguration configs = loadAll();
+        GlobalConfiguration configs = loadGlobal();
         boolean result = configs.getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration().add(config);
         if (result) {
             configurationsXmlRepository.save(configs);
@@ -103,9 +95,17 @@ public final class EventTraceDataSourceConfigurationServiceImpl implements Event
     
     @Override
     public void delete(final String name) {
-        GlobalConfiguration configs = loadAll();
+        GlobalConfiguration configs = loadGlobal();
         if (configs.getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration().remove(new EventTraceDataSourceConfiguration(name, null, null, null))) {
             configurationsXmlRepository.save(configs);
         }
+    }
+    
+    private GlobalConfiguration loadGlobal() {
+        GlobalConfiguration result = configurationsXmlRepository.load();
+        if (null == result.getRegistryCenterConfigurations()) {
+            result.setRegistryCenterConfigurations(new RegistryCenterConfigurations());
+        }
+        return result;
     }
 }

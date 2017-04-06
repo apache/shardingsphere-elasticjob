@@ -62,7 +62,7 @@ public final class RegistryCenterRestfulApi {
         if (regCenterConfig.isPresent()) {
             setRegistryCenterNameToSession(regCenterConfig.get(), request.getSession());
         }
-        return regCenterService.loadAll().getRegistryCenterConfigurations().getRegistryCenterConfiguration();
+        return regCenterService.loadAll().getRegistryCenterConfiguration();
     }
     
     /**
