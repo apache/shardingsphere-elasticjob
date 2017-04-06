@@ -73,22 +73,22 @@ public final class CloudJobConfigurationGsonFactory {
         protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
             switch (jsonName) {
                 case "appName":
-                    customizedValueMap.put("appName", in.nextString());
+                    customizedValueMap.put(jsonName, in.nextString());
                     break;
                 case "cpuCount":
-                    customizedValueMap.put("cpuCount", in.nextDouble());
+                    customizedValueMap.put(jsonName, in.nextDouble());
                     break;
                 case "memoryMB":
-                    customizedValueMap.put("memoryMB", in.nextDouble());
+                    customizedValueMap.put(jsonName, in.nextDouble());
                     break;
                 case "jobExecutionType":
-                    customizedValueMap.put("jobExecutionType", in.nextString());
+                    customizedValueMap.put(jsonName, in.nextString());
                     break;
                 case "beanName":
-                    customizedValueMap.put("beanName", in.nextString());
+                    customizedValueMap.put(jsonName, in.nextString());
                     break;
                 case "applicationContext":
-                    customizedValueMap.put("applicationContext", in.nextString());
+                    customizedValueMap.put(jsonName, in.nextString());
                     break;
                 default:
                     in.skipValue();

@@ -36,7 +36,7 @@ public final class CloudOperationRestfulApi {
     
     private static ProducerManager producerManager;
     
-    private static final long RECONCILE_INTERVAL = 10 * 1000;
+    private static final long RECONCILE_MILLIS_INTERVAL = 10 * 1000L;
     
     private static long lastReconcileTime;
     
@@ -80,7 +80,7 @@ public final class CloudOperationRestfulApi {
     }
     
     private void validReconcileInterval() {
-        if (System.currentTimeMillis() < lastReconcileTime + RECONCILE_INTERVAL) {
+        if (System.currentTimeMillis() < lastReconcileTime + RECONCILE_MILLIS_INTERVAL) {
             throw new RuntimeException("Repeat explicitReconcile");
         }
         lastReconcileTime = System.currentTimeMillis();

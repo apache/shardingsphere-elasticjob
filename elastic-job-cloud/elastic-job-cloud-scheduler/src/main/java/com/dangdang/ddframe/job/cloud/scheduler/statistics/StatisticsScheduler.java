@@ -26,7 +26,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.plugins.management.ShutdownHookPlugin;
 import org.quartz.simpl.SimpleThreadPool;
 
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -82,10 +81,7 @@ final class StatisticsScheduler {
     void register(final StatisticJob statisticJob) {
         try {
             JobDetail jobDetail = statisticJob.buildJobDetail();
-            Map<String, Object> dataMap = statisticJob.getDataMap();
-            for (String each : dataMap.keySet()) {
-                jobDetail.getJobDataMap().put(each, dataMap.get(each));
-            }
+            jobDetail.getJobDataMap().putAll(statisticJob.getDataMap());
             scheduler.scheduleJob(jobDetail, statisticJob.buildTrigger());
         } catch (final SchedulerException ex) {
             throw new JobStatisticException(ex);

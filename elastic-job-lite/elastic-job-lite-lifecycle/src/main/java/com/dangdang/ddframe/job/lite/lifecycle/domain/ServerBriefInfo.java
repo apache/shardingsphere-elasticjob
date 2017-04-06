@@ -31,9 +31,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author caohao
  */
+@RequiredArgsConstructor
 @Getter
 @Setter
-@RequiredArgsConstructor
 public final class ServerBriefInfo implements Serializable, Comparable<ServerBriefInfo> {
     
     private static final long serialVersionUID = 1133149706443681483L;

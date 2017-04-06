@@ -117,20 +117,20 @@ public final class JobRunningStatisticJob extends AbstractStatisticJob {
         repository.add(taskRunningStatistics);
     }
     
-    private int getJobRunningCount(final Map<String, Set<TaskContext>> allRunnintTasks) {
+    private int getJobRunningCount(final Map<String, Set<TaskContext>> allRunningTasks) {
         int result = 0;
-        for (String each : allRunnintTasks.keySet()) {
-            if (!allRunnintTasks.get(each).isEmpty()) {
+        for (Map.Entry<String, Set<TaskContext>> entry : allRunningTasks.entrySet()) {
+            if (!entry.getValue().isEmpty()) {
                 result++;
             }
         }
         return result;
     }
     
-    private int getTaskRunningCount(final Map<String, Set<TaskContext>> allRunnintTasks) {
+    private int getTaskRunningCount(final Map<String, Set<TaskContext>> allRunningTasks) {
         int result = 0;
-        for (String each : allRunnintTasks.keySet()) {
-            result += allRunnintTasks.get(each).size();
+        for (Map.Entry<String, Set<TaskContext>> entry : allRunningTasks.entrySet()) {
+            result += entry.getValue().size();
         }
         return result;
     }

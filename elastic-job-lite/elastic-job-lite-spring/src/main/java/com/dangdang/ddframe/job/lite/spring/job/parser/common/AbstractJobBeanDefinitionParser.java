@@ -33,9 +33,8 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
-import java.util.LinkedHashMap;
+import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.CRON_ATTRIBUTE;
@@ -123,7 +122,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     
     private BeanDefinition createJobPropertiesBeanDefinition(final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(JobProperties.class);
-        Map<JobPropertiesEnum, String> map = new LinkedHashMap<>(JobPropertiesEnum.values().length, 1);
+        EnumMap<JobPropertiesEnum, String> map = new EnumMap<>(JobPropertiesEnum.class);
         map.put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER, element.getAttribute(EXECUTOR_SERVICE_HANDLER_ATTRIBUTE));
         map.put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER, element.getAttribute(JOB_EXCEPTION_HANDLER_ATTRIBUTE));
         result.addConstructorArgValue(map);

@@ -38,7 +38,7 @@ import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
-import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT;
+import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT_SECONDS;
 import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FRAMEWORK_NAME;
 
 /**
@@ -90,7 +90,7 @@ public final class SchedulerService {
             builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkIDOptional.get()).build());
         }
         Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(FRAMEWORK_NAME)
-                .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT)
+                .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT_SECONDS)
                 .setWebuiUrl(WEB_UI_PROTOCOL + env.getFrameworkHostPort()).build();
         return new MesosSchedulerDriver(new SchedulerEngine(taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }

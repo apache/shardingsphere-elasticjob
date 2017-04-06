@@ -119,6 +119,5 @@ public final class CloudAppConfigurationGsonFactory {
             out.name("eventTraceSamplingCount").value(value.getEventTraceSamplingCount());
             out.endObject();
         }
-    
     }
 }

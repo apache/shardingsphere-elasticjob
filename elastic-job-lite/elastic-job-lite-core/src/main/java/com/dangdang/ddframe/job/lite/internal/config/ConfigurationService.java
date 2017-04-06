@@ -106,7 +106,7 @@ public final class ConfigurationService {
         long timeDiff = Math.abs(timeService.getCurrentMillis() - jobNodeStorage.getRegistryCenterTime());
         if (timeDiff > maxTimeDiffSeconds * 1000L) {
             throw new JobExecutionEnvironmentException(
-                    "Time different between job server and register center exceed '%s' seconds, max time different is '%s' seconds.", Long.valueOf(timeDiff / 1000).intValue(), maxTimeDiffSeconds);
+                    "Time different between job server and register center exceed '%s' seconds, max time different is '%s' seconds.", timeDiff / 1000, maxTimeDiffSeconds);
         }
     }
 }
