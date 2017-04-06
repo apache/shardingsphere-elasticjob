@@ -190,6 +190,7 @@ function bindRemoveButton() {
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     refreshJobNavTag();
+                    refreshServerNavTag();
                     $("#jobs-status-overview-tbl").bootstrapTable("refresh");
                 }
             });
