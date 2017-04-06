@@ -99,6 +99,14 @@ public final class ShardingListenerManagerTest {
     }
     
     @Test
+    public void assertListenServersChangedJobListenerWhenIsInstanceChangeButInvalidJobInstance() {
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance(JobInstance.DEFAULT_INSTANCE_ID));
+        shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_ADDED, "");
+        verify(shardingService, times(0)).setReshardingFlag();
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+    }
+    
+    @Test
     public void assertListenServersChangedJobListenerWhenIsInstanceChange() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_ADDED, "");
         verify(shardingService).setReshardingFlag();

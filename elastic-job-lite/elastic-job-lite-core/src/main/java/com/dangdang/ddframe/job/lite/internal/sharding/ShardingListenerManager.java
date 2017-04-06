@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
@@ -78,7 +79,9 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
             if (isInstanceChange(eventType, path) || isServerChange(path)) {
-                shardingService.setReshardingFlag();
+                if (!JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(JobInstance.DEFAULT_INSTANCE_ID)) {
+                    shardingService.setReshardingFlag();
+                }
             }
         }
         
