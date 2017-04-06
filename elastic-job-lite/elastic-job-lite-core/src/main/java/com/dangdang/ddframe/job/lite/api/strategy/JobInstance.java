@@ -58,4 +58,13 @@ public final class JobInstance {
     public String getIp() {
         return jobInstanceId.substring(0, jobInstanceId.indexOf(DELIMITER));
     }
+    
+    /**
+     * 判断是否为默认作业运行实例.
+     * 
+     * @return 是否为默认作业运行实例
+     */
+    public boolean isDefaultJobInstance() {
+        return DEFAULT_INSTANCE_ID.equals(jobInstanceId);
+    }
 }
