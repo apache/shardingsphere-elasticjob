@@ -23,7 +23,6 @@ import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.JobFacade;
 import com.dangdang.ddframe.job.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
@@ -33,17 +32,14 @@ import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobShutdownHookPlugin;
+import com.dangdang.ddframe.job.lite.internal.schedule.LiteJob;
 import com.dangdang.ddframe.job.lite.internal.schedule.LiteJobFacade;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
 import lombok.Getter;
-import lombok.Setter;
-import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -63,8 +59,6 @@ public class JobScheduler {
     public static final String ELASTIC_JOB_DATA_MAP_KEY = "elasticJob";
     
     private static final String JOB_FACADE_DATA_MAP_KEY = "jobFacade";
-    
-    private final String jobName;
     
     private final LiteJobConfiguration liteJobConfig;
     
@@ -86,14 +80,13 @@ public class JobScheduler {
     }
     
     private JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventBus jobEventBus, final ElasticJobListener... elasticJobListeners) {
-        jobName = liteJobConfig.getJobName();
-        JobRegistry.getInstance().addJobInstance(jobName, new JobInstance());
+        JobRegistry.getInstance().addJobInstance(liteJobConfig.getJobName(), new JobInstance());
         this.liteJobConfig = liteJobConfig;
         this.regCenter = regCenter;
         List<ElasticJobListener> elasticJobListenerList = Arrays.asList(elasticJobListeners);
         setGuaranteeServiceForElasticJobListeners(regCenter, elasticJobListenerList);
         schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig.getJobName(), elasticJobListenerList);
-        jobFacade = new LiteJobFacade(regCenter, jobName, Arrays.asList(elasticJobListeners), jobEventBus);
+        jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
     }
     
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
@@ -110,14 +103,14 @@ public class JobScheduler {
      */
     public void init() {
         schedulerFacade.registerStartUpInfo(liteJobConfig);
-        JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
-        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(liteJobConfig.getTypeConfig().getJobClass()), jobName);
+        JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        JobScheduleController jobScheduleController = new JobScheduleController(createScheduler(), createJobDetail(liteJobConfig.getTypeConfig().getJobClass()), liteJobConfig.getJobName());
         jobScheduleController.scheduleJob(liteJobConfig.getTypeConfig().getCoreConfig().getCron());
-        JobRegistry.getInstance().registerJob(jobName, jobScheduleController, regCenter);
+        JobRegistry.getInstance().registerJob(liteJobConfig.getJobName(), jobScheduleController, regCenter);
     }
     
     private JobDetail createJobDetail(final String jobClass) {
-        JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(jobName).build();
+        JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         Optional<ElasticJob> elasticJobInstance = createElasticJobInstance();
         if (elasticJobInstance.isPresent()) {
@@ -152,29 +145,10 @@ public class JobScheduler {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
-        result.put("org.quartz.scheduler.instanceName", jobName);
+        result.put("org.quartz.scheduler.instanceName", liteJobConfig.getJobName());
         result.put("org.quartz.jobStore.misfireThreshold", "1");
         result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
         result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
         return result;
-    }
-    
-    /**
-     * Lite调度作业.
-     * 
-     * @author zhangliang
-     */
-    public static final class LiteJob implements Job {
-        
-        @Setter
-        private ElasticJob elasticJob;
-        
-        @Setter
-        private JobFacade jobFacade;
-        
-        @Override
-        public void execute(final JobExecutionContext context) throws JobExecutionException {
-            JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
-        }
     }
 }
