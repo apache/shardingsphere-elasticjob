@@ -31,7 +31,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * 
  * @author zhangliang
  */
-public class ElectionListenerManager extends AbstractListenerManager {
+public final class ElectionListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     

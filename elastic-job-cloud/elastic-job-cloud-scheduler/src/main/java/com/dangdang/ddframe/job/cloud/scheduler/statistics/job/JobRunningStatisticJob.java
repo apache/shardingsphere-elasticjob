@@ -51,7 +51,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Slf4j
-public class JobRunningStatisticJob extends AbstractStatisticJob {
+public final class JobRunningStatisticJob extends AbstractStatisticJob {
     
     private RunningService runningService;
     

@@ -35,7 +35,7 @@ import java.util.concurrent.Executors;
  * @author zhangliang
  * @author caohao
  */
-public class CloudJobConfigurationListener implements TreeCacheListener {
+public final class CloudJobConfigurationListener implements TreeCacheListener {
     
     private final CoordinatorRegistryCenter regCenter;
     

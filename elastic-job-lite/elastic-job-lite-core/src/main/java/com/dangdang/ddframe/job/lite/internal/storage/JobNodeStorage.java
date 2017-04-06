@@ -38,7 +38,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class JobNodeStorage {
+public final class JobNodeStorage {
     
     private final CoordinatorRegistryCenter regCenter;
     

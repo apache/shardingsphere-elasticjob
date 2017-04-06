@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.lite.console.repository.impl.ConfigurationsXmlRe
 import com.dangdang.ddframe.job.lite.console.service.RegistryCenterService;
 import com.google.common.base.Optional;
 
-public class RegistryCenterServiceImpl implements RegistryCenterService {
+public final class RegistryCenterServiceImpl implements RegistryCenterService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
     

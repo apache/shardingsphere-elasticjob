@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.console.repository.impl;
 import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
 import com.dangdang.ddframe.job.lite.console.repository.ConfigurationsXmlRepository;
 
-public class ConfigurationsXmlRepositoryImpl extends AbstractXmlRepositoryImpl<GlobalConfiguration> implements ConfigurationsXmlRepository {
+public final class ConfigurationsXmlRepositoryImpl extends AbstractXmlRepositoryImpl<GlobalConfiguration> implements ConfigurationsXmlRepository {
     
     public ConfigurationsXmlRepositoryImpl() {
         super("Configurations.xml", GlobalConfiguration.class);

@@ -38,7 +38,7 @@ import java.util.Collection;
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public class CloudJobFacade implements JobFacade {
+public final class CloudJobFacade implements JobFacade {
     
     private final ShardingContexts shardingContexts;
     

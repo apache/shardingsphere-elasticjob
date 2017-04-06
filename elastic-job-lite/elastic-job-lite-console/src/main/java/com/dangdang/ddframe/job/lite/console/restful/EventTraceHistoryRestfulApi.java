@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Path("/event-trace")
-public class EventTraceHistoryRestfulApi {
+public final class EventTraceHistoryRestfulApi {
     
     private EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = SessionEventTraceDataSourceConfiguration.getEventTraceDataSourceConfiguration();
     

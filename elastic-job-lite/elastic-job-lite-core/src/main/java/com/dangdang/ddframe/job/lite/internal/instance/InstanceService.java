@@ -30,7 +30,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class InstanceService {
+public final class InstanceService {
     
     private final JobNodeStorage jobNodeStorage;
     

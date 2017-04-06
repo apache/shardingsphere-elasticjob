@@ -49,7 +49,7 @@ import java.util.Set;
  * @author zhangliang
  */
 @Slf4j
-public class ProducerManager {
+public final class ProducerManager {
     
     private final CloudAppConfigurationService appConfigService;
     

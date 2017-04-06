@@ -36,7 +36,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 @Path("/data-source")
-public class EventTraceDataSourceRestfulApi {
+public final class EventTraceDataSourceRestfulApi {
     
     public static final String DATA_SOURCE_CONFIG_KEY = "data_source_config_key";
     

@@ -36,7 +36,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class SchedulerFacade {
+public final class SchedulerFacade {
     
     private final CoordinatorRegistryCenter regCenter;
     

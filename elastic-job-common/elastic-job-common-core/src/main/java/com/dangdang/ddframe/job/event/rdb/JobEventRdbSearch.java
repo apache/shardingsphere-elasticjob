@@ -50,7 +50,7 @@ import java.util.Map;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class JobEventRdbSearch {
+public final class JobEventRdbSearch {
     
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     

@@ -29,7 +29,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * @author caohao
  * @author zhangliang
  */
-public class RescheduleListenerManager extends AbstractListenerManager {
+public final class RescheduleListenerManager extends AbstractListenerManager {
     
     private final ConfigurationNode configNode;
     

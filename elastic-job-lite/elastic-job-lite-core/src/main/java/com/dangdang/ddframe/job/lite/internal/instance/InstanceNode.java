@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
  * 
  * @author zhangliang
  */
-public class InstanceNode {
+public final class InstanceNode {
     
     /**
      * 运行实例信息根节点.

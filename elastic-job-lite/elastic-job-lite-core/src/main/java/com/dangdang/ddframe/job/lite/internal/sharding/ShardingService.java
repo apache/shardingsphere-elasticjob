@@ -47,7 +47,7 @@ import java.util.Map;
  * @author zhangliang
  */
 @Slf4j
-public class ShardingService {
+public final class ShardingService {
     
     private final String jobName;
     

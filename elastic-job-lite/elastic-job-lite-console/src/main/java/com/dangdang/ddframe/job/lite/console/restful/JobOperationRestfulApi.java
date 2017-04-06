@@ -34,7 +34,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 @Path("/jobs")
-public class JobOperationRestfulApi {
+public final class JobOperationRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     

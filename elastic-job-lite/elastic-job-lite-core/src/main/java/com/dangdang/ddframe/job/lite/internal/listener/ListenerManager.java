@@ -35,7 +35,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class ListenerManager {
+public final class ListenerManager {
     
     private final JobNodeStorage jobNodeStorage;
     

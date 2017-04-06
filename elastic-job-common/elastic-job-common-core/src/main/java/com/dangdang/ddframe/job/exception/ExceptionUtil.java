@@ -29,7 +29,7 @@ import java.io.StringWriter;
  * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ExceptionUtil {
+public final class ExceptionUtil {
     
     public static String transform(final Throwable cause) {
         if (null == cause) {

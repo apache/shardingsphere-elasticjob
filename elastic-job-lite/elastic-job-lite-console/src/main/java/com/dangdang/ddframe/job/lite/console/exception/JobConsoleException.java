@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.console.exception;
 
-public class JobConsoleException extends RuntimeException {
+public final class JobConsoleException extends RuntimeException {
     
     private static final long serialVersionUID = 1393957353478034407L;
     

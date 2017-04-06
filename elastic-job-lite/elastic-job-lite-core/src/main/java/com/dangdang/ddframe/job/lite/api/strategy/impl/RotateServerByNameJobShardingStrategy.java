@@ -29,7 +29,7 @@ import java.util.Map;
  * 
  * @author weishubin
  */
-public class RotateServerByNameJobShardingStrategy implements JobShardingStrategy {
+public final class RotateServerByNameJobShardingStrategy implements JobShardingStrategy {
     
     private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     

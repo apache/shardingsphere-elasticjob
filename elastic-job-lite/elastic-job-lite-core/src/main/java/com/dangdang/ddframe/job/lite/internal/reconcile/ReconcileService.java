@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 @Slf4j
-public class ReconcileService extends AbstractScheduledService {
+public final class ReconcileService extends AbstractScheduledService {
     
     private long lastReconcileTime;
     

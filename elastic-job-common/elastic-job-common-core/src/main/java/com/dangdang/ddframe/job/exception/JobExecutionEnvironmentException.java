@@ -22,7 +22,7 @@ package com.dangdang.ddframe.job.exception;
  * 
  * @author zhangliang
  */
-public class JobExecutionEnvironmentException extends Exception {
+public final class JobExecutionEnvironmentException extends Exception {
     
     private static final long serialVersionUID = -6670738108926897433L;
     

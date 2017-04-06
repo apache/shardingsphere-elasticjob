@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author zhangliang
  */
 @Slf4j
-public class LeaderService {
+public final class LeaderService {
     
     private final String jobName;
     

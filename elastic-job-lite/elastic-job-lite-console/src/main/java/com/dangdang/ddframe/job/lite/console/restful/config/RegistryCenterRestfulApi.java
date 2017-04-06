@@ -37,7 +37,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 @Path("/registry-center")
-public class RegistryCenterRestfulApi {
+public final class RegistryCenterRestfulApi {
     
     public static final String REG_CENTER_CONFIG_KEY = "reg_center_config_key";
     

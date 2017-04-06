@@ -45,7 +45,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public class RunningService {
+public final class RunningService {
     
     private static final int TASK_INITIAL_SIZE = 1024;
     

@@ -35,7 +35,7 @@ import java.util.List;
  * @author zhangliang
  * @author caohao
  */
-public class ExecutionService {
+public final class ExecutionService {
     
     private final String jobName;
     

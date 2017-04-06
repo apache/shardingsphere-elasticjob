@@ -50,7 +50,7 @@ import java.util.Set;
  * @author caohao
  */
 @Slf4j
-public class FacadeService {
+public final class FacadeService {
     
     private final CloudAppConfigurationService appConfigService;
     

@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  * 
  * @author zhangliang
  */
-public class ServerNode {
+public final class ServerNode {
     
     /**
      * 服务器信息根节点.

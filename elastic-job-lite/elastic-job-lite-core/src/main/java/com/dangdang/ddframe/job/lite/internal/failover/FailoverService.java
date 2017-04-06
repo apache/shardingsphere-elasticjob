@@ -36,7 +36,7 @@ import java.util.List;
  * @author zhangliang
  */
 @Slf4j
-public class FailoverService {
+public final class FailoverService {
     
     private final String jobName;
     

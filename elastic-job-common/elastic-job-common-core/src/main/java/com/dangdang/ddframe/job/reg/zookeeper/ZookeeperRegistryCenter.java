@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * @author zhangliang
  */
 @Slf4j
-public class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
+public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter {
     
     @Getter(AccessLevel.PROTECTED)
     private ZookeeperConfiguration zkConfig;

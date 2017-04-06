@@ -45,7 +45,7 @@ import java.util.Properties;
  *
  * @author caohao
  */
-class TransientProducerScheduler {
+final class TransientProducerScheduler {
     
     private final TransientProducerRepository repository;
     

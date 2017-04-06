@@ -48,7 +48,7 @@ import java.util.Set;
  * @author zhangliang
  */
 @Slf4j
-public class FailoverService {
+public final class FailoverService {
     
     private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
     

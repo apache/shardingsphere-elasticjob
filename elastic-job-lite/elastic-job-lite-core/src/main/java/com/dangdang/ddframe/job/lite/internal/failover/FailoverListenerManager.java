@@ -33,7 +33,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * 
  * @author zhangliang
  */
-public class FailoverListenerManager extends AbstractListenerManager {
+public final class FailoverListenerManager extends AbstractListenerManager {
     
     private final ConfigurationService configService;
     

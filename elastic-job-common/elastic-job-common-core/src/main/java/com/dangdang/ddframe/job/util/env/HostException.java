@@ -24,7 +24,7 @@ import java.io.IOException;
  * 
  * @author zhangliang
  */
-public class HostException extends RuntimeException {
+public final class HostException extends RuntimeException {
     
     private static final long serialVersionUID = 3589264847881174997L;
     

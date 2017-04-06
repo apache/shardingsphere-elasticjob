@@ -37,7 +37,7 @@ import java.util.Map;
  * 
  * @author zhangliang
  */
-public class ExecutionContextService {
+public final class ExecutionContextService {
     
     private final String jobName;
     

@@ -32,7 +32,7 @@ import java.util.concurrent.CountDownLatch;
  * @author caohao
  */
 @Slf4j
-public class ZookeeperElectionService {
+public final class ZookeeperElectionService {
     
     private final CountDownLatch leaderLatch = new CountDownLatch(1);
     

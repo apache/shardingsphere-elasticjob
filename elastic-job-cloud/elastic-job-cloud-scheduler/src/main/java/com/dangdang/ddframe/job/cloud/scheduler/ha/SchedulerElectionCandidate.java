@@ -26,7 +26,7 @@ import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
  *
  * @author caohao
  */
-public class SchedulerElectionCandidate implements ElectionCandidate {
+public final class SchedulerElectionCandidate implements ElectionCandidate {
     
     private final CoordinatorRegistryCenter regCenter;
     

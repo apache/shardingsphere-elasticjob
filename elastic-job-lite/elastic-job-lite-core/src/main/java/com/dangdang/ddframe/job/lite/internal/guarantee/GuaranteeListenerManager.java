@@ -31,7 +31,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class GuaranteeListenerManager extends AbstractListenerManager {
+public final class GuaranteeListenerManager extends AbstractListenerManager {
     
     private final GuaranteeNode guaranteeNode;
     

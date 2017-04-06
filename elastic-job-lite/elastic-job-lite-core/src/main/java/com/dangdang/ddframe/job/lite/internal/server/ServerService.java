@@ -30,7 +30,7 @@ import java.util.List;
  * @author zhangliang
  * @author caohao
  */
-public class ServerService {
+public final class ServerService {
     
     private final String jobName;
     

@@ -16,7 +16,7 @@ import org.apache.curator.framework.state.ConnectionStateListener;
  *
  * @author zhangliang
  */
-public class RegistryCenterConnectionStateListener implements ConnectionStateListener {
+public final class RegistryCenterConnectionStateListener implements ConnectionStateListener {
     
     private final String jobName;
     

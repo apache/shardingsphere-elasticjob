@@ -33,7 +33,7 @@ import org.quartz.TriggerKey;
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public class JobScheduleController {
+public final class JobScheduleController {
     
     private final Scheduler scheduler;
     

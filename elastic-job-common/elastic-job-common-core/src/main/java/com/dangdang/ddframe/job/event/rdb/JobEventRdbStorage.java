@@ -44,7 +44,7 @@ import java.util.UUID;
  * @author caohao
  */
 @Slf4j
-class JobEventRdbStorage {
+final class JobEventRdbStorage {
     
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     

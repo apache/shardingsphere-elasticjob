@@ -28,7 +28,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * 
  * @author zhangliang
  */
-public class ShutdownListenerManager extends AbstractListenerManager {
+public final class ShutdownListenerManager extends AbstractListenerManager {
     
     private final InstanceNode instanceNode;
     

@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class LiteJobConfiguration implements JobRootConfiguration {
+public final class LiteJobConfiguration implements JobRootConfiguration {
     
     private final JobTypeConfiguration typeConfig;
     

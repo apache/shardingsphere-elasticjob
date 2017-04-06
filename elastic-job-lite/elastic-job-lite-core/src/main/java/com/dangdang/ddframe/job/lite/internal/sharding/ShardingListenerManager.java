@@ -32,7 +32,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * 
  * @author zhangliang
  */
-public class ShardingListenerManager extends AbstractListenerManager {
+public final class ShardingListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     

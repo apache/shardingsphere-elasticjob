@@ -29,7 +29,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * 
  * @author zhangliang
  */
-public class TriggerListenerManager extends AbstractListenerManager {
+public final class TriggerListenerManager extends AbstractListenerManager {
     
     private final String jobName;
     

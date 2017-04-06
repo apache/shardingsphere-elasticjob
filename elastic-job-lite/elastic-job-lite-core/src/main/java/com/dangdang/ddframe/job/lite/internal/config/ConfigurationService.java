@@ -31,7 +31,7 @@ import com.google.common.base.Optional;
  * @author zhangliang
  * @author caohao
  */
-public class ConfigurationService {
+public final class ConfigurationService {
     
     private final TimeService timeService;
     

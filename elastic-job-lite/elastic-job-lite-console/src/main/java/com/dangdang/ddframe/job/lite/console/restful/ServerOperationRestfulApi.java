@@ -33,7 +33,7 @@ import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
 @Path("/servers")
-public class ServerOperationRestfulApi {
+public final class ServerOperationRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     

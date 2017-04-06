@@ -27,7 +27,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class JobExecutionTypeStatistics {
+public final class JobExecutionTypeStatistics {
     
     private int transientJobCount;
     

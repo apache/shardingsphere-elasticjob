@@ -17,9 +17,8 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.statistics;
 
-import java.util.Map;
-import java.util.Properties;
-
+import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.StatisticJob;
+import com.dangdang.ddframe.job.exception.JobStatisticException;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -27,15 +26,15 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.plugins.management.ShutdownHookPlugin;
 import org.quartz.simpl.SimpleThreadPool;
 
-import com.dangdang.ddframe.job.cloud.scheduler.statistics.job.StatisticJob;
-import com.dangdang.ddframe.job.exception.JobStatisticException;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 统计作业调度器.
  *
  * @author liguangyun
  */
-class StatisticsScheduler {
+final class StatisticsScheduler {
     
     private final StdSchedulerFactory factory;
     

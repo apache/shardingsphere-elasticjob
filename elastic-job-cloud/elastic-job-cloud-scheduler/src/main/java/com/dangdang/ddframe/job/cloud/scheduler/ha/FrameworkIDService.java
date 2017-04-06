@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
  * @author gaohongtao
  */
 @RequiredArgsConstructor
-public class FrameworkIDService {
+public final class FrameworkIDService {
     
     private final CoordinatorRegistryCenter regCenter;
     

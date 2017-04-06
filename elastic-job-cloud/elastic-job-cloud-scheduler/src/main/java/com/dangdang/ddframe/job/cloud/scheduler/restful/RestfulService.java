@@ -29,7 +29,7 @@ import com.google.common.base.Optional;
  *
  * @author caohao
  */
-public class RestfulService {
+public final class RestfulService {
     
     private static final String CONSOLE_PATH = "console";
     

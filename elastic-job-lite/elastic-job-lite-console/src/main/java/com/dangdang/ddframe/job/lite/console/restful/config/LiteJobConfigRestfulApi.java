@@ -31,7 +31,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/jobs/config")
-public class LiteJobConfigRestfulApi {
+public final class LiteJobConfigRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     

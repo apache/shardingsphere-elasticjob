@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class TaskLaunchScheduledService extends AbstractScheduledService {
+public final class TaskLaunchScheduledService extends AbstractScheduledService {
     
     private final SchedulerDriver schedulerDriver;
     

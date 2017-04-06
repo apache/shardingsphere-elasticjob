@@ -36,7 +36,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
-public class JobExecutionEvent implements JobEvent {
+public final class JobExecutionEvent implements JobEvent {
     
     private String id = UUID.randomUUID().toString();
     

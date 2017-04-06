@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
-public class JobStatusTraceEvent implements JobEvent {
+public final class JobStatusTraceEvent implements JobEvent {
     
     private String id = UUID.randomUUID().toString();
     

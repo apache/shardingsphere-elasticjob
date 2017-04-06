@@ -47,7 +47,7 @@ import java.util.List;
  * @author zhangliang
  */
 @Slf4j
-public class LiteJobFacade implements JobFacade {
+public final class LiteJobFacade implements JobFacade {
     
     private final ConfigurationService configService;
     

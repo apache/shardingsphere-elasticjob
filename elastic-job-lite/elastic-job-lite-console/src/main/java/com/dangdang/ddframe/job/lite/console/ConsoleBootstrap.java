@@ -21,12 +21,15 @@ import com.dangdang.ddframe.job.lite.console.restful.JobOperationRestfulApi;
 import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.dangdang.ddframe.job.security.WwwAuthFilter;
 import com.google.common.base.Optional;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * 界面启动器.
  *
  * @author caohao
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConsoleBootstrap {
     
     private static final String CONSOLE_PATH = "console";

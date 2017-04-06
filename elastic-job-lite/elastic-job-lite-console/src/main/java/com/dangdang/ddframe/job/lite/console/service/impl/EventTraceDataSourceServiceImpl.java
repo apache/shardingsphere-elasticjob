@@ -25,7 +25,7 @@ import com.dangdang.ddframe.job.lite.console.repository.impl.ConfigurationsXmlRe
 import com.dangdang.ddframe.job.lite.console.service.EventTraceDataSourceService;
 import com.google.common.base.Optional;
 
-public class EventTraceDataSourceServiceImpl implements EventTraceDataSourceService {
+public final class EventTraceDataSourceServiceImpl implements EventTraceDataSourceService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
     

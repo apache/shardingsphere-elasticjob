@@ -22,7 +22,7 @@ package com.dangdang.ddframe.job.reg.exception;
  * 
  * @author zhangliang
  */
-public class RegException extends RuntimeException {
+public final class RegException extends RuntimeException {
     
     private static final long serialVersionUID = -6417179023552012152L;
     

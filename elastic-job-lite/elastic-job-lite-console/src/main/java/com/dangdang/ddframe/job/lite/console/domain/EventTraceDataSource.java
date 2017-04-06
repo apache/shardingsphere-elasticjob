@@ -1,12 +1,11 @@
 package com.dangdang.ddframe.job.lite.console.domain;
 
-import java.sql.DriverManager;
-
-import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  * 事件追踪数据源.
@@ -14,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author zhangxinguo
  */
 @Slf4j
-public class EventTraceDataSource {
+public final class EventTraceDataSource {
     
     @Getter(AccessLevel.PROTECTED)
     private EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration;
@@ -28,7 +27,7 @@ public class EventTraceDataSource {
         try {
             Class.forName(eventTraceDataSourceConfiguration.getDriver());
             DriverManager.getConnection(eventTraceDataSourceConfiguration.getUrl(), eventTraceDataSourceConfiguration.getUsername(), eventTraceDataSourceConfiguration.getPassword());
-        } catch (Exception ex) {
+        } catch (final ClassNotFoundException | SQLException ex) {
             throw new RuntimeException(ex);
         }
     }
