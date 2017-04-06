@@ -22,12 +22,12 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public final class HomeFolderTest {
+public final class HomeFolderUtilsTest {
     
     private static final String HOME_FOLDER = System.getProperty("user.home") + System.getProperty("file.separator") + ".elastic-job-console" + System.getProperty("file.separator");
     
     @Test
     public void assertGetFilePathInHomeFolder() {
-        assertThat(HomeFolder.getFilePathInHomeFolder("test_file"), is(HOME_FOLDER + "test_file"));
+        assertThat(HomeFolderUtils.getFilePathInHomeFolder("test_file"), is(HOME_FOLDER + "test_file"));
     }
 }

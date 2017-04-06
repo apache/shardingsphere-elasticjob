@@ -30,11 +30,22 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+/**
+ * 作业配置的RESTful API.
+ *
+ * @author caohao
+ */
 @Path("/jobs/config")
 public final class LiteJobConfigRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
+    /**
+     * 获取作业配置.
+     * 
+     * @param jobName 作业名称
+     * @return 作业配置
+     */
     @GET
     @Path("/{jobName}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,12 +53,22 @@ public final class LiteJobConfigRestfulApi {
         return jobAPIService.getJobSettingsAPI().getJobSettings(jobName);
     }
     
+    /**
+     * 修改作业配置.
+     * 
+     * @param jobSettings 作业配置
+     */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public void updateJobSettings(final JobSettings jobSettings) {
         jobAPIService.getJobSettingsAPI().updateJobSettings(jobSettings);
     }
     
+    /**
+     * 删除作业配置.
+     * 
+     * @param jobName 作业名称
+     */
     @DELETE
     @Path("/{jobName}")
     public void removeJob(@PathParam("jobName") final String jobName) {

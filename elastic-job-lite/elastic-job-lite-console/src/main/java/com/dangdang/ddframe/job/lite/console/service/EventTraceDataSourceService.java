@@ -21,15 +21,47 @@ import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfigur
 import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
 import com.google.common.base.Optional;
 
+/**
+ * 事件追踪数据源配置服务.
+ * 
+ * @author caohao
+ */
 public interface EventTraceDataSourceService {
     
+    /**
+     * 读取全局配置.
+     * 
+     * @return 全局配置
+     */
     GlobalConfiguration loadAll();
     
+    /**
+     * 读取事件追踪数据源配置.
+     * 
+     * @param name 配置名称
+     * @return 事件追踪数据源配置
+     */
     EventTraceDataSourceConfiguration load(String name);
     
+    /**
+     * 读取已连接的事件追踪数据源配置.
+     * 
+     * @return 已连接的事件追踪数据源配置
+     */
     Optional<EventTraceDataSourceConfiguration> loadActivated();
     
+    /**
+     * 添加事件追踪数据源配置.
+     * 
+     * @param config 事件追踪数据源配置
+     * @return 是否添加成功
+     */
     boolean add(EventTraceDataSourceConfiguration config);
     
+    /**
+     * 删除事件追踪数据源配置.
+     *
+     * @param name 配置名称
+     */
     void delete(String name);
 }

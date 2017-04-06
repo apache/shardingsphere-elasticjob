@@ -42,7 +42,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 为调度器提供内部服务的门面类.
+ * 为作业提供内部服务的门面类.
  * 
  * @author zhangliang
  */

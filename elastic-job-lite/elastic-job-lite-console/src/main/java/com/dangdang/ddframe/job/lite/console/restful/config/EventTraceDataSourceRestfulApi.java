@@ -35,6 +35,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
+/**
+ * 事件追踪数据源配置的RESTful API.
+ *
+ * @author caohao
+ */
 @Path("/data-source")
 public final class EventTraceDataSourceRestfulApi {
     
@@ -42,6 +47,12 @@ public final class EventTraceDataSourceRestfulApi {
     
     private EventTraceDataSourceServiceImpl eventTraceDataSourceService = new EventTraceDataSourceServiceImpl();
     
+    /**
+     * 读取事件追踪数据源配置.
+     * 
+     * @param request HTTP请求对象
+     * @return 事件追踪数据源配置集合
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<EventTraceDataSourceConfiguration> load(final @Context HttpServletRequest request) {
@@ -52,6 +63,12 @@ public final class EventTraceDataSourceRestfulApi {
         return eventTraceDataSourceService.loadAll().getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration();
     }
     
+    /**
+     * 添加事件追踪数据源配置.
+     * 
+     * @param config 事件追踪数据源配置
+     * @return 是否添加成功
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -59,12 +76,24 @@ public final class EventTraceDataSourceRestfulApi {
         return eventTraceDataSourceService.add(config);
     }
     
+    /**
+     * 删除事件追踪数据源配置.
+     * 
+     * @param config 事件追踪数据源配置
+     */
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     public void delete(final EventTraceDataSourceConfiguration config) {
         eventTraceDataSourceService.delete(config.getName());
     }
     
+    /**
+     * 连接事件追踪数据源.
+     *
+     * @param config 事件追踪数据源配置
+     * @param request HTTP请求对象
+     * @return 是否连接成功
+     */
     @POST
     @Path("/connect")
     @Produces(MediaType.APPLICATION_JSON)
@@ -83,7 +112,9 @@ public final class EventTraceDataSourceRestfulApi {
             EventTraceDataSourceFactory.createCoordinatorDataSource(dataSourceConfig.getDriver(), dataSourceConfig.getUrl(), 
                     dataSourceConfig.getUsername(), Optional.fromNullable(dataSourceConfig.getPassword()));
             SessionEventTraceDataSourceConfiguration.setDataSourceConfiguration((EventTraceDataSourceConfiguration) session.getAttribute(DATA_SOURCE_CONFIG_KEY));
+        // CHECKSTYLE:OFF
         } catch (final Exception ex) {
+        // CHECKSTYLE:ON
             return false;
         }
         return true;

@@ -28,10 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 修复作业服务器不一致状态服务.
+ * 调解分布式作业不一致状态服务.
  *
  * @author caohao
- *
  */
 @Slf4j
 public final class ReconcileService extends AbstractScheduledService {

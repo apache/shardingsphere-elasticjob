@@ -41,27 +41,46 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 事件追踪历史记录的RESTful API.
+ *
+ * @author zhangxinguo
+ */
 @Path("/event-trace")
 public final class EventTraceHistoryRestfulApi {
     
     private EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = SessionEventTraceDataSourceConfiguration.getEventTraceDataSourceConfiguration();
     
+    /**
+     * 查询作业执行事件.
+     * 
+     * @param uriInfo 查询条件
+     * @return 运行痕迹事件结果集
+     * @throws ParseException 解析异常
+     */
     @GET
     @Path("/execution")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo info) throws ParseException {
+    public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo uriInfo) throws ParseException {
         JobEventRdbSearch jobEventRdbSearch = new JobEventRdbSearch(setUpEventTraceDataSource());
-        return jobEventRdbSearch.findJobExecutionEvents(buildCondition(info, new String[]{"jobName", "ip", "isSuccess"}));
+        return jobEventRdbSearch.findJobExecutionEvents(buildCondition(uriInfo, new String[]{"jobName", "ip", "isSuccess"}));
     }
     
+    /**
+     * 查询作业状态事件.
+     *
+     * @param uriInfo 查询条件
+     * @return 运行痕迹事件结果集
+     * @throws ParseException 解析异常
+     */
     @GET
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo info) throws ParseException {
+    public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo uriInfo) throws ParseException {
         JobEventRdbSearch jobEventRdbSearch = new JobEventRdbSearch(setUpEventTraceDataSource());
-        return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(info, new String[]{"jobName", "source", "executionType", "state"}));
+        return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(uriInfo, new String[]{"jobName", "source", "executionType", "state"}));
     }
     
     private DataSource setUpEventTraceDataSource() {

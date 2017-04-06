@@ -21,15 +21,47 @@ import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
 import com.google.common.base.Optional;
 
+/**
+ * 注册中心配置服务.
+ *
+ * @author zhangliang
+ */
 public interface RegistryCenterService {
     
+    /**
+     * 读取全局配置.
+     *
+     * @return 全局配置
+     */
     GlobalConfiguration loadAll();
     
+    /**
+     * 读取注册中心配置.
+     *
+     * @param name 配置名称
+     * @return 注册中心配置
+     */
     RegistryCenterConfiguration load(String name);
     
+    /**
+     * 读取已连接的注册中心配置.
+     *
+     * @return 已连接的注册中心配置
+     */
     Optional<RegistryCenterConfiguration> loadActivated();
     
+    /**
+     * 添加注册中心配置.
+     *
+     * @param config 注册中心配置
+     * @return 是否添加成功
+     */
     boolean add(RegistryCenterConfiguration config);
     
+    /**
+     * 删除注册中心配置.
+     *
+     * @param name 配置名称
+     */
     void delete(String name);
 }

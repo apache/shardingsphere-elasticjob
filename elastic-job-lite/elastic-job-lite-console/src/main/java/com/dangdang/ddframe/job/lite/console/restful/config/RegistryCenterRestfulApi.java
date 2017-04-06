@@ -36,6 +36,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
+/**
+ * 注册中心配置的RESTful API.
+ *
+ * @author caohao
+ */
 @Path("/registry-center")
 public final class RegistryCenterRestfulApi {
     
@@ -43,6 +48,12 @@ public final class RegistryCenterRestfulApi {
     
     private RegistryCenterServiceImpl regCenterService = new RegistryCenterServiceImpl();
     
+    /**
+     * 读取注册中心配置.
+     * 
+     * @param request HTTP请求
+     * @return 注册中心配置集合
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<RegistryCenterConfiguration> load(final @Context HttpServletRequest request) {
@@ -53,12 +64,23 @@ public final class RegistryCenterRestfulApi {
         return regCenterService.loadAll().getRegistryCenterConfigurations().getRegistryCenterConfiguration();
     }
     
+    /**
+     * 添加注册中心.
+     * 
+     * @param config 注册中心配置
+     * @return 是否添加成功
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public boolean add(final RegistryCenterConfiguration config) {
         return regCenterService.add(config);
     }
     
+    /**
+     * 删除注册中心.
+     *
+     * @param config 注册中心配置
+     */
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     public void delete(final RegistryCenterConfiguration config) {

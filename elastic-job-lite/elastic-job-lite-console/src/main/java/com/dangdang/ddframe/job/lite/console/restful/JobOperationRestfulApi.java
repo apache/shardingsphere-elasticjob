@@ -33,29 +33,54 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
 
+/**
+ * 作业维度操作的RESTful API.
+ *
+ * @author caohao
+ */
 @Path("/jobs")
 public final class JobOperationRestfulApi {
     
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
+    /**
+     * 获取作业总数.
+     * 
+     * @return 作业总数
+     */
     @GET
     @Path("/count")
     public int getJobsTotalCount() {
         return jobAPIService.getJobStatisticsAPI().getJobsTotalCount();
     }
     
+    /**
+     * 获取作业详情.
+     * 
+     * @return 作业详情集合
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {
         return jobAPIService.getJobStatisticsAPI().getAllJobsBriefInfo();
     }
     
+    /**
+     * 触发作业.
+     * 
+     * @param jobName 作业名称
+     */
     @POST
     @Path("/{jobName}/trigger")
     public void triggerJob(@PathParam("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().trigger(Optional.of(jobName), Optional.<String>absent());
     }
     
+    /**
+     * 禁用作业.
+     * 
+     * @param jobName 作业名称
+     */
     @POST
     @Path("/{jobName}/disable")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -63,6 +88,11 @@ public final class JobOperationRestfulApi {
         jobAPIService.getJobOperatorAPI().disable(Optional.of(jobName), Optional.<String>absent());
     }
     
+    /**
+     * 启用作业.
+     *
+     * @param jobName 作业名称
+     */
     @DELETE
     @Path("/{jobName}/disable")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -70,6 +100,11 @@ public final class JobOperationRestfulApi {
         jobAPIService.getJobOperatorAPI().enable(Optional.of(jobName), Optional.<String>absent());
     }
     
+    /**
+     * 终止作业.
+     * 
+     * @param jobName 作业名称
+     */
     @POST
     @Path("/{jobName}/shutdown")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -77,6 +112,12 @@ public final class JobOperationRestfulApi {
         jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.<String>absent());
     }
     
+    /**
+     * 获取分片信息.
+     * 
+     * @param jobName 作业名称
+     * @return 分片信息集合
+     */
     @GET
     @Path("/{jobName}/sharding")
     @Produces(MediaType.APPLICATION_JSON)

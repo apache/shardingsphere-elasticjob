@@ -17,15 +17,19 @@
 
 package com.dangdang.ddframe.job.lite.console.domain;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import lombok.Getter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import lombok.Getter;
-
+/**
+ * 注册中心配置根对象.
+ *
+ * @author zhangliang
+ */
 @Getter
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

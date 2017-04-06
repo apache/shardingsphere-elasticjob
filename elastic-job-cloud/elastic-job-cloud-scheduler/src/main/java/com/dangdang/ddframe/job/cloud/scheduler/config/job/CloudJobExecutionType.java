@@ -25,5 +25,4 @@ package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 public enum CloudJobExecutionType {
     
     DAEMON, TRANSIENT
-    
 }

@@ -20,6 +20,11 @@ package com.dangdang.ddframe.job.lite.console.repository.impl;
 import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
 import com.dangdang.ddframe.job.lite.console.repository.ConfigurationsXmlRepository;
 
+/**
+ * 基于XML的全局配置数据访问器实现类.
+ *
+ * @author zhangliang
+ */
 public final class ConfigurationsXmlRepositoryImpl extends AbstractXmlRepositoryImpl<GlobalConfiguration> implements ConfigurationsXmlRepository {
     
     public ConfigurationsXmlRepositoryImpl() {

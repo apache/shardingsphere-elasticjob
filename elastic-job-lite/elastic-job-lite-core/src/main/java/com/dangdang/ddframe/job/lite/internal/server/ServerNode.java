@@ -24,7 +24,7 @@ import com.dangdang.ddframe.job.util.env.IpUtils;
 import java.util.regex.Pattern;
 
 /**
- * Elastic Job服务器节点常量类.
+ * 服务器节点路径.
  * 
  * @author zhangliang
  */
