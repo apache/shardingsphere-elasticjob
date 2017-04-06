@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.failover;
 
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNode;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -147,7 +148,10 @@ public final class FailoverService {
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), JobRegistry.getInstance().getJobInstance(jobName).getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             // TODO 不应使用triggerJob, 而是使用executor统一调度
-            JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            if (null != jobScheduleController) {
+                jobScheduleController.triggerJob();
+            }
         }
     }
 }
