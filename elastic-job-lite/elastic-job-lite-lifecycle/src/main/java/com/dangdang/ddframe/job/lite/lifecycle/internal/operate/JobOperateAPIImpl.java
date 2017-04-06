@@ -74,7 +74,9 @@ public final class JobOperateAPIImpl implements JobOperateAPI {
         } else if (serverIp.isPresent()) {
             List<String> jobNames = regCenter.getChildrenKeys("/");
             for (String each : jobNames) {
-                persistDisabledOrEnabledJob(each, serverIp.get(), disabled);
+                if (regCenter.isExisted(new JobNodePath(each).getServerNodePath(serverIp.get()))) {
+                    persistDisabledOrEnabledJob(each, serverIp.get(), disabled);
+                }
             }
         }
     }

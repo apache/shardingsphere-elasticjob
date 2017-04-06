@@ -124,6 +124,9 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     }
     
     private JobBriefInfo getJobBriefInfoByJobNameAndIp(final String jobName, final String ip) {
+        if (!regCenter.isExisted(new JobNodePath(jobName).getServerNodePath(ip))) {
+            return null;
+        }
         JobBriefInfo result = new JobBriefInfo();
         result.setJobName(jobName);
         result.setStatus(getJobStatusByJobNameAndIp(jobName, ip));

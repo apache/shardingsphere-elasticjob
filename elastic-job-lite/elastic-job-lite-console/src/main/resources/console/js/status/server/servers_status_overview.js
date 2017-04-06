@@ -14,7 +14,7 @@ function renderServersOverview() {
             sortable: "true"
         }, {
             field: "instancesNum",
-            title: "实例数",
+            title: "运行实例数",
             sortable: "true"
         }, {
             field: "jobsNum",
@@ -45,17 +45,15 @@ function generateOperationButtons(val, row) {
     var disableButton = "<button operation='disable-server' class='btn-xs btn-warning' server-ip='" + row.serverIp + "'>禁用</button>";
     var enableButton = "<button operation='enable-server' class='btn-xs btn-success' server-ip='" + row.serverIp + "'>启用</button>";
     var shutdownButton = "<button operation='shutdown-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "'>终止</button>";
-    var removeButton = "<button operation='remove-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "'>删除</button>";
-    var operationTd = "";
-    if (row.disabledJobsNum > 0 && row.jobsNum > 0) {
-        operationTd = detailButton  + "&nbsp;" + enableButton + "&nbsp;";
-    } else if (row.jobsNum > 0 && row.instancesNum > 0) {
-        operationTd = detailButton  + "&nbsp;" + disableButton + "&nbsp;";
+    var removeButton = "<button operation='remove-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "'>清理</button>";
+    if (row.instancesNum == 0) {
+        return removeButton;
     }
-    if (row.jobsNum > 0) {
-        operationTd = operationTd  + shutdownButton;
-    } else {
-        operationTd = operationTd  + removeButton;
+    var operationTd = "";
+    if (row.disabledJobsNum > 0) {
+        operationTd = detailButton  + "&nbsp;" + enableButton + "&nbsp;" + shutdownButton;
+    } else if (row.instancesNum > 0) {
+        operationTd = detailButton  + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
     }
     return operationTd;
 }
@@ -120,7 +118,6 @@ function bindRemoveServerButton() {
     $(document).on("click", "button[operation='remove-server']", function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
-        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
         $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
             $.ajax({

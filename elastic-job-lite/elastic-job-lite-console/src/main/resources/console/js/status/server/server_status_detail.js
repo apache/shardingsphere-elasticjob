@@ -17,7 +17,7 @@ function renderJobs() {
             sortable: "true"
         }, {
             field: "instanceCount",
-            title: "实例数"
+            title: "运行实例数"
         }, {
             field: "status",
             title: "状态",
@@ -47,8 +47,7 @@ function statusFormatter(val, row) {
 
 function generateOperationButtons(val, row) {
     if (0 === row.instanceCount ) {
-        //return "<button operation='remove' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
-        return "-";
+        return "<button operation='remove' class='btn-xs btn-danger' job-name='" + row.jobName + "'>清理</button>";
     }
     var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "'>禁用</button>";
     var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "'>启用</button>";
@@ -97,13 +96,21 @@ function bindEnableButton() {
 
 function bindShutdownButton() {
     $(document).on("click", "button[operation='shutdown']", function(event) {
-        $.ajax({
-            url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/shutdown",
-            type: "POST",
-            success: function(){
-                $("#server-jobs-tbl").bootstrapTable("refresh");
-                showSuccessDialog();
-            }
+        $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        var serverIp = $("#server-ip").text();
+        var jobName = $(event.currentTarget).attr("job-name");
+        $(document).off("click", "#shutdown-confirm-dialog-confirm-btn");
+        $(document).on("click", "#shutdown-confirm-dialog-confirm-btn", function() {
+            $.ajax({
+                url: "/api/servers/" + serverIp + "/jobs/" + jobName + "/shutdown",
+                type: "POST",
+                success: function () {
+                    $("#shutdown-confirm-dialog").modal("hide");
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
+                    $("#server-jobs-tbl").bootstrapTable("refresh");
+                }
+            });
         });
     });
 }
@@ -113,7 +120,6 @@ function bindRemoveButton() {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $("#server-ip").text();
         var jobName = $(event.currentTarget).attr("job-name");
-        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
         $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
             $.ajax({
