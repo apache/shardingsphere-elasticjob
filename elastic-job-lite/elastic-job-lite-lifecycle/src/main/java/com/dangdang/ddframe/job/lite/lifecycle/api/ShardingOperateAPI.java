@@ -25,20 +25,18 @@ package com.dangdang.ddframe.job.lite.lifecycle.api;
 public interface ShardingOperateAPI {
     
     /**
-     * 分片禁用.
+     * 禁用作业分片.
      * 
-     * <p>会重新分片.</p>
-     *
      * @param jobName 作业名称
-     * @param sharding 分片项
+     * @param item 分片项
      */
-    void disable(String jobName, String sharding);
+    void disable(String jobName, String item);
     
     /**
-     * 分片启用.
+     * 启用作业分片.
      *
      * @param jobName 作业名称
-     * @param sharding 分片项
+     * @param item 分片项
      */
-    void enable(String jobName, String sharding);
+    void enable(String jobName, String item);
 }

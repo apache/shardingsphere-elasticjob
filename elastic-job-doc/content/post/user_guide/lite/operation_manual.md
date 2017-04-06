@@ -30,7 +30,7 @@ weight=15
  
 ### 2. 操作类API
 
-#### `JobOperateAPI` 操作作业的API
+#### 2.1 `JobOperateAPI` 操作作业的API
 
 ##### `void trigger(Optional<String> jobName, Optional<String> serverIp)` 作业立刻执行.作业在不与上次运行中作业冲突的情况下才会启动, 并在启动后自动清理此标记.
 
@@ -62,9 +62,27 @@ weight=15
   * `jobName` — 作业名称
   * `serverIp` — 作业服务器IP地址
 
+#### 2.2 `ShardingOperateAPI` 操作分片的API
+
+##### `void disable(String jobName, String item)` 禁用作业分片.
+
+* **Parameters:**
+  * `jobName` — 作业名称
+  * `item` — 作业分片项
+
+##### `void enable(String jobName, String item)` 启用作业分片.
+
+* **Parameters:**
+  * `jobName` — 作业名称
+  * `item` — 作业分片项
+
 ### 3. 统计类API
 
 #### 3.1 `JobStatisticsAPI` 作业状态展示的API
+
+##### `int getJobsTotalCount()` 获取作业总数.
+
+* **Returns:** 作业总数
 
 ##### `JobBriefInfo getJobBriefInfo(String jobName)` 获取作业简明信息.
 
@@ -83,6 +101,10 @@ weight=15
 * **Returns:** 作业简明信息集合
 
 #### 3.2 `ServerStatisticsAPI` 作业服务器状态展示的API
+
+##### `int getServersTotalCount()` 获取作业服务器总数.
+
+* **Returns:** 作业服务器总数
 
 ##### `Collection<ServerBriefInfo> getAllServersBriefInfo()` 获取所有作业服务器简明信息.
 
