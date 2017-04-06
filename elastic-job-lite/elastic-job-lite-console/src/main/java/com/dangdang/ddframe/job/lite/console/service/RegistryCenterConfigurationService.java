@@ -17,49 +17,58 @@
 
 package com.dangdang.ddframe.job.lite.console.service;
 
-import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
+import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
 import com.google.common.base.Optional;
 
 /**
- * 事件追踪数据源配置服务.
- * 
- * @author caohao
+ * 注册中心配置服务.
+ *
+ * @author zhangliang
  */
-public interface EventTraceDataSourceService {
+public interface RegistryCenterConfigurationService {
     
     /**
      * 读取全局配置.
-     * 
+     *
      * @return 全局配置
      */
     GlobalConfiguration loadAll();
     
     /**
-     * 读取事件追踪数据源配置.
+     * 读取注册中心配置.
+     *
+     * @param name 配置名称
+     * @return 注册中心配置
+     */
+    RegistryCenterConfiguration load(String name);
+    
+    /**
+     * 查找注册中心配置.
      * 
      * @param name 配置名称
-     * @return 事件追踪数据源配置
+     * @param configs 全局配置
+     * @return 注册中心配置
      */
-    EventTraceDataSourceConfiguration load(String name);
+    RegistryCenterConfiguration find(final String name, final GlobalConfiguration configs);
     
     /**
-     * 读取已连接的事件追踪数据源配置.
-     * 
-     * @return 已连接的事件追踪数据源配置
+     * 读取已连接的注册中心配置.
+     *
+     * @return 已连接的注册中心配置
      */
-    Optional<EventTraceDataSourceConfiguration> loadActivated();
+    Optional<RegistryCenterConfiguration> loadActivated();
     
     /**
-     * 添加事件追踪数据源配置.
-     * 
-     * @param config 事件追踪数据源配置
+     * 添加注册中心配置.
+     *
+     * @param config 注册中心配置
      * @return 是否添加成功
      */
-    boolean add(EventTraceDataSourceConfiguration config);
+    boolean add(RegistryCenterConfiguration config);
     
     /**
-     * 删除事件追踪数据源配置.
+     * 删除注册中心配置.
      *
      * @param name 配置名称
      */

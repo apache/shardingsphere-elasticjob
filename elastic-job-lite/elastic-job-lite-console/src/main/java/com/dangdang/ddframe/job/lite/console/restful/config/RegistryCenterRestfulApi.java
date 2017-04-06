@@ -18,7 +18,8 @@
 package com.dangdang.ddframe.job.lite.console.restful.config;
 
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
-import com.dangdang.ddframe.job.lite.console.service.impl.RegistryCenterServiceImpl;
+import com.dangdang.ddframe.job.lite.console.service.RegistryCenterConfigurationService;
+import com.dangdang.ddframe.job.lite.console.service.impl.RegistryCenterConfigurationServiceImpl;
 import com.dangdang.ddframe.job.lite.console.util.SessionRegistryCenterConfiguration;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactory;
 import com.dangdang.ddframe.job.reg.exception.RegException;
@@ -46,7 +47,7 @@ public final class RegistryCenterRestfulApi {
     
     public static final String REG_CENTER_CONFIG_KEY = "reg_center_config_key";
     
-    private RegistryCenterServiceImpl regCenterService = new RegistryCenterServiceImpl();
+    private RegistryCenterConfigurationService regCenterService = new RegistryCenterConfigurationServiceImpl();
     
     /**
      * 读取注册中心配置.
@@ -92,7 +93,7 @@ public final class RegistryCenterRestfulApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean connect(final RegistryCenterConfiguration config, final @Context HttpServletRequest request) {
-        boolean isConnected = setRegistryCenterNameToSession(regCenterService.findRegistryCenterConfiguration(config.getName(), regCenterService.loadAll()), request.getSession());
+        boolean isConnected = setRegistryCenterNameToSession(regCenterService.find(config.getName(), regCenterService.loadAll()), request.getSession());
         if (isConnected) {
             regCenterService.load(config.getName());
         }

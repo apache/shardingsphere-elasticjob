@@ -19,7 +19,8 @@ package com.dangdang.ddframe.job.lite.console.restful.config;
 
 import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceFactory;
-import com.dangdang.ddframe.job.lite.console.service.impl.EventTraceDataSourceServiceImpl;
+import com.dangdang.ddframe.job.lite.console.service.EventTraceDataSourceConfigurationService;
+import com.dangdang.ddframe.job.lite.console.service.impl.EventTraceDataSourceConfigurationServiceImpl;
 import com.dangdang.ddframe.job.lite.console.util.SessionEventTraceDataSourceConfiguration;
 import com.google.common.base.Optional;
 
@@ -45,7 +46,7 @@ public final class EventTraceDataSourceRestfulApi {
     
     public static final String DATA_SOURCE_CONFIG_KEY = "data_source_config_key";
     
-    private EventTraceDataSourceServiceImpl eventTraceDataSourceService = new EventTraceDataSourceServiceImpl();
+    private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService = new EventTraceDataSourceConfigurationServiceImpl();
     
     /**
      * 读取事件追踪数据源配置.
@@ -56,11 +57,11 @@ public final class EventTraceDataSourceRestfulApi {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<EventTraceDataSourceConfiguration> load(final @Context HttpServletRequest request) {
-        Optional<EventTraceDataSourceConfiguration> dataSourceConfig = eventTraceDataSourceService.loadActivated();
+        Optional<EventTraceDataSourceConfiguration> dataSourceConfig = eventTraceDataSourceConfigurationService.loadActivated();
         if (dataSourceConfig.isPresent()) {
             setDataSourceNameToSession(dataSourceConfig.get(), request.getSession());
         }
-        return eventTraceDataSourceService.loadAll().getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration();
+        return eventTraceDataSourceConfigurationService.loadAll().getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration();
     }
     
     /**
@@ -73,7 +74,7 @@ public final class EventTraceDataSourceRestfulApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean add(final EventTraceDataSourceConfiguration config) {
-        return eventTraceDataSourceService.add(config);
+        return eventTraceDataSourceConfigurationService.add(config);
     }
     
     /**
@@ -84,7 +85,7 @@ public final class EventTraceDataSourceRestfulApi {
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     public void delete(final EventTraceDataSourceConfiguration config) {
-        eventTraceDataSourceService.delete(config.getName());
+        eventTraceDataSourceConfigurationService.delete(config.getName());
     }
     
     /**
@@ -99,9 +100,9 @@ public final class EventTraceDataSourceRestfulApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean connect(final EventTraceDataSourceConfiguration config, final @Context HttpServletRequest request) {
-        boolean isConnected = setDataSourceNameToSession(eventTraceDataSourceService.findDataSourceConfiguration(config.getName(), eventTraceDataSourceService.loadAll()), request.getSession());
+        boolean isConnected = setDataSourceNameToSession(eventTraceDataSourceConfigurationService.find(config.getName(), eventTraceDataSourceConfigurationService.loadAll()), request.getSession());
         if (isConnected) {
-            eventTraceDataSourceService.load(config.getName());
+            eventTraceDataSourceConfigurationService.load(config.getName());
         }
         return isConnected;
     }

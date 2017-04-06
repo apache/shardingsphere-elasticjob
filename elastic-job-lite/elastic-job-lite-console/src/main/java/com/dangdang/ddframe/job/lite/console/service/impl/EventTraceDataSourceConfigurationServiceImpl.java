@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfigur
 import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
 import com.dangdang.ddframe.job.lite.console.repository.ConfigurationsXmlRepository;
 import com.dangdang.ddframe.job.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
-import com.dangdang.ddframe.job.lite.console.service.EventTraceDataSourceService;
+import com.dangdang.ddframe.job.lite.console.service.EventTraceDataSourceConfigurationService;
 import com.google.common.base.Optional;
 
 /**
@@ -30,7 +30,7 @@ import com.google.common.base.Optional;
  *
  * @author caohao
  */
-public final class EventTraceDataSourceServiceImpl implements EventTraceDataSourceService {
+public final class EventTraceDataSourceConfigurationServiceImpl implements EventTraceDataSourceConfigurationService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
     
@@ -46,12 +46,13 @@ public final class EventTraceDataSourceServiceImpl implements EventTraceDataSour
     @Override
     public EventTraceDataSourceConfiguration load(final String name) {
         GlobalConfiguration configs = loadAll();
-        EventTraceDataSourceConfiguration result = findDataSourceConfiguration(name, configs);
+        EventTraceDataSourceConfiguration result = find(name, configs);
         setActivated(configs, result);
         return result;
     }
     
-    public EventTraceDataSourceConfiguration findDataSourceConfiguration(final String name, final GlobalConfiguration configs) {
+    @Override
+    public EventTraceDataSourceConfiguration find(final String name, final GlobalConfiguration configs) {
         for (EventTraceDataSourceConfiguration each : configs.getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration()) {
             if (name.equals(each.getName())) {
                 return each;

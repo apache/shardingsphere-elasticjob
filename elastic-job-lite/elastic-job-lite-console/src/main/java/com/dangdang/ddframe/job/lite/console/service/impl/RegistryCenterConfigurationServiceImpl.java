@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
 import com.dangdang.ddframe.job.lite.console.repository.ConfigurationsXmlRepository;
 import com.dangdang.ddframe.job.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
-import com.dangdang.ddframe.job.lite.console.service.RegistryCenterService;
+import com.dangdang.ddframe.job.lite.console.service.RegistryCenterConfigurationService;
 import com.google.common.base.Optional;
 
 /**
@@ -30,7 +30,7 @@ import com.google.common.base.Optional;
  *
  * @author zhangliang
  */
-public final class RegistryCenterServiceImpl implements RegistryCenterService {
+public final class RegistryCenterConfigurationServiceImpl implements RegistryCenterConfigurationService {
     
     private ConfigurationsXmlRepository configurationsXmlRepository = new ConfigurationsXmlRepositoryImpl();
     
@@ -46,12 +46,13 @@ public final class RegistryCenterServiceImpl implements RegistryCenterService {
     @Override
     public RegistryCenterConfiguration load(final String name) {
         GlobalConfiguration configs = loadAll();
-        RegistryCenterConfiguration result = findRegistryCenterConfiguration(name, configs);
+        RegistryCenterConfiguration result = find(name, configs);
         setActivated(configs, result);
         return result;
     }
     
-    public RegistryCenterConfiguration findRegistryCenterConfiguration(final String name, final GlobalConfiguration configs) {
+    @Override
+    public RegistryCenterConfiguration find(final String name, final GlobalConfiguration configs) {
         for (RegistryCenterConfiguration each : configs.getRegistryCenterConfigurations().getRegistryCenterConfiguration()) {
             if (name.equals(each.getName())) {
                 return each;
