@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.lifecycle.api;
 
 import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.JobOperateAPIImpl;
+import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.ShardingOperateAPIImpl;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactory;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.settings.JobSettingsAPIImpl;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.JobStatisticsAPIImpl;
@@ -57,6 +58,18 @@ public final class JobAPIFactory {
      */
     public static JobOperateAPI createJobOperateAPI(final String connectString, final String namespace, final Optional<String> digest) {
         return new JobOperateAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
+    }
+    
+    /**
+     * 创建操作分片API对象.
+     *
+     * @param connectString 注册中心连接字符串
+     * @param namespace 注册中心命名空间
+     * @param digest 注册中心凭证
+     * @return 操作分片API对象
+     */
+    public static ShardingOperateAPI createShardingOperateAPI(final String connectString, final String namespace, final Optional<String> digest) {
+        return new ShardingOperateAPIImpl(RegistryCenterFactory.createCoordinatorRegistryCenter(connectString, namespace, digest));
     }
     
     /**

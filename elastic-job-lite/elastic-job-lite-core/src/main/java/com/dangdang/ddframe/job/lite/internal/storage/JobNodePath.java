@@ -91,17 +91,6 @@ public final class JobNodePath {
     }
     
     /**
-     * 根据IP地址和子节点名称获取子节点路径.
-     *
-     * @param serverIp 作业服务器IP地址
-     * @param nodeName 子节点名称
-     * @return 作业节点IP地址子节点路径
-     */
-    public String getServerNodePath(final String serverIp, final String nodeName) {
-        return String.format("%s/%s", getServerNodePath(serverIp), nodeName);
-    }
-    
-    /**
      * 获取作业实例节点根路径.
      *
      * @return 作业实例节点根路径
@@ -123,7 +112,7 @@ public final class JobNodePath {
     /**
      * 获取分片节点根路径.
      *
-     * @return 运行节点根路径
+     * @return 分片节点根路径
      */
     public String getShardingNodePath() {
         return String.format("/%s/%s", jobName, SHARDING_NODE);
@@ -134,7 +123,7 @@ public final class JobNodePath {
      *
      * @param item 分片项
      * @param nodeName 子节点名称
-     * @return 运行节点路径
+     * @return 分片节点路径
      */
     public String getShardingNodePath(final String item, final String nodeName) {
         return String.format("%s/%s/%s", getShardingNodePath(), item, nodeName);

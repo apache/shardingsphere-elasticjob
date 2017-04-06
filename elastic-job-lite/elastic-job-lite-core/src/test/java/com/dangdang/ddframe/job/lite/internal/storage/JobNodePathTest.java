@@ -42,11 +42,6 @@ public final class JobNodePathTest {
     }
     
     @Test
-    public void assertGetServerNodePathForServerIpAndNameNode() {
-        assertThat(jobNodePath.getServerNodePath("ip0", "node"), is("/test_job/servers/ip0/node"));
-    }
-    
-    @Test
     public void assertGetShardingNodePath() {
         assertThat(jobNodePath.getShardingNodePath(), is("/test_job/sharding"));
     }

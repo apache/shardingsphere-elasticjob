@@ -59,10 +59,11 @@ public final class ShardingStatisticsAPIImpl implements ShardingStatisticsAPI {
         result.setItem(Integer.parseInt(item));
         JobNodePath jobNodePath = new JobNodePath(jobName);
         String instanceId = regCenter.get(jobNodePath.getShardingNodePath(item, "instance"));
+        boolean disabled = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "disabled"));
         boolean running = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "running"));
         boolean completed = regCenter.isExisted(jobNodePath.getShardingNodePath(item, "completed"));
         boolean shardingError = !regCenter.isExisted(jobNodePath.getInstanceNodePath(instanceId));
-        result.setStatus(ShardingStatus.getShardingStatus(running, completed, shardingError));
+        result.setStatus(ShardingStatus.getShardingStatus(disabled, running, completed, shardingError));
         result.setFailover(regCenter.isExisted(jobNodePath.getShardingNodePath(item, "failover")));
         if (null != instanceId) {
             result.setServerIp(instanceId.split("@-@")[0]);

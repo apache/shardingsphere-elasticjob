@@ -26,22 +26,27 @@ import static org.junit.Assert.assertThat;
 public final class ShardingStatusTest {
     
     @Test
+    public void assertGetShardingStatusWhenIsDisabled() {
+        assertThat(ShardingStatus.getShardingStatus(true, false, false, true), is(ShardingStatus.DISABLED));
+    }
+    
+    @Test
     public void assertGetShardingStatusWhenIsRunning() {
-        assertThat(ShardingStatus.getShardingStatus(true, false, false), is(ShardingStatus.RUNNING));
+        assertThat(ShardingStatus.getShardingStatus(false, true, false, false), is(ShardingStatus.RUNNING));
     }
     
     @Test
     public void assertGetShardingStatusWhenIsCompleted() {
-        assertThat(ShardingStatus.getShardingStatus(false, true, false), is(ShardingStatus.COMPLETED));
+        assertThat(ShardingStatus.getShardingStatus(false, false, true, false), is(ShardingStatus.COMPLETED));
     }
     
     @Test
     public void assertGetShardingStatusWhenIsPending() {
-        assertThat(ShardingStatus.getShardingStatus(false, false, false), is(ShardingStatus.PENDING));
+        assertThat(ShardingStatus.getShardingStatus(false, false, false, false), is(ShardingStatus.PENDING));
     }
     
     @Test
     public void assertGetShardingStatusWhenIsShardingError() {
-        assertThat(ShardingStatus.getShardingStatus(false, false, true), is(ShardingStatus.SHARDING_ERROR));
+        assertThat(ShardingStatus.getShardingStatus(false, false, false, true), is(ShardingStatus.SHARDING_ERROR));
     }
 }
