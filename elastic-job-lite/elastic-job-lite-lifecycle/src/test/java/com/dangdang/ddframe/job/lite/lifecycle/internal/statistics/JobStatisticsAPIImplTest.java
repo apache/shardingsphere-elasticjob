@@ -27,9 +27,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -87,14 +85,12 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/test_job_1/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance"));
         when(regCenter.getChildrenKeys("/test_job_2/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance", "ip2@-@defaultInstance"));
         int i = 0;
-        List<String> shardingItems = new ArrayList<>();
         for (JobBriefInfo each : jobStatisticsAPI.getAllJobsBriefInfo()) {
             i++;
             assertThat(each.getJobName(), is("test_job_" + i));
             assertThat(each.getDescription(), is("desc" + i));
             assertThat(each.getCron(), is("0/1 * * * * ?"));
             assertThat(each.getJobType(), is("SIMPLE"));
-            shardingItems.add(String.valueOf(i));
             assertThat(each.getInstanceCount(), is(i));
             assertThat(each.getShardingTotalCount(), is(3));
         }

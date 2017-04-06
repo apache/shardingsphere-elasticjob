@@ -1,17 +1,15 @@
 package com.dangdang.ddframe.job.lite.console.domain;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 事件追踪数据源工厂.
