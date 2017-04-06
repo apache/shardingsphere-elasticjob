@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.console.service.impl;
 import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
 import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfigurations;
 import com.dangdang.ddframe.job.lite.console.domain.GlobalConfiguration;
-import com.dangdang.ddframe.job.lite.console.domain.RegistryCenterConfigurations;
 import com.dangdang.ddframe.job.lite.console.repository.ConfigurationsXmlRepository;
 import com.dangdang.ddframe.job.lite.console.repository.impl.ConfigurationsXmlRepositoryImpl;
 import com.dangdang.ddframe.job.lite.console.service.EventTraceDataSourceConfigurationService;
@@ -96,15 +95,17 @@ public final class EventTraceDataSourceConfigurationServiceImpl implements Event
     @Override
     public void delete(final String name) {
         GlobalConfiguration configs = loadGlobal();
-        if (configs.getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration().remove(new EventTraceDataSourceConfiguration(name, null, null, null))) {
+        EventTraceDataSourceConfiguration toBeRemovedConfig = find(name, configs.getEventTraceDataSourceConfigurations());
+        if (null != toBeRemovedConfig) {
+            configs.getEventTraceDataSourceConfigurations().getEventTraceDataSourceConfiguration().remove(toBeRemovedConfig);
             configurationsXmlRepository.save(configs);
         }
     }
     
     private GlobalConfiguration loadGlobal() {
         GlobalConfiguration result = configurationsXmlRepository.load();
-        if (null == result.getRegistryCenterConfigurations()) {
-            result.setRegistryCenterConfigurations(new RegistryCenterConfigurations());
+        if (null == result.getEventTraceDataSourceConfigurations()) {
+            result.setEventTraceDataSourceConfigurations(new EventTraceDataSourceConfigurations());
         }
         return result;
     }

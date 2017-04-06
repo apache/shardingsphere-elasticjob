@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.console.domain;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,7 +35,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(of = "name")
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class EventTraceDataSourceConfiguration implements Serializable {
@@ -61,8 +59,7 @@ public final class EventTraceDataSourceConfiguration implements Serializable {
     @XmlAttribute
     private boolean activated;
     
-    public EventTraceDataSourceConfiguration(final String name, final String driver, final String url, final String username) {
-        this.name = name;
+    public EventTraceDataSourceConfiguration(final String driver, final String url, final String username) {
         this.driver = driver;
         this.url = url;
         this.username = username;

@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.console.domain;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +34,6 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"zkAddressList", "namespace", "digest", "activated"})
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @NoArgsConstructor
@@ -57,8 +55,4 @@ public final class RegistryCenterConfiguration implements Serializable {
     
     @XmlAttribute
     private boolean activated;
-    
-    public RegistryCenterConfiguration(final String name) {
-        this.name = name;
-    }
 }

@@ -26,7 +26,7 @@ public final class EventTraceDataSourceFactory {
      *
      * @return 事件追踪数据源对象
      */
-    public static EventTraceDataSource createCoordinatorDataSource(final String driver, final String url, final String username, final Optional<String> password) {
+    public static EventTraceDataSource createEventTraceDataSource(final String driver, final String url, final String username, final Optional<String> password) {
         Hasher hasher =  Hashing.md5().newHasher().putString(driver, Charsets.UTF_8).putString(url, Charsets.UTF_8);
         if (!Strings.isNullOrEmpty(username)) {
             hasher.putString(username, Charsets.UTF_8);
@@ -39,7 +39,7 @@ public final class EventTraceDataSourceFactory {
         if (null != result) {
             return result;
         }
-        EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = new EventTraceDataSourceConfiguration(null, driver, url, username);
+        EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = new EventTraceDataSourceConfiguration(driver, url, username);
         if (password.isPresent()) {
             eventTraceDataSourceConfiguration.setPassword(password.get());
         }

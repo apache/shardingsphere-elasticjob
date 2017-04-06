@@ -95,7 +95,9 @@ public final class RegistryCenterConfigurationServiceImpl implements RegistryCen
     @Override
     public void delete(final String name) {
         GlobalConfiguration configs = loadGlobal();
-        if (configs.getRegistryCenterConfigurations().getRegistryCenterConfiguration().remove(new RegistryCenterConfiguration(name))) {
+        RegistryCenterConfiguration toBeRemovedConfig = find(name, configs.getRegistryCenterConfigurations());
+        if (null != toBeRemovedConfig) {
+            configs.getRegistryCenterConfigurations().getRegistryCenterConfiguration().remove(toBeRemovedConfig);
             configurationsXmlRepository.save(configs);
         }
     }
