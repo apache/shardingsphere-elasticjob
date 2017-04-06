@@ -93,7 +93,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
                 shardingInstances.add(instanceId);
             }
         }
-        if (!instances.containsAll(shardingInstances)) {
+        if (!instances.containsAll(shardingInstances) || shardingInstances.isEmpty()) {
             return JobStatus.SHARDING_ERROR;
         }
         for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {

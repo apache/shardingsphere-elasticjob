@@ -45,7 +45,7 @@ function shardingStatusFormatter(value, row) {
             return "<span class='label label-success'>已完成</span>";
             break;
         case "SHARDING_ERROR":
-            return "<span class='label label-warning'>分片调整中</span>";
+            return "<span class='label label-info'>分片调整中</span>";
             break;
         default:
             return "<span class='label label-default'>等待运行</span>";
