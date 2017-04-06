@@ -46,7 +46,7 @@ function statusFormatter(value, row) {
             return "<span class='label label-warning'>已禁用</span>";
             break;
         case "SHARDING_ERROR":
-            return "<span class='label label-warning'>分片错误</span>";
+            return "<span class='label label-warning'>分片调整中</span>";
             break;
         case "CRASHED":
             return "<span class='label label-default'>已下线</span>";

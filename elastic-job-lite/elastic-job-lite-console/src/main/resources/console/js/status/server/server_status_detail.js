@@ -7,7 +7,7 @@ $(function() {
 
 function renderJobs() {
     var ip = $("#server-ip").text();
-    $("#server-jobs").bootstrapTable({
+    $("#server-jobs-tbl").bootstrapTable({
         url: "/api/servers/" + ip + "/jobs",
         cache: false,
         columns: 
@@ -31,8 +31,11 @@ function renderJobs() {
     });
 }
 
-function statusFormatter(value) {
-    switch(value) {
+function statusFormatter(val, row) {
+    if (0 === row.instanceCount ) {
+        return "<span class='label label-default'>已下线</span>";
+    }
+    switch(val) {
         case "OK":
             return "<span class='label label-success'>已启用</span>";
             break;
@@ -43,6 +46,10 @@ function statusFormatter(value) {
 }
 
 function generateOperationButtons(val, row) {
+    if (0 === row.instanceCount ) {
+        //return "<button operation='remove' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
+        return "-";
+    }
     var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "'>禁用</button>";
     var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "'>启用</button>";
     var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
@@ -59,6 +66,7 @@ function bindButtons() {
     bindDisableButton();
     bindEnableButton();
     bindShutdownButton();
+    bindRemoveButton();
 }
 
 function bindDisableButton() {
@@ -67,7 +75,7 @@ function bindDisableButton() {
             url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
             type: "POST",
             success: function() {
-                $("#server-jobs").bootstrapTable("refresh");
+                $("#server-jobs-tbl").bootstrapTable("refresh");
                 showSuccessDialog();
             }
         });
@@ -80,7 +88,7 @@ function bindEnableButton() {
             url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
             type: "DELETE",
             success: function() {
-                $("#server-jobs").bootstrapTable("refresh");
+                $("#server-jobs-tbl").bootstrapTable("refresh");
                 showSuccessDialog();
             }
         });
@@ -93,9 +101,32 @@ function bindShutdownButton() {
             url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/shutdown",
             type: "POST",
             success: function(){
-                $("#server-jobs").bootstrapTable("refresh");
+                $("#server-jobs-tbl").bootstrapTable("refresh");
                 showSuccessDialog();
             }
+        });
+    });
+}
+
+function bindRemoveButton() {
+    $(document).on("click", "button[operation='remove']", function(event) {
+        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        var serverIp = $("#server-ip").text();
+        var jobName = $(event.currentTarget).attr("job-name");
+        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        $(document).off("click", "#delete-confirm-dialog-confirm-btn");
+        $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
+            $.ajax({
+                url: "/api/servers/" + serverIp + "/jobs/" + jobName,
+                type: "DELETE",
+                success: function () {
+                    $("#delete-confirm-dialog").modal("hide");
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
+                    refreshServerNavTag();
+                    $("#server-jobs-tbl").bootstrapTable("refresh");
+                }
+            });
         });
     });
 }

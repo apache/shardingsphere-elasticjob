@@ -19,6 +19,7 @@ package com.dangdang.ddframe.job.lite.lifecycle.internal.statistics;
 
 import com.dangdang.ddframe.job.lite.lifecycle.api.ShardingStatisticsAPI;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingInfo.ShardingStatus;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +79,7 @@ public final class ShardingStatisticsAPIImplTest {
                     break;
                 case 3:
                     assertTrue(each.isFailover());
-                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.PENDING));
+                    assertThat(each.getStatus(), is(ShardingStatus.SHARDING_ERROR));
                     assertThat(each.getServerIp(), is("ip3"));
                     break;
                 default:

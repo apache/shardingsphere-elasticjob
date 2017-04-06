@@ -38,6 +38,12 @@ public class ServerOperationRestfulApi {
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
     @GET
+    @Path("/count")
+    public int getServersTotalCount() {
+        return jobAPIService.getServerStatisticsAPI().getServersTotalCount();
+    }
+    
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         return jobAPIService.getServerStatisticsAPI().getAllServersBriefInfo();
@@ -90,5 +96,11 @@ public class ServerOperationRestfulApi {
     @Path("/{serverIp}/jobs/{jobName}/shutdown")
     public void shutdownServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
         jobAPIService.getJobOperatorAPI().shutdown(Optional.of(jobName), Optional.of(serverIp));
+    }
+    
+    @DELETE
+    @Path("/{serverIp}/jobs/{jobName}")
+    public void removeServerJob(@PathParam("serverIp") final String serverIp, @PathParam("jobName") final String jobName) {
+        jobAPIService.getJobOperatorAPI().remove(Optional.of(jobName), Optional.of(serverIp));
     }
 }

@@ -54,7 +54,8 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
     public enum ShardingStatus {
         
         RUNNING, 
-        COMPLETED, 
+        COMPLETED,
+        SHARDING_ERROR,
         PENDING;
     
         /**
@@ -64,12 +65,15 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
          * @param isCompleted 是否运行完毕
          * @return 作业运行时状态
          */
-        public static ShardingStatus getShardingStatus(final boolean isRunning, final boolean isCompleted) {
+        public static ShardingStatus getShardingStatus(final boolean isRunning, final boolean isCompleted, final boolean isShardingError) {
             if (isRunning) {
                 return RUNNING;
             }
             if (isCompleted) {
                 return COMPLETED;
+            }
+            if (isShardingError) {
+                return SHARDING_ERROR;
             }
             return PENDING;
         }

@@ -29,6 +29,13 @@ import java.util.Collection;
 public interface ServerStatisticsAPI {
     
     /**
+     * 获取作业服务器总数.
+     *
+     * @return 作业服务器总数
+     */
+    int getServersTotalCount();
+    
+    /**
      * 获取所有作业服务器简明信息.
      *
      * @return 作业服务器简明信息集合

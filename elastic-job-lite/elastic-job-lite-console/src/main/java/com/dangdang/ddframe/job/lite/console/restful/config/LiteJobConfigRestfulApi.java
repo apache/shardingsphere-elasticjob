@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.console.restful.config;
 import com.dangdang.ddframe.job.lite.console.service.JobAPIService;
 import com.dangdang.ddframe.job.lite.console.service.impl.JobAPIServiceImpl;
 import com.dangdang.ddframe.job.lite.lifecycle.domain.JobSettings;
-import com.google.common.base.Optional;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -53,6 +52,5 @@ public class LiteJobConfigRestfulApi {
     @Path("/{jobName}")
     public void removeJob(@PathParam("jobName") final String jobName) {
         jobAPIService.getJobSettingsAPI().removeJobSettings(jobName);
-        jobAPIService.getJobOperatorAPI().remove(Optional.of(jobName), Optional.<String>absent());
     }
 }

@@ -26,7 +26,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -40,25 +42,39 @@ public final class ServerStatisticsAPIImpl implements ServerStatisticsAPI {
     private final CoordinatorRegistryCenter regCenter;
     
     @Override
+    public int getServersTotalCount() {
+        Set<String> servers = new HashSet<>();
+        for (String jobName : regCenter.getChildrenKeys("/")) {
+            JobNodePath jobNodePath = new JobNodePath(jobName);
+            for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
+                servers.add(each);
+            }
+        }
+        return servers.size();
+    }
+    
+    @Override
     public Collection<ServerBriefInfo> getAllServersBriefInfo() {
         ConcurrentHashMap<String, ServerBriefInfo> servers = new ConcurrentHashMap<>();
-        List<String> jobs = regCenter.getChildrenKeys("/");
-        for (String jobName : jobs) {
+        for (String jobName : regCenter.getChildrenKeys("/")) {
             JobNodePath jobNodePath = new JobNodePath(jobName);
             for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
                 servers.putIfAbsent(each, new ServerBriefInfo(each));
+                ServerBriefInfo serverInfo = servers.get(each);
                 if ("DISABLED".equalsIgnoreCase(regCenter.get(jobNodePath.getServerNodePath(each)))) {
-                    servers.get(each).getDisabledJobsNum().incrementAndGet();
+                    serverInfo.getDisabledJobsNum().incrementAndGet();
                 }
+                serverInfo.getJobNames().add(jobName);
+                serverInfo.setJobsNum(serverInfo.getJobNames().size());
             }
             List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
             for (String each : instances) {
                 String serverIp = each.split("@-@")[0];
                 ServerBriefInfo serverInfo = servers.get(serverIp);
-                serverInfo.getJobNames().add(jobName);
-                serverInfo.getInstances().add(each);
-                serverInfo.setJobsNum(serverInfo.getJobNames().size());
-                serverInfo.setInstancesNum(serverInfo.getInstances().size());
+                if (null != serverInfo) {
+                    serverInfo.getInstances().add(each);
+                    serverInfo.setInstancesNum(serverInfo.getInstances().size());
+                }
             }
         }
         List<ServerBriefInfo> result = new ArrayList<>(servers.values());

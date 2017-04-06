@@ -70,7 +70,7 @@ public final class ServerStatisticsAPIImplTest {
                     break;
                 case 2:
                     assertThat(each.getDisabledJobsNum().intValue(), is(1));
-                    assertThat(each.getJobsNum(), is(1));
+                    assertThat(each.getJobsNum(), is(2));
                     assertThat(each.getInstancesNum(), is(1));
                     break;
                 default:

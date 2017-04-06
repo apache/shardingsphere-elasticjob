@@ -44,6 +44,25 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     private final CoordinatorRegistryCenter regCenter;
     
     @Override
+    public int getJobsTotalCount() {
+        return regCenter.getChildrenKeys("/").size();
+    }
+    
+    @Override
+    public Collection<JobBriefInfo> getAllJobsBriefInfo() {
+        List<String> jobNames = regCenter.getChildrenKeys("/");
+        List<JobBriefInfo> result = new ArrayList<>(jobNames.size());
+        for (String each : jobNames) {
+            JobBriefInfo jobBriefInfo = getJobBriefInfo(each);
+            if (null != jobBriefInfo) {
+                result.add(jobBriefInfo);
+            }
+        }
+        Collections.sort(result);
+        return result;
+    }
+    
+    @Override
     public JobBriefInfo getJobBriefInfo(final String jobName) {
         JobNodePath jobNodePath = new JobNodePath(jobName);
         JobBriefInfo result = new JobBriefInfo();
@@ -88,20 +107,6 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     
     private int getJobInstanceCount(final String jobName) {
         return regCenter.getChildrenKeys(new JobNodePath(jobName).getInstancesNodePath()).size();
-    }
-    
-    @Override
-    public Collection<JobBriefInfo> getAllJobsBriefInfo() {
-        List<String> jobNames = regCenter.getChildrenKeys("/");
-        List<JobBriefInfo> result = new ArrayList<>(jobNames.size());
-        for (String each : jobNames) {
-            JobBriefInfo jobBriefInfo = getJobBriefInfo(each);
-            if (null != jobBriefInfo) {
-                result.add(jobBriefInfo);
-            }
-        }
-        Collections.sort(result);
-        return result;
     }
     
     @Override

@@ -68,6 +68,7 @@ function bindConnectButtons() {
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
                     refreshJobNavTag();
+                    refreshServerNavTag();
                     showSuccessDialog();
                 } else {
                     showFailureDialog("switch-reg-center-failure-dialog");

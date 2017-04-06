@@ -130,6 +130,7 @@ function bindRemoveServerButton() {
                     $("#delete-confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
+                    refreshServerNavTag();
                     $("#servers-overview-tbl").bootstrapTable("refresh");
                 }
             });

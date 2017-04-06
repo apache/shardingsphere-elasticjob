@@ -39,6 +39,12 @@ public class JobOperationRestfulApi {
     private JobAPIService jobAPIService = new JobAPIServiceImpl();
     
     @GET
+    @Path("/count")
+    public int getJobsTotalCount() {
+        return jobAPIService.getJobStatisticsAPI().getJobsTotalCount();
+    }
+    
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Collection<JobBriefInfo> getAllJobsBriefInfo() {
         return jobAPIService.getJobStatisticsAPI().getAllJobsBriefInfo();

@@ -29,12 +29,11 @@ import java.util.Collection;
 public interface JobStatisticsAPI {
     
     /**
-     * 获取作业简明信息.
+     * 获取作业总数.
      *
-     * @param jobName 作业名称
-     * @return 作业简明信息.
+     * @return 作业总数.
      */
-    JobBriefInfo getJobBriefInfo(String jobName);
+    int getJobsTotalCount();
     
     /**
      * 获取所有作业简明信息.
@@ -42,6 +41,14 @@ public interface JobStatisticsAPI {
      * @return 作业简明信息集合.
      */
     Collection<JobBriefInfo> getAllJobsBriefInfo();
+    
+    /**
+     * 获取作业简明信息.
+     *
+     * @param jobName 作业名称
+     * @return 作业简明信息.
+     */
+    JobBriefInfo getJobBriefInfo(String jobName);
     
     /**
      * 获取该IP下所有作业简明信息.
