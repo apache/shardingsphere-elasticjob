@@ -87,6 +87,15 @@ public final class ElectionListenerManagerTest {
     }
     
     @Test
+    public void assertLeaderElectionWhenRemoveLeaderInstancePathWithAvailableServerButJobInstanceIsInvalid() {
+        when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance(JobInstance.DEFAULT_INSTANCE_ID));
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/leader/election/instance", Type.NODE_REMOVED, "127.0.0.1");
+        verify(leaderService, times(0)).electLeader();
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
+    }
+    
+    @Test
     public void assertLeaderElectionWhenRemoveLeaderInstancePathWithAvailableServer() {
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/leader/election/instance", Type.NODE_REMOVED, "127.0.0.1");

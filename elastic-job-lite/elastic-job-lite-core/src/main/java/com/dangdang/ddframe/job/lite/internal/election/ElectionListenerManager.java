@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -63,7 +64,9 @@ public final class ElectionListenerManager extends AbstractListenerManager {
         protected void dataChanged(final String path, final Type eventType, final String data) {
             if (isLeaderCrashed(path, eventType) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())
                     || !leaderService.hasLeader() && isLocalServerEnabled(path, data)) {
-                leaderService.electLeader();
+                if (!JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(JobInstance.DEFAULT_INSTANCE_ID)) {
+                    leaderService.electLeader();
+                }
             } else if (leaderService.isLeader() && isLocalServerDisabled(path, data)) {
                 leaderService.removeLeader();
             }
