@@ -21,7 +21,9 @@ import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +36,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public final class ShardingListenerManagerTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
+    private JobScheduleController jobScheduleController;
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -99,22 +107,24 @@ public final class ShardingListenerManagerTest {
     }
     
     @Test
-    public void assertListenServersChangedJobListenerWhenIsInstanceChangeButInvalidJobInstance() {
-        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance(JobInstance.DEFAULT_INSTANCE_ID));
+    public void assertListenServersChangedJobListenerWhenIsInstanceChangeButJobInstanceIsShutdown() {
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_ADDED, "");
         verify(shardingService, times(0)).setReshardingFlag();
-        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsInstanceChange() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/instances/xxx", Type.NODE_ADDED, "");
         verify(shardingService).setReshardingFlag();
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
     public void assertListenServersChangedJobListenerWhenIsServerChange() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         shardingListenerManager.new ListenServersChangedJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, "");
         verify(shardingService).setReshardingFlag();
+        JobRegistry.getInstance().shutdown("test_job");
     }
 }

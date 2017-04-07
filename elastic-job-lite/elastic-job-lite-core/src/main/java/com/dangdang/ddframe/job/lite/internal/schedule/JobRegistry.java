@@ -112,8 +112,7 @@ public final class JobRegistry {
      * @return 作业运行实例
      */
     public JobInstance getJobInstance(final String jobName) {
-        JobInstance result = jobInstanceMap.get(jobName);
-        return null == result ? new JobInstance(JobInstance.DEFAULT_INSTANCE_ID) : result;
+        return jobInstanceMap.get(jobName);
     }
     
     /**
@@ -175,5 +174,15 @@ public final class JobRegistry {
         jobInstanceMap.remove(jobName);
         jobRunningMap.remove(jobName);
         currentShardingTotalCountMap.remove(jobName);
+    }
+    
+    /**
+     * 判断任务调度是否已终止.
+     * 
+     * @param jobName 作业名称
+     * @return 任务调度是否已终止
+     */
+    public boolean isShutdown(final String jobName) {
+        return !schedulerMap.containsKey(jobName) || !jobInstanceMap.containsKey(jobName);
     }
 }

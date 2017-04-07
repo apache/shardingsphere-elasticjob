@@ -27,9 +27,11 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.TransactionExecutionCallback;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
@@ -57,6 +59,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public final class ShardingServiceTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
+    private JobScheduleController jobScheduleController;
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -168,12 +176,20 @@ public final class ShardingServiceTest {
     }
     
     @Test
-    public void assertGetLocalShardingItemsWithDisabledServer() {
+    public void assertGetLocalShardingItemsWithInstanceShutdown() {
         assertThat(shardingService.getLocalShardingItems(), is(Collections.<Integer>emptyList()));
     }
     
     @Test
+    public void assertGetLocalShardingItemsWithDisabledServer() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        assertThat(shardingService.getLocalShardingItems(), is(Collections.<Integer>emptyList()));
+        JobRegistry.getInstance().shutdown("test_job");
+    }
+    
+    @Test
     public void assertGetLocalShardingItemsWithEnabledServer() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         when(configService.load(true)).thenReturn(
                 LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).build());
@@ -181,6 +197,7 @@ public final class ShardingServiceTest {
         when(jobNodeStorage.getJobNodeData("sharding/1/instance")).thenReturn("127.0.0.1@-@1");
         when(jobNodeStorage.getJobNodeData("sharding/2/instance")).thenReturn("127.0.0.1@-@0");
         assertThat(shardingService.getLocalShardingItems(), is(Arrays.asList(0, 2)));
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test

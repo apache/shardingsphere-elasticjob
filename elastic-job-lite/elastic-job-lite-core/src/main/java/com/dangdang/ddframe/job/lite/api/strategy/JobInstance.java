@@ -34,11 +34,6 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "jobInstanceId")
 public final class JobInstance {
     
-    /**
-     * 默认作业运行实例主键.
-     */
-    public static final String DEFAULT_INSTANCE_ID = "1.1.1.1@-@1";
-    
     private static final String DELIMITER = "@-@";
     
     /**
@@ -57,14 +52,5 @@ public final class JobInstance {
      */
     public String getIp() {
         return jobInstanceId.substring(0, jobInstanceId.indexOf(DELIMITER));
-    }
-    
-    /**
-     * 判断是否为默认作业运行实例.
-     * 
-     * @return 是否为默认作业运行实例
-     */
-    public boolean isDefaultJobInstance() {
-        return DEFAULT_INSTANCE_ID.equals(jobInstanceId);
     }
 }

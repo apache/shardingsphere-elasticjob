@@ -20,8 +20,10 @@ package com.dangdang.ddframe.job.lite.internal.election;
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService.LeaderElectionExecutionCallback;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -37,6 +39,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public final class LeaderServiceTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
+    private JobScheduleController jobScheduleController;
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -63,10 +71,12 @@ public final class LeaderServiceTest {
     
     @Test
     public void assertIsLeaderUntilBlockWithLeader() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeaderUntilBlock());
         verify(jobNodeStorage, times(0)).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
@@ -85,18 +95,22 @@ public final class LeaderServiceTest {
     
     @Test
     public void assertIsLeaderUntilBlockWhenHasLeader() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         when(jobNodeStorage.isJobNodeExisted("leader/election/instance")).thenReturn(false, true);
         when(serverService.hasAvailableServers()).thenReturn(true);
         when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeaderUntilBlock());
         verify(jobNodeStorage).executeInLeader(eq("leader/election/latch"), ArgumentMatchers.<LeaderElectionExecutionCallback>any());
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
     public void assertIsLeader() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         when(jobNodeStorage.getJobNodeData("leader/election/instance")).thenReturn("127.0.0.1@-@0");
         assertTrue(leaderService.isLeader());
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test

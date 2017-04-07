@@ -55,20 +55,24 @@ public final class ElectionListenerManager extends AbstractListenerManager {
     @Override
     public void start() {
         addDataListener(new LeaderElectionJobListener());
+        addDataListener(new LeaderAbdicationJobListener());
     }
     
     class LeaderElectionJobListener extends AbstractJobListener {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (isLeaderCrashed(path, eventType) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())
-                    || !leaderService.hasLeader() && isLocalServerEnabled(path, data)) {
-                if (!JobRegistry.getInstance().getJobInstance(jobName).isDefaultJobInstance()) {
-                    leaderService.electLeader();
-                }
-            } else if (leaderService.isLeader() && isLocalServerDisabled(path, data)) {
-                leaderService.removeLeader();
+            if (!JobRegistry.getInstance().isShutdown(jobName) && (isActiveElection(path, data) || isPassiveElection(path, eventType))) {
+                leaderService.electLeader();
             }
+        }
+        
+        private boolean isActiveElection(final String path, final String data) {
+            return !leaderService.hasLeader() && isLocalServerEnabled(path, data);
+        }
+        
+        private boolean isPassiveElection(final String path, final Type eventType) {
+            return isLeaderCrashed(path, eventType) && serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp());
         }
         
         private boolean isLeaderCrashed(final String path, final Type eventType) {
@@ -77,6 +81,16 @@ public final class ElectionListenerManager extends AbstractListenerManager {
         
         private boolean isLocalServerEnabled(final String path, final String data) {
             return serverNode.isLocalServerPath(path) && !ServerStatus.DISABLED.name().equals(data);
+        }
+    }
+    
+    class LeaderAbdicationJobListener extends AbstractJobListener {
+        
+        @Override
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (leaderService.isLeader() && isLocalServerDisabled(path, data)) {
+                leaderService.removeLeader();
+            }
         }
         
         private boolean isLocalServerDisabled(final String path, final String data) {

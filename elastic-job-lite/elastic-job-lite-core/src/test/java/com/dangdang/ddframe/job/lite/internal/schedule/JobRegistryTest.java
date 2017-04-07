@@ -39,12 +39,7 @@ public final class JobRegistryTest {
     }
     
     @Test
-    public void assertGetJobInstanceIfNull() {
-        assertThat(JobRegistry.getInstance().getJobInstance("null_job_instance"), is(new JobInstance(JobInstance.DEFAULT_INSTANCE_ID)));
-    }
-    
-    @Test
-    public void assertGetJobInstanceIfNotNull() {
+    public void assertGetJobInstance() {
         JobRegistry.getInstance().addJobInstance("exist_job_instance", new JobInstance("127.0.0.1@-@0"));
         assertThat(JobRegistry.getInstance().getJobInstance("exist_job_instance"), is(new JobInstance("127.0.0.1@-@0")));
     }
@@ -84,9 +79,30 @@ public final class JobRegistryTest {
         JobScheduleController jobScheduleController = mock(JobScheduleController.class);
         CoordinatorRegistryCenter regCenter = mock(CoordinatorRegistryCenter.class);
         JobRegistry.getInstance().registerJob("test_job_for_shutdown", jobScheduleController, regCenter);
-        JobRegistry.getInstance().registerJob("test_job_for_shutdown_other", jobScheduleController, regCenter);
         JobRegistry.getInstance().shutdown("test_job_for_shutdown");
         verify(jobScheduleController).shutdown();
         verify(regCenter).evictCacheData("/test_job_for_shutdown");
+    }
+    
+    @Test
+    public void assertIsShutdownForJobSchedulerNull() {
+        assertTrue(JobRegistry.getInstance().isShutdown("test_job_for_job_scheduler_null"));
+    }
+    
+    @Test
+    public void assertIsShutdownForJobInstanceNull() {
+        JobScheduleController jobScheduleController = mock(JobScheduleController.class);
+        CoordinatorRegistryCenter regCenter = mock(CoordinatorRegistryCenter.class);
+        JobRegistry.getInstance().registerJob("test_job_for_job_instance_null", jobScheduleController, regCenter);
+        assertTrue(JobRegistry.getInstance().isShutdown("test_job_for_job_instance_null"));
+    }
+    
+    @Test
+    public void assertIsNotShutdown() {
+        JobScheduleController jobScheduleController = mock(JobScheduleController.class);
+        CoordinatorRegistryCenter regCenter = mock(CoordinatorRegistryCenter.class);
+        JobRegistry.getInstance().registerJob("test_job_for_job_not_shutdown", jobScheduleController, regCenter);
+        JobRegistry.getInstance().addJobInstance("test_job_for_job_not_shutdown", new JobInstance("127.0.0.1@-@0"));
+        assertFalse(JobRegistry.getInstance().isShutdown("test_job_for_job_not_shutdown"));
     }
 }

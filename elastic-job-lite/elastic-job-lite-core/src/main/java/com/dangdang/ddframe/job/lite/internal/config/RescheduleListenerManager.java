@@ -50,7 +50,7 @@ public final class RescheduleListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && null != JobRegistry.getInstance().getJobScheduleController(jobName)) {
+            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !JobRegistry.getInstance().isShutdown(jobName)) {
                 JobRegistry.getInstance().getJobScheduleController(jobName).rescheduleJob(LiteJobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getCron());
             }
         }

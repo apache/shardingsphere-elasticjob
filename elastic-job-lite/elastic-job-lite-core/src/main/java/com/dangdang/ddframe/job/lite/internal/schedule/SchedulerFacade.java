@@ -111,10 +111,9 @@ public final class SchedulerFacade {
             leaderService.removeLeader();
         }
         monitorService.close();
-        // TODO cannot mock, use power mock
-//        if (reconcileService.isRunning()) {
-//            reconcileService.stopAsync();
-//        }
+        if (reconcileService.isRunning()) {
+            reconcileService.stopAsync();
+        }
         JobRegistry.getInstance().shutdown(jobName);
     }
 }

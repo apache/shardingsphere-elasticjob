@@ -37,12 +37,12 @@ public final class ServerNode {
     
     private static final String SERVERS = ROOT + "/%s";
     
-    private final String ip;
+    private final String jobName;
     
     private final JobNodePath jobNodePath;
     
     public ServerNode(final String jobName) {
-        ip = JobRegistry.getInstance().getJobInstance(jobName).getIp();
+        this.jobName = jobName;
         jobNodePath = new JobNodePath(jobName);
     }
     
@@ -63,7 +63,7 @@ public final class ServerNode {
      * @return 是否为本地作业服务器路径
      */
     public boolean isLocalServerPath(final String path) {
-        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, ip)));
+        return path.equals(jobNodePath.getFullPath(String.format(SERVERS, JobRegistry.getInstance().getJobInstance(jobName).getIp())));
     }
     
     String getServerNode(final String ip) {

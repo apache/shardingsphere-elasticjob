@@ -38,6 +38,9 @@ public final class RegistryCenterConnectionStateListener implements ConnectionSt
     
     @Override
     public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
+        if (JobRegistry.getInstance().isShutdown(jobName)) {
+            return;
+        }
         JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
         if (ConnectionState.LOST == newState) {
             jobScheduleController.pauseJob();

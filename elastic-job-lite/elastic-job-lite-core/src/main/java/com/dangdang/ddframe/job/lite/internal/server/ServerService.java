@@ -50,7 +50,9 @@ public final class ServerService {
      * @param enabled 作业是否启用
      */
     public void persistOnline(final boolean enabled) {
-        jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp()), enabled ? "" : ServerStatus.DISABLED.name());
+        if (!JobRegistry.getInstance().isShutdown(jobName)) {
+            jobNodeStorage.fillJobNode(serverNode.getServerNode(JobRegistry.getInstance().getJobInstance(jobName).getIp()), enabled ? "" : ServerStatus.DISABLED.name());
+        }
     }
     
     /**

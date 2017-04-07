@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.config;
 
 import com.dangdang.ddframe.job.event.JobEventBus;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManager.CronSettingAndJobEventChangedJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -83,8 +84,10 @@ public final class RescheduleListenerManagerTest {
     
     @Test
     public void assertCronSettingChangedJobListenerWhenIsCronPathAndUpdateAndFindJob() {
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         rescheduleListenerManager.new CronSettingAndJobEventChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
         verify(jobScheduleController).rescheduleJob("0/1 * * * * ?");
+        JobRegistry.getInstance().shutdown("test_job");
     }
 }

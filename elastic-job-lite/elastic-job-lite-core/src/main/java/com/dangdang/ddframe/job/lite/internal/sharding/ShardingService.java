@@ -152,7 +152,7 @@ public final class ShardingService {
      * @return 运行在本作业实例的分片项集合
      */
     public List<Integer> getLocalShardingItems() {
-        if (!serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
+        if (JobRegistry.getInstance().isShutdown(jobName) || !serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
             return Collections.emptyList();
         }
         List<Integer> result = new LinkedList<>();

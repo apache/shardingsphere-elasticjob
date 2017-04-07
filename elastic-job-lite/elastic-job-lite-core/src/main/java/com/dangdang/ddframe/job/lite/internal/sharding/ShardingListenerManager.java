@@ -77,7 +77,7 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!JobRegistry.getInstance().getJobInstance(jobName).isDefaultJobInstance() && (isInstanceChange(eventType, path) || isServerChange(path))) {
+            if (!JobRegistry.getInstance().isShutdown(jobName) && (isInstanceChange(eventType, path) || isServerChange(path))) {
                 shardingService.setReshardingFlag();
             }
         }

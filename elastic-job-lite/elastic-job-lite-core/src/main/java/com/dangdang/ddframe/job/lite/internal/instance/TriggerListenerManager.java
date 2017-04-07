@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.internal.instance;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
@@ -57,13 +56,9 @@ public final class TriggerListenerManager extends AbstractListenerManager {
                 return;
             }
             instanceService.clearTriggerFlag();
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-            if (null == jobScheduleController) {
-                return;
-            }
-            // TODO 目前是作业运行时不能触发, 未来改为堆积式触发
-            if (!JobRegistry.getInstance().isJobRunning(jobName)) {
-                jobScheduleController.triggerJob();
+            if (!JobRegistry.getInstance().isShutdown(jobName) && !JobRegistry.getInstance().isJobRunning(jobName)) {
+                // TODO 目前是作业运行时不能触发, 未来改为堆积式触发
+                JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();
             }
         }
     }

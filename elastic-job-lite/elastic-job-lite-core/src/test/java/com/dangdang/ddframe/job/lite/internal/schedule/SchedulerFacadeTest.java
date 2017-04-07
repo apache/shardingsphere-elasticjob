@@ -29,6 +29,7 @@ import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
+import com.dangdang.ddframe.job.lite.internal.reconcile.ReconcileService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -71,6 +72,9 @@ public class SchedulerFacadeTest {
     private MonitorService monitorService;
     
     @Mock
+    private ReconcileService reconcileService;
+    
+    @Mock
     private ListenerManager listenerManager;
     
     private final LiteJobConfiguration liteJobConfig = JobConfigurationUtil.createDataflowLiteJobConfiguration();
@@ -91,6 +95,7 @@ public class SchedulerFacadeTest {
         ReflectionUtils.setFieldValue(schedulerFacade, "instanceService", instanceService);
         ReflectionUtils.setFieldValue(schedulerFacade, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(schedulerFacade, "monitorService", monitorService);
+        ReflectionUtils.setFieldValue(schedulerFacade, "reconcileService", reconcileService);
         ReflectionUtils.setFieldValue(schedulerFacade, "listenerManager", listenerManager);
     }
     
@@ -110,21 +115,24 @@ public class SchedulerFacadeTest {
     }
     
     @Test
-    public void assertShutdownInstanceIfNotLeader() {
+    public void assertShutdownInstanceIfNotLeaderAndReconcileServiceIsNotRunning() {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         schedulerFacade.shutdownInstance();
         verify(leaderService, times(0)).removeLeader();
         verify(monitorService).close();
+        verify(reconcileService, times(0)).stopAsync();
         verify(jobScheduleController).shutdown();
     }
     
     @Test
-    public void assertShutdownInstanceIfLeader() {
+    public void assertShutdownInstanceIfLeaderAndReconcileServiceIsRunning() {
         when(leaderService.isLeader()).thenReturn(true);
+        when(reconcileService.isRunning()).thenReturn(true);
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         schedulerFacade.shutdownInstance();
         verify(leaderService).removeLeader();
         verify(monitorService).close();
+        verify(reconcileService).stopAsync();
         verify(jobScheduleController).shutdown();
     }
 }

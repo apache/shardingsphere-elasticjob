@@ -19,7 +19,9 @@ package com.dangdang.ddframe.job.lite.internal.server;
 
 import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -31,10 +33,17 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public final class ServerServiceTest {
+    
+    @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
+    private JobScheduleController jobScheduleController;
     
     @Mock
     private JobNodeStorage jobNodeStorage;
@@ -47,21 +56,31 @@ public final class ServerServiceTest {
         serverService = new ServerService(null, "test_job");
         MockitoAnnotations.initMocks(this);
         ServerNode serverNode = new ServerNode("test_job");
-        ReflectionUtils.setFieldValue(serverNode, "ip", "127.0.0.1");
         ReflectionUtils.setFieldValue(serverService, "serverNode", serverNode);
         ReflectionUtils.setFieldValue(serverService, "jobNodeStorage", jobNodeStorage);
     }
     
     @Test
+    public void assertPersistOnlineForInstanceShutdown() {
+        JobRegistry.getInstance().shutdown("test_job");
+        serverService.persistOnline(false);
+        verify(jobNodeStorage, times(0)).fillJobNode("servers/127.0.0.1", ServerStatus.DISABLED.name());
+    }
+    
+    @Test
     public void assertPersistOnlineForDisabledServer() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         serverService.persistOnline(false);
         verify(jobNodeStorage).fillJobNode("servers/127.0.0.1", ServerStatus.DISABLED.name());
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
     public void assertPersistOnlineForEnabledServer() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         serverService.persistOnline(true);
         verify(jobNodeStorage).fillJobNode("servers/127.0.0.1", "");
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test

@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
@@ -78,7 +79,9 @@ public final class FailoverListenerManager extends AbstractListenerManager {
     }
     
     private boolean isJobCrashAndNeedFailover(final Integer item, final Type eventType) {
-        return null != item && Type.NODE_REMOVED == eventType && !executionService.isCompleted(item) && configService.load(true).isFailover();
+        LiteJobConfiguration jobConfig = configService.load(true);
+        boolean isFailover = null != jobConfig && jobConfig.isFailover();
+        return null != item && Type.NODE_REMOVED == eventType && !executionService.isCompleted(item) && isFailover;
     }
     
     class JobCrashedJobListener extends AbstractJobListener {

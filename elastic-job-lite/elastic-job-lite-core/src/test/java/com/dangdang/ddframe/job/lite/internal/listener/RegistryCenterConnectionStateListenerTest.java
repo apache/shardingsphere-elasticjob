@@ -59,10 +59,18 @@ public final class RegistryCenterConnectionStateListenerTest {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         regCenterConnectionStateListener.stateChanged(null, ConnectionState.LOST);
         verify(jobScheduleController).pauseJob();
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
-    public void assertConnectionLostListenerWhenConnectionStateIsReconnectedAndIsNotPausedManually() {
+    public void assertConnectionLostListenerWhenConnectionStateIsLostButIsShutdown() {
+        regCenterConnectionStateListener.stateChanged(null, ConnectionState.LOST);
+        verify(jobScheduleController, times(0)).pauseJob();
+        verify(jobScheduleController, times(0)).resumeJob();
+    }
+    
+    @Test
+    public void assertConnectionLostListenerWhenConnectionStateIsReconnected() {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
         when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
@@ -70,6 +78,16 @@ public final class RegistryCenterConnectionStateListenerTest {
         verify(serverService).persistOnline(true);
         verify(executionService).clearRunningInfo(Arrays.asList(0, 1));
         verify(jobScheduleController).resumeJob();
+        JobRegistry.getInstance().shutdown("test_job");
+    }
+    
+    @Test
+    public void assertConnectionLostListenerWhenConnectionStateIsReconnectedButIsShutdown() {
+        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(0, 1));
+        when(serverService.isEnableServer("127.0.0.1")).thenReturn(true);
+        regCenterConnectionStateListener.stateChanged(null, ConnectionState.RECONNECTED);
+        verify(jobScheduleController, times(0)).pauseJob();
+        verify(jobScheduleController, times(0)).resumeJob();
     }
     
     @Test
@@ -78,5 +96,6 @@ public final class RegistryCenterConnectionStateListenerTest {
         regCenterConnectionStateListener.stateChanged(null, ConnectionState.CONNECTED);
         verify(jobScheduleController, times(0)).pauseJob();
         verify(jobScheduleController, times(0)).resumeJob();
+        JobRegistry.getInstance().shutdown("test_job");
     }
 }

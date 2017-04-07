@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.lite.internal.failover;
 
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNode;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
@@ -96,7 +95,10 @@ public final class FailoverService {
      * 
      * @return 运行在本作业服务器的失效转移序列号
      */
-    public List<Integer> getLocalHostFailoverItems() {
+    public List<Integer> getLocalFailoverItems() {
+        if (JobRegistry.getInstance().isShutdown(jobName)) {
+            return Collections.emptyList();
+        }
         List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT);
         List<Integer> result = new ArrayList<>(items.size());
         String ip = JobRegistry.getInstance().getJobInstance(jobName).getIp();
@@ -140,7 +142,7 @@ public final class FailoverService {
         
         @Override
         public void execute() {
-            if (!needFailover()) {
+            if (JobRegistry.getInstance().isShutdown(jobName) || !needFailover()) {
                 return;
             }
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
@@ -148,10 +150,7 @@ public final class FailoverService {
             jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), JobRegistry.getInstance().getJobInstance(jobName).getIp());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             // TODO 不应使用triggerJob, 而是使用executor统一调度
-            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-            if (null != jobScheduleController) {
-                jobScheduleController.triggerJob();
-            }
+            JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();
         }
     }
 }
