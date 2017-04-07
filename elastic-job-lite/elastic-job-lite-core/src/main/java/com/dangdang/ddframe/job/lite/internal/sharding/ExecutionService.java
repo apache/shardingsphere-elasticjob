@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
 import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
@@ -126,7 +127,8 @@ public final class ExecutionService {
      * @return 分片项中是否还有执行中的作业
      */
     public boolean hasRunningItems(final Collection<Integer> items) {
-        if (!configService.load(true).isMonitorExecution()) {
+        LiteJobConfiguration jobConfig = configService.load(true);
+        if (null == jobConfig || !jobConfig.isMonitorExecution()) {
             return false;
         }
         for (int each : items) {
