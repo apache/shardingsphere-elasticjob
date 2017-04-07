@@ -49,6 +49,18 @@ public final class EventTraceDataSourceRestfulApi {
     private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService = new EventTraceDataSourceConfigurationServiceImpl();
     
     /**
+     * 判断是否存在已连接的事件追踪数据源配置.
+     *
+     * @param request HTTP请求
+     * @return 是否存在已连接的事件追踪数据源配置
+     */
+    @GET
+    @Path("/activated")
+    public boolean activated(final @Context HttpServletRequest request) {
+        return eventTraceDataSourceConfigurationService.loadActivated().isPresent();
+    }
+    
+    /**
      * 读取事件追踪数据源配置.
      * 
      * @param request HTTP请求对象

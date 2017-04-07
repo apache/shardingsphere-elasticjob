@@ -23,6 +23,8 @@ import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
 import com.dangdang.ddframe.job.lite.console.domain.EventTraceDataSourceConfiguration;
+import com.dangdang.ddframe.job.lite.console.service.EventTraceDataSourceConfigurationService;
+import com.dangdang.ddframe.job.lite.console.service.impl.EventTraceDataSourceConfigurationServiceImpl;
 import com.dangdang.ddframe.job.lite.console.util.SessionEventTraceDataSourceConfiguration;
 import com.google.common.base.Strings;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -37,6 +39,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +54,8 @@ public final class EventTraceHistoryRestfulApi {
     
     private EventTraceDataSourceConfiguration eventTraceDataSourceConfiguration = SessionEventTraceDataSourceConfiguration.getEventTraceDataSourceConfiguration();
     
+    private EventTraceDataSourceConfigurationService eventTraceDataSourceConfigurationService = new EventTraceDataSourceConfigurationServiceImpl();
+    
     /**
      * 查询作业执行事件.
      * 
@@ -63,6 +68,9 @@ public final class EventTraceHistoryRestfulApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobExecutionEvent> findJobExecutionEvents(@Context final UriInfo uriInfo) throws ParseException {
+        if (!eventTraceDataSourceConfigurationService.loadActivated().isPresent()) {
+            return new Result<>(0, new ArrayList<JobExecutionEvent>());
+        }
         JobEventRdbSearch jobEventRdbSearch = new JobEventRdbSearch(setUpEventTraceDataSource());
         return jobEventRdbSearch.findJobExecutionEvents(buildCondition(uriInfo, new String[]{"jobName", "ip", "isSuccess"}));
     }
@@ -79,6 +87,9 @@ public final class EventTraceHistoryRestfulApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Result<JobStatusTraceEvent> findJobStatusTraceEvents(@Context final UriInfo uriInfo) throws ParseException {
+        if (!eventTraceDataSourceConfigurationService.loadActivated().isPresent()) {
+            return new Result<>(0, new ArrayList<JobStatusTraceEvent>());
+        }
         JobEventRdbSearch jobEventRdbSearch = new JobEventRdbSearch(setUpEventTraceDataSource());
         return jobEventRdbSearch.findJobStatusTraceEvents(buildCondition(uriInfo, new String[]{"jobName", "source", "executionType", "state"}));
     }
