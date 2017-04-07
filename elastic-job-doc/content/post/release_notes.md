@@ -29,7 +29,7 @@ weight=1
 ### 结构调整
 
 1. [ISSUE #263](https://github.com/dangdangdotcom/elastic-job/issues/263) Elastic-Job-Lite作业操作API重新梳理
-1. [ISSUE #264](https://github.com/dangdangdotcom/elastic-job/issues/264) Elastic-Job-Lite数据存储结构调整，升级后请清理Zookeeper中相关作业节点的server节点下的所有数据
+1. [ISSUE #264](https://github.com/dangdangdotcom/elastic-job/issues/264) Elastic-Job-Lite数据存储结构调整，但向前兼容
 
 ## 2.0.5
 
