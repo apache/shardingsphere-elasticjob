@@ -33,7 +33,7 @@ public final class LiteJobConfigurationTest {
     public void assertBuildAllProperties() {
         LiteJobConfiguration actual = LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName()))
-                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).reconcileIntervalMinutes(60).build();
+                .monitorExecution(false).maxTimeDiffSeconds(1000).monitorPort(8888).jobShardingStrategyClass("testClass").disabled(true).overwrite(true).reconcileIntervalMinutes(60).clusterOrdeer(true).build();
         assertFalse(actual.isMonitorExecution());
         assertThat(actual.getMaxTimeDiffSeconds(), is(1000));
         assertThat(actual.getMonitorPort(), is(8888));
@@ -41,6 +41,7 @@ public final class LiteJobConfigurationTest {
         assertTrue(actual.isDisabled());
         assertTrue(actual.isOverwrite());
         assertThat(actual.getReconcileIntervalMinutes(), is(60));
+        assertTrue(actual.isClusterOrder());
     }
     
     @Test
@@ -53,6 +54,7 @@ public final class LiteJobConfigurationTest {
         assertThat(actual.getJobShardingStrategyClass(), is(""));
         assertFalse(actual.isDisabled());
         assertFalse(actual.isOverwrite());
+        assertFalse(actual.isClusterOrder());
     }
     
     @Test

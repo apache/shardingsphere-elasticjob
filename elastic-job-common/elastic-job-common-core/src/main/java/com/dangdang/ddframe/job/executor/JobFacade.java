@@ -145,4 +145,9 @@ public interface JobFacade {
      * @param message 作业执行消息
      */
     void postJobStatusTraceEvent(String taskId, JobStatusTraceEvent.State state, String message);
+
+    /**
+     * 判断作业是否全局顺序
+     */
+    boolean clusterOrderIfNecessary();
 }

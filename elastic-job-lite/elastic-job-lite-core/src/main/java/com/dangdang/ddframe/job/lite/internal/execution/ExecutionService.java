@@ -175,6 +175,17 @@ public class ExecutionService {
         }
         return false;
     }
+
+    /**
+     * 如果还有分片项没有执行完，返回true。
+     * @return 全局
+     */
+    public boolean clusterOrderIfNecessary(){
+        if(hasRunningItems()){
+            return true;
+        }
+        return false;
+    }
     
     /**
      * 设置任务被错过执行的标记.

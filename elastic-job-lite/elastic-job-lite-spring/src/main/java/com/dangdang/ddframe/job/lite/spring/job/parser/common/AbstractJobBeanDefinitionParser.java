@@ -60,6 +60,7 @@ import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBean
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.SHARDING_ITEM_PARAMETERS_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.SHARDING_TOTAL_COUNT_ATTRIBUTE;
 import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.RECONCILE_INTERVAL_MINUTES;
+import static com.dangdang.ddframe.job.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.CLUSTER_ORDER;
 
 /**
  * 基本作业的命名空间解析器.
@@ -105,6 +106,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
         result.addConstructorArgValue(element.getAttribute(DISABLED_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(OVERWRITE_ATTRIBUTE));
         result.addConstructorArgValue(element.getAttribute(RECONCILE_INTERVAL_MINUTES));
+        result.addConstructorArgValue(element.getAttribute(CLUSTER_ORDER));
         return result.getBeanDefinition();
     }
     

@@ -20,35 +20,58 @@ package com.dangdang.ddframe.job.lite.api.strategy;
 import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.lite.api.strategy.fixture.InvalidJobShardingStrategy;
 import com.dangdang.ddframe.job.lite.api.strategy.impl.AverageAllocationJobShardingStrategy;
+import org.junit.Before;
 import org.junit.Test;
 
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class JobShardingStrategyFactoryTest {
+
+    private JobShardingStrategyService jobShardingStrategyService;
+
+    @Before
+    public void setUp(){
+        jobShardingStrategyService = new JobShardingStrategyService();
+    }
+
     
     @Test
     public void assertGetDefaultStrategy() {
-        assertThat(JobShardingStrategyFactory.getStrategy(null), instanceOf(AverageAllocationJobShardingStrategy.class));
+        assertThat(jobShardingStrategyService.getJobShardingStrategy(null), instanceOf(AverageAllocationJobShardingStrategy.class));
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetStrategyFailureWhenClassNotFound() {
-        JobShardingStrategyFactory.getStrategy("NotClass");
+        jobShardingStrategyService.getJobShardingStrategy("NotClass");
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetStrategyFailureWhenNotStrategyClass() {
-        JobShardingStrategyFactory.getStrategy(Object.class.getName());
+        jobShardingStrategyService.getJobShardingStrategy(Object.class.getName());
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetStrategyFailureWhenStrategyClassInvalid() {
-        JobShardingStrategyFactory.getStrategy(InvalidJobShardingStrategy.class.getName());
+        jobShardingStrategyService.getJobShardingStrategy(InvalidJobShardingStrategy.class.getName());
     }
     
     @Test
     public void assertGetStrategySuccess() {
-        assertThat(JobShardingStrategyFactory.getStrategy(AverageAllocationJobShardingStrategy.class.getName()), instanceOf(AverageAllocationJobShardingStrategy.class));
+        assertThat(jobShardingStrategyService.getJobShardingStrategy(AverageAllocationJobShardingStrategy.class.getName()), instanceOf(AverageAllocationJobShardingStrategy.class));
+    }
+
+    @Test
+    public void assertOnlyOneStrategyFactoryClass()throws Exception{
+        Field field = jobShardingStrategyService.getClass().getDeclaredField("factories");
+        field.setAccessible(true);
+        List lists =(List) field.get(new JobShardingStrategyService());
+        assertEquals(lists.size(),1);
     }
 }
