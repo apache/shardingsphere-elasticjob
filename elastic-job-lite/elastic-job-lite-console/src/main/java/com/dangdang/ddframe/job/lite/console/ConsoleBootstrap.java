@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.console;
 
+import com.dangdang.ddframe.job.lite.console.filter.GlobalConfigurationFilter;
 import com.dangdang.ddframe.job.lite.console.restful.JobOperationRestfulApi;
 import com.dangdang.ddframe.job.restful.RestfulServer;
 import com.dangdang.ddframe.job.security.WwwAuthFilter;
@@ -45,7 +46,8 @@ public final class ConsoleBootstrap {
     public static void main(final String[] args) throws Exception {
     //CHECKSTYLE:ON
         RestfulServer restfulServer = new RestfulServer(PORT);
-        restfulServer.addFilter(WwwAuthFilter.class, "/")
+        restfulServer.addFilter(GlobalConfigurationFilter.class, "*.html")
+                     .addFilter(WwwAuthFilter.class, "/")
                      .addFilter(WwwAuthFilter.class, "*.html")
                      .start(JobOperationRestfulApi.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
     }
