@@ -70,7 +70,8 @@ public final class ExecutionContextService {
     }
     
     private String buildTaskId(final LiteJobConfiguration liteJobConfig, final List<Integer> shardingItems) {
-        return Joiner.on("@-@").join(liteJobConfig.getJobName(), Joiner.on(",").join(shardingItems), "READY", JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()); 
+        String jobInstanceId = JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId();
+        return Joiner.on("@-@").join(liteJobConfig.getJobName(), Joiner.on(",").join(shardingItems), "READY", null == jobInstanceId ? "127.0.0.1@-@1" : jobInstanceId); 
     }
     
     private void removeRunningIfMonitorExecution(final boolean monitorExecution, final List<Integer> shardingItems) {
