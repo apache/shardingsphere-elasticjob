@@ -44,7 +44,6 @@ function generateOperationButtons(val, row) {
     var operationTd;
     var name = row.name;
     if (row.activated) {
-        $("#activated-reg-center").text(name);
         operationTd = "<button disabled operation='connect' class='btn-xs' regName='" + name + "'>已连</button>&nbsp;<button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     } else {
         operationTd = "<button operation='connect' class='btn-xs btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
@@ -64,7 +63,6 @@ function bindConnectButtons() {
             dataType: "json",
             success: function(data) {
                 if (data) {
-                    $("#activated-reg-center").text(regName);
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
                     refreshJobNavTag();

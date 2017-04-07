@@ -5,7 +5,6 @@ $(function() {
     switchDataSource();
     renderSkin();
     controlSubMenuStyle();
-    controlDropdownMenuStyle();
     refreshRegCenterNavTag();
     refreshEventTraceNavTag();
 });
@@ -13,22 +12,31 @@ $(function() {
 function renderRegCenterForDashboardNav() {
     $.get("api/registry-center", {}, function(data) {
         var index;
+        var activatedRegCenter;
         for (index = 0; index < data.length; index++) {
             if (data[index].activated) {
-                $("#activated-reg-center").text(data[index].name);
+                activatedRegCenter = data[index].name;
             }
         }
-        var activatedRegCenter = $("#activated-reg-center");
         var registryCenterDimension = $("#registry-center-dimension");
         registryCenterDimension.empty();
         for (index = 0; index < data.length; index++) {
             var regName = data[index].name;
-            var liContent = "<a href='#' reg-name='" + regName + "' data-loading-text='切换中...'>" + regName + "</a>";
+            var liContent;
             if (activatedRegCenter && activatedRegCenter === regName) {
-                registryCenterDimension.append("<li class='open'>" + liContent + "</li>");
+                liContent = "<a href='#' reg-name='" + regName + "' data-loading-text='切换中...'><b>" + regName + "&nbsp;&nbsp;(已连接)</b></a>";
             } else {
-                registryCenterDimension.append("<li>" + liContent + "</li>");
+                liContent = "<a href='#' reg-name='" + regName + "' data-loading-text='切换中...'>" + regName + "</a>";
             }
+            registryCenterDimension.append("<li>" + liContent + "</li>");
+        }
+        if (0 === data.length) {
+            registryCenterDimension.hide();
+        }
+    });
+    $(document).on("click", "#registry-center-dimension-link", function(event) {
+        if ($("#registry-center-dimension").children("li").length > 0) {
+            $("#registry-center-dimension").css("display", "");
         }
     });
 }
@@ -36,22 +44,31 @@ function renderRegCenterForDashboardNav() {
 function renderDataSourceForDashboardNav() {
     $.get("api/data-source", {}, function(data) {
         var index;
+        var activatedDataSource;
         for (index = 0; index < data.length; index++) {
             if (data[index].activated) {
-                $("#activated-data-source").text(data[index].name);
+                activatedDataSource = data[index].name;
             }
         }
-        var activatedDataSource = $("#activated-data-source");
         var dataSourceDimension = $("#data-source-dimension");
         dataSourceDimension.empty();
         for (index = 0; index < data.length; index++) {
             var dataSourceName = data[index].name;
-            var liContent = "<a href='#' data-source-name='" + dataSourceName + "' data-loading-text='切换中...'>" + dataSourceName + "</a>";
+            var liContent;
             if (activatedDataSource && activatedDataSource === dataSourceName) {
-                dataSourceDimension.append("<li class='open'>" + liContent + "</li>");
+                liContent = "<a href='#' data-source-name='" + dataSourceName + "' data-loading-text='切换中...'><b>" + dataSourceName + "&nbsp;&nbsp;(已连接)</b></a>";
             } else {
-                dataSourceDimension.append("<li>" + liContent + "</li>");
+                liContent = "<a href='#' data-source-name='" + dataSourceName + "' data-loading-text='切换中...'>" + dataSourceName + "</a>";
             }
+            dataSourceDimension.append("<li>" + liContent + "</li>");
+        }
+        if (0 === data.length) {
+            dataSourceDimension.hide();
+        }
+    });
+    $(document).on("click", "#data-source-dimension-link", function(event) {
+        if ($("#data-source-dimension").children("li").length > 0) {
+            $("#data-source-dimension").css("display", "");
         }
     });
 }
@@ -131,7 +148,7 @@ function renderSkin() {
 
 function changeSkin(skinClass) {
     $.each(my_skins, function(index) {
-      $("body").removeClass(my_skins[index]);
+        $("body").removeClass(my_skins[index]);
     });
     $("body").addClass(skinClass);
 }
@@ -140,14 +157,6 @@ function controlSubMenuStyle() {
     $(".sub-menu").click(function() {
         $(this).parent().parent().children().removeClass("active");
         $(this).parent().addClass("active");
-    });
-}
-
-function controlDropdownMenuStyle() {
-    $("a.dropdown-toggle").click(function() {
-        if (0 === $(this).parent().children("ul").children("li").length) {
-            $(this).parent().children("ul").hide();
-        }
     });
 }
 
