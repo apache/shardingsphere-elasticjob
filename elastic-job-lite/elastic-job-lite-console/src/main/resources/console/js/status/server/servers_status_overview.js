@@ -4,32 +4,43 @@ $(function() {
 });
 
 function renderServersOverview() {
-    $("#servers-overview-tbl").bootstrapTable({
-        url: "/api/servers",
+    var jsonData = {
         cache: false,
-        columns: 
-        [{
-            field: "serverIp",
-            title: "服务器IP",
-            sortable: "true"
-        }, {
-            field: "instancesNum",
-            title: "运行实例数",
-            sortable: "true"
-        }, {
-            field: "jobsNum",
-            title: "作业总数",
-            sortable: "true"
-        }, {
-            field: "disabledJobsNum",
-            title: "禁用作业数",
-            sortable: "true"
-        }, {
-            field: "operation",
-            title: "操作",
-            formatter: "generateOperationButtons"
-        }]
+        columns:
+            [{
+                field: "serverIp",
+                title: "服务器IP",
+                sortable: "true"
+            }, {
+                field: "instancesNum",
+                title: "运行实例数",
+                sortable: "true"
+            }, {
+                field: "jobsNum",
+                title: "作业总数",
+                sortable: "true"
+            }, {
+                field: "disabledJobsNum",
+                title: "禁用作业数",
+                sortable: "true"
+            }, {
+                field: "operation",
+                title: "操作",
+                formatter: "generateOperationButtons"
+            }]
+    };
+    var activated = false;
+    $.ajax({
+        url: "/api/registry-center/activated",
+        async: false,
+        success: function(data) {
+            activated = data;
+        }
     });
+    if (activated) {
+        jsonData.url = "/api/servers";
+    }
+    $("#servers-overview-tbl").bootstrapTable(jsonData);
 }
 
 function bindOperationButtons() {

@@ -4,37 +4,48 @@ $(function() {
 });
 
 function renderJobsOverview() {
-    $("#jobs-status-overview-tbl").bootstrapTable({
-        url: "/api/jobs",
+    var jsonData = {
         cache: false,
-        columns: 
-        [{
-            field: "jobName",
-            title: "作业名",
-            sortable: "true"
-        }, {
-            field: "shardingTotalCount",
-            title: "分片总数",
-            sortable: "true"
-        }, {
-            field: "cron",
-            title: "cron表达式",
-            sortable: "true"
-        }, {
-            field: "description",
-            title: "描述",
-            sortable: "true"
-        }, {
-            field: "status",
-            title: "运行状态",
-            formatter: "statusFormatter",
-            sortable: "true"
-        }, {
-            field: "operation",
-            title: "操作",
-            formatter: "generateOperationButtons"
-        }]
+        columns:
+            [{
+                field: "jobName",
+                title: "作业名",
+                sortable: "true"
+            }, {
+                field: "shardingTotalCount",
+                title: "分片总数",
+                sortable: "true"
+            }, {
+                field: "cron",
+                title: "cron表达式",
+                sortable: "true"
+            }, {
+                field: "description",
+                title: "描述",
+                sortable: "true"
+            }, {
+                field: "status",
+                title: "运行状态",
+                formatter: "statusFormatter",
+                sortable: "true"
+            }, {
+                field: "operation",
+                title: "操作",
+                formatter: "generateOperationButtons"
+            }]
+    };
+    var activated = false;
+    $.ajax({
+        url: "/api/registry-center/activated",
+        async: false,
+        success: function(data) {
+            activated = data;
+        }
     });
+    if (activated) {
+        jsonData.url = "/api/jobs";
+    }
+    $("#jobs-status-overview-tbl").bootstrapTable(jsonData);
 }
 
 function statusFormatter(value, row) {

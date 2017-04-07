@@ -50,7 +50,19 @@ public final class RegistryCenterRestfulApi {
     private RegistryCenterConfigurationService regCenterService = new RegistryCenterConfigurationServiceImpl();
     
     /**
-     * 读取注册中心配置.
+     * 判断是否存在已连接的注册中心配置.
+     *
+     * @param request HTTP请求
+     * @return 是否存在已连接的注册中心配置
+     */
+    @GET
+    @Path("/activated")
+    public boolean activated(final @Context HttpServletRequest request) {
+        return regCenterService.loadActivated().isPresent();
+    }
+    
+    /**
+     * 读取注册中心配置集合.
      * 
      * @param request HTTP请求
      * @return 注册中心配置集合

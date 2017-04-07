@@ -4,7 +4,7 @@ $(function() {
 });
 
 function bindSubmitJobSettingsForm() {
-    $("#update-job-info-btn").on("click", function(ev){
+    $("#update-job-info-btn").on("click", function(){
         var bootstrapValidator = $("#job-config-form").data("bootstrapValidator");
         bootstrapValidator.validate();
         if (bootstrapValidator.isValid()) {

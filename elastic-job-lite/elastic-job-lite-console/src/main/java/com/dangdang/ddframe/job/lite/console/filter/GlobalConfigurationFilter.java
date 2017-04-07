@@ -43,6 +43,11 @@ import java.io.IOException;
 import static com.dangdang.ddframe.job.lite.console.restful.config.EventTraceDataSourceRestfulApi.DATA_SOURCE_CONFIG_KEY;
 import static com.dangdang.ddframe.job.lite.console.restful.config.RegistryCenterRestfulApi.REG_CENTER_CONFIG_KEY;
 
+/**
+ * 全局配置过滤器.
+ *
+ * @author caohao
+ */
 public class GlobalConfigurationFilter implements Filter {
     
     private final RegistryCenterConfigurationService regCenterService = new RegistryCenterConfigurationServiceImpl();
