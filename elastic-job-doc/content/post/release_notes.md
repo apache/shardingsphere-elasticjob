@@ -12,7 +12,12 @@ weight=1
 
 1. [ISSUE #242](https://github.com/dangdangdotcom/elastic-job/issues/242) Elastic-Job-Cloud支持删除应用及作业功能
 1. [ISSUE #243](https://github.com/dangdangdotcom/elastic-job/issues/243) Elastic-Job-Cloud支持禁用/启用应用及作业功能
+
+
+### 缺陷修正
+
 1. [ISSUE #266](https://github.com/dangdangdotcom/elastic-job/issues/266) Elastic-Job-Lite启动脚本指定端口无效
+1. [ISSUE #269](https://github.com/dangdangdotcom/elastic-job/issues/269) EventTrace失败记录不受采样率影响并且记录失败时间
 
 ## 2.1.0
 
