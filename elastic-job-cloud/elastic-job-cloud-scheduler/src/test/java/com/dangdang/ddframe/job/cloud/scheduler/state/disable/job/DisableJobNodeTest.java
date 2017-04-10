@@ -15,26 +15,17 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.reg.base;
+package com.dangdang.ddframe.job.cloud.scheduler.state.disable.job;
 
-/**
- * 选举候选人.
- * 保证{@link #startLeadership()}与{@link #stopLeadership()}方法在同一个线程内交替运行,
- * 且不会出现并发执行的情况.
- * 
- * @author gaohongtao
- */
-public interface ElectionCandidate {
+import org.junit.Test;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+public final class DisableJobNodeTest {
     
-    /**
-     * 开始领导状态.
-     * @throws Exception 抛出的异常
-     */
-    void startLeadership() throws Exception;
-    
-    /**
-     * 终止领导状态.
-     * 实现该方法时不应该抛出任何异常
-     */
-    void stopLeadership();
+    @Test
+    public void assertGetDisableAppNodePath() {
+        assertThat(DisableJobNode.getDisableJobNodePath("test_job0000000001"), is("/state/disable/job/test_job0000000001"));
+    }
 }

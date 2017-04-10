@@ -15,26 +15,25 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.reg.base;
+package com.dangdang.ddframe.job.cloud.scheduler.state.disable.app;
+
+import com.dangdang.ddframe.job.cloud.scheduler.state.StateNode;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * 选举候选人.
- * 保证{@link #startLeadership()}与{@link #stopLeadership()}方法在同一个线程内交替运行,
- * 且不会出现并发执行的情况.
- * 
- * @author gaohongtao
+ * 禁用应用队列节点路径.
+ *
+ * @author caohao
  */
-public interface ElectionCandidate {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+final class DisableAppNode {
     
-    /**
-     * 开始领导状态.
-     * @throws Exception 抛出的异常
-     */
-    void startLeadership() throws Exception;
+    static final String ROOT = StateNode.ROOT + "/disable/app";
     
-    /**
-     * 终止领导状态.
-     * 实现该方法时不应该抛出任何异常
-     */
-    void stopLeadership();
+    private static final String DISABLE_APP = ROOT + "/%s";
+    
+    static String getDisableAppNodePath(final String appName) {
+        return String.format(DISABLE_APP, appName);
+    }
 }

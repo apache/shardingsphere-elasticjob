@@ -271,7 +271,6 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
         assertThat(jobExecutionTypeStatistics.getTransientJobCount(), is(0));
     }
     
-    
     @Test
     public void assertFindTaskRunningStatistics() throws Exception {
         assertThat(sentGetRequest("http://127.0.0.1:19000/api/job/statistics/tasks/running"),
@@ -300,5 +299,31 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     public void assertFindJobRegisterStatisticsSinceOnline() throws Exception {
         assertThat(sentGetRequest("http://127.0.0.1:19000/api/job/statistics/jobs/register"), 
                 is(GsonFactory.getGson().toJson(Collections.emptyList())));
+    }
+    
+    @Test
+    public void assertIsDisabled() throws Exception {
+        when(getRegCenter().isExisted("/state/disable/job/test_job")).thenReturn(true);
+        assertThat(sentGetRequest("http://127.0.0.1:19000/api/job/test_job/disable"), is("true"));
+    }
+    
+    @Test
+    public void assertDisable() throws Exception {
+        when(getRegCenter().isExisted("/config/job")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        assertThat(sentRequest("http://127.0.0.1:19000/api/job/test_job/disable", "POST"), is(204));
+        verify(getRegCenter()).persist("/state/disable/job/test_job", "test_job");
+    }
+    
+    @Test
+    public void assertEnable() throws Exception {
+        when(getRegCenter().isExisted("/config/job")).thenReturn(true);
+        when(getRegCenter().getChildrenKeys("/config/job")).thenReturn(Lists.newArrayList("test_job"));
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
+        when(getRegCenter().get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
+        assertThat(sentRequest("http://127.0.0.1:19000/api/job/test_job/disable", "DELETE", "test_job"), is(204));
+        verify(getRegCenter()).remove("/state/disable/job/test_job");
     }
 }

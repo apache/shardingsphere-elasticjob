@@ -6,6 +6,13 @@ weight=1
 
 # Release Notes
 
+## 2.1.1
+
+### 新功能
+
+1. [ISSUE #242](https://github.com/dangdangdotcom/elastic-job/issues/242) cloud支持删除应用及作业功能
+1. [ISSUE #243](https://github.com/dangdangdotcom/elastic-job/issues/243) cloud支持禁用/启用应用及作业功能
+
 ## 2.1.0
 
 ### 新功能

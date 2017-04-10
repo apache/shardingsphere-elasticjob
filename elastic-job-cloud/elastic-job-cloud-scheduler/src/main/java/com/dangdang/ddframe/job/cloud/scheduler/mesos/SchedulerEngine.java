@@ -57,12 +57,14 @@ public final class SchedulerEngine implements Scheduler {
         log.info("call registered");
         frameworkIDService.save(frameworkID.getValue());
         taskScheduler.expireAllLeases();
+        MesosStateService.register(masterInfo.getHostname(), masterInfo.getPort());
     }
     
     @Override
     public void reregistered(final SchedulerDriver schedulerDriver, final Protos.MasterInfo masterInfo) {
         log.info("call reregistered");
         taskScheduler.expireAllLeases();
+        MesosStateService.register(masterInfo.getHostname(), masterInfo.getPort());
     }
     
     @Override
@@ -96,6 +98,7 @@ public final class SchedulerEngine implements Scheduler {
                     facadeService.updateDaemonStatus(taskContext, false);
                 } else if ("COMPLETE".equals(taskStatus.getMessage())) {
                     facadeService.updateDaemonStatus(taskContext, true);
+                    statisticManager.taskRunSuccessfully();
                 }
                 break;
             case TASK_FINISHED:
@@ -138,6 +141,7 @@ public final class SchedulerEngine implements Scheduler {
     @Override
     public void disconnected(final SchedulerDriver schedulerDriver) {
         log.warn("call disconnected");
+        MesosStateService.deregister();
     }
     
     @Override
