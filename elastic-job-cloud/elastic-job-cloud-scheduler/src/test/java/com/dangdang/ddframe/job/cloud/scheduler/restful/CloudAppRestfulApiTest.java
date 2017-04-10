@@ -87,6 +87,7 @@ public final class CloudAppRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertDeregister() throws Exception {
+        when(getRegCenter().get("/config/app/test_app")).thenReturn(CloudAppJsonConstants.getAppJson("test_app"));
         assertThat(sentRequest("http://127.0.0.1:19000/api/app/test_app", "DELETE", CloudAppJsonConstants.getAppJson("test_app")), is(204));
         verify(getRegCenter()).get("/config/app/test_app");
     }

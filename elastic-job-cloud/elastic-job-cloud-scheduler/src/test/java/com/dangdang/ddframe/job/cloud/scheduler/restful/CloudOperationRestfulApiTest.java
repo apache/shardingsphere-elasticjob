@@ -18,13 +18,6 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.ha.HANode;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
-import com.dangdang.ddframe.job.restful.RestfulServer;
-import com.google.common.base.Optional;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.util.ReflectionUtils;
 
@@ -35,26 +28,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 public class CloudOperationRestfulApiTest extends AbstractCloudRestfulApiTest {
-    
-    private static RestfulServer masterServer;
-    
-    private static RestfulServer slaveServer;
-    
-    @BeforeClass
-    public static void startServer() throws Exception {
-        MesosStateService.register("127.0.0.1", 9050);
-        masterServer = new RestfulServer(9050);
-        masterServer.start(MesosMasterServerMock.class.getPackage().getName(), Optional.<String>absent(), Optional.<String>absent());
-        slaveServer = new RestfulServer(9051);
-        slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), Optional.<String>absent(), Optional.<String>absent());
-    }
-    
-    @AfterClass
-    public static void stopServer() {
-        masterServer.stop();
-        slaveServer.stop();
-        MesosStateService.deregister();
-    }
     
     @Test
     public void assertExplicitReconcile() throws Exception {
