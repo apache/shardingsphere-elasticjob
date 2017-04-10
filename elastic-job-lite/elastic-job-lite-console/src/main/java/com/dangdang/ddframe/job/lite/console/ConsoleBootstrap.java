@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.security.WwwAuthFilter;
 import com.google.common.base.Optional;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 界面启动器.
@@ -31,11 +32,10 @@ import lombok.NoArgsConstructor;
  * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public final class ConsoleBootstrap {
     
     private static final String CONSOLE_PATH = "console";
-    
-    private static final int PORT = 8899;
     
     /**
      * 启动RESTful服务并加载页面.
@@ -45,7 +45,15 @@ public final class ConsoleBootstrap {
     //CHECKSTYLE:OFF
     public static void main(final String[] args) throws Exception {
     //CHECKSTYLE:ON
-        RestfulServer restfulServer = new RestfulServer(PORT);
+        int port = 8899;
+        if (args.length == 1) {
+            try {
+                port = Integer.parseInt(args[0]);
+            } catch (final NumberFormatException ex) {
+                log.warn("Wrong port format, using default port 8899 instead.");
+            }
+        }
+        RestfulServer restfulServer = new RestfulServer(port);
         restfulServer.addFilter(GlobalConfigurationFilter.class, "*.html")
                      .addFilter(WwwAuthFilter.class, "/")
                      .addFilter(WwwAuthFilter.class, "*.html")

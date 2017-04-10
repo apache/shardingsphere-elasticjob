@@ -10,8 +10,9 @@ weight=1
 
 ### 新功能
 
-1. [ISSUE #242](https://github.com/dangdangdotcom/elastic-job/issues/242) cloud支持删除应用及作业功能
-1. [ISSUE #243](https://github.com/dangdangdotcom/elastic-job/issues/243) cloud支持禁用/启用应用及作业功能
+1. [ISSUE #242](https://github.com/dangdangdotcom/elastic-job/issues/242) Elastic-Job-Cloud支持删除应用及作业功能
+1. [ISSUE #243](https://github.com/dangdangdotcom/elastic-job/issues/243) Elastic-Job-Cloud支持禁用/启用应用及作业功能
+1. [ISSUE #266](https://github.com/dangdangdotcom/elastic-job/issues/266) Elastic-Job-Lite启动脚本指定端口无效
 
 ## 2.1.0
 
