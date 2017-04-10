@@ -15,6 +15,11 @@
             <artifactId>elastic-job-lite-lifecycle</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

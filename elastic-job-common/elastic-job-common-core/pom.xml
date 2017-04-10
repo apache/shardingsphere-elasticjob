@@ -8,12 +8,8 @@
     </parent>
     <artifactId>elastic-job-common-core</artifactId>
     <name>${project.artifactId}</name>
-
+    
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -55,6 +51,10 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

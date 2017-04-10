@@ -13,6 +13,9 @@ weight=1
 1. [ISSUE #242](https://github.com/dangdangdotcom/elastic-job/issues/242) Elastic-Job-Cloud支持删除应用及作业功能
 1. [ISSUE #243](https://github.com/dangdangdotcom/elastic-job/issues/243) Elastic-Job-Cloud支持禁用/启用应用及作业功能
 
+### 功能提升
+
+1. [ISSUE #268](https://github.com/dangdangdotcom/elastic-job/issues/268) 精简POM依赖
 
 ### 缺陷修正
 
