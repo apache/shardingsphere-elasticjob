@@ -100,4 +100,41 @@
             <artifactId>javaee-web-api</artifactId>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <finalName>esjob</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.4.13</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <imageName>esjob-console</imageName>
+                            <baseImage>tomcat:8.0.39-jre8</baseImage>
+                            <maintainer>${user.name}</maintainer>
+                            <!--<cmd>["catalina.sh", "run"]</cmd>-->
+                            <resources>
+                                <resource>
+                                    <targetPath>/usr/local/tomcat/webapps</targetPath>
+                                    <directory>${project.build.directory}/</directory>
+                                    <include>${project.build.finalName}.${project.packaging}</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
