@@ -96,12 +96,14 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         if (!instances.containsAll(shardingInstances) || shardingInstances.isEmpty()) {
             return JobStatus.SHARDING_ERROR;
         }
-        for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
+        List<String> serversPath = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+        int disabledServerCount = 0;
+        for (String each : serversPath) {
             if ("DISABLED".equals(regCenter.get(jobNodePath.getServerNodePath(each)))) {
-                return JobStatus.DISABLED;
+                disabledServerCount++;
             }
         }
-        return JobStatus.OK;
+        return disabledServerCount == serversPath.size() ? JobStatus.DISABLED : JobStatus.OK;
     }
     
     private int getJobInstanceCount(final String jobName) {

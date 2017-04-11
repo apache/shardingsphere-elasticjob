@@ -21,6 +21,7 @@ weight=1
 
 1. [ISSUE #266](https://github.com/dangdangdotcom/elastic-job/issues/266) Elastic-Job-Lite启动脚本指定端口无效
 1. [ISSUE #269](https://github.com/dangdangdotcom/elastic-job/issues/269) EventTrace失败记录不受采样率影响并且记录失败时间
+1. [ISSUE #272](https://github.com/dangdangdotcom/elastic-job/issues/272) Elastic-Job-Lite界面作业维度，只有全部服务器被禁用时，才应显示为被禁用
 
 ## 2.1.0
 
