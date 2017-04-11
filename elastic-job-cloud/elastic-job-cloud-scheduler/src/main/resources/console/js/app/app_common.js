@@ -26,7 +26,7 @@ function validate() {
                             var appName = $("#app-name").val();
                             var result = true;
                                 $.ajax({
-                                    url: "/app/" + appName,
+                                    url: "/api/app/" + appName,
                                     contentType: "application/json",
                                     async: false,
                                     success: function(data) {

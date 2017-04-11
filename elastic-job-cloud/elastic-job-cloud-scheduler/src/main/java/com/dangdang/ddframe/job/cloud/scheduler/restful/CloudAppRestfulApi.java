@@ -44,7 +44,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Collection;
+
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * 云作业应用的REST API.
@@ -120,12 +123,12 @@ public final class CloudAppRestfulApi {
     @GET
     @Path("/{appName}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public CloudAppConfiguration detail(@PathParam("appName") final String appName) {
-        Optional<CloudAppConfiguration> config = appConfigService.load(appName);
-        if (config.isPresent()) {
-            return config.get();
+    public Response detail(@PathParam("appName") final String appName) {
+        Optional<CloudAppConfiguration> appConfig = appConfigService.load(appName);
+        if (!appConfig.isPresent()) {
+            return Response.status(NOT_FOUND).build();
         }
-        throw new JobSystemException("Cannot find app '%s', please check the appName.", appName);
+        return Response.ok(appConfig.get()).build();
     }
     
     /**
