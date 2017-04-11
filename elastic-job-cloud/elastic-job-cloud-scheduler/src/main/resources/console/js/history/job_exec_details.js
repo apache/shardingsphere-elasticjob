@@ -1,7 +1,8 @@
 $(function() {
+    $("[data-mask]").inputmask();
     $(".toolbar input").bind("keypress", function(event) {
         if("13" === event.keyCode) {
-            $("#job-exec-status-table").bootstrapTable("refresh", {silent: true});
+            $("#job-exec-details-table").bootstrapTable("refresh", {silent: true});
         }
     });
 });
@@ -15,11 +16,21 @@ function queryParams(params) {
         order: params.sortOrder,
         jobName: $("#job-name").val(),
         taskId: $("#task-id").val(),
-        slaveId: $("#slave-id").val(),
-        source: $("#source").val(),
-        executionType: $("#execution-type").val(),
-        state: $("#state").val(),
         startTime: $("#start-time").val(),
         endTime: $("#end-time").val(),
+        ip: $("#ip").val(),
+        isSuccess: $('input[name = "isSuccess"]:checked ').val()
     };
+}
+
+function successFormatter(value) {
+    switch(value)
+    {
+    case true:
+      return "Y";
+    case false:
+        return "N";
+    default:
+      return "N/A";
+    }
 }
