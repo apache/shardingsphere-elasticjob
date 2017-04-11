@@ -6,6 +6,10 @@ weight=600
 
 # 第三方文档
 
+### 2017-04 [InfoQ新闻：分布式调度中间件Elastic-Job 2.1.0发布：Cloud Native里程碑版本](http://www.infoq.com/cn/news/2017/04/Elastic-Job-2.1.0)
+
+### 2017-04 [中国技术开放日分享：如何从0到1搭建弹性作业云Elastic-Job-Cloud](http://www.infoq.com/cn/presentations/how-to-build-elastic-job-cloud)
+
 ### 2017-03 [源码分析：Elastic-Job项目源码分析系列](http://blog.csdn.net/spy19881201/article/category/6784965)
 
 ### 2016-09 [2016全球容器技术大会分享：基于Mesos的当当作业云Elastic-Job-Cloud](http://ppt.geekbang.org/slide/show/378)
