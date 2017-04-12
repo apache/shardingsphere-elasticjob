@@ -104,7 +104,6 @@ public class SchedulerFacadeTest {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), false)).build());
         schedulerFacade.registerStartUpInfo(liteJobConfig);
-        verify(regCenter).addCacheData("/test_job");
         verify(listenerManager).startAllListeners();
         verify(leaderService).electLeader();
         verify(configService).persist(liteJobConfig);

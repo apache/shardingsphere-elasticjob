@@ -89,7 +89,6 @@ public final class SchedulerFacade {
      * @param liteJobConfig 作业配置
      */
     public void registerStartUpInfo(final LiteJobConfiguration liteJobConfig) {
-        regCenter.addCacheData("/" + liteJobConfig.getJobName());
         listenerManager.startAllListeners();
         leaderService.electLeader();
         configService.persist(liteJobConfig);
