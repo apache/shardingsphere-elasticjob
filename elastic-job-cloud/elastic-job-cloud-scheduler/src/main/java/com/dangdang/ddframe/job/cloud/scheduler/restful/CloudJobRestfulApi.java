@@ -227,7 +227,7 @@ public final class CloudJobRestfulApi {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response detail(@PathParam("jobName") final String jobName) {
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
-        if (jobConfig.isPresent()) {
+        if (!jobConfig.isPresent()) {
             return Response.status(NOT_FOUND).build();
         }
         return Response.ok(jobConfig.get()).build();
