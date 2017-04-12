@@ -46,7 +46,7 @@ public final class ConsoleBootstrap {
     public static void main(final String[] args) throws Exception {
     //CHECKSTYLE:ON
         int port = 8899;
-        if (args.length == 1) {
+        if (1 == args.length) {
             try {
                 port = Integer.parseInt(args[0]);
             } catch (final NumberFormatException ex) {
