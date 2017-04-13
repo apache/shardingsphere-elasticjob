@@ -23,6 +23,7 @@ weight=1
 1. [ISSUE #269](https://github.com/dangdangdotcom/elastic-job/issues/269) EventTrace失败记录不受采样率影响并且记录失败时间
 1. [ISSUE #272](https://github.com/dangdangdotcom/elastic-job/issues/272) Elastic-Job-Lite界面作业维度，只有全部服务器被禁用时，才应显示为被禁用
 1. [ISSUE #275](https://github.com/dangdangdotcom/elastic-job/issues/275) 停掉Zookeeper后，再重启Zookeeper，任务不会继续执行
+1. [ISSUE #280](https://github.com/dangdangdotcom/elastic-job/issues/280) 控制台作业历史页面的历史状态显示不正确
 1. [ISSUE #283](https://github.com/dangdangdotcom/elastic-job/issues/283) 作业不设置overwrite且本地配置与注册中心不一致时，作业启动的cron应以注册中心为准
 
 ## 2.1.0
