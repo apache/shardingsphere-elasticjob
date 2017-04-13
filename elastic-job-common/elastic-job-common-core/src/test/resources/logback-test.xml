@@ -22,4 +22,5 @@
     <logger name="com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration" level="OFF" />
     <logger name="com.dangdang.ddframe.job.event.JobEventBus" level="OFF" />
     <logger name="com.dangdang.ddframe.job.executor.handler.impl.DefaultJobExceptionHandler" level="OFF" />
+    <logger name="org.apache.curator.framework.recipes.leader.LeaderSelector" level="OFF" />
 </configuration>
