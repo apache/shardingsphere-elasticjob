@@ -1,8 +1,6 @@
 $(function() {
     renderRegCenters();
     validate();
-    bindConnectButtons();
-    bindDeleteButtons();
     dealRegCenterModal();
     handleFieldValidator();
     submitRegCenter();
@@ -35,7 +33,13 @@ function renderRegCenters() {
             field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
-        }]
+        }],
+        onLoadSuccess: function() {
+            bindButtons();
+        },
+        onSort: function(name, order) {
+            $("#reg-centers").bootstrapTable("refresh");
+        }
     });
     renderRegCenterForDashboardNav();
 }
@@ -51,8 +55,13 @@ function generateOperationButtons(val, row) {
     return operationTd;
 }
 
+function bindButtons() {
+    bindConnectButtons();
+    bindDeleteButtons();
+}
+
 function bindConnectButtons() {
-    $(document).on("click", "button[operation='connect']", function(event) {
+    $("button[operation='connect']").click(function(event) {
         var btn = $(this).button("loading");
         var regName = $(event.currentTarget).attr("regName");
         $.ajax({
@@ -78,7 +87,7 @@ function bindConnectButtons() {
 }
 
 function bindDeleteButtons() {
-    $(document).on("click", "button[operation='delete']", function(event) {
+    $("button[operation='delete']").click(function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var regName = $(event.currentTarget).attr("regName");
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");

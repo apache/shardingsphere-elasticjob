@@ -17,6 +17,6 @@ function queryParams(params) {
         jobName: $("#job-name").val(),
         state: $("#state").val(),
         startTime: $("#start-time").val(),
-        endTime: $("#end-time").val(),
+        endTime: $("#end-time").val()
     };
 }
