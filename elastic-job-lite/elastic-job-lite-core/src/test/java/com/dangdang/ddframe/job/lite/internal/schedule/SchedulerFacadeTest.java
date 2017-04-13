@@ -88,7 +88,6 @@ public class SchedulerFacadeTest {
         schedulerFacade = new SchedulerFacade(null, "test_job", Collections.<ElasticJobListener>emptyList());
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), false)).build());
-        ReflectionUtils.setFieldValue(schedulerFacade, "regCenter", regCenter);
         ReflectionUtils.setFieldValue(schedulerFacade, "configService", configService);
         ReflectionUtils.setFieldValue(schedulerFacade, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(schedulerFacade, "serverService", serverService);

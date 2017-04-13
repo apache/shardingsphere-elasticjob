@@ -80,4 +80,13 @@ public final class InstanceService {
         }
         return result;
     }
+    
+    /**
+     * 判断当前作业运行实例的节点是否仍然存在.
+     * 
+     * @return 当前作业运行实例的节点是否仍然存在
+     */
+    public boolean isLocalJobInstanceExisted() {
+        return jobNodeStorage.isJobNodeExisted(instanceNode.getLocalInstanceNode());
+    }
 }

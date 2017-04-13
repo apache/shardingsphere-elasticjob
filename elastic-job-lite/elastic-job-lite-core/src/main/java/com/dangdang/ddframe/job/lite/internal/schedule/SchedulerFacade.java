@@ -38,8 +38,6 @@ import java.util.List;
  */
 public final class SchedulerFacade {
     
-    private final CoordinatorRegistryCenter regCenter;
-    
     private final String jobName;
     
     private final ConfigurationService configService;
@@ -59,7 +57,6 @@ public final class SchedulerFacade {
     private ListenerManager listenerManager;
     
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName) {
-        this.regCenter = regCenter;
         this.jobName = jobName;
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
@@ -71,7 +68,6 @@ public final class SchedulerFacade {
     }
     
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
-        this.regCenter = regCenter;
         this.jobName = jobName;
         configService = new ConfigurationService(regCenter, jobName);
         leaderService = new LeaderService(regCenter, jobName);
