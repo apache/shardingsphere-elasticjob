@@ -1,7 +1,6 @@
 $(function() {
     $("#job-name").text($("#index-job-name").text());
     renderShardingTable();
-    bindButtons();
     renderBreadCrumbMenu();
 });
 
@@ -29,7 +28,13 @@ function renderShardingTable() {
                 field: "operation",
                 title: "操作",
                 formatter: "generateOperationButtons"
-            }]
+            }],
+            onLoadSuccess: function() {
+                bindButtons();
+            },
+            onSort: function(name, order) {
+                $("#sharding").bootstrapTable("refresh");
+            }
     });
 }
 
@@ -73,7 +78,7 @@ function bindButtons() {
 }
 
 function bindDisableButton() {
-    $(document).on("click", "button[operation='disable-sharding']", function(event) {
+    $("button[operation='disable-sharding']").click(function(event) {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
         $.ajax({
@@ -88,7 +93,7 @@ function bindDisableButton() {
 }
 
 function bindEnableButton() {
-    $(document).on("click", "button[operation='enable-sharding']", function(event) {
+    $("button[operation='enable-sharding']").click(function(event) {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
         $.ajax({

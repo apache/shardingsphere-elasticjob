@@ -92,6 +92,7 @@ function switchRegCenter() {
                     renderRegCenterForDashboardNav();
                     refreshJobNavTag();
                     refreshServerNavTag();
+                    $("#content").load("html/global/registry_center.html");
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -117,6 +118,7 @@ function switchDataSource() {
                     showSuccessDialog();
                     $("#data-sources").bootstrapTable("refresh");
                     renderDataSourceForDashboardNav();
+                    $("#content").load("html/global/event_trace_data_source.html");
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-data-source-failure-dialog");

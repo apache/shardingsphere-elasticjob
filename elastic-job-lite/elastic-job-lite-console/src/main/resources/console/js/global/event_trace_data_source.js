@@ -1,8 +1,6 @@
 $(function() {
     renderDataSources();
     validate();
-    bindConnectButtons();
-    bindDeleteButtons();
     dealDataSourceModal();
     handleFieldValidator();
     submitDataSource();
@@ -35,7 +33,13 @@ function renderDataSources() {
             field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
-        }]
+        }],
+        onLoadSuccess: function() {
+            bindButtons();
+        },
+        onSort: function(name, order) {
+            $("#data-sources").bootstrapTable("refresh");
+        }
     });
     renderDataSourceForDashboardNav();
 }
@@ -51,8 +55,13 @@ function generateOperationButtons(val, row) {
     return operationTd;
 }
 
+function bindButtons() {
+    bindConnectButtons();
+    bindDeleteButtons();
+}
+
 function bindConnectButtons() {
-    $(document).on("click", "button[operation='connectDataSource']", function(event) {
+    $("button[operation='connectDataSource']").click(function(event) {
         var btn = $(this).button("loading");
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $.ajax({
@@ -76,7 +85,7 @@ function bindConnectButtons() {
 }
 
 function bindDeleteButtons() {
-    $(document).on("click", "button[operation='deleteDataSource']", function(event) {
+    $("button[operation='deleteDataSource']").click(function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
