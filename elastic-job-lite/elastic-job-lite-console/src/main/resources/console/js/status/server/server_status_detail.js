@@ -1,7 +1,6 @@
 $(function() {
     $("#server-ip").text($("#index-server-ip").text());
     renderJobs();
-    bindButtons();
     renderBreadCrumbMenu();
 });
 
@@ -27,7 +26,13 @@ function renderJobs() {
             field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
-        }]
+        }],
+        onLoadSuccess: function() {
+            bindButtons();
+        },
+        onSort: function(name, order) {
+            $("#server-jobs-tbl").bootstrapTable("refresh");
+        }
     });
 }
 
@@ -69,7 +74,7 @@ function bindButtons() {
 }
 
 function bindDisableButton() {
-    $(document).on("click", "button[operation='disable']", function(event) {
+    $("button[operation='disable']").click(function(event) {
         $.ajax({
             url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
             type: "POST",
@@ -82,7 +87,7 @@ function bindDisableButton() {
 }
 
 function bindEnableButton() {
-    $(document).on("click", "button[operation='enable']", function(event) {
+    $("button[operation='enable']").click(function(event) {
         $.ajax({
             url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
             type: "DELETE",
@@ -95,7 +100,7 @@ function bindEnableButton() {
 }
 
 function bindShutdownButton() {
-    $(document).on("click", "button[operation='shutdown']", function(event) {
+    $("button[operation='shutdown']").click(function(event) {
         $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $("#server-ip").text();
         var jobName = $(event.currentTarget).attr("job-name");
@@ -116,7 +121,7 @@ function bindShutdownButton() {
 }
 
 function bindRemoveButton() {
-    $(document).on("click", "button[operation='remove']", function(event) {
+    $("button[operation='remove']").click(function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $("#server-ip").text();
         var jobName = $(event.currentTarget).attr("job-name");
