@@ -130,7 +130,7 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     
     @Test
     public void assertDetailWithNotExistedJob() throws Exception {
-        assertThat(sentRequest("http://127.0.0.1:19000/api/job/jobs/notExistedJobName", "GET", ""), is(500));
+        assertThat(sentRequest("http://127.0.0.1:19000/api/job/jobs/notExistedJobName", "GET", ""), is(404));
     }
     
     @Test
