@@ -6,6 +6,23 @@ weight=1
 
 # Release Notes
 
+## 2.1.1
+
+### 新功能
+
+1. [ISSUE #242](https://github.com/dangdangdotcom/elastic-job/issues/242) Elastic-Job-Cloud支持删除应用及作业功能
+1. [ISSUE #243](https://github.com/dangdangdotcom/elastic-job/issues/243) Elastic-Job-Cloud支持禁用/启用应用及作业功能
+
+### 功能提升
+
+1. [ISSUE #268](https://github.com/dangdangdotcom/elastic-job/issues/268) 精简POM依赖
+
+### 缺陷修正
+
+1. [ISSUE #266](https://github.com/dangdangdotcom/elastic-job/issues/266) Elastic-Job-Lite启动脚本指定端口无效
+1. [ISSUE #269](https://github.com/dangdangdotcom/elastic-job/issues/269) EventTrace失败记录不受采样率影响并且记录失败时间
+1. [ISSUE #272](https://github.com/dangdangdotcom/elastic-job/issues/272) Elastic-Job-Lite界面作业维度，只有全部服务器被禁用时，才应显示为被禁用
+
 ## 2.1.0
 
 ### 新功能

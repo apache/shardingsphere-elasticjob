@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.context;
 
-import com.dangdang.ddframe.job.util.digest.Encryption;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -125,7 +124,7 @@ public final class TaskContext {
      * @return 任务执行器主键
      */
     public String getExecutorId(final String appName) {
-        return Joiner.on(DELIMITER).join(Encryption.md5(appName), slaveId);
+        return Joiner.on(DELIMITER).join(appName, slaveId);
     }
     
     /**

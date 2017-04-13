@@ -28,7 +28,7 @@ public interface ElectionCandidate {
     
     /**
      * 开始领导状态.
-     * @throws Exception 抛出异常后,将调用{@link #stopLeadership()}进行清理
+     * @throws Exception 抛出的异常
      */
     void startLeadership() throws Exception;
     

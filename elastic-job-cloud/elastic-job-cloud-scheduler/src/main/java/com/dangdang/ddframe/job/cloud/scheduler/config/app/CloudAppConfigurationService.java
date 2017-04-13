@@ -84,7 +84,6 @@ public final class CloudAppConfigurationService {
         return result;
     }
     
-    
     /**
      * 删除云作业App配置.
      *

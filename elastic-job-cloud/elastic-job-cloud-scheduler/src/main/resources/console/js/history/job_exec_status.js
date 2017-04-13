@@ -1,11 +1,11 @@
-$(function () {
-    $('.toolbar input').bind('keypress',function(event){  
-        if(event.keyCode == "13") {
-            $('#jobExecStatusTable').bootstrapTable('refresh', {silent: true});
-        }  
+$(function() {
+    $(".toolbar input").bind("keypress", function(event) {
+        if("13" === event.keyCode) {
+            $("#job-exec-status-table").bootstrapTable("refresh", {silent: true});
+        }
     });
 });
-    
+
 function queryParams(params) {
     return {
         per_page: params.pageSize, 
@@ -13,13 +13,13 @@ function queryParams(params) {
         q: params.searchText,
         sort: params.sortName,
         order: params.sortOrder,
-        jobName: $("#jobName").val(),
-        taskId: $("#taskId").val(),
-        slaveId: $("#slaveId").val(),
+        jobName: $("#job-name").val(),
+        taskId: $("#task-id").val(),
+        slaveId: $("#slave-id").val(),
         source: $("#source").val(),
-        executionType: $("#executionType").val(),
+        executionType: $("#execution-type").val(),
         state: $("#state").val(),
-        startTime: $("#startTime").val(),
-        endTime: $("#endTime").val(),
+        startTime: $("#start-time").val(),
+        endTime: $("#end-time").val(),
     };
 }

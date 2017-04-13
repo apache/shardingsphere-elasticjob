@@ -78,14 +78,14 @@ public final class SchedulerEngineTest {
     
     @Test
     public void assertRegistered() {
-        schedulerEngine.registered(null, Protos.FrameworkID.newBuilder().setValue("1").build(), null);
+        schedulerEngine.registered(null, Protos.FrameworkID.newBuilder().setValue("1").build(), Protos.MasterInfo.getDefaultInstance());
         verify(taskScheduler).expireAllLeases();
         verify(frameworkIDService).save("1");
     }
     
     @Test
     public void assertReregistered() {
-        schedulerEngine.reregistered(null, null);
+        schedulerEngine.reregistered(null, Protos.MasterInfo.getDefaultInstance());
         verify(taskScheduler).expireAllLeases();
     }
     

@@ -104,7 +104,7 @@ public final class TaskContextTest {
     @Test
     public void assertGetExecutorId() {
         TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
-        assertThat(actual.getExecutorId("app"), is("d2a57dc1d883fd21fb9951699df71cc7@-@slave-S0"));
+        assertThat(actual.getExecutorId("app"), is("app@-@slave-S0"));
     }
     
     @Test

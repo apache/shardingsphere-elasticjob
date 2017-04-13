@@ -48,7 +48,7 @@ import static com.dangdang.ddframe.job.lite.console.restful.config.RegistryCente
  *
  * @author caohao
  */
-public class GlobalConfigurationFilter implements Filter {
+public final class GlobalConfigurationFilter implements Filter {
     
     private final RegistryCenterConfigurationService regCenterService = new RegistryCenterConfigurationServiceImpl();
     

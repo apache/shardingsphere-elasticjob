@@ -244,13 +244,14 @@ final class JobEventRdbStorage {
     
     private boolean updateJobExecutionEventFailure(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "UPDATE `" + TABLE_JOB_EXECUTION_LOG + "` SET `is_success` = ?, `failure_cause` = ? WHERE id = ?";
+        String sql = "UPDATE `" + TABLE_JOB_EXECUTION_LOG + "` SET `is_success` = ?, `complete_time` = ?, `failure_cause` = ? WHERE id = ?";
         try (
                 Connection conn = dataSource.getConnection();
                 PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setBoolean(1, jobExecutionEvent.isSuccess());
-            preparedStatement.setString(2, truncateString(jobExecutionEvent.getFailureCause()));
-            preparedStatement.setString(3, jobExecutionEvent.getId());
+            preparedStatement.setTimestamp(2, new Timestamp(jobExecutionEvent.getCompleteTime().getTime()));
+            preparedStatement.setString(3, truncateString(jobExecutionEvent.getFailureCause()));
+            preparedStatement.setString(4, jobExecutionEvent.getId());
             if (0 == preparedStatement.executeUpdate()) {
                 return insertJobExecutionEventWhenFailure(jobExecutionEvent);
             }
