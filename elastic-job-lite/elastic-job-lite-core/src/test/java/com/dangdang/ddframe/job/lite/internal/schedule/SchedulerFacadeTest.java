@@ -41,6 +41,8 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -99,17 +101,24 @@ public class SchedulerFacadeTest {
     }
     
     @Test
+    public void assertUpdateJobConfiguration() {
+        LiteJobConfiguration jobConfig = LiteJobConfiguration.newBuilder(
+                new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestDataflowJob.class.getCanonicalName(), false)).build();
+        when(configService.load(false)).thenReturn(jobConfig);
+        assertThat(schedulerFacade.updateJobConfiguration(jobConfig), is(jobConfig));
+        verify(configService).persist(jobConfig);
+    }
+    
+    @Test
     public void assertRegisterStartUpInfo() {
         when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
                 TestDataflowJob.class.getCanonicalName(), false)).build());
-        schedulerFacade.registerStartUpInfo(liteJobConfig);
+        schedulerFacade.registerStartUpInfo(true);
         verify(listenerManager).startAllListeners();
         verify(leaderService).electLeader();
-        verify(configService).persist(liteJobConfig);
         verify(serverService).persistOnline(true);
         verify(shardingService).setReshardingFlag();
         verify(monitorService).listen();
-        verify(configService).load(false);
     }
     
     @Test

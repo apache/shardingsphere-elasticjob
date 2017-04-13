@@ -80,16 +80,25 @@ public final class SchedulerFacade {
     }
     
     /**
+     * 更新作业配置.
+     *
+     * @param liteJobConfig 作业配置
+     * @return 更新后的作业配置
+     */
+    public LiteJobConfiguration updateJobConfiguration(final LiteJobConfiguration liteJobConfig) {
+        configService.persist(liteJobConfig);
+        return configService.load(false);
+    }
+    
+    /**
      * 注册作业启动信息.
      * 
-     * @param liteJobConfig 作业配置
+     * @param enabled 作业是否启用
      */
-    public void registerStartUpInfo(final LiteJobConfiguration liteJobConfig) {
+    public void registerStartUpInfo(final boolean enabled) {
         listenerManager.startAllListeners();
         leaderService.electLeader();
-        configService.persist(liteJobConfig);
-        LiteJobConfiguration liteJobConfigFromZk = configService.load(false);
-        serverService.persistOnline(!liteJobConfigFromZk.isDisabled());
+        serverService.persistOnline(enabled);
         instanceService.persistOnline();
         shardingService.setReshardingFlag();
         monitorService.listen();
