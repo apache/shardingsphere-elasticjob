@@ -4,6 +4,7 @@ $(function() {
     dealDataSourceModal();
     handleFieldValidator();
     submitDataSource();
+    bindButtons();
 });
 
 function renderDataSources() {
@@ -33,13 +34,7 @@ function renderDataSources() {
             field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
-        }],
-        onLoadSuccess: function() {
-            bindButtons();
-        },
-        onSort: function(name, order) {
-            $("#data-sources").bootstrapTable("refresh");
-        }
+        }]
     });
     renderDataSourceForDashboardNav();
 }
@@ -48,9 +43,9 @@ function generateOperationButtons(val, row) {
     var operationTd;
     var name = row.name;
     if (row.activated) {
-        operationTd = "<button disabled operation='connectDataSource' class='btn-xs' dataSourceName='" + name + "'>已连</button>&nbsp;<button operation='deleteDataSource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
+        operationTd = "<button disabled operation='connect-datasource' class='btn-xs' dataSourceName='" + name + "'>已连</button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
     } else {
-        operationTd = "<button operation='connectDataSource' class='btn-xs btn-primary' dataSourceName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='deleteDataSource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connect-datasource' class='btn-xs btn-primary' dataSourceName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
     }
     return operationTd;
 }
@@ -61,7 +56,8 @@ function bindButtons() {
 }
 
 function bindConnectButtons() {
-    $("button[operation='connectDataSource']").click(function(event) {
+    $(document).off("click", "button[operation='connect-datasource']");
+    $(document).on("click", "button[operation='connect-datasource']", function(event) {
         var btn = $(this).button("loading");
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $.ajax({
@@ -85,7 +81,8 @@ function bindConnectButtons() {
 }
 
 function bindDeleteButtons() {
-    $("button[operation='deleteDataSource']").click(function(event) {
+    $(document).off("click", "button[operation='delete-datasource']");
+    $(document).on("click", "button[operation='delete-datasource']", function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
@@ -190,7 +187,7 @@ function validate() {
                     },
                     regexp: {
                         regexp: /^[\w\.-]+$/,
-                        message: "数据源只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
+                        message: "数据源名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             },

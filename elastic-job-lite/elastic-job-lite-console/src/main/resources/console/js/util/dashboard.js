@@ -93,6 +93,8 @@ function switchRegCenter() {
                     refreshJobNavTag();
                     refreshServerNavTag();
                     $("#content").load("html/global/registry_center.html");
+                    renderSidebarMenu($("#settings"));
+                    $("#reg-center").parent().addClass("active");
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -119,6 +121,8 @@ function switchDataSource() {
                     $("#data-sources").bootstrapTable("refresh");
                     renderDataSourceForDashboardNav();
                     $("#content").load("html/global/event_trace_data_source.html");
+                    renderSidebarMenu($("#settings"));
+                    $("#event-trace-data-source").parent().addClass("active");
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-data-source-failure-dialog");
@@ -126,6 +130,13 @@ function switchDataSource() {
             }
         });
     });
+}
+
+function renderSidebarMenu(div) {
+    div.parent().children().removeClass("active");
+    div.parent().children().children().children("li").removeClass("active");
+    div.parent().children().children("ul").css("display","");
+    div.addClass("active");
 }
 
 var my_skins = [

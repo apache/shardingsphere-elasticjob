@@ -1,5 +1,6 @@
 $(function() {
     renderJobsOverview();
+    bindButtons();
 });
 
 function renderJobsOverview() {
@@ -47,13 +48,7 @@ function renderJobsOverview() {
     $("#jobs-status-overview-tbl").bootstrapTable({
         columns: jsonData.columns,
         url: jsonData.url,
-        cache: jsonData.cache,
-        onLoadSuccess: function() {
-            bindButtons();
-        },
-        onSort: function(name, order) {
-            $("#jobs-status-overview-tbl").bootstrapTable("refresh");
-        }
+        cache: jsonData.cache
     });
 }
 
@@ -109,7 +104,8 @@ function bindButtons() {
 }
 
 function bindModifyButton() {
-    $("button[operation='modify-job'][data-toggle!='modal']").click(function(event) {
+    $(document).off("click", "button[operation='modify-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='modify-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
             url: "/api/jobs/config/" + jobName,
@@ -127,7 +123,8 @@ function bindModifyButton() {
 }
 
 function bindShardingStatusButton() {
-    $("button[operation='job-detail'][data-toggle!='modal']").click(function(event) {
+    $(document).off("click", "button[operation='job-detail'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='job-detail'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $("#index-job-name").text(jobName);
         $("#content").load("html/status/job/job_status_detail.html");
@@ -135,7 +132,8 @@ function bindShardingStatusButton() {
 }
 
 function bindTriggerButton() {
-    $("button[operation='trigger-job'][data-toggle!='modal']").click(function(event) {
+    $(document).off("click", "button[operation='trigger-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='trigger-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
             url: "/api/jobs/" + jobName + "/trigger",
@@ -149,7 +147,8 @@ function bindTriggerButton() {
 }
 
 function bindDisableButton() {
-    $("button[operation='disable-job']").click(function(event) {
+    $(document).off("click", "button[operation='disable-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='disable-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
             url: "/api/jobs/" + jobName + "/disable",
@@ -163,7 +162,8 @@ function bindDisableButton() {
 }
 
 function bindEnableButton() {
-    $("button[operation='enable-job']").click(function(event) {
+    $(document).off("click", "button[operation='enable-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='enable-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
             url: "/api/jobs/" + jobName + "/disable",
@@ -177,7 +177,8 @@ function bindEnableButton() {
 }
 
 function bindShutdownButton() {
-    $("button[operation='shutdown-job']").click(function(event) {
+    $(document).off("click", "button[operation='shutdown-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='shutdown-job'][data-toggle!='modal']", function(event) {
         $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var jobName = $(event.currentTarget).attr("job-name");
         $(document).off("click", "#shutdown-confirm-dialog-confirm-btn");
@@ -197,7 +198,8 @@ function bindShutdownButton() {
 }
 
 function bindRemoveButton() {
-    $("button[operation='remove-job']").click(function(event) {
+    $(document).off("click", "button[operation='remove-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='remove-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");

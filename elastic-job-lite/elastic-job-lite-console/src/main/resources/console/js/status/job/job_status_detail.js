@@ -2,6 +2,7 @@ $(function() {
     $("#job-name").text($("#index-job-name").text());
     renderShardingTable();
     renderBreadCrumbMenu();
+    bindButtons();
 });
 
 function renderShardingTable() {
@@ -28,13 +29,7 @@ function renderShardingTable() {
                 field: "operation",
                 title: "操作",
                 formatter: "generateOperationButtons"
-            }],
-            onLoadSuccess: function() {
-                bindButtons();
-            },
-            onSort: function(name, order) {
-                $("#sharding").bootstrapTable("refresh");
-            }
+            }]
     });
 }
 
@@ -78,7 +73,8 @@ function bindButtons() {
 }
 
 function bindDisableButton() {
-    $("button[operation='disable-sharding']").click(function(event) {
+    $(document).off("click", "button[operation='disable-sharding']");
+    $(document).on("click", "button[operation='disable-sharding']", function(event) {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
         $.ajax({
@@ -93,13 +89,14 @@ function bindDisableButton() {
 }
 
 function bindEnableButton() {
-    $("button[operation='enable-sharding']").click(function(event) {
+    $(document).off("click", "button[operation='enable-sharding']");
+    $(document).on("click", "button[operation='enable-sharding']", function(event) {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
         $.ajax({
             url: "/api/jobs/" + jobName + "/sharding/" + item + "/disable",
             type: "DELETE",
-            success: function() {
+            success: function () {
                 showSuccessDialog();
                 $("#sharding").bootstrapTable("refresh");
             }
