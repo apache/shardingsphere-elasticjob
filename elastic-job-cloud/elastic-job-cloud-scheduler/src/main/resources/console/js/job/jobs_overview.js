@@ -1,8 +1,8 @@
 $(function() {
-    $('#add-job').click(function() {
+    $("#add-job").click(function() {
         $(".box-body").remove();
-        $('#add-job-body').load('html/job/add_job.html');
-        $('#data-add-job').modal({backdrop : 'static', keyboard : true});
+        $("#add-job-body").load("html/job/add_job.html");
+        $("#data-add-job").modal({backdrop : "static", keyboard : true});
     });
     bindDetailJobButton();
     bindDeleteJobButton();
@@ -48,14 +48,14 @@ function bindDetailJobButton() {
             contentType: "application/json",
             success: function(result) {
                 $(".box-body").remove();
-                $('#detail-job-body').load('html/job/detail_job.html', null, function() {
+                $("#detail-job-body").load("html/job/detail_job.html", null, function() {
                     if("SCRIPT" === result.jobType) {
                         $("#bootstrap-script-div").show();
                     } else {
                         $("#bootstrap-script-div").hide();
                     }
                     renderJob(result);
-                    $('#data-detail-job').modal({backdrop : 'static', keyboard : true});
+                    $("#data-detail-job").modal({backdrop : "static", keyboard : true});
                     $("#close-button").on("click", function(){
                         $("#data-detail-job").modal("hide");
                     });
@@ -68,12 +68,12 @@ function bindDetailJobButton() {
 function bindDeleteJobButton() {
     $(document).on("click", "button[operation='deleteJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
-        $("#delete-data").modal({backdrop : 'static', keyboard : true});
+        $("#delete-data").modal({backdrop : "static", keyboard : true});
         var flag = true;
-        $('#deleteRemove').on("click", function() {
+        $("#delete-job-remove").on("click", function() {
             flag = false;
         });
-        $('#deleteConfirm').on("click", function() {
+        $("#delete-job-confirm").on("click", function() {
             if(flag) {
                 $.ajax({
                     url: "/api/job/deregister",
@@ -81,7 +81,7 @@ function bindDeleteJobButton() {
                     contentType: "application/json",
                     data: jobName,
                     success: function(result) {
-                        $("#job-table").bootstrapTable('refresh');
+                        $("#job-table").bootstrapTable("refresh");
                         $("#delete-data").hide();
                     }
                 });
@@ -98,8 +98,8 @@ function bindModifyJobButton() {
             success: function(result) {
                 if (null !== result) {
                     $(".box-body").remove();
-                    $('#update-job-body').load('html/job/modify_job.html', null, function() {
-                        $('#data-update-job').modal({backdrop : 'static', keyboard : true});
+                    $("#update-job-body").load("html/job/modify_job.html", null, function() {
+                        $('#data-update-job').modal({backdrop : "static", keyboard : true});
                         renderJob(result);
                     });
                 }
@@ -155,19 +155,19 @@ function renderJob(job) {
     $("#misfire").prop("checked", job.misfire);
     $("#streaming-process").prop("checked", job.streamingProcess);
     $("#job-type").val(job.jobType);
-    if('SIMPLE' === job.jobType) {
+    if("SIMPLE" === job.jobType) {
         $("#job-class").attr("value", job.jobClass);
         $("#job-class-model").show();
         $("#streaming-process").hide();
         $("#streaming-process-box").hide();
         $("#bootstrap-script-div").hide();
-    } else if('DATAFLOW' === job.jobType) {
+    } else if("DATAFLOW" === job.jobType) {
         $("#job-class").attr("value", job.jobClass);
         $("#job-class-model").show();
         $("#streaming-process").show();
         $("#streaming-process-box").show();
         $("#bootstrap-script-div").hide();
-    } else if('SCRIPT' === job.jobType) {
+    } else if("SCRIPT" === job.jobType) {
         $("#job-class").attr("");
         $("#job-class-model").hide();
         $("#streaming-process").hide();

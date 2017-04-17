@@ -13,8 +13,8 @@ function validate() {
                         message: "作业实现类不能为空"
                     },
                     regexp: {
-                        regexp: /^([a-zA-Z_][a-zA-Z0-9_]*\.)*[a-zA-Z_][a-zA-Z0-9_]*$/,
-                        message: "作业实现类不能包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "作业实现类只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             },
@@ -29,8 +29,8 @@ function validate() {
                         message: "作业名称长度不能超过100字符大小"
                     },
                     regexp: {
-                        regexp: /^([a-zA-Z_][a-zA-Z0-9_]*\.)*[a-zA-Z_][a-zA-Z0-9_]*$/,
-                        message: "作业名称包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "作业名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     },
                     callback: {
                         message: "作业名称已经注册",
@@ -128,8 +128,8 @@ function validate() {
             shardingItemParameters: {
                 validators: {
                     regexp: {
-                        regexp: /^(\d+)=([a-zA-Z0-9_\u4e00-\u9fa5]+)(,(\d+)=([a-zA-Z0-9_\u4e00-\u9fa5]+))*$/,
-                        message: "作业分片项的格式不正确"
+                        regexp: /^(\d+)=(\w+)(,(\d+)=(\w+))*$/,
+                        message: "作业分片项格式不正确且只包含数字、字母、逗号"
                     },
                 }
             }
@@ -162,14 +162,14 @@ function submitConfirm(type, url) {
             if(0 === beanName.length && 0 === applicationContext.length) {
                 submitJobForm(type,url);
             } else if(null !== applicationContext && 0 === beanName.length) {
-                $("#delete-data—beanName").modal();
+                $("#delete-data—bean-name").modal();
                 setTimeout(function() {
-                    $("#delete-data—beanName").modal("hide");
+                    $("#delete-data—bean-name").modal("hide");
                 }, 3000); 
             } else if(null !== beanName && 0 === applicationContext.length) {
-                $("#delete-data-applicationContext").modal();
+                $("#delete-data-application-context").modal();
                 setTimeout(function() {
-                    $("#delete-data-applicationContext").modal("hide");
+                    $("#delete-data-application-context").modal("hide");
                 }, 3000);
             } else {
                 submitJobForm(type, url);

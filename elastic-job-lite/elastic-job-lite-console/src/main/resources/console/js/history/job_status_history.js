@@ -1,6 +1,6 @@
 $(function() {
     $(".toolbar input").bind("keypress", function(event) {
-        if("13" === event.keyCode) {
+        if("13" == event.keyCode) {
             $("#job-exec-status-table").bootstrapTable("refresh", {silent: true});
         }
     });

@@ -29,6 +29,9 @@ Date.prototype.format=function(fmt) {
 }
 
 function dateTimeFormatter(value) {
+    if(null == value){
+        return "";
+    }
     return new Date(value).format("yyyy-MM-dd HH:mm:ss");
 }
 
