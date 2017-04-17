@@ -113,19 +113,19 @@ function bindDisableAppButton() {
 function bindDeleteAppButton() {
     $(document).on("click", "button[operation='deleteApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
-        $("#delete-data-app").modal({backdrop : 'static', keyboard : true});
+        $("#delete-data-app").modal({backdrop : "static", keyboard : true});
         var flag = true;
-        $('#delete-app-remove').on("click", function() {
+        $("#delete-app-remove").on("click", function() {
             flag = false;
         });
-        $('#delete-app-confirm').on("click", function() {
+        $("#delete-app-confirm").on("click", function() {
             if(flag) {
                 $.ajax({
                     url: "/api/app/" + appName,
                     type: "DELETE",
                     contentType: "application/json",
                     success: function(result) {
-                        $("#app-table").bootstrapTable('refresh');
+                        $("#app-table").bootstrapTable("refresh");
                         $("#delete-data-app").hide();
                     }
                 });

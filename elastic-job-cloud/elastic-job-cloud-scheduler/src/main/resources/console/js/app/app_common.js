@@ -17,8 +17,8 @@ function validate() {
                         message: "应用名称长度不能超过100字符大小"
                     },
                     regexp: {
-                        regexp: /^[a-zA-Z0-9_-][a-zA-Z_.-]*$/,
-                        message: "应用名称包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "应用名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     },
                     callback: {
                         message: "应用已经注册",
@@ -30,7 +30,7 @@ function validate() {
                                     contentType: "application/json",
                                     async: false,
                                     success: function(data) {
-                                        if(null !== data) {
+                                        if (null !== data) {
                                             result = false;
                                         }
                                     }

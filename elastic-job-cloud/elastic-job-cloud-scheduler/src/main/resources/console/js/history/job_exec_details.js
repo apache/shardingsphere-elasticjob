@@ -1,7 +1,7 @@
 $(function() {
     $("[data-mask]").inputmask();
     $(".toolbar input").bind("keypress", function(event) {
-        if("13" === event.keyCode) {
+        if("13" == event.keyCode) {
             $("#job-exec-details-table").bootstrapTable("refresh", {silent: true});
         }
     });
