@@ -92,7 +92,7 @@ Elastic-Job的Spring版本支持从3.1.0.RELEASE至4的任何版本。Spring 5�
 
 ***
 
-### 9. 作业暂停(Pause)与作业失效(Disable)的区别是什么?
+### 9. Elastic-Job 2.0.5及之前版本的作业暂停(Pause)与作业失效(Disable)的区别是什么?
 
 回答：
 

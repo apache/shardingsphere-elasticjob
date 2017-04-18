@@ -22,7 +22,13 @@ next = "/00-overview/contribution/"
 
 1. [ISSUE #266](https://github.com/dangdangdotcom/elastic-job/issues/266) Elastic-Job-Lite启动脚本指定端口无效
 1. [ISSUE #269](https://github.com/dangdangdotcom/elastic-job/issues/269) EventTrace失败记录不受采样率影响并且记录失败时间
+1. [ISSUE #270](https://github.com/dangdangdotcom/elastic-job/issues/270) 控制台点击按钮后发起两次请求
 1. [ISSUE #272](https://github.com/dangdangdotcom/elastic-job/issues/272) Elastic-Job-Lite界面作业维度，只有全部服务器被禁用时，才应显示为被禁用
+1. [ISSUE #275](https://github.com/dangdangdotcom/elastic-job/issues/275) 停掉Zookeeper后，再重启Zookeeper，任务不会继续执行
+1. [ISSUE #276](https://github.com/dangdangdotcom/elastic-job/issues/276) 开启失效转移且分片任务执行后，任务会重复执行
+1. [ISSUE #279](https://github.com/dangdangdotcom/elastic-job/issues/279) 添加事件追踪数据源,数据库连接地址不能带参数
+1. [ISSUE #280](https://github.com/dangdangdotcom/elastic-job/issues/280) 作业历史页面的历史状态显示不正确
+1. [ISSUE #283](https://github.com/dangdangdotcom/elastic-job/issues/283) 作业不设置overwrite且本地配置与注册中心不一致时，作业启动的cron应以注册中心为准
 
 ## 2.1.0
 

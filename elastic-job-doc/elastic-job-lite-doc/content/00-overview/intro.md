@@ -7,7 +7,7 @@ prev = "/00-overview/index/"
 next = "/00-overview/release-notes/"
 +++
 
-Elastic-Job-Lite以jar的形式提供最轻量级的服务，外部依赖仅Zookeeper。
+Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形式提供最轻量级的分布式任务的协调服务，外部依赖仅Zookeeper。
 
 # 基本概念
 
