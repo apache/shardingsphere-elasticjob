@@ -1,13 +1,14 @@
-##Elastic-Job - distributed scheduled job solution
+# Elastic-Job - distributed scheduled job solution
 
 # [中文主页](README_cn.md) 
   
 # [原1.x版本文档](README_1.x.md)
 
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
 [![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
 [![Coverage Status](https://coveralls.io/repos/dangdangdotcom/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/dangdangdotcom/elastic-job?branch=master)
+[![GitHub release](https://img.shields.io/github/release/dangdangdotcom/elastic-job.svg)](https://github.com/dangdangdotcom/elastic-job/releases)
+[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 # Overview
 
@@ -27,6 +28,7 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 * Failover
 * Misfired jobs refire
 * Sharding consistently, same sharding item for a job only one running instance
+* Self diagnose and recover when distribute environment unstable
 * Parallel scheduling supported
 * Job lifecycle operation
 * Lavish job types
@@ -35,11 +37,15 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 ## 2. Elastic-Job-Cloud
 * All Elastic-Job-Lite features included
-* Resources allocated elastically
 * Application distributed automatically
+* Fenzo based resources allocated elastically
 * Docker based processes isolation support (TBD)
 
 ***
+
+# [Roadmap](ROADMAP.md)
+
+# [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
 
 # Architecture
 
@@ -52,11 +58,11 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 ![Elastic-Job-Cloud Architecture](elastic-job-doc/content/img/architecture/elastic_job_cloud.png)
 
-# [Roadmap](ROADMAP.md)
-
 # Quick Start
 
-## Add maven dependency
+## Elastic-Job-Lite
+
+### Add maven dependency
 
 ```xml
 <!-- import elastic-job lite core -->
@@ -73,13 +79,13 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
     <version>${lasted.release.version}</version>
 </dependency>
 ```
-## Job development
+### Job development
 
 ```java
 public class MyElasticJob implements SimpleJob {
     
     @Override
-    public void process(ShardingContext context) {
+    public void execute(ShardingContext context) {
         switch (context.getShardingItem()) {
             case 0: 
                 // do something by sharding item 0
@@ -96,7 +102,7 @@ public class MyElasticJob implements SimpleJob {
 }
 ```
 
-## Job configuration
+### Job configuration
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -117,4 +123,38 @@ public class MyElasticJob implements SimpleJob {
     <!--configure job -->
     <job:simple id="myElasticJob" class="xxx.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
+```
+
+***
+
+## Elastic-Job-Cloud
+
+### Add maven dependency
+
+```xml
+<!-- import elastic-job cloud executor -->
+<dependency>
+    <groupId>com.dangdang</groupId>
+    <artifactId>elastic-job-cloud-executor</artifactId>
+    <version>${lasted.release.version}</version>
+</dependency>
+```
+### Job development
+
+Same with `Elastic-Job-Lite`
+
+### Job App configuration
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"appName":"yourAppName","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' 
+http://elastic_job_cloud_host:8899/app
+```
+
+### Job configuration
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
+http://elastic_job_cloud_host:8899/job/register
 ```

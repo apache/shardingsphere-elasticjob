@@ -24,12 +24,8 @@ import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * 作业调度控制器.
@@ -37,25 +33,23 @@ import java.util.List;
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public class JobScheduleController {
+public final class JobScheduleController {
     
     private final Scheduler scheduler;
     
     private final JobDetail jobDetail;
-    
-    private final SchedulerFacade schedulerFacade;
     
     private final String triggerIdentity;
     
     /**
      * 调度作业.
      * 
-     * @param cronExpression CRON表达式
+     * @param cron CRON表达式
      */
-    public void scheduleJob(final String cronExpression) {
+    public void scheduleJob(final String cron) {
         try {
             if (!scheduler.checkExists(jobDetail.getKey())) {
-                scheduler.scheduleJob(jobDetail, createTrigger(cronExpression));
+                scheduler.scheduleJob(jobDetail, createTrigger(cron));
             }
             scheduler.start();
         } catch (final SchedulerException ex) {
@@ -79,43 +73,8 @@ public class JobScheduleController {
         }
     }
     
-    private CronTrigger createTrigger(final String cronExpression) {
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression);
-        if (schedulerFacade.loadJobConfiguration().getTypeConfig().getCoreConfig().isMisfire()) {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
-        } else {
-            cronScheduleBuilder = cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
-        }
-        return TriggerBuilder.newTrigger()
-                .withIdentity(triggerIdentity)
-                .withSchedule(cronScheduleBuilder).build();
-    }
-    
-    /**
-     * 获取下次作业触发时间.
-     * 
-     * @return 下次作业触发时间
-     */
-    public Date getNextFireTime() {
-        List<? extends Trigger> triggers;
-        try {
-            triggers = scheduler.getTriggersOfJob(jobDetail.getKey());
-        } catch (final SchedulerException ex) {
-            return null;
-        }
-        Date result = null;
-        for (Trigger each : triggers) {
-            Date nextFireTime = each.getNextFireTime();
-            if (null == nextFireTime) {
-                continue;
-            }
-            if (null == result) {
-                result = nextFireTime;
-            } else if (nextFireTime.getTime() < result.getTime()) {
-                result = nextFireTime;
-            }
-        }
-        return result;
+    private CronTrigger createTrigger(final String cron) {
+        return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
     }
     
     /**
@@ -161,7 +120,6 @@ public class JobScheduleController {
      * 关闭调度器.
      */
     public void shutdown() {
-        schedulerFacade.releaseJobResource();
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.shutdown();

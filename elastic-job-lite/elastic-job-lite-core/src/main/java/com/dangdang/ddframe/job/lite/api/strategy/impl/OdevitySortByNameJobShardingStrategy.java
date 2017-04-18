@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,11 +43,11 @@ public final class OdevitySortByNameJobShardingStrategy implements JobShardingSt
     private AverageAllocationJobShardingStrategy averageAllocationJobShardingStrategy = new AverageAllocationJobShardingStrategy();
     
     @Override
-    public Map<String, List<Integer>> sharding(final List<String> serversList, final JobShardingStrategyOption option) {
-        long jobNameHash = option.getJobName().hashCode();
+    public Map<JobInstance, List<Integer>> sharding(final List<JobInstance> jobInstances, final String jobName, final int shardingTotalCount) {
+        long jobNameHash = jobName.hashCode();
         if (0 == jobNameHash % 2) {
-            Collections.reverse(serversList);
+            Collections.reverse(jobInstances);
         }
-        return averageAllocationJobShardingStrategy.sharding(serversList, option);
+        return averageAllocationJobShardingStrategy.sharding(jobInstances, jobName, shardingTotalCount);
     }
 }

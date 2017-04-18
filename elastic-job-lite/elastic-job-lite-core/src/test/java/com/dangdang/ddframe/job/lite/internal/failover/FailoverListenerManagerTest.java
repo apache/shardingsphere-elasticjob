@@ -23,15 +23,14 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.LiteJsonConstants;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
@@ -74,28 +73,25 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertStart() {
         failoverListenerManager.start();
-        verify(jobNodeStorage, times(3)).addDataListener(Matchers.<AbstractJobListener>any());
+        verify(jobNodeStorage, times(3)).addDataListener(ArgumentMatchers.<AbstractJobListener>any());
     }
     
     @Test
     public void assertJobCrashedJobListenerWhenIsNotRunningItemPath() {
-        failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/execution/0/other", null, "".getBytes())), "/test_job/execution/0/other");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/sharding/0/other", Type.NODE_ADDED, "");
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
     
     @Test
     public void assertJobCrashedJobListenerWhenIsRunningItemPathButNotRemove() {
-        failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/execution/0/running", null, "".getBytes())), "/test_job/execution/0/running");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/sharding/0/running", Type.NODE_ADDED, "");
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
     
     @Test
     public void assertJobCrashedJobListenerWhenIsRunningItemPathAndRemoveButItemCompleted() {
         when(executionService.isCompleted(0)).thenReturn(true);
-        failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/running", null, "".getBytes())), "/test_job/execution/0/running");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/sharding/0/running", Type.NODE_REMOVED, "");
         verify(executionService).isCompleted(0);
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
@@ -105,10 +101,8 @@ public final class FailoverListenerManagerTest {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class.getCanonicalName())).build());
-        failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/running", null, "".getBytes())), "/test_job/execution/0/running");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/sharding/0/running", Type.NODE_REMOVED, "");
         verify(executionService).isCompleted(0);
-        verify(configService).load(true);
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
     
@@ -117,14 +111,12 @@ public final class FailoverListenerManagerTest {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
+        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(1, 2));
         when(executionService.hasRunningItems(Arrays.asList(1, 2))).thenReturn(true);
-        failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/running", null, "".getBytes())), "/test_job/execution/0/running");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/sharding/0/running", Type.NODE_REMOVED, "");
         verify(executionService).isCompleted(0);
-        verify(configService).load(true);
         verify(failoverService).setCrashedFailoverFlag(0);
-        verify(shardingService).getLocalHostShardingItems();
+        verify(shardingService).getLocalShardingItems();
         verify(executionService).hasRunningItems(Arrays.asList(1, 2));
         verify(failoverService, times(0)).failoverIfNecessary();
     }
@@ -134,37 +126,32 @@ public final class FailoverListenerManagerTest {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
+        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(1, 2));
         when(executionService.hasRunningItems(Arrays.asList(1, 2))).thenReturn(false);
-        failoverListenerManager.new JobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/running", null, "".getBytes())), "/test_job/execution/0/running");
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/sharding/0/running", Type.NODE_REMOVED, "");
         verify(executionService).isCompleted(0);
-        verify(configService).load(true);
         verify(failoverService).setCrashedFailoverFlag(0);
-        verify(shardingService).getLocalHostShardingItems();
+        verify(shardingService).getLocalShardingItems();
         verify(executionService).hasRunningItems(Arrays.asList(1, 2));
         verify(failoverService).failoverIfNecessary();
     }
     
     @Test
     public void assertFailoverJobCrashedJobListenerWhenIsNotRunningItemPath() {
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/execution/0/other", null, "".getBytes())), "/test_job/execution/0/other");
+        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/other", Type.NODE_ADDED, "");
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
     
     @Test
     public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathButNotRemove() {
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/execution/0/failover", null, "".getBytes())), "/test_job/execution/0/failover");
+        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_ADDED, "");
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
     
     @Test
     public void assertFailoverJobCrashedJobListenerWhenIsRunningItemPathAndRemoveButItemCompleted() {
         when(executionService.isCompleted(0)).thenReturn(true);
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/failover", null, "".getBytes())), "/test_job/execution/0/failover");
+        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_REMOVED, "");
         verify(executionService).isCompleted(0);
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
@@ -174,10 +161,8 @@ public final class FailoverListenerManagerTest {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(false).build(), TestSimpleJob.class.getCanonicalName())).build());
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/failover", null, "".getBytes())), "/test_job/execution/0/failover");
+        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_REMOVED, "");
         verify(executionService).isCompleted(0);
-        verify(configService).load(true);
         verify(failoverService, times(0)).setCrashedFailoverFlag(0);
     }
     
@@ -186,14 +171,12 @@ public final class FailoverListenerManagerTest {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
+        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(1, 2));
         when(executionService.hasRunningItems(Arrays.asList(1, 2))).thenReturn(true);
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/failover", null, "".getBytes())), "/test_job/execution/0/failover");
+        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_REMOVED, "");
         verify(executionService).isCompleted(0);
-        verify(configService).load(true);
         verify(failoverService).setCrashedFailoverFlag(0);
-        verify(shardingService).getLocalHostShardingItems();
+        verify(shardingService).getLocalShardingItems();
         verify(executionService).hasRunningItems(Arrays.asList(1, 2));
         verify(failoverService, times(0)).failoverIfNecessary();
     }
@@ -203,43 +186,37 @@ public final class FailoverListenerManagerTest {
         when(executionService.isCompleted(0)).thenReturn(false);
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), 
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
-        when(shardingService.getLocalHostShardingItems()).thenReturn(Arrays.asList(1, 2));
+        when(shardingService.getLocalShardingItems()).thenReturn(Arrays.asList(1, 2));
         when(executionService.hasRunningItems(Arrays.asList(1, 2))).thenReturn(false);
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/execution/0/failover", null, "".getBytes())), "/test_job/execution/0/failover");
+        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_REMOVED, "");
         verify(executionService).isCompleted(0);
-        verify(configService).load(true);
         verify(failoverService).setCrashedFailoverFlag(0);
-        verify(shardingService).getLocalHostShardingItems();
+        verify(shardingService).getLocalShardingItems();
         verify(executionService).hasRunningItems(Arrays.asList(1, 2));
         verify(failoverService).failoverIfNecessary();
     }
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsNotFailoverPath() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config/other", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config/other");
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathButNotUpdate() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/config/failover", null, "".getBytes())), "/test_job/config/failover");
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config/failover", Type.NODE_ADDED, "");
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButEnableFailover() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson().getBytes())), "/test_job/config");
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson());
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_UPDATED, new ChildData("/test_job/config", null, LiteJsonConstants.getJobJson(false).getBytes())), "/test_job/config");
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson(false));
         verify(failoverService).removeFailoverInfo();
     }
 }

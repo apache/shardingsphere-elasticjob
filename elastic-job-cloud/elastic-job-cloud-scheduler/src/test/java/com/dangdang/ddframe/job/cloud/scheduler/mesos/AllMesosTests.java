@@ -17,18 +17,22 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
+import com.dangdang.ddframe.job.cloud.scheduler.ha.FrameworkIDServiceTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.facade.FacadeServiceTest;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.strategy.ExhaustFirstResourceAllocateStrategyTest;
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        HardwareResourceTest.class, 
+        SupportedExtractionTypeTest.class, 
+        LeasesQueueTest.class, 
+        JobTaskRequestTest.class, 
+        TaskInfoDataTest.class, 
         FacadeServiceTest.class, 
-        ExhaustFirstResourceAllocateStrategyTest.class, 
-        SchedulerEngineTest.class
+        SchedulerEngineTest.class,
+        TaskLaunchScheduledServiceTest.class,
+        SchedulerServiceTest.class,
+        LaunchingTasksTest.class,
+        FrameworkIDServiceTest.class
     })
 public final class AllMesosTests {
 }

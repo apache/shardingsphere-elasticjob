@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.api.listener;
 
-import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.exception.JobSystemException;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.ElasticJobListenerCaller;
 import com.dangdang.ddframe.job.lite.api.listener.fixture.TestDistributeOnceElasticJobListener;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeService;
-import com.dangdang.ddframe.env.TimeService;
+import com.dangdang.ddframe.job.util.env.TimeService;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public final class DistributeOnceElasticJobListenerTest {
         Map<Integer, String> map = new HashMap<>(2, 1);
         map.put(0, "");
         map.put(1, "");
-        shardingContexts = new ShardingContexts("test_job", 10, "", map);
+        shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", map);
     }
     
     @Test

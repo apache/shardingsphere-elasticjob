@@ -17,7 +17,6 @@
 
 package com.dangdang.ddframe.job.lite.integrate;
 
-import com.dangdang.ddframe.env.LocalHostService;
 import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
@@ -34,47 +33,32 @@ import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.integrate.fixture.IgnoreJobExceptionHandler;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
-import com.dangdang.ddframe.job.lite.internal.util.BlockUtils;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperConfiguration;
-import com.dangdang.ddframe.reg.zookeeper.ZookeeperRegistryCenter;
-import com.google.common.base.Joiner;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
+import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
+import com.dangdang.ddframe.job.util.env.IpUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.curator.test.TestingServer;
-import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
-import java.io.File;
-import java.io.IOException;
-
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractBaseStdJobTest {
     
-    private static final int PORT = 3181;
-    
-    private static volatile TestingServer testingServer;
-    
-    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(Joiner.on(":").join("localhost", PORT), "zkRegTestCenter");
+    private static ZookeeperConfiguration zkConfig = new ZookeeperConfiguration(EmbedTestingServer.getConnectionString(), "zkRegTestCenter");
     
     @Getter(value = AccessLevel.PROTECTED)
     private static CoordinatorRegistryCenter regCenter = new ZookeeperRegistryCenter(zkConfig);
-    
-    @Getter(AccessLevel.PROTECTED)
-    private final LocalHostService localHostService = new LocalHostService();
     
     @Getter(AccessLevel.PROTECTED)
     private final LiteJobConfiguration liteJobConfig;
@@ -85,7 +69,7 @@ public abstract class AbstractBaseStdJobTest {
     
     private final int monitorPort;
     
-    private final LeaderElectionService leaderElectionService;
+    private final LeaderService leaderService;
     
     @Getter(AccessLevel.PROTECTED)
     private final String jobName = System.nanoTime() + "_test_job";
@@ -115,7 +99,7 @@ public abstract class AbstractBaseStdJobTest {
             }
         });
         monitorPort = -1;
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
     }
     
     protected AbstractBaseStdJobTest(final Class<? extends ElasticJob> elasticJobClass, final int monitorPort) {
@@ -123,7 +107,7 @@ public abstract class AbstractBaseStdJobTest {
         liteJobConfig = initJobConfig(elasticJobClass);
         jobScheduler = new JobScheduler(regCenter, liteJobConfig);
         disabled = false;
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
     }
     
     private LiteJobConfiguration initJobConfig(final Class<? extends ElasticJob> elasticJobClass) {
@@ -145,34 +129,9 @@ public abstract class AbstractBaseStdJobTest {
     
     @BeforeClass
     public static void init() {
-        startEmbedTestingServer();
+        EmbedTestingServer.start();
         zkConfig.setConnectionTimeoutMilliseconds(30000);
         regCenter.init();
-    }
-    
-    private static void startEmbedTestingServer() {
-        if (null != testingServer) {
-            return;
-        }
-        try {
-            testingServer = new TestingServer(PORT, new File(String.format("target/test_zk_data/%s/", System.nanoTime())));
-            // CHECKSTYLE:OFF
-        } catch (final Exception ex) {
-            // CHECKSTYLE:ON
-            RegExceptionHandler.handleException(ex);
-        } finally {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                
-                @Override
-                public void run() {
-                    try {
-                        testingServer.close();
-                    } catch (final IOException ex) {
-                        RegExceptionHandler.handleException(ex);
-                    }
-                }
-            });
-        }
     }
     
     @Before
@@ -182,11 +141,9 @@ public abstract class AbstractBaseStdJobTest {
     
     @After
     public void tearDown() throws SchedulerException, NoSuchFieldException {
-        JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-        if (null != jobScheduleController) {
-            JobRegistry.getInstance().getJobScheduleController(jobName).shutdown();
-        }
+        jobScheduler.getSchedulerFacade().shutdownInstance();
         ReflectionUtils.setFieldValue(JobRegistry.getInstance(), "instance", null);
+        
     }
     
     protected void initJob() {
@@ -195,36 +152,31 @@ public abstract class AbstractBaseStdJobTest {
     
     void assertRegCenterCommonInfoWithEnabled() {
         assertRegCenterCommonInfo();
-        assertTrue(leaderElectionService.isLeader());
+        assertTrue(leaderService.isLeaderUntilBlock());
     }
     
     protected void assertRegCenterCommonInfoWithDisabled() {
         assertRegCenterCommonInfo();
-        assertFalse(leaderElectionService.isLeader());
     }
     
     private void assertRegCenterCommonInfo() {
+        assertThat(JobRegistry.getInstance().getCurrentShardingTotalCount(jobName), is(3));
+        assertThat(JobRegistry.getInstance().getJobInstance(jobName).getIp(), is(IpUtils.getIp()));
         LiteJobConfiguration liteJobConfig = LiteJobConfigurationGsonFactory.fromJson(regCenter.get("/" + jobName + "/config"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), is(3));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters(), is("0=A,1=B,2=C"));
         assertThat(liteJobConfig.getTypeConfig().getCoreConfig().getCron(), is("0/1 * * * * ?"));
-        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/hostName"), is(localHostService.getHostName()));
         if (disabled) {
-            assertTrue(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
-            while (null != regCenter.get("/" + jobName + "/leader/election/host")) {
-                BlockUtils.sleep(100L);
+            assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(ServerStatus.DISABLED.name()));
+            while (null != regCenter.get("/" + jobName + "/leader/election/instance")) {
+                BlockUtils.waitingShortTime();
             }
+            regCenter.persist("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp(), "");
         } else {
-            assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/disabled"));
-            assertThat(regCenter.get("/" + jobName + "/leader/election/host"), is(localHostService.getIp()));
+            assertThat(regCenter.get("/" + jobName + "/servers/" + JobRegistry.getInstance().getJobInstance(jobName).getIp()), is(""));
+            assertThat(regCenter.get("/" + jobName + "/leader/election/instance"), is(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         }
-        assertFalse(regCenter.isExisted("/" + jobName + "/servers/" + localHostService.getIp() + "/paused"));
-        assertThat(regCenter.get("/" + jobName + "/servers/" + localHostService.getIp() + "/status"), CoreMatchers.is(ServerStatus.READY.name()));
+        assertTrue(regCenter.isExisted("/" + jobName + "/instances/" + JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId()));
         regCenter.remove("/" + jobName + "/leader/election");
-    }
-    
-    void assertRegCenterListenerInfo() {
-        assertThat(regCenter.get("/" + jobName + "/listener/once"), is("test"));
-        assertThat(regCenter.get("/" + jobName + "/listener/every"), is("test"));
     }
 }

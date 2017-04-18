@@ -21,7 +21,7 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.google.common.base.Joiner;
 
 /**
- * 保证分布式任务全部开始和结束状态节点名称的常量类.
+ * 保证分布式任务全部开始和结束状态节点路径.
  * 
  * @author zhangliang
  */

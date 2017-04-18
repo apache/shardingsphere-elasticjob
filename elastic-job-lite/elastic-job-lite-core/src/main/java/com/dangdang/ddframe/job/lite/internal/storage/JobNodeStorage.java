@@ -18,8 +18,8 @@
 package com.dangdang.ddframe.job.lite.internal.storage;
 
 import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.recipes.cache.TreeCache;
@@ -38,7 +38,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class JobNodeStorage {
+public final class JobNodeStorage {
     
     private final CoordinatorRegistryCenter regCenter;
     
@@ -205,6 +205,8 @@ public class JobNodeStorage {
     
     /**
      * 注册连接状态监听器.
+     * 
+     * @param listener 连接状态监听器
      */
     public void addConnectionStateListener(final ConnectionStateListener listener) {
         getClient().getConnectionStateListenable().addListener(listener);
@@ -216,6 +218,8 @@ public class JobNodeStorage {
     
     /**
      * 注册数据监听器.
+     * 
+     * @param listener 数据监听器
      */
     public void addDataListener(final TreeCacheListener listener) {
         TreeCache cache = (TreeCache) regCenter.getRawCache("/" + jobName);

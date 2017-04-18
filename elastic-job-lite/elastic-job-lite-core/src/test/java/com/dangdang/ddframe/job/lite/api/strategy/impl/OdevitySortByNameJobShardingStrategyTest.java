@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,19 +35,19 @@ public final class OdevitySortByNameJobShardingStrategyTest {
     
     @Test
     public void assertShardingByAsc() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Collections.singletonList(0));
-        expected.put("host1", Collections.singletonList(1));
-        expected.put("host2", Collections.<Integer>emptyList());
-        assertThat(odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("1", 2)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new HashMap<>();
+        expected.put(new JobInstance("host0@-@0"), Collections.singletonList(0));
+        expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));
+        expected.put(new JobInstance("host2@-@0"), Collections.<Integer>emptyList());
+        assertThat(odevitySortByNameJobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "1", 2), is(expected));
     }
     
     @Test
     public void assertShardingByDesc() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host2", Collections.singletonList(0));
-        expected.put("host1", Collections.singletonList(1));
-        expected.put("host0", Collections.<Integer>emptyList());
-        assertThat(odevitySortByNameJobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), new JobShardingStrategyOption("0", 2)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new HashMap<>();
+        expected.put(new JobInstance("host2@-@0"), Collections.singletonList(0));
+        expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));
+        expected.put(new JobInstance("host0@-@0"), Collections.<Integer>emptyList());
+        assertThat(odevitySortByNameJobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "0", 2), is(expected));
     }
 }

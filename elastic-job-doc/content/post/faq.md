@@ -54,7 +54,7 @@ weight=400
 
 `Elastic-Job-Lite`的使用限制：
 
-* 同一台作业服务器只能运行一个相同的作业实例，因为作业运行时是按照`IP`注册和管理的。
+* 同一台作业服务器可以运行多个相同的作业实例，但每个作业实例必须使用不同的`JobInstanceId`，因为作业运行时是按照`IP`和`JobInstanceId`注册和管理的。`JobInstanceId`可在作业配置中设置。
 
 * 一旦有服务器波动，或者修改分片项，将会触发重新分片；触发重新分片将会导致运行中的流式处理的作业在执行完本次作业后不再继续执行，等待分片结束后再恢复正常。
 
@@ -79,11 +79,11 @@ weight=400
 
 ***
 
-### 7. 使用`Spring`占位符出错?
+### 7. 使用`Spring`版本有何限制?
 
 回答：
 
-`Elastic-Job`的`Spring`命名空间以及占位符仅支持`Spring 4`及其以上版本。低版本的`Spring`不支持这些功能。
+`Elastic-Job`的`Spring`版本支持从`3.1.0.RELEASE`至`4`的任何版本。`Spring 5`由于仅支持`JDK 8`及其以上版本，因此目前并不支持。`Spring 3.1.0`之前的版本对占位符的使用与目前不同，因此不再支持。`Elastic-Job`并未包含`Spring`的`maven`依赖，请自行添加您需要的版本。
 
 ***
 
@@ -95,11 +95,19 @@ weight=400
 
 ***
 
-### 9. `Elastic-Job 2.0.0`版本`API`改动较大，升级时需要注意哪些问题?
+### 9. 作业暂停(`Pause`)与作业失效(`Disable`)的区别是什么?
 
 回答：
 
-基于扩展性提升，概念明晰和命名规范化的考虑，`elastic-job 2.100`版本决定抛弃原有包袱的束缚，重新定义了`JAVA API`，`Spring`命名空间并且删除了已废弃的`API`。
+作业暂停和失效都会停止当前节点作业的运行。但作业暂停和恢复不会触发重分片，而作业失效和生效将触发重分片。
+
+***
+
+### 10. `Elastic-Job 2.0.0`版本`API`改动较大，升级时需要注意哪些问题?
+
+回答：
+
+基于扩展性提升，概念明晰和命名规范化的考虑，`elastic-job 2.0.0`版本决定抛弃原有包袱的束缚，重新定义了`JAVA API`，`Spring`命名空间并且删除了已废弃的`API`。
 
 **重新定义`JAVA API`**
 
@@ -132,3 +140,27 @@ weight=400
 * 删除废弃作业调度器类，包括`com.dangdang.ddframe.job.schedule.JobController`和`com.dangdang.ddframe.job.spring.schedule.SpringJobController`。
 
 * 不再支持非`Spring`命名空间通过`xml`方式配置`bean`，如有需要请使用`Spring Java Config`。
+
+### 11. `Elastic-Job 2.0.5`版本使用Cloud需要注意哪些问题?
+
+回答：
+
+对于Elastic Job Cloud，原作业维度配置无法满足易用性和扩展性等需求，因此在`elastic-job 2.0.5`Cloud版本中增加了`作业APP`的概念，即作业打包部署后的应用，描述了作业启动需要用到的CPU、内存、启动脚本及应用下载路径等基本信息，每个APP可以包含一个或多个作业。
+
+**增加`JOB APP API`**
+
+* 将作业打包部署后发布作业APP。
+
+* 作业APP配置参数cpuCount,memoryMB分别代表应用启动时需要用到的`CPU`及内存。
+
+**调整`JOB API`**
+
+* 新增作业时，必须先发布打包部署后的作业APP。
+
+* 作业配置参数cpuCount,memoryMB分别代表作业运行时需要用到的`CPU`及内存。
+
+### 12. `Elastic-Job 2.0.6`版本支持单节点运行多个相同的作业实例，是否不兼容原来的数据结构?
+
+回答：
+
+是的。新`Elastic-Job Lite`的数据结构和原有结构并不兼容。在升级`Elastic-Job 2.0.6`版本时，请清理`Zookeeper`中相关作业节点下的`server`节点下的所有数据。否则使用`Web Console`时会导致显示错乱，且将导致`Elastic-Job-Lite`运行不稳定。

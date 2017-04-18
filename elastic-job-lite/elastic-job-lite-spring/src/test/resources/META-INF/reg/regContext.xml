@@ -12,12 +12,6 @@
                         ">
     <context:property-placeholder location="classpath:conf/reg/conf.properties" ignore-unresolvable="true" />
     
-    <reg:zookeeper id="regCenter1" server-lists="${regCenter1.serverLists}" namespace="${regCenter1.namespace}" base-sleep-time-milliseconds="${regCenter1.baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${regCenter1.maxSleepTimeMilliseconds}" max-retries="${regCenter1.maxRetries}" local-properties-path="${regCenter1.localPropertiesPath}" />
-    <reg:zookeeper id="regCenter2" server-lists="${regCenter2.serverLists}" namespace="${regCenter2.namespace}" base-sleep-time-milliseconds="${regCenter2.baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${regCenter2.maxSleepTimeMilliseconds}" max-retries="${regCenter2.maxRetries}" session-timeout-milliseconds="${regCenter2.sessionTimeoutMilliseconds}" connection-timeout-milliseconds="${regCenter2.connectionTimeoutMilliseconds}" digest="${regCenter2.digest}" overwrite="${regCenter2.overwrite}" local-properties-path="${regCenter2.localPropertiesPath}" />
-    
-    <reg:placeholder registry-center-ref="regCenter1" order="-1" />
-    <reg:placeholder registry-center-ref="regCenter2" order="-2" />
-    
-    <import resource="placeholder/localPlaceholder.xml" />
-    <import resource="placeholder/placeholderBean.xml" />
+    <reg:zookeeper id="regCenter1" server-lists="${regCenter1.serverLists}" namespace="${regCenter1.namespace}" base-sleep-time-milliseconds="${regCenter1.baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${regCenter1.maxSleepTimeMilliseconds}" max-retries="${regCenter1.maxRetries}" />
+    <reg:zookeeper id="regCenter2" server-lists="${regCenter2.serverLists}" namespace="${regCenter2.namespace}" base-sleep-time-milliseconds="${regCenter2.baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${regCenter2.maxSleepTimeMilliseconds}" max-retries="${regCenter2.maxRetries}" session-timeout-milliseconds="${regCenter2.sessionTimeoutMilliseconds}" connection-timeout-milliseconds="${regCenter2.connectionTimeoutMilliseconds}" digest="${regCenter2.digest}" />
 </beans>

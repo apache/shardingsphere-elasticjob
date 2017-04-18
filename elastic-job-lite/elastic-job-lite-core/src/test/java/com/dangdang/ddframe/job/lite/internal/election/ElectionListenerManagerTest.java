@@ -17,20 +17,21 @@
 
 package com.dangdang.ddframe.job.lite.internal.election;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager.LeaderElectionJobListener;
-import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
+import com.dangdang.ddframe.job.lite.internal.server.ServerStatus;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
-
-import java.util.Collections;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,13 +40,16 @@ import static org.mockito.Mockito.when;
 public final class ElectionListenerManagerTest {
     
     @Mock
+    private CoordinatorRegistryCenter regCenter;
+    
+    @Mock
+    private JobScheduleController jobScheduleController;
+    
+    @Mock
     private JobNodeStorage jobNodeStorage;
     
     @Mock
-    private ServerNode serverNode;
-    
-    @Mock
-    private LeaderElectionService leaderElectionService;
+    private LeaderService leaderService;
     
     @Mock
     private ServerService serverService;
@@ -54,79 +58,84 @@ public final class ElectionListenerManagerTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(electionListenerManager, electionListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
-        ReflectionUtils.setFieldValue(electionListenerManager, "serverNode", serverNode);
-        ReflectionUtils.setFieldValue(electionListenerManager, "leaderElectionService", leaderElectionService);
+        ReflectionUtils.setFieldValue(electionListenerManager, "leaderService", leaderService);
         ReflectionUtils.setFieldValue(electionListenerManager, "serverService", serverService);
     }
     
     @Test
     public void assertStart() {
         electionListenerManager.start();
-        verify(jobNodeStorage).addDataListener(Matchers.<LeaderElectionJobListener>any());
+        verify(jobNodeStorage, times(2)).addDataListener(ArgumentMatchers.<LeaderElectionJobListener>any());
     }
     
     @Test
-    public void assertLeaderElectionJobListenerWhenIsNotLeaderHostPath() {
-        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/leader/election/other", null, "localhost".getBytes())), "/test_job/leader/election/other");
-        verify(leaderElectionService, times(0)).leaderElection();
+    public void assertIsNotLeaderInstancePathAndServerPath() {
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/leader/election/other", Type.NODE_REMOVED, "127.0.0.1");
+        verify(leaderService, times(0)).electLeader();
     }
     
     @Test
-    public void assertLeaderElectionJobListenerWhenIsLeaderHostPathButNotRemove() {
-        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/leader/election/host", null, "localhost".getBytes())), "/test_job/leader/election/host");
-        verify(leaderElectionService, times(0)).leaderElection();
+    public void assertLeaderElectionWhenAddLeaderInstancePath() {
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/leader/election/instance", Type.NODE_ADDED, "127.0.0.1");
+        verify(leaderService, times(0)).electLeader();
     }
     
     @Test
-    public void assertLeaderElectionJobListenerWhenIsLeaderHostPathAndIsRemoveAndIsLeader() {
-        when(leaderElectionService.hasLeader()).thenReturn(true);
-        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host", null, "localhost".getBytes())), "/test_job/leader/election/host");
-        verify(leaderElectionService).hasLeader();
-        verify(leaderElectionService, times(0)).leaderElection();
+    public void assertLeaderElectionWhenRemoveLeaderInstancePathWithoutAvailableServers() {
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/leader/election/instance", Type.NODE_REMOVED, "127.0.0.1");
+        verify(leaderService, times(0)).electLeader();
     }
     
     @Test
-    public void assertLeaderElectionJobListenerWhenIsLeaderHostPathAndIsRemoveAndIsNotLeaderWithAvailableServers() {
-        when(leaderElectionService.hasLeader()).thenReturn(false);
-        when(serverService.getAvailableServers()).thenReturn(Collections.singletonList("localhost"));
-        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host", null, "localhost".getBytes())), "/test_job/leader/election/host");
-        verify(leaderElectionService).hasLeader();
-        verify(serverService).getAvailableServers();
-        verify(leaderElectionService).leaderElection();
+    public void assertLeaderElectionWhenRemoveLeaderInstancePathWithAvailableServerButJobInstanceIsShutdown() {
+        when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/leader/election/instance", Type.NODE_REMOVED, "127.0.0.1");
+        verify(leaderService, times(0)).electLeader();
     }
     
     @Test
-    public void assertLeaderElectionJobListenerWhenIsLeaderHostPathAndIsRemoveAndIsNotLeaderWithoutAvailableServers() {
-        when(leaderElectionService.hasLeader()).thenReturn(false);
-        when(serverService.getAvailableServers()).thenReturn(Collections.<String>emptyList());
-        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_REMOVED, new ChildData("/test_job/leader/election/host", null, "localhost".getBytes())), "/test_job/leader/election/host");
-        verify(leaderElectionService).hasLeader();
-        verify(serverService).getAvailableServers();
-        verify(leaderElectionService, times(0)).leaderElection();
+    public void assertLeaderElectionWhenRemoveLeaderInstancePathWithAvailableServer() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        when(serverService.isAvailableServer("127.0.0.1")).thenReturn(true);
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/leader/election/instance", Type.NODE_REMOVED, "127.0.0.1");
+        verify(leaderService).electLeader();
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
-    public void assertLeaderElectionJobListenerWhenJobDisabledAndIsNotLeader() {
-        when(leaderElectionService.isLeader()).thenReturn(false);
-        when(serverNode.isLocalJobPausedPath("/test_job/server/mockedIP/disabled")).thenReturn(true);
-        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/server/mockedIP/disabled", null, "localhost".getBytes())), "/test_job/server/mockedIP/disabled");
-        verify(leaderElectionService, times(0)).removeLeader();
+    public void assertLeaderElectionWhenServerDisableWithoutLeader() {
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_REMOVED, ServerStatus.DISABLED.name());
+        verify(leaderService, times(0)).electLeader();
     }
     
     @Test
-    public void assertLeaderElectionJobListenerWhenJobShutdownAndIsLeader() {
-        when(leaderElectionService.isLeader()).thenReturn(true);
-        when(serverNode.isLocalJobPausedPath("/test_job/server/mockedIP/shutdown")).thenReturn(true);
-        electionListenerManager.new LeaderElectionJobListener().dataChanged(null, new TreeCacheEvent(
-                TreeCacheEvent.Type.NODE_ADDED, new ChildData("/test_job/server/mockedIP/shutdown", null, "localhost".getBytes())), "/test_job/server/mockedIP/shutdown");
-        verify(leaderElectionService).removeLeader();
+    public void assertLeaderElectionWhenServerEnableWithLeader() {
+        when(leaderService.hasLeader()).thenReturn(true);
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, "");
+        verify(leaderService, times(0)).electLeader();
+    }
+    
+    @Test
+    public void assertLeaderElectionWhenServerEnableWithoutLeader() {
+        JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
+        electionListenerManager.new LeaderElectionJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, "");
+        verify(leaderService).electLeader();
+        JobRegistry.getInstance().shutdown("test_job");
+    }
+    
+    @Test
+    public void assertLeaderAbdicationWhenFollowerDisable() {
+        electionListenerManager.new LeaderAbdicationJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, ServerStatus.DISABLED.name());
+        verify(leaderService, times(0)).removeLeader();
+    }
+    
+    @Test
+    public void assertLeaderAbdicationWhenLeaderDisable() {
+        when(leaderService.isLeader()).thenReturn(true);
+        electionListenerManager.new LeaderAbdicationJobListener().dataChanged("/test_job/servers/127.0.0.1", Type.NODE_UPDATED, ServerStatus.DISABLED.name());
+        verify(leaderService).removeLeader();
     }
 }

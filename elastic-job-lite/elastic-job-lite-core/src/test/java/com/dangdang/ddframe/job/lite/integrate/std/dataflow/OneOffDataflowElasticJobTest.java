@@ -51,6 +51,6 @@ public final class OneOffDataflowElasticJobTest extends AbstractBaseStdJobAutoIn
         while (!OneOffDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }

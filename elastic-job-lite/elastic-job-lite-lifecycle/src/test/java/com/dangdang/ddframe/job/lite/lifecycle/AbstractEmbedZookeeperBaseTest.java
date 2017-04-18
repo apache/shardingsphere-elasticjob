@@ -17,7 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.lifecycle;
 
-import com.dangdang.ddframe.reg.exception.RegExceptionHandler;
+import com.dangdang.ddframe.job.reg.exception.RegExceptionHandler;
 import com.google.common.base.Joiner;
 import org.apache.curator.test.TestingServer;
 import org.junit.BeforeClass;

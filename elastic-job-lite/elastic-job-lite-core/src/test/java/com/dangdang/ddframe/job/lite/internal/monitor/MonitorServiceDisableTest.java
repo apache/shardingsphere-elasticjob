@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.internal.monitor;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobTest;
 import org.junit.Test;
-
 import java.io.IOException;
 
 public final class MonitorServiceDisableTest extends AbstractBaseStdJobTest {

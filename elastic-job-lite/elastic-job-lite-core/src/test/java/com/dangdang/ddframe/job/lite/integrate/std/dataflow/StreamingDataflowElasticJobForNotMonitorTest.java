@@ -18,15 +18,15 @@
 package com.dangdang.ddframe.job.lite.integrate.std.dataflow;
 
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
+import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import com.dangdang.ddframe.job.lite.integrate.AbstractBaseStdJobAutoInitTest;
 import com.dangdang.ddframe.job.lite.integrate.WaitingUtils;
 import com.dangdang.ddframe.job.lite.integrate.fixture.dataflow.StreamingDataflowElasticJob;
-import com.dangdang.ddframe.job.lite.fixture.util.JobConfigurationUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public final class StreamingDataflowElasticJobForNotMonitorTest extends AbstractBaseStdJobAutoInitTest {
     
@@ -51,6 +51,6 @@ public final class StreamingDataflowElasticJobForNotMonitorTest extends Abstract
         while (!StreamingDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertFalse(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }

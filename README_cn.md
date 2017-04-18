@@ -1,6 +1,8 @@
-##Elastic-Job - distributed scheduled job solution
+# Elastic-Job - distributed scheduled job solution
 
 # [English](README.md)
+
+# [原1.x版本文档](README_1.x.md)
 
 [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
@@ -18,11 +20,15 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 # 为何使用Elastic-Job？
 
+## 定位
+
+Elastic-Job-Lite以jar的形式提供最轻量级的服务，外部依赖仅Zookeeper。Elastic-Job-Cloud以私有云平台的方式提供集资源、调度以及分片为一体的全量级解决方案，依赖Mesos和Zookeeper。
+
 ## 通用部分
 
 ### 1. 分片概念
 
-任务的分布式执行，需要将一个任务拆分为n个独立的任务项，然后由分布式的服务器分别执行某一个或几个分片项。
+任务的分布式执行，需要将一个任务拆分为多个独立的任务项，然后由分布式的服务器分别执行某一个或几个分片项。
 
 例如：有一个遍历数据库某张表的作业，现有`2`台服务器。为了快速的执行作业，那么每台服务器应执行作业的`50%`。
 为满足此需求，可将作业分成`2`片，每台服务器执行`1`片。作业遍历数据的逻辑应为：服务器`A`遍历`ID`以奇数结尾的数据；服务器`B`遍历`ID`以偶数结尾的数据。
@@ -30,7 +36,7 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ### 2. 分片项与业务处理解耦
 
-`Elastic-ob`并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器，开发者需要自行处理分片项与真实数据的对应关系。
+`Elastic-Job`并不直接提供数据处理的功能，框架只会将分片项分配至各个运行中的作业服务器，开发者需要自行处理分片项与真实数据的对应关系。
 
 ### 3. 个性化参数的适用场景
 
@@ -88,19 +94,22 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 * 失效转移
 * 错过执行作业重触发
 * 作业分片一致性，保证同一分片在分布式环境中仅一个执行实例
+* 自诊断并修复分布式不稳定造成的问题
 * 支持并行调度
-* 支持作业声明周期操作
+* 支持作业生命周期操作
 * 丰富的作业类型
 * Spring整合以及命名空间提供
 * 运维平台
 
 ## 2. Elastic-Job-Cloud
 * 包含Elastic-Job-Lite的全部功能
-* 弹性资源分配
 * 应用自动分发
+* 基于Fenzo的弹性资源分配
 * 基于Docker的进程隔离(TBD)
 
 ***
+
+# [Roadmap](ROADMAP.md)
 
 # [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
 
@@ -116,14 +125,14 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
 
 ![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_cloud.png)
 
-# [Roadmap](ROADMAP.md)
-
 # Quick Start
 
-## 引入maven依赖
+## Elastic-Job-Lite
+
+### 引入maven依赖
 
 ```xml
-<!-- 引入elastic-job核心模块 -->
+<!-- 引入elastic-job-lite核心模块 -->
 <dependency>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job-lite-core</artifactId>
@@ -137,13 +146,13 @@ Elastic-Job-Lite和Elastic-Job-Cloud提供同一套API开发作业，开发者�
     <version>${latest.release.version}</version>
 </dependency>
 ```
-## 作业开发
+### 作业开发
 
 ```java
 public class MyElasticJob implements SimpleJob {
     
     @Override
-    public void process(ShardingContext context) {
+    public void execute(ShardingContext context) {
         switch (context.getShardingItem()) {
             case 0: 
                 // do something by sharding item 0
@@ -160,7 +169,7 @@ public class MyElasticJob implements SimpleJob {
 }
 ```
 
-## 作业配置
+### 作业配置
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -182,6 +191,41 @@ public class MyElasticJob implements SimpleJob {
     <job:simple id="oneOffElasticJob" class="xxx.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
 ```
+***
+
+## Elastic-Job-Cloud
+
+### 引入maven依赖
+
+```xml
+<!-- 引入elastic-job-cloud执行器模块 -->
+<dependency>
+    <groupId>com.dangdang</groupId>
+    <artifactId>elastic-job-cloud-executor</artifactId>
+    <version>${latest.release.version}</version>
+</dependency>
+```
+### 作业开发
+
+同`Elastic-Job-Lite`
+
+### 作业APP配置
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"appName":"yourAppName","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' 
+http://elastic_job_cloud_host:8899/app
+```
+
+### 作业配置
+
+```shell
+curl -l -H "Content-type: application/json" -X POST -d 
+'{"jobName":"fooJob","appName":"yourAppName","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"failover":true,"misfire":true}' 
+http://elastic_job_cloud_host:8899/job/register
+```
+
+***
 
 # 相关文档
 
@@ -200,3 +244,5 @@ public class MyElasticJob implements SimpleJob {
 ## 5. [其他第三方文档](http://dangdangdotcom.github.io/elastic-job/post/third_parties_docs/)
 
 **讨论QQ群：**430066234（不限于Elastic-Job，包括分布式，定时任务相关以及其他互联网技术交流。由于QQ群已接近饱和，我们希望您在申请加群之前仔细阅读文档，并在加群申请中正确回答问题，以及在申请时写上您的姓名和公司名称。并且在入群后及时修改群名片。否则我们将有权拒绝您的入群申请。谢谢合作。）
+
+**使用Elastic-Job的公司如果方便请留下公司+网址** https://github.com/dangdangdotcom/elastic-job/issues/254

@@ -18,60 +18,40 @@
 package com.dangdang.ddframe.job.lite.lifecycle.domain;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 作业服务器简明信息对象.
+ * 服务器维度简明信息对象.
  *
- * @author zhangliang
+ * @author caohao
  */
+@RequiredArgsConstructor
 @Getter
 @Setter
 public final class ServerBriefInfo implements Serializable, Comparable<ServerBriefInfo> {
     
     private static final long serialVersionUID = 1133149706443681483L;
     
-    private String serverIp;
+    private final String serverIp;
     
-    private String serverHostName;
+    private final Set<String> instances = new HashSet<>();
     
-    private ServerBriefStatus status;
+    private final Set<String> jobNames = new HashSet<>();
+    
+    private int instancesNum;
+    
+    private int jobsNum;
+    
+    private AtomicInteger disabledJobsNum = new AtomicInteger();
     
     @Override
     public int compareTo(final ServerBriefInfo o) {
-        return getServerIp().compareTo(o.getServerIp());
-    }
-    
-    /**
-     * 作业服务器状态.
-     *
-     * @author zhangliang
-     */
-    public enum ServerBriefStatus {
-        
-        OK, 
-        PARTIAL_ALIVE, 
-        ALL_CRASHED;
-        
-        /**
-         * 获取作业服务器状态.
-         * 
-         * @param aliveServers 存活的作业服务器集合
-         * @param crashedServers 崩溃的作业服务器集合
-         * @param serverIp 作业服务器IP地址
-         * @return 作业服务器状态
-         */
-        public static ServerBriefStatus getServerBriefStatus(final Collection<String> aliveServers, final Collection<String> crashedServers, final String serverIp) {
-            if (!aliveServers.contains(serverIp)) {
-                return ALL_CRASHED;
-            }
-            if (!crashedServers.contains(serverIp)) {
-                return OK;
-            }
-            return PARTIAL_ALIVE;
-        }
+        return (getServerIp()).compareTo(o.getServerIp());
     }
 }

@@ -21,4 +21,7 @@
     </root>
     
     <logger name="com.dangdang.ddframe.job.cloud.scheduler.mesos.SchedulerEngine" level="OFF" />
+    <logger name="com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService" level="OFF" />
+    <logger name="com.dangdang.ddframe.job.cloud.scheduler.state.misfired.MisfiredService" level="OFF" />
+    <logger name="com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService" level="OFF" />
 </configuration>

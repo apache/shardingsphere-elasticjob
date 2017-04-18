@@ -17,12 +17,12 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderNode;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNode;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
- * Elastic Job失效转移节点名称的常量类.
+ * 失效转移节点路径.
  * 
  * @author zhangliang
  */
@@ -30,7 +30,7 @@ public final class FailoverNode {
     
     static final String FAILOVER = "failover";
     
-    static final String LEADER_ROOT = ElectionNode.ROOT + "/" + FAILOVER;
+    static final String LEADER_ROOT = LeaderNode.ROOT + "/" + FAILOVER;
     
     static final String ITEMS_ROOT = LEADER_ROOT + "/items";
     
@@ -38,7 +38,7 @@ public final class FailoverNode {
     
     static final String LATCH = LEADER_ROOT + "/latch";
     
-    private static final String EXECUTION_FAILOVER = ExecutionNode.ROOT + "/%s/" + FAILOVER;
+    private static final String EXECUTION_FAILOVER = ShardingNode.ROOT + "/%s/" + FAILOVER;
     
     private final JobNodePath jobNodePath;
     
@@ -64,10 +64,10 @@ public final class FailoverNode {
         if (!isFailoverPath(path)) {
             return null;
         }
-        return Integer.parseInt(path.substring(jobNodePath.getFullPath(ExecutionNode.ROOT).length() + 1, path.lastIndexOf(FailoverNode.FAILOVER) - 1));
+        return Integer.parseInt(path.substring(jobNodePath.getFullPath(ShardingNode.ROOT).length() + 1, path.lastIndexOf(FailoverNode.FAILOVER) - 1));
     }
     
     private boolean isFailoverPath(final String path) {
-        return path.startsWith(jobNodePath.getFullPath(ExecutionNode.ROOT)) && path.endsWith(FailoverNode.FAILOVER);
+        return path.startsWith(jobNodePath.getFullPath(ShardingNode.ROOT)) && path.endsWith(FailoverNode.FAILOVER);
     }
 }

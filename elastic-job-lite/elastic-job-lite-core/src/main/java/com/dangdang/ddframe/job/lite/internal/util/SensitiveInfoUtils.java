@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.lite.internal.util;
 
+import com.dangdang.ddframe.job.util.env.IpUtils;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -40,8 +41,6 @@ public final class SensitiveInfoUtils {
     
     private static final String FAKE_IP_SAMPLE = "ip";
     
-    private static final String IP_REGEX = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
-    
     /**
      * 屏蔽替换IP地址敏感信息.
      * 
@@ -55,7 +54,7 @@ public final class SensitiveInfoUtils {
             
             @Override
             public String apply(final String input) {
-                Matcher matcher = Pattern.compile(IP_REGEX).matcher(input);
+                Matcher matcher = Pattern.compile(IpUtils.IP_REGEX).matcher(input);
                 String result = input;
                 while (matcher.find()) {
                     String realIp = matcher.group();

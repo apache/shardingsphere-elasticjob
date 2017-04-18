@@ -21,6 +21,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(CloudJobRestfulApiTest.class)
+@Suite.SuiteClasses({
+        CloudJobRestfulApiTest.class,
+        CloudAppRestfulApiTest.class,
+        CloudOperationRestfulApiTest.class
+        })
 public final class AllRestfulTests {
 }

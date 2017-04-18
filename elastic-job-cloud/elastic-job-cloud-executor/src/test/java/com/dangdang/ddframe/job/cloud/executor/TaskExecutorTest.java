@@ -17,10 +17,6 @@
 
 package com.dangdang.ddframe.job.cloud.executor;
 
-import com.dangdang.ddframe.job.api.JobType;
-import com.dangdang.ddframe.job.cloud.executor.fixture.TestJob;
-import com.dangdang.ddframe.job.exception.JobSystemException;
-import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.mesos.ExecutorDriver;
@@ -30,19 +26,16 @@ import org.apache.mesos.Protos.FrameworkInfo;
 import org.apache.mesos.Protos.SlaveInfo;
 import org.apache.mesos.Protos.TaskID;
 import org.apache.mesos.Protos.TaskInfo;
-import org.apache.mesos.Protos.TaskState;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.unitils.util.ReflectionUtils;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,7 +44,10 @@ public final class TaskExecutorTest {
     @Mock
     private ExecutorDriver executorDriver;
     
-    private ExecutorInfo executorInfo = ExecutorInfo.getDefaultInstance();
+    @Mock
+    private ExecutorService executorService;
+    
+    private ExecutorInfo executorInfo;
     
     private SlaveInfo slaveInfo = SlaveInfo.getDefaultInstance();
     
@@ -61,8 +57,9 @@ public final class TaskExecutorTest {
     
     @Before
     public void setUp() throws NoSuchFieldException {
-        executorDriver = mock(ExecutorDriver.class);
         taskExecutor = new TaskExecutor();
+        ReflectionUtils.setFieldValue(taskExecutor, "executorService", executorService);
+        executorInfo = ExecutorInfo.getDefaultInstance();
     }
     
     @Test
@@ -70,105 +67,55 @@ public final class TaskExecutorTest {
         TaskID taskID = Protos.TaskID.newBuilder().setValue("task_id").build();
         taskExecutor.killTask(executorDriver, taskID);
         verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskID).setState(Protos.TaskState.TASK_KILLED).build());
-        verify(executorDriver).stop();
     }
     
     @Test
-    public void assertLaunchTaskWithDaemonTaskAndJavaSimpleJob() {
-        TaskInfo taskInfo = buildTransientTaskInfo();
-        taskExecutor.launchTask(executorDriver, taskInfo);
-        verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
-    }
-    
-    @Test
-    public void assertLaunchTaskWithTransientTaskAndSpringSimpleJob() {
-        TaskInfo taskInfo = buildDaemonTaskInfo();
-        taskExecutor.launchTask(executorDriver, taskInfo);
-        verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
-    }
-    
-    @Test
-    public void assertLaunchTaskWithTransientTaskAndJavaScriptJob() {
-        TaskInfo taskInfo = buildScriptDaemonTaskInfo();
-        taskExecutor.launchTask(executorDriver, taskInfo);
-        verify(executorDriver).sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(TaskState.TASK_RUNNING).build());
-    }
-    
-    @Test(expected = JobSystemException.class)
-    public void assertLaunchTaskWithWrongClass() throws NoSuchFieldException {
-        taskExecutor.launchTask(executorDriver, buildWrongTaskInfo());
-    }
-    
-    @Test(expected = JobSystemException.class)
-    public void assertLaunchTaskWithNotElasticJobClass() throws NoSuchFieldException {
-        taskExecutor.launchTask(executorDriver, buildNotElasticJobTaskInfo());
-    }
-    
-    @Test
-    public void assertOtherOperations() throws NoSuchFieldException {
+    public void assertRegisteredWithoutData() {
+        // CHECKSTYLE:OFF
+        HashMap<String, String> data = new HashMap<>(4, 1);
+        // CHECKSTYLE:ON
+        data.put("event_trace_rdb_driver", "org.h2.Driver");
+        data.put("event_trace_rdb_url", "jdbc:h2:mem:test_executor");
+        data.put("event_trace_rdb_username", "sa");
+        data.put("event_trace_rdb_password", "");
+        ExecutorInfo executorInfo = ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder().setValue("test_executor")).setCommand(Protos.CommandInfo.getDefaultInstance())
+                .setData(ByteString.copyFrom(SerializationUtils.serialize(data))).build();
         taskExecutor.registered(executorDriver, executorInfo, frameworkInfo, slaveInfo);
+    }
+    
+    @Test
+    public void assertRegisteredWithData() {
+        taskExecutor.registered(executorDriver, executorInfo, frameworkInfo, slaveInfo);
+    }
+    
+    @Test
+    public void assertLaunchTask() {
+        taskExecutor.launchTask(executorDriver, TaskInfo.newBuilder().setName("test_job")
+                .setTaskId(TaskID.newBuilder().setValue("fake_task_id")).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+    }
+    
+    @Test
+    public void assertReregistered() {
         taskExecutor.reregistered(executorDriver, slaveInfo);
+    }
+    
+    @Test
+    public void assertDisconnected() {
         taskExecutor.disconnected(executorDriver);
+    }
+    
+    @Test
+    public void assertFrameworkMessage() {
         taskExecutor.frameworkMessage(executorDriver, null);
+    }
+    
+    @Test
+    public void assertShutdown() {
         taskExecutor.shutdown(executorDriver);
+    }
+    
+    @Test
+    public void assertError() {
         taskExecutor.error(executorDriver, "");
-    }
-    
-    private TaskInfo buildTransientTaskInfo() {
-        return buildTaskInfo(buildSpringJobConfigurationContextMap()).build();
-    }
-    
-    private TaskInfo buildDaemonTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClassAndCron(TestJob.class.getCanonicalName(), "ignoredCron")).build();
-    }
-    
-    private TaskInfo buildScriptDaemonTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMap(TestJob.class.getCanonicalName(), "ignoredCron", JobType.SCRIPT)).build();
-    }
-    
-    private TaskInfo buildWrongTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClass("WrongJobClass")).build();
-    }
-    
-    private TaskInfo buildNotElasticJobTaskInfo() {
-        return buildTaskInfo(buildBaseJobConfigurationContextMapWithJobClass(Object.class.getCanonicalName())).build();
-    }
-    
-    private TaskInfo.Builder buildTaskInfo(Map<String, String> jobConfigurationContext) {
-        return TaskInfo.newBuilder().setData(ByteString.copyFrom(serialize(jobConfigurationContext)))
-                .setName("test_job").setTaskId(Protos.TaskID.newBuilder().setValue("task_id")).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0"));
-    }
-    
-    private byte[] serialize(final Map<String, String> jobConfigurationContext) {
-        LinkedHashMap<String, Object> result = new LinkedHashMap<>(2, 1);
-        ShardingContexts shardingContexts = new ShardingContexts("test_job", 1, "", Collections.singletonMap(1, "a"));
-        result.put("shardingContext", shardingContexts);
-        result.put("jobConfigContext", jobConfigurationContext);
-        return SerializationUtils.serialize(result);
-    }
-    
-    private Map<String, String> buildSpringJobConfigurationContextMap() {
-        Map<String, String> context = buildBaseJobConfigurationContextMapWithJobClass(TestJob.class.getCanonicalName());
-        context.put("beanName", "testJob");
-        context.put("applicationContext", "applicationContext.xml");
-        return context;
-    }
-    
-    private Map<String, String> buildBaseJobConfigurationContextMapWithJobClass(String jobClass) {
-        return buildBaseJobConfigurationContextMapWithJobClassAndCron(jobClass, "0/1 * * * * ?");
-    }
-    
-    private Map<String, String> buildBaseJobConfigurationContextMapWithJobClassAndCron(String jobClass, String cron) {
-        return buildBaseJobConfigurationContextMap(jobClass, cron, JobType.SIMPLE);
-    }
-    
-    private Map<String, String> buildBaseJobConfigurationContextMap(String jobClass, String cron, JobType jobType) {
-        Map<String, String> result = new HashMap<>();
-        result.put("jobName", "test_job");
-        result.put("cron", cron);
-        result.put("jobClass", jobClass);
-        result.put("jobType", jobType.name());
-        result.put("scriptCommandLine", "echo \"\"");
-        return result;
     }
 }

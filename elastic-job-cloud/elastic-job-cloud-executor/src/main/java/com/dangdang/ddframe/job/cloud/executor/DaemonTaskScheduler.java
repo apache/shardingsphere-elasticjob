@@ -18,11 +18,11 @@
 package com.dangdang.ddframe.job.cloud.executor;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.exception.JobSystemException;
+import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.JobFacade;
-import com.google.common.base.Joiner;
+import com.dangdang.ddframe.job.executor.ShardingContexts;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.apache.mesos.ExecutorDriver;
@@ -38,8 +38,10 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.plugins.management.ShutdownHookPlugin;
 
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 常驻作业调度器.
@@ -58,9 +60,7 @@ public final class DaemonTaskScheduler {
     
     private static final String TASK_ID_DATA_MAP_KEY = "taskId";
     
-    private static final String SCHEDULER_INSTANCE_NAME_SUFFIX = "Scheduler";
-    
-    private static final String CRON_TRIGGER_IDENTITY_SUFFIX = "Trigger";
+    private static final ConcurrentHashMap<String, Scheduler> RUNNING_SCHEDULERS = new ConcurrentHashMap<>(1024, 1);
     
     private final ElasticJob elasticJob;
     
@@ -82,27 +82,28 @@ public final class DaemonTaskScheduler {
         jobDetail.getJobDataMap().put(EXECUTOR_DRIVER_DATA_MAP_KEY, executorDriver);
         jobDetail.getJobDataMap().put(TASK_ID_DATA_MAP_KEY, taskId);
         try {
-            scheduleJob(initializeScheduler(jobDetail.getKey().toString()), jobDetail, Joiner.on("_").join(jobRootConfig.getTypeConfig().getCoreConfig().getJobName(), CRON_TRIGGER_IDENTITY_SUFFIX), 
-                    jobRootConfig.getTypeConfig().getCoreConfig().getCron());
+            scheduleJob(initializeScheduler(), jobDetail, taskId.getValue(), jobRootConfig.getTypeConfig().getCoreConfig().getCron());
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
     }
     
-    private Scheduler initializeScheduler(final String jobName) throws SchedulerException {
+    private Scheduler initializeScheduler() throws SchedulerException {
         StdSchedulerFactory factory = new StdSchedulerFactory();
-        factory.initialize(getBaseQuartzProperties(jobName));
+        factory.initialize(getBaseQuartzProperties());
         return factory.getScheduler();
     }
     
-    private Properties getBaseQuartzProperties(final String jobName) {
+    private Properties getBaseQuartzProperties() {
         Properties result = new Properties();
         result.put("org.quartz.threadPool.class", org.quartz.simpl.SimpleThreadPool.class.getName());
         result.put("org.quartz.threadPool.threadCount", "1");
-        result.put("org.quartz.scheduler.instanceName", Joiner.on("_").join(jobName, SCHEDULER_INSTANCE_NAME_SUFFIX));
+        result.put("org.quartz.scheduler.instanceName", taskId.getValue());
         if (!jobRootConfig.getTypeConfig().getCoreConfig().isMisfire()) {
             result.put("org.quartz.jobStore.misfireThreshold", "1");
         }
+        result.put("org.quartz.plugin.shutdownhook.class", ShutdownHookPlugin.class.getName());
+        result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
         return result;
     }
     
@@ -112,6 +113,7 @@ public final class DaemonTaskScheduler {
                 scheduler.scheduleJob(jobDetail, createTrigger(triggerIdentity, cron));
             }
             scheduler.start();
+            RUNNING_SCHEDULERS.putIfAbsent(scheduler.getSchedulerName(), scheduler);
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
@@ -119,6 +121,22 @@ public final class DaemonTaskScheduler {
     
     private CronTrigger createTrigger(final String triggerIdentity, final String cron) {
         return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
+    }
+    
+    /**
+     * 停止任务调度.
+     * 
+     * @param taskID 任务主键
+     */
+    public static void shutdown(final Protos.TaskID taskID) {
+        Scheduler scheduler = RUNNING_SCHEDULERS.remove(taskID.getValue());
+        if (null != scheduler) {
+            try {
+                scheduler.shutdown();
+            } catch (final SchedulerException ex) {
+                throw new JobSystemException(ex);
+            }
+        }
     }
     
     /**
@@ -142,9 +160,20 @@ public final class DaemonTaskScheduler {
         
         @Override
         public void execute(final JobExecutionContext context) throws JobExecutionException {
-            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
-            JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
-            executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
+            ShardingContexts shardingContexts = jobFacade.getShardingContexts();
+            int jobEventSamplingCount = shardingContexts.getJobEventSamplingCount();
+            int currentJobEventSamplingCount = shardingContexts.getCurrentJobEventSamplingCount();
+            if (jobEventSamplingCount > 0 && ++currentJobEventSamplingCount < jobEventSamplingCount) {
+                shardingContexts.setCurrentJobEventSamplingCount(currentJobEventSamplingCount);
+                jobFacade.getShardingContexts().setAllowSendJobEvent(false);
+                JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+            } else {
+                jobFacade.getShardingContexts().setAllowSendJobEvent(true);
+                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("BEGIN").build());
+                JobExecutorFactory.getJobExecutor(elasticJob, jobFacade).execute();
+                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskId).setState(Protos.TaskState.TASK_RUNNING).setMessage("COMPLETE").build());
+                shardingContexts.setCurrentJobEventSamplingCount(0);
+            }
         }
     }
 }

@@ -6,7 +6,120 @@ weight=1
 
 # Release Notes
 
-## 2.0.0-SNAPSHOT
+## 2.1.0
+
+### 新功能
+
+1. [ISSUE #195](https://github.com/dangdangdotcom/elastic-job/issues/195) Elastic-Job-Lite自诊断并修复分布式不稳定造成的问题
+1. [ISSUE #248](https://github.com/dangdangdotcom/elastic-job/issues/248) Elastic-Job-Lite同一台作业服务器可以行多个相同作业名称的JVM实例(Cloud Native)
+1. [ISSUE #249](https://github.com/dangdangdotcom/elastic-job/issues/249) Elastic-Job-Lite运维界面支持事件追踪查询
+
+### 功能提升
+
+1. [ISSUE #240](https://github.com/dangdangdotcom/elastic-job/issues/240) Elastic-Job-Lite运维界面重构
+1. [ISSUE #262](https://github.com/dangdangdotcom/elastic-job/issues/262) Elastic-Job-Lite控制台删除作业配置
+
+### 缺陷修正
+
+1. [ISSUE #237](https://github.com/dangdangdotcom/elastic-job/issues/238) 增加REST API对分片总数不小于1的校验
+1. [ISSUE #238](https://github.com/dangdangdotcom/elastic-job/issues/238) IP正则表达式错误
+1. [ISSUE #246](https://github.com/dangdangdotcom/elastic-job/issues/246) 通过JobOperateAPI.remove()后，再JobScheduler.init()创建相同作业后多次触发执行
+1. [ISSUE #250](https://github.com/dangdangdotcom/elastic-job/issues/250) Misfire任务多触发一次
+
+### 结构调整
+
+1. [ISSUE #263](https://github.com/dangdangdotcom/elastic-job/issues/263) Elastic-Job-Lite作业操作API重新梳理
+1. [ISSUE #264](https://github.com/dangdangdotcom/elastic-job/issues/264) Elastic-Job-Lite数据存储结构调整，但向前兼容
+
+## 2.0.5
+
+### 缺陷修正
+
+1. [ISSUE 222](https://github.com/dangdangdotcom/elastic-job/issues/222) elastic-job-lite-spring的reg配置参数max-retries不起作用
+1. [ISSUE 231](https://github.com/dangdangdotcom/elastic-job/issues/231) 批量删除cloud作业时，mesos会提前同步TASK_LOST消息给framework，导致作业被重新放入ready队列并执行
+
+### 新功能
+
+1. [ISSUE #191](https://github.com/dangdangdotcom/elastic-job/issues/191) Framework的HA功能
+1. [ISSUE #217](https://github.com/dangdangdotcom/elastic-job/issues/217) cloud版本增加APP维度配置
+1. [ISSUE #223](https://github.com/dangdangdotcom/elastic-job/issues/223) cloud版本常驻作业事件追踪采样率
+
+## 2.0.4
+
+### 缺陷修正
+
+1. [ISSUE #189](https://github.com/dangdangdotcom/elastic-job/issues/189) 管理后台执行失效操作，但任务还在执行
+1. [ISSUE #204](https://github.com/dangdangdotcom/elastic-job/issues/204) 异步事件执行消息顺序不一致导致数据库数据不准确
+1. [ISSUE #209](https://github.com/dangdangdotcom/elastic-job/issues/209) cloud作业资源分配算法改进
+
+### 新功能
+
+1. [ISSUE #203](https://github.com/dangdangdotcom/elastic-job/issues/203) cloud类型作业增加运行统计，并提供REST API查询
+1. [ISSUE #215](https://github.com/dangdangdotcom/elastic-job/issues/215) cloud版本运维管理界面
+
+### 功能提升
+
+1. [ISSUE #187](https://github.com/dangdangdotcom/elastic-job/issues/187) ShardingContext中增加taskId属性，供业务方使用 
+
+## 2.0.3
+
+### 缺陷修正
+
+1. [ISSUE #177](https://github.com/dangdangdotcom/elastic-job/issues/177) 2.0.2版本Spring命名空间的job:script空指针
+1. [ISSUE #185](https://github.com/dangdangdotcom/elastic-job/issues/185) Executor多占用分片资源导致资源浪费问题
+
+### 新功能
+
+1. [ISSUE #178](https://github.com/dangdangdotcom/elastic-job/issues/178) 事件驱动触发作业
+
+### 功能提升
+
+1. [ISSUE #179](https://github.com/dangdangdotcom/elastic-job/issues/179) Transient的Script类型作业优化，无需Java的Executor支持
+1. [ISSUE #182](https://github.com/dangdangdotcom/elastic-job/issues/182) 增加对spring boot的支持
+
+### 结构调整
+
+1. [ISSUE #184](https://github.com/dangdangdotcom/elastic-job/issues/184) ExecutorServiceHandler接口方法调整，增加jobName区分用来区分不同作业线程名
+1. [ISSUE #186](https://github.com/dangdangdotcom/elastic-job/issues/186) 去除Spring命名空间DTO相关代码，简化SpringJobScheduler使用
+
+## 2.0.2
+
+### 缺陷修正
+
+1. [ISSUE #64](https://github.com/dangdangdotcom/elastic-job/issues/64) Spring命名空间，若注册多个同Class的作业Bean，会导致作业Bean查找不准确
+1. [ISSUE #115](https://github.com/dangdangdotcom/elastic-job/issues/115) console新增注册中心，没有连接成功，后台一直反复连接并报错
+1. [ISSUE #151](https://github.com/dangdangdotcom/elastic-job/issues/151) 基于关系型数据库的事件追踪缺乏对MySQL之外数据库的支持
+1. [ISSUE #152](https://github.com/dangdangdotcom/elastic-job/issues/152) job自定义异常处理器无效，总是被DefaultJobExceptionHandler处理
+1. [ISSUE #156](https://github.com/dangdangdotcom/elastic-job/issues/156) 作业事件追踪整体调用链路数据采集
+1. [ISSUE #158](https://github.com/dangdangdotcom/elastic-job/issues/158) 作业在暂停时错过分片时机将不会再分片
+1. [ISSUE #161](https://github.com/dangdangdotcom/elastic-job/issues/161) Lite版本部署至某些版本的Tomcat无法启动
+1. [ISSUE #163](https://github.com/dangdangdotcom/elastic-job/issues/163) 任务设置disable＝true后，启动项目还是会自动执行任务
+1. [ISSUE #165](https://github.com/dangdangdotcom/elastic-job/issues/165) 所有服务节点都disable时会导致分片线程死锁
+1. [ISSUE #167](https://github.com/dangdangdotcom/elastic-job/issues/167) Failover作业增加源执行任务ID记录
+
+### 功能提升
+
+1. [ISSUE #159](https://github.com/dangdangdotcom/elastic-job/issues/159) 提供从Spring 3.1.0.REELASE至Spring 4任何版本的支持
+1. [ISSUE #164](https://github.com/dangdangdotcom/elastic-job/issues/164) 作业Spring命名空间中已声明的JobBean不需要再声明@Component或在Spring xml中定义
+
+### 结构调整
+
+1. [ISSUE #153](https://github.com/dangdangdotcom/elastic-job/issues/153) 事件追踪配置集中化
+1. [ISSUE #160](https://github.com/dangdangdotcom/elastic-job/issues/160) 调整maven模块结构，提供elastic-job-common及其二级模块，原elastic-job-core模块迁移至elastic-job-common-core
+
+## 2.0.1
+
+### 缺陷修正
+
+1. [ISSUE #141](https://github.com/dangdangdotcom/elastic-job/issues/141) 删除reg模块从zk读取信息功能，使reg命名空间的placeholder完全可用
+1. [ISSUE #143](https://github.com/dangdangdotcom/elastic-job/issues/143) elastic-job-cloud-scheduler内存泄漏问题
+1. [ISSUE #145](https://github.com/dangdangdotcom/elastic-job/issues/145) 修改作业日志的数据库连接后日志还是会写入老的数据库
+1. [ISSUE #146](https://github.com/dangdangdotcom/elastic-job/issues/146) 作业的线程池复用问题
+1. [ISSUE #147](https://github.com/dangdangdotcom/elastic-job/issues/147) console作业维度加载不出来 后台有报空指针错误
+1. [ISSUE #149](https://github.com/dangdangdotcom/elastic-job/issues/149) 运维平台删除作业，偶尔会遇到删除不全的情况
+1. [ISSUE #150](https://github.com/dangdangdotcom/elastic-job/issues/150) Cloud的misfire功能在作业堆积时将会一直执行
+
+## 2.0.0
 
 ### 新功能
 
@@ -14,6 +127,7 @@ weight=1
 1. 重构原Elastic-Job至Elastic-Job-Lite
 
 ### 缺陷修正
+
 1. [ISSUE #119](https://github.com/dangdangdotcom/elastic-job/issues/119) spring容器关闭时，quartz未正常关闭 
 1. [ISSUE #123](https://github.com/dangdangdotcom/elastic-job/issues/123) 单机跑定时任务，zk断开后重连，没有触发leader选举 
 1. [ISSUE #127](https://github.com/dangdangdotcom/elastic-job/issues/127) Spring方式配置作业id无法使用占位符

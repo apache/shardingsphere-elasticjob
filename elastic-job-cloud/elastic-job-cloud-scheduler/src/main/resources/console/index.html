@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Job Console</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="plugins/font-awesome-4.5.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="plugins/AdminLTE/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="plugins/AdminLTE/css/skins/_all-skins.min.css">
+    <!-- common -->
+    <link rel="stylesheet" href="css/common.css">
+    <!-- bootstrap-table -->
+    <link rel="stylesheet" href="plugins/bootstrap-table/bootstrap-table.min.css">
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+    <!-- jQuery 2.1.4 -->
+    <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <!-- Bootstrap 3.3.5 -->
+    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="plugins/AdminLTE/js/app.min.js"></script>
+    <script src="plugins/highcharts/js/highcharts.js"></script>
+    <script src="js/index.js"></script>
+    </head>
+    <body class="hold-transition skin-purple sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+        <!-- Logo -->
+        <a href="" class="logo">
+        <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Elastic Job Cloud Console</b></span>
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+        </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+                <li class="header">主菜单</li>
+                <li class="treeview active">
+                    <a href="#app" class="nav-header collapsed" data-toggle="collapse">
+                        <i class="fa fa-laptop">     应用</i>
+                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                    </a>
+                    <ul id="app" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                        <li><a href="#" id="registerApp"><i>&nbsp;&nbsp;&nbsp;&nbsp;</i> 定义</a></li>
+                    </ul>
+                    <a href="#job" class="nav-header collapsed" data-toggle="collapse">
+                        <i class="fa fa-edit">     作业</i>
+                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                    </a>
+                    <ul id="job" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                        <li><a href="#" id="registerJob"><i>&nbsp;&nbsp;&nbsp;&nbsp;</i> 定义</a></li>
+                        <li><a href="#" id="status"><i>&nbsp;&nbsp;&nbsp;&nbsp;</i> 状态</a></li>
+                    </ul>
+                    <a href="#record" class="nav-header collapsed" data-toggle="collapse">
+                        <i class="fa fa-dashboard">     作业历史</i>
+                        <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                    </a>
+                    <ul id="record" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                        <li><a href="#" id="dashboard"><i>&nbsp;&nbsp;&nbsp;&nbsp;</i> 历史dashboard</a></li>
+                        <li><a href="#" id="execDetail"><i>&nbsp;&nbsp;&nbsp;&nbsp;</i> 运行轨迹查询</a></li>
+                        <li><a href="#" id="execStatus"><i>&nbsp;&nbsp;&nbsp;&nbsp;</i> 运行状态查询</a></li>
+                    </ul>
+                </li>   
+            </ul>
+    </section>
+    <!-- /.sidebar -->
+    </aside>
+    <!-- Content Wrapper. Contains page content -->
+    <div id="contentRight">
+    </div>
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+            <strong>Copyright &copy; 2004-2017 <a href="http://www.dangdang.com">当当网</a>.</strong> All rights reserved.
+    </footer>
+    <div class="control-sidebar-bg"></div>
+    </div><!-- ./wrapper -->
+    </body>
+</html>

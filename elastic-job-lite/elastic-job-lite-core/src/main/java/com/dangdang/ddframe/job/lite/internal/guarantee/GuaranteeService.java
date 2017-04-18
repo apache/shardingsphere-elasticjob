@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.lite.internal.guarantee;
 
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Collection;
 
@@ -28,7 +28,7 @@ import java.util.Collection;
  * 
  * @author zhangliang
  */
-public class GuaranteeService {
+public final class GuaranteeService {
     
     private final JobNodeStorage jobNodeStorage;
     

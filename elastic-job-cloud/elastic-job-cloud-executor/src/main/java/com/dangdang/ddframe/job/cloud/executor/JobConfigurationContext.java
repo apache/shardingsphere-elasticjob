@@ -17,25 +17,18 @@
 
 package com.dangdang.ddframe.job.cloud.executor;
 
+import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
 import com.dangdang.ddframe.job.config.JobRootConfiguration;
 import com.dangdang.ddframe.job.config.JobTypeConfiguration;
-import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
-import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
-import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
-import com.dangdang.ddframe.job.event.JobEventConfiguration;
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
-import com.dangdang.ddframe.job.event.log.JobEventLogConfiguration;
+import com.dangdang.ddframe.job.executor.handler.JobProperties.JobPropertiesEnum;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +36,7 @@ import java.util.Map;
  *
  * @author caohao
  */
-public class JobConfigurationContext implements JobRootConfiguration {
+public final class JobConfigurationContext implements JobRootConfiguration {
     
     private static final String IGNORE_CRON = "ignoredCron";
     
@@ -64,7 +57,7 @@ public class JobConfigurationContext implements JobRootConfiguration {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobName), "jobName can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobType), "jobType can not be empty.");
         Preconditions.checkArgument(!Strings.isNullOrEmpty(jobClass), "jobClass can not be empty.");
-        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount).jobEventConfiguration(buildJobEventConfiguration(jobConfigurationMap)).build();
+        JobCoreConfiguration jobCoreConfig = JobCoreConfiguration.newBuilder(jobName, cron, ignoredShardingTotalCount).build();
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER.name(), jobConfigurationMap.get("executorServiceHandler"));
         jobCoreConfig.getJobProperties().put(JobPropertiesEnum.JOB_EXCEPTION_HANDLER.name(), jobConfigurationMap.get("jobExceptionHandler"));
         if (JobType.DATAFLOW.name().equals(jobType)) {
@@ -76,21 +69,6 @@ public class JobConfigurationContext implements JobRootConfiguration {
         }
         beanName = jobConfigurationMap.get("beanName");
         applicationContext = jobConfigurationMap.get("applicationContext");
-    }
-    
-    private JobEventConfiguration[] buildJobEventConfiguration(final Map<String, String> jobConfigurationMap) {
-        List<JobEventConfiguration> result = new ArrayList<>();
-        if (jobConfigurationMap.containsKey("driverClassName") && jobConfigurationMap.containsKey("url")
-                && jobConfigurationMap.containsKey("username") && jobConfigurationMap.containsKey("password") && jobConfigurationMap.containsKey("logLevel")) {
-            result.add(new JobEventRdbConfiguration(jobConfigurationMap.get("driverClassName"), jobConfigurationMap.get("url"),
-                    jobConfigurationMap.get("username"), jobConfigurationMap.get("password"), LogLevel.valueOf(jobConfigurationMap.get("logLevel").toUpperCase())));
-        } else {
-            result.add(new JobEventLogConfiguration());
-        }
-        if (jobConfigurationMap.containsKey("logEvent") && result.get(0) instanceof JobEventRdbConfiguration) {
-            result.add(new JobEventLogConfiguration());
-        }
-        return Iterables.toArray(result, JobEventConfiguration.class);
     }
     
     /**

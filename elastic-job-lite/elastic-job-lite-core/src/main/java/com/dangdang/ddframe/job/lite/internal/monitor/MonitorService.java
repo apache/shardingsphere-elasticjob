@@ -17,13 +17,11 @@
 
 package com.dangdang.ddframe.job.lite.internal.monitor;
 
-import com.dangdang.ddframe.job.event.JobTraceEvent.LogLevel;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.util.SensitiveInfoUtils;
-import com.dangdang.ddframe.job.event.JobTraceEvent;
-import com.dangdang.ddframe.job.event.JobEventBus;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Joiner;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 
@@ -42,7 +40,8 @@ import java.util.List;
  * 
  * @author caohao
  */
-public class MonitorService {
+@Slf4j
+public final class MonitorService {
     
     public static final String DUMP_COMMAND = "dump";
     
@@ -71,10 +70,10 @@ public class MonitorService {
             return;
         }
         try {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.INFO, String.format("Monitor service is running, the port is: '%s'.", port)));
+            log.info("Elastic job: Monitor service is running, the port is '{}'", port);
             openSocketForMonitor(port);
         } catch (final IOException ex) {
-            JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket initialize failure.", ex));
+            log.error("Elastic job: Monitor service listen failure, error is: ", ex);
         }
     }
     
@@ -88,7 +87,7 @@ public class MonitorService {
                     try {
                         process(serverSocket.accept());
                     } catch (final IOException ex) {
-                        JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket initialize failure.", ex));
+                        log.error("Elastic job: Monitor service open socket for monitor failure, error is: ", ex);
                     }
                 }
             }
@@ -143,7 +142,7 @@ public class MonitorService {
             try {
                 serverSocket.close();
             } catch (final IOException ex) {
-                JobEventBus.getInstance().post(new JobTraceEvent(jobName, LogLevel.ERROR, "Monitor socket close failure.", ex));
+                log.error("Elastic job: Monitor service close failure, error is: ", ex);
             }
         }
     }

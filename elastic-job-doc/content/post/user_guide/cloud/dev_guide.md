@@ -1,8 +1,7 @@
-
 +++
 date = "2016-01-27T16:14:21+08:00"
 title = "Elastic-Job-Cloud开发指南"
-weight=52
+weight=56
 +++
 
 # Elastic-Job-Cloud开发指南
@@ -22,7 +21,7 @@ weight=52
 public class MyElasticJob implements SimpleJob {
     
     @Override
-    public void process(ShardingContext context) {
+    public void execute(ShardingContext context) {
         switch (context.getShardingItem()) {
             case 0: 
                 // do something by sharding item 0
@@ -44,7 +43,7 @@ public class MyElasticJob implements SimpleJob {
 `Dataflow`类型用于处理数据流，需实现`DataflowJob`接口。该接口提供`2`个方法可供覆盖，分别用于抓取(`fetchData`)和处理(`processData`)数据。
 
 ```java
-public class MyElasticJob implements DataflowElasticJob<Foo> {
+public class MyElasticJob implements DataflowJob<Foo> {
     
     @Override
     public List<Foo> fetchData(ShardingContext context) {
@@ -120,33 +119,3 @@ public class JobDemo {
 ```
 
 之后将作业和用于执行`Java Main`方法的`Shell`脚本打包为`gz.tar`格式，然后使用`Cloud`提供的`REST API`将其部署至`Elastic-Job-Cloud`系统。如对如何打包不理解请参考我们提供的`example`。
-
-## 其他功能
-
-### 1. 作业事件追踪
-`elastic-job`在配置中提供了`JobEventConfiguration`，目前支持数据库和日志文件两种方式配置，默认为日志文件方式。
-
-```java
-    // 定义日志文件事件溯源配置
-    JobEventConfiguration jobLogEventConfig = new JobEventLogConfiguration();
-    
-    // 定义数据库日志文件事件溯源配置
-    JobEventConfiguration jobRdbEventConfig = new JobEventRdbConfiguration("org.h2.Driver", "jdbc:h2:mem:job_event_bus", "sa", "", LogLevel.INFO);
-    
-    // 定义SIMPLE作业类型，使用日志文件方式
-    SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(simpleCoreConfig, SimpleDemoJob.class.getCanonicalName()).jobEventConfiguration(jobLogEventConfig);
-    
-    // 定义DATAFLOW作业类型，使用数据库方式
-    DataflowJobConfiguration dataflowJobConfig = new DataflowJobConfiguration(dataflowCoreConfig, DataflowDemoJob.class.getCanonicalName()).jobEventConfiguration(jobRdbEventConfig);
-    
-    // 定义SCRIPT类型配置，使用日志文件和数据库方式
-    ScriptJobConfiguration scriptJobConfig = new ScriptJobConfiguration(scriptCoreConfig, "test.sh").jobEventConfiguration(jobLogEventConfig, jobRdbEventConfig);
-```
-
-### 2. 异常处理
-
-`elastic-job`在配置中提供了`JobProperties`，可扩展`JobExceptionHandler`接口，并设置`job_exception_handler`定制异常处理流程。默认实现是记录日志但不抛出异常。
-
-### 3. 定制化作业处理线程池
-
-`elastic-job`在配置中提供了`JobProperties`，可扩展`ExecutorServiceHandler`接口，并设置`executor_service_handler`定制线程池。默认使用`CPU*2`线程数的线程池。

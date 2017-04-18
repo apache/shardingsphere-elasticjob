@@ -18,11 +18,6 @@
 package com.dangdang.ddframe.job.lite.lifecycle.api;
 
 import com.dangdang.ddframe.job.lite.lifecycle.AbstractEmbedZookeeperBaseTest;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobAPIFactory;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobSettingsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.JobStatisticsAPI;
-import com.dangdang.ddframe.job.lite.lifecycle.api.ServerStatisticsAPI;
 import com.google.common.base.Optional;
 import org.junit.Test;
 
@@ -42,6 +37,11 @@ public final class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
     }
     
     @Test
+    public void assertCreateServerOperateAPI() {
+        assertThat(JobAPIFactory.createShardingOperateAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(ShardingOperateAPI.class));
+    }
+    
+    @Test
     public void assertCreateJobStatisticsAPI() {
         assertThat(JobAPIFactory.createJobStatisticsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(JobStatisticsAPI.class));
     }
@@ -49,5 +49,10 @@ public final class JobAPIFactoryTest extends AbstractEmbedZookeeperBaseTest {
     @Test
     public void assertCreateServerStatisticsAPI() {
         assertThat(JobAPIFactory.createServerStatisticsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(ServerStatisticsAPI.class));
+    }
+    
+    @Test
+    public void assertCreateShardingStatisticsAPI() {
+        assertThat(JobAPIFactory.createShardingStatisticsAPI(getConnectionString(), "namespace", Optional.<String>absent()), instanceOf(ShardingStatisticsAPI.class));
     }
 }

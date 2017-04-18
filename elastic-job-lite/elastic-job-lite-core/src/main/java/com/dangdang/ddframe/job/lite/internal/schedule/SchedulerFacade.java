@@ -17,16 +17,17 @@
 
 package com.dangdang.ddframe.job.lite.internal.schedule;
 
-import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
+import com.dangdang.ddframe.job.lite.internal.reconcile.ReconcileService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
 
@@ -35,79 +36,84 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class SchedulerFacade {
+public final class SchedulerFacade {
+    
+    private final CoordinatorRegistryCenter regCenter;
+    
+    private final String jobName;
     
     private final ConfigurationService configService;
     
-    private final LeaderElectionService leaderElectionService;
+    private final LeaderService leaderService;
     
     private final ServerService serverService;
     
-    private final ShardingService shardingService;
+    private final InstanceService instanceService;
     
-    private final ExecutionService executionService;
+    private final ShardingService shardingService;
     
     private final MonitorService monitorService;
     
-    private final ListenerManager listenerManager;
+    private final ReconcileService reconcileService;
     
-    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final List<ElasticJobListener> elasticJobListeners) {
-        String jobName = liteJobConfig.getJobName();
+    private ListenerManager listenerManager;
+    
+    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.regCenter = regCenter;
+        this.jobName = jobName;
         configService = new ConfigurationService(regCenter, jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
-        executionService = new ExecutionService(regCenter, jobName);
         monitorService = new MonitorService(regCenter, jobName);
-        listenerManager = new ListenerManager(regCenter, liteJobConfig, elasticJobListeners);
+        reconcileService = new ReconcileService(regCenter, jobName);
+    }
+    
+    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+        this.regCenter = regCenter;
+        this.jobName = jobName;
+        configService = new ConfigurationService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        monitorService = new MonitorService(regCenter, jobName);
+        reconcileService = new ReconcileService(regCenter, jobName);
+        listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
     }
     
     /**
-     * 每次作业启动前清理上次运行状态.
-     */
-    public void clearPreviousServerStatus() {
-        serverService.clearPreviousServerStatus();
-    }
-    
-    /**
-     * 注册Elastic-Job启动信息.
+     * 注册作业启动信息.
      * 
      * @param liteJobConfig 作业配置
      */
     public void registerStartUpInfo(final LiteJobConfiguration liteJobConfig) {
+        regCenter.addCacheData("/" + liteJobConfig.getJobName());
         listenerManager.startAllListeners();
-        leaderElectionService.leaderForceElection();
+        leaderService.electLeader();
         configService.persist(liteJobConfig);
-        serverService.persistServerOnline(liteJobConfig);
-        serverService.clearJobPausedStatus();
+        LiteJobConfiguration liteJobConfigFromZk = configService.load(false);
+        serverService.persistOnline(!liteJobConfigFromZk.isDisabled());
+        instanceService.persistOnline();
         shardingService.setReshardingFlag();
         monitorService.listen();
-        listenerManager.setCurrentShardingTotalCount(configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount());
+        if (!reconcileService.isRunning()) {
+            reconcileService.startAsync();
+        }
     }
     
     /**
-     * 释放作业占用的资源.
+     * 终止作业调度.
      */
-    public void releaseJobResource() {
+    public void shutdownInstance() {
+        if (leaderService.isLeader()) {
+            leaderService.removeLeader();
+        }
         monitorService.close();
-        serverService.removeServerStatus();
-    }
-    
-    /**
-     * 读取作业配置.
-     *
-     * @return 作业配置
-     */
-    public LiteJobConfiguration loadJobConfiguration() {
-        return configService.load(false);
-    }
-    
-    /**
-     * 获取作业触发监听器.
-     * 
-     * @return 作业触发监听器
-     */
-    public JobTriggerListener newJobTriggerListener() {
-        return new JobTriggerListener(executionService, shardingService);
+        if (reconcileService.isRunning()) {
+            reconcileService.stopAsync();
+        }
+        JobRegistry.getInstance().shutdown(jobName);
     }
 }

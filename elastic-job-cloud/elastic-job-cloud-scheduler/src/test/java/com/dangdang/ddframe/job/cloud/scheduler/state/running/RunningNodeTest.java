@@ -26,14 +26,13 @@ import static org.junit.Assert.assertThat;
 public final class RunningNodeTest {
     
     @Test
-    public void assertGetRunningTaskNodePath() {
-        String nodePath = TaskNode.builder().build().getTaskNodePath();
-        assertThat(RunningNode.getRunningTaskNodePath(nodePath), is("/state/running/test_job/" + nodePath));
+    public void assertGetRunningJobNodePath() {
+        assertThat(RunningNode.getRunningJobNodePath("test_job"), is("/state/running/test_job"));
     }
     
     @Test
-    public void assertGetRunningTaskIdleNodePath() {
+    public void assertGetRunningTaskNodePath() {
         String nodePath = TaskNode.builder().build().getTaskNodePath();
-        assertThat(RunningNode.getRunningTaskIdleNodePath(nodePath), is("/state/running/test_job/" + nodePath + "/idle"));
+        assertThat(RunningNode.getRunningTaskNodePath(nodePath), is("/state/running/test_job/" + nodePath));
     }
 }
