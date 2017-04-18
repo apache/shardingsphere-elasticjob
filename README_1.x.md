@@ -20,7 +20,7 @@
 # Build Status
 [![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
 [![Coverage Status](https://coveralls.io/repos/dangdangdotcom/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/dangdangdotcom/elastic-job?branch=master)
-##主要贡献者
+## 主要贡献者
 * 张亮 [当当网](http://www.dangdang.com/) zhangliang@dangdang.com
 * 曹昊 [当当网](http://www.dangdang.com/) caohao@dangdang.com
 * 江树建 [当当网](http://www.dangdang.com/) jiangshujian@dangdang.com
