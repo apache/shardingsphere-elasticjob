@@ -191,6 +191,7 @@ public final class ProducerManagerTest {
         for (TaskContext each : taskContexts) {
             verify(schedulerDriver).killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
         }
+        verify(disableJobService).remove("transient_test_job");
         verify(configService).remove("transient_test_job");
         verify(runningService).remove("transient_test_job");
         verify(readyService).remove(Lists.newArrayList("transient_test_job"));

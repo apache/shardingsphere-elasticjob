@@ -207,6 +207,7 @@ public final class CloudAppRestfulApi {
                 producerManager.deregister(each.getJobName());
             }
         }
+        disableAppService.remove(appName);
         appConfigService.remove(appName);
     }
     

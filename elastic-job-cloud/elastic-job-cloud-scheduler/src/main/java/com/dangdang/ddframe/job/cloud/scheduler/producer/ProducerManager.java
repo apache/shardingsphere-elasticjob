@@ -132,6 +132,7 @@ public final class ProducerManager {
     public void deregister(final String jobName) {
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
         if (jobConfig.isPresent()) {
+            disableJobService.remove(jobName);
             configService.remove(jobName);
             transientProducerScheduler.deregister(jobConfig.get());
         }
