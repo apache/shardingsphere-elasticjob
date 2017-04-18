@@ -24,7 +24,7 @@ Elastic-Job-Lite在配置中提供了JobEventConfiguration，目前支持数据�
     new JobScheduler(regCenter, liteJobConfig, jobEventRdbConfig).init(); 
 ```
 
-具体配置方式请参见[开发指南](/01-lite/dev_guide/).
+具体配置方式请参见[开发指南](/02-/dev-guide/).
 
 事件追踪的event_trace_rdb_url属性对应库自动创建JOB_EXECUTION_LOG和JOB_STATUS_TRACE_LOG两张表以及若干索引。
 

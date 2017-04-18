@@ -236,18 +236,18 @@ next = "/00-overview/contribution/"
 
 ### 结构调整
 
-1. [ISSUE #59](https://github.com/dangdangdotcom/elastic-job/issues/59) 将elastic-job依赖的curator从`2.8.0`升级至`2.10.0`
+1. [ISSUE #59](https://github.com/dangdangdotcom/elastic-job/issues/59) 将elastic-job依赖的curator从2.8.0升级至2.10.0
 
 ## 1.0.4
 
 ### 功能提升
 1. [ISSUE #16](https://github.com/dangdangdotcom/elastic-job/issues/16) 提供内嵌zookeeper，简化开发环境
-1. [ISSUE #28](https://github.com/dangdangdotcom/elastic-job/issues/28) Dataflow类型作业增加`processData`批量处理数据的方法
+1. [ISSUE #28](https://github.com/dangdangdotcom/elastic-job/issues/28) Dataflow类型作业增加processData批量处理数据的方法
 1. [ISSUE #56](https://github.com/dangdangdotcom/elastic-job/issues/56) 作业自定义参数设置
 
 ### 结构调整
 
-1. [ISSUE #57](https://github.com/dangdangdotcom/elastic-job/issues/57) 精简模块，移除`elastic-job-test`模块
+1. [ISSUE #57](https://github.com/dangdangdotcom/elastic-job/issues/57) 精简模块，移除elastic-job-test模块
 1. [ISSUE #58](https://github.com/dangdangdotcom/elastic-job/issues/58) 增加批量处理功能导致的作业类型接口变更
 
 ## 1.0.3
