@@ -85,6 +85,9 @@ public final class JobScheduleController {
      */
     public boolean isPaused() {
         try {
+            if (scheduler.isShutdown()) {
+                return false;
+            }
             return Trigger.TriggerState.PAUSED == scheduler.getTriggerState(new TriggerKey(triggerIdentity));
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
