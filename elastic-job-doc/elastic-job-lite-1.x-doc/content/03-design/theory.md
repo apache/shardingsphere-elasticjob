@@ -3,7 +3,7 @@ toc = true
 date = "2016-12-06T22:38:50+08:00"
 title = "实现原理"
 weight = 3
-prev = "/03-design/index/"
+prev = "/03-design/module/"
 next = "/00-overview/index/"
 +++
 

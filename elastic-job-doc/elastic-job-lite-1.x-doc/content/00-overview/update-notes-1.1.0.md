@@ -3,8 +3,8 @@ toc = true
 date = "2016-12-06T22:38:50+08:00"
 title = "1.1.0版本升级说明"
 weight = 1002
-prev = "/00-overview/release-notes"
-next = "/00-overview/source-code-guide"
+prev = "/00-overview/release-notes/"
+next = "/00-overview/source-code-guide/"
 +++
 
 * 基于扩展性提升，概念明晰和命名规范化的考虑，elastic-job 1.1.0版本决定抛弃原有包袱的束缚，重新定义了JAVA API，Spring命名空间并且删除了已废弃的API。

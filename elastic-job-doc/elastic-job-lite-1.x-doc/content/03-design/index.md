@@ -4,7 +4,7 @@ date = "2016-12-12T16:06:17+08:00"
 title = "设计"
 weight = 1
 prev = "/02-guide/dump/"
-next = "/03-design/theory/"
+next = "/03-design/module/"
 chapter = true
 
 +++

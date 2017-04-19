@@ -3,7 +3,7 @@ icon = "<b>0. </b>"
 date = "2017-04-13T16:06:17+08:00"
 title = "概览"
 weight = 0
-prev = "/03-design/roadmap/"
+prev = "/03-design/theory/"
 next = "/00-overview/intro/"
 chapter = true
 +++

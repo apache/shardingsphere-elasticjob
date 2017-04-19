@@ -4,7 +4,7 @@ date = "2016-12-06T22:38:50+08:00"
 title = "目录结构说明"
 weight = 2
 prev = "/03-design/index/"
-next = "/03-design/module/"
+next = "/03-design/theory/"
 +++
 
 ## elastic-job-core

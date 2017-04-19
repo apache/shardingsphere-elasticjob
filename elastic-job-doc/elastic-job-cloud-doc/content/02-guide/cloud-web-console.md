@@ -3,7 +3,7 @@ toc = true
 date = "2017-01-07T16:14:21+08:00"
 title = "运维平台"
 weight = 11
-prev = "/02-guide/index/"
+prev = "/02-guide/cloud-concepts/"
 next = "/02-guide/cloud-restful-api/"
 +++
 
