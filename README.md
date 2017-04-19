@@ -1,8 +1,8 @@
 # Elastic-Job - distributed scheduled job solution
 
-# [中文主页](README_cn.md) 
-  
-# [原1.x版本文档](README_1.x.md)
+# [Elastic-Job-Lite中文主页](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite)
+# [Elastic-Job-Lite 1.x中文主页](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite-1.x)
+# [Elastic-Job-Cloud中文主页](http://dangdangdotcom.github.io/elastic-job/elastic-job-cloud)
 
 [![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
@@ -41,22 +41,18 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 * Fenzo based resources allocated elastically
 * Docker based processes isolation support (TBD)
 
-***
-
-# [Roadmap](ROADMAP.md)
-
-# [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
-
 # Architecture
 
 ## Elastic-Job-Lite
 
-![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_lite.png)
+![Elastic-Job-Lite Architecture](elastic-job-doc/static/img/architecture/elastic_job_lite.png)
 ***
 
 ## Elastic-Job-Cloud
 
-![Elastic-Job-Cloud Architecture](elastic-job-doc/content/img/architecture/elastic_job_cloud.png)
+![Elastic-Job-Cloud Architecture](elastic-job-doc/static/img/architecture/elastic_job_cloud.png)
+
+# [Roadmap](ROADMAP.md)
 
 # Quick Start
 
