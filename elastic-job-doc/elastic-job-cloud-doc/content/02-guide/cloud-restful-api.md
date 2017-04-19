@@ -87,7 +87,7 @@ url：job/register
 |jobProperties                       |String |否      |       | 作业定制化属性，目前支持job_exception_handler和executor_service_handler，用于扩展异常处理和自定义作业处理线程池 |
 |description                         |String |否      |       | 作业描述信息                                                                       |
 
-注册的作业可用Java和Spring两种启动方式，作业启动在[开发指南](../dev_guide/)中有说明，这里只举例说明两种方式如何注册。
+注册的作业可用Java和Spring两种启动方式，作业启动在[开发指南](/01-start/dev-guide/)中有说明，这里只举例说明两种方式如何注册。
 
 使用Transient的Script类型作业可直接将shell上传至appURL，而无需打成java包。如果只有单个shell文件可无需压缩。如是复杂shell或python等应用，仍可上传tar包，支持各种常见压缩格式。
 

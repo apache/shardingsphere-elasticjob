@@ -10,7 +10,7 @@ chapter = true
 
 # 本章导航
 
- - 想要了解Elastic-Job-Cloud是什么？请先了解这些[核心概念](02-guide/cloud-concepts/)
+ - 想要了解Elastic-Job-Cloud是什么？请先了解这些[核心概念](/02-guide/cloud-concepts/)
  
  - Elastic-Job-Cloud提供了简单易用的[运维平台](/02-guide/cloud-web-console/)，方便用户操作及查询作业。
  

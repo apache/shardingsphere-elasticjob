@@ -41,7 +41,7 @@ Elastic-Job-Lite提出了overwrite概念，可通过JobConfiguration或Spring命
 
 分布式问题非常难于调试和重现，为此Elastic-Job-Lite提供了dump命令。
 
-如果您怀疑某些场景出现问题，可参照[dump文档](/02-guide/lite-dump/)将作业运行时信息发给我们、提交issue或发至QQ群讨论。我们已将IP等敏感信息过滤，dump出来的信息可在公网安全传输。
+如果您怀疑某些场景出现问题，可参照[dump文档](/02-guide/dump/)将作业运行时信息发给我们、提交issue或发至QQ群讨论。我们已将IP等敏感信息过滤，dump出来的信息可在公网安全传输。
 
 ***
 
@@ -142,7 +142,7 @@ Elastic-Job的Spring版本支持从3.1.0.RELEASE至4的任何版本。Spring 5�
 
 回答：
 
-是的。新Elastic-Job Lite的数据结构和原有结构完全兼容，之前版本的数据。
+是的。新Elastic-Job Lite的数据结构和原有结构完全兼容。
 
 ### 12. 界面Console无法正常显示?
 
