@@ -29,6 +29,7 @@ next = "/00-overview/contribution/"
 1. [ISSUE #279](https://github.com/dangdangdotcom/elastic-job/issues/279) 添加事件追踪数据源,数据库连接地址不能带参数
 1. [ISSUE #280](https://github.com/dangdangdotcom/elastic-job/issues/280) 作业历史页面的历史状态显示不正确
 1. [ISSUE #283](https://github.com/dangdangdotcom/elastic-job/issues/283) 作业不设置overwrite且本地配置与注册中心不一致时，作业启动的cron应以注册中心为准
+1. [ISSUE #290](https://github.com/dangdangdotcom/elastic-job/issues/290) Elastic-Job-Cloud删除被禁用的APP或JOB时，对应的disabled节点数据无法删除
 
 ## 2.1.0
 

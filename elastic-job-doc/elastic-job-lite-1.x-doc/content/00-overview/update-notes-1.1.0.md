@@ -1,6 +1,5 @@
 +++
 toc = true
-toc = true
 date = "2016-12-06T22:38:50+08:00"
 title = "1.1.0版本升级说明"
 weight = 1002

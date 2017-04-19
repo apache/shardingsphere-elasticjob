@@ -247,7 +247,7 @@ public class JobMain {
 |max-time-diff-seconds               |int    |否      |-1   | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为-1表示不校验时间误差|
 |failover                            |boolean|否      |false| 是否开启失效转移<br />仅monitorExecution开启，失效转移才有效                   |
 |misfire                             |boolean|否      |true | 是否开启错过任务重新执行                                                       |
-|job-sharding-strategy-class         |String |否      |true | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](http://dangdangdotcom.github.io/elastic-job/post/job_strategy)  |
+|job-sharding-strategy-class         |String |否      |true | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](/02-guide/job-sharding-strategy)  |
 |description                         |String |否      |     | 作业描述信息                                                                 |
 |disabled                            |boolean|否      |false| 作业是否禁止启动<br />可用于部署作业时，先禁止启动，部署结束后统一启动              |
 |overwrite                           |boolean|否      |false| 本地配置是否可覆盖注册中心配置<br />如果可覆盖，每次启动作业都以本地配置为准         |
