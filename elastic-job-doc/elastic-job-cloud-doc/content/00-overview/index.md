@@ -44,7 +44,7 @@ Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理�
 
 * 2017-04 [中国技术开放日分享：如何从0到1搭建弹性作业云Elastic-Job-Cloud](http://www.infoq.com/cn/presentations/how-to-build-elastic-job-cloud)
 
-* 2016-09 [2016全球容器技术大会分享：基于Mesos的当当作业云Elastic-Job-Cloud](http://ppt.geekbang.org/slide/show/378)
+* 2016-11 [2016全球容器技术大会分享：基于Mesos的当当作业云Elastic-Job-Cloud](http://www.infoq.com/cn/presentations/dangdang-operating-cloud-elastic-job-cloud-based-on-the-esos)
 
 * 2016-09 [InfoQ新闻：基于Mesos的当当作业云Elastic Job Cloud](http://www.infoq.com/cn/news/2016/09/Mesos-Elastic-Job-Cloud)
 

@@ -30,9 +30,7 @@ url：app
 |eventTraceSamplingCount             |int    |否      | 0     | 常驻作业事件采样率统计条数，默认不采样全部记录。为避免数据量过大，可对频繁调度的常驻作业配置采样率，即作业每执行N次，才会记录作业执行及追踪相关数据|
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d 
-'{"appName":"foo_app","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' 
-http://elastic_job_cloud_host:8899/app
+curl -l -H "Content-type: application/json" -X POST -d '{"appName":"foo_app","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' http://elastic_job_cloud_host:8899/api/app
 ```
 
 ### 修改作业应用配置
@@ -52,9 +50,7 @@ url：app
 |eventTraceSamplingCount             |int    |否      | 0     | 常驻作业事件采样率统计条数，默认不采样全部记录。为避免数据量过大，可对频繁调度的常驻作业配置采样率，即作业每执行N次，才会记录作业执行及追踪相关数据|
 
 ```shell
-curl -l -H "Content-type: application/json" -X PUT -d 
-'{"appName":"foo_app","appCacheEnable":true}' 
-http://elastic_job_cloud_host:8899/app
+curl -l -H "Content-type: application/json" -X PUT -d '{"appName":"foo_app","appCacheEnable":true}' http://elastic_job_cloud_host:8899/api/app
 ```
 
 ### 注册作业
@@ -98,18 +94,13 @@ url：job/register
 **Java启动方式作业注册**
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d 
-'{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
-http://elastic_job_cloud_host:8899/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_host:8899/api/job/register
 ```
 
 **Spring启动方式作业注册**
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobType":"SIMPLE","jobExecutionType":"TRANSIENT",
-"cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
-http://elastic_job_cloud_masterhost:8899/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_masterhost:8899/api/job/register
 ```
 
 ### 修改作业配置
@@ -124,8 +115,7 @@ url：job/update
 
 ```shell
 curl -l -H "Content-type: application/json" -X PUT -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
-http://elastic_job_cloud_host:8899/job/update
+'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_host:8899/api/job/update
 ```
 
 ### 注销作业
@@ -139,7 +129,7 @@ url：job/deregister
 参数：作业名称
 
 ```shell
-curl -l -H "Content-type: application/json" -X DELETE -d 'foo_job' http://elastic_job_cloud_host:8899/job/deregister
+curl -l -H "Content-type: application/json" -X DELETE -d 'foo_job' http://elastic_job_cloud_host:8899/api/job/deregister
 ```
 
 ### 触发一次作业
@@ -155,5 +145,5 @@ url：job/trigger
 说明：即事件驱动，通过调用API而非定时的触发作业。目前仅对Transient作业类型生效。
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d 'foo_job' http://elastic_job_cloud_host:8899/job/trigger
+curl -l -H "Content-type: application/json" -X POST -d 'foo_job' http://elastic_job_cloud_host:8899/api/job/trigger
 ```

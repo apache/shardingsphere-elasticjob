@@ -67,7 +67,6 @@ next = "/01-start/index/"
 
 ### 提交一个功能增强建议之前
  
- - 请先检查[详细功能列表](/)。
  - 请确定这不是一个重复的功能增强建议。
    查看[Issue Page](https://github.com/dangdangdotcom/elastic-job/issues)列表，搜索您要提交的功能增强建议是否已经被提交过。
 
