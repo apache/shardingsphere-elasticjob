@@ -83,7 +83,7 @@ function validate() {
     });
 }
 
-function submitConfirm(type) {
+function submitConfirm(type, modal) {
     $("#save-button").on("click", function() {
         var bootstrapValidator = $("#app-form").data("bootstrapValidator");
         bootstrapValidator.validate();
@@ -95,7 +95,11 @@ function submitConfirm(type) {
                 url: "/api/app",
                 contentType: "application/json",
                 success: function(data) {
-                    window.location = "index.html?appName";
+                    modal.modal("hide");
+                    $("#app-table").bootstrapTable("refresh");
+                    $(".modal-backdrop").remove();
+                    $("body").removeClass("modal-open");
+                    refreshAppNavTag();
                 }
             });
         }

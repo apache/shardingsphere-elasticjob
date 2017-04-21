@@ -1,5 +1,5 @@
 $(function() {
     validate();
     dataControl();
-    submitConfirm("post", "/api/job/register");
+    submitConfirm("post", "/api/job/register", $("#data-add-job"));
 });

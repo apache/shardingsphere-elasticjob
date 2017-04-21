@@ -19,46 +19,46 @@
     <div class="page-height-min">
         <section class="content-header">
             <h1>作业定义</h1>
+            <ol class="breadcrumb">
+                <li class="active"><i class="fa fa-edit"></i> 作业</li>
+                <li class="active">作业定义</li>
+            </ol>
         </section>
         <section class="content">
-        <div class="row">
-            <div class="box box-info">
-                <div id="job-toolbar">
-                    <div class="form-inline" role="form">
-                        <div class="form-group">
-                            <a href="#" id="add-job" type="button" class="label label-success">增加</a>
-                        </div>
+            <div id="job-toolbar">
+                <div class="form-inline" role="form">
+                    <div class="form-group">
+                        &nbsp;&nbsp;&nbsp;<button type="button" class="btn-xs btn-success" id="add-job">添加</button>
                     </div>
                 </div>
-                <table id="job-table" 
-                    data-show-refresh="true"
-                    data-show-toggle="true"
-                    data-striped="true"
-                    data-toggle="table"
-                    data-url="/api/job/jobs"
-                    data-flat="true"
-                    data-click-to-select="true"
-                    data-search="true"
-                    data-strict-search="false"
-                    data-query-params="jobName"
-                    data-query-params-type="notLimit"
-                    data-pagination="true"
-                    data-page-list="[10, 20, 50, 100]"
-                    data-show-columns="true"
-                    data-toolbar="#job-toolbar">
-                    <thead>
-                        <tr>
-                            <th data-field="jobName" data-sortable="true">名称</th>
-                            <th data-field="appName" data-sortable="true">应用名称</th>
-                            <th data-field="jobClass" data-sortable="true">实现类</th>
-                            <th data-field="shardingTotalCount" data-sortable="true">分片总数</th>
-                            <th data-field="cron" data-sortable="true">cron表达式</th>
-                            <th data-field="operate" data-formatter="operationJob">操作</th>
-                        </tr>
-                    </thead>
-                </table>
             </div>
-        </div>
+            <table id="job-table" 
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-striped="true"
+                data-toggle="table"
+                data-url="/api/job/jobs"
+                data-flat="true"
+                data-click-to-select="true"
+                data-search="true"
+                data-strict-search="false"
+                data-query-params="jobName"
+                data-query-params-type="notLimit"
+                data-pagination="true"
+                data-page-list="[10, 20, 50, 100]"
+                data-show-columns="true"
+                data-toolbar="#job-toolbar">
+                <thead>
+                    <tr>
+                        <th data-field="jobName" data-sortable="true">名称</th>
+                        <th data-field="appName" data-sortable="true">应用名称</th>
+                        <th data-field="jobClass" data-sortable="true">实现类</th>
+                        <th data-field="shardingTotalCount" data-sortable="true">分片总数</th>
+                        <th data-field="cron" data-sortable="true">cron表达式</th>
+                        <th data-field="operate" data-formatter="operationJob">操作</th>
+                    </tr>
+                </thead>
+            </table>
         </section>
     </div>
 </div>
@@ -83,8 +83,8 @@
                 <h3 class="size-font">确认要删除该作业吗？</h3>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="delete-job-confirm" data-dismiss="modal">确认</button>
-                <button type="button" class="btn btn-success" id="delete-job-remove" data-dismiss="modal">取消</button>
+                <button type="button" class="btn-xs btn-danger" id="delete-job-confirm" data-dismiss="modal">确认</button>
+                <button type="button" class="btn-xs btn-success" id="delete-job-remove" data-dismiss="modal">取消</button>
             </div>
         </div>
     </div>
