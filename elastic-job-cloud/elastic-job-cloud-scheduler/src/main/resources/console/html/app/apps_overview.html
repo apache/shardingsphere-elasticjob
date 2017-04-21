@@ -2,44 +2,44 @@
     <div class="page-height-min">
         <section class="content-header">
             <h1>应用定义</h1>
+            <ol class="breadcrumb">
+                <li class="active"><i class="fa fa-laptop"></i> 定义</li>
+                <li class="active">应用定义</li>
+            </ol>
         </section>
         <section class="content">
-        <div class="row">
-            <div class="box box-info">
-                <div id="app-toolbar">
-                    <div class="form-inline" role="form">
-                        <div class="form-group">
-                            <a href="#" id="add-app" type="button" class="label label-success">增加</a>
-                        </div>
+            <div id="app-toolbar">
+                <div class="form-inline" role="form">
+                    <div class="form-group">
+                        &nbsp;&nbsp;&nbsp;<button type="button" class="btn-xs btn-success" id="add-app">添加</button>
                     </div>
                 </div>
-                <table id="app-table" 
-                    data-show-refresh="true"
-                    data-show-toggle="true"
-                    data-striped="true"
-                    data-toggle="table"
-                    data-url="/api/app/list"
-                    data-flat="true"
-                    data-click-to-select="true"
-                    data-search="true"
-                    data-strict-search="false"
-                    data-query-params="queryParams"
-                    data-query-params-type="notLimit"
-                    data-pagination="true"
-                    data-page-list="[10, 20, 50, 100]"
-                    data-show-columns="true"
-                    data-toolbar="#app-toolbar">
-                    <thead>
-                        <tr>
-                            <th data-field="appName" data-sortable="true">名称</th>
-                            <th data-field="appURL" data-sortable="true">所在路径</th>
-                            <th data-field="bootstrapScript" data-sortable="true">启动脚本</th>
-                            <th data-field="operation" data-formatter="operationApp">操作</th>
-                        </tr>
-                    </thead>
-                </table>
             </div>
-        </div>
+            <table id="app-table" 
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-striped="true"
+                data-toggle="table"
+                data-url="/api/app/list"
+                data-flat="true"
+                data-click-to-select="true"
+                data-search="true"
+                data-strict-search="false"
+                data-query-params="queryParams"
+                data-query-params-type="notLimit"
+                data-pagination="true"
+                data-page-list="[10, 20, 50, 100]"
+                data-show-columns="true"
+                data-toolbar="#app-toolbar">
+                <thead>
+                    <tr>
+                        <th data-field="appName" data-sortable="true">名称</th>
+                        <th data-field="appURL" data-sortable="true">所在路径</th>
+                        <th data-field="bootstrapScript" data-sortable="true">启动脚本</th>
+                        <th data-field="operation" data-formatter="operationApp">操作</th>
+                    </tr>
+                </thead>
+            </table>
         </section>
     </div>
 </div>
@@ -51,7 +51,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <h2 class="modal-title">应用详情</h2>
                 </div>
-                <div class="modal-body" id = "detail-app-body">
+                <div class="modal-body" id ="detail-app-body">
                 </div>
             </div>
         </div>
@@ -92,8 +92,8 @@
                 <h3 class="size-font">确认要删除该应用吗？</h3>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="delete-app-confirm" data-dismiss="modal">确认</button>
-                <button type="button" class="btn btn-success" id="delete-app-remove" data-dismiss="modal">取消</button>
+                <button type="button" class="btn-xs btn-danger" id="delete-app-confirm" data-dismiss="modal">确认</button>
+                <button type="button" class="btn-xs btn-success" id="delete-app-remove" data-dismiss="modal">取消</button>
             </div>
         </div>
     </div>

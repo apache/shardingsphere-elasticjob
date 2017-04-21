@@ -12,11 +12,11 @@ $(function() {
 });
 
 function operationApp(val, row) {
-    var detailButton = "<button operation='detailApp' class='btn btn-info' appName='" + row.appName + "'>详情</button>";
-    var modifyButton = "<button operation='modifyApp' class='btn btn-warning' appName='" + row.appName + "'>修改</button>";
-    var deleteButton = "<button operation='deleteApp' class='btn btn-danger' appName='" + row.appName + "'>删除</button>";
-    var enableButton = "<button operation='enableApp' class='btn btn-success' appName='" + row.appName + "'>生效</button>";
-    var disableButton = "<button operation='disableApp' class='btn btn-warning' appName='" + row.appName + "'>失效</button>";
+    var detailButton = "<button operation='detailApp' class='btn-xs btn-info' appName='" + row.appName + "'>详情</button>";
+    var modifyButton = "<button operation='modifyApp' class='btn-xs btn-warning' appName='" + row.appName + "'>修改</button>";
+    var deleteButton = "<button operation='deleteApp' class='btn-xs btn-danger' appName='" + row.appName + "'>删除</button>";
+    var enableButton = "<button operation='enableApp' class='btn-xs btn-success' appName='" + row.appName + "'>生效</button>";
+    var disableButton = "<button operation='disableApp' class='btn-xs btn-warning' appName='" + row.appName + "'>失效</button>";
     var operationId = detailButton + "&nbsp;" + modifyButton  +"&nbsp;" + deleteButton;
     if(selectAppStatus(row.appName)) {
         operationId = operationId + "&nbsp;" + enableButton;
@@ -26,21 +26,8 @@ function operationApp(val, row) {
     return operationId;
 }
 
-function selectAppStatus(appName) {
-    var resultValue = null;
-    $.ajax({
-        type: "GET",
-        async: false,
-        url: "/api/app/" + appName + "/disable",
-        contentType: "application/json",
-        success: function(result) {
-            resultValue = result;
-        }
-    });
-    return resultValue;
-}
-
 function bindDetailAppButton() {
+    $(document).off("click", "button[operation='detailApp'][data-toggle!='modal']");
     $(document).on("click", "button[operation='detailApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
@@ -63,6 +50,7 @@ function bindDetailAppButton() {
 }
 
 function bindModifyAppButton() {
+    $(document).off("click", "button[operation='modifyApp'][data-toggle!='modal']");
     $(document).on("click", "button[operation='modifyApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
@@ -81,6 +69,7 @@ function bindModifyAppButton() {
 }
 
 function bindEnableAppButton() {
+    $(document).off("click", "button[operation='enableApp'][data-toggle!='modal']");
     $(document).on("click", "button[operation='enableApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
@@ -88,14 +77,15 @@ function bindEnableAppButton() {
             type: "DELETE",
             contentType: "application/json",
             success: function(result) {
-                $("#app-table").bootstrapTable("refresh");
                 showSuccessDialog();
+                $("#app-table").bootstrapTable("refresh");
             }
         });
     });
 }
 
 function bindDisableAppButton() {
+    $(document).off("click", "button[operation='disableApp'][data-toggle!='modal']");
     $(document).on("click", "button[operation='disableApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
@@ -103,14 +93,15 @@ function bindDisableAppButton() {
             type: "POST",
             contentType: "application/json",
             success: function(result) {
-                $("#app-table").bootstrapTable("refresh");
                 showSuccessDialog();
+                $("#app-table").bootstrapTable("refresh");
             }
         });
     });
 }
 
 function bindDeleteAppButton() {
+    $(document).off("click", "button[operation='deleteApp'][data-toggle!='modal']");
     $(document).on("click", "button[operation='deleteApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $("#delete-data-app").modal({backdrop : "static", keyboard : true});
@@ -127,6 +118,8 @@ function bindDeleteAppButton() {
                     success: function(result) {
                         $("#app-table").bootstrapTable("refresh");
                         $("#delete-data-app").hide();
+                        refreshAppNavTag();
+                        refreshJobNavTag();
                     }
                 });
             }
