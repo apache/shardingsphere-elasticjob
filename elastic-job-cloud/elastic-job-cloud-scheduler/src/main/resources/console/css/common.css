@@ -11,7 +11,6 @@
     height: 52px;
     text-align: center;
 }
-/* add,modif页面的css */
 .form-horizontal label i{
     padding: 0 7px 0 0;
     color: #fb4d59;
@@ -36,4 +35,67 @@
 .form-horizontal input::-webkit-input-placeholder{
     color: #DCDCDC;
     opacity: 1;
+}
+/* dashboard  css */
+.table-line{
+    background-color:#00c0ef;
+    height:3px;width:100%;
+    margin-bottom:0;
+}
+.chart-right{
+    margin-right:-15px;
+}
+.chart-left{
+    margin-left:-6px;
+}
+.chart-size{
+    padding-left:0;
+    padding-right:0;
+}
+.chart-size.row{
+    margin:auto 0;
+}
+.chart-size-solation{
+    padding-left:0;
+    padding-right:0;
+    height:230px;
+}
+.set-size{
+    margin:0 auto;
+    width:98%;
+    height:220px;
+}
+.page-height-min{
+    min-height:780px;
+}
+/* app_overview job_overview  css */
+.form-group a{
+    width:80px;
+    font-size:14px; 
+    padding: 6px;
+    margin-left:23px;
+}
+.detail-model-size{
+    width:160%;
+    margin-left:-180px;
+}
+.update-model-size{
+    width:210%;
+    margin-left:-290px;
+}
+.size-font{
+    font-size:20px;
+}
+.center-font{
+    text-align:center;
+}
+.right-navigation-bar{
+    margin-left:20px;
+    width:190px;
+}
+.width-appURL{
+    margin-left:74px;
+}
+.app-width-size{
+    width:97%;
 }

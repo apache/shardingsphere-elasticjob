@@ -1,0 +1,72 @@
+<div class="box-body">
+    <div role="tabpanel" class="tab-pane active" onsubmit="return false;">
+        <form id="app-form" class="form-horizontal">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="app-name" class="col-sm-6 control-label"><i>*</i>应用名称</label>
+                        <div class="col-sm-6">
+                            <input type="text" disabled="disabled" placeholder="yourappName" id="app-name" name="appName" class="form-control" data-toggle="tooltip" data-placement="bottom" title="应用名称"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5" >
+                    <div class="form-group">
+                        <label for="bootstrap-script" class="col-sm-6 control-label"><i>*</i>启动脚本</label>
+                        <div class="col-sm-6">
+                            <input type="text" disabled="disabled" placeholder="bin/start.sh" id="bootstrap-script" name="bootstrapScript" class="form-control" data-toggle="tooltip" data-placement="bottom" title="启动脚本，如：bin\start.sh。"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="cpu-count" class="col-sm-6 control-label"><i>*</i>CPU数量</label>
+                        <div class="col-sm-6">
+                            <input type="number" disabled="disabled" value="1.0" min="1.0" step="0.1" id="cpu-count" name="cpuCount" class="form-control" data-toggle="tooltip"  data-placement="bottom" title=""/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="app-memory" class="col-sm-6 control-label"><i>*</i>应用内存(M)</label>
+                        <div class="col-sm-6">
+                            <input type="number" disabled="disabled" value="256" min="1" id="app-memory" name="appMemory" class="form-control" data-toggle="tooltip" data-placement="bottom" title=""/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="event-trace-sampling-count" class="col-sm-6 control-label"><i>*</i>作业事件采样次数(Daemon)</label>
+                        <div class="col-sm-6">
+                            <input type="number" disabled="disabled" id="event-trace-sampling-count" value="0" min="0" name="eventTraceSamplingCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title=""/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="form-group">
+                        <label for="app-cache-enable" class="col-sm-6 control-label">本地缓存应用</label>
+                        <div class="col-sm-6">
+                            <input type="checkbox" disabled="disabled" checked="checked" id="app-cache-enable" name="appCacheEnable" data-toggle="tooltip" data-placement="bottom" title="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="width-appURL">
+                    <div class="form-group">
+                        <label for="app-url" class="col-sm-2 control-label"><i>*</i>应用所在路径</label>
+                        <div class="col-sm-8">
+                           <div class="app-width-size">
+                                <input type="text" disabled="disabled" placeholder="http://file_host:8080/foo-job.tar.gz" id="app-url" name="appURL" class="form-control" data-toggle="tooltip" data-placement="bottom" title="必须是可以通过网络访问到的路径。如：http://file_host:8080/your-job.tar.gz"/>
+                           </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </form>
+    </div>
+</div>

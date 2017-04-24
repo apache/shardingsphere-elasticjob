@@ -1,6 +1,6 @@
 $(function() {
     $(".toolbar input").bind("keypress", function(event) {
-        if("13" === event.keyCode) {
+        if("13" == event.keyCode) {
             $("#job-exec-status-table").bootstrapTable("refresh", {silent: true});
         }
     });
@@ -17,6 +17,6 @@ function queryParams(params) {
         jobName: $("#job-name").val(),
         state: $("#state").val(),
         startTime: $("#start-time").val(),
-        endTime: $("#end-time").val(),
+        endTime: $("#end-time").val()
     };
 }

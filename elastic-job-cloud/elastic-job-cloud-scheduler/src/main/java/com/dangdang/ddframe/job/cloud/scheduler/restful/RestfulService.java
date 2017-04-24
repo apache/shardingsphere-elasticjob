@@ -38,8 +38,8 @@ public final class RestfulService {
     public RestfulService(final CoordinatorRegistryCenter regCenter, final RestfulServerConfiguration config, final ProducerManager producerManager) {
         restfulServer = new RestfulServer(config.getPort());
         CloudJobRestfulApi.init(regCenter, producerManager);
-        CloudAppRestfulApi.init(regCenter);
-        CloudOperationRestfulApi.init(producerManager);
+        CloudAppRestfulApi.init(regCenter, producerManager);
+        CloudOperationRestfulApi.init(regCenter, producerManager);
     }
     
     /**

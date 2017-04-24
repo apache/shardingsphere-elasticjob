@@ -202,21 +202,21 @@ public abstract class AbstractElasticJobExecutor {
             jobFacade.postJobExecutionEvent(startEvent);
         }
         log.trace("Job '{}' executing, item is: '{}'.", jobName, item);
-        JobExecutionEvent completeEvent = null;
+        JobExecutionEvent completeEvent;
         try {
             process(new ShardingContext(shardingContexts, item));
             completeEvent = startEvent.executionSuccess();
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
+            if (shardingContexts.isAllowSendJobEvent()) {
+                jobFacade.postJobExecutionEvent(completeEvent);
+            }
             // CHECKSTYLE:OFF
         } catch (final Throwable cause) {
             // CHECKSTYLE:ON
             completeEvent = startEvent.executionFailure(cause);
+            jobFacade.postJobExecutionEvent(completeEvent);
             itemErrorMessages.put(item, ExceptionUtil.transform(cause));
             jobExceptionHandler.handleException(jobName, cause);
-        } finally {
-            if (shardingContexts.isAllowSendJobEvent()) {
-                jobFacade.postJobExecutionEvent(completeEvent);
-            }
         }
     }
     

@@ -42,7 +42,7 @@ public final class RegistryCenterConnectionStateListener implements ConnectionSt
             return;
         }
         JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
-        if (ConnectionState.LOST == newState) {
+        if (ConnectionState.SUSPENDED == newState || ConnectionState.LOST == newState) {
             jobScheduleController.pauseJob();
         } else if (ConnectionState.RECONNECTED == newState) {
             serverService.persistOnline(serverService.isEnableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp()));

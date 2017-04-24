@@ -37,6 +37,7 @@ import org.unitils.util.ReflectionUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public final class JobSchedulerTest {
     
@@ -66,8 +67,9 @@ public final class JobSchedulerTest {
     
     @Test
     public void assertInit() throws NoSuchFieldException, SchedulerException {
+        when(schedulerFacade.updateJobConfiguration(liteJobConfig)).thenReturn(liteJobConfig);
         jobScheduler.init();
-        verify(schedulerFacade).registerStartUpInfo(liteJobConfig);
+        verify(schedulerFacade).registerStartUpInfo(true);
         Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), JobScheduleController.class.getDeclaredField("scheduler"));
         assertTrue(scheduler.isStarted());
     }

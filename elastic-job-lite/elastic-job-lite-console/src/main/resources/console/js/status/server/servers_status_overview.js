@@ -1,6 +1,6 @@
 $(function() {
     renderServersOverview();
-    bindOperationButtons();
+    bindButtons();
 });
 
 function renderServersOverview() {
@@ -40,10 +40,14 @@ function renderServersOverview() {
     if (activated) {
         jsonData.url = "/api/servers";
     }
-    $("#servers-overview-tbl").bootstrapTable(jsonData);
+    $("#servers-overview-tbl").bootstrapTable({
+        columns: jsonData.columns,
+        url: jsonData.url,
+        cache: jsonData.cache
+    });
 }
 
-function bindOperationButtons() {
+function bindButtons() {
     bindServerStatusDetailButton();
     bindDisableServerButton();
     bindEnableServerButton();
@@ -70,6 +74,7 @@ function generateOperationButtons(val, row) {
 }
 
 function bindServerStatusDetailButton() {
+    $(document).off("click", "button[operation='server-detail'][data-toggle!='modal']");
     $(document).on("click", "button[operation='server-detail'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
         $("#index-server-ip").text(serverIp);
@@ -78,7 +83,8 @@ function bindServerStatusDetailButton() {
 }
 
 function bindDisableServerButton() {
-    $(document).on("click", "button[operation='disable-server']", function(event) {
+    $(document).off("click", "button[operation='disable-server'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='disable-server'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
         $.ajax({
             url: "/api/servers/" + serverIp + "/disable",
@@ -92,7 +98,8 @@ function bindDisableServerButton() {
 }
 
 function bindEnableServerButton() {
-    $(document).on("click", "button[operation='enable-server']", function(event) {
+    $(document).off("click", "button[operation='enable-server'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='enable-server'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
         $.ajax({
             url: "/api/servers/" + serverIp + "/disable",
@@ -106,7 +113,8 @@ function bindEnableServerButton() {
 }
 
 function bindShutdownServerButton() {
-    $(document).on("click", "button[operation='shutdown-server']", function(event) {
+    $(document).off("click", "button[operation='shutdown-server'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='shutdown-server'][data-toggle!='modal']", function(event) {
         $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
         $(document).off("click", "#shutdown-confirm-dialog-confirm-btn");
@@ -126,7 +134,8 @@ function bindShutdownServerButton() {
 }
 
 function bindRemoveServerButton() {
-    $(document).on("click", "button[operation='remove-server']", function(event) {
+    $(document).off("click", "button[operation='remove-server'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='remove-server'][data-toggle!='modal']", function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");

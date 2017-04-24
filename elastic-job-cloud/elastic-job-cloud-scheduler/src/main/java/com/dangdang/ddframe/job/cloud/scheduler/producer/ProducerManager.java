@@ -17,11 +17,12 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.job.DisableJobService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.TaskContext;
@@ -36,6 +37,8 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.Protos;
+import org.apache.mesos.Protos.ExecutorID;
+import org.apache.mesos.Protos.SlaveID;
 import org.apache.mesos.SchedulerDriver;
 
 import java.util.Collection;
@@ -59,6 +62,8 @@ public final class ProducerManager {
     
     private final RunningService runningService;
     
+    private final DisableJobService disableJobService;
+    
     private final TransientProducerScheduler transientProducerScheduler;
     
     private final SchedulerDriver schedulerDriver;
@@ -69,6 +74,7 @@ public final class ProducerManager {
         configService = new CloudJobConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
+        disableJobService = new DisableJobService(regCenter);
         transientProducerScheduler = new TransientProducerScheduler(readyService);
     }
     
@@ -89,6 +95,9 @@ public final class ProducerManager {
      * @param jobConfig 作业配置
      */
     public void register(final CloudJobConfiguration jobConfig) {
+        if (disableJobService.isDisabled(jobConfig.getJobName())) {
+            throw new JobConfigurationException("Job '%s' has been disable.", jobConfig.getJobName());
+        }
         Optional<CloudAppConfiguration> appConfigFromZk = appConfigService.load(jobConfig.getAppName());
         if (!appConfigFromZk.isPresent()) {
             throw new AppConfigurationException("Register app '%s' firstly.", jobConfig.getAppName());
@@ -123,6 +132,7 @@ public final class ProducerManager {
     public void deregister(final String jobName) {
         Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
         if (jobConfig.isPresent()) {
+            disableJobService.remove(jobName);
             configService.remove(jobName);
             transientProducerScheduler.deregister(jobConfig.get());
         }
@@ -135,6 +145,9 @@ public final class ProducerManager {
      * @param jobConfig 作业配置
      */
     public void schedule(final CloudJobConfiguration jobConfig) {
+        if (disableJobService.isDisabled(jobConfig.getAppName())) {
+            return;
+        }
         if (CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
             transientProducerScheduler.register(jobConfig);
         } else if (CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
@@ -163,6 +176,17 @@ public final class ProducerManager {
     public void reschedule(final CloudJobConfiguration jobConfig) {
         unschedule(jobConfig.getJobName());
         schedule(jobConfig);
+    }
+    
+    /**
+     * 向Executor发送消息.
+     * 
+     * @param executorId 接受消息的executorId
+     * @param slaveId 运行executor的slaveId
+     * @param data 消息内容
+     */
+    public void sendFrameworkMessage(final ExecutorID executorId, final SlaveID slaveId, final byte[] data) {
+        schedulerDriver.sendFrameworkMessage(executorId, slaveId, data);
     }
     
     /**

@@ -18,9 +18,14 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.RestfulServerConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.restful.RestfulServer;
+import com.google.common.base.Optional;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.mesos.SchedulerDriver;
@@ -44,8 +49,17 @@ public abstract class AbstractCloudRestfulApiTest {
     
     private static RestfulService restfulService;
     
+    private static RestfulServer masterServer;
+    
+    private static RestfulServer slaveServer;
+    
     @BeforeClass
     public static void setUpClass() throws Exception {
+        initRestfulServer();
+        initMesosServer();
+    }
+    
+    private static void initRestfulServer() {
         regCenter = mock(CoordinatorRegistryCenter.class);
         jobEventRdbSearch = mock(JobEventRdbSearch.class);
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
@@ -55,9 +69,20 @@ public abstract class AbstractCloudRestfulApiTest {
         restfulService.start();
     }
     
+    private static void initMesosServer() throws Exception {
+        MesosStateService.register("127.0.0.1", 9050);
+        masterServer = new RestfulServer(9050);
+        masterServer.start(MesosMasterServerMock.class.getPackage().getName(), Optional.<String>absent(), Optional.<String>absent());
+        slaveServer = new RestfulServer(9051);
+        slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), Optional.<String>absent(), Optional.<String>absent());
+    }
+    
     @AfterClass
     public static void tearDown() throws Exception {
         restfulService.stop();
+        masterServer.stop();
+        slaveServer.stop();
+        MesosStateService.deregister();
     }
     
     @Before

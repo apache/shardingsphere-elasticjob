@@ -12,31 +12,32 @@ $(function() {
 function renderRegCenterForDashboardNav() {
     $.get("api/registry-center", {}, function(data) {
         var index;
-        var activatedRegCenter;
+        var activatedRegCenterName;
         for (index = 0; index < data.length; index++) {
             if (data[index].activated) {
-                activatedRegCenter = data[index].name;
+                activatedRegCenterName = data[index].name;
             }
         }
         var registryCenterDimension = $("#registry-center-dimension");
         registryCenterDimension.empty();
         for (index = 0; index < data.length; index++) {
-            var regName = data[index].name;
-            var liContent;
-            if (activatedRegCenter && activatedRegCenter === regName) {
-                liContent = "<a href='#' reg-name='" + regName + "' data-loading-text='切换中...'><b>" + regName + "&nbsp;&nbsp;(已连接)</b></a>";
+            var regCenterName = data[index].name;
+            var regCenterDisplayName;
+            if (activatedRegCenterName && activatedRegCenterName === regCenterName) {
+                regCenterDisplayName = "<b>" + regCenterName + "&nbsp;&nbsp;(已连接)</b>";
             } else {
-                liContent = "<a href='#' reg-name='" + regName + "' data-loading-text='切换中...'>" + regName + "</a>";
+                regCenterDisplayName = regCenterName;
             }
-            registryCenterDimension.append("<li>" + liContent + "</li>");
+            registryCenterDimension.append("<li><a href='#' reg-name='" + regCenterName + "' data-loading-text='切换中...'>" + regCenterDisplayName + "</a></li>");
         }
         if (0 === data.length) {
             registryCenterDimension.hide();
         }
     });
     $(document).on("click", "#registry-center-dimension-link", function(event) {
-        if ($("#registry-center-dimension").children("li").length > 0) {
-            $("#registry-center-dimension").css("display", "");
+        var $regCenterDimension = $("#registry-center-dimension");
+        if ($regCenterDimension.children("li").length > 0) {
+            $regCenterDimension.css("display", "");
         }
     });
 }
@@ -54,21 +55,22 @@ function renderDataSourceForDashboardNav() {
         dataSourceDimension.empty();
         for (index = 0; index < data.length; index++) {
             var dataSourceName = data[index].name;
-            var liContent;
+            var dataSourceDisplayName;
             if (activatedDataSource && activatedDataSource === dataSourceName) {
-                liContent = "<a href='#' data-source-name='" + dataSourceName + "' data-loading-text='切换中...'><b>" + dataSourceName + "&nbsp;&nbsp;(已连接)</b></a>";
+                dataSourceDisplayName = "<b>" + dataSourceName + "&nbsp;&nbsp;(已连接)</b>";
             } else {
-                liContent = "<a href='#' data-source-name='" + dataSourceName + "' data-loading-text='切换中...'>" + dataSourceName + "</a>";
+                dataSourceDisplayName = dataSourceName;
             }
-            dataSourceDimension.append("<li>" + liContent + "</li>");
+            dataSourceDimension.append("<li><a href='#' data-source-name='" + dataSourceName + "' data-loading-text='切换中...'>" + dataSourceDisplayName + "</a></li>");
         }
         if (0 === data.length) {
             dataSourceDimension.hide();
         }
     });
     $(document).on("click", "#data-source-dimension-link", function(event) {
-        if ($("#data-source-dimension").children("li").length > 0) {
-            $("#data-source-dimension").css("display", "");
+        var $dataSourceDimension = $("#data-source-dimension");
+        if ($dataSourceDimension.children("li").length > 0) {
+            $dataSourceDimension.css("display", "");
         }
     });
 }
@@ -76,11 +78,11 @@ function renderDataSourceForDashboardNav() {
 function switchRegCenter() {
     $(document).on("click", "a[reg-name]", function(event) {
         var link = $(this).button("loading");
-        var regName = $(event.currentTarget).attr("reg-name");
+        var regCenterName = $(event.currentTarget).attr("reg-name");
         $.ajax({
             url: "api/registry-center/connect",
             type: "POST",
-            data: JSON.stringify({"name" : regName}),
+            data: JSON.stringify({"name" : regCenterName}),
             contentType: "application/json",
             dataType: "json",
             success: function(data) {
@@ -90,6 +92,9 @@ function switchRegCenter() {
                     renderRegCenterForDashboardNav();
                     refreshJobNavTag();
                     refreshServerNavTag();
+                    $("#content").load("html/global/registry_center.html");
+                    renderSidebarMenu($("#settings"));
+                    $("#reg-center").parent().addClass("active");
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-reg-center-failure-dialog");
@@ -115,6 +120,9 @@ function switchDataSource() {
                     showSuccessDialog();
                     $("#data-sources").bootstrapTable("refresh");
                     renderDataSourceForDashboardNav();
+                    $("#content").load("html/global/event_trace_data_source.html");
+                    renderSidebarMenu($("#settings"));
+                    $("#event-trace-data-source").parent().addClass("active");
                 } else {
                     link.button("reset");
                     showFailureDialog("switch-data-source-failure-dialog");
@@ -122,6 +130,13 @@ function switchDataSource() {
             }
         });
     });
+}
+
+function renderSidebarMenu(div) {
+    div.parent().children().removeClass("active");
+    div.parent().children().children().children("li").removeClass("active");
+    div.parent().children().children("ul").css("display","");
+    div.addClass("active");
 }
 
 var my_skins = [

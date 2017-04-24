@@ -35,12 +35,15 @@ public final class ShutdownListenerManager extends AbstractListenerManager {
     
     private final InstanceNode instanceNode;
     
+    private final InstanceService instanceService;
+    
     private final SchedulerFacade schedulerFacade;
     
     public ShutdownListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
         instanceNode = new InstanceNode(jobName);
+        instanceService = new InstanceService(regCenter, jobName);
         schedulerFacade = new SchedulerFacade(regCenter, jobName);
     }
     
@@ -53,9 +56,18 @@ public final class ShutdownListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (!JobRegistry.getInstance().isShutdown(jobName) && instanceNode.isLocalInstancePath(path) && Type.NODE_REMOVED == eventType) {
+            if (!JobRegistry.getInstance().isShutdown(jobName) && !JobRegistry.getInstance().getJobScheduleController(jobName).isPaused()
+                    && isRemoveInstance(path, eventType) && !isReconnectedRegistryCenter()) {
                 schedulerFacade.shutdownInstance();
             }
+        }
+        
+        private boolean isRemoveInstance(final String path, final Type eventType) {
+            return instanceNode.isLocalInstancePath(path) && Type.NODE_REMOVED == eventType;
+        }
+        
+        private boolean isReconnectedRegistryCenter() {
+            return instanceService.isLocalJobInstanceExisted();
         }
     }
 }

@@ -22,18 +22,16 @@ import com.google.common.base.Optional;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.EnumSet;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import java.util.EnumSet;
 
 /**
  * REST API的内嵌服务器.
@@ -61,13 +59,26 @@ public final class RestfulServer {
      * @throws Exception 启动服务器异常
      */
     public void start(final String packages, final Optional<String> resourcePath) throws Exception {
+        start(packages, resourcePath, Optional.of("/api"));
+    }
+    
+    /**
+     * 启动内嵌的RESTful服务器.
+     *
+     * @param packages RESTful实现类所在包
+     * @param resourcePath 资源路径
+     * @param servletPath servlet路径
+     * @throws Exception 启动服务器异常
+     */
+    public void start(final String packages, final Optional<String> resourcePath, final Optional<String> servletPath) throws Exception {
         log.info("Elastic Job: Start RESTful server");
         HandlerList handlers = new HandlerList();
         if (resourcePath.isPresent()) {
             servletContextHandler.setBaseResource(Resource.newClassPathResource(resourcePath.get()));
             servletContextHandler.addServlet(new ServletHolder(DefaultServlet.class), "/*");
         }
-        servletContextHandler.addServlet(getServletHolder(packages), "/api/*");
+        String servletPathStr = (servletPath.isPresent() ? servletPath.get() : "") + "/*";
+        servletContextHandler.addServlet(getServletHolder(packages), servletPathStr);
         handlers.addHandler(servletContextHandler);
         server.setHandler(handlers);
         server.start();

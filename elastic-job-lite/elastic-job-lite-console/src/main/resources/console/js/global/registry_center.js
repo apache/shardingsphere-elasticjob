@@ -1,11 +1,10 @@
 $(function() {
     renderRegCenters();
     validate();
-    bindConnectButtons();
-    bindDeleteButtons();
     dealRegCenterModal();
     handleFieldValidator();
     submitRegCenter();
+    bindButtons();
 });
 
 function renderRegCenters() {
@@ -44,15 +43,21 @@ function generateOperationButtons(val, row) {
     var operationTd;
     var name = row.name;
     if (row.activated) {
-        operationTd = "<button disabled operation='connect' class='btn-xs' regName='" + name + "'>已连</button>&nbsp;<button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button disabled operation='connect-reg-center' class='btn-xs' regName='" + name + "'>已连</button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     } else {
-        operationTd = "<button operation='connect' class='btn-xs btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connect-reg-center' class='btn-xs btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     }
     return operationTd;
 }
 
+function bindButtons() {
+    bindConnectButtons();
+    bindDeleteButtons();
+}
+
 function bindConnectButtons() {
-    $(document).on("click", "button[operation='connect']", function(event) {
+    $(document).off("click", "button[operation='connect-reg-center']");
+    $(document).on("click", "button[operation='connect-reg-center']", function(event) {
         var btn = $(this).button("loading");
         var regName = $(event.currentTarget).attr("regName");
         $.ajax({
@@ -78,7 +83,8 @@ function bindConnectButtons() {
 }
 
 function bindDeleteButtons() {
-    $(document).on("click", "button[operation='delete']", function(event) {
+    $(document).off("click", "button[operation='delete-reg-center']");
+    $(document).on("click", "button[operation='delete-reg-center']", function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var regName = $(event.currentTarget).attr("regName");
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
@@ -183,15 +189,15 @@ function validate() {
             name: {
                 validators: {
                     notEmpty: {
-                        message: "注册中心不能为空"
+                        message: "注册中心名称不能为空"
                     },
                     stringLength: {
                         max: 50,
-                        message: "注册中心长度不能超过50字符大小"
+                        message: "注册中心名称长度不能超过50字符大小"
                     },
                     regexp: {
-                        regexp: /^([a-zA-Z0-9_]+(-|\.))*[a-zA-Z0-9_]+$/,
-                        message: "注册中心包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "注册中心名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             },
@@ -203,10 +209,6 @@ function validate() {
                     stringLength: {
                         max: 100,
                         message: "注册中心地址长度不能超过100字符大小"
-                    },
-                    regexp: {
-                        regexp: /^[^?!@#$%\^&*()'';""\]\[<>\\`~{}|=+/]+$/,
-                        message: "注册中心地址包含非法字符"
                     }
                 }
             },
@@ -217,8 +219,8 @@ function validate() {
                         message: "命名空间长度不能超过50字符大小"
                     },
                     regexp: {
-                        regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
-                        message: "命名空间包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "命名空间只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             },
@@ -229,8 +231,8 @@ function validate() {
                         message: "登录凭证长度不能超过20字符大小"
                     },
                     regexp: {
-                        regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
-                        message: "登录凭证包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "登录凭证只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             }

@@ -1,8 +1,8 @@
 $(function() {
     $("#job-name").text($("#index-job-name").text());
     renderShardingTable();
-    bindButtons();
     renderBreadCrumbMenu();
+    bindButtons();
 });
 
 function renderShardingTable() {
@@ -73,6 +73,7 @@ function bindButtons() {
 }
 
 function bindDisableButton() {
+    $(document).off("click", "button[operation='disable-sharding']");
     $(document).on("click", "button[operation='disable-sharding']", function(event) {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
@@ -88,13 +89,14 @@ function bindDisableButton() {
 }
 
 function bindEnableButton() {
+    $(document).off("click", "button[operation='enable-sharding']");
     $(document).on("click", "button[operation='enable-sharding']", function(event) {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
         $.ajax({
             url: "/api/jobs/" + jobName + "/sharding/" + item + "/disable",
             type: "DELETE",
-            success: function() {
+            success: function () {
                 showSuccessDialog();
                 $("#sharding").bootstrapTable("refresh");
             }

@@ -1,11 +1,10 @@
 $(function() {
     renderDataSources();
     validate();
-    bindConnectButtons();
-    bindDeleteButtons();
     dealDataSourceModal();
     handleFieldValidator();
     submitDataSource();
+    bindButtons();
 });
 
 function renderDataSources() {
@@ -44,15 +43,21 @@ function generateOperationButtons(val, row) {
     var operationTd;
     var name = row.name;
     if (row.activated) {
-        operationTd = "<button disabled operation='connectDataSource' class='btn-xs' dataSourceName='" + name + "'>已连</button>&nbsp;<button operation='deleteDataSource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
+        operationTd = "<button disabled operation='connect-datasource' class='btn-xs' dataSourceName='" + name + "'>已连</button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
     } else {
-        operationTd = "<button operation='connectDataSource' class='btn-xs btn-primary' dataSourceName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='deleteDataSource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connect-datasource' class='btn-xs btn-primary' dataSourceName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
     }
     return operationTd;
 }
 
+function bindButtons() {
+    bindConnectButtons();
+    bindDeleteButtons();
+}
+
 function bindConnectButtons() {
-    $(document).on("click", "button[operation='connectDataSource']", function(event) {
+    $(document).off("click", "button[operation='connect-datasource']");
+    $(document).on("click", "button[operation='connect-datasource']", function(event) {
         var btn = $(this).button("loading");
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $.ajax({
@@ -76,7 +81,8 @@ function bindConnectButtons() {
 }
 
 function bindDeleteButtons() {
-    $(document).on("click", "button[operation='deleteDataSource']", function(event) {
+    $(document).off("click", "button[operation='delete-datasource']");
+    $(document).on("click", "button[operation='delete-datasource']", function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $(document).off("click", "#delete-confirm-dialog-confirm-btn");
@@ -180,8 +186,8 @@ function validate() {
                         message: "数据源名称长度不能超过50字符大小"
                     },
                     regexp: {
-                        regexp: /^([a-zA-Z0-9_]+(-|\.))*[a-zA-Z0-9_]+$/,
-                        message: "数据源包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "数据源名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             },
@@ -191,12 +197,8 @@ function validate() {
                         message: "数据库URL不能为空"
                     },
                     stringLength: {
-                        max: 100,
-                        message: "数据库URL长度不能超过100字符大小"
-                    },
-                    regexp: {
-                        regexp: /^[^?!@#$%\^&*()'',;""\]\[<>\\`~{}|=+]+$/,
-                        message: "数据库URL包含非法字符"
+                        max: 200,
+                        message: "数据库URL长度不能超过200字符大小"
                     }
                 }
             },
@@ -210,8 +212,8 @@ function validate() {
                         message: "数据库用户名不能超过50字符大小"
                     },
                     regexp: {
-                        regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
-                        message: "数据库用户名包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "数据库用户名只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             },
@@ -222,8 +224,8 @@ function validate() {
                         message: "数据库口令不能超过50字符大小"
                     },
                     regexp: {
-                        regexp: /^[^?!@#$%\^&*()'',.;:""\]\[<>\\`~{}|=+/]+$/,
-                        message: "数据库口令包含非法字符"
+                        regexp: /^[\w\.-]+$/,
+                        message: "数据库口令只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             }

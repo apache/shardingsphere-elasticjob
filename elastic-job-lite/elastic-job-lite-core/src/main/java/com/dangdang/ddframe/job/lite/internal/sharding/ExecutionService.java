@@ -79,9 +79,13 @@ public final class ExecutionService {
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
-            jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getCompletedNode(each));
+            ensureShardingItemCompleteAndRemoveRunningStatus(each);
         }
+    }
+    
+    private void ensureShardingItemCompleteAndRemoveRunningStatus(final int shardingItem) {
+        jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getCompletedNode(shardingItem));
+        jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(shardingItem));
     }
     
     /**

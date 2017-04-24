@@ -1,21 +1,5 @@
 $(function() {
-    bootstrapValidator();
-    submitBootstrapValidator();
+    validate();
     dataControl();
+    submitConfirm("put", "/api/job/update");
 });
-    
-function bindSubmitJobSettingsForm() {
-    $.ajax({
-        type: 'put',
-        dataType:'json',
-        data:JSON.stringify(dataInfo()),
-        url:'/api/job/update',
-        contentType: "application/json",
-        success: function(data) {
-            window.location="index.html";
-        },
-        error:function(XMLHttpRequest, textStatus, errorThrown){
-            alert ("XMLHttpRequest.status="+XMLHttpRequest.status+"\ntextStatus="+textStatus+"\nerrorThrown=" + errorThrown);
-        }
-    });
-}

@@ -1,8 +1,8 @@
 $(function() {
     $("#server-ip").text($("#index-server-ip").text());
     renderJobs();
-    bindButtons();
     renderBreadCrumbMenu();
+    bindButtons();
 });
 
 function renderJobs() {
@@ -47,11 +47,11 @@ function statusFormatter(val, row) {
 
 function generateOperationButtons(val, row) {
     if (0 === row.instanceCount ) {
-        return "<button operation='remove' class='btn-xs btn-danger' job-name='" + row.jobName + "'>清理</button>";
+        return "<button operation='remove-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>清理</button>";
     }
-    var disableButton = "<button operation='disable' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "'>禁用</button>";
-    var enableButton = "<button operation='enable' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "'>启用</button>";
-    var shutdownButton = "<button operation='shutdown' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
+    var disableButton = "<button operation='disable-server-job' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "'>禁用</button>";
+    var enableButton = "<button operation='enable-server-job' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "'>启用</button>";
+    var shutdownButton = "<button operation='shutdown-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
     var operationTd = "";
     if ("DISABLED" === row.status) {
         operationTd = enableButton + "&nbsp;" + shutdownButton;
@@ -69,7 +69,8 @@ function bindButtons() {
 }
 
 function bindDisableButton() {
-    $(document).on("click", "button[operation='disable']", function(event) {
+    $(document).off("click", "button[operation='disable-server-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='disable-server-job'][data-toggle!='modal']", function(event) {
         $.ajax({
             url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
             type: "POST",
@@ -82,7 +83,8 @@ function bindDisableButton() {
 }
 
 function bindEnableButton() {
-    $(document).on("click", "button[operation='enable']", function(event) {
+    $(document).off("click", "button[operation='enable-server-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='enable-server-job'][data-toggle!='modal']", function(event) {
         $.ajax({
             url: "/api/servers/" + $("#server-ip").text() + "/jobs/" + $(event.currentTarget).attr("job-name") + "/disable",
             type: "DELETE",
@@ -95,7 +97,8 @@ function bindEnableButton() {
 }
 
 function bindShutdownButton() {
-    $(document).on("click", "button[operation='shutdown']", function(event) {
+    $(document).off("click", "button[operation='shutdown-server-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='shutdown-server-job'][data-toggle!='modal']", function(event) {
         $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $("#server-ip").text();
         var jobName = $(event.currentTarget).attr("job-name");
@@ -116,7 +119,8 @@ function bindShutdownButton() {
 }
 
 function bindRemoveButton() {
-    $(document).on("click", "button[operation='remove']", function(event) {
+    $(document).off("click", "button[operation='remove-server-job'][data-toggle!='modal']");
+    $(document).on("click", "button[operation='remove-server-job'][data-toggle!='modal']", function(event) {
         $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $("#server-ip").text();
         var jobName = $(event.currentTarget).attr("job-name");

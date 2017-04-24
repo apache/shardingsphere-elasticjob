@@ -17,13 +17,14 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.producer;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.job.DisableJobService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
 import com.dangdang.ddframe.job.context.TaskContext;
@@ -51,7 +52,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -78,6 +79,9 @@ public final class ProducerManagerTest {
     private RunningService runningService;
     
     @Mock
+    private DisableJobService disableJobService;
+    
+    @Mock
     private TransientProducerScheduler transientProducerScheduler;
     
     private ProducerManager producerManager;
@@ -98,6 +102,7 @@ public final class ProducerManagerTest {
         ReflectionUtils.setFieldValue(producerManager, "configService", configService);
         ReflectionUtils.setFieldValue(producerManager, "readyService", readyService);
         ReflectionUtils.setFieldValue(producerManager, "runningService", runningService);
+        ReflectionUtils.setFieldValue(producerManager, "disableJobService", disableJobService);
         ReflectionUtils.setFieldValue(producerManager, "transientProducerScheduler", transientProducerScheduler);
     }
     
@@ -112,15 +117,21 @@ public final class ProducerManagerTest {
     
     
     @Test(expected = AppConfigurationException.class)
-    public void assertRegisterWithoutApp() {
+    public void assertRegisterJobWithoutApp() {
         when(appConfigService.load("test_app")).thenReturn(Optional.<CloudAppConfiguration>absent());
         producerManager.register(transientJobConfig);
     }
     
     @Test(expected = JobConfigurationException.class)
-    public void assertRegisterExisted() {
+    public void assertRegisterExistedJob() {
         when(appConfigService.load("test_app")).thenReturn(Optional.of(appConfig));
         when(configService.load("transient_test_job")).thenReturn(Optional.of(transientJobConfig));
+        producerManager.register(transientJobConfig);
+    }
+    
+    @Test(expected = JobConfigurationException.class)
+    public void assertRegisterDisabledJob() {
+        when(disableJobService.isDisabled("transient_test_job")).thenReturn(true);
         producerManager.register(transientJobConfig);
     }
     
@@ -180,6 +191,7 @@ public final class ProducerManagerTest {
         for (TaskContext each : taskContexts) {
             verify(schedulerDriver).killTask(Protos.TaskID.newBuilder().setValue(each.getId()).build());
         }
+        verify(disableJobService).remove("transient_test_job");
         verify(configService).remove("transient_test_job");
         verify(runningService).remove("transient_test_job");
         verify(readyService).remove(Lists.newArrayList("transient_test_job"));
