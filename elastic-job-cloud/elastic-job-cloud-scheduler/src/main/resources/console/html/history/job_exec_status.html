@@ -25,16 +25,32 @@
                     </div>
                     <div class="form-group toolbar">
                         <label for="source">执行来源:</label>
-                        <input type="text" class="form-control" id="source" placeholder="">
+                      <select id="source" name="source" class="form-control" data-toggle="tooltip" data-placement="bottom" >
+                            <option value="">全部</option>
+                            <option value="CLOUD_SCHEDULER">CLOUD_SCHEDULER</option>
+                            <option value="CLOUD_EXECUTOR">CLOUD_EXECUTOR</option>
+                        </select> 
                     </div>
                     <div class="form-group toolbar">
-                        <label for="execution-type">执行类型:</label>
-                        <input type="text" class="form-control" size="13" id="execution-type" placeholder="">
+                        <label for="execution-type">任务来源:</label>
+                        <select id="execution-type" name="jobExecutionType" class="form-control" data-toggle="tooltip" data-placement="bottom" >
+                            <option value="">全部</option>
+                            <option value="FAILOVER" >FAILOVER</option>
+                            <option value="READY">READY</option>
+                        </select> 
                     </div>
                     <br/>
                     <div class="form-group toolbar">
                         <label for="state">状态:</label>
-                        <input type="text" class="form-control" id="state" placeholder="">
+                        <select id="state" name="state" class="form-control" data-toggle="tooltip" data-placement="bottom" >
+                            <option value="">全部</option>
+                            <option value="TASK_STAGING" >TASK_STAGING</option>
+                            <option value="TASK_FAILED">TASK_FAILED</option>
+                            <option value="TASK_FINISHED">TASK_FINISHED</option>
+                            <option value="TASK_RUNNING">TASK_RUNNING</option>
+                            <option value="TASK_ERROR">TASK_ERROR</option>
+                            <option value="TASK_KILLED">TASK_KILLED</option>
+                        </select> 
                     </div>
                     <div class="form-group toolbar">
                         <label>创建时间:</label>
@@ -72,7 +88,7 @@
                         <th data-field="executionType" data-sortable="true">任务来源</th>
                         <th data-field="state" data-sortable="true">状态</th>
                         <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter">创建时间</th>
-                        <th data-field="message" data-formatter="splitFormatter">备注</th>
+                        <th data-field="message" data-formatter="splitRemarkFormatter">备注</th>
                     </tr>
                 </thead>
             </table>
