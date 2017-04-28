@@ -1,9 +1,7 @@
 $(function() {
-    if(null !== getCurrentUrl("appName")) {
-        $("#content-right").load("/html/app/apps_overview.html");
-    }else{
-        $("#content-right").load("/html/job/jobs_overview.html");
-    }
+    $("#content-right").load("/html/app/apps_overview.html");
+    refreshJobNavTag();
+    refreshAppNavTag();
     $("#register-app").click(function() {
         $("#content-right").load("/html/app/apps_overview.html");
     });
@@ -23,12 +21,3 @@ $(function() {
         $("#content-right").load("/html/history/job_exec_status.html");
     });
 });
-
-function getCurrentUrl(param) {
-    var regular = new RegExp(param);
-    var result = window.location.search.substr(1).match(regular);
-    if (null !== result) {
-        return unescape(result[1]);
-    }
-    return null;
-}

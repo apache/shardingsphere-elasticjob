@@ -13,8 +13,8 @@ function validate() {
                         message: "作业实现类不能为空"
                     },
                     regexp: {
-                        regexp: /^([a-zA-Z_]\w*\.)*[a-zA-Z_]\w*$/,
-                        message: "作业实现类必须以字母开头并且只包含数字、字母、下划线(_)和点号(.)"
+                        regexp: /^[\w\.]+$/,
+                        message: "作业实现类只能使用数字、字母、下划线(_)和点号(.)"
                     }
                 }
             },
@@ -149,7 +149,7 @@ $("#sharding-item-parameters").focus(function() {
     $("#job-form").data('bootstrapValidator').enableFieldValidators("shardingItemParameters", true);
 });
 
-function submitConfirm(type, url) {
+function submitConfirm(type, url, modal) {
     $("#save-button").on("click", function() {
         if($("" == "#sharding-item-parameters").val() || null === $("#sharding-item-parameters").val()) {
             $("#job-form").data("bootstrapValidator").enableFieldValidators("shardingItemParameters", false);
@@ -160,7 +160,7 @@ function submitConfirm(type, url) {
             var beanName = $("#bean-name").val();
             var applicationContext = $("#application-context").val();
             if(0 === beanName.length && 0 === applicationContext.length) {
-                submitJobForm(type,url);
+                submitJobForm(type, url, modal);
             } else if(null !== applicationContext && 0 === beanName.length) {
                 $("#delete-data—bean-name").modal();
                 setTimeout(function() {
@@ -172,13 +172,13 @@ function submitConfirm(type, url) {
                     $("#delete-data-application-context").modal("hide");
                 }, 3000);
             } else {
-                submitJobForm(type, url);
+                submitJobForm(type, url, modal);
             }
         }
     });
 }
 
-function submitJobForm(type, url) {
+function submitJobForm(type, url, modal) {
     $.ajax({
         type: type,
         dataType: "json",
@@ -186,7 +186,11 @@ function submitJobForm(type, url) {
         url: url,
         contentType: "application/json",
         success: function(data) {
-            window.location = "index.html";
+            modal.modal("hide");
+            $(".modal-backdrop").remove();
+            $("body").removeClass("modal-open");
+            $("#content-right").load("/html/job/jobs_overview.html");
+            refreshJobNavTag();
         }
     });
 }

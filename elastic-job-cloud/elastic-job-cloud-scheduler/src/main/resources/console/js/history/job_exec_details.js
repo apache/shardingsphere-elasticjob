@@ -8,11 +8,12 @@ $(function() {
 });
 
 function queryParams(params) {
+    var sortName = "success" === params.sortName ? "isSuccess" : params.sortName;
     return {
         per_page: params.pageSize, 
         page: params.pageNumber,
         q: params.searchText,
-        sort: params.sortName,
+        sort: sortName,
         order: params.sortOrder,
         jobName: $("#job-name").val(),
         taskId: $("#task-id").val(),

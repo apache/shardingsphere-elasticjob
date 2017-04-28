@@ -1,76 +1,74 @@
 <div class="content-wrapper">
     <div class="page-height-min">
         <section class="content-header">
-            <h1>作业执行轨迹</h1>
+            <h1>作业运行轨迹</h1>
+            <ol class="breadcrumb">
+                <li class="active"><i class="fa fa-history"></i> 作业历史</li>
+                <li class="active">作业运行轨迹</li>
+            </ol>
         </section>
         <section class="content">
-        <div class="row">
-            <div class="box box-info">
-                <div class="box-body">
-                    <div id="job-exec-detail-toolbar-div">
-                        <div class="form-inline" role="form">
-                            <div class="form-group toolbar">
-                                <label for="job-name">作业名称:</label>
-                                <input type="text" class="form-control" id="job-name" placeholder="">
-                            </div>
-                            <div class="form-group toolbar">
-                                <label for="task-id">任务ID:</label>
-                                <input type="text" class="form-control" size="55" id="task-id" placeholder="">
-                            </div>
-                            <br/>
-                            <div class="form-group toolbar">
-                                <label for="ip">宿主机IP:</label>
-                                <input type="text" class="form-control" data-inputmask="'alias': 'ip'" data-mask="" id="ip">
-                            </div>
-                            <div class="form-group toolbar">
-                                <label>执行时间:</label>
-                                <input type="text" class="form-control pull-right custom-datepicker" id="start-time">
-                            </div>
-                            <div class="form-group toolbar">
-                                <span>至</span>
-                                <input type="text" class="form-control pull-right custom-datepicker" id="end-time">
-                            </div>
-                            <div class="form-group toolbar">
-                                <label for="isSuccess">是否成功:</label>
-                                <input type="radio" name="isSuccess" value="1">是
-                                <input type="radio" name="isSuccess" value="0">否
-                                <input type="radio" name="isSuccess" value="" checked="checked">全部
-                            </div>
-                        </div>
+            <div id="job-exec-detail-toolbar-div">
+                <div class="form-inline" role="form">
+                    <div class="form-group toolbar">
+                        <label for="job-name">作业名称:</label>
+                        <input type="text" class="form-control" id="job-name" placeholder="">
                     </div>
-                    <table id="job-exec-details-table" 
-                        data-show-refresh="true"
-                        data-show-toggle="true"
-                        data-striped="true"
-                        data-toggle="table"
-                        data-url="/api/job/events/executions"
-                        data-flat="true"
-                        data-click-to-select="true"
-                        data-row-style="rowStyle"
-                        data-query-params="queryParams"
-                        data-query-params-type="notLimit"
-                        data-side-pagination="server"
-                        data-pagination="true"
-                        data-page-list="[10, 20, 50, 100]"
-                        data-show-columns="true"
-                        data-toolbar="#job-exec-detail-toolbar-div">
-                        <thead>
-                            <tr>
-                                <th data-field="jobName" data-sortable="true">作业名称</th>
-                                <th data-field="taskId">任务ID</th>
-                                <th data-field="ip" data-sortable="true">宿主机IP</th>
-                                <th data-field="shardingItem">分片</th>
-                                <th data-field="source" data-sortable="true">执行依据</th>
-                                <th data-field="success" data-sortable="true" data-formatter="successFormatter">是否成功</th>
-                                <th data-field="failureCause.plainText" data-formatter="splitFormatter">失败原因</th>
-                                <th data-field="startTime" data-sortable="true" data-formatter="dateTimeFormatter">执行开始时间</th>
-                                <th data-field="completeTime" data-sortable="true" data-formatter="dateTimeFormatter">执行结束时间</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div class="form-group toolbar">
+                        <label for="task-id">任务ID:</label>
+                        <input type="text" class="form-control" size="55" id="task-id" placeholder="">
+                    </div>
+                    <br/>
+                    <div class="form-group toolbar">
+                        <label for="ip">宿主机IP:</label>
+                        <input type="text" class="form-control" data-inputmask="'alias': 'ip'" data-mask="" id="ip">
+                    </div>
+                    <div class="form-group toolbar">
+                        <label>执行时间:</label>
+                        <input type="text" class="form-control pull-right custom-datepicker" id="start-time">
+                    </div>
+                    <div class="form-group toolbar">
+                        <span>至</span>
+                        <input type="text" class="form-control pull-right custom-datepicker" id="end-time">
+                    </div>
+                    <div class="form-group toolbar">
+                        <label for="isSuccess">是否成功:</label>
+                        <input type="radio" name="isSuccess" value="1">是
+                        <input type="radio" name="isSuccess" value="0">否
+                        <input type="radio" name="isSuccess" value="" checked="checked">全部
+                    </div>
                 </div>
             </div>
-        </div>
+            <table id="job-exec-details-table" 
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-striped="true"
+                data-toggle="table"
+                data-url="/api/job/events/executions"
+                data-flat="true"
+                data-click-to-select="true"
+                data-row-style="rowStyle"
+                data-query-params="queryParams"
+                data-query-params-type="notLimit"
+                data-side-pagination="server"
+                data-pagination="true"
+                data-page-list="[10, 20, 50, 100]"
+                data-show-columns="true"
+                data-toolbar="#job-exec-detail-toolbar-div">
+                <thead>
+                    <tr>
+                        <th data-field="jobName" data-sortable="true">作业名称</th>
+                        <th data-field="taskId">任务ID</th>
+                        <th data-field="ip" data-sortable="true">宿主机IP</th>
+                        <th data-field="shardingItem">分片</th>
+                        <th data-field="source" data-sortable="true">执行依据</th>
+                        <th data-field="success" data-sortable="true" data-formatter="successFormatter">是否成功</th>
+                        <th data-field="failureCause.plainText" data-formatter="splitFormatter">失败原因</th>
+                        <th data-field="startTime" data-sortable="true" data-formatter="dateTimeFormatter">执行开始时间</th>
+                        <th data-field="completeTime" data-sortable="true" data-formatter="dateTimeFormatter">执行结束时间</th>
+                    </tr>
+                </thead>
+            </table>
         </section>
     </div>
 </div>

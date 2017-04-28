@@ -7,6 +7,16 @@ prev = "/00-overview/intro/"
 next = "/00-overview/contribution/"
 +++
 
+## 2.1.2
+
+### 新功能
+
+### 功能提升
+
+1. [ISSUE #296](https://github.com/dangdangdotcom/elastic-job/issues/296) Elastic-Job-Cloud运维界面重构
+
+### 缺陷修正
+
 ## 2.1.1
 
 ### 新功能

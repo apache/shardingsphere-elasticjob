@@ -1,4 +1,4 @@
 $(function() {
     validate();
-    submitConfirm("post");
+    submitConfirm("post", $("#data-add-app"));
 });

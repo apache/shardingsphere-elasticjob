@@ -296,6 +296,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         try {
             String path = client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(key);
             result = client.checkExists().forPath(path).getCtime();
+            client.delete().forPath(path);
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON

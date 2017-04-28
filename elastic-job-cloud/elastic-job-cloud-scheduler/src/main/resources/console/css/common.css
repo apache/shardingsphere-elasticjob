@@ -99,3 +99,36 @@
 .app-width-size{
     width:97%;
 }
+/* index css */
+#control-sidebar-theme-demo-options-tab li {
+    float:left; 
+    width: 33.33333%; 
+    padding: 5px;
+}
+#control-sidebar-theme-demo-options-tab li a {
+    display: block; 
+    box-shadow: 0 0 3px rgba(0,0,0,0.4);
+}
+.top-span {
+    display:block; 
+    width: 100%; 
+    float: left; 
+    height: 7px; 
+}
+#span-black{
+    background: #fefefe;
+}
+.down-span-left {
+    display:block; 
+    width: 20%; 
+    float: left; 
+    height: 20px; 
+    background: #222d32;
+}
+.down-span-right {
+    display:block; 
+    width: 80%; 
+    float: left; 
+    height: 20px; 
+    background: #f4f5f7;
+}
