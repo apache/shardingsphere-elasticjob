@@ -101,7 +101,7 @@ public final class CloudOperationRestfulApi {
      *
      * @param appName 云作业App配置名称
      * @return 沙箱信息
-     * @throws JSONException
+     * @throws JSONException JSON解析异常
      */
     @GET
     @Path("/sandbox")
