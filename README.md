@@ -52,6 +52,11 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 
 ![Elastic-Job-Cloud Architecture](http://dangdangdotcom.github.io/elastic-job/elastic-job-cloud/img/architecture/elastic_job_cloud.png)
 
+
+# [Release Notes](https://github.com/dangdangdotcom/elastic-job/releases)
+
+# [Roadmap](ROADMAP.md)
+
 # Quick Start
 
 ## Elastic-Job-Lite
@@ -149,90 +154,3 @@ curl -l -H "Content-type: application/json" -X POST -d '{"appName":"yourAppName"
 ```shell
 curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_host:8899/api/job/register
 ```
-
-# Roadmap
-
-## Core
-- [x] Unify Job Config API
-    - [x] Core Config
-    - [x] Type Config
-    - [x] Root Config
-- [x] Job Types
-    - [x] Simple
-    - [x] Dataflow
-    - [x] Script
-    - [ ] Http
-- [x] Event Trace
-    - [x] Event Publisher
-    - [x] Log Event Listener
-    - [x] Database Event Listener
-    - [ ] Other Event Listener
-
-## Elastic-Job-Lite
-- [x] Distributed Features
-    - [x] High Availability
-    - [x] Leadership Election
-    - [x] Elastic scale in/out
-    - [x] Failover
-    - [x] Misfire
-    - [x] Idempotency
-- [x] Registry Center
-    - [x] Zookeeper
-    - [ ] Health Detection
-    - [ ] Other Registry Center Supported
-- [x] Lifecycle Management
-    - [x] Add/Remove
-    - [x] Pause/Resume
-    - [x] Disable/Enable
-    - [x] Shutdown
-    - [ ] Restful API
-- [x] Job Dependency
-    - [x] Listener
-    - [ ] Workflow
-    - [ ] DAG
-- [x] Spring Integrate
-    - [x] Namespace
-    - [x] Bean Injection
-- [x] Web Console
-
-## Elastic-Job-Cloud
-- [x] Transient Job
-    - [x] High Availability
-    - [x] Elastic scale in/out
-    - [x] Failover
-    - [x] Misfire
-    - [x] Idempotency
-- [x] Daemon Job
-    - [x] High Availability
-    - [x] Elastic scale in/out
-    - [ ] Failover
-    - [ ] Misfire
-    - [x] Idempotency
-- [x] Mesos Scheduler
-    - [x] Leadership Election
-    - [ ] Redis Based Queue Improvement
-- [x] Mesos Executor
-    - [x] Executor reuse pool
-    - [ ] Progress Reporting
-    - [ ] Health Detection
-    - [ ] Log Redirect
-- [x] Lifecycle Management
-    - [x] Add/Remove
-    - [ ] Pause/Resume
-    - [x] Disable/Enable
-    - [ ] Shutdown
-    - [x] Restful API
-- [ ] Job Dependency
-    - [ ] Listener
-    - [ ] Workflow
-    - [ ] DAG
-- [x] Job Distribution
-    - [x] Mesos Based Distribution
-    - [ ] Docker Based Distribution
-- [x] Resource Management
-    - [x] Resources Allocate
-    - [ ] Resources Isolation
-    - [ ] Cross Data Center
-    - [ ] A/B Test
-- [x] Spring Integrate
-- [x] Web Console
