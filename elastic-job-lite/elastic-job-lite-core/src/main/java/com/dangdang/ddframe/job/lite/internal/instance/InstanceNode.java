@@ -44,6 +44,15 @@ public final class InstanceNode {
     }
     
     /**
+     * 获取作业运行实例全路径.
+     *
+     * @return 作业运行实例全路径
+     */
+    public String getInstanceFullPath() {
+        return jobNodePath.getFullPath(InstanceNode.ROOT);
+    }
+    
+    /**
      * 判断给定路径是否为作业运行实例路径.
      *
      * @param path 待判断的路径

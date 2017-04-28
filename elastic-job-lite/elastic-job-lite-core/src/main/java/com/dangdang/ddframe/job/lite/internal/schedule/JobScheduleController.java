@@ -63,7 +63,7 @@ public final class JobScheduleController {
      * 
      * @param cron CRON表达式
      */
-    public void rescheduleJob(final String cron) {
+    public synchronized void rescheduleJob(final String cron) {
         try {
             CronTrigger trigger = (CronTrigger) scheduler.getTrigger(TriggerKey.triggerKey(triggerIdentity));
             if (!scheduler.isShutdown() && null != trigger && !cron.equals(trigger.getCronExpression())) {
@@ -83,12 +83,9 @@ public final class JobScheduleController {
      * 
      * @return 作业是否暂停
      */
-    public boolean isPaused() {
+    public synchronized boolean isPaused() {
         try {
-            if (scheduler.isShutdown()) {
-                return false;
-            }
-            return Trigger.TriggerState.PAUSED == scheduler.getTriggerState(new TriggerKey(triggerIdentity));
+            return !scheduler.isShutdown() && Trigger.TriggerState.PAUSED == scheduler.getTriggerState(new TriggerKey(triggerIdentity));
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
@@ -97,7 +94,7 @@ public final class JobScheduleController {
     /**
      * 暂停作业.
      */
-    public void pauseJob() {
+    public synchronized void pauseJob() {
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.pauseAll();
@@ -110,7 +107,7 @@ public final class JobScheduleController {
     /**
      * 恢复作业.
      */
-    public void resumeJob() {
+    public synchronized void resumeJob() {
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.resumeAll();
@@ -123,7 +120,7 @@ public final class JobScheduleController {
     /**
      * 立刻启动作业.
      */
-    public void triggerJob() {
+    public synchronized void triggerJob() {
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.triggerJob(jobDetail.getKey());
@@ -136,7 +133,7 @@ public final class JobScheduleController {
     /**
      * 关闭调度器.
      */
-    public void shutdown() {
+    public synchronized void shutdown() {
         try {
             if (!scheduler.isShutdown()) {
                 scheduler.shutdown();
