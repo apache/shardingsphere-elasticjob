@@ -165,6 +165,8 @@ public final class CloudJobRestfulApi {
      * 查询作业是否被禁用.
      *
      * @param jobName 作业名称
+     * @return 作业是否被禁用
+     * @throws JSONException JSON解析异常
      */
     @GET
     @Path("/{jobName}/disable")
@@ -177,6 +179,7 @@ public final class CloudJobRestfulApi {
      * 启用作业.
      *
      * @param jobName 作业名称
+     * @throws JSONException JSON解析异常
      */
     @DELETE
     @Path("/{jobName}/disable")
