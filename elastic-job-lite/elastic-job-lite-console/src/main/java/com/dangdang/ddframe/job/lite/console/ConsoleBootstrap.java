@@ -40,6 +40,7 @@ public final class ConsoleBootstrap {
     /**
      * 启动RESTful服务并加载页面.
      * 
+     * @param args 启动参数
      * @throws Exception 启动服务器异常
      */
     //CHECKSTYLE:OFF

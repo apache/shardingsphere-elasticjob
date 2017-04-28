@@ -145,8 +145,10 @@ public final class CloudAppRestfulApi {
     
     /**
      * 查询应用是否被禁用.
-     *
+     * 
      * @param appName 应用名称
+     * @return 应用是否被禁用
+     * @throws JSONException
      */
     @GET
     @Path("/{appName}/disable")
@@ -175,8 +177,8 @@ public final class CloudAppRestfulApi {
     
     /**
      * 启用应用.
-     *
      * @param appName 应用名称
+     * @throws JSONException
      */
     @DELETE
     @Path("/{appName}/disable")

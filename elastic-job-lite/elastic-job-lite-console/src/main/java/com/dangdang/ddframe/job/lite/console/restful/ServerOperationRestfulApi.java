@@ -109,9 +109,10 @@ public final class ServerOperationRestfulApi {
     }
     
     /**
-     * 获取该服务器上注册的作业.
+     * 获取该服务器上注册的作业的简明信息.
      *
      * @param serverIp 服务器IP地址
+     * @return 作业简明信息对象集合
      */
     @GET
     @Path("/{serverIp}/jobs")
