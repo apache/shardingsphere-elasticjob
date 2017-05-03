@@ -40,8 +40,6 @@ public final class ShardingNode {
     
     static final String RUNNING = ROOT + "/%s/" + RUNNING_APPENDIX;
     
-    static final String COMPLETED = ROOT + "/%s/completed";
-    
     static final String MISFIRE = ROOT + "/%s/misfire";
     
     static final String DISABLED = ROOT + "/%s/disabled";
@@ -51,8 +49,6 @@ public final class ShardingNode {
     static final String NECESSARY = LEADER_ROOT + "/necessary";
     
     static final String PROCESSING = LEADER_ROOT + "/processing";
-    
-    static final String CLEANING = LEADER_ROOT + "/cleaning";
     
     private final JobNodePath jobNodePath;
     
@@ -72,10 +68,6 @@ public final class ShardingNode {
      */
     public static String getRunningNode(final int item) {
         return String.format(RUNNING, item);
-    }
-    
-    static String getCompletedNode(final int item) {
-        return String.format(COMPLETED, item);
     }
     
     static String getMisfireNode(final int item) {

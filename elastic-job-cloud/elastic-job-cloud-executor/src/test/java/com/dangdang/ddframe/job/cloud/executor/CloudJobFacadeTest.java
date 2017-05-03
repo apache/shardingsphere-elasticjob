@@ -140,11 +140,6 @@ public class CloudJobFacadeTest {
     }
     
     @Test
-    public void assertCleanPreviousExecutionInfo() {
-        jobFacade.cleanPreviousExecutionInfo();
-    }
-    
-    @Test
     public void assertBeforeJobExecuted() {
         jobFacade.beforeJobExecuted(null);
     }

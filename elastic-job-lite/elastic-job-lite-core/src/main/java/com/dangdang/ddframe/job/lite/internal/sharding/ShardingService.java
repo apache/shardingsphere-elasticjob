@@ -176,14 +176,7 @@ public final class ShardingService {
         if (JobRegistry.getInstance().isShutdown(jobName) || !serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
             return Collections.emptyList();
         }
-        List<Integer> result = new LinkedList<>();
-        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
-        for (int i = 0; i < shardingTotalCount; i++) {
-            if (JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
-                result.add(i);
-            }
-        }
-        return result;
+        return getShardingItems(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
     }
     
     /**

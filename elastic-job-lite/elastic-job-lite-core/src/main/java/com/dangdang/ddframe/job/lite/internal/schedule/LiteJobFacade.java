@@ -115,7 +115,7 @@ public final class LiteJobFacade implements JobFacade {
         shardingService.shardingIfNecessary();
         List<Integer> shardingItems = shardingService.getLocalShardingItems();
         if (isFailover) {
-            shardingItems.removeAll(failoverService.getLocalHostTakeOffItems());
+            shardingItems.removeAll(failoverService.getLocalTakeOffItems());
         }
         shardingItems.removeAll(executionService.getDisabledItems(shardingItems));
         return executionContextService.getJobShardingContext(shardingItems);
@@ -148,11 +148,6 @@ public final class LiteJobFacade implements JobFacade {
     @Override
     public boolean isNeedSharding() {
         return shardingService.isNeedSharding();
-    }
-    
-    @Override
-    public void cleanPreviousExecutionInfo() {
-        executionService.cleanPreviousExecutionInfo();
     }
     
     @Override

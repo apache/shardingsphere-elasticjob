@@ -112,7 +112,6 @@ public abstract class AbstractElasticJobExecutor {
             }
             return;
         }
-        jobFacade.cleanPreviousExecutionInfo();
         try {
             jobFacade.beforeJobExecuted(shardingContexts);
             //CHECKSTYLE:OFF

@@ -111,12 +111,6 @@ public interface JobFacade {
     boolean isNeedSharding();
     
     /**
-     * 清理作业上次运行时信息.
-     * 只会在主节点进行.
-     */
-    void cleanPreviousExecutionInfo();
-    
-    /**
      * 作业执行前的执行的方法.
      *
      * @param shardingContexts 分片上下文

@@ -26,7 +26,6 @@ import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
@@ -38,6 +37,7 @@ import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,9 +52,6 @@ public final class FailoverListenerManagerTest {
     private ConfigurationService configService;
     
     @Mock
-    private ExecutionService executionService;
-    
-    @Mock
     private ShardingService shardingService;
     
     @Mock
@@ -67,7 +64,6 @@ public final class FailoverListenerManagerTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(failoverListenerManager, failoverListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
         ReflectionUtils.setFieldValue(failoverListenerManager, "configService", configService);
-        ReflectionUtils.setFieldValue(failoverListenerManager, "executionService", executionService);
         ReflectionUtils.setFieldValue(failoverListenerManager, "shardingService", shardingService);
         ReflectionUtils.setFieldValue(failoverListenerManager, "failoverService", failoverService);
     }
@@ -75,7 +71,7 @@ public final class FailoverListenerManagerTest {
     @Test
     public void assertStart() {
         failoverListenerManager.start();
-        verify(jobNodeStorage, times(3)).addDataListener(ArgumentMatchers.<AbstractJobListener>any());
+        verify(jobNodeStorage, times(2)).addDataListener(ArgumentMatchers.<AbstractJobListener>any());
     }
     
     @Test
@@ -124,43 +120,16 @@ public final class FailoverListenerManagerTest {
     }
     
     @Test
-    public void assertFailoverJobCrashedJobListenerWhenFailoverDisabled() {
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_REMOVED, "");
-        verify(failoverService, times(0)).failoverIfNecessary();
-    }
-    
-    @Test
-    public void assertFailoverJobCrashedJobListenerWhenIsNotNodeRemoved() {
+    public void assertJobCrashedJobListenerWhenIsOtherFailoverInstanceCrashed() {
+        JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class.getCanonicalName())).build());
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_ADDED, "");
-        verify(failoverService, times(0)).failoverIfNecessary();
-    }
-    
-    @Test
-    public void assertFailoverJobCrashedJobListenerWhenIsNotFailoverNode() {
-        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class.getCanonicalName())).build());
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/other", Type.NODE_REMOVED, "");
-        verify(failoverService, times(0)).failoverIfNecessary();
-    }
-    
-    @Test
-    public void assertFailoverJobCrashedJobListenerWhenJobIsCompleted() {
-        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class.getCanonicalName())).build());
-        when(executionService.isCompleted(0)).thenReturn(true);
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_REMOVED, "");
-        verify(failoverService, times(0)).failoverIfNecessary();
-    }
-    
-    @Test
-    public void assertFailoverJobCrashedJobListenerWhenJobIsNotCompleted() {
-        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
-                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class.getCanonicalName())).build());
-        failoverListenerManager.new FailoverJobCrashedJobListener().dataChanged("/test_job/sharding/0/failover", Type.NODE_REMOVED, "");
-        verify(failoverService).setCrashedFailoverFlag(0);
+        when(failoverService.getFailoverItems("127.0.0.1@-@1")).thenReturn(Collections.singletonList(1));
+        when(shardingService.getShardingItems("127.0.0.1@-@1")).thenReturn(Arrays.asList(0, 2));
+        failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@1", Type.NODE_REMOVED, "");
+        verify(failoverService).setCrashedFailoverFlag(1);
         verify(failoverService).failoverIfNecessary();
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
