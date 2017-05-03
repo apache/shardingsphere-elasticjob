@@ -134,13 +134,13 @@ public final class FailoverListenerManagerTest {
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsNotFailoverPath() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config/other", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/other", Type.NODE_ADDED, LiteJsonConstants.getJobJson());
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathButNotUpdate() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config/failover", Type.NODE_ADDED, "");
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_ADDED, "");
         verify(failoverService, times(0)).removeFailoverInfo();
     }
     
@@ -152,7 +152,7 @@ public final class FailoverListenerManagerTest {
     
     @Test
     public void assertFailoverSettingsChangedJobListenerWhenIsFailoverPathAndUpdateButDisableFailover() {
-        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJson(false));
+        failoverListenerManager.new FailoverSettingsChangedJobListener().dataChanged("/test_job/config", Type.NODE_UPDATED, LiteJsonConstants.getJobJsonWithFailover(false));
         verify(failoverService).removeFailoverInfo();
     }
 }

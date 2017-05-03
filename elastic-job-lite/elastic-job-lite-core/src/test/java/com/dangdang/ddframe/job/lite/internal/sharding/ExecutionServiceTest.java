@@ -71,9 +71,6 @@ public final class ExecutionServiceTest {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
         executionService.registerJobBegin(getShardingContext());
-        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/running");
-        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/running");
-        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
         verify(jobNodeStorage, times(0)).fillEphemeralJobNode((String) any(), any());
         assertTrue(JobRegistry.getInstance().isJobRunning("test_job"));
     }
@@ -110,6 +107,17 @@ public final class ExecutionServiceTest {
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/running");
         verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
         assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
+    }
+    
+    
+    @Test
+    public void assertClearAllRunningInfo() {
+        when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
+                new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(), TestSimpleJob.class.getCanonicalName())).monitorExecution(false).build());
+        executionService.clearAllRunningInfo();
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/0/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/1/running");
+        verify(jobNodeStorage).removeJobNodeIfExisted("sharding/2/running");
     }
     
     @Test

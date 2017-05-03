@@ -56,9 +56,6 @@ public final class ExecutionService {
     public void registerJobBegin(final ShardingContexts shardingContexts) {
         JobRegistry.getInstance().setJobRunning(jobName, true);
         if (!configService.load(true).isMonitorExecution()) {
-            for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-                jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
-            }
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
@@ -82,7 +79,14 @@ public final class ExecutionService {
     }
     
     /**
-     * 清除分配分片序列号的运行状态.
+     * 清除全部分片的运行状态.
+     */
+    public void clearAllRunningInfo() {
+        clearRunningInfo(getAllItems());
+    }
+    
+    /**
+     * 清除分配分片项的运行状态.
      * 
      * @param items 需要清理的分片项列表
      */

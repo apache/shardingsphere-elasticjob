@@ -47,6 +47,7 @@ import com.dangdang.ddframe.job.lite.internal.server.ServerNodeTest;
 import com.dangdang.ddframe.job.lite.internal.server.ServerServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionContextServiceTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionServiceTest;
+import com.dangdang.ddframe.job.lite.internal.sharding.MonitorExecutionListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManagerTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNodeTest;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingServiceTest;
@@ -78,7 +79,8 @@ import org.junit.runners.Suite.SuiteClasses;
         ServerNodeTest.class,
         ShardingListenerManagerTest.class, 
         ExecutionContextServiceTest.class, 
-        ExecutionServiceTest.class, 
+        ExecutionServiceTest.class,
+        MonitorExecutionListenerManagerTest.class, 
         ShardingNodeTest.class,
         FailoverServiceTest.class, 
         FailoverNodeTest.class,
