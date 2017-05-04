@@ -55,7 +55,6 @@ public final class ShardingInfo implements Serializable, Comparable<ShardingInfo
         
         DISABLED, 
         RUNNING, 
-        COMPLETED,
         SHARDING_ERROR,
         PENDING;
     
