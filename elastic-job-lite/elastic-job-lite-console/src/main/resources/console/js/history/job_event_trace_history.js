@@ -27,10 +27,25 @@ function successFormatter(value) {
     switch(value)
     {
     case true:
-      return "Y";
-    case false:
-        return "N";
-    default:
-      return "N/A";
+        return "<span class='label label-success'>成功</span>";
+      case false:
+          return "<span class='label label-danger'>失败</span>";
+      default:
+        return "空";
     }
+}
+
+function splitFormatter(value) {
+    var maxLength = 50;
+    var replacement = "...";
+    if(null != value && value.length > maxLength) {
+        var vauleDetail = value.substring(0 , maxLength - replacement.length) + replacement;
+        return '<a href="javascript: void(0);" style="color:#FF0000;" onClick="showFailureReason(\'' + value.replace(/\n/g,"<br/>") + '\')">' + vauleDetail + '</a>';
+    }
+    return value;
+}
+
+function showFailureReason(value){
+    $("#show-failure-reason-log").html(value);
+    $("#show-failure-reason").modal("show");
 }

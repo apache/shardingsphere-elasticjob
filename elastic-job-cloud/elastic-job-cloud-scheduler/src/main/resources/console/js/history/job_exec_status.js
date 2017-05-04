@@ -23,3 +23,13 @@ function queryParams(params) {
         endTime: $("#end-time").val(),
     };
 }
+
+function splitRemarkFormatter(value) {
+    var maxLength = 50;
+    var replacement = "...";
+    if(null != value && value.length > maxLength) {
+        return "<div title ='" + value + "'>" + value.substring(0 , maxLength - replacement.length) + replacement + "</div>";
+    }
+    return value;
+}
+

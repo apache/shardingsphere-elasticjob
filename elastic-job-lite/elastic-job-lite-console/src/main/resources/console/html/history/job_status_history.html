@@ -15,7 +15,15 @@
                 </div>
                 <div class="form-group toolbar">
                     <label for="state">状态:</label>
-                    <input type="text" class="form-control" id="state" placeholder="">
+                    <select id="state" name="state" class="form-control" data-toggle="tooltip" data-placement="bottom" >
+                        <option value="">全部</option>
+                        <option value="TASK_STAGING" >TASK_STAGING</option>
+                        <option value="TASK_FAILED">TASK_FAILED</option>
+                        <option value="TASK_FINISHED">TASK_FINISHED</option>
+                        <option value="TASK_RUNNING">TASK_RUNNING</option>
+                        <option value="TASK_ERROR">TASK_ERROR</option>
+                        <option value="TASK_KILLED">TASK_KILLED</option>
+                    </select> 
                 </div>
                 <br/>
                 <div class="form-group toolbar">
@@ -50,7 +58,7 @@
                     <th data-field="shardingItems">分片</th>
                     <th data-field="state" data-sortable="true">状态</th>
                     <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter">创建时间</th>
-                    <th data-field="message" data-formatter="splitFormatter">备注</th>
+                    <th data-field="message" data-formatter="splitRemarkFormatter">备注</th>
                 </tr>
             </thead>
         </table>
