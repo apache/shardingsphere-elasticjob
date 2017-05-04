@@ -67,7 +67,7 @@ public final class FailoverService {
     }
     
     /**
-     * 如果需要失效转移, 则设置作业失效转移.
+     * 如果需要失效转移, 则执行作业失效转移.
      */
     public void failoverIfNecessary() {
         if (needFailover()) {

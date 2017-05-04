@@ -180,7 +180,7 @@ public final class ExecutionServiceTest {
         when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("sharding/2/running")).thenReturn(false);
-        assertFalse(executionService.misfireIfRunning(Arrays.asList(0, 1, 2)));
+        assertFalse(executionService.misfireIfHasRunningItems(Arrays.asList(0, 1, 2)));
     }
     
     @Test
@@ -189,7 +189,15 @@ public final class ExecutionServiceTest {
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(false);
         when(jobNodeStorage.isJobNodeExisted("sharding/1/running")).thenReturn(true);
-        assertTrue(executionService.misfireIfRunning(Arrays.asList(0, 1, 2)));
+        assertTrue(executionService.misfireIfHasRunningItems(Arrays.asList(0, 1, 2)));
+    }
+    
+    @Test
+    public void assertSetMisfire() {
+        executionService.setMisfire(Arrays.asList(0, 1, 2));
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/0/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/1/misfire");
+        verify(jobNodeStorage).createJobNodeIfNeeded("sharding/2/misfire");
     }
     
     @Test

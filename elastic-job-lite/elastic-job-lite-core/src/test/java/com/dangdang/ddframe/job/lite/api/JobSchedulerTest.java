@@ -25,6 +25,7 @@ import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.fixture.TestSimpleJob;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobTriggerListener;
 import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.junit.Before;
@@ -35,6 +36,8 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.unitils.util.ReflectionUtils;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,9 +71,11 @@ public final class JobSchedulerTest {
     @Test
     public void assertInit() throws NoSuchFieldException, SchedulerException {
         when(schedulerFacade.updateJobConfiguration(liteJobConfig)).thenReturn(liteJobConfig);
+        when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
         jobScheduler.init();
         verify(schedulerFacade).registerStartUpInfo(true);
         Scheduler scheduler = ReflectionUtils.getFieldValue(JobRegistry.getInstance().getJobScheduleController("test_job"), JobScheduleController.class.getDeclaredField("scheduler"));
+        assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
     }
 }

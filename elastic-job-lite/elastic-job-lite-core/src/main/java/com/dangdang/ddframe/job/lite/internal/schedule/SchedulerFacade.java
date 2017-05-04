@@ -26,6 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
 import com.dangdang.ddframe.job.lite.internal.reconcile.ReconcileService;
 import com.dangdang.ddframe.job.lite.internal.server.ServerService;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionService;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
@@ -50,6 +51,8 @@ public final class SchedulerFacade {
     
     private final ShardingService shardingService;
     
+    private final ExecutionService executionService;
+    
     private final MonitorService monitorService;
     
     private final ReconcileService reconcileService;
@@ -63,6 +66,7 @@ public final class SchedulerFacade {
         serverService = new ServerService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
         monitorService = new MonitorService(regCenter, jobName);
         reconcileService = new ReconcileService(regCenter, jobName);
     }
@@ -74,9 +78,19 @@ public final class SchedulerFacade {
         serverService = new ServerService(regCenter, jobName);
         instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
         monitorService = new MonitorService(regCenter, jobName);
         reconcileService = new ReconcileService(regCenter, jobName);
         listenerManager = new ListenerManager(regCenter, jobName, elasticJobListeners);
+    }
+    
+    /**
+     * 获取作业触发监听器.
+     *
+     * @return 作业触发监听器
+     */
+    public JobTriggerListener newJobTriggerListener() {
+        return new JobTriggerListener(executionService, shardingService);
     }
     
     /**

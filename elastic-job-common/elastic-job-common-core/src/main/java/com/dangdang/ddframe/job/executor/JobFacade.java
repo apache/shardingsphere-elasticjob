@@ -47,7 +47,7 @@ public interface JobFacade {
     void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException;
     
     /**
-     * 如果需要失效转移, 则设置作业失效转移.
+     * 如果需要失效转移, 则执行作业失效转移.
      */
     void failoverIfNecessary();
     

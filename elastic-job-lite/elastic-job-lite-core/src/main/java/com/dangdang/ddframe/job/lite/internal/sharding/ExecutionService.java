@@ -139,14 +139,23 @@ public final class ExecutionService {
      * @param items 需要设置错过执行的任务分片项
      * @return 是否错过本次执行
      */
-    public boolean misfireIfRunning(final Collection<Integer> items) {
+    public boolean misfireIfHasRunningItems(final Collection<Integer> items) {
         if (!hasRunningItems(items)) {
             return false;
         }
+        setMisfire(items);
+        return true;
+    }
+    
+    /**
+     * 设置任务被错过执行的标记.
+     *
+     * @param items 需要设置错过执行的任务分片项
+     */
+    public void setMisfire(final Collection<Integer> items) {
         for (int each : items) {
             jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getMisfireNode(each));
         }
-        return true;
     }
     
     /**
