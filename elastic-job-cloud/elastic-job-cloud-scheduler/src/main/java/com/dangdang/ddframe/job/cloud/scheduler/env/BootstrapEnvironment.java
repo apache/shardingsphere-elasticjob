@@ -149,6 +149,19 @@ public final class BootstrapEnvironment {
         return result;
     }
     
+    /**
+     * 获取该framework的mesos角色.
+     * 
+     * @return 角色的可选值.
+     */
+    public Optional<String> getMesosRole() {
+        String role = getValue(EnvironmentArgument.MESOS_ROLE);
+        if (Strings.isNullOrEmpty(role)) {
+            return Optional.absent();
+        }
+        return Optional.of(role);
+    }
+    
     private String getValue(final EnvironmentArgument environmentArgument) {
         String result = properties.getProperty(environmentArgument.getKey(), environmentArgument.getDefaultValue());
         if (environmentArgument.isRequired()) {
@@ -169,6 +182,8 @@ public final class BootstrapEnvironment {
         HOSTNAME("hostname", "localhost", true),
         
         MESOS_URL("mesos_url", "zk://localhost:2181/mesos", true),
+        
+        MESOS_ROLE("mesos_role", "", false),
         
         USER("user", "", false),
         
