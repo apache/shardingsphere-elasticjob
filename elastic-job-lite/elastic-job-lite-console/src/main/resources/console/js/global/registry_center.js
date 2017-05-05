@@ -74,7 +74,7 @@ function bindConnectButtons() {
                     refreshServerNavTag();
                     showSuccessDialog();
                 } else {
-                    showFailureDialog("failure-dialog", "操作未成功，原因：连接失败，请检查注册中心配置");
+                    showFailureDialog("操作未成功，原因：连接失败，请检查注册中心配置");
                 }
                 btn.button("reset");
             }
@@ -170,7 +170,7 @@ function submitRegCenter() {
                         renderRegCenterForDashboardNav();
                         refreshRegCenterNavTag();
                     } else {
-                        showFailureDialog("failure-dialog", "操作未成功，原因：注册中心名称重复");
+                        showFailureDialog("操作未成功，原因：注册中心名称重复");
                     }
                 }
             });

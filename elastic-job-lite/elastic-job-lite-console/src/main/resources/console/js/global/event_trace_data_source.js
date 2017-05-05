@@ -72,7 +72,7 @@ function bindConnectButtons() {
                     renderDataSourceForDashboardNav();
                     showSuccessDialog();
                 } else {
-                    showFailureDialog("failure-dialog", "操作未成功，原因：连接失败，请检查事件追踪数据源配置");
+                    showFailureDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
                 }
                 btn.button("reset");
             }
@@ -160,7 +160,7 @@ function submitDataSource() {
                         renderDataSourceForDashboardNav();
                         refreshEventTraceNavTag();
                     } else {
-                        showFailureDialog("failure-dialog", "操作未成功，原因：数据源名称重复");
+                        showFailureDialog("操作未成功，原因：数据源名称重复");
                     }
                 }
             });

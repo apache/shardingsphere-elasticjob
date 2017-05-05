@@ -10,10 +10,10 @@ function showSuccessDialog() {
     setTimeout('$("#success-dialog").modal("hide")', 2000);
 }
 
-function showFailureDialog(id, info) {
+function showFailureDialog(info) {
     $("#failure-dialog-info").text(info);
-    $("#" + id).modal("show");
-    setTimeout("$('#" + id + "').modal('hide')", 4000);
+    $("#failure-dialog").modal("show");
+    setTimeout("$('#failure-dialog').modal('hide')", 4000);
 }
 
 function authorityControl() {
