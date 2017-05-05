@@ -1,6 +1,9 @@
 $(function() {
     renderSkin();
     controlSubMenuStyle();
+    $("table").on("all.bs.table", function() {
+        authorityControl();
+    });
 });
 
 function showSuccessDialog() {
@@ -81,4 +84,11 @@ function selectAppStatus(appName) {
         }
     });
     return resultValue;
+}
+
+function authorityControl() {
+    if (-1 !== document.cookie.indexOf("guest")) {
+        $(".content-wrapper .btn-xs").attr("disabled", true);
+        $(".btn-info").attr("disabled", false);
+    }
 }

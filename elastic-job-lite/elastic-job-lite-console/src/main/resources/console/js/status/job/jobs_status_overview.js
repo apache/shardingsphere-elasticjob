@@ -179,15 +179,16 @@ function bindEnableButton() {
 function bindShutdownButton() {
     $(document).off("click", "button[operation='shutdown-job'][data-toggle!='modal']");
     $(document).on("click", "button[operation='shutdown-job'][data-toggle!='modal']", function(event) {
-        $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        showShutdownConfirmModal();
+        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var jobName = $(event.currentTarget).attr("job-name");
-        $(document).off("click", "#shutdown-confirm-dialog-confirm-btn");
-        $(document).on("click", "#shutdown-confirm-dialog-confirm-btn", function() {
+        $(document).off("click", "#confirm-btn");
+        $(document).on("click", "#confirm-btn", function() {
             $.ajax({
                 url: "/api/jobs/" + jobName + "/shutdown",
                 type: "POST",
                 success: function () {
-                    $("#shutdown-confirm-dialog").modal("hide");
+                    $("#confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     $("#jobs-status-overview-tbl").bootstrapTable("refresh");
@@ -201,14 +202,15 @@ function bindRemoveButton() {
     $(document).off("click", "button[operation='remove-job'][data-toggle!='modal']");
     $(document).on("click", "button[operation='remove-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
-        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
-        $(document).off("click", "#delete-confirm-dialog-confirm-btn");
-        $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
+        showDeleteConfirmModal();
+        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        $(document).off("click", "#confirm-btn");
+        $(document).on("click", "#confirm-btn", function() {
             $.ajax({
                 url: "/api/jobs/config/" + jobName,
                 type: "DELETE",
                 success: function() {
-                    $("#delete-confirm-dialog").modal("hide");
+                    $("#confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     refreshJobNavTag();

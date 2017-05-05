@@ -115,15 +115,16 @@ function bindEnableServerButton() {
 function bindShutdownServerButton() {
     $(document).off("click", "button[operation='shutdown-server'][data-toggle!='modal']");
     $(document).on("click", "button[operation='shutdown-server'][data-toggle!='modal']", function(event) {
-        $("#shutdown-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        showShutdownConfirmModal();
+        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
-        $(document).off("click", "#shutdown-confirm-dialog-confirm-btn");
-        $(document).on("click", "#shutdown-confirm-dialog-confirm-btn", function() {
+        $(document).off("click", "#confirm-btn");
+        $(document).on("click", "#confirm-btn", function() {
             $.ajax({
                 url: "/api/servers/" + serverIp + "/shutdown",
                 type: "POST",
                 success: function () {
-                    $("#shutdown-confirm-dialog").modal("hide");
+                    $("#confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     $("#servers-overview-tbl").bootstrapTable("refresh");
@@ -136,15 +137,16 @@ function bindShutdownServerButton() {
 function bindRemoveServerButton() {
     $(document).off("click", "button[operation='remove-server'][data-toggle!='modal']");
     $(document).on("click", "button[operation='remove-server'][data-toggle!='modal']", function(event) {
-        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        showDeleteConfirmModal();
+        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
-        $(document).off("click", "#delete-confirm-dialog-confirm-btn");
-        $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
+        $(document).off("click", "#confirm-btn");
+        $(document).on("click", "#confirm-btn", function() {
             $.ajax({
                 url: "/api/servers/" + serverIp,
                 type: "DELETE",
                 success: function () {
-                    $("#delete-confirm-dialog").modal("hide");
+                    $("#confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     refreshServerNavTag();

@@ -1,5 +1,7 @@
 $(function() {
-    $("#content").load("html/global/registry_center.html");
+    $("#content").load("html/global/registry_center.html", function(response, status, xhr) {
+        document.cookie = "user=" + xhr.getResponseHeader("identify");
+    });
     $("#reg-center").click(function() {
         $("#content").load("html/global/registry_center.html");
     });

@@ -36,6 +36,10 @@ public final class WwwAuthFilter implements Filter {
     
     private String password = "root";
     
+    private String guest_username = "guest";
+    
+    private String guest_password = "guest";
+    
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
         String fileSeparator = System.getProperty("file.separator");
@@ -48,6 +52,8 @@ public final class WwwAuthFilter implements Filter {
         }
         username = props.getProperty("console.username", username);
         password = props.getProperty("console.password", password);
+        guest_username = props.getProperty("console.guset.username", guest_username);
+        guest_password = props.getProperty("console.guset.password", guest_password);
     }
     
     @Override
@@ -58,7 +64,10 @@ public final class WwwAuthFilter implements Filter {
         if (null != authorization && authorization.length() > AUTH_PREFIX.length()) {
             authorization = authorization.substring(AUTH_PREFIX.length(), authorization.length());
             if ((username + ":" + password).equals(new String(Base64.decodeBase64(authorization)))) {
-                authenticateSuccess(httpResponse);
+                authenticateSuccess(httpResponse, false);
+                chain.doFilter(httpRequest, httpResponse);
+            } else if ((guest_username + ":" + guest_password).equals(new String(Base64.decodeBase64(authorization)))) {
+                authenticateSuccess(httpResponse, true);
                 chain.doFilter(httpRequest, httpResponse);
             } else {
                 needAuthenticate(httpRequest, httpResponse);
@@ -68,11 +77,12 @@ public final class WwwAuthFilter implements Filter {
         }
     }
     
-    private void authenticateSuccess(final HttpServletResponse response) {
+    private void authenticateSuccess(final HttpServletResponse response, boolean isGuset) {
         response.setStatus(200);
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-store");
         response.setDateHeader("Expires", 0);
+        response.setHeader("identify", true == isGuset ? guest_username : username);
     }
     
     private void needAuthenticate(final HttpServletRequest request, final HttpServletResponse response) {
