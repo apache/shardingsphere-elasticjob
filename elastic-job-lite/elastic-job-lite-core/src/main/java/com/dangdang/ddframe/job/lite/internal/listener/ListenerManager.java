@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.instance.ShutdownListenerManager;
 import com.dangdang.ddframe.job.lite.internal.instance.TriggerListenerManager;
+import com.dangdang.ddframe.job.lite.internal.sharding.MonitorExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -45,6 +46,8 @@ public final class ListenerManager {
     
     private final FailoverListenerManager failoverListenerManager;
     
+    private final MonitorExecutionListenerManager monitorExecutionListenerManager;
+    
     private final ShutdownListenerManager shutdownListenerManager;
     
     private final TriggerListenerManager triggerListenerManager;
@@ -60,6 +63,7 @@ public final class ListenerManager {
         electionListenerManager = new ElectionListenerManager(regCenter, jobName);
         shardingListenerManager = new ShardingListenerManager(regCenter, jobName);
         failoverListenerManager = new FailoverListenerManager(regCenter, jobName);
+        monitorExecutionListenerManager = new MonitorExecutionListenerManager(regCenter, jobName);
         shutdownListenerManager = new ShutdownListenerManager(regCenter, jobName);
         triggerListenerManager = new TriggerListenerManager(regCenter, jobName);
         rescheduleListenerManager = new RescheduleListenerManager(regCenter, jobName);
@@ -74,6 +78,7 @@ public final class ListenerManager {
         electionListenerManager.start();
         shardingListenerManager.start();
         failoverListenerManager.start();
+        monitorExecutionListenerManager.start();
         shutdownListenerManager.start();
         triggerListenerManager.start();
         rescheduleListenerManager.start();

@@ -20,11 +20,9 @@ package com.dangdang.ddframe.job.lite.internal.sharding;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.util.concurrent.BlockUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,13 +42,10 @@ public final class ExecutionService {
     
     private final ConfigurationService configService;
     
-    private final LeaderService leaderService;
-    
     public ExecutionService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
         configService = new ConfigurationService(regCenter, jobName);
-        leaderService = new LeaderService(regCenter, jobName);
     }
         
     /**
@@ -79,42 +74,19 @@ public final class ExecutionService {
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            ensureShardingItemCompleteAndRemoveRunningStatus(each);
+            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
         }
     }
     
-    private void ensureShardingItemCompleteAndRemoveRunningStatus(final int shardingItem) {
-        jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getCompletedNode(shardingItem));
-        jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(shardingItem));
-    }
-    
     /**
-     * 清理作业上次运行时信息.
-     * 只会在主节点进行.
+     * 清除全部分片的运行状态.
      */
-    public void cleanPreviousExecutionInfo() {
-        if (!configService.load(true).isMonitorExecution()) {
-            return;
-        }
-        if (leaderService.isLeaderUntilBlock()) {
-            jobNodeStorage.fillEphemeralJobNode(ShardingNode.CLEANING, "");
-            List<Integer> items = getAllItems();
-            for (int each : items) {
-                jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getCompletedNode(each));
-            }
-            jobNodeStorage.removeJobNodeIfExisted(ShardingNode.CLEANING);
-        }
-        while (jobNodeStorage.isJobNodeExisted(ShardingNode.CLEANING)) {
-            BlockUtils.waitingShortTime();
-        }
+    public void clearAllRunningInfo() {
+        clearRunningInfo(getAllItems());
     }
     
     /**
-     * 清除分配分片序列号的运行状态.
-     * 
-     * <p>
-     * 用于作业服务器恢复连接注册中心而重新上线的场景, 先清理上次运行时信息.
-     * </p>
+     * 清除分配分片项的运行状态.
      * 
      * @param items 需要清理的分片项列表
      */
@@ -167,14 +139,23 @@ public final class ExecutionService {
      * @param items 需要设置错过执行的任务分片项
      * @return 是否错过本次执行
      */
-    public boolean misfireIfRunning(final Collection<Integer> items) {
+    public boolean misfireIfHasRunningItems(final Collection<Integer> items) {
         if (!hasRunningItems(items)) {
             return false;
         }
+        setMisfire(items);
+        return true;
+    }
+    
+    /**
+     * 设置任务被错过执行的标记.
+     *
+     * @param items 需要设置错过执行的任务分片项
+     */
+    public void setMisfire(final Collection<Integer> items) {
         for (int each : items) {
             jobNodeStorage.createJobNodeIfNeeded(ShardingNode.getMisfireNode(each));
         }
-        return true;
     }
     
     /**
@@ -218,15 +199,5 @@ public final class ExecutionService {
             }
         }
         return result;
-    }
-    
-    /**
-     * 判断该分片是否已完成.
-     * 
-     * @param item 运行中的分片路径
-     * @return 该分片是否已完成
-     */
-    public boolean isCompleted(final int item) {
-        return jobNodeStorage.isJobNodeExisted(ShardingNode.getCompletedNode(item));
     }
 }

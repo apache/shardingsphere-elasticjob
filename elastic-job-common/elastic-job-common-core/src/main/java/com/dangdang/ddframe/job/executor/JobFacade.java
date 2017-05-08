@@ -47,7 +47,7 @@ public interface JobFacade {
     void checkJobExecutionEnvironment() throws JobExecutionEnvironmentException;
     
     /**
-     * 如果需要失效转移, 则设置作业失效转移.
+     * 如果需要失效转移, 则执行作业失效转移.
      */
     void failoverIfNecessary();
     
@@ -109,12 +109,6 @@ public interface JobFacade {
      * @return 是否需要重分片
      */
     boolean isNeedSharding();
-    
-    /**
-     * 清理作业上次运行时信息.
-     * 只会在主节点进行.
-     */
-    void cleanPreviousExecutionInfo();
     
     /**
      * 作业执行前的执行的方法.

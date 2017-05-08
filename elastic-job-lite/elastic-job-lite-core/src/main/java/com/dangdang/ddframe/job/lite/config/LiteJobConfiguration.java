@@ -65,7 +65,7 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
      * @return 是否开启失效转移
      */
     public boolean isFailover() {
-        return monitorExecution && typeConfig.getCoreConfig().isFailover();
+        return typeConfig.getCoreConfig().isFailover();
     }
     
     /**

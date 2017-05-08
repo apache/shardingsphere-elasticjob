@@ -23,8 +23,12 @@ public final class EventTraceDataSourceFactory {
     
     /**
      * 创建事件追踪数据源.
-     *
-     * @return 事件追踪数据源对象
+     * 
+     * @param driver 数据库驱动类名称
+     * @param url 数据库URL
+     * @param username 数据库用户名
+     * @param password 数据库密码
+     * @return 事件追踪数据源
      */
     public static EventTraceDataSource createEventTraceDataSource(final String driver, final String url, final String username, final Optional<String> password) {
         Hasher hasher =  Hashing.md5().newHasher().putString(driver, Charsets.UTF_8).putString(url, Charsets.UTF_8);

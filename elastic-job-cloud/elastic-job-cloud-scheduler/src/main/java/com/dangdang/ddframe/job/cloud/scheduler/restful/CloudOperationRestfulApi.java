@@ -51,7 +51,8 @@ public final class CloudOperationRestfulApi {
     /**
      * 初始化.
      * 
-     * @param producerManager 生产管理器
+     * @param regCenter 注册中心
+     * @param producerManager 产管理器
      */
     public static void init(final CoordinatorRegistryCenter regCenter, final ProducerManager producerManager) {
         CloudOperationRestfulApi.producerManager = producerManager;
@@ -100,6 +101,7 @@ public final class CloudOperationRestfulApi {
      *
      * @param appName 云作业App配置名称
      * @return 沙箱信息
+     * @throws JSONException JSON解析异常
      */
     @GET
     @Path("/sandbox")

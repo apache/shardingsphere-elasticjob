@@ -1,4 +1,5 @@
 $(function() {
+    authorityControl();
     renderRegCenters();
     validate();
     dealRegCenterModal();
@@ -45,7 +46,7 @@ function generateOperationButtons(val, row) {
     if (row.activated) {
         operationTd = "<button disabled operation='connect-reg-center' class='btn-xs' regName='" + name + "'>已连</button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     } else {
-        operationTd = "<button operation='connect-reg-center' class='btn-xs btn-primary' regName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connect-reg-center' class='btn-xs btn-info' regName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
     }
     return operationTd;
 }
@@ -74,7 +75,7 @@ function bindConnectButtons() {
                     refreshServerNavTag();
                     showSuccessDialog();
                 } else {
-                    showFailureDialog("switch-reg-center-failure-dialog");
+                    showFailureDialog("操作未成功，原因：连接失败，请检查注册中心配置");
                 }
                 btn.button("reset");
             }
@@ -85,10 +86,11 @@ function bindConnectButtons() {
 function bindDeleteButtons() {
     $(document).off("click", "button[operation='delete-reg-center']");
     $(document).on("click", "button[operation='delete-reg-center']", function(event) {
-        $("#delete-confirm-dialog").modal({backdrop: 'static', keyboard: true});
+        showDeleteConfirmModal();
+        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var regName = $(event.currentTarget).attr("regName");
-        $(document).off("click", "#delete-confirm-dialog-confirm-btn");
-        $(document).on("click", "#delete-confirm-dialog-confirm-btn", function() {
+        $(document).off("click", "#confirm-btn");
+        $(document).on("click", "#confirm-btn", function() {
             $.ajax({
                 url: "api/registry-center",
                 type: "DELETE",
@@ -97,7 +99,7 @@ function bindDeleteButtons() {
                 dataType: "json",
                 success: function() {
                     $("#reg-centers").bootstrapTable("refresh");
-                    $("#delete-confirm-dialog").modal("hide");
+                    $("#confirm-dialog").modal("hide");
                     $(".modal-backdrop").remove();
                     $("body").removeClass("modal-open");
                     renderRegCenterForDashboardNav();
@@ -169,7 +171,7 @@ function submitRegCenter() {
                         renderRegCenterForDashboardNav();
                         refreshRegCenterNavTag();
                     } else {
-                        showFailureDialog("add-reg-center-failure-dialog");
+                        showFailureDialog("操作未成功，原因：注册中心名称重复");
                     }
                 }
             });
@@ -198,6 +200,26 @@ function validate() {
                     regexp: {
                         regexp: /^[\w\.-]+$/,
                         message: "注册中心名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
+                    },
+                    callback: {
+                        message: "注册中心已经存在",
+                        callback: function() {
+                            var regName = $("#name").val();
+                            var result = true;
+                            $.ajax({
+                                url: "api/registry-center",
+                                contentType: "application/json",
+                                async: false,
+                                success: function(data) {
+                                    for (var index = 0; index < data.length; index++) {
+                                        if (regName === data[index].name) {
+                                            result = false;
+                                        }
+                                    }
+                                }
+                            });
+                            return result;
+                        }
                     }
                 }
             },

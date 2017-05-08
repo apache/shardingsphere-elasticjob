@@ -33,11 +33,6 @@ public final class ShardingNodeTest {
     }
     
     @Test
-    public void assertGetCompletedNode() {
-        assertThat(ShardingNode.getCompletedNode(0), is("sharding/0/completed"));
-    }
-    
-    @Test
     public void assertGetMisfireNode() {
         assertThat(ShardingNode.getMisfireNode(0), is("sharding/0/misfire"));
     }

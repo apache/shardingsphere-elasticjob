@@ -147,6 +147,27 @@ public final class ShardingService {
     }
     
     /**
+     * 获取作业运行实例的分片项集合.
+     *
+     * @param jobInstanceId 作业运行实例主键
+     * @return 作业运行实例的分片项集合
+     */
+    public List<Integer> getShardingItems(final String jobInstanceId) {
+        JobInstance jobInstance = new JobInstance(jobInstanceId);
+        if (!serverService.isAvailableServer(jobInstance.getIp())) {
+            return Collections.emptyList();
+        }
+        List<Integer> result = new LinkedList<>();
+        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        for (int i = 0; i < shardingTotalCount; i++) {
+            if (jobInstance.getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
+    
+    /**
      * 获取运行在本作业实例的分片项集合.
      * 
      * @return 运行在本作业实例的分片项集合
@@ -155,14 +176,7 @@ public final class ShardingService {
         if (JobRegistry.getInstance().isShutdown(jobName) || !serverService.isAvailableServer(JobRegistry.getInstance().getJobInstance(jobName).getIp())) {
             return Collections.emptyList();
         }
-        List<Integer> result = new LinkedList<>();
-        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
-        for (int i = 0; i < shardingTotalCount; i++) {
-            if (JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
-                result.add(i);
-            }
-        }
-        return result;
+        return getShardingItems(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
     }
     
     /**

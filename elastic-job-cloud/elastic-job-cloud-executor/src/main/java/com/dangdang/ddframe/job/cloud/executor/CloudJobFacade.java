@@ -96,10 +96,6 @@ public final class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public void cleanPreviousExecutionInfo() {
-    }
-    
-    @Override
     public void beforeJobExecuted(final ShardingContexts shardingContexts) {
     }
     

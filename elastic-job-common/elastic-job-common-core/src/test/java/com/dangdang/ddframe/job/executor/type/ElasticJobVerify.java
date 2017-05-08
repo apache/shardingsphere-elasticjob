@@ -45,7 +45,6 @@ final class ElasticJobVerify {
         verify(jobFacade).getShardingContexts();
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), JobStatusTraceEvent.State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
-        verify(jobFacade).cleanPreviousExecutionInfo();
         verify(jobFacade).beforeJobExecuted(shardingContexts);
         verify(jobFacade).registerJobBegin(shardingContexts);
         verify(jobFacade).registerJobCompleted(shardingContexts);

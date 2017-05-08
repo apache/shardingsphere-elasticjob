@@ -32,9 +32,13 @@ public final class WwwAuthFilter implements Filter {
     
     private static final String AUTH_PREFIX = "Basic ";
     
-    private String username = "root";
+    private String root_username = "root";
     
-    private String password = "root";
+    private String root_password = "root";
+    
+    private String guest_username = "guest";
+    
+    private String guest_password = "guest";
     
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
@@ -46,8 +50,10 @@ public final class WwwAuthFilter implements Filter {
         } catch (final IOException ex) {
             log.warn("Cannot found auth config file, use default auth config.");
         }
-        username = props.getProperty("console.username", username);
-        password = props.getProperty("console.password", password);
+        root_username = props.getProperty("root.username", root_username);
+        root_password = props.getProperty("root.password", root_password);
+        guest_username = props.getProperty("guset.username", guest_username);
+        guest_password = props.getProperty("guset.password", guest_password);
     }
     
     @Override
@@ -57,8 +63,11 @@ public final class WwwAuthFilter implements Filter {
         String authorization = httpRequest.getHeader("authorization");
         if (null != authorization && authorization.length() > AUTH_PREFIX.length()) {
             authorization = authorization.substring(AUTH_PREFIX.length(), authorization.length());
-            if ((username + ":" + password).equals(new String(Base64.decodeBase64(authorization)))) {
-                authenticateSuccess(httpResponse);
+            if ((root_username + ":" + root_password).equals(new String(Base64.decodeBase64(authorization)))) {
+                authenticateSuccess(httpResponse, false);
+                chain.doFilter(httpRequest, httpResponse);
+            } else if ((guest_username + ":" + guest_password).equals(new String(Base64.decodeBase64(authorization)))) {
+                authenticateSuccess(httpResponse, true);
                 chain.doFilter(httpRequest, httpResponse);
             } else {
                 needAuthenticate(httpRequest, httpResponse);
@@ -68,11 +77,12 @@ public final class WwwAuthFilter implements Filter {
         }
     }
     
-    private void authenticateSuccess(final HttpServletResponse response) {
+    private void authenticateSuccess(final HttpServletResponse response, boolean isGuset) {
         response.setStatus(200);
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-store");
         response.setDateHeader("Expires", 0);
+        response.setHeader("identify", true == isGuset ? guest_username : root_username);
     }
     
     private void needAuthenticate(final HttpServletRequest request, final HttpServletResponse response) {

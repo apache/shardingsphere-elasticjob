@@ -38,6 +38,11 @@ public final class InstanceNodeTest {
     }
     
     @Test
+    public void assertGetInstanceFullPath() {
+        assertThat(instanceNode.getInstanceFullPath(), is("/test_job/instances"));
+    }
+    
+    @Test
     public void assertIsInstancePath() {
         assertTrue(instanceNode.isInstancePath("/test_job/instances/127.0.0.1@-@0"));
     }

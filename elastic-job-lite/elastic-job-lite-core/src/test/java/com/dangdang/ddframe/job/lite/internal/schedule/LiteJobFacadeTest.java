@@ -160,7 +160,7 @@ public class LiteJobFacadeTest {
                 TestSimpleJob.class.getCanonicalName())).monitorExecution(true).build());
         when(failoverService.getLocalFailoverItems()).thenReturn(Collections.<Integer>emptyList());
         when(shardingService.getLocalShardingItems()).thenReturn(Lists.newArrayList(0, 1));
-        when(failoverService.getLocalHostTakeOffItems()).thenReturn(Collections.singletonList(0));
+        when(failoverService.getLocalTakeOffItems()).thenReturn(Collections.singletonList(0));
         when(executionContextService.getJobShardingContext(Collections.singletonList(1))).thenReturn(shardingContexts);
         assertThat(liteJobFacade.getShardingContexts(), is(shardingContexts));
         verify(shardingService).shardingIfNecessary();
@@ -191,7 +191,7 @@ public class LiteJobFacadeTest {
     
     @Test
     public void assertMisfireIfRunning() {
-        when(executionService.misfireIfRunning(Arrays.asList(0, 1))).thenReturn(true);
+        when(executionService.misfireIfHasRunningItems(Arrays.asList(0, 1))).thenReturn(true);
         assertThat(liteJobFacade.misfireIfRunning(Arrays.asList(0, 1)), is(true));
     }
     
@@ -205,12 +205,6 @@ public class LiteJobFacadeTest {
     public void assertIsNeedSharding() {
         when(shardingService.isNeedSharding()).thenReturn(true);
         assertThat(liteJobFacade.isNeedSharding(), is(true));
-    }
-    
-    @Test
-    public void assertCleanPreviousExecutionInfo() {
-        liteJobFacade.cleanPreviousExecutionInfo();
-        verify(executionService).cleanPreviousExecutionInfo();
     }
     
     @Test

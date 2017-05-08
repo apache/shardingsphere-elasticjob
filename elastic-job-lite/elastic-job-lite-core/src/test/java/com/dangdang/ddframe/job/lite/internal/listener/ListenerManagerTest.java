@@ -24,6 +24,7 @@ import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
 import com.dangdang.ddframe.job.lite.internal.instance.ShutdownListenerManager;
 import com.dangdang.ddframe.job.lite.internal.instance.TriggerListenerManager;
+import com.dangdang.ddframe.job.lite.internal.sharding.MonitorExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
@@ -51,6 +52,9 @@ public class ListenerManagerTest {
     private FailoverListenerManager failoverListenerManager;
     
     @Mock
+    private MonitorExecutionListenerManager monitorExecutionListenerManager;
+    
+    @Mock
     private ShutdownListenerManager shutdownListenerManager;
     
     @Mock
@@ -74,6 +78,7 @@ public class ListenerManagerTest {
         ReflectionUtils.setFieldValue(listenerManager, "electionListenerManager", electionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "failoverListenerManager", failoverListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "monitorExecutionListenerManager", monitorExecutionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shutdownListenerManager", shutdownListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "triggerListenerManager", triggerListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "rescheduleListenerManager", rescheduleListenerManager);
@@ -87,6 +92,7 @@ public class ListenerManagerTest {
         verify(electionListenerManager).start();
         verify(shardingListenerManager).start();
         verify(failoverListenerManager).start();
+        verify(monitorExecutionListenerManager).start();
         verify(shutdownListenerManager).start();
         verify(rescheduleListenerManager).start();
         verify(guaranteeListenerManager).start();

@@ -40,7 +40,7 @@ JobTypeConfiguration根据不同实现类型分为SimpleJobConfiguration，Dataf
 | shardingTotalCount     | int     | 是     |        | 作业分片总数 |
 | shardingItemParameters | String  | 否       |        | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从0开始，不可大于或等于作业分片总数<br />如：<br/>0=a,1=b,2=c |
 | jobParameter           | String  | 否       |        | 作业自定义参数<br />作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
-| failover               | boolean | 否       | false  | 是否开启失效转移<br />仅monitorExecution开启，失效转移才有效 |
+| failover               | boolean | 否       | false  | 是否开启失效转移 |
 | misfire                | boolean | 否       | true   | 是否开启错过任务重新执行 |
 | description            | String  | 否       |        | 作业描述信息 |
 | jobProperties          | Enum    | 否       |        | 配置jobProperties定义的枚举控制Elastic-Job的实现细节<br />JOB_EXCEPTION_HANDLER用于扩展异常处理类<br />EXECUTOR_SERVICE_HANDLER用于扩展作业处理线程池类|
@@ -114,18 +114,18 @@ Spring命名空间与Java Code方式配置类似，大部分属性只是将命�
 
 | 属性名                               | 类型    | 是否必填 | 缺省值           | 描述                                                                       |
 | ------------------------------------|:--------|:--------|:----------------|:---------------------------------------------------------------------------|
-| id                                  | String  | 是    |                 | 作业名称                                                                    |
-| class                               | String  | 否      |                 | 作业实现类，需实现ElasticJob接口                                            |
-| registry-center-ref                 | String  | 是    |                 | 注册中心Bean的引用，需引用reg:zookeeper的声明                              |
-| cron                                | String  | 是    |                 | cron表达式，用于控制作业触发时间                                             |
-| sharding-total-count                | int     | 是    |                 | 作业分片总数                                                                 |
+| id                                  | String  | 是      |                 | 作业名称                                                                    |
+| class                               | String  | 否      |                 | 作业实现类，需实现ElasticJob接口                                              |
+| registry-center-ref                 | String  | 是      |                 | 注册中心Bean的引用，需引用reg:zookeeper的声明                                  |
+| cron                                | String  | 是      |                 | cron表达式，用于控制作业触发时间                                               |
+| sharding-total-count                | int     | 是      |                 | 作业分片总数                                                                 |
 | sharding-item-parameters            | String  | 否      |                 | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从0开始，不可大于或等于作业分片总数<br />如：<br/>0=a,1=b,2=c|
 | job-instance-id                     | String  | 否      | defaultInstance | 作业实例主键，同IP可运行实例主键不同, 但名称相同的多个作业实例                     |
 | job-parameter                       | String  | 否      |                 | 作业自定义参数<br />作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
 | monitor-execution                   | boolean | 否      | true            | 监控作业运行时状态<br />每次作业执行时间和间隔时间均非常短的情况，建议不监控作业运行时状态以提升效率。因为是瞬时状态，所以无必要监控。请用户自行增加数据堆积监控。并且不能保证数据重复选取，应在作业中实现幂等性。<br />每次作业执行时间和间隔时间均较长的情况，建议监控作业运行时状态，可保证数据不会重复选取。|
 | monitor-port                        | int     | 否      | -1              | 作业监控端口<br />建议配置作业监控端口, 方便开发者dump作业信息。<br />使用方法: echo "dump" \| nc 127.0.0.1 9888|
 | max-time-diff-seconds               | int     | 否      | -1              | 最大允许的本机与注册中心的时间误差秒数<br />如果时间误差超过配置秒数则作业启动时将抛异常<br />配置为-1表示不校验时间误差|
-| failover                            | boolean | 否      | false           | 是否开启失效转移<br />仅monitorExecution开启，失效转移才有效                   |
+| failover                            | boolean | 否      | false           | 是否开启失效转移                                                              |
 | misfire                             | boolean | 否      | true            | 是否开启错过任务重新执行                                                       |
 | job-sharding-strategy-class         | String  | 否      |                 | 作业分片策略实现类全路径<br />默认使用平均分配策略<br />详情参见：[作业分片策略](/02-guide/job-sharding-strategy)|
 | description                         | String  | 否      |                 | 作业描述信息                                                                 |
@@ -134,7 +134,7 @@ Spring命名空间与Java Code方式配置类似，大部分属性只是将命�
 | job-exception-handler               | String  | 否      |                 | 扩展异常处理类                                                               |
 | executor-service-handler            | String  | 否      |                 | 扩展作业处理线程池类                                                          |
 | reconcile-interval-minutes          | int     | 否      | 10              | 修复作业服务器不一致状态服务调度间隔时间，配置为小于1的任意值表示不执行修复<br />单位：分钟 |
-| event-trace-rdb-data-source         | String  | 否      |                 | 作业事件追踪的数据源Bean引用                                                |
+| event-trace-rdb-data-source         | String  | 否      |                 | 作业事件追踪的数据源Bean引用                                                   |
 
 #### job:dataflow命名空间属性详细说明
 

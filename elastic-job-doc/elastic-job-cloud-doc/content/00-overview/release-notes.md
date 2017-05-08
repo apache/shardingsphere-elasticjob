@@ -9,13 +9,13 @@ next = "/00-overview/contribution/"
 
 ## 2.1.2
 
-### 新功能
-
 ### 功能提升
 
 1. [ISSUE #296](https://github.com/dangdangdotcom/elastic-job/issues/296) Elastic-Job-Cloud运维界面重构
+1. [ISSUE #302](https://github.com/dangdangdotcom/elastic-job/issues/302) Failover与MonitorExecution分离
 
 ### 缺陷修正
+1. [ISSUE #306](https://github.com/dangdangdotcom/elastic-job/issues/306) 切换是否监控作业执行状态且作业间隔时间短时可能发生作业无法继续运行
 
 ## 2.1.1
 

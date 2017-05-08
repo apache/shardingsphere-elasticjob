@@ -22,16 +22,21 @@
     <body class="hold-transition skin-blue-light sidebar-mini">
     <div class="wrapper">
         <header class="main-header">
-        <a href="" class="logo">
-            <span class="logo-lg"><b>Elastic Job Cloud Console</b></span>
+        <a class="logo">
+            <span class="logo-lg">Elastic Job Cloud Console</span>
         </a>
         <nav class="navbar navbar-static-top" role="navigation">
-              <div id="navbar" class="navbar-custom-menu">
-                    <ul class="nav navbar-nav">
-                        <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
-                        <li></li>
-                    </ul>
-                </div>
+            <div id="navbar" class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-graduation-cap"></i>
+                            <span id="authority"></span>
+                        </a>
+                    </li>
+                    <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
+                </ul>
+            </div>
         </nav>
     </header>
     <aside class="main-sidebar">
@@ -50,7 +55,7 @@
                 </li>
                 <li class="treeview" id="job">
                     <a href="#">
-                        <i class="fa fa-edit">&nbsp;&nbsp;作业</i><i class="pull-right fa fa-angle-left"></i>
+                        <i class="fa fa-tasks">&nbsp;&nbsp;作业</i><i class="pull-right fa fa-angle-left"></i>
                         <div class="pull-right">
                             <span id="job-nav-tag" class="label label-primary"></span>
                         </div>
