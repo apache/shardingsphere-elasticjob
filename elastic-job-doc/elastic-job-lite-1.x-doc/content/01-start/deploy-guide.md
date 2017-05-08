@@ -4,7 +4,7 @@ date = "2016-01-27T16:14:21+08:00"
 title = "部署指南"
 weight = 13
 prev = "/01-start/dev-guide/"
-next = "/02-guide/index/"
+next = "/02-guide"
 +++
 
 ## 安装Java环境

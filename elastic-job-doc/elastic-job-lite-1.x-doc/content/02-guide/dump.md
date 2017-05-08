@@ -4,7 +4,7 @@ date = "2016-01-27T16:14:21+08:00"
 title = "dump作业运行信息"
 weight = 24
 prev = "/02-guide/execution-monitor/"
-next = "/03-design/index/"
+next = "/03-design"
 +++
 
 由于在使用Elastic-Job中可能会碰到一些分布式问题，导致作业运行不稳定。由于无法在生产环境调试，通过dump命令可以把作业内部相关信息dump出来，方便开发者debug分析；另外为了不泄露隐私，已经把相关信息中的ip地址以ip1, ip2...的形式过滤掉了，可以在互联网上公开传输环境信息，便于进一步完善Elastic-Job。

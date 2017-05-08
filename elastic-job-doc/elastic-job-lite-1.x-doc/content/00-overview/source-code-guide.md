@@ -4,7 +4,7 @@ date = "2016-01-27T16:14:21+08:00"
 title = "阅读源码编译问题说明"
 weight = 1009
 prev = "/00-overview/update-notes-1.1.0/"
-next = "/01-start/index/"
+next = "/01-start"
 +++
 
 因为关注极简代码，Elastic-Job使用lombok。在阅读源码的过程中会遇到@Getter, @Setter等注解导致不能编译，请按照以下步骤安装lombok到你的IDE，只使用发布包请不用关注。
