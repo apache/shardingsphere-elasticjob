@@ -1,5 +1,6 @@
 $(function() {
     $("#job-name").text($("#index-job-name").text());
+    authorityControl();
     renderShardingTable();
     renderBreadCrumbMenu();
     bindButtons();

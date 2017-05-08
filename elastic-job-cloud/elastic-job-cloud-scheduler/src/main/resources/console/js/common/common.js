@@ -82,3 +82,19 @@ function selectAppStatus(appName) {
     });
     return resultValue;
 }
+
+function authorityControl() {
+    $.ajax({
+        type: "HEAD",
+        url : "/",
+        complete: function(xhr, data) {
+            if ("guest" === xhr.getResponseHeader("identify")) {
+                $("table").on("all.bs.table", function() {
+                    $(".content-wrapper .btn-xs").attr("disabled", true);
+                    $(".btn-info").attr("disabled", false);
+                });
+            }
+            $("#authority").text(xhr.getResponseHeader("identify"));
+        }
+    });
+}

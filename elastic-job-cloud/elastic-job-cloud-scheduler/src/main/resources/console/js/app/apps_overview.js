@@ -1,4 +1,5 @@
 $(function() {
+    authorityControl();
     $("#add-app").click(function() {
         $(".box-body").remove();
         $("#add-app-body").load("html/app/add_app.html");

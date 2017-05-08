@@ -36,6 +36,12 @@
                         <li class="dropdown"><a id="data-source-dimension-link" href="#" class="dropdown-toggle" data-toggle="dropdown">切换事件追踪数据源<span class="caret"></span></a>
                             <ul id="data-source-dimension" class="dropdown-menu"></ul>
                         </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle">
+                                <i class="fa fa-graduation-cap"></i>
+                                <span id="authority"></span>
+                            </a>
+                        </li>
                         <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
                         <li></li>
                     </ul>
@@ -250,10 +256,6 @@
         <div id="success-dialog" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">信息框</h4>
-                    </div>
                     <div class="modal-body">
                         <h4>操作已成功完成</h4>
                     </div>
@@ -263,15 +265,11 @@
                 </div>
             </div>
         </div>
-        <div id="switch-reg-center-failure-dialog" class="modal">
+        <div id="failure-dialog" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">信息框</h4>
-                    </div>
                     <div class="modal-body">
-                        <h4>操作未成功，原因：连接失败，请检查注册中心配置</h4>
+                        <h4 id="failure-dialog-info"></h4>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn-xs btn-danger" data-dismiss="modal">关闭</button>
@@ -279,111 +277,14 @@
                 </div>
             </div>
         </div>
-        <div id="switch-data-source-failure-dialog" class="modal">
+        <div id="confirm-dialog" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">信息框</h4>
-                    </div>
                     <div class="modal-body">
-                        <h4>操作未成功，原因：连接失败，请检查事件追踪数据源配置</h4>
+                        <h4 id="confirm-info"></h4>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn-xs btn-danger" data-dismiss="modal">关闭</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="remove-job-failure-dialog" class="modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">信息框</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h4>操作未成功，原因：删除作业失败，请检查作业是否已被停止</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn-xs btn-danger" data-dismiss="modal">关闭</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="add-reg-center-failure-dialog" class="modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">信息框</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h4>操作未成功，原因：注册中心名称重复</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn-xs btn-danger" data-dismiss="modal">关闭</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="add-data-source-failure-dialog" class="modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">信息框</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h4>操作未成功，原因：数据源名称重复</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn-xs btn-danger" data-dismiss="modal">关闭</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="shutdown-confirm-dialog" class="modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">确认框</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h4>确认要关闭吗？</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="shutdown-confirm-dialog-confirm-btn" type="button" class="btn-xs btn-danger">确认</button>
-                        <button type="button" class="btn-xs btn-success" data-dismiss="modal">关闭</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="delete-confirm-dialog" class="modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">确认框</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h4>确认要删除吗？</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="delete-confirm-dialog-confirm-btn" type="button" class="btn-xs btn-danger">确认</button>
-                        <button type="button" class="btn-xs btn-success" data-dismiss="modal">关闭</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="show-failure-reason" class="modal" tabindex="-1" aria-hidden="true" >
-            <div class="modal-dialog" id="modal-dialog-width">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div id="show-failure-reason-log"></div>
-                    </div>
-                    <div class="modal-footer">
+                        <button id="confirm-btn" type="button" class="btn-xs btn-danger">确认</button>
                         <button type="button" class="btn-xs btn-success" data-dismiss="modal">关闭</button>
                     </div>
                 </div>

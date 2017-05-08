@@ -1,6 +1,7 @@
 $(function() {
     validate();
     bindSubmitJobSettingsForm();
+    resetValidatorStatus();
 });
 
 function bindSubmitJobSettingsForm() {
@@ -33,18 +34,32 @@ function bindSubmitJobSettingsForm() {
             var description = $("#description").val();
             var reconcileCycleTime = $("#reconcile-cycle-time").val();
             var postJson = {jobName: jobName, jobType : jobType, jobClass : jobClass, shardingTotalCount: shardingTotalCount, jobParameter: jobParameter, cron: cron, streamingProcess: streamingProcess, maxTimeDiffSeconds: maxTimeDiffSeconds, monitorPort: monitorPort, monitorExecution: monitorExecution, failover: failover, misfire: misfire, shardingItemParameters: shardingItemParameters, jobShardingStrategyClass: jobShardingStrategyClass, jobProperties: {"executor_service_handler": executorServiceHandler, "job_exception_handler": jobExceptionHandler}, description: description, scriptCommandLine: scriptCommandLine, reconcileCycleTime:reconcileCycleTime};
-            $.ajax({
-                url: "/api/jobs/config",
-                type: "PUT",
-                data: JSON.stringify(postJson),
-                contentType: "application/json",
-                dataType: "json",
-                success: function() {
-                    showSuccessDialog();
-                    $("#data-update-job").modal("hide");
-                    $("#jobs-status-overview-tbl").bootstrapTable("refresh");
-                }
-            });
+            if (true === monitorExecution || true === failover || true === misfire) {
+                showUpdateConfirmModal();
+                $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
+                $(document).off("click", "#confirm-btn");
+                $(document).on("click", "#confirm-btn", function() {
+                    $("#confirm-dialog").modal("hide");
+                    submitAjax(postJson);
+                });
+            } else {
+                submitAjax(postJson);
+            }
+        }
+    });
+}
+
+function submitAjax(postJson) {
+    $.ajax({
+        url: "/api/jobs/config",
+        type: "PUT",
+        data: JSON.stringify(postJson),
+        contentType: "application/json",
+        dataType: "json",
+        success: function() {
+            $("#data-update-job").modal("hide");
+            $("#jobs-status-overview-tbl").bootstrapTable("refresh");
+            showSuccessDialog();
         }
     });
 }
@@ -106,5 +121,11 @@ function validate() {
     });
     $("#job-config-form").submit(function(event) {
         event.preventDefault();
+    });
+}
+
+function resetValidatorStatus() {
+    $("#confirm-dialog").on("hide.bs.modal", function() {
+        $("#job-config-form").data("bootstrapValidator").resetForm();
     });
 }
