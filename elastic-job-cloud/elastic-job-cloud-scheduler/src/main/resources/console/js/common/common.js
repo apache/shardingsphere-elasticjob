@@ -90,7 +90,7 @@ function authorityControl() {
         complete: function(xhr, data) {
             if ("guest" === xhr.getResponseHeader("identify")) {
                 $("table").on("all.bs.table", function() {
-                    $(".index-content .btn-xs").attr("disabled", true);
+                    $(".content-wrapper .btn-xs").attr("disabled", true);
                     $(".btn-info").attr("disabled", false);
                 });
             }
