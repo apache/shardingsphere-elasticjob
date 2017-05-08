@@ -1,9 +1,6 @@
 $(function() {
     renderSkin();
     controlSubMenuStyle();
-    $("table").on("all.bs.table", function() {
-        authorityControl();
-    });
 });
 
 function showSuccessDialog() {
@@ -87,8 +84,17 @@ function selectAppStatus(appName) {
 }
 
 function authorityControl() {
-    if (-1 !== document.cookie.indexOf("guest")) {
-        $(".content-wrapper .btn-xs").attr("disabled", true);
-        $(".btn-info").attr("disabled", false);
-    }
+    $.ajax({
+        type: "HEAD",
+        url : "/",
+        complete: function(xhr, data) {
+            if ("guest" === xhr.getResponseHeader("identify")) {
+                $("table").on("all.bs.table", function() {
+                    $(".index-content .btn-xs").attr("disabled", true);
+                    $(".btn-info").attr("disabled", false);
+                });
+            }
+            $("#authority").text(xhr.getResponseHeader("identify"));
+        }
+    });
 }

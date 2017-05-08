@@ -1,4 +1,5 @@
 $(function() {
+    authorityControl();
     renderRegCenters();
     validate();
     dealRegCenterModal();

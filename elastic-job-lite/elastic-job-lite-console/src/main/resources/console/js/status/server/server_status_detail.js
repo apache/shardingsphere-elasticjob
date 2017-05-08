@@ -1,5 +1,6 @@
 $(function() {
     $("#server-ip").text($("#index-server-ip").text());
+    authorityControl();
     renderJobs();
     renderBreadCrumbMenu();
     bindButtons();

@@ -1,4 +1,5 @@
 $(function() {
+    authorityControl();
     $("#add-job").click(function() {
         $(".box-body").remove();
         $("#add-job-body").load("html/job/add_job.html");
