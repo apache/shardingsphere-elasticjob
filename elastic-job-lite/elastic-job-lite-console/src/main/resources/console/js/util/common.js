@@ -43,5 +43,6 @@ function showUpdateConfirmModal() {
 
 function showTestConnectionSuccessDialog(info) {
     $("#success-dialog-info").text(info);
-    showSuccessDialog();
+    $("#test-connection-success-dialog").modal("show");
+    setTimeout('$("#test-connection-success-dialog").modal("hide")', 2000);
 }
