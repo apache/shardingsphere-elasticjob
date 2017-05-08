@@ -40,3 +40,8 @@ function showShutdownConfirmModal() {
 function showUpdateConfirmModal() {
     $("#confirm-info").text("请慎重更新！");
 }
+
+function showTestConnectionSuccessDialog(info) {
+    $("#success-dialog-info").text(info);
+    showSuccessDialog();
+}
