@@ -101,6 +101,21 @@ public final class EventTraceDataSourceRestfulApi {
     }
     
     /**
+     * 连接事件追踪数据源测试.
+     *
+     * @param config 事件追踪数据源配置
+     * @param request HTTP请求对象
+     * @return 是否连接成功
+     */
+    @POST
+    @Path("/connectTest")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public boolean connectTest(final EventTraceDataSourceConfiguration config, final @Context HttpServletRequest request) {
+        return setDataSourceNameToSession(config, request.getSession());
+    }
+    
+    /**
      * 连接事件追踪数据源.
      *
      * @param config 事件追踪数据源配置

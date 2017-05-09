@@ -6,6 +6,7 @@ $(function() {
     handleFieldValidator();
     submitDataSource();
     bindButtons();
+    bindConnectionTest();
 });
 
 function renderDataSources() {
@@ -255,5 +256,29 @@ function validate() {
     });
     $("#data-source-form").submit(function(event) {
         event.preventDefault();
+    });
+}
+
+function bindConnectionTest() {
+    $("#connect-test").on("click", function() {
+        var name = $("#name").val();
+        var driver = $("#driver").val();
+        var url = $("#url").val();
+        var username = $("#username").val();
+        var password = $("#password").val();
+        $.ajax({
+            url: "api/data-source/connectTest",
+            type: "POST",
+            data: JSON.stringify({"name": name, "driver": driver, "url": url, "username": username, "password": password}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(data) {
+                if (data) {
+                    showTestConnectionSuccessDialog("事件追踪数据源测试连接成功!");
+                } else {
+                    showFailureDialog("事件追踪数据源测试连接失败!");
+                }
+            }
+        });
     });
 }

@@ -116,6 +116,7 @@ function bindModifyButton() {
                     $('#update-job-body').load('html/status/job/job_config.html', null, function() {
                         $('#data-update-job').modal({backdrop : 'static', keyboard : true});
                         renderJob(data);
+                        $("#job-overviews-name").text(jobName);
                     });
                 }
             }
