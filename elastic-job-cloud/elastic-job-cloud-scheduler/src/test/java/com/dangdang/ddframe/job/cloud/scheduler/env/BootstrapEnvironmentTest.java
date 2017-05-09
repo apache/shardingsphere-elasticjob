@@ -101,4 +101,18 @@ public final class BootstrapEnvironmentTest {
         assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey()), is("sa"));
         assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey()), is("password"));
     }
+    
+    @Test
+    public void assertReconcileConfiguration() throws NoSuchFieldException {
+        FrameworkConfiguration configuration = bootstrapEnvironment.getFrameworkConfiguration();
+        assertThat(configuration.getReconciliationInitialDelay(), is(60000));
+        assertThat(configuration.getReconciliationInterval(), is(600000));
+        Properties properties = new Properties();
+        properties.setProperty(EnvironmentArgument.RECONCILIATION_INITIAL_DELAY.getKey(), "900");
+        properties.setProperty(EnvironmentArgument.RECONCILIATION_INTERVAL.getKey(), "9000");
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
+        configuration = bootstrapEnvironment.getFrameworkConfiguration();
+        assertThat(configuration.getReconciliationInitialDelay(), is(900));
+        assertThat(configuration.getReconciliationInterval(), is(9000));
+    }
 }

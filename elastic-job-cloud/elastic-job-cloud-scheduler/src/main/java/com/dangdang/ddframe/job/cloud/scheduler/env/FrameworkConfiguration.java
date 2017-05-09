@@ -30,4 +30,8 @@ import lombok.RequiredArgsConstructor;
 public final class FrameworkConfiguration {
     
     private final int jobStateQueueSize;
+    
+    private final int reconciliationInitialDelay;
+    
+    private final int reconciliationInterval;
 }

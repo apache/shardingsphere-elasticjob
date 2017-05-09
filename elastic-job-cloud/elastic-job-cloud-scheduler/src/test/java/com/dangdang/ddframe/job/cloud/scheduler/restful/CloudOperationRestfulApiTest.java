@@ -34,8 +34,6 @@ public class CloudOperationRestfulApiTest extends AbstractCloudRestfulApiTest {
         ReflectionUtils.setFieldValue(new CloudOperationRestfulApi(), "lastReconcileTime", 0);
         assertThat(sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit", "POST", ""), is(204));
         assertThat(sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit", "POST", ""), is(500));
-        ReflectionUtils.setFieldValue(new CloudOperationRestfulApi(), "lastReconcileTime", 0);
-        assertThat(sentRequest("http://127.0.0.1:19000/api/operate/reconcile/explicit?taskId=unknown", "POST", ""), is(500));
     }
     
     @Test

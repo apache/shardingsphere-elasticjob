@@ -33,7 +33,8 @@ import org.junit.runners.Suite;
         SchedulerServiceTest.class,
         LaunchingTasksTest.class,
         FrameworkIDServiceTest.class,
-        MesosStateServiceTest.class
+        MesosStateServiceTest.class,
+        ReconcileServiceTest.class
     })
 public final class AllMesosTests {
 }

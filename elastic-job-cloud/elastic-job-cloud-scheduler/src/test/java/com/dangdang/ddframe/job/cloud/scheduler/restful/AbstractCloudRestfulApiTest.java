@@ -18,7 +18,9 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.RestfulServerConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.ReconcileService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
@@ -65,7 +67,7 @@ public abstract class AbstractCloudRestfulApiTest {
         SchedulerDriver schedulerDriver = mock(SchedulerDriver.class);
         ProducerManager producerManager = new ProducerManager(schedulerDriver, regCenter);
         producerManager.startup();
-        restfulService = new RestfulService(regCenter, new RestfulServerConfiguration(19000), producerManager);
+        restfulService = new RestfulService(regCenter, new RestfulServerConfiguration(19000), producerManager, new ReconcileService(schedulerDriver, new FacadeService(regCenter)));
         restfulService.start();
     }
     

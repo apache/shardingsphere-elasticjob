@@ -18,6 +18,7 @@
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
 import com.dangdang.ddframe.job.cloud.scheduler.env.RestfulServerConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.ReconcileService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.restful.RestfulServer;
@@ -35,11 +36,11 @@ public final class RestfulService {
     
     private final RestfulServer restfulServer;
     
-    public RestfulService(final CoordinatorRegistryCenter regCenter, final RestfulServerConfiguration config, final ProducerManager producerManager) {
+    public RestfulService(final CoordinatorRegistryCenter regCenter, final RestfulServerConfiguration config, final ProducerManager producerManager, final ReconcileService reconcileService) {
         restfulServer = new RestfulServer(config.getPort());
         CloudJobRestfulApi.init(regCenter, producerManager);
         CloudAppRestfulApi.init(regCenter, producerManager);
-        CloudOperationRestfulApi.init(regCenter, producerManager);
+        CloudOperationRestfulApi.init(regCenter, reconcileService);
     }
     
     /**

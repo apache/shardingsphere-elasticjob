@@ -58,13 +58,16 @@ public class SchedulerServiceTest {
     @Mock
     private RestfulService restfulService;
     
+    @Mock
+    private ReconcileService reconcileService;
+    
     private SchedulerService schedulerService;
     
     @Before
     public void setUp() throws Exception {
         schedulerService = new SchedulerService(env, facadeService, schedulerDriver,  
                 producerManager, statisticManager, cloudJobConfigurationListener, 
-                taskLaunchScheduledService, restfulService);
+                taskLaunchScheduledService, restfulService, reconcileService);
     }
     
     @Test
@@ -78,6 +81,7 @@ public class SchedulerServiceTest {
         inOrder.verify(taskLaunchScheduledService).startAsync();
         inOrder.verify(restfulService).start();
         inOrder.verify(schedulerDriver).start();
+        inOrder.verify(reconcileService).startAsync();
     }
     
     @Test
@@ -91,12 +95,13 @@ public class SchedulerServiceTest {
         inOrder.verify(producerManager).shutdown();
         inOrder.verify(schedulerDriver).stop(true);
         inOrder.verify(facadeService).stop();
+        inOrder.verify(reconcileService).stopAsync();
     }
     
     private InOrder getInOrder() {
         return Mockito.inOrder(facadeService, schedulerDriver,
                 producerManager, statisticManager, cloudJobConfigurationListener,
-                taskLaunchScheduledService, restfulService);
+                taskLaunchScheduledService, restfulService, reconcileService);
     } 
 }
     
