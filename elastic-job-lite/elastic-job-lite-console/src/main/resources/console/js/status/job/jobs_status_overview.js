@@ -241,7 +241,7 @@ function renderJob(data) {
     $("#job-sharding-strategy-class").attr("value", data.jobShardingStrategyClass);
     $("#executor-service-handler").attr("value", data.jobProperties["executor_service_handler"]);
     $("#job-exception-handler").attr("value", data.jobProperties["job_exception_handler"]);
-    $("#reconcile-cycle-time").attr("value", data.reconcileCycleTime);
+    $("#reconcile-interval-minutes").attr("value", data.reconcileIntervalMinutes);
     $("#description").text(data.description);
     $("#script-command-line").attr("value", data.scriptCommandLine);
     if ("DATAFLOW" === $("#job-type").val()) {
