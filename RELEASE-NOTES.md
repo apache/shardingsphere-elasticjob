@@ -2,12 +2,16 @@
 
 ### 功能提升
 
+1. [ISSUE #293](https://github.com/dangdangdotcom/elastic-job/issues/293) Lite Console中 关于数据源配置的完善
 1. [ISSUE #296](https://github.com/dangdangdotcom/elastic-job/issues/296) Elastic-Job-Cloud运维界面重构
+1. [ISSUE #301](https://github.com/dangdangdotcom/elastic-job/issues/301) Console增加Guest权限配置，guest只允许查看，不允许增加、删除、修改操作
 1. [ISSUE #302](https://github.com/dangdangdotcom/elastic-job/issues/302) Failover与MonitorExecution分离
 
 ### 缺陷修正
+
+1. [ISSUE #291](https://github.com/dangdangdotcom/elastic-job/issues/291) elastic-job控制台信息失败原因信息展示不全
 1. [ISSUE #306](https://github.com/dangdangdotcom/elastic-job/issues/306) 切换是否监控作业执行状态且作业间隔时间短时可能发生作业无法继续运行
-1. [ISSUE #306](https://github.com/dangdangdotcom/elastic-job/issues/310) 配置检查本机与注册中心的时间误差秒后，创建过多sequence节点
+1. [ISSUE #310](https://github.com/dangdangdotcom/elastic-job/issues/310) 配置检查本机与注册中心的时间误差秒后，创建过多sequence节点
 
 ## 2.1.1
 
