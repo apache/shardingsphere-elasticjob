@@ -3,8 +3,8 @@ toc = true
 date = "2016-12-06T22:38:50+08:00"
 title = "贡献代码"
 weight = 3
-prev = "/00-overview/release-notes/"
-next = "/01-start/index/"
+prev = "/00-overview/intro/"
+next = "/01-start"
 +++
 
 您可以报告bug，提交一个新的功能增强建议或者直接对以上内容提交改进补丁。

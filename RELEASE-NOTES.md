@@ -1,12 +1,3 @@
-+++
-toc = true
-date = "2016-01-27T22:38:50+08:00"
-title = "Release Note"
-weight = 2
-prev = "/00-overview/intro/"
-next = "/00-overview/contribution/"
-+++
-
 ## 2.1.2
 
 ### 功能提升

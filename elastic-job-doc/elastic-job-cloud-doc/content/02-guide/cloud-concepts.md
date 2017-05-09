@@ -3,7 +3,7 @@ toc = true
 date = "2017-02-20T10:38:50+08:00"
 title = "核心概念"
 weight = 1
-prev = "/02-guide/index/"
+prev = "/02-guide"
 next = "/02-guide/cloud-web-console/"
 +++
 
