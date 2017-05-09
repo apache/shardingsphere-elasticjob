@@ -7,6 +7,7 @@
 
 ### 缺陷修正
 1. [ISSUE #306](https://github.com/dangdangdotcom/elastic-job/issues/306) 切换是否监控作业执行状态且作业间隔时间短时可能发生作业无法继续运行
+1. [ISSUE #306](https://github.com/dangdangdotcom/elastic-job/issues/310) 配置检查本机与注册中心的时间误差秒后，创建过多sequence节点
 
 ## 2.1.1
 
