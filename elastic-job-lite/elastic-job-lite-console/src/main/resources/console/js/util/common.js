@@ -38,7 +38,7 @@ function showShutdownConfirmModal() {
 }
 
 function showUpdateConfirmModal() {
-    $("#confirm-info").text("请慎重更新！");
+    $("#confirm-info").text("该更新会对运行中的作业造成影响，请慎重操作！");
 }
 
 function showTestConnectionSuccessDialog(info) {

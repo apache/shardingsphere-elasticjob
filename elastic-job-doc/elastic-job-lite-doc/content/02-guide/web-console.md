@@ -13,7 +13,7 @@ next = "/02-guide/config-manual/"
 
 ## 登录
 
-默认用户名和密码是root/root，可通过conf\auth.properties修改默认登录账户。
+提供两种账户，管理员及访客，管理员拥有全部操作权限，访客仅拥有察看权限。默认管理员用户名和密码是root/root，访客用户名和密码是guest/guest，可通过conf\auth.properties修改管理员及访客用户名及密码。
 
 ## 功能列表
 
