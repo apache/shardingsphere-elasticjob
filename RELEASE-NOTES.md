@@ -1,11 +1,15 @@
 ## 2.1.2
 
+### 新功能
+
+1. [ISSUE #301](https://github.com/dangdangdotcom/elastic-job/issues/301) Console增加Guest权限配置，guest只允许查看，不允许增加、删除、修改操作
+
 ### 功能提升
 
 1. [ISSUE #293](https://github.com/dangdangdotcom/elastic-job/issues/293) Lite Console中 关于数据源配置的完善
 1. [ISSUE #296](https://github.com/dangdangdotcom/elastic-job/issues/296) Elastic-Job-Cloud运维界面重构
-1. [ISSUE #301](https://github.com/dangdangdotcom/elastic-job/issues/301) Console增加Guest权限配置，guest只允许查看，不允许增加、删除、修改操作
 1. [ISSUE #302](https://github.com/dangdangdotcom/elastic-job/issues/302) Failover与MonitorExecution分离
+1. [ISSUE #316](https://github.com/dangdangdotcom/elastic-job/issues/316) Elastic-Job-Lite中instanceId更改为IP@_@PID
 
 ### 缺陷修正
 
