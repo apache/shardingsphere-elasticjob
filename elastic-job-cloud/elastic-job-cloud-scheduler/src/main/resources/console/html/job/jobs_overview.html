@@ -15,33 +15,7 @@
                     </div>
                 </div>
             </div>
-            <table id="job-table" 
-                data-show-refresh="true"
-                data-show-toggle="true"
-                data-striped="true"
-                data-toggle="table"
-                data-url="/api/job/jobs"
-                data-flat="true"
-                data-click-to-select="true"
-                data-search="true"
-                data-strict-search="false"
-                data-query-params="jobName"
-                data-query-params-type="notLimit"
-                data-pagination="true"
-                data-page-list="[10, 20, 50, 100]"
-                data-show-columns="true"
-                data-toolbar="#job-toolbar">
-                <thead>
-                    <tr>
-                        <th data-field="jobName" data-sortable="true">名称</th>
-                        <th data-field="appName" data-sortable="true">应用名称</th>
-                        <th data-field="jobClass" data-sortable="true">实现类</th>
-                        <th data-field="shardingTotalCount" data-sortable="true">分片总数</th>
-                        <th data-field="cron" data-sortable="true">cron表达式</th>
-                        <th data-field="operate" data-formatter="operationJob">操作</th>
-                    </tr>
-                </thead>
-            </table>
+            <table id="job-table" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true" data-show-columns="true"></table>
         </section>
     </div>
 </div>

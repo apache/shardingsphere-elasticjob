@@ -15,31 +15,7 @@
                     </div>
                 </div>
             </div>
-            <table id="app-table" 
-                data-show-refresh="true"
-                data-show-toggle="true"
-                data-striped="true"
-                data-toggle="table"
-                data-url="/api/app/list"
-                data-flat="true"
-                data-click-to-select="true"
-                data-search="true"
-                data-strict-search="false"
-                data-query-params="queryParams"
-                data-query-params-type="notLimit"
-                data-pagination="true"
-                data-page-list="[10, 20, 50, 100]"
-                data-show-columns="true"
-                data-toolbar="#app-toolbar">
-                <thead>
-                    <tr>
-                        <th data-field="appName" data-sortable="true">名称</th>
-                        <th data-field="appURL" data-sortable="true">所在路径</th>
-                        <th data-field="bootstrapScript" data-sortable="true">启动脚本</th>
-                        <th data-field="operation" data-formatter="operationApp">操作</th>
-                    </tr>
-                </thead>
-            </table>
+            <table id="app-table" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true" data-show-columns="true"></table>
         </section>
     </div>
 </div>

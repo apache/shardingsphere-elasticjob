@@ -28,12 +28,14 @@ function authorityControl() {
         url : "/",
         complete: function(xhr, data) {
             if ("guest" === xhr.getResponseHeader("identify")) {
-                $("table").on("all.bs.table", function() {
+                $("table").on("load-success.bs.table", function() {
                     $(".index-content .btn-xs").attr("disabled", true);
                     $(".btn-info").attr("disabled", false);
                 });
             }
-            $("#authority").text(xhr.getResponseHeader("identify"));
+            if ("" === $("#authority").text()) {
+                $("#authority").text(xhr.getResponseHeader("identify"));
+            }
         }
     });
 }
