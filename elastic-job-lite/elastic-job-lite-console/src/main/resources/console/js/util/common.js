@@ -36,7 +36,7 @@ function authorityControl() {
                     $(".btn-info").attr("disabled", false);
                 });
             }
-            $(".authority").text(xhr.getResponseHeader("identify"));
+            $("#authority").text(xhr.getResponseHeader("identify"));
         }
     });
 }
