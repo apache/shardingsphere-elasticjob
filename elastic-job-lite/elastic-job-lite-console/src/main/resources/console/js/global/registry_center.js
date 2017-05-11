@@ -73,9 +73,9 @@ function bindConnectButtons() {
                     renderRegCenterForDashboardNav();
                     refreshJobNavTag();
                     refreshServerNavTag();
-                    showInfoDialog("操作已成功完成");
+                    showSuccessDialog();
                 } else {
-                    showErrorDialog("操作未成功，原因：连接失败，请检查注册中心配置");
+                    showFailureDialog("操作未成功，原因：连接失败，请检查注册中心配置");
                 }
                 btn.button("reset");
             }

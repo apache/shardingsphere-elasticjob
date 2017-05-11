@@ -13,16 +13,16 @@ function showDialog(msg, style, timeout) {
     }
 }
 
+function showSuccessDialog() {
+    showInfoDialog("操作已成功完成");
+}
+
 function showInfoDialog(msg) {
     showDialog(msg, "h4", 2000);
 }
 
-function showErrorDialog(msg) {
-    showErrorDialogByStyle(msg, "h4");
-}
-
-function showErrorDialogByStyle(msg, style) {
-    showDialog(msg, style, null);
+function showFailureDialog(msg) {
+    showDialog(msg, "h4", null);
 }
 
 function authorityControl() {
@@ -36,7 +36,7 @@ function authorityControl() {
                     $(".btn-info").attr("disabled", false);
                 });
             }
-            $("#authority").text(xhr.getResponseHeader("identify"));
+            $(".authority").text(xhr.getResponseHeader("identify"));
         }
     });
 }

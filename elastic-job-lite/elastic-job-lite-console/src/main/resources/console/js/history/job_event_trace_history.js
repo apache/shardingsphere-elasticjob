@@ -46,5 +46,5 @@ function splitFormatter(value) {
 }
 
 function showFailureReason(value){
-    showErrorDialogByStyle(value, "h5");
+    showDialog(value, "h5", null);
 }

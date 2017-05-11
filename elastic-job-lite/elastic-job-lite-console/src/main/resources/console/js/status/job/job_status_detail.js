@@ -85,7 +85,7 @@ function bindDisableButton() {
             url: "/api/jobs/" + jobName + "/sharding/" + item + "/disable",
             type: "POST",
             success: function() {
-                showInfoDialog("操作已成功完成");
+                showSuccessDialog();
                 $("#sharding").bootstrapTable("refresh");
             }
         });
@@ -101,7 +101,7 @@ function bindEnableButton() {
             url: "/api/jobs/" + jobName + "/sharding/" + item + "/disable",
             type: "DELETE",
             success: function () {
-                showInfoDialog("操作已成功完成");
+                showSuccessDialog();
                 $("#sharding").bootstrapTable("refresh");
             }
         });

@@ -72,9 +72,9 @@ function bindConnectButtons() {
                 if (data) {
                     $("#data-sources").bootstrapTable("refresh");
                     renderDataSourceForDashboardNav();
-                    showInfoDialog("操作已成功完成");
+                    showSuccessDialog();
                 } else {
-                    showErrorDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
+                    showFailureDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
                 }
                 btn.button("reset");
             }
@@ -274,7 +274,7 @@ function bindConnectionTest() {
                 if (data) {
                     showInfoDialog("事件追踪数据源测试连接成功!");
                 } else {
-                    showErrorDialog("事件追踪数据源测试连接失败!");
+                    showFailureDialog("事件追踪数据源测试连接失败!");
                 }
             }
         });
