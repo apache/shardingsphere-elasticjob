@@ -91,7 +91,7 @@ function bindDisableServerButton() {
             url: "/api/servers/" + serverIp + "/disable",
             type: "POST",
             success: function() {
-                showSuccessDialog();
+                showInfoDialog("操作已成功完成");
                 $("#servers-overview-tbl").bootstrapTable("refresh");
             }
         });
@@ -106,7 +106,7 @@ function bindEnableServerButton() {
             url: "/api/servers/" + serverIp + "/disable",
             type: "DELETE",
             success: function() {
-                showSuccessDialog();
+                showInfoDialog("操作已成功完成");
                 $("#servers-overview-tbl").bootstrapTable("refresh");
             }
         });

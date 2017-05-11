@@ -72,9 +72,9 @@ function bindConnectButtons() {
                 if (data) {
                     $("#data-sources").bootstrapTable("refresh");
                     renderDataSourceForDashboardNav();
-                    showSuccessDialog();
+                    showInfoDialog("操作已成功完成");
                 } else {
-                    showFailureDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
+                    showErrorDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
                 }
                 btn.button("reset");
             }
@@ -161,8 +161,6 @@ function submitDataSource() {
                         $("body").removeClass("modal-open");
                         renderDataSourceForDashboardNav();
                         refreshEventTraceNavTag();
-                    } else {
-                        showFailureDialog("操作未成功，原因：数据源名称重复");
                     }
                 }
             });
@@ -274,9 +272,9 @@ function bindConnectionTest() {
             dataType: "json",
             success: function(data) {
                 if (data) {
-                    showTestConnectionSuccessDialog("事件追踪数据源测试连接成功!");
+                    showInfoDialog("事件追踪数据源测试连接成功!");
                 } else {
-                    showFailureDialog("事件追踪数据源测试连接失败!");
+                    showErrorDialog("事件追踪数据源测试连接失败!");
                 }
             }
         });

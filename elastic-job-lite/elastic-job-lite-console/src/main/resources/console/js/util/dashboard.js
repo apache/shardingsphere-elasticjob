@@ -87,7 +87,7 @@ function switchRegCenter() {
             dataType: "json",
             success: function(data) {
                 if (data) {
-                    showSuccessDialog();
+                    showInfoDialog("操作已成功完成");
                     $("#reg-centers").bootstrapTable("refresh");
                     renderRegCenterForDashboardNav();
                     refreshJobNavTag();
@@ -97,7 +97,7 @@ function switchRegCenter() {
                     $("#reg-center").parent().addClass("active");
                 } else {
                     link.button("reset");
-                    showFailureDialog("switch-reg-center-failure-dialog");
+                    showErrorDialog("操作未成功，原因：连接失败，请检查注册中心配置");
                 }
             }
         });
@@ -117,7 +117,7 @@ function switchDataSource() {
             dataType: "json",
             success: function(data) {
                 if (data) {
-                    showSuccessDialog();
+                    showInfoDialog("操作已成功完成");
                     $("#data-sources").bootstrapTable("refresh");
                     renderDataSourceForDashboardNav();
                     $("#content").load("html/global/event_trace_data_source.html");
@@ -125,7 +125,7 @@ function switchDataSource() {
                     $("#event-trace-data-source").parent().addClass("active");
                 } else {
                     link.button("reset");
-                    showFailureDialog("switch-data-source-failure-dialog");
+                    showErrorDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
                 }
             }
         });

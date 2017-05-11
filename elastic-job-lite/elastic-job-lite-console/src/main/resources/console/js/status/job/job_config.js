@@ -73,7 +73,7 @@ function submitAjax(postJson) {
         success: function() {
             $("#data-update-job").modal("hide");
             $("#jobs-status-overview-tbl").bootstrapTable("refresh");
-            showSuccessDialog();
+            showInfoDialog("操作已成功完成");
         }
     });
 }

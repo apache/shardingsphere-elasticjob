@@ -77,7 +77,7 @@ function bindDisableButton() {
             type: "POST",
             success: function() {
                 $("#server-jobs-tbl").bootstrapTable("refresh");
-                showSuccessDialog();
+                showInfoDialog("操作已成功完成");
             }
         });
     });
@@ -91,7 +91,7 @@ function bindEnableButton() {
             type: "DELETE",
             success: function() {
                 $("#server-jobs-tbl").bootstrapTable("refresh");
-                showSuccessDialog();
+                showInfoDialog("操作已成功完成");
             }
         });
     });

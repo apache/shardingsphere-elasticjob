@@ -141,7 +141,7 @@ function bindTriggerButton() {
             url: "/api/jobs/" + jobName + "/trigger",
             type: "POST",
             success: function() {
-                showSuccessDialog();
+                showInfoDialog("操作已成功完成");
                 $("#jobs-status-overview-tbl").bootstrapTable("refresh");
             }
         });
@@ -156,7 +156,7 @@ function bindDisableButton() {
             url: "/api/jobs/" + jobName + "/disable",
             type: "POST",
             success: function() {
-                showSuccessDialog();
+                showInfoDialog("操作已成功完成");
                 $("#jobs-status-overview-tbl").bootstrapTable("refresh");
             }
         });
@@ -171,7 +171,7 @@ function bindEnableButton() {
             url: "/api/jobs/" + jobName + "/disable",
             type: "DELETE",
             success: function() {
-                showSuccessDialog();
+                showInfoDialog("操作已成功完成");
                 $("#jobs-status-overview-tbl").bootstrapTable("refresh");
             }
         });
