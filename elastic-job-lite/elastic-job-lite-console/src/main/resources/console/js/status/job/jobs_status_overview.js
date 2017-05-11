@@ -182,7 +182,6 @@ function bindShutdownButton() {
     $(document).off("click", "button[operation='shutdown-job'][data-toggle!='modal']");
     $(document).on("click", "button[operation='shutdown-job'][data-toggle!='modal']", function(event) {
         showShutdownConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var jobName = $(event.currentTarget).attr("job-name");
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
@@ -205,7 +204,6 @@ function bindRemoveButton() {
     $(document).on("click", "button[operation='remove-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         showDeleteConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
             $.ajax({

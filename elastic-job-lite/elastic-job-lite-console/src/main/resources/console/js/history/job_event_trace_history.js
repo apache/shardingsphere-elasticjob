@@ -45,6 +45,7 @@ function splitFormatter(value) {
     return value;
 }
 
-function showFailureReason(value){
-    showDialog(value, "h5", null);
+function showFailureReason(value) {
+    $("#show-failure-reason-log").text(value);
+    $("#show-failure-reason").modal("show");
 }

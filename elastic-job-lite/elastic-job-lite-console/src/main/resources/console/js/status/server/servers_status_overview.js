@@ -117,7 +117,6 @@ function bindShutdownServerButton() {
     $(document).off("click", "button[operation='shutdown-server'][data-toggle!='modal']");
     $(document).on("click", "button[operation='shutdown-server'][data-toggle!='modal']", function(event) {
         showShutdownConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
@@ -139,7 +138,6 @@ function bindRemoveServerButton() {
     $(document).off("click", "button[operation='remove-server'][data-toggle!='modal']");
     $(document).on("click", "button[operation='remove-server'][data-toggle!='modal']", function(event) {
         showDeleteConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $(event.currentTarget).attr("server-ip");
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
