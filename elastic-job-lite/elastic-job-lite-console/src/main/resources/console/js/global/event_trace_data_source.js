@@ -86,7 +86,6 @@ function bindDeleteButtons() {
     $(document).off("click", "button[operation='delete-datasource']");
     $(document).on("click", "button[operation='delete-datasource']", function(event) {
         showDeleteConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {

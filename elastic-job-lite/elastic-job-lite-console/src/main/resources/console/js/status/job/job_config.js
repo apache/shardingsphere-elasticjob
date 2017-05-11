@@ -50,7 +50,6 @@ function bindSubmitJobSettingsForm() {
             var jobParams = getJobParams();
             if (jobParams.monitorExecution !== monitorExecution || jobParams.failover !== failover || jobParams.misfire !== misfire) {
                 showUpdateConfirmModal();
-                $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
                 $(document).off("click", "#confirm-btn");
                 $(document).on("click", "#confirm-btn", function() {
                     $("#confirm-dialog").modal("hide");
