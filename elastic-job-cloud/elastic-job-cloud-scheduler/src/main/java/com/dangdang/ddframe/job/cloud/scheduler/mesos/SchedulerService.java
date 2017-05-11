@@ -136,7 +136,9 @@ public final class SchedulerService {
         taskLaunchScheduledService.startAsync();
         restfulService.start();
         schedulerDriver.start();
-        reconcileService.startAsync();
+        if (env.getFrameworkConfiguration().isEnabledReconcile()) {
+            reconcileService.startAsync();
+        }
     }
     
     /**
@@ -150,6 +152,8 @@ public final class SchedulerService {
         producerManager.shutdown();
         schedulerDriver.stop(true);
         facadeService.stop();
-        reconcileService.stopAsync();
+        if (env.getFrameworkConfiguration().isEnabledReconcile()) {
+            reconcileService.stopAsync();
+        }
     }
 }

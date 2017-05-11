@@ -66,10 +66,8 @@ public final class CloudOperationRestfulApi {
     @POST
     @Path("/reconcile/explicit")
     public void explicitReconcile() {
-        synchronized (CloudOperationRestfulApi.class) {
-            validReconcileInterval();
-            reconcileService.explicitReconcile();
-        }
+        validReconcileInterval();
+        reconcileService.explicitReconcile();
     }
     
     /**
@@ -78,16 +76,11 @@ public final class CloudOperationRestfulApi {
     @POST
     @Path("/reconcile/implicit")
     public void implicitReconcile() {
-        synchronized (CloudOperationRestfulApi.class) {
-            validReconcileInterval();
-            reconcileService.implicitReconcile();
-        }
+        validReconcileInterval();
+        reconcileService.implicitReconcile();
     }
     
     private void validReconcileInterval() {
-        if (reconcileService.isRunning()) {
-            throw new IllegalStateException("Reconcile is running");
-        }
         if (System.currentTimeMillis() < lastReconcileTime + RECONCILE_MILLIS_INTERVAL) {
             throw new RuntimeException("Repeat explicitReconcile");
         }

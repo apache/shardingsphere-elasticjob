@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 协调Mesos与调度器之间的作业状态.
@@ -46,45 +47,62 @@ public class ReconcileService extends AbstractScheduledService {
     
     private final FacadeService facadeService;
     
+    private final ReentrantLock lock = new ReentrantLock();
+    
     @Override
     protected void runOneIteration() throws Exception {
-        explicitReconcile();
-        implicitReconcile();
+        lock.lock();
+        try {
+            explicitReconcile();
+            implicitReconcile();
+        } finally {
+            lock.unlock();
+        }
     }
     
     /**
      * 全量的显示协调.
      */
     public void explicitReconcile() {
-        Set<TaskContext> runningTask = new HashSet<>();
-        for (Set<TaskContext> each : facadeService.getAllRunningTasks().values()) {
-            runningTask.addAll(each);
-        }
-        if (runningTask.isEmpty()) {
-            return;
-        }
-        log.info("Requesting {} tasks reconciliation with the Mesos master", runningTask.size());
-        schedulerDriver.reconcileTasks(Collections2.transform(runningTask, new Function<TaskContext, Protos.TaskStatus>() {
-            @Override
-            public Protos.TaskStatus apply(final TaskContext input) {
-                return Protos.TaskStatus.newBuilder()
-                        .setTaskId(Protos.TaskID.newBuilder().setValue(input.getId()).build())
-                        .setSlaveId(Protos.SlaveID.newBuilder().setValue(input.getSlaveId()).build())
-                        .setState(Protos.TaskState.TASK_RUNNING).build();
+        lock.lock();
+        try {
+            Set<TaskContext> runningTask = new HashSet<>();
+            for (Set<TaskContext> each : facadeService.getAllRunningTasks().values()) {
+                runningTask.addAll(each);
             }
-        }));
+            if (runningTask.isEmpty()) {
+                return;
+            }
+            log.info("Requesting {} tasks reconciliation with the Mesos master", runningTask.size());
+            schedulerDriver.reconcileTasks(Collections2.transform(runningTask, new Function<TaskContext, Protos.TaskStatus>() {
+                @Override
+                public Protos.TaskStatus apply(final TaskContext input) {
+                    return Protos.TaskStatus.newBuilder()
+                            .setTaskId(Protos.TaskID.newBuilder().setValue(input.getId()).build())
+                            .setSlaveId(Protos.SlaveID.newBuilder().setValue(input.getSlaveId()).build())
+                            .setState(Protos.TaskState.TASK_RUNNING).build();
+                }
+            }));
+        } finally {
+            lock.unlock();
+        }
     }
     
     /**
      * 隐式协调.
      */
     public void implicitReconcile() {
-        schedulerDriver.reconcileTasks(Collections.<Protos.TaskStatus>emptyList());
+        lock.lock();
+        try {
+            schedulerDriver.reconcileTasks(Collections.<Protos.TaskStatus>emptyList());
+        } finally {
+            lock.unlock();
+        }
     }
     
     @Override
     protected Scheduler scheduler() {
         FrameworkConfiguration configuration = BootstrapEnvironment.getInstance().getFrameworkConfiguration();
-        return Scheduler.newFixedDelaySchedule(configuration.getReconciliationInitialDelay(), configuration.getReconciliationInterval(), TimeUnit.MILLISECONDS);
+        return Scheduler.newFixedDelaySchedule(configuration.getReconcileIntervalMinutes(), configuration.getReconcileIntervalMinutes(), TimeUnit.MINUTES);
     }
 }

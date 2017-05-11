@@ -32,6 +32,7 @@ import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class BootstrapEnvironmentTest {
     
@@ -105,14 +106,13 @@ public final class BootstrapEnvironmentTest {
     @Test
     public void assertReconcileConfiguration() throws NoSuchFieldException {
         FrameworkConfiguration configuration = bootstrapEnvironment.getFrameworkConfiguration();
-        assertThat(configuration.getReconciliationInitialDelay(), is(60000));
-        assertThat(configuration.getReconciliationInterval(), is(600000));
+        assertThat(configuration.getReconcileIntervalMinutes(), is(10));
+        assertTrue(configuration.isEnabledReconcile());
         Properties properties = new Properties();
-        properties.setProperty(EnvironmentArgument.RECONCILIATION_INITIAL_DELAY.getKey(), "900");
-        properties.setProperty(EnvironmentArgument.RECONCILIATION_INTERVAL.getKey(), "9000");
+        properties.setProperty(EnvironmentArgument.RECONCILE_INTERVAL_MINUTES.getKey(), "0");
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
         configuration = bootstrapEnvironment.getFrameworkConfiguration();
-        assertThat(configuration.getReconciliationInitialDelay(), is(900));
-        assertThat(configuration.getReconciliationInterval(), is(9000));
+        assertThat(configuration.getReconcileIntervalMinutes(), is(0));
+        assertFalse(configuration.isEnabledReconcile());
     }
 }
