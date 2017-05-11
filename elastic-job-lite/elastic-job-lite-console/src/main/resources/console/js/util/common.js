@@ -25,7 +25,6 @@ function showErrorDialogByStyle(msg, style) {
     showDialog(msg, style, null);
 }
 
-
 function authorityControl() {
     $.ajax({
         type: "HEAD",
