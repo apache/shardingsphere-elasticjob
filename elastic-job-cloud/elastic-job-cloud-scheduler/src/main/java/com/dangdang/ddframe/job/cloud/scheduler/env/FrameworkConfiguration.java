@@ -30,4 +30,15 @@ import lombok.RequiredArgsConstructor;
 public final class FrameworkConfiguration {
     
     private final int jobStateQueueSize;
+    
+    private final int reconcileIntervalMinutes;
+    
+    /**
+     * 是否启用协调服务.
+     * 
+     * @return true 启用 false 不启用
+     */
+    public boolean isEnabledReconcile() {
+        return reconcileIntervalMinutes > 0;
+    }
 }

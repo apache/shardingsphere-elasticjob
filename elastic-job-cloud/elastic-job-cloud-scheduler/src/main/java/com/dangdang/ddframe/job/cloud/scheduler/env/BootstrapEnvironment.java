@@ -109,7 +109,7 @@ public final class BootstrapEnvironment {
      * @return Mesos框架配置对象
      */
     public FrameworkConfiguration getFrameworkConfiguration() {
-        return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
+        return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)), Integer.parseInt(getValue(EnvironmentArgument.RECONCILE_INTERVAL_MINUTES)));
     }
     
     /**
@@ -203,7 +203,9 @@ public final class BootstrapEnvironment {
         
         EVENT_TRACE_RDB_USERNAME("event_trace_rdb_username", "", false),
         
-        EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false);
+        EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false),
+    
+        RECONCILE_INTERVAL_MINUTES("reconcile_interval_minutes", "10", true);
         
         private final String key;
         

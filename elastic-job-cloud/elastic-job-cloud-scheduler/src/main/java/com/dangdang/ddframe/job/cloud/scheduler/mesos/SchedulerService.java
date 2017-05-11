@@ -69,6 +69,8 @@ public final class SchedulerService {
     
     private final RestfulService restfulService;
     
+    private final ReconcileService reconcileService;
+    
     public SchedulerService(final CoordinatorRegistryCenter regCenter) {
         env = BootstrapEnvironment.getInstance();
         facadeService = new FacadeService(regCenter);
@@ -79,7 +81,8 @@ public final class SchedulerService {
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
         taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
-        restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager);
+        reconcileService = new ReconcileService(schedulerDriver, facadeService);
+        restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager, reconcileService);
     }
     
     private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
@@ -133,6 +136,9 @@ public final class SchedulerService {
         taskLaunchScheduledService.startAsync();
         restfulService.start();
         schedulerDriver.start();
+        if (env.getFrameworkConfiguration().isEnabledReconcile()) {
+            reconcileService.startAsync();
+        }
     }
     
     /**
@@ -146,5 +152,8 @@ public final class SchedulerService {
         producerManager.shutdown();
         schedulerDriver.stop(true);
         facadeService.stop();
+        if (env.getFrameworkConfiguration().isEnabledReconcile()) {
+            reconcileService.stopAsync();
+        }
     }
 }

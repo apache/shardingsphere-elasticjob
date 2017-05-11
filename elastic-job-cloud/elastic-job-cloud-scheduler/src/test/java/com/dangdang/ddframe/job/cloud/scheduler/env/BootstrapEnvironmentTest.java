@@ -32,6 +32,7 @@ import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class BootstrapEnvironmentTest {
     
@@ -100,5 +101,18 @@ public final class BootstrapEnvironmentTest {
         assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_URL.getKey()), is("jdbc:h2:mem:job_event_trace"));
         assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_USERNAME.getKey()), is("sa"));
         assertThat(jobEventRdbConfigurationMap.get(EnvironmentArgument.EVENT_TRACE_RDB_PASSWORD.getKey()), is("password"));
+    }
+    
+    @Test
+    public void assertReconcileConfiguration() throws NoSuchFieldException {
+        FrameworkConfiguration configuration = bootstrapEnvironment.getFrameworkConfiguration();
+        assertThat(configuration.getReconcileIntervalMinutes(), is(10));
+        assertTrue(configuration.isEnabledReconcile());
+        Properties properties = new Properties();
+        properties.setProperty(EnvironmentArgument.RECONCILE_INTERVAL_MINUTES.getKey(), "0");
+        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
+        configuration = bootstrapEnvironment.getFrameworkConfiguration();
+        assertThat(configuration.getReconcileIntervalMinutes(), is(0));
+        assertFalse(configuration.isEnabledReconcile());
     }
 }
