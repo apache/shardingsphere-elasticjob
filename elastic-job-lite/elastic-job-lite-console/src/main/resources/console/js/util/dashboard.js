@@ -97,7 +97,7 @@ function switchRegCenter() {
                     $("#reg-center").parent().addClass("active");
                 } else {
                     link.button("reset");
-                    showFailureDialog("switch-reg-center-failure-dialog");
+                    showFailureDialog("操作未成功，原因：连接失败，请检查注册中心配置");
                 }
             }
         });
@@ -125,7 +125,7 @@ function switchDataSource() {
                     $("#event-trace-data-source").parent().addClass("active");
                 } else {
                     link.button("reset");
-                    showFailureDialog("switch-data-source-failure-dialog");
+                    showFailureDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
                 }
             }
         });

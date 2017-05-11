@@ -170,8 +170,6 @@ function submitRegCenter() {
                         $("body").removeClass("modal-open");
                         renderRegCenterForDashboardNav();
                         refreshRegCenterNavTag();
-                    } else {
-                        showFailureDialog("操作未成功，原因：注册中心名称重复");
                     }
                 }
             });

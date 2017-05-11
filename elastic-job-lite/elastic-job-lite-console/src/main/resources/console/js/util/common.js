@@ -2,15 +2,27 @@ $(function() {
     $("[data-toggle='tooltip']").tooltip();
 });
 
-function showSuccessDialog() {
-    $("#success-dialog").modal("show");
-    setTimeout('$("#success-dialog").modal("hide")', 2000);
+function showDialog(msg, style, timeout) {
+    var modalHtml = "<" + style + " id='message-dialog-msg'></" + style + ">";
+    $("#message-dialog .modal-body").empty();
+    $("#message-dialog .modal-body").append(modalHtml);
+    $("#message-dialog-msg").text(msg);
+    $("#message-dialog").modal("show");
+    if(null !== timeout) {
+        setTimeout('$("#message-dialog").modal("hide")', timeout);
+    }
 }
 
-function showFailureDialog(info) {
-    $("#failure-dialog-info").text(info);
-    $("#failure-dialog").modal("show");
-    setTimeout("$('#failure-dialog').modal('hide')", 4000);
+function showSuccessDialog() {
+    showInfoDialog("操作已成功完成");
+}
+
+function showInfoDialog(msg) {
+    showDialog(msg, "h4", 2000);
+}
+
+function showFailureDialog(msg) {
+    showDialog(msg, "h4", null);
 }
 
 function authorityControl() {
@@ -39,10 +51,4 @@ function showShutdownConfirmModal() {
 
 function showUpdateConfirmModal() {
     $("#confirm-info").text("该更新会对运行中的作业造成影响，请慎重操作！");
-}
-
-function showTestConnectionSuccessDialog(info) {
-    $("#success-dialog-info").text(info);
-    $("#test-connection-success-dialog").modal("show");
-    setTimeout('$("#test-connection-success-dialog").modal("hide")', 2000);
 }
