@@ -51,6 +51,6 @@ function showShutdownConfirmModal() {
 }
 
 function showUpdateConfirmModal() {
-    $("#confirm-info").text("该更新会对运行中的作业造成影响，请慎重操作！");
+    $("#confirm-info").text("更新监控作业执行时状态、支持自动失效转移、支持misfire会对运行中的作业造成影响，请慎重操作！");
     $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
 }

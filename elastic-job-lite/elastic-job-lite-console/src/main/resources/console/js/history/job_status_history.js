@@ -21,12 +21,19 @@ function queryParams(params) {
     };
 }
 
-function splitRemarkFormatter(value) {
+function splitRemarkFormatter(value, row) {
     var maxLength = 50;
     var replacement = "...";
     if(null != value && value.length > maxLength) {
-        var vauleDetail = value.substring(0 , maxLength - replacement.length) + replacement;
-        return '<a href="javascript: void(0);" style="color:black;" onClick="showHistoryMessage(\'' + value.replace(/\'/g, "\\'") + '\')">' + vauleDetail + '</a>';
+        var valueDetail = value.substring(0 , maxLength - replacement.length) + replacement;
+        value = value.replace(/\n/g,"<br/>").replace(/\'/g, "\\'");
+        var remarkHtml;
+        if ("TASK_FAILED" === row.state || "TASK_ERROR" === row.state) {
+            remarkHtml = '<a href="javascript: void(0);" style="color:#FF0000;" onClick="showHistoryMessage(\'' + value + '\')">' + valueDetail + '</a>';
+        } else {
+            remarkHtml = '<a href="javascript: void(0);" style="color:black;" onClick="showHistoryMessage(\'' + value + '\')">' + valueDetail + '</a>';
+        }
+        return remarkHtml;
     }
     return value;
 }
