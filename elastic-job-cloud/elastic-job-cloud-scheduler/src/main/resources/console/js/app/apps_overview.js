@@ -33,7 +33,7 @@ function renderAppOverview() {
             },  {
                 field: "operation",
                 title: "操作",
-                formatter: "operationJob"
+                formatter: "operationApp"
             }]
     };
     $("#app-table").bootstrapTable({

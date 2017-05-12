@@ -1,7 +1,6 @@
 $(function() {
     validate();
     bindSubmitJobSettingsForm();
-    resetValidatorStatus();
 });
 
 function getJobParams() {
@@ -134,11 +133,5 @@ function validate() {
     });
     $("#job-config-form").submit(function(event) {
         event.preventDefault();
-    });
-}
-
-function resetValidatorStatus() {
-    $("#confirm-dialog").on("hide.bs.modal", function() {
-        $("#job-config-form").data("bootstrapValidator").resetForm();
     });
 }
