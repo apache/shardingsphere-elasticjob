@@ -29,8 +29,8 @@ function authorityControl() {
         complete: function(xhr, data) {
             if ("guest" === xhr.getResponseHeader("identify")) {
                 $("table").on("all.bs.table", function() {
-                    $(".index-content .btn-xs").attr("disabled", true);
-                    $(".btn-info").attr("disabled", false);
+                    $(".index-content .btn-xs").not(".btn-info").attr("disabled", true);
+                    $(".index-content .btn-xs").not(".btn-info").removeClass().addClass("btn-xs");
                 });
             }
             if ("" === $("#authority").text()) {

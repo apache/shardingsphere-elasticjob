@@ -28,7 +28,8 @@ function splitRemarkFormatter(value) {
     var maxLength = 50;
     var replacement = "...";
     if(null != value && value.length > maxLength) {
-        return "<div title ='" + value + "'>" + value.substring(0 , maxLength - replacement.length) + replacement + "</div>";
+        var vauleDetail = value.substring(0 , maxLength - replacement.length) + replacement;
+        return '<a href="javascript: void(0);" style="color:black;" onClick="showHistoryMessage(\'' + value.replace(/\'/g, "\\'") + '\')">' + vauleDetail + '</a>';
     }
     return value;
 }
