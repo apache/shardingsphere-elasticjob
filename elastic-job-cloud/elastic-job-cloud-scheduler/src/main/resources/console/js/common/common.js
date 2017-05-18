@@ -101,7 +101,6 @@ function authorityControl() {
     });
 }
 
-
 function getMesosRole() {
     $.ajax({
         url: "/api/operate/mesosRole",
