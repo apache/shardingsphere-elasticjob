@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.ReconcileService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
@@ -99,5 +100,16 @@ public final class CloudOperationRestfulApi {
     public JsonArray sandbox(@QueryParam("appName") final String appName) throws JSONException {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(appName), "Lack param 'appName'");
         return mesosStateService.sandbox(appName);
+    }
+
+    /**
+     * 获取作业云Mesos角色信息.
+     *
+     * @return mesos role
+     */
+    @GET
+    @Path("/mesosRole")
+    public String getMesosRole() {
+        return BootstrapEnvironment.getInstance().getMesosRole().orNull();
     }
 }

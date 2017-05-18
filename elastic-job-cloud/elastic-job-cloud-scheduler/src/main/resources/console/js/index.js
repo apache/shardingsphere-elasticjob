@@ -1,5 +1,7 @@
 $(function() {
-    $("#content-right").load("/html/app/apps_overview.html");
+    $("#content-right").load("/html/app/apps_overview.html", function() {
+        getMesosRole();
+    });
     refreshJobNavTag();
     refreshAppNavTag();
     $("#register-app").click(function() {
