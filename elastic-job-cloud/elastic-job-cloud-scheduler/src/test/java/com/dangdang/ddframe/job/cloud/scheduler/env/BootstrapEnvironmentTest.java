@@ -106,8 +106,8 @@ public final class BootstrapEnvironmentTest {
     @Test
     public void assertReconcileConfiguration() throws NoSuchFieldException {
         FrameworkConfiguration configuration = bootstrapEnvironment.getFrameworkConfiguration();
-        assertThat(configuration.getReconcileIntervalMinutes(), is(10));
-        assertTrue(configuration.isEnabledReconcile());
+        assertThat(configuration.getReconcileIntervalMinutes(), is(-1));
+        assertFalse(configuration.isEnabledReconcile());
         Properties properties = new Properties();
         properties.setProperty(EnvironmentArgument.RECONCILE_INTERVAL_MINUTES.getKey(), "0");
         ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);

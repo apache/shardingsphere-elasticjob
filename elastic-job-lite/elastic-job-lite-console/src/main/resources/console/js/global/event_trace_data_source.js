@@ -6,6 +6,7 @@ $(function() {
     handleFieldValidator();
     submitDataSource();
     bindButtons();
+    bindConnectionTest();
 });
 
 function renderDataSources() {
@@ -85,7 +86,6 @@ function bindDeleteButtons() {
     $(document).off("click", "button[operation='delete-datasource']");
     $(document).on("click", "button[operation='delete-datasource']", function(event) {
         showDeleteConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var dataSourceName = $(event.currentTarget).attr("dataSourceName");
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
@@ -160,8 +160,6 @@ function submitDataSource() {
                         $("body").removeClass("modal-open");
                         renderDataSourceForDashboardNav();
                         refreshEventTraceNavTag();
-                    } else {
-                        showFailureDialog("操作未成功，原因：数据源名称重复");
                     }
                 }
             });
@@ -255,5 +253,29 @@ function validate() {
     });
     $("#data-source-form").submit(function(event) {
         event.preventDefault();
+    });
+}
+
+function bindConnectionTest() {
+    $("#connect-test").on("click", function() {
+        var name = $("#name").val();
+        var driver = $("#driver").val();
+        var url = $("#url").val();
+        var username = $("#username").val();
+        var password = $("#password").val();
+        $.ajax({
+            url: "api/data-source/connectTest",
+            type: "POST",
+            data: JSON.stringify({"name": name, "driver": driver, "url": url, "username": username, "password": password}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(data) {
+                if (data) {
+                    showInfoDialog("事件追踪数据源测试连接成功!");
+                } else {
+                    showFailureDialog("事件追踪数据源测试连接失败!");
+                }
+            }
+        });
     });
 }

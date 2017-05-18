@@ -90,11 +90,13 @@ function authorityControl() {
         complete: function(xhr, data) {
             if ("guest" === xhr.getResponseHeader("identify")) {
                 $("table").on("all.bs.table", function() {
-                    $(".content-wrapper .btn-xs").attr("disabled", true);
-                    $(".btn-info").attr("disabled", false);
+                    $(".content-wrapper .btn-xs").not(".btn-info").attr("disabled", true);
+                    $(".content-wrapper .btn-xs").not(".btn-info").removeClass().addClass("btn-xs");
                 });
             }
-            $("#authority").text(xhr.getResponseHeader("identify"));
+            if ("" === $("#authority").text()) {
+                $("#authority").text(xhr.getResponseHeader("identify"));
+            }
         }
     });
 }

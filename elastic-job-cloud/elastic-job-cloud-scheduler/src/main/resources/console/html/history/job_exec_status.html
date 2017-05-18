@@ -20,16 +20,16 @@
                     </div>
                     <br/>
                     <div class="form-group toolbar">
-                        <label for="job-name">宿主机ID:</label>
+                        <label for="slave-id">宿主机ID:</label>
                         <input type="text" class="form-control" id="slave-id" placeholder="">
                     </div>
                     <div class="form-group toolbar">
                         <label for="source">执行来源:</label>
-                      <select id="source" name="source" class="form-control" data-toggle="tooltip" data-placement="bottom" >
+                        <select id="source" name="source" class="form-control" data-toggle="tooltip" data-placement="bottom" >
                             <option value="">全部</option>
                             <option value="CLOUD_SCHEDULER">CLOUD_SCHEDULER</option>
                             <option value="CLOUD_EXECUTOR">CLOUD_EXECUTOR</option>
-                        </select> 
+                        </select>
                     </div>
                     <div class="form-group toolbar">
                         <label for="execution-type">任务来源:</label>
@@ -44,20 +44,20 @@
                         <label for="state">状态:</label>
                         <select id="state" name="state" class="form-control" data-toggle="tooltip" data-placement="bottom" >
                             <option value="">全部</option>
-                            <option value="TASK_STAGING" >TASK_STAGING</option>
-                            <option value="TASK_FAILED">TASK_FAILED</option>
-                            <option value="TASK_FINISHED">TASK_FINISHED</option>
-                            <option value="TASK_RUNNING">TASK_RUNNING</option>
-                            <option value="TASK_ERROR">TASK_ERROR</option>
-                            <option value="TASK_KILLED">TASK_KILLED</option>
+                            <option value="TASK_STAGING" >准备中</option>
+                            <option value="TASK_FAILED">运行失败</option>
+                            <option value="TASK_FINISHED">已完成</option>
+                            <option value="TASK_RUNNING">运行中</option>
+                            <option value="TASK_ERROR">启动失败</option>
+                            <option value="TASK_KILLED">主动终止</option>
                         </select> 
                     </div>
                     <div class="form-group toolbar">
-                        <label>创建时间:</label>
+                        <label for="start-time">创建时间:</label>
                         <input type="text" class="form-control pull-right custom-datepicker" id="start-time">
                     </div>
                     <div class="form-group toolbar">
-                        <span>至</span>
+                        <label for="end-time">至：</label>
                         <input type="text" class="form-control pull-right custom-datepicker" id="end-time">
                     </div>
                 </div>
@@ -84,9 +84,9 @@
                         <th data-field="taskId">任务ID</th>
                         <th data-field="slaveId" data-sortable="true">宿主机ID</th>
                         <th data-field="source" data-sortable="true">执行来源</th>
-                        <th data-field="shardingItems">分片</th>
+                        <th data-field="shardingItems">分片项</th>
                         <th data-field="executionType" data-sortable="true">任务来源</th>
-                        <th data-field="state" data-sortable="true">状态</th>
+                        <th data-field="state" data-sortable="true" data-formatter="stateFormatter">状态</th>
                         <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter">创建时间</th>
                         <th data-field="message" data-formatter="splitRemarkFormatter">备注</th>
                     </tr>

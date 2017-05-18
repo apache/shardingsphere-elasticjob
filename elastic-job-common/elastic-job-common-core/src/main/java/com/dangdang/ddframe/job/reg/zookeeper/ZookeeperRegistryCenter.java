@@ -187,9 +187,9 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Override
     public int getNumChildren(final String key) {
         try {
-            Stat stat = client.getZookeeperClient().getZooKeeper().exists(getNameSpace() + key, false);
+            Stat stat = client.checkExists().forPath(key);
             if (null != stat) {
-                return stat.getNumChildren();   
+                return stat.getNumChildren();
             }
             //CHECKSTYLE:OFF
         } catch (final Exception ex) {
@@ -198,12 +198,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         }
         return 0;
     }
-    
-    private String getNameSpace() {
-        String result = this.getZkConfig().getNamespace();
-        return Strings.isNullOrEmpty(result) ? "" : "/" + result;
-    }
-    
+
     @Override
     public boolean isExisted(final String key) {
         try {
@@ -294,9 +289,8 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public long getRegistryCenterTime(final String key) {
         long result = 0L;
         try {
-            String path = client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(key);
-            result = client.checkExists().forPath(path).getCtime();
-            client.delete().forPath(path);
+            persist(key, "");
+            result = client.checkExists().forPath(key).getMtime();
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON

@@ -50,8 +50,6 @@ public final class RestfulService {
         try {
             restfulServer.addFilter(WwwAuthFilter.class, "*/")
                          .addFilter(WwwAuthFilter.class, "*.html")
-                         .addFilter(WwwAuthFilter.class, "*.js")
-                         .addFilter(WwwAuthFilter.class, "*.css")
                          .start(RestfulService.class.getPackage().getName(), Optional.of(CONSOLE_PATH));
             //CHECKSTYLE:OFF
         } catch (final Exception ex) {

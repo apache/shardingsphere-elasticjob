@@ -1,5 +1,6 @@
 $(function() {
     authorityControl();
+    renderJobOverview();
     $("#add-job").click(function() {
         $(".box-body").remove();
         $("#add-job-body").load("html/job/add_job.html");
@@ -11,6 +12,44 @@ $(function() {
     bindEnableJobButton();
     bindDisableJobButton();
 });
+
+function renderJobOverview() {
+    var jsonData = {
+        url: "/api/job/jobs",
+        cache: false,
+        columns:
+            [{
+                field: "jobName",
+                title: "作业名",
+                sortable: "true"
+            }, {
+                field: "appName",
+                title: "应用名",
+                sortable: "true"
+            }, {
+                field: "jobClass",
+                title: "作业实现类",
+                sortable: "true"
+            }, {
+                field: "shardingTotalCount",
+                title: "分片总数",
+                sortable: "true"
+            }, {
+                field: "cron",
+                title: "cron表达式",
+                sortable: "true"
+            }, {
+                field: "operation",
+                title: "操作",
+                formatter: "operationJob"
+            }]
+    };
+    $("#job-table").bootstrapTable({
+        columns: jsonData.columns,
+        url: jsonData.url,
+        cache: jsonData.cache
+    });
+}
 
 function operationJob(val, row) {
     var detailButton = "<button operation='detailJob' class='btn-xs btn-info' jobName='" + row.jobName + "'>详情</button>";

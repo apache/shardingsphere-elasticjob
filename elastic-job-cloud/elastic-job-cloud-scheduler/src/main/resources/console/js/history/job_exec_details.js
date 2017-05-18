@@ -41,13 +41,7 @@ function splitFormatter(value) {
     var replacement = "...";
     if(null != value && value.length > maxLength) {
         var vauleDetail = value.substring(0 , maxLength - replacement.length) + replacement;
-        return '<a href="javascript: void(0);" style="color:#FF0000;" onClick="showFailureReason(\'' + value.replace(/\n/g,"<br/>") + '\')">' + vauleDetail + '</a>';
+        return '<a href="javascript: void(0);" style="color:#FF0000;" onClick="showHistoryMessage(\'' + value.replace(/\n/g,"<br/>") + '\')">' + vauleDetail + '</a>';
     }
     return value;
-}
-
-function showFailureReason(value){
-    $("#show-failure-reason-log").html(value);
-    $("#show-failure-reason").modal("show");
-    $("#show-failure-reason").modal({backdrop: "static", keyboard: true});
 }

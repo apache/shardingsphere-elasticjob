@@ -34,3 +34,8 @@ function dateTimeFormatter(value) {
     }
     return new Date(value).format("yyyy-MM-dd HH:mm:ss");
 }
+
+function showHistoryMessage(value) {
+    $("#history-message").html(value);
+    $("#history-message-modal").modal("show");
+}

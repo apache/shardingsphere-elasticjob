@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.UUID;
+import java.lang.management.ManagementFactory;
 
 /**
  * 作业运行实例.
@@ -42,7 +42,7 @@ public final class JobInstance {
     private final String jobInstanceId;
     
     public JobInstance() {
-        jobInstanceId = IpUtils.getIp() + DELIMITER + UUID.randomUUID().toString();
+        jobInstanceId = IpUtils.getIp() + DELIMITER + ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
     }
     
     /**

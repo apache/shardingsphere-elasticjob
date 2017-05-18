@@ -87,7 +87,6 @@ function bindDeleteButtons() {
     $(document).off("click", "button[operation='delete-reg-center']");
     $(document).on("click", "button[operation='delete-reg-center']", function(event) {
         showDeleteConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var regName = $(event.currentTarget).attr("regName");
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
@@ -170,8 +169,6 @@ function submitRegCenter() {
                         $("body").removeClass("modal-open");
                         renderRegCenterForDashboardNav();
                         refreshRegCenterNavTag();
-                    } else {
-                        showFailureDialog("操作未成功，原因：注册中心名称重复");
                     }
                 }
             });

@@ -1,5 +1,6 @@
 $(function() {
     authorityControl();
+    renderAppOverview();
     $("#add-app").click(function() {
         $(".box-body").remove();
         $("#add-app-body").load("html/app/add_app.html");
@@ -11,6 +12,36 @@ $(function() {
     bindDisableAppButton();
     bindDeleteAppButton();
 });
+
+function renderAppOverview() {
+    var jsonData = {
+        url: "/api/app/list",
+        cache: false,
+        columns:
+            [{
+                field: "appName",
+                title: "应用名称",
+                sortable: "true"
+            }, {
+                field: "appURL",
+                title: "应用下载路径",
+                sortable: "true"
+            }, {
+                field: "bootstrapScript",
+                title: "启动脚本",
+                sortable: "true"
+            },  {
+                field: "operation",
+                title: "操作",
+                formatter: "operationApp"
+            }]
+    };
+    $("#app-table").bootstrapTable({
+        columns: jsonData.columns,
+        url: jsonData.url,
+        cache: jsonData.cache
+    });
+}
 
 function operationApp(val, row) {
     var detailButton = "<button operation='detailApp' class='btn-xs btn-info' appName='" + row.appName + "'>详情</button>";

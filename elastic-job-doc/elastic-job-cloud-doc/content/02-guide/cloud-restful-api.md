@@ -21,11 +21,11 @@ url：app
 
 | 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
 | -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
-|appName                             |String |是    |       | 作业应用名称。为Elastic-Job-Cloud的作业应用唯一标识                                 |
-|appURL                              |String |是    |       | 作业应用所在路径。必须是可以通过网络访问到的路径                                        |
-|cpuCount                            |double |否      |   1   | 作业应用启动所需要的CPU数量                                                        |
-|memoryMB                            |double |否      |  128  | 作业应用启动所需要的内存MB                                                         |
-|bootstrapScript                     |String |是    |       | 启动脚本，如：bin\start.sh                                                        |
+|appName                             |String |是      |       | 作业应用名称。为Elastic-Job-Cloud的作业应用唯一标识                                   |
+|appURL                              |String |是      |       | 作业应用所在路径。必须是可以通过网络访问到的路径                                        |
+|cpuCount                            |double |否      |   1   | 作业应用启动所需要的CPU数量                                                          |
+|memoryMB                            |double |否      |  128  | 作业应用启动所需要的内存MB                                                           |
+|bootstrapScript                     |String |是      |       | 启动脚本，如：bin\start.sh                                                          |
 |appCacheEnable                      |bool   |否      | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
 |eventTraceSamplingCount             |int    |否      | 0     | 常驻作业事件采样率统计条数，默认不采样全部记录。为避免数据量过大，可对频繁调度的常驻作业配置采样率，即作业每执行N次，才会记录作业执行及追踪相关数据|
 
@@ -45,8 +45,8 @@ url：app
 
 | 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
 | -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
-|appName                             |String |是    |       | 作业应用名称。为Elastic-Job-Cloud的作业应用唯一标识                                 |
-|appCacheEnable                      |bool   |是    | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
+|appName                             |String |是      |       | 作业应用名称。为Elastic-Job-Cloud的作业应用唯一标识                                   |
+|appCacheEnable                      |bool   |是      | true  | 每次执行作业时是否从缓存中读取应用。禁用则每次执行任务均从应用仓库下载应用至本地             |
 |eventTraceSamplingCount             |int    |否      | 0     | 常驻作业事件采样率统计条数，默认不采样全部记录。为避免数据量过大，可对频繁调度的常驻作业配置采样率，即作业每执行N次，才会记录作业执行及追踪相关数据|
 
 ```shell
@@ -65,27 +65,27 @@ url：job/register
 
 | 属性名                              | 类型  |是否必填 | 缺省值 | 描述                                                                              |
 | -----------------------------------|:------|:-------|:------|:---------------------------------------------------------------------------------|
-|jobName                             |String |是    |       | 作业名称。为Elastic-Job-Cloud的作业唯一标识                                        |
-|appName                             |String |是    |       | 作业应用名称。                                                                      |
-|jobClass                            |String |是    |       | 作业实现类                                                                         |
-|jobType                             |Enum   |是    |       | 作业类型。SIMPLE，DATAFLOW，SCRIPT                                            |
-|jobExecutionType                    |Enum   |是    |       | 作业执行类型。TRANSIENT为瞬时作业，DAEMON为常驻作业                                |
-|cron                                |String |是    |       | cron表达式，用于配置作业触发时间                                                    |
-|shardingTotalCount                  |int    |是    |       | 作业分片总数                                                                       |
-|cpuCount                            |double |是    |       | 单片作业所需要的CPU数量，最小值为0.001                                            |
-|memoryMB                            |double |是    |       | 单片作业所需要的内存MB，最小值为1                                                 |
-|appURL                              |String |是    |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
-|bootstrapScript                     |String |是    |       | 启动脚本，如：bin\start.sh。                                                      |
+|jobName                             |String |是      |       | 作业名称。为Elastic-Job-Cloud的作业唯一标识                                          |
+|appName                             |String |是      |       | 作业应用名称。                                                                      |
+|jobClass                            |String |是      |       | 作业实现类                                                                         |
+|jobType                             |Enum   |是      |       | 作业类型。SIMPLE，DATAFLOW，SCRIPT                                                  |
+|jobExecutionType                    |Enum   |是      |       | 作业执行类型。TRANSIENT为瞬时作业，DAEMON为常驻作业                                    |
+|cron                                |String |是      |       | cron表达式，用于配置作业触发时间                                                      |
+|shardingTotalCount                  |int    |是      |       | 作业分片总数                                                                       |
+|cpuCount                            |double |是      |       | 单片作业所需要的CPU数量，最小值为0.001                                                |
+|memoryMB                            |double |是      |       | 单片作业所需要的内存MB，最小值为1                                                     |
+|appURL                              |String |是      |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
+|bootstrapScript                     |String |是      |       | 启动脚本，如：bin\start.sh。                                                        |
 |shardingItemParameters              |String |否      |       | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从0开始，不可大于或等于作业分片总数<br />如：<br/>0=a,1=b,2=c|
 |jobParameter                        |String |否      |       | 作业自定义参数<br />作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
-|failover                            |boolean|否      |false| 是否开启失效转移                                                                    |
-|misfire                             |boolean|否      |false| 是否开启错过任务重新执行                                                             |
-|beanName                            |String |否      |       | Spring容器中配置的bean名称                                                      |
-|applicationContext                  |String |否      |       | Spring方式配置Spring配置文件相对路径以及名称，如：META-INF\applicationContext.xml|
-|streamingProcess                    |boolean|否      |false| DATAFLOW类型作业，是否流式处理数据<br />如果流式处理数据, 则fetchData不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
-|scriptCommandLine                   |String |否      |       | SCRIPT类型作业命令行执行脚本                                                      |
+|failover                            |boolean|否      |false  | 是否开启失效转移，开启表示如果作业在一次任务执行中途宕机，允许将该次未完成的任务在另一作业节点上补偿执行 |
+|misfire                             |boolean|否      |false  | 是否开启错过任务重新执行                                                             |
+|beanName                            |String |否      |       | Spring容器中配置的bean名称                                                          |
+|applicationContext                  |String |否      |       | Spring方式配置Spring配置文件相对路径以及名称，如：META-INF\applicationContext.xml      |
+|streamingProcess                    |boolean|否      |false  | DATAFLOW类型作业，是否流式处理数据<br />如果流式处理数据, 则fetchData不返回空结果将持续执行作业<br />如果非流式处理数据, 则处理数据完成后作业结束<br />|
+|scriptCommandLine                   |String |否      |       | SCRIPT类型作业命令行执行脚本                                                         |
 |jobProperties                       |String |否      |       | 作业定制化属性，目前支持job_exception_handler和executor_service_handler，用于扩展异常处理和自定义作业处理线程池 |
-|description                         |String |否      |       | 作业描述信息                                                                       |
+|description                         |String |否      |       | 作业描述信息                                                                        |
 
 注册的作业可用Java和Spring两种启动方式，作业启动在[开发指南](/01-start/dev-guide/)中有说明，这里只举例说明两种方式如何注册。
 

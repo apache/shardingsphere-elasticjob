@@ -23,7 +23,7 @@
         <div class="wrapper">
             <header class="main-header">
             <a class="logo">
-                <span class="logo-lg">Elastic Job Lite v2.1.2-SNAPSHOT</span>
+                <span class="logo-lg">Elastic Job Lite v2.1.2</span>
             </a>
             <span id="index-job-name" hidden="hidden"></span>
             <span id="index-server-ip" hidden="hidden"></span>
@@ -38,11 +38,11 @@
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle">
-                                <i class="fa fa-graduation-cap"></i>
+                                <i class="fa fa-user"></i>
                                 <span id="authority"></span>
                             </a>
                         </li>
-                        <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
+                        <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-flag"></i></a></li>
                         <li></li>
                     </ul>
                 </div>
@@ -253,23 +253,23 @@
             </div>
         </aside>
         </div>
-        <div id="success-dialog" class="modal">
+        <div id="message-dialog" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <h4>操作已成功完成</h4>
+                        <h4 id="message-info"></h4>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn-xs btn-success" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn-xs btn-primary" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="failure-dialog" class="modal">
-            <div class="modal-dialog">
+        <div id="history-message-modal" class="modal">
+            <div class="modal-dialog" id="modal-dialog-width">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <h4 id="failure-dialog-info"></h4>
+                        <h5 id="history-message"></h5>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn-xs btn-danger" data-dismiss="modal">关闭</button>

@@ -70,9 +70,9 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label for="reconcile-cycle-time" class="col-sm-6 control-label">作业服务器状态修复周期</label>
+                            <label for="reconcile-interval-minutes" class="col-sm-6 control-label">作业服务器状态修复周期</label>
                             <div class="col-sm-6">
-                                <input type="number" id="reconcile-cycle-time" name="reconcileCycleTime" class="form-control" data-toggle="tooltip" data-placement="bottom" title="修复错误状态的作业服务器扫描修复周期。配置为-1表示不启用修复动作。" />
+                                <input type="number" id="reconcile-interval-minutes" name="reconcileIntervalMinutes" class="form-control" data-toggle="tooltip" data-placement="bottom" title="修复错误状态的作业服务器扫描修复周期。配置为-1表示不启用修复动作。" />
                             </div>
                         </div>
                     </div>
@@ -90,13 +90,13 @@
                         <div class="form-group">
                             <label for="failover" class="col-sm-6 control-label">支持自动失效转移</label>
                             <div class="col-sm-6">
-                                <input type="checkbox" id="failover" name="failover" data-toggle="tooltip" data-placement="bottom" title="只有开启监控作业执行时状态的情况下才可以开启失效转移" />
+                                <input type="checkbox" id="failover" name="failover" data-toggle="tooltip" data-placement="bottom" title="是否开启任务执行失效转移，开启表示如果作业在一次任务执行中途宕机，允许将该次未完成的任务在另一作业节点上补偿执行。" />
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label for="failover" class="col-sm-6 control-label">支持misfire</label>
+                            <label for="misfire" class="col-sm-6 control-label">支持misfire</label>
                             <div class="col-sm-6">
                                 <input type="checkbox" id="misfire" name="misfire" data-toggle="tooltip" data-placement="bottom" title="是否开启任务错过重新执行" />
                             </div>

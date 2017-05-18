@@ -1,263 +1,276 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Elastic Job Cloud Console</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="lib/font-awesome-4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="lib/AdminLTE/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="lib/AdminLTE/css/skins/_all-skins.min.css">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="lib/bootstrap-table/bootstrap-table.min.css">
-    <link rel="stylesheet" href="lib/daterangepicker/daterangepicker.css">
-    <script src="lib/jQuery/jQuery-2.1.4.min.js"></script>
-    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="lib/AdminLTE/js/app.min.js"></script>
-    <script src="lib/highcharts/js/highcharts.js"></script>
-    <script src="js/common/common.js"></script>
-    <script src="js/index.js"></script>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Elastic Job Cloud Console</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="lib/font-awesome-4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="lib/AdminLTE/css/AdminLTE.min.css">
+        <link rel="stylesheet" href="lib/AdminLTE/css/skins/_all-skins.min.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="lib/bootstrap-table/bootstrap-table.min.css">
+        <link rel="stylesheet" href="lib/daterangepicker/daterangepicker.css">
+        <script src="lib/jQuery/jQuery-2.1.4.min.js"></script>
+        <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+        <script src="lib/AdminLTE/js/app.min.js"></script>
+        <script src="lib/highcharts/js/highcharts.js"></script>
+        <script src="js/common/common.js"></script>
+        <script src="js/index.js"></script>
     </head>
     <body class="hold-transition skin-blue-light sidebar-mini">
-    <div class="wrapper">
-        <header class="main-header">
-        <a class="logo">
-            <span class="logo-lg">Elastic Job Cloud Console</span>
-        </a>
-        <nav class="navbar navbar-static-top" role="navigation">
-            <div id="navbar" class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-graduation-cap"></i>
-                            <span id="authority"></span>
-                        </a>
-                    </li>
-                    <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <aside class="main-sidebar">
-        <section class="sidebar">
-            <ul class="sidebar-menu">
-                <li class="treeview" id="app">
-                    <a href="#">
-                        <i class="fa fa-laptop">&nbsp;&nbsp;应用</i><i class="pull-right fa fa-angle-left "></i>
-                        <div class="pull-right">
-                            <span id="app-nav-tag" class="label label-primary"></span>
-                        </div>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#" id="register-app" class="sub-menu"><i class="fa fa-circle-o"></i>定义</a></li>
+        <div class="wrapper">
+            <header class="main-header">
+                <a class="logo">
+                    <span class="logo-lg">Elastic Job Cloud Console</span>
+                </a>
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <div id="navbar" class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle">
+                                    <i class="fa fa-user"></i>
+                                    <span id="authority"></span>
+                                </a>
+                            </li>
+                            <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-flag"></i></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <aside class="main-sidebar">
+                <section class="sidebar">
+                    <ul class="sidebar-menu">
+                        <li class="treeview" id="app">
+                            <a href="#">
+                                <i class="fa fa-laptop">&nbsp;&nbsp;应用</i><i class="pull-right fa fa-angle-left "></i>
+                                <div class="pull-right">
+                                    <span id="app-nav-tag" class="label label-primary"></span>
+                                </div>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#" id="register-app" class="sub-menu"><i class="fa fa-circle-o"></i>定义</a></li>
+                            </ul>
+                        </li>
+                        <li class="treeview" id="job">
+                            <a href="#">
+                                <i class="fa fa-tasks">&nbsp;&nbsp;作业</i><i class="pull-right fa fa-angle-left"></i>
+                                <div class="pull-right">
+                                    <span id="job-nav-tag" class="label label-primary"></span>
+                                </div>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#" id="register-job" class="sub-menu"><i class="fa fa-circle-o"></i>定义</a></li>
+                                <li><a href="#" id="status" class="sub-menu"><i class="fa fa-circle-o"></i>状态</a></li>
+                            </ul>
+                        </li>
+                        <li class="treeview" id="history">
+                            <a href="#">
+                                <i class="fa fa-history">&nbsp;&nbsp;作业历史</i><i class="pull-right fa fa-angle-left "></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#" id="dashboard" class ="sub-menu"><i class="fa fa-circle-o"></i> 历史dashboard</a></li>
+                                <li><a href="#" id="exec-details" class ="sub-menu"><i class="fa fa-circle-o"></i> 作业运行轨迹</a></li>
+                                <li><a href="#" id="exec-status" class ="sub-menu"><i class="fa fa-circle-o"></i> 作业运行状态</a></li>
+                           </ul>
+                        </li>
                     </ul>
-                </li>
-                <li class="treeview" id="job">
-                    <a href="#">
-                        <i class="fa fa-tasks">&nbsp;&nbsp;作业</i><i class="pull-right fa fa-angle-left"></i>
-                        <div class="pull-right">
-                            <span id="job-nav-tag" class="label label-primary"></span>
-                        </div>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#" id="register-job" class="sub-menu"><i class="fa fa-circle-o"></i>定义</a></li>
-                        <li><a href="#" id="status" class="sub-menu"><i class="fa fa-circle-o"></i>状态</a></li>
-                    </ul>
-                </li>
-                <li class="treeview" id="history">
-                    <a href="#">
-                        <i class="fa fa-history">&nbsp;&nbsp;作业历史</i><i class="pull-right fa fa-angle-left "></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#" id="dashboard" class ="sub-menu"><i class="fa fa-circle-o"></i> 历史dashboard</a></li>
-                        <li><a href="#" id="exec-details" class ="sub-menu"><i class="fa fa-circle-o"></i> 作业运行轨迹</a></li>
-                        <li><a href="#" id="exec-status" class ="sub-menu"><i class="fa fa-circle-o"></i> 作业运行状态</a></li>
-                   </ul>
-                </li>
-            </ul>
-    </section>
-    </aside>
-    <div id="content-right"></div>
-    <footer class="main-footer">
-            <strong>Copyright &copy; 2004-2017 <a href="http://www.dangdang.com">当当网</a>.</strong> All rights reserved.
-    </footer>
-    <aside class="control-sidebar control-sidebar-dark">
-        <div class="tab-content">
-            <div id="control-sidebar-theme-demo-options-tab" class="tab-pane active">
-                <h4 class="control-sidebar-heading">更换主题皮肤</h4>
-                <ul class="list-unstyled clearfix">
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-blue" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-blue top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">蓝色</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-black" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">白色</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-purple" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-purple top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">紫色</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-green" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-green top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">绿色</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-yellow" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-yellow top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">黄色</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-red" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-red top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">红色</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-blue-light" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-light-blue top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">蓝色高亮</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-black-light" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">白色高亮</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-purple-light" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-purple top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">紫色高亮</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-green-light" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-green top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">绿色高亮</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-yellow-light" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-yellow top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">黄色高亮</p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-red-light" class="clearfix full-opacity-hover">
-                        <div>
-                            <span class="bg-red top-span"></span>
-                        </div>
-                        <div>
-                            <span class="down-span-left"></span>
-                            <span class="down-span-right"></span>
-                        </div>
-                        </a>
-                        <p class="text-center no-margin">红色高亮</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </aside>
-    <div id="success-dialog" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <p class="size-font">操作已成功完成</p>
+            </section>
+            </aside>
+            <div id="content-right"></div>
+            <footer class="main-footer">
+                    <strong>Copyright &copy; 2004-2017 <a href="http://www.dangdang.com">当当网</a>.</strong> All rights reserved.
+            </footer>
+            <aside class="control-sidebar control-sidebar-dark">
+                <div class="tab-content">
+                    <div id="control-sidebar-theme-demo-options-tab" class="tab-pane active">
+                        <h4 class="control-sidebar-heading">更换主题皮肤</h4>
+                        <ul class="list-unstyled clearfix">
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-blue" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-blue top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">蓝色</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-black" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">白色</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-purple" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-purple top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">紫色</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-green" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-green top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">绿色</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-yellow" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-yellow top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">黄色</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-red" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-red top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">红色</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-blue-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-light-blue top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">蓝色高亮</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-black-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">白色高亮</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-purple-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-purple top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">紫色高亮</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-green-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-green top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">绿色高亮</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-yellow-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-yellow top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">黄色高亮</p>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);" data-skin="skin-red-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-red top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                                </a>
+                                <p class="text-center no-margin">红色高亮</p>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-xs btn-success" data-dismiss="modal">关闭</button>
+            </aside>
+            <div id="success-dialog" class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p class="size-font">操作已成功完成</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-xs btn-success" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-        <div id="fail-dialog" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <p class="size-font">作业对应的应用已失效，操作失败</p>
+            <div id="history-message-modal" class="modal">
+                <div class="modal-dialog" id="modal-dialog-width">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <h5 id="history-message"></h5>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-xs btn-danger" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-xs btn-success" data-dismiss="modal">关闭</button>
+            </div>
+            <div id="fail-dialog" class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p class="size-font">作业对应的应用已失效，操作失败</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-xs btn-success" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </body>
 </html>

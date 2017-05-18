@@ -101,7 +101,6 @@ function bindShutdownButton() {
     $(document).off("click", "button[operation='shutdown-server-job'][data-toggle!='modal']");
     $(document).on("click", "button[operation='shutdown-server-job'][data-toggle!='modal']", function(event) {
         showShutdownConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $("#server-ip").text();
         var jobName = $(event.currentTarget).attr("job-name");
         $(document).off("click", "#confirm-btn");
@@ -124,7 +123,6 @@ function bindRemoveButton() {
     $(document).off("click", "button[operation='remove-server-job'][data-toggle!='modal']");
     $(document).on("click", "button[operation='remove-server-job'][data-toggle!='modal']", function(event) {
         showDeleteConfirmModal();
-        $("#confirm-dialog").modal({backdrop: 'static', keyboard: true});
         var serverIp = $("#server-ip").text();
         var jobName = $(event.currentTarget).attr("job-name");
         $(document).off("click", "#confirm-btn");

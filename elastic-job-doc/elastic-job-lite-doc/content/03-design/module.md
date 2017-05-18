@@ -3,7 +3,7 @@ toc = true
 date = "2016-12-06T22:38:50+08:00"
 title = "目录结构说明"
 weight = 2
-prev = "/03-design/index/"
+prev = "/03-design"
 next = "/03-design/lite-design/"
 +++
 

@@ -198,14 +198,14 @@ public final class BootstrapEnvironment {
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true),
         
         EVENT_TRACE_RDB_DRIVER("event_trace_rdb_driver", "", false),
-        
+
         EVENT_TRACE_RDB_URL("event_trace_rdb_url", "", false),
-        
+
         EVENT_TRACE_RDB_USERNAME("event_trace_rdb_username", "", false),
-        
+
         EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false),
     
-        RECONCILE_INTERVAL_MINUTES("reconcile_interval_minutes", "10", true);
+        RECONCILE_INTERVAL_MINUTES("reconcile_interval_minutes", "-1", false);
         
         private final String key;
         
