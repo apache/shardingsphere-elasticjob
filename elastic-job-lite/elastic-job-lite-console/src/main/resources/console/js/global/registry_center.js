@@ -29,9 +29,6 @@ function renderRegCenters() {
             title: "命名空间",
             sortable: true
         }, {
-            field: "digest",
-            title: "登录凭证"
-        }, {
             field: "operation",
             title: "操作",
             formatter: "generateOperationButtons"
@@ -195,7 +192,7 @@ function validate() {
                         message: "注册中心名称长度不能超过50字符大小"
                     },
                     regexp: {
-                        regexp: /^[\w\.-\/]+$/,
+                        regexp: /^[\/\w\.-]+$/,
                         message: "注册中心名称只能使用数字、字母、下划线(_)、短横线(-)、斜线(/)和点号(.)"
                     },
                     callback: {
@@ -238,7 +235,7 @@ function validate() {
                         message: "命名空间长度不能超过50字符大小"
                     },
                     regexp: {
-                        regexp: /^[\w\.-\/]+$/,
+                        regexp: /^[\/\w\.-]+$/,
                         message: "命名空间只能使用数字、字母、下划线(_)、短横线(-)、斜线(/)和点号(.)"
                     }
                 }

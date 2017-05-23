@@ -186,7 +186,7 @@ function validate() {
                         message: "数据源名称长度不能超过50字符大小"
                     },
                     regexp: {
-                        regexp: /^[\w\.-\/]+$/,
+                        regexp: /^[\/\w\.-]+$/,
                         message: "数据源名称只能使用数字、字母、下划线(_)、短横线(-)、斜线(/)和点号(.)"
                     },
                     callback: {
