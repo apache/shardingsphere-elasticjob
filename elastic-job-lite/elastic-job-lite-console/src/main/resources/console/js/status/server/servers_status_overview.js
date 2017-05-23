@@ -32,14 +32,14 @@ function renderServersOverview() {
     };
     var activated = false;
     $.ajax({
-        url: "/api/registry-center/activated",
+        url: "api/registry-center/activated",
         async: false,
         success: function(data) {
             activated = data;
         }
     });
     if (activated) {
-        jsonData.url = "/api/servers";
+        jsonData.url = "api/servers";
     }
     $("#servers-overview-tbl").bootstrapTable({
         columns: jsonData.columns,
@@ -88,7 +88,7 @@ function bindDisableServerButton() {
     $(document).on("click", "button[operation='disable-server'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
         $.ajax({
-            url: "/api/servers/" + serverIp + "/disable",
+            url: "api/servers/" + serverIp + "/disable",
             type: "POST",
             success: function() {
                 showSuccessDialog();
@@ -103,7 +103,7 @@ function bindEnableServerButton() {
     $(document).on("click", "button[operation='enable-server'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
         $.ajax({
-            url: "/api/servers/" + serverIp + "/disable",
+            url: "api/servers/" + serverIp + "/disable",
             type: "DELETE",
             success: function() {
                 showSuccessDialog();
@@ -121,7 +121,7 @@ function bindShutdownServerButton() {
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
             $.ajax({
-                url: "/api/servers/" + serverIp + "/shutdown",
+                url: "api/servers/" + serverIp + "/shutdown",
                 type: "POST",
                 success: function () {
                     $("#confirm-dialog").modal("hide");
@@ -142,7 +142,7 @@ function bindRemoveServerButton() {
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
             $.ajax({
-                url: "/api/servers/" + serverIp,
+                url: "api/servers/" + serverIp,
                 type: "DELETE",
                 success: function () {
                     $("#confirm-dialog").modal("hide");

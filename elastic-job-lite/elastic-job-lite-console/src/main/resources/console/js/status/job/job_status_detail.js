@@ -9,7 +9,7 @@ $(function() {
 function renderShardingTable() {
     var jobName = $("#job-name").text();
     $("#sharding").bootstrapTable({
-        url: "/api/jobs/" + jobName + "/sharding",
+        url: "api/jobs/" + jobName + "/sharding",
         cache: false,
         columns: [
             {
@@ -82,7 +82,7 @@ function bindDisableButton() {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
         $.ajax({
-            url: "/api/jobs/" + jobName + "/sharding/" + item + "/disable",
+            url: "api/jobs/" + jobName + "/sharding/" + item + "/disable",
             type: "POST",
             success: function() {
                 showSuccessDialog();
@@ -98,7 +98,7 @@ function bindEnableButton() {
         var jobName = $("#index-job-name").text();
         var item = $(event.currentTarget).attr("item");
         $.ajax({
-            url: "/api/jobs/" + jobName + "/sharding/" + item + "/disable",
+            url: "api/jobs/" + jobName + "/sharding/" + item + "/disable",
             type: "DELETE",
             success: function () {
                 showSuccessDialog();

@@ -211,7 +211,7 @@ function refreshEventTraceNavTag() {
 
 function refreshJobNavTag() {
     $.ajax({
-        url: "/api/jobs/count",
+        url: "api/jobs/count",
         cache: false,
         success: function(data) {
             $("#job-nav-tag").text(data);
@@ -221,7 +221,7 @@ function refreshJobNavTag() {
 
 function refreshServerNavTag() {
     $.ajax({
-        url: "/api/servers/count",
+        url: "api/servers/count",
         cache: false,
         success: function(data) {
             $("#server-nav-tag").text(data);

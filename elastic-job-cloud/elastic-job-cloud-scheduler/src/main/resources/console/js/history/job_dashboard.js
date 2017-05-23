@@ -11,7 +11,7 @@ $(function() {
 
 function renderPieChartSinceLastMinuteData() {
     $.ajax({
-        url: "/api/job/statistics/tasks/results/lastMinute",
+        url: "api/job/statistics/tasks/results/lastMinute",
         dataType: "json",
         success: function(jobData) {
             if(null !== jobData) {
@@ -26,7 +26,7 @@ function renderPieChartSinceLastMinuteData() {
 
 function renderPieChartSinceLastHourData() {
     $.ajax({
-        url: "/api/job/statistics/tasks/results/lastHour",
+        url: "api/job/statistics/tasks/results/lastHour",
         dataType: "json",
         success: function(jobData) {
             if(null !== jobData) {
@@ -41,7 +41,7 @@ function renderPieChartSinceLastHourData() {
 
 function renderPieChartSinceLastWeekData() {
     $.ajax({
-        url: "/api/job/statistics/tasks/results/lastWeek",
+        url: "api/job/statistics/tasks/results/lastWeek",
         dataType: "json",
         success: function(jobData) {
             if(null !== jobData) {
@@ -56,7 +56,7 @@ function renderPieChartSinceLastWeekData() {
 
 function renderJobTypePieChart() {
     $.ajax({
-        url: "/api/job/statistics/jobs/type",
+        url: "api/job/statistics/jobs/type",
         dataType: "json",
         success: function(jobData) {
             if(null !== jobData) {
@@ -71,7 +71,7 @@ function renderJobTypePieChart() {
 
 function renderJobExecutionTypePieChart() {
     $.ajax({
-        url: "/api/job/statistics/jobs/executionType",
+        url: "api/job/statistics/jobs/executionType",
         dataType: "json",
         success: function(jobData) {
             if(null !== jobData) {
@@ -86,7 +86,7 @@ function renderJobExecutionTypePieChart() {
 
 function renderStasticsJobsLineChart() {
     $.ajax({
-        url: "/api/job/statistics/tasks/results?since=last24hours",
+        url: "api/job/statistics/tasks/results?since=last24hours",
         dataType: "json",
         success: function(jobData) {
             if(null !== jobData) {
@@ -107,11 +107,11 @@ function renderStasticsJobsLineChart() {
 
 function renderRunningJobsAndTasksLineChart() {
     $.ajax({
-        url: "/api/job/statistics/jobs/running?since=lastWeek",
+        url: "api/job/statistics/jobs/running?since=lastWeek",
         dataType: "json",
         success: function(jobData) {
             $.ajax({
-                url: "/api/job/statistics/tasks/running?since=lastWeek",
+                url: "api/job/statistics/tasks/running?since=lastWeek",
                 dataType: "json",
                 success: function(taskData) {
                     if(null !== taskData) {
@@ -137,7 +137,7 @@ function renderRunningJobsAndTasksLineChart() {
 
 function renderRegisteredJobs() {
     $.ajax({
-        url: "/api/job/statistics/jobs/register",
+        url: "api/job/statistics/jobs/register",
         dataType: "json",
         success: function(jobData) {
             if(null !== jobData) {

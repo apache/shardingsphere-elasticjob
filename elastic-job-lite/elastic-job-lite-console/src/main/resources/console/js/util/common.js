@@ -25,7 +25,7 @@ function showFailureDialog(msg) {
 function authorityControl() {
     $.ajax({
         type: "HEAD",
-        url : "/",
+        url : "",
         complete: function(xhr, data) {
             if ("guest" === xhr.getResponseHeader("identify")) {
                 $("table").on("all.bs.table", function() {

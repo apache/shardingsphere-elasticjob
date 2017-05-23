@@ -15,7 +15,7 @@ $(function() {
 
 function renderJobOverview() {
     var jsonData = {
-        url: "/api/job/jobs",
+        url: "api/job/jobs",
         cache: false,
         columns:
             [{
@@ -71,7 +71,7 @@ function selectJobStatus(jobName) {
     $.ajax({
         type:"GET",
         async: false,
-        url: "/api/job/" + jobName + "/disable",
+        url: "api/job/" + jobName + "/disable",
         contentType: "application/json",
         success: function(result) {
             resultValue = result;
@@ -85,7 +85,7 @@ function bindDetailJobButton() {
     $(document).on("click", "button[operation='detailJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         $.ajax({
-            url: "/api/job/jobs/" + jobName,
+            url: "api/job/jobs/" + jobName,
             contentType: "application/json",
             success: function(result) {
                 $(".box-body").remove();
@@ -118,7 +118,7 @@ function bindDeleteJobButton() {
         $("#delete-job-confirm").on("click", function() {
             if(flag) {
                 $.ajax({
-                    url: "/api/job/deregister",
+                    url: "api/job/deregister",
                     type: "DELETE",
                     contentType: "application/json",
                     data: jobName,
@@ -138,7 +138,7 @@ function bindModifyJobButton() {
     $(document).on("click", "button[operation='modifyJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         $.ajax({
-            url: "/api/job/jobs/" + jobName,
+            url: "api/job/jobs/" + jobName,
             success: function(result) {
                 if (null !== result) {
                     $(".box-body").remove();
@@ -161,7 +161,7 @@ function bindEnableJobButton() {
             showFailDialog();
         } else {
             $.ajax({
-                url: "/api/job/" + jobName + "/disable",
+                url: "api/job/" + jobName + "/disable",
                 type: "DELETE",
                 contentType: "application/json",
                 success: function(result) {
@@ -178,7 +178,7 @@ function bindDisableJobButton() {
     $(document).on("click", "button[operation='disableJob'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("jobName");
         $.ajax({
-            url: "/api/job/" + jobName + "/disable",
+            url: "api/job/" + jobName + "/disable",
             type: "POST",
             contentType: "application/json",
             success: function(result) {

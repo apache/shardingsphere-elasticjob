@@ -38,7 +38,7 @@ function validate() {
                             var jobName = $("#job-name").val();
                             var result = true;
                                 $.ajax({
-                                    url: "/api/job/jobs/" + jobName,
+                                    url: "api/job/jobs/" + jobName,
                                     contentType: "application/json",
                                     async: false,
                                     success: function(data) {
@@ -60,7 +60,7 @@ function validate() {
                             var appName = $("#job-app-name").val();
                             var result = false;
                                 $.ajax({
-                                    url: "/api/app/" + appName,
+                                    url: "api/app/" + appName,
                                     contentType: "application/json",
                                     async: false,
                                     success: function(data) {

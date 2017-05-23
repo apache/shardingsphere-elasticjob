@@ -15,7 +15,7 @@ function showFailDialog() {
 
 function refreshJobNavTag() {
     $.ajax({
-        url: "/api/job/jobs",
+        url: "api/job/jobs",
         cache: false,
         success: function(data) {
             $("#job-nav-tag").text(data.length);
@@ -25,7 +25,7 @@ function refreshJobNavTag() {
 
 function refreshAppNavTag() {
     $.ajax({
-        url: "/api/app/list",
+        url: "api/app/list",
         cache: false,
         success: function(data) {
             $("#app-nav-tag").text(data.length);
@@ -74,7 +74,7 @@ function selectAppStatus(appName) {
     $.ajax({
         type: "GET",
         async: false,
-        url: "/api/app/" + appName + "/disable",
+        url: "api/app/" + appName + "/disable",
         contentType: "application/json",
         success: function(result) {
             resultValue = result;
@@ -86,7 +86,7 @@ function selectAppStatus(appName) {
 function authorityControl() {
     $.ajax({
         type: "HEAD",
-        url : "/",
+        url : "",
         complete: function(xhr, data) {
             if ("guest" === xhr.getResponseHeader("identify")) {
                 $("table").on("all.bs.table", function() {

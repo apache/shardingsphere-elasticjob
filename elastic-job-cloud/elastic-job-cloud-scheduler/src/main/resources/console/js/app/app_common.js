@@ -26,7 +26,7 @@ function validate() {
                             var appName = $("#app-name").val();
                             var result = true;
                                 $.ajax({
-                                    url: "/api/app/" + appName,
+                                    url: "api/app/" + appName,
                                     contentType: "application/json",
                                     async: false,
                                     success: function(data) {
@@ -92,7 +92,7 @@ function submitConfirm(type, modal) {
                 type: type,
                 dataType: "json",
                 data: JSON.stringify(getApp()),
-                url: "/api/app",
+                url: "api/app",
                 contentType: "application/json",
                 success: function(data) {
                     modal.modal("hide");

@@ -15,7 +15,7 @@ $(function() {
 
 function renderAppOverview() {
     var jsonData = {
-        url: "/api/app/list",
+        url: "api/app/list",
         cache: false,
         columns:
             [{
@@ -63,7 +63,7 @@ function bindDetailAppButton() {
     $(document).on("click", "button[operation='detailApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
-            url: "/api/app/" + appName,
+            url: "api/app/" + appName,
             contentType: "application/json",
             success: function(result) {
                 if (null !== result) {
@@ -86,7 +86,7 @@ function bindModifyAppButton() {
     $(document).on("click", "button[operation='modifyApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
-            url: "/api/app/" + appName,
+            url: "api/app/" + appName,
             success: function(result) {
                 if(null !== result) {
                     $(".box-body").remove();
@@ -105,7 +105,7 @@ function bindEnableAppButton() {
     $(document).on("click", "button[operation='enableApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
-            url: "/api/app/" + appName + "/disable",
+            url: "api/app/" + appName + "/disable",
             type: "DELETE",
             contentType: "application/json",
             success: function(result) {
@@ -121,7 +121,7 @@ function bindDisableAppButton() {
     $(document).on("click", "button[operation='disableApp'][data-toggle!='modal']", function(event) {
         var appName = $(event.currentTarget).attr("appName");
         $.ajax({
-            url: "/api/app/" + appName + "/disable",
+            url: "api/app/" + appName + "/disable",
             type: "POST",
             contentType: "application/json",
             success: function(result) {
@@ -144,7 +144,7 @@ function bindDeleteAppButton() {
         $("#delete-app-confirm").on("click", function() {
             if(flag) {
                 $.ajax({
-                    url: "/api/app/" + appName,
+                    url: "api/app/" + appName,
                     type: "DELETE",
                     contentType: "application/json",
                     success: function(result) {

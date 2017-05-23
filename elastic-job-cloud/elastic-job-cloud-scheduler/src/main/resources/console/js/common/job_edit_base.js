@@ -48,7 +48,7 @@ function bootstrapValidator(){
                             var jobName = $('#jobName').val();
                             var res = true;
                                 $.ajax({
-                                    url: '/api/job/jobs/'+jobName,
+                                    url: 'api/job/jobs/'+jobName,
                                     contentType: "application/json",
                                     async: false,
                                     success: function (data) {
@@ -81,7 +81,7 @@ function bootstrapValidator(){
                             var appName = $('#appName').val();
                             var res = true;
                                 $.ajax({
-                                    url: '/api/app/'+appName,
+                                    url: 'api/app/'+appName,
                                     contentType: "application/json",
                                     async: false,
                                     success: function (data) {
@@ -103,7 +103,7 @@ function bootstrapValidator(){
                             var appName = $('#jobAppName').val();
                             var res = false;
                                 $.ajax({
-                                    url: '/api/app/'+appName,
+                                    url: 'api/app/'+appName,
                                     contentType: "application/json",
                                     async: false,
                                     success: function (data) {

@@ -37,14 +37,14 @@ function renderJobsOverview() {
     };
     var activated = false;
     $.ajax({
-        url: "/api/registry-center/activated",
+        url: "api/registry-center/activated",
         async: false,
         success: function(data) {
             activated = data;
         }
     });
     if (activated) {
-        jsonData.url = "/api/jobs";
+        jsonData.url = "api/jobs";
     }
     $("#jobs-status-overview-tbl").bootstrapTable({
         columns: jsonData.columns,
@@ -109,7 +109,7 @@ function bindModifyButton() {
     $(document).on("click", "button[operation='modify-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
-            url: "/api/jobs/config/" + jobName,
+            url: "api/jobs/config/" + jobName,
             success: function(data) {
                 if (null !== data) {
                     $(".box-body").remove();
@@ -138,7 +138,7 @@ function bindTriggerButton() {
     $(document).on("click", "button[operation='trigger-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
-            url: "/api/jobs/" + jobName + "/trigger",
+            url: "api/jobs/" + jobName + "/trigger",
             type: "POST",
             success: function() {
                 showSuccessDialog();
@@ -153,7 +153,7 @@ function bindDisableButton() {
     $(document).on("click", "button[operation='disable-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
-            url: "/api/jobs/" + jobName + "/disable",
+            url: "api/jobs/" + jobName + "/disable",
             type: "POST",
             success: function() {
                 showSuccessDialog();
@@ -168,7 +168,7 @@ function bindEnableButton() {
     $(document).on("click", "button[operation='enable-job'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $.ajax({
-            url: "/api/jobs/" + jobName + "/disable",
+            url: "api/jobs/" + jobName + "/disable",
             type: "DELETE",
             success: function() {
                 showSuccessDialog();
@@ -186,7 +186,7 @@ function bindShutdownButton() {
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
             $.ajax({
-                url: "/api/jobs/" + jobName + "/shutdown",
+                url: "api/jobs/" + jobName + "/shutdown",
                 type: "POST",
                 success: function () {
                     $("#confirm-dialog").modal("hide");
@@ -207,7 +207,7 @@ function bindRemoveButton() {
         $(document).off("click", "#confirm-btn");
         $(document).on("click", "#confirm-btn", function() {
             $.ajax({
-                url: "/api/jobs/config/" + jobName,
+                url: "api/jobs/config/" + jobName,
                 type: "DELETE",
                 success: function() {
                     $("#confirm-dialog").modal("hide");
