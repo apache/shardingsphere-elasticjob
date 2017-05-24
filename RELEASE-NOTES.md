@@ -2,11 +2,13 @@
 
 ### 功能提升
 
+1. [ISSUE #327](https://github.com/dangdangdotcom/elastic-job/issues/327) spring命名空间支持使用xml方式配置bean
 1. [ISSUE #332](https://github.com/dangdangdotcom/elastic-job/issues/332) elastic-job-cloud增加Docker镜像dangdangdotcom/elastic-job-cloud
 
 ### 缺陷修正
 
-1. [ISSUE #321](https://github.com/dangdangdotcom/elastic-job/issues/321)新版2.1.2的console版本在添加注册中心时命名空间不支持/
+1. [ISSUE #321](https://github.com/dangdangdotcom/elastic-job/issues/321) elastic-job-lite界面在添加注册中心时命名空间不支持/
+1. [ISSUE #333](https://github.com/dangdangdotcom/elastic-job/issues/333) elastic-job-lite界面中注册中心配置中登录凭证隐式显示
 
 ## 2.1.2
 
