@@ -1,5 +1,9 @@
 ## 2.1.3
 
+### 功能提升
+
+1. [ISSUE #332](https://github.com/dangdangdotcom/elastic-job/issues/332) elastic-job-cloud增加Docker镜像dangdangdotcom/elastic-job-cloud
+
 ### 缺陷修正
 
 1. [ISSUE #321](https://github.com/dangdangdotcom/elastic-job/issues/321)新版2.1.2的console版本在添加注册中心时命名空间不支持/
