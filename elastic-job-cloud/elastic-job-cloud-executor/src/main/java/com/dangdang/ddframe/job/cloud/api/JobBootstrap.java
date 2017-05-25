@@ -18,7 +18,6 @@
 package com.dangdang.ddframe.job.cloud.api;
 
 import com.dangdang.ddframe.job.cloud.executor.TaskExecutor;
-import com.dangdang.ddframe.job.cloud.executor.local.LocalTaskExecutor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.mesos.MesosExecutorDriver;
@@ -41,14 +40,5 @@ public final class JobBootstrap {
     public static void execute() {
         MesosExecutorDriver driver = new MesosExecutorDriver(new TaskExecutor());
         System.exit(Protos.Status.DRIVER_STOPPED == driver.run() ? 0 : -1);
-    }
-    
-    /**
-     * 新建本地作业运行器的构建器.
-     * 
-     * @return 本地作业运行器
-     */
-    public static LocalTaskExecutor.LocalTaskExecutorBuilder newLocalTaskExecutorBuilder() {
-        return LocalTaskExecutor.builder();
     }
 }

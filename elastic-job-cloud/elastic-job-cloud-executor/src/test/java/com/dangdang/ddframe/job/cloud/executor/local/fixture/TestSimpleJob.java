@@ -19,8 +19,12 @@ package com.dangdang.ddframe.job.cloud.executor.local.fixture;
 
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
+import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class TestSimpleJob implements SimpleJob {
     
@@ -28,8 +32,14 @@ public class TestSimpleJob implements SimpleJob {
     @Setter
     private static ShardingContext shardingContext;
     
+    @Getter
+    private static Set<String> shardingParameters = new ConcurrentSkipListSet<>();
+    
     @Override
     public void execute(final ShardingContext shardingContext) {
         TestSimpleJob.shardingContext = shardingContext;
+        if (!Strings.isNullOrEmpty(shardingContext.getShardingParameter())) {
+            shardingParameters.add(shardingContext.getShardingParameter());    
+        }
     }
 }

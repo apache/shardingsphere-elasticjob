@@ -17,17 +17,23 @@
 
 package com.dangdang.ddframe.job.cloud.executor.local;
 
-import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.cloud.executor.local.fixture.TestDataflowJob;
 import com.dangdang.ddframe.job.cloud.executor.local.fixture.TestSimpleJob;
+import com.dangdang.ddframe.job.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
+import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
+import static com.dangdang.ddframe.job.cloud.executor.local.LocalCloudJobExecutionType.DAEMON;
+import static com.dangdang.ddframe.job.cloud.executor.local.LocalCloudJobExecutionType.TRANSIENT;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -42,68 +48,46 @@ public class LocalTaskExecutorTest {
     
     @Test
     public void assertTransientSimpleJob() throws Exception {
-        LocalTaskExecutor.builder().jobClass(TestSimpleJob.class).shardingItemExpression("0").build().runTransient();
+        LocalCloudJobConfiguration configuration = new LocalCloudJobConfiguration(new SimpleJobConfiguration(JobCoreConfiguration
+                .newBuilder(TestSimpleJob.class.getSimpleName(), "*/2 * * * * ?", 1).build(), TestSimpleJob.class.getName()), TRANSIENT);
+        Future<Integer> future = new LocalTaskExecutor(configuration).run();
+        assertFalse(future.isCancelled());
+        assertThat(future.get(), is(1));
+        assertTrue(future.isDone());
         assertThat(TestSimpleJob.getShardingContext().getJobName(), is(TestSimpleJob.class.getSimpleName()));
         assertThat(TestSimpleJob.getShardingContext().getShardingItem(), is(0));
         assertThat(TestSimpleJob.getShardingContext().getShardingTotalCount(), is(1));
-        assertThat(TestSimpleJob.getShardingContext().getShardingParameter(), is(""));
+        assertNull(TestSimpleJob.getShardingContext().getShardingParameter());
         assertThat(TestSimpleJob.getShardingContext().getJobParameter(), is(""));
     }
     
     @Test
     public void assertDaemonSimpleJob() throws Exception {
-        final LocalTaskExecutor localTaskExecutor = LocalTaskExecutor.builder().jobClass(TestSimpleJob.class).shardingItemExpression("2=Beijing").shardingTotalCount(10).jobParameter("dbName=dangdang")
-                .applicationContext("applicationContext.xml").beanName("testSimpleJob").build();
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(4000);
-                } catch (final InterruptedException ignored) {
-                }
-                localTaskExecutor.stopDaemon();
-            }
-        });
-        localTaskExecutor.runDaemon("*/2 * * * * ?");
+        LocalCloudJobConfiguration configuration = new LocalCloudJobConfiguration(new SimpleJobConfiguration(JobCoreConfiguration
+                .newBuilder(TestSimpleJob.class.getSimpleName(), "*/2 * * * * ?", 3)
+                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").jobParameter("dbName=dangdang").build(), TestSimpleJob.class.getName()), DAEMON, "testSimpleJob", "applicationContext.xml");
+        Future<Integer> future = new LocalTaskExecutor(configuration).run();
+        assertTrue(future.isCancelled());
+        assertThat(future.get(4, TimeUnit.SECONDS), is(0));
+        assertFalse(future.isDone());
+        assertTrue(future.cancel(true));
+        assertTrue(future.isDone());
         assertThat(TestSimpleJob.getShardingContext().getJobName(), is(TestSimpleJob.class.getSimpleName()));
-        assertThat(TestSimpleJob.getShardingContext().getShardingItem(), is(2));
-        assertThat(TestSimpleJob.getShardingContext().getShardingTotalCount(), is(10));
-        assertThat(TestSimpleJob.getShardingContext().getShardingParameter(), is("Beijing"));
+        assertThat(TestSimpleJob.getShardingContext().getShardingTotalCount(), is(3));
         assertThat(TestSimpleJob.getShardingContext().getJobParameter(), is("dbName=dangdang"));
+        assertThat(TestSimpleJob.getShardingParameters().size(), is(3));
     }
     
     @Test
     public void assertDataflow() throws Exception {
         TestDataflowJob.setInput(Arrays.asList("1", "2", "3"));
-        LocalTaskExecutor.builder().jobClass(TestDataflowJob.class).shardingItemExpression("0").build().runTransient();
+        LocalCloudJobConfiguration configuration = new LocalCloudJobConfiguration(new DataflowJobConfiguration(JobCoreConfiguration
+                .newBuilder(TestDataflowJob.class.getSimpleName(), "*/2 * * * * ?", 1).build(), TestDataflowJob.class.getName(), false), TRANSIENT);
+        Future<Integer> future = new LocalTaskExecutor(configuration).run();
+        assertThat(future.get(), is(1));
         assertFalse(TestDataflowJob.getOutput().isEmpty());
         for (String each : TestDataflowJob.getOutput()) {
             assertTrue(each.endsWith("-d"));
         }
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void assertUnsupportedScriptJob() throws Exception {
-        LocalTaskExecutor.builder().jobClass(ScriptJob.class).shardingItemExpression("0").build().runTransient();
-    }
-    
-    @Test(expected = NullPointerException.class)
-    public void assertLackJobClass() throws Exception {
-        LocalTaskExecutor.builder().build().runTransient();
-    }
-    
-    @Test(expected = NullPointerException.class)
-    public void assertLackShardingItemExpression() throws Exception {
-        LocalTaskExecutor.builder().jobClass(TestSimpleJob.class).build().runTransient();
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void assertLackApplicationContext() throws Exception {
-        LocalTaskExecutor.builder().jobClass(ScriptJob.class).shardingItemExpression("0").beanName("test").build().runTransient();
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void assertLackBeanName() throws Exception {
-        LocalTaskExecutor.builder().jobClass(ScriptJob.class).shardingItemExpression("0").applicationContext("applicationContext.xml").build().runTransient();
     }
 }

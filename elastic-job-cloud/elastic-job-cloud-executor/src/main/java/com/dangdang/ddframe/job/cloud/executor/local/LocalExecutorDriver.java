@@ -17,12 +17,14 @@
 
 package com.dangdang.ddframe.job.cloud.executor.local;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import com.google.common.collect.Sets;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mesos.ExecutorDriver;
 import org.apache.mesos.Protos;
+
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 本地模式运行时ExecutorDriver的仿造对象.
@@ -30,13 +32,14 @@ import org.apache.mesos.Protos;
  * @author gaohongtao
  */
 @Slf4j
-public final class ExecutorDriverMock implements ExecutorDriver {
+@RequiredArgsConstructor
+public final class LocalExecutorDriver implements ExecutorDriver {
+    
+    private static final Set<Protos.TaskState> TERMINAL_STATE = Sets.newHashSet(Protos.TaskState.TASK_ERROR, Protos.TaskState.TASK_FINISHED, Protos.TaskState.TASK_KILLED);
     
     private volatile Protos.Status driverStatus = Protos.Status.DRIVER_NOT_STARTED;
     
-    @Getter(AccessLevel.PACKAGE)
-    @Setter(AccessLevel.PACKAGE)
-    private volatile Protos.TaskState lastTaskState;
+    private final CountDownLatch latch;
     
     @Override
     public Protos.Status start() {
@@ -72,7 +75,9 @@ public final class ExecutorDriverMock implements ExecutorDriver {
     @Override
     public Protos.Status sendStatusUpdate(final Protos.TaskStatus status) {
         log.info("Task driverStatus is {}", status);
-        lastTaskState = status.getState();
+        if (TERMINAL_STATE.contains(status.getState())) {
+            latch.countDown();
+        }
         return driverStatus;
     }
     

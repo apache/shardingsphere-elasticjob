@@ -17,17 +17,12 @@
 
 package com.dangdang.ddframe.job.cloud.executor.local;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        LocalExecutorDriverTest.class,
-        LocalTaskExecutorTest.class,
-        TerminalTaskStateTest.class
-    })
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AllLocalExecutorTests {
+/**
+ * 本地作业执行类型.
+ * 
+ * @author gaohongtao
+ */
+public enum LocalCloudJobExecutionType {
+    
+    DAEMON, TRANSIENT
 }

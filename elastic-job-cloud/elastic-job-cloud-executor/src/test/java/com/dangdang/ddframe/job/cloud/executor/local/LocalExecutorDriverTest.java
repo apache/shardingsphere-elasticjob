@@ -21,16 +21,23 @@ import org.apache.mesos.Protos;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
-public class ExecutorDriverMockTest {
+public class LocalExecutorDriverTest {
     
-    private ExecutorDriverMock executorDriver;
+    private CountDownLatch latch;
+    
+    private LocalExecutorDriver executorDriver;
     
     @Before
     public void assertSetUp() throws Exception {
-        executorDriver = new ExecutorDriverMock();
+        latch = new CountDownLatch(1);
+        executorDriver = new LocalExecutorDriver(latch);
     }
     
     @Test
@@ -53,10 +60,14 @@ public class ExecutorDriverMockTest {
     }
     
     @Test
-    public void assertSendStatusUpdate() throws Exception {
+    public void assertSendStatusUpdate() {
         assertThat(executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(Protos.TaskID.newBuilder()
-                .setValue("1")).setState(Protos.TaskState.TASK_RUNNING).build()), is(Protos.Status.DRIVER_NOT_STARTED));
-        assertThat(executorDriver.getLastTaskState(), is(Protos.TaskState.TASK_RUNNING));
+                .setValue("1")).setState(Protos.TaskState.TASK_ERROR).build()), is(Protos.Status.DRIVER_NOT_STARTED));
+        try {
+            latch.await(5, TimeUnit.SECONDS);
+        } catch (final InterruptedException ignored) {
+        }
+        assertFalse(latch.getCount() > 0);
     }
     
     @Test
