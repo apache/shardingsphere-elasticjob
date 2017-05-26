@@ -9,6 +9,7 @@
 
 1. [ISSUE #321](https://github.com/dangdangdotcom/elastic-job/issues/321) elastic-job-lite界面在添加注册中心时命名空间不支持/
 1. [ISSUE #333](https://github.com/dangdangdotcom/elastic-job/issues/333) elastic-job-lite界面中注册中心配置中登录凭证隐式显示
+1. [ISSUE #334](https://github.com/dangdangdotcom/elastic-job/issues/334) elastic-job-lite界面在windows平台上找不到conf\auth.properties文件
 1. [ISSUE #335](https://github.com/dangdangdotcom/elastic-job/issues/335) elastic-job-lite界面guest账户在conf\auth.properties文件中配置不起作用
 
 ## 2.1.2
