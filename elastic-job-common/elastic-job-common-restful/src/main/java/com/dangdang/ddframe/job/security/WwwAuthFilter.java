@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.servlet.*;
+import com.google.common.base.Strings;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
@@ -31,14 +32,18 @@ import java.util.Properties;
 public final class WwwAuthFilter implements Filter {
     
     private static final String AUTH_PREFIX = "Basic ";
+
+    private static final String GUEST = "guest";
+
+    private static final String ROOT = "root";
+
+    private String rootUsername;
     
-    private String root_username = "root";
+    private String rootPassword;
     
-    private String root_password = "root";
+    private String guestUsername;
     
-    private String guest_username = "guest";
-    
-    private String guest_password = "guest";
+    private String guestPassword;
     
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
@@ -50,10 +55,18 @@ public final class WwwAuthFilter implements Filter {
         } catch (final IOException ex) {
             log.warn("Cannot found auth config file, use default auth config.");
         }
-        root_username = props.getProperty("root.username", root_username);
-        root_password = props.getProperty("root.password", root_password);
-        guest_username = props.getProperty("guset.username", guest_username);
-        guest_password = props.getProperty("guset.password", guest_password);
+        if (Strings.isNullOrEmpty(props.getProperty("root.username"))) {
+            rootUsername = "root";
+        } else {
+            rootUsername = props.getProperty("root.username");
+        }
+        if (Strings.isNullOrEmpty(props.getProperty("guest.username"))) {
+            guestUsername = "guest";
+        } else {
+            guestUsername = props.getProperty("guest.username");
+        }
+        rootPassword = props.getProperty("root.password", "root");
+        guestPassword = props.getProperty("guest.password", "guest");
     }
     
     @Override
@@ -63,10 +76,10 @@ public final class WwwAuthFilter implements Filter {
         String authorization = httpRequest.getHeader("authorization");
         if (null != authorization && authorization.length() > AUTH_PREFIX.length()) {
             authorization = authorization.substring(AUTH_PREFIX.length(), authorization.length());
-            if ((root_username + ":" + root_password).equals(new String(Base64.decodeBase64(authorization)))) {
+            if ((rootUsername + ":" + rootPassword).equals(new String(Base64.decodeBase64(authorization)))) {
                 authenticateSuccess(httpResponse, false);
                 chain.doFilter(httpRequest, httpResponse);
-            } else if ((guest_username + ":" + guest_password).equals(new String(Base64.decodeBase64(authorization)))) {
+            } else if ((guestUsername + ":" + guestPassword).equals(new String(Base64.decodeBase64(authorization)))) {
                 authenticateSuccess(httpResponse, true);
                 chain.doFilter(httpRequest, httpResponse);
             } else {
@@ -82,7 +95,7 @@ public final class WwwAuthFilter implements Filter {
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-store");
         response.setDateHeader("Expires", 0);
-        response.setHeader("identify", true == isGuset ? guest_username : root_username);
+        response.setHeader("identify", true == isGuset ? GUEST : ROOT);
     }
     
     private void needAuthenticate(final HttpServletRequest request, final HttpServletResponse response) {
