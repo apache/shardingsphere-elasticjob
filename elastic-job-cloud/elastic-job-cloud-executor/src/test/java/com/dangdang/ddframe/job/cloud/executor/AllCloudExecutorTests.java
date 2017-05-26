@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.cloud.executor;
 
+import com.dangdang.ddframe.job.cloud.executor.local.AllLocalExecutorTests;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;
@@ -29,7 +30,8 @@ import org.junit.runners.Suite.SuiteClasses;
         DaemonTaskSchedulerTest.class, 
         JobConfigurationContextTest.class,
         TaskExecutorTest.class,
-        TaskExecutorThreadTest.class
+        TaskExecutorThreadTest.class,
+        AllLocalExecutorTests.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllCloudExecutorTests {

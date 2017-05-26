@@ -169,6 +169,13 @@ Root对应JobRootConfiguration，有2个子类分别对应Lite和Cloud部署类�
     <!-- 配置简单作业-->
     <job:simple id="simpleElasticJob" class="xxx.MySimpleElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
     
+    <bean id="yourRefJobBeanId" class="xxx.MySimpleRefElasticJob">
+        <property name="fooService" ref="xxx.FooService"/>
+    </bean>
+    
+    <!-- 配置关联Bean作业-->
+    <job:simple id="simpleRefElasticJob" job-ref="yourRefJobBeanId" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
+    
     <!-- 配置数据流作业-->
     <job:dataflow id="throughputDataflow" class="xxx.MyThroughputDataflowElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
     
@@ -182,7 +189,7 @@ Root对应JobRootConfiguration，有2个子类分别对应Lite和Cloud部署类�
     </job:simple>
     
     <!-- 配置带作业数据库事件追踪的简单作业-->
-    <job:simple id="listenerElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" event-trace-rdb-data-source="yourDataSource">
+    <job:simple id="eventTraceElasticJob" class="xxx.MySimpleListenerElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" event-trace-rdb-data-source="yourDataSource">
     </job:simple>
 </beans>
 ```
