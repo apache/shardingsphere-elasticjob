@@ -37,13 +37,13 @@ public final class WwwAuthFilter implements Filter {
 
     private static final String ROOT = "root";
 
-    private String root_username;
+    private String rootUsername;
     
-    private String root_password;
+    private String rootPassword;
     
-    private String guest_username;
+    private String guestUsername;
     
-    private String guest_password;
+    private String guestPassword;
     
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
@@ -56,17 +56,17 @@ public final class WwwAuthFilter implements Filter {
             log.warn("Cannot found auth config file, use default auth config.");
         }
         if (Strings.isNullOrEmpty(props.getProperty("root.username"))) {
-            root_username = "root";
+            rootUsername = "root";
         } else {
-            root_username = props.getProperty("root.username");
+            rootUsername = props.getProperty("root.username");
         }
         if (Strings.isNullOrEmpty(props.getProperty("guest.username"))) {
-            guest_username = "guest";
+            guestUsername = "guest";
         } else {
-            guest_username = props.getProperty("guest.username");
+            guestUsername = props.getProperty("guest.username");
         }
-        root_password = props.getProperty("root.password", "root");
-        guest_password = props.getProperty("guest.password", "guest");
+        rootPassword = props.getProperty("root.password", "root");
+        guestPassword = props.getProperty("guest.password", "guest");
     }
     
     @Override
@@ -76,10 +76,10 @@ public final class WwwAuthFilter implements Filter {
         String authorization = httpRequest.getHeader("authorization");
         if (null != authorization && authorization.length() > AUTH_PREFIX.length()) {
             authorization = authorization.substring(AUTH_PREFIX.length(), authorization.length());
-            if ((root_username + ":" + root_password).equals(new String(Base64.decodeBase64(authorization)))) {
+            if ((rootUsername + ":" + rootPassword).equals(new String(Base64.decodeBase64(authorization)))) {
                 authenticateSuccess(httpResponse, false);
                 chain.doFilter(httpRequest, httpResponse);
-            } else if ((guest_username + ":" + guest_password).equals(new String(Base64.decodeBase64(authorization)))) {
+            } else if ((guestUsername + ":" + guestPassword).equals(new String(Base64.decodeBase64(authorization)))) {
                 authenticateSuccess(httpResponse, true);
                 chain.doFilter(httpRequest, httpResponse);
             } else {
