@@ -31,6 +31,8 @@ import java.util.Properties;
 public final class WwwAuthFilter implements Filter {
     
     private static final String AUTH_PREFIX = "Basic ";
+
+    private static final String GUEST = "guest";
     
     private String root_username = "root";
     
@@ -52,8 +54,8 @@ public final class WwwAuthFilter implements Filter {
         }
         root_username = props.getProperty("root.username", root_username);
         root_password = props.getProperty("root.password", root_password);
-        guest_username = props.getProperty("guset.username", guest_username);
-        guest_password = props.getProperty("guset.password", guest_password);
+        guest_username = props.getProperty("guest.username", guest_username);
+        guest_password = props.getProperty("guest.password", guest_password);
     }
     
     @Override
@@ -82,7 +84,7 @@ public final class WwwAuthFilter implements Filter {
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-store");
         response.setDateHeader("Expires", 0);
-        response.setHeader("identify", true == isGuset ? guest_username : root_username);
+        response.setHeader("identify", true == isGuset ? GUEST : root_username);
     }
     
     private void needAuthenticate(final HttpServletRequest request, final HttpServletResponse response) {
