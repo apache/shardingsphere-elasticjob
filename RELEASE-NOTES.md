@@ -3,6 +3,7 @@
 ### 功能提升
 
 1. [ISSUE #327](https://github.com/dangdangdotcom/elastic-job/issues/327) spring命名空间支持使用xml方式配置bean
+1. [ISSUE #336](https://github.com/dangdangdotcom/elastic-job/issues/336) Cloud作业提交失败返回错误详细信息到framework
 
 ### 缺陷修正
 
