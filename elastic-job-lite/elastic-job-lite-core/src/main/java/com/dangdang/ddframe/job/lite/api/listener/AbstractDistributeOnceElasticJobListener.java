@@ -109,14 +109,14 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
      *
      * @param shardingContexts 分片上下文
      */
-    public abstract void doBeforeJobExecutedAtLastStarted(final ShardingContexts shardingContexts);
+    public abstract void doBeforeJobExecutedAtLastStarted(ShardingContexts shardingContexts);
     
     /**
      * 分布式环境中最后一个作业执行后的执行的方法.
      *
      * @param shardingContexts 分片上下文
      */
-    public abstract void doAfterJobExecutedAtLastCompleted(final ShardingContexts shardingContexts);
+    public abstract void doAfterJobExecutedAtLastCompleted(ShardingContexts shardingContexts);
     
     /**
      * 通知任务开始.

@@ -28,6 +28,7 @@
                     <xsd:element ref="distributed-listener" minOccurs="0" maxOccurs="1" />
                 </xsd:all>
                 <xsd:attribute name="class" type="xsd:string" />
+                <xsd:attribute name="job-ref" type="xsd:string" />
                 <xsd:attribute name="registry-center-ref" type="xsd:string" use="required" />
                 <xsd:attribute name="cron" type="xsd:string" use="required" />
                 <xsd:attribute name="sharding-total-count" type="xsd:string" use="required" />

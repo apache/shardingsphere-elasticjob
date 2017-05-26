@@ -56,9 +56,20 @@ public final class BootstrapEnvironment {
         try (FileInputStream fileInputStream = new FileInputStream(PROPERTIES_PATH)) {
             result.load(fileInputStream);
         } catch (final IOException ex) {
-            log.warn("Cannot found conf/elastic-job-cloud-scheduler.properties, use default value now.");
         }
+        setPropertiesByEnv(result);
         return result;
+    }
+    
+    private void setPropertiesByEnv(final Properties prop) {
+        for (EnvironmentArgument each : EnvironmentArgument.values()) {
+            String key = each.getKey();
+            String value = System.getenv(key);
+            if (!Strings.isNullOrEmpty(value)) {
+                log.info("Load property {} with value {} from ENV.", key, value);
+                prop.setProperty(each.getKey(), value);
+            }
+        }
     }
     
     /**

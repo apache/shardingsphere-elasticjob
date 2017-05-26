@@ -26,6 +26,8 @@ import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.*;
+
 /**
  * 云作业App配置的Gson工厂.
  *
@@ -78,25 +80,25 @@ public final class CloudAppConfigurationGsonFactory {
             while (in.hasNext()) {
                 String jsonName = in.nextName();
                 switch (jsonName) {
-                    case "appName":
+                    case APP_NAME:
                         appName = in.nextString();
                         break;
-                    case "appURL":
+                    case APP_URL:
                         appURL = in.nextString();
                         break;
-                    case "bootstrapScript":
+                    case BOOTSTRAP_SCRIPT:
                         bootstrapScript = in.nextString();
                         break;
-                    case "cpuCount":
+                    case CPU_COUNT:
                         cpuCount = in.nextDouble();
                         break;
-                    case "memoryMB":
+                    case MEMORY_MB:
                         memoryMB = in.nextDouble();
                         break;
-                    case "appCacheEnable":
+                    case APP_CACHE_ENABLE:
                         appCacheEnable = in.nextBoolean();
                         break;
-                    case "eventTraceSamplingCount":
+                    case EVENT_TRACE_SAMPLING_COUNT:
                         eventTraceSamplingCount = in.nextInt();
                         break;
                     default:
@@ -110,13 +112,13 @@ public final class CloudAppConfigurationGsonFactory {
         @Override
         public void write(final JsonWriter out, final CloudAppConfiguration value) throws IOException {
             out.beginObject();
-            out.name("appName").value(value.getAppName());
-            out.name("appURL").value(value.getAppURL());
-            out.name("bootstrapScript").value(value.getBootstrapScript());
-            out.name("cpuCount").value(value.getCpuCount());
-            out.name("memoryMB").value(value.getMemoryMB());
-            out.name("appCacheEnable").value(value.isAppCacheEnable());
-            out.name("eventTraceSamplingCount").value(value.getEventTraceSamplingCount());
+            out.name(APP_NAME).value(value.getAppName());
+            out.name(APP_URL).value(value.getAppURL());
+            out.name(BOOTSTRAP_SCRIPT).value(value.getBootstrapScript());
+            out.name(CPU_COUNT).value(value.getCpuCount());
+            out.name(MEMORY_MB).value(value.getMemoryMB());
+            out.name(APP_CACHE_ENABLE).value(value.isAppCacheEnable());
+            out.name(EVENT_TRACE_SAMPLING_COUNT).value(value.getEventTraceSamplingCount());
             out.endObject();
         }
     }

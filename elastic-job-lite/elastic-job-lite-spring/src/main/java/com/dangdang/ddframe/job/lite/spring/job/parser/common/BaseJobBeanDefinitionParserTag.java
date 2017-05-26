@@ -28,9 +28,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BaseJobBeanDefinitionParserTag {
     
-    public static final String REGISTRY_CENTER_REF_ATTRIBUTE = "registry-center-ref";
-    
     public static final String CLASS_ATTRIBUTE = "class";
+    
+    public static final String JOB_REF_ATTRIBUTE = "job-ref";
+    
+    public static final String REGISTRY_CENTER_REF_ATTRIBUTE = "registry-center-ref";
     
     public static final String CRON_ATTRIBUTE = "cron";
     
