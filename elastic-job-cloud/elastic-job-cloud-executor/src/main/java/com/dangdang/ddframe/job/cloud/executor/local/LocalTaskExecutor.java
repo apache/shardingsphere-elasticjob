@@ -124,12 +124,12 @@ public final class LocalTaskExecutor {
             }
             return true;
         }
-    
+        
         @Override
         public boolean isCancelled() {
             return DAEMON.equals(localCloudJobConfiguration.getExecutionType());
         }
-    
+        
         @Override
         public boolean isDone() {
             return latch.getCount() < 1;
@@ -140,7 +140,7 @@ public final class LocalTaskExecutor {
             latch.await();
             return Long.valueOf(shardingTotalCount - latch.getCount()).intValue();
         }
-    
+        
         @Override
         public Integer get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
             latch.await(timeout, unit);
