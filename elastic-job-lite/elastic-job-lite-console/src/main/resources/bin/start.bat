@@ -11,9 +11,9 @@ shift
 set PORT=%1
 
 :doStart
-set DDCFGDIR=%~dp0%..\conf
-set CLASSPATH=%DDCFGDIR%
-SET CLASSPATH=%~dp0..\lib\*;%CLASSPATH%
+set CFG_DIR=%~dp0%..
+set CLASSPATH=%CFG_DIR%
+set CLASSPATH=%~dp0..\lib\*;%CLASSPATH%
 set CONSOLE_MAIN=com.dangdang.ddframe.job.lite.console.ConsoleBootstrap
 echo on
 if ""%PORT%"" == """" set PORT=8899
