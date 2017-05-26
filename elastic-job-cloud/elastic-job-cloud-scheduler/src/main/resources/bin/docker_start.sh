@@ -6,10 +6,4 @@ LIB_DIR=${DEPLOY_DIR}/lib/*
 CONTAINER_MAIN=com.dangdang.ddframe.job.cloud.scheduler.Bootstrap
 JAVA_OPTS=" -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true -Djava.library.path=/usr/local/lib:/usr/lib:/usr/lib64"
 
-if [ ${hostname} = "" ] || [ ${hostname} = "127.0.0.1" ] || [ ${hostname} = "localhost" ]; then
-  echo "Please config hostname in ENV with a routable IP address."
-  exit;
-fi
-export LIBPROCESS_IP=${hostname}
-
 java ${JAVA_OPTS} -classpath ${LIB_DIR}:. ${CONTAINER_MAIN}

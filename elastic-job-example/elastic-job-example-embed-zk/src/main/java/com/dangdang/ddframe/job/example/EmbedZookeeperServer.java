@@ -54,7 +54,6 @@ public final class EmbedZookeeperServer {
                         Thread.sleep(1000L);
                         testingServer.close();
                     } catch (final InterruptedException | IOException ex) {
-                        ex.printStackTrace();
                     }
                 }
             });
