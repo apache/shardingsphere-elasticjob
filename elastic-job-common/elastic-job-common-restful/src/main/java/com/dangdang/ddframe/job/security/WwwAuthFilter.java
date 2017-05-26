@@ -90,12 +90,12 @@ public final class WwwAuthFilter implements Filter {
         }
     }
     
-    private void authenticateSuccess(final HttpServletResponse response, boolean isGuset) {
+    private void authenticateSuccess(final HttpServletResponse response, boolean isGuest) {
         response.setStatus(200);
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-store");
         response.setDateHeader("Expires", 0);
-        response.setHeader("identify", true == isGuset ? GUEST : ROOT);
+        response.setHeader("identify", true == isGuest ? GUEST : ROOT);
     }
     
     private void needAuthenticate(final HttpServletRequest request, final HttpServletResponse response) {
