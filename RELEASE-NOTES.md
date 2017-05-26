@@ -3,7 +3,6 @@
 ### 功能提升
 
 1. [ISSUE #327](https://github.com/dangdangdotcom/elastic-job/issues/327) spring命名空间支持使用xml方式配置bean
-1. [ISSUE #332](https://github.com/dangdangdotcom/elastic-job/issues/332) elastic-job-cloud增加Docker镜像dangdangdotcom/elastic-job-cloud
 
 ### 缺陷修正
 
