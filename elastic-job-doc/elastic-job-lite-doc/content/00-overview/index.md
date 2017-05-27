@@ -117,6 +117,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [有货网](http://www.yohobuy.com/)
 
+## [有信电话](http://www.uxin.com/)
+
 ## [云猴网](http://www.yunhou.com/)
 
 ## [浙江电子口岸](http://www.zjport.gov.cn/)
