@@ -21,6 +21,7 @@ import com.dangdang.ddframe.job.api.ElasticJob;
 import com.dangdang.ddframe.job.api.script.ScriptJob;
 import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
+import com.dangdang.ddframe.job.exception.ExceptionUtil;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.executor.JobExecutorFactory;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
@@ -133,7 +134,8 @@ public final class TaskExecutor implements Executor {
                 // CHECKSTYLE:OFF
             } catch (final Throwable ex) {
                 // CHECKSTYLE:ON
-                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).build());
+                log.error("Elastic-Job-Cloud-Executor error", ex);
+                executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_ERROR).setMessage(ExceptionUtil.transform(ex)).build());
                 executorDriver.stop();
                 throw ex;
             }
