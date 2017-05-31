@@ -66,7 +66,7 @@ curl -l -H "Content-type: application/json" -X POST -d '{"appName":"foo_app","ap
 ## 发布作业
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appName":"foo_app","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_host:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":3,"cpuCount":0.1,"memoryMB":64.0}' http://elastic_job_cloud_host:8899/api/job/register
 ```
 
 >详细的开发方式请参考[开发指南](/02-guide/dev-guide)
