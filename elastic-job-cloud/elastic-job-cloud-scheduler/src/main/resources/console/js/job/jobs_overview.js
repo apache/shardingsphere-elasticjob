@@ -206,6 +206,7 @@ function renderJob(job) {
     $("#misfire").prop("checked", job.misfire);
     $("#streaming-process").prop("checked", job.streamingProcess);
     $("#job-type").val(job.jobType);
+    $("#script-command-line").val(job.scriptCommandLine);
     if("SIMPLE" === job.jobType) {
         $("#job-class").attr("value", job.jobClass);
         $("#job-class-model").show();
