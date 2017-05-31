@@ -236,6 +236,7 @@ function getJob() {
         streamingProcess: $("#streaming-process").prop("checked"),
         applicationContext: $("#application-context").val(),
         shardingItemParameters: $("#sharding-item-parameters").val(),
+        scriptCommandLine: $("#script-command-line").val(),
         description: $("#description").val()
     };
 }
