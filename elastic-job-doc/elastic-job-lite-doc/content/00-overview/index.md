@@ -71,6 +71,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [当当](http://www.dangdang.com/)
 
+## [国美](http://www.gome.com.cn/))
+
 ## [记健康](http://www.jjklife.com/)
 
 ## [简理财](http://www.jianlc.com/)
@@ -126,6 +128,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 ## [浙金网](https://www.zjmax.com/)
 
 ## [中国平安](http://www.pingan.com/)
+
+## [猪八戒网](http://www.zbj.com/)
 
 ## [赚啦理财](http://www.zhuanlalicai.com/)
 
