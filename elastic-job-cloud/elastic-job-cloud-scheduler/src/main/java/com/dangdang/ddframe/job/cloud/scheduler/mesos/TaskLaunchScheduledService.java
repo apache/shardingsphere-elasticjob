@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
 import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.context.ExecutionType;
 import com.dangdang.ddframe.job.context.TaskContext;
 import com.dangdang.ddframe.job.event.JobEventBus;
@@ -161,10 +162,18 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         CloudAppConfiguration appConfig = appConfigOptional.get();
         taskContext.setSlaveId(offer.getSlaveId().getValue());
         ShardingContexts shardingContexts = getShardingContexts(taskContext, appConfig, jobConfig);
-        boolean useDefaultExecutor = CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
-        Protos.CommandInfo.URI uri = buildURI(appConfig, useDefaultExecutor);
-        Protos.CommandInfo command = buildCommand(uri, appConfig.getBootstrapScript(), shardingContexts, useDefaultExecutor);
-        return buildTaskInfo(taskContext, appConfig, jobConfig, shardingContexts, offer, command, useDefaultExecutor);
+        boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
+        String script = appConfig.getBootstrapScript();
+        if (isCommandExecutor) {
+            script = ((ScriptJobConfiguration)jobConfig.getTypeConfig()).getScriptCommandLine();
+        }
+        Protos.CommandInfo.URI uri = buildURI(appConfig, isCommandExecutor);
+        Protos.CommandInfo command = buildCommand(uri, script, shardingContexts, isCommandExecutor);
+        if (isCommandExecutor) {
+            return buildCommandExecutorTaskInfo(taskContext, jobConfig, shardingContexts, offer, command);
+        } else {
+            return buildCustomizedExecutorTaskInfo(taskContext, appConfig, jobConfig, shardingContexts, offer, command);
+        }
     }
     
     private ShardingContexts getShardingContexts(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig) {
@@ -176,38 +185,23 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
                 jobConfig.getTypeConfig().getCoreConfig().getJobParameter(), assignedShardingItemParameters, appConfig.getEventTraceSamplingCount());
     }
     
-    private Protos.CommandInfo.URI buildURI(final CloudAppConfiguration appConfig, final boolean useDefaultExecutor) {
-        Protos.CommandInfo.URI.Builder result = Protos.CommandInfo.URI.newBuilder().setValue(appConfig.getAppURL()).setCache(appConfig.isAppCacheEnable());
-        if (useDefaultExecutor && !SupportedExtractionType.isExtraction(appConfig.getAppURL())) {
-            result.setExecutable(true);
-        } else {
-            result.setExtract(true);
-        }
-        return result.build();
-    }
-    
-    private Protos.CommandInfo buildCommand(final Protos.CommandInfo.URI uri, final String bootstrapScript, final ShardingContexts shardingContexts, final boolean useDefaultExecutor) {
-        Protos.CommandInfo.Builder result = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true);
-        if (useDefaultExecutor) {
-            CommandLine commandLine = CommandLine.parse(bootstrapScript);
-            commandLine.addArgument(GsonFactory.getGson().toJson(shardingContexts), false);
-            result.setValue(Joiner.on(" ").join(commandLine.getExecutable(), Joiner.on(" ").join(commandLine.getArguments())));
-        } else {
-            result.setValue(bootstrapScript);
-        }
-        return result.build();
-    }
-    
-    private Protos.TaskInfo buildTaskInfo(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,
-                                          final Protos.Offer offer, final Protos.CommandInfo command, final boolean useDefaultExecutor) {
+    private Protos.TaskInfo buildCommandExecutorTaskInfo(final TaskContext taskContext, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,
+                                                         final Protos.Offer offer, final Protos.CommandInfo command) {
         Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName()).setSlaveId(offer.getSlaveId())
                 .addResources(buildResource("cpus", jobConfig.getCpuCount(), offer.getResourcesList()))
                 .addResources(buildResource("mem", jobConfig.getMemoryMB(), offer.getResourcesList()))
                 .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()));
-        if (useDefaultExecutor) {
-            return result.setCommand(command).build();
-        }
+        return result.setCommand(command).build();
+    }
+    
+    private Protos.TaskInfo buildCustomizedExecutorTaskInfo(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,
+                                                         final Protos.Offer offer, final Protos.CommandInfo command) {
+        Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
+                .setName(taskContext.getTaskName()).setSlaveId(offer.getSlaveId())
+                .addResources(buildResource("cpus", jobConfig.getCpuCount(), offer.getResourcesList()))
+                .addResources(buildResource("mem", jobConfig.getMemoryMB(), offer.getResourcesList()))
+                .setData(ByteString.copyFrom(new TaskInfoData(shardingContexts, jobConfig).serialize()));
         Protos.ExecutorInfo.Builder executorBuilder = Protos.ExecutorInfo.newBuilder().setExecutorId(Protos.ExecutorID.newBuilder()
                 .setValue(taskContext.getExecutorId(jobConfig.getAppName()))).setCommand(command)
                 .addResources(buildResource("cpus", appConfig.getCpuCount(), offer.getResourcesList()))
@@ -216,6 +210,28 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
             executorBuilder.setData(ByteString.copyFrom(SerializationUtils.serialize(env.getJobEventRdbConfigurationMap()))).build();
         }
         return result.setExecutor(executorBuilder.build()).build();
+    }
+    
+    private Protos.CommandInfo.URI buildURI(final CloudAppConfiguration appConfig, final boolean isCommandExecutor) {
+        Protos.CommandInfo.URI.Builder result = Protos.CommandInfo.URI.newBuilder().setValue(appConfig.getAppURL()).setCache(appConfig.isAppCacheEnable());
+        if (isCommandExecutor && !SupportedExtractionType.isExtraction(appConfig.getAppURL())) {
+            result.setExecutable(true);
+        } else {
+            result.setExtract(true);
+        }
+        return result.build();
+    }
+    
+    private Protos.CommandInfo buildCommand(final Protos.CommandInfo.URI uri, final String script, final ShardingContexts shardingContexts, final boolean isCommandExecutor) {
+        Protos.CommandInfo.Builder result = Protos.CommandInfo.newBuilder().addUris(uri).setShell(true);
+        if (isCommandExecutor) {
+            CommandLine commandLine = CommandLine.parse(script);
+            commandLine.addArgument(GsonFactory.getGson().toJson(shardingContexts), false);
+            result.setValue(Joiner.on(" ").join(commandLine.getExecutable(), Joiner.on(" ").join(commandLine.getArguments())));
+        } else {
+            result.setValue(script);
+        }
+        return result.build();
     }
     
     private Protos.Resource buildResource(final String type, final double resourceValue, final List<Protos.Resource> resources) {

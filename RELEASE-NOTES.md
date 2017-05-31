@@ -1,3 +1,12 @@
+## 2.1.4
+
+### 功能提升
+
+### 缺陷修正
+
+1. [ISSUE #341](https://github.com/dangdangdotcom/elastic-job/issues/341) elastic-job-cloud界面script作业配置缺少执行脚本
+1. [ISSUE #343](https://github.com/dangdangdotcom/elastic-job/issues/343) elastic-job-cloud中Script类型作业执行脚本不正确
+
 ## 2.1.3
 
 ### 功能提升
