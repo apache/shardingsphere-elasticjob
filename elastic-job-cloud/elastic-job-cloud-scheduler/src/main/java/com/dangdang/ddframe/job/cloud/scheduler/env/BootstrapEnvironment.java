@@ -56,6 +56,7 @@ public final class BootstrapEnvironment {
         try (FileInputStream fileInputStream = new FileInputStream(PROPERTIES_PATH)) {
             result.load(fileInputStream);
         } catch (final IOException ex) {
+            log.warn("Can not load properties file from path: '{}'.", PROPERTIES_PATH);
         }
         setPropertiesByEnv(result);
         return result;

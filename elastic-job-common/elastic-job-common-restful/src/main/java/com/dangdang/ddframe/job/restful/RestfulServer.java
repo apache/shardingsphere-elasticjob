@@ -97,9 +97,9 @@ public final class RestfulServer {
     }
     
     private ServletContextHandler buildServletContextHandler() {
-        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletContextHandler.setContextPath("/");
-        return servletContextHandler;
+        ServletContextHandler result = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        result.setContextPath("/");
+        return result;
     }
     
     private ServletHolder getServletHolder(final String packages) {

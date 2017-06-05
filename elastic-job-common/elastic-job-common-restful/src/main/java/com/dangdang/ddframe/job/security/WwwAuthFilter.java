@@ -17,26 +17,48 @@
 
 package com.dangdang.ddframe.job.security;
 
+import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 
-import javax.servlet.*;
-import com.google.common.base.Strings;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
+/**
+ * 认证过滤器.
+ * 
+ * @author zhangliang 
+ */
 @Slf4j
 public final class WwwAuthFilter implements Filter {
     
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+    
     private static final String AUTH_PREFIX = "Basic ";
-
-    private static final String GUEST = "guest";
-
-    private static final String ROOT = "root";
-
+    
+    private static final String ROOT_IDENTIFY = "root";
+    
+    private static final String ROOT_DEFAULT_USERNAME = "root";
+    
+    private static final String ROOT_DEFAULT_PASSWORD = "root";
+    
+    private static final String GUEST_IDENTIFY = "guest";
+    
+    private static final String GUEST_DEFAULT_USERNAME = "guest";
+    
+    private static final String GUEST_DEFAULT_PASSWORD = "guest";
+    
+    
     private String rootUsername;
     
     private String rootPassword;
@@ -47,26 +69,20 @@ public final class WwwAuthFilter implements Filter {
     
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
-        String fileSeparator = System.getProperty("file.separator");
-        String configFilePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + fileSeparator + "conf" + fileSeparator + "auth.properties";
         Properties props = new Properties();
-        try {
-            props.load(new FileInputStream(configFilePath));
-        } catch (final IOException ex) {
-            log.warn("Cannot found auth config file, use default auth config.");
+        URL classLoaderURL = Thread.currentThread().getContextClassLoader().getResource("");
+        if (null != classLoaderURL) {
+            String configFilePath = Joiner.on(FILE_SEPARATOR).join(classLoaderURL.getPath(), "conf", "auth.properties");
+            try {
+                props.load(new FileInputStream(configFilePath));
+            } catch (final IOException ex) {
+                log.warn("Cannot found auth config file, use default auth config.");
+            }
         }
-        if (Strings.isNullOrEmpty(props.getProperty("root.username"))) {
-            rootUsername = "root";
-        } else {
-            rootUsername = props.getProperty("root.username");
-        }
-        if (Strings.isNullOrEmpty(props.getProperty("guest.username"))) {
-            guestUsername = "guest";
-        } else {
-            guestUsername = props.getProperty("guest.username");
-        }
-        rootPassword = props.getProperty("root.password", "root");
-        guestPassword = props.getProperty("guest.password", "guest");
+        rootUsername = props.getProperty("root.username", ROOT_DEFAULT_USERNAME);
+        rootPassword = props.getProperty("root.password", ROOT_DEFAULT_PASSWORD);
+        guestUsername = props.getProperty("guest.username", GUEST_DEFAULT_USERNAME);
+        guestPassword = props.getProperty("guest.password", GUEST_DEFAULT_PASSWORD);
     }
     
     @Override
@@ -83,22 +99,22 @@ public final class WwwAuthFilter implements Filter {
                 authenticateSuccess(httpResponse, true);
                 chain.doFilter(httpRequest, httpResponse);
             } else {
-                needAuthenticate(httpRequest, httpResponse);
+                needAuthenticate(httpResponse);
             }
         } else {
-            needAuthenticate(httpRequest, httpResponse);
+            needAuthenticate(httpResponse);
         }
     }
     
-    private void authenticateSuccess(final HttpServletResponse response, boolean isGuest) {
+    private void authenticateSuccess(final HttpServletResponse response, final boolean isGuest) {
         response.setStatus(200);
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-store");
         response.setDateHeader("Expires", 0);
-        response.setHeader("identify", true == isGuest ? GUEST : ROOT);
+        response.setHeader("identify", isGuest ? GUEST_IDENTIFY : ROOT_IDENTIFY);
     }
     
-    private void needAuthenticate(final HttpServletRequest request, final HttpServletResponse response) {
+    private void needAuthenticate(final HttpServletResponse response) {
         response.setStatus(401);
         response.setHeader("Cache-Control", "no-store");
         response.setDateHeader("Expires", 0);
