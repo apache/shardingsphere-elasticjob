@@ -24,7 +24,7 @@ curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","be
 注册demo作业的快捷命令:
 
 1. 注册APP:
-curl -l -H "Content-type: application/json" -X POST -d '{"appName":"exampleApp","appURL":"http://localhost:8080/elastic-job-example-cloud-2.1.3.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' http://localhost:8899/api/app
+curl -l -H "Content-type: application/json" -X POST -d '{"appName":"exampleApp","appURL":"http://localhost:8080/elastic-job-example-cloud-2.1.4.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' http://localhost:8899/api/app
 
 2. Java启动方式作业注册:
 
