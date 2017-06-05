@@ -223,7 +223,7 @@ public final class JobEventRdbSearch {
             preparedStatement.setTimestamp(index++, new Timestamp(condition.getStartTime().getTime()));
         }
         if (null != condition.getEndTime()) {
-            preparedStatement.setTimestamp(index++, new Timestamp(condition.getEndTime().getTime()));
+            preparedStatement.setTimestamp(index, new Timestamp(condition.getEndTime().getTime()));
         }
     }
     
