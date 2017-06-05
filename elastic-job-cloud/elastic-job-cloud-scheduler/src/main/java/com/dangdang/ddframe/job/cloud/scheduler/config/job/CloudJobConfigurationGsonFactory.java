@@ -74,22 +74,14 @@ public final class CloudJobConfigurationGsonFactory {
         @Override
         protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
             switch (jsonName) {
-                case APP_NAME:
-                    customizedValueMap.put(jsonName, in.nextString());
-                    break;
                 case CPU_COUNT:
-                    customizedValueMap.put(jsonName, in.nextDouble());
-                    break;
                 case MEMORY_MB:
                     customizedValueMap.put(jsonName, in.nextDouble());
                     break;
-                case JOB_EXECUTION_TYPE:
-                    customizedValueMap.put(jsonName, in.nextString());
-                    break;
-                case BEAN_NAME:
-                    customizedValueMap.put(jsonName, in.nextString());
-                    break;
+                case APP_NAME:
                 case APPLICATION_CONTEXT:
+                case BEAN_NAME:
+                case JOB_EXECUTION_TYPE:
                     customizedValueMap.put(jsonName, in.nextString());
                     break;
                 default:
