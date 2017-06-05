@@ -16,10 +16,6 @@ function validate() {
                         max: 100,
                         message: "应用名称长度不能超过100字符大小"
                     },
-                    regexp: {
-                        regexp: /^[\w\.-]+$/,
-                        message: "应用名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
-                    },
                     callback: {
                         message: "应用已经注册",
                         callback: function() {

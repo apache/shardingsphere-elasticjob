@@ -28,15 +28,12 @@ function validate() {
                         max: 100,
                         message: "作业名称长度不能超过100字符大小"
                     },
-                    regexp: {
-                        regexp: /^[\w\.-]+$/,
-                        message: "作业名称只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
-                    },
                     callback: {
                         message: "作业名称已经注册",
                         callback: function () {
                             var jobName = $("#job-name").val();
                             var result = true;
+                            if ("" !== appName) {
                                 $.ajax({
                                     url: "/api/job/jobs/" + jobName,
                                     contentType: "application/json",
@@ -47,6 +44,7 @@ function validate() {
                                         }
                                     }
                                 });
+                            }
                             return result;
                         }
                     }
