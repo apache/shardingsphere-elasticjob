@@ -38,6 +38,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.AbstractScheduledService;
 import com.google.protobuf.ByteString;
 import com.netflix.fenzo.TaskAssignmentResult;
+import com.netflix.fenzo.TaskRequest;
 import com.netflix.fenzo.TaskScheduler;
 import com.netflix.fenzo.VMAssignmentResult;
 import com.netflix.fenzo.VirtualMachineLease;
@@ -92,6 +93,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     @Override
     protected void startUp() throws Exception {
         log.info("Elastic Job: Start {}", serviceName());
+        AppConstraintEvaluator.init(facadeService);
     }
     
     @Override
@@ -103,8 +105,11 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
     protected void runOneIteration() throws Exception {
         try {
             LaunchingTasks launchingTasks = new LaunchingTasks(facadeService.getEligibleJobContext());
-            List<VirtualMachineLease> virtualMachineLeases = LeasesQueue.getInstance().drainTo();
-            Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(launchingTasks.getPendingTasks(), virtualMachineLeases).getResultMap().values();
+            List<TaskRequest> taskRequests = launchingTasks.getPendingTasks();
+            if (!taskRequests.isEmpty()) {
+                AppConstraintEvaluator.getInstance().loadAppRunningState();
+            }
+            Collection<VMAssignmentResult> vmAssignmentResults = taskScheduler.scheduleOnce(taskRequests, LeasesQueue.getInstance().drainTo()).getResultMap().values();
             List<TaskContext> taskContextsList = new LinkedList<>();
             Map<List<Protos.OfferID>, List<Protos.TaskInfo>> offerIdTaskInfoMap = new HashMap<>();
             for (VMAssignmentResult each: vmAssignmentResults) {
@@ -128,6 +133,8 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         } catch (Throwable throwable) {
             //CHECKSTYLE:ON
             log.error("Launch task error", throwable);
+        } finally {
+            AppConstraintEvaluator.getInstance().clearAppRunningState();
         }
     }
     

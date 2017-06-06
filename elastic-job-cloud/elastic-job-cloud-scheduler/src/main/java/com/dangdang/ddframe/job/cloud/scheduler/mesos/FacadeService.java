@@ -37,6 +37,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,6 +69,8 @@ public final class FacadeService {
     
     private final DisableJobService disableJobService;
     
+    private final MesosStateService mesosStateService;
+    
     public FacadeService(final CoordinatorRegistryCenter regCenter) {
         appConfigService = new CloudAppConfigurationService(regCenter);
         jobConfigService = new CloudJobConfigurationService(regCenter);
@@ -76,6 +79,7 @@ public final class FacadeService {
         failoverService = new FailoverService(regCenter);
         disableAppService = new DisableAppService(regCenter);
         disableJobService = new DisableJobService(regCenter);
+        mesosStateService = new MesosStateService(regCenter);
     }
     
     /**
@@ -309,6 +313,15 @@ public final class FacadeService {
      */
     public void disableJob(final String jobName) {
         disableJobService.add(jobName);
+    }
+    
+    /**
+     * 获取所有正在运行的Executor的信息.
+     * 
+     * @return Executor信息集合
+     */
+    public Collection<MesosStateService.ExecutorStateInfo> loadExecutorInfo() throws JSONException {
+        return mesosStateService.executors();
     }
     
     /**

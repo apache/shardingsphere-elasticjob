@@ -82,6 +82,9 @@ public final class FacadeServiceTest {
     @Mock
     private DisableJobService disableJobService;
     
+    @Mock
+    private MesosStateService mesosStateService;
+    
     private FacadeService facadeService;
     
     @Before
@@ -94,6 +97,7 @@ public final class FacadeServiceTest {
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
         ReflectionUtils.setFieldValue(facadeService, "disableAppService", disableAppService);
         ReflectionUtils.setFieldValue(facadeService, "disableJobService", disableJobService);
+        ReflectionUtils.setFieldValue(facadeService, "mesosStateService", mesosStateService);
     }
     
     @Test
@@ -308,5 +312,11 @@ public final class FacadeServiceTest {
     public void assertDisableJob() {
         facadeService.disableJob("test_job");
         verify(disableJobService).add("test_job");
+    }
+    
+    @Test
+    public void assertLoadExecutor() throws Exception {
+        facadeService.loadExecutorInfo();
+        verify(mesosStateService).executors();
     }
 }
