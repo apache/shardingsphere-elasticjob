@@ -39,7 +39,7 @@ function renderShardingTable() {
             }]
     });
 }
-concle
+
 function shardingStatusFormatter(value, row) {
     switch(value) {
         case "DISABLED":
