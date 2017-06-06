@@ -7,6 +7,7 @@
 1. [ISSUE #322](https://github.com/dangdangdotcom/elastic-job/issues/322) elastic-job-cloud-scheduler调度任务评估资源时考虑对executor的资源使用情况
 1. [ISSUE #341](https://github.com/dangdangdotcom/elastic-job/issues/341) elastic-job-cloud界面script作业配置缺少执行脚本
 1. [ISSUE #343](https://github.com/dangdangdotcom/elastic-job/issues/343) elastic-job-cloud中Script类型作业执行脚本不正确
+1. [ISSUE #345](https://github.com/dangdangdotcom/elastic-job/issues/345) elastic-job-lite-console任务全部禁用时状态显示不正确
 1. [ISSUE #351](https://github.com/dangdangdotcom/elastic-job/issues/351) elastic-job-lite-console管理后台添加注册中心，登录凭证栏无法输入‘:‘
 
 ## 2.1.3
