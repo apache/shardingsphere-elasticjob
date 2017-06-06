@@ -61,8 +61,8 @@ function statusFormatter(value, row) {
         case "DISABLED":
             return "<span class='label label-warning'>已禁用</span>";
             break;
-        case "SHARDING_ERROR":
-            return "<span class='label label-info'>分片调整中</span>";
+        case "SHARDING_FLAG":
+            return "<span class='label label-info'>分片待调整</span>";
             break;
         case "CRASHED":
             return "<span class='label label-default'>已下线</span>";
@@ -85,7 +85,7 @@ function generateOperationButtons(val, row) {
     if ("DISABLED" === row.status) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
     }
-    if ("SHARDING_ERROR" === row.status) {
+    if ("SHARDING_FLAG" === row.status) {
         operationTd = operationTd + "&nbsp;" + shutdownButton;
     }
     if ("CRASHED" === row.status) {

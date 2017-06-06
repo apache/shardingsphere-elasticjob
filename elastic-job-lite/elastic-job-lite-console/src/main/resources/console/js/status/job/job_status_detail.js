@@ -39,7 +39,7 @@ function renderShardingTable() {
             }]
     });
 }
-
+concle
 function shardingStatusFormatter(value, row) {
     switch(value) {
         case "DISABLED":
@@ -48,8 +48,8 @@ function shardingStatusFormatter(value, row) {
         case "RUNNING":
             return "<span class='label label-primary'>运行中</span>";
             break;
-        case "SHARDING_ERROR":
-            return "<span class='label label-info'>分片调整中</span>";
+        case "SHARDING_FLAG":
+            return "<span class='label label-info'>分片待调整</span>";
             break;
         default:
             return "<span class='label label-default'>等待运行</span>";

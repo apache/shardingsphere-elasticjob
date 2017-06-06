@@ -94,7 +94,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
             }
         }
         if (!instances.containsAll(shardingInstances) || shardingInstances.isEmpty()) {
-            return JobStatus.SHARDING_ERROR;
+            return JobStatus.SHARDING_FLAG;
         }
         List<String> serversPath = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
         int disabledServerCount = 0;

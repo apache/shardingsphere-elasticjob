@@ -59,6 +59,6 @@ public final class JobBriefInfo implements Serializable, Comparable<JobBriefInfo
         OK, 
         CRASHED,
         DISABLED,
-        SHARDING_ERROR 
+        SHARDING_FLAG 
     }
 }

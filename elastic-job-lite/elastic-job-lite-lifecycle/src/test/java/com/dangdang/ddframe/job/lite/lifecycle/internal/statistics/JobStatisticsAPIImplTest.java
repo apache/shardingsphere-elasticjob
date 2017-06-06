@@ -114,7 +114,7 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
         when(regCenter.get("/test_job/sharding/2/instance")).thenReturn("ip3@-@defaultInstance");
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
-        assertThat(jobBrief.getStatus(), is(JobStatus.SHARDING_ERROR));
+        assertThat(jobBrief.getStatus(), is(JobStatus.SHARDING_FLAG));
     }
     
     @Test

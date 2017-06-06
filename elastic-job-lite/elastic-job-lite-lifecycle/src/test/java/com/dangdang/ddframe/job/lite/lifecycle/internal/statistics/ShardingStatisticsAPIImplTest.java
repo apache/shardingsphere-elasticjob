@@ -74,7 +74,7 @@ public final class ShardingStatisticsAPIImplTest {
                     break;
                 case 2:
                     assertTrue(each.isFailover());
-                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.SHARDING_ERROR));
+                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.SHARDING_FLAG));
                     assertThat(each.getServerIp(), is("ip2"));
                     assertThat(each.getInstanceId(), is("2341"));
                     break;
