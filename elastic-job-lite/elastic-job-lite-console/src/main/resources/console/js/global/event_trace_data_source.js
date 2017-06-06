@@ -185,10 +185,6 @@ function validate() {
                         max: 50,
                         message: "数据源名称长度不能超过50字符大小"
                     },
-                    regexp: {
-                        regexp: /^[\/\w\.-]+$/,
-                        message: "数据源名称只能使用数字、字母、下划线(_)、短横线(-)、斜线(/)和点号(.)"
-                    },
                     callback: {
                         message: "数据源已经存在",
                         callback: function() {
@@ -230,10 +226,6 @@ function validate() {
                     stringLength: {
                         max: 50,
                         message: "数据库用户名不能超过50字符大小"
-                    },
-                    regexp: {
-                        regexp: /^[\w\.-]+$/,
-                        message: "数据库用户名只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             },
@@ -242,10 +234,6 @@ function validate() {
                     stringLength: {
                         max: 50,
                         message: "数据库口令不能超过50字符大小"
-                    },
-                    regexp: {
-                        regexp: /^[\w\.-]+$/,
-                        message: "数据库口令只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             }

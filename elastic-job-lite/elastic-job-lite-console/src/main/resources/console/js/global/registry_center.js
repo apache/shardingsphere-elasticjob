@@ -191,10 +191,6 @@ function validate() {
                         max: 50,
                         message: "注册中心名称长度不能超过50字符大小"
                     },
-                    regexp: {
-                        regexp: /^[\/\w\.-]+$/,
-                        message: "注册中心名称只能使用数字、字母、下划线(_)、短横线(-)、斜线(/)和点号(.)"
-                    },
                     callback: {
                         message: "注册中心已经存在",
                         callback: function() {
@@ -233,10 +229,6 @@ function validate() {
                     stringLength: {
                         max: 50,
                         message: "命名空间长度不能超过50字符大小"
-                    },
-                    regexp: {
-                        regexp: /^[\/\w\.-]+$/,
-                        message: "命名空间只能使用数字、字母、下划线(_)、短横线(-)、斜线(/)和点号(.)"
                     }
                 }
             },
@@ -245,10 +237,6 @@ function validate() {
                     stringLength: {
                         max: 20,
                         message: "登录凭证长度不能超过20字符大小"
-                    },
-                    regexp: {
-                        regexp: /^[\w\.-]+$/,
-                        message: "登录凭证只能使用数字、字母、下划线(_)、短横线(-)和点号(.)"
                     }
                 }
             }
