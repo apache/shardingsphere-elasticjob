@@ -29,7 +29,13 @@ import lombok.NoArgsConstructor;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.*;
+import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.DISABLED;
+import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.JOB_SHARDING_STRATEGY_CLASS;
+import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.MAX_TIME_DIFF_SECONDS;
+import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.MONITOR_EXECUTION;
+import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.MONITOR_PORT;
+import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.OVERWRITE;
+import static com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationConstants.RECONCILE_INTERVAL_MINUTES;
 
 /**
  * Lite作业配置的Gson工厂.

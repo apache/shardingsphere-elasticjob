@@ -183,7 +183,7 @@ function bootstrapValidator(){
                     regexp: {
                         regexp: /^(\d+)=([a-zA-Z0-9_\u4e00-\u9fa5]+)(,(\d+)=([a-zA-Z0-9_\u4e00-\u9fa5]+))*$/,
                         message: '作业分片项的格式不正确'
-                    },
+                    }
                 }
             }
         }

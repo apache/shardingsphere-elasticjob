@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -60,7 +61,7 @@ public final class ServerStatisticsAPIImplTest {
         when(regCenter.getChildrenKeys("/test_job2/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         when(regCenter.get("/test_job1/servers/ip1")).thenReturn("DISABLED");
         when(regCenter.get("/test_job1/servers/ip2")).thenReturn("");
-        when(regCenter.getChildrenKeys("/test_job1/instances")).thenReturn(Arrays.asList("ip1@-@defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job1/instances")).thenReturn(Collections.singletonList("ip1@-@defaultInstance"));
         
         when(regCenter.get("/test_job2/servers/ip1")).thenReturn("DISABLED");
         when(regCenter.get("/test_job2/servers/ip2")).thenReturn("DISABLED");

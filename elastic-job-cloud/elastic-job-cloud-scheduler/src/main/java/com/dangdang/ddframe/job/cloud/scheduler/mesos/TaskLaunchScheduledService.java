@@ -172,7 +172,7 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         boolean isCommandExecutor = CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType() && JobType.SCRIPT == jobConfig.getTypeConfig().getJobType();
         String script = appConfig.getBootstrapScript();
         if (isCommandExecutor) {
-            script = ((ScriptJobConfiguration)jobConfig.getTypeConfig()).getScriptCommandLine();
+            script = ((ScriptJobConfiguration) jobConfig.getTypeConfig()).getScriptCommandLine();
         }
         Protos.CommandInfo.URI uri = buildURI(appConfig, isCommandExecutor);
         Protos.CommandInfo command = buildCommand(uri, script, shardingContexts, isCommandExecutor);
@@ -202,8 +202,8 @@ public final class TaskLaunchScheduledService extends AbstractScheduledService {
         return result.setCommand(command).build();
     }
     
-    private Protos.TaskInfo buildCustomizedExecutorTaskInfo(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig, final ShardingContexts shardingContexts,
-                                                         final Protos.Offer offer, final Protos.CommandInfo command) {
+    private Protos.TaskInfo buildCustomizedExecutorTaskInfo(final TaskContext taskContext, final CloudAppConfiguration appConfig, final CloudJobConfiguration jobConfig, 
+                                                            final ShardingContexts shardingContexts, final Protos.Offer offer, final Protos.CommandInfo command) {
         Protos.TaskInfo.Builder result = Protos.TaskInfo.newBuilder().setTaskId(Protos.TaskID.newBuilder().setValue(taskContext.getId()).build())
                 .setName(taskContext.getTaskName()).setSlaveId(offer.getSlaveId())
                 .addResources(buildResource("cpus", jobConfig.getCpuCount(), offer.getResourcesList()))

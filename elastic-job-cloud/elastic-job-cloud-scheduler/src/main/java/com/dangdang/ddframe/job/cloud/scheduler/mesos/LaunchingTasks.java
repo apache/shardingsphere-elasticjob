@@ -26,8 +26,8 @@ import com.netflix.fenzo.VMAssignmentResult;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -61,7 +61,7 @@ public final class LaunchingTasks {
     private Collection<TaskRequest> createTaskRequests(final JobContext jobContext) {
         Collection<TaskRequest> result = new ArrayList<>(jobContext.getAssignedShardingItems().size());
         for (int each : jobContext.getAssignedShardingItems()) {
-            result.add(new JobTaskRequest(new TaskContext(jobContext.getJobConfig().getJobName(), Arrays.asList(each), jobContext.getType()), jobContext.getJobConfig()));
+            result.add(new JobTaskRequest(new TaskContext(jobContext.getJobConfig().getJobName(), Collections.singletonList(each), jobContext.getType()), jobContext.getJobConfig()));
         }
         return result;
     }

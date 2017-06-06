@@ -53,7 +53,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AppConstraintEvaluatorTest {
+public final class AppConstraintEvaluatorTest {
     
     private static final double SUFFICIENT_CPU = 1.0 * 13;
     
@@ -75,13 +75,12 @@ public class AppConstraintEvaluatorTest {
     
     @Before
     public void setUp() throws Exception {
-        taskScheduler = new TaskScheduler.Builder()
-                .withLeaseOfferExpirySecs(1000000000L).withLeaseRejectAction(new Action1<VirtualMachineLease>() {
-                    @Override
-                    public void call(final VirtualMachineLease virtualMachineLease) {
-                        
-                    }
-                }).build();
+        taskScheduler = new TaskScheduler.Builder().withLeaseOfferExpirySecs(1000000000L).withLeaseRejectAction(new Action1<VirtualMachineLease>() {
+            
+            @Override
+            public void call(final VirtualMachineLease virtualMachineLease) {
+            }
+        }).build();
     }
     
     @After
@@ -128,7 +127,7 @@ public class AppConstraintEvaluatorTest {
         assertThat(result.getResultMap().size(), is(2));
         assertThat(getAssignedTaskNumber(result), is(18));
     }
-
+    
     @Test
     public void assertLackJobConfig() throws Exception {
         when(facadeService.load("test")).thenReturn(Optional.<CloudJobConfiguration>absent());
@@ -136,7 +135,7 @@ public class AppConstraintEvaluatorTest {
         assertThat(result.getResultMap().size(), is(1));
         assertThat(getAssignedTaskNumber(result), is(1));
     }
-
+    
     @Test
     public void assertLackAppConfig() throws Exception {
         when(facadeService.load("test")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test")));

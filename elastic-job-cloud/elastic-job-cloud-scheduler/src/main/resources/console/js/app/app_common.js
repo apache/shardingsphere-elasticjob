@@ -74,7 +74,7 @@ function validate() {
                         message: "应用所在路径不能为空"
                     }
                 }
-            },
+            }
         }
     });
 }

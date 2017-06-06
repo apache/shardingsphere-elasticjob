@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -109,8 +110,8 @@ public final class JobOperateAPIImplTest {
 
     @Test
     public void assertShutdownWithJobNameAndServerIp() {
-        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("localhost"));
-        when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Arrays.asList("localhost@-@defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Collections.singletonList("localhost"));
+        when(regCenter.getChildrenKeys("/test_job/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
         jobOperateAPI.shutdown(Optional.of("test_job"), Optional.of("localhost"));
         verify(regCenter).remove("/test_job/instances/localhost@-@defaultInstance");
     }
@@ -127,8 +128,8 @@ public final class JobOperateAPIImplTest {
     @Test
     public void assertShutdownWithServerIp() {
         when(regCenter.getChildrenKeys("/")).thenReturn(Arrays.asList("test_job1", "test_job2"));
-        when(regCenter.getChildrenKeys("/test_job1/instances")).thenReturn(Arrays.asList("localhost@-@defaultInstance"));
-        when(regCenter.getChildrenKeys("/test_job2/instances")).thenReturn(Arrays.asList("localhost@-@defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job1/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
+        when(regCenter.getChildrenKeys("/test_job2/instances")).thenReturn(Collections.singletonList("localhost@-@defaultInstance"));
         jobOperateAPI.shutdown(Optional.<String>absent(), Optional.of("localhost"));
         verify(regCenter).getChildrenKeys("/");
         verify(regCenter).remove("/test_job1/instances/localhost@-@defaultInstance");

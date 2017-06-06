@@ -1,21 +1,22 @@
 $(function() {
-    $(".custom-datepicker").daterangepicker({singleDatePicker : true, timePicker : true, timePicker24Hour : true, timePickerSeconds : true, autoUpdateInput : false});
-    $(".custom-datepicker").on("apply.daterangepicker", function(event, picker) {
+    $customDatepicker = $(".custom-datepicker");
+    $customDatepicker.daterangepicker({singleDatePicker : true, timePicker : true, timePicker24Hour : true, timePickerSeconds : true, autoUpdateInput : false});
+    $customDatepicker.on("apply.daterangepicker", function(event, picker) {
         $(this).val(picker.startDate.format("YYYY-MM-DD HH:mm:ss"));
     });
-    $(".custom-datepicker").on("cancel.daterangepicker", function(event, picker) {
+    $customDatepicker.on("cancel.daterangepicker", function(event, picker) {
         $(this).val("");
     });
 });
 
-Date.prototype.format=function(fmt) {
+Date.prototype.format = function(fmt) {
     var date = {
     "M+" : this.getMonth() + 1,
     "d+" : this.getDate(),
     "h+" : this.getHours() % 12 == 0 ? 12 : this.getHours() % 12,
     "H+" : this.getHours(),
     "m+" : this.getMinutes(),
-    "s+" : this.getSeconds(),
+    "s+" : this.getSeconds()
     };
     if(/(y+)/.test(fmt)) {
         fmt=fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
@@ -26,7 +27,7 @@ Date.prototype.format=function(fmt) {
         }
     }
     return fmt;
-}
+};
 
 function dateTimeFormatter(value) {
     if (null == value) {

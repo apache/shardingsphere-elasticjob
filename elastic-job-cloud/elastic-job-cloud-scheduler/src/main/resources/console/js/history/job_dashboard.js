@@ -157,7 +157,7 @@ function renderRegisteredJobs() {
 function renderPieChart(chartName, title, color, jobData) {
     $(chartName).highcharts({
         chart: {
-            backgroundColor: "rgba(255, 255, 255, 0)",
+            backgroundColor: "rgba(255, 255, 255, 0)"
         },
         title: {
             text: title

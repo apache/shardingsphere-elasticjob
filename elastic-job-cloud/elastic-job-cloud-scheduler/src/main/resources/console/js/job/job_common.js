@@ -127,8 +127,8 @@ function validate() {
                 validators: {
                     regexp: {
                         regexp: /^(\d+)=(\w+)(,(\d+)=(\w+))*$/,
-                        message: "作业分片项格式不正确且只包含数字、字母、逗号"
-                    },
+                        message: "作业分片项格式不正确, 格式: 0=xx,1=yy"
+                    }
                 }
             }
         }

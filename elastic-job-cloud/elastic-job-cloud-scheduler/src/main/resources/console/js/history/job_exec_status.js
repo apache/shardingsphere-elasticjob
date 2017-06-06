@@ -20,7 +20,7 @@ function queryParams(params) {
         executionType: $("#execution-type").val(),
         state: $("#state").val(),
         startTime: $("#start-time").val(),
-        endTime: $("#end-time").val(),
+        endTime: $("#end-time").val()
     };
 }
 

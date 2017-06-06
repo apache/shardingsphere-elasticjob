@@ -35,22 +35,22 @@ public final class LiteJsonConstants {
     
     private static final String DEFAULT_JOB_CLASS = "com.dangdang.ddframe.job.lite.fixture.TestSimpleJob";
     
-    private static final boolean DEFAULT_FAIOVER = true;
+    private static final boolean DEFAULT_FAILOVER = true;
     
     private static final boolean DEFAULT_MONITOR_EXECUTION = true;
     
     private static final int DEFAULT_MAX_TIME_DIFF_SECONDS = 1000;
     
     public static String getJobJson() {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAIOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
+        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     public static String getJobJson(final String jobClass) {
-        return String.format(JOB_JSON, jobClass, DEFAULT_FAIOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
+        return String.format(JOB_JSON, jobClass, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     public static String getJobJson(final int maxTimeDiffSeconds) {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAIOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
+        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
     }
     
     public static String getJobJsonWithFailover(final boolean failover) {
@@ -58,6 +58,6 @@ public final class LiteJsonConstants {
     }
     
     public static String getJobJsonWithMonitorExecution(final boolean monitorExecution) {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAIOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
+        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
 }

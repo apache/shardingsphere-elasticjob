@@ -26,7 +26,13 @@ import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 
-import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.*;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.APP_CACHE_ENABLE;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.APP_NAME;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.APP_URL;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.BOOTSTRAP_SCRIPT;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.CPU_COUNT;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.EVENT_TRACE_SAMPLING_COUNT;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.MEMORY_MB;
 
 /**
  * 云作业App配置的Gson工厂.

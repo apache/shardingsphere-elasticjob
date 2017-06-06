@@ -41,13 +41,16 @@ import java.util.Set;
 
 /**
  * App目标slave适配度限制器.
+ * 
+ * <p>
  * 选择slave时需要考虑其上是否运行有App的executor,如果没有运行executor需要将其资源消耗考虑进适配计算算法中.
+ * </p>
  * 
  * @author gaohongtao
  */
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class AppConstraintEvaluator implements ConstraintEvaluator {
+public final class AppConstraintEvaluator implements ConstraintEvaluator {
     
     private static AppConstraintEvaluator instance;
     
@@ -55,6 +58,11 @@ public class AppConstraintEvaluator implements ConstraintEvaluator {
     
     private final FacadeService facadeService;
     
+    /**
+     * 初始化.
+     * 
+     * @param facadeService 为Mesos提供的门面服务
+     */
     public static void init(final FacadeService facadeService) {
         instance = new AppConstraintEvaluator(facadeService);
     }
@@ -111,8 +119,8 @@ public class AppConstraintEvaluator implements ConstraintEvaluator {
                 assigningCpus += assigningAppConfig.getCpuCount();
                 assigningMemoryMB += assigningAppConfig.getMemoryMB();
             }
-        } catch (final LackConfigException e) {
-            log.warn("Lack config, disable {}", getName(), e);
+        } catch (final LackConfigException ex) {
+            log.warn("Lack config, disable {}", getName(), ex);
             return new Result(true, "");
         }
         if (assigningCpus > targetVM.getCurrAvailableResources().cpuCores()) {
@@ -153,6 +161,7 @@ public class AppConstraintEvaluator implements ConstraintEvaluator {
     }
     
     private class LackConfigException extends Exception {
+        
         LackConfigException(final String scope, final String configName) {
             super(String.format("Lack %s's config %s", scope, configName));
         }
