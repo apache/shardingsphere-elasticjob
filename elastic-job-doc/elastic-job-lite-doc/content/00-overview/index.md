@@ -79,6 +79,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [茧数科技](http://a-crm.cn/)
 
+## [金柚网](https://www.joyowo.com/)
+
 ## [就医160](http://www.91160.com/)
 
 ## [快钱](https://www.99bill.com/)
@@ -86,6 +88,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 ## [拉手网](http://www.lashou.com/)
 
 ## [懒人听书](www.lrts.me/)
+
+## [捞财宝(证大爱特)](https://www.laocaibao.com)
 
 ## [米袋集团](http://www.midaigroup.com/)
 
@@ -106,6 +110,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 ## [华图教育](http://bj.huatu.com/)
 
 ## [亚信](http://www.asiainfo.com.cn/)
+
+## [耀莱在线](https://www.yaolaivip.com/)
 
 ## [一加手机](http://www.oneplus.cn/)
 
