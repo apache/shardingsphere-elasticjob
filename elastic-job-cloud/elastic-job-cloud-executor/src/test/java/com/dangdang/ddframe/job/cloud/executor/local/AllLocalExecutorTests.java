@@ -15,24 +15,15 @@
  * </p>
  */
 
-package com.dangdang.ddframe.job.cloud.executor;
+package com.dangdang.ddframe.job.cloud.executor.local;
 
-import com.dangdang.ddframe.job.cloud.executor.local.AllLocalExecutorTests;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({
-        CloudJobFacadeTest.class,
-        DaemonTaskSchedulerTest.class, 
-        JobConfigurationContextTest.class,
-        TaskExecutorTest.class,
-        TaskExecutorThreadTest.class,
-        AllLocalExecutorTests.class
-    })
+@Suite.SuiteClasses(LocalTaskExecutorTest.class)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class AllCloudExecutorTests {
+public final class AllLocalExecutorTests {
 }

@@ -19,3 +19,5 @@ chapter = true
  - Elastic-Job-Cloud的Scheduler如何保证高可用？请阅读[高可用](/02-guide/high-availability/)。
  
  - 为了便于记录、查询、统计及监控作业运行情况，Elastic-Job提供了[事件追踪](/02-guide/event-trace/)功能。
+ 
+ - 为了方便在开发机上调试，运行作业，Elastic-Job提供了[本地运行作业](/02-guide/local-executor)功能。
