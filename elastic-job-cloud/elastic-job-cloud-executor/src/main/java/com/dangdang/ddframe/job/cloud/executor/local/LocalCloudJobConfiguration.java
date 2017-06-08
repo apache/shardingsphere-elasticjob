@@ -35,8 +35,6 @@ public final class LocalCloudJobConfiguration implements JobRootConfiguration {
     
     private final JobTypeConfiguration typeConfig;
     
-    private final LocalCloudJobExecutionType executionType;
-    
     private final int shardingItem;
     
     private String beanName;

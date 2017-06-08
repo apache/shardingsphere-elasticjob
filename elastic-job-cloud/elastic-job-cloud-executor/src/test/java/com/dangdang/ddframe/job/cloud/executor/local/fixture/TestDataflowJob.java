@@ -26,7 +26,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-public class TestDataflowJob implements DataflowJob<String> {
+public final class TestDataflowJob implements DataflowJob<String> {
     
     @Setter
     private static List<String> input;

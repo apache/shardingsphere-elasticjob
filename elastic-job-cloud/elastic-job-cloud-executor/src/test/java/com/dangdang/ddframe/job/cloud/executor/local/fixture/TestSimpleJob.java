@@ -26,7 +26,7 @@ import lombok.Setter;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class TestSimpleJob implements SimpleJob {
+public final class TestSimpleJob implements SimpleJob {
     
     @Getter
     @Setter
