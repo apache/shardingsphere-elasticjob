@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Elastic Job Lite Console</title>
@@ -19,283 +19,283 @@
     <script src="js/util/common.js"></script>
     <script src="js/util/dashboard.js"></script>
     <script src="js/index.js"></script>
-</head>
-<body class="hold-transition skin-blue-light sidebar-mini">
-<div class="wrapper">
-    <header class="main-header">
-        <a class="logo">
-            <span class="logo-lg">Elastic Job Lite v2.1.3</span>
-        </a>
-        <span id="index-job-name" hidden="hidden"></span>
-        <span id="index-server-ip" hidden="hidden"></span>
-        <nav class="navbar navbar-static-top" role="navigation">
-            <div id="navbar" class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <li class="dropdown"><a id="registry-center-dimension-link" href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="registry-center-dimension"><span class="caret"></span></a>
-                        <ul id="registry-center-dimension" class="dropdown-menu"></ul>
-                    </li>
-                    <li class="dropdown"><a id="data-source-dimension-link" href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="data-source-dimension"><span class="caret"></span></a>
-                        <ul id="data-source-dimension" class="dropdown-menu"></ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle">
-                            <i class="fa fa-user"></i>
-                            <span id="authority"></span>
+    </head>
+    <body class="hold-transition skin-blue-light sidebar-mini">
+        <div class="wrapper">
+            <header class="main-header">
+            <a class="logo">
+                <span class="logo-lg">Elastic Job Lite v2.1.4</span>
+            </a>
+            <span id="index-job-name" hidden="hidden"></span>
+            <span id="index-server-ip" hidden="hidden"></span>
+            <nav class="navbar navbar-static-top" role="navigation">
+                <div id="navbar" class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown"><a id="registry-center-dimension-link" href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="registry-center-dimension"><span class="caret"></span></a>
+                            <ul id="registry-center-dimension" class="dropdown-menu"></ul>
+                        </li>
+                        <li class="dropdown"><a id="data-source-dimension-link" href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="data-source-dimension"><span class="caret"></span></a>
+                            <ul id="data-source-dimension" class="dropdown-menu"></ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle">
+                                <i class="fa fa-user"></i>
+                                <span id="authority"></span>
+                            </a>
+                        </li>
+                        <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-flag"></i></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="select-lang"></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" id="lang-zh" data-lang="lang-zh"></a></li>
+                                <li><a href="#" id="lang-en" data-lang="lang-en"></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <ul class="sidebar-menu">
+                    <li class="treeview" id="settings">
+                        <a href="#">
+                            <i class="fa fa-cogs" data-lang="global-settings"></i><i class="pull-right fa fa-angle-left "></i>
+                            <div class="pull-right">
+                                <span id="reg-nav-tag" class="label label-primary"></span>
+                                <span id="event-trace-nav-tag" class="label label-primary"></span>
+                            </div>
                         </a>
-                    </li>
-                    <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-flag"></i></a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="select-lang"></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#" id="lang-zh" data-lang="lang-zh"></a></li>
-                            <li><a href="#" id="lang-en" data-lang="lang-en"></a></li>
+                        <ul class="treeview-menu">
+                            <li><a href="#" id="reg-center" class="sub-menu"><i class="fa fa-circle-o" data-lang="reg-center"></i></a></li>
+                            <li><a href="#" id="event-trace-data-source" class="sub-menu"><i class="fa fa-circle-o" data-lang="event-trace-data-source"></i></a></li>
                         </ul>
                     </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <aside class="main-sidebar">
-        <section class="sidebar">
-            <ul class="sidebar-menu">
-                <li class="treeview" id="settings">
-                    <a href="#">
-                        <i class="fa fa-cogs" data-lang="global-settings"></i><i class="pull-right fa fa-angle-left "></i>
-                        <div class="pull-right">
-                            <span id="reg-nav-tag" class="label label-primary"></span>
-                            <span id="event-trace-nav-tag" class="label label-primary"></span>
-                        </div>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#" id="reg-center" class="sub-menu"><i class="fa fa-circle-o" data-lang="reg-center"></i></a></li>
-                        <li><a href="#" id="event-trace-data-source" class="sub-menu"><i class="fa fa-circle-o" data-lang="event-trace-data-source"></i></a></li>
-                    </ul>
-                </li>
-                <li class="treeview" id="server">
-                    <a href="#">
-                        <i class="fa fa-tasks" data-lang="job-operation"></i><i class="pull-right fa fa-angle-left "></i>
-                        <div class="pull-right">
-                            <span id="job-nav-tag" class="label label-primary"></span>
-                            <span id="server-nav-tag" class="label label-primary"></span>
-                        </div>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#" id="job-status" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-dimension"></i></a></li>
-                        <li><a href="#" id="server-status" class="sub-menu"><i class="fa fa-circle-o" data-lang="server-dimension"></i></a></li>
-                    </ul>
-                </li>
-                <li class="treeview" id="history">
-                    <a href="#">
-                        <i class="fa fa-history" data-lang="job-history"></i><i class="pull-right fa fa-angle-left "></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#" id="event-trace-history" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-event-trace-history"></i></a></li>
-                        <li><a href="#" id="status-history" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-status-history"></i></a></li>
-                    </ul>
-                </li>
-                <li class="treeview">
-                    <a href="#" id="help" class="sub-menu">
-                        <i class="fa fa-book" data-lang="help"></i>
-                    </a>
-                </li>
-            </ul>
-        </section>
-    </aside>
-    <div id="content" class="lang-en">
-    </div>
-    <footer class="main-footer">
-        <strong>Copyright &copy; 2004-2017 <a href="http://www.dangdang.com" data-lang="dangdang"></a>.</strong> All rights reserved.
-    </footer>
-    <aside class="control-sidebar control-sidebar-dark">
-        <div class="tab-content">
-            <div id="control-sidebar-theme-demo-options-tab" class="tab-pane active">
-                <h4 class="control-sidebar-heading" data-lang="change-theme-skin"></h4>
-                <ul class="list-unstyled clearfix">
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-blue" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-blue top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
+                    <li class="treeview" id="server">
+                        <a href="#">
+                            <i class="fa fa-tasks" data-lang="job-operation"></i><i class="pull-right fa fa-angle-left "></i>
+                            <div class="pull-right">
+                                <span id="job-nav-tag" class="label label-primary"></span>
+                                <span id="server-nav-tag" class="label label-primary"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="blue"></p>
+                        <ul class="treeview-menu">
+                            <li><a href="#" id="job-status" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-dimension"></i></a></li>
+                            <li><a href="#" id="server-status" class="sub-menu"><i class="fa fa-circle-o" data-lang="server-dimension"></i></a></li>
+                        </ul>
                     </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-black" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
+                    <li class="treeview" id="history">
+                        <a href="#">
+                            <i class="fa fa-history" data-lang="job-history"></i><i class="pull-right fa fa-angle-left "></i>
                         </a>
-                        <p class="text-center no-margin" data-lang="white"></p>
+                        <ul class="treeview-menu">
+                            <li><a href="#" id="event-trace-history" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-event-trace-history"></i></a></li>
+                            <li><a href="#" id="status-history" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-status-history"></i></a></li>
+                        </ul>
                     </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-purple" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-purple top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
+                    <li class="treeview">
+                        <a href="#" id="help" class="sub-menu">
+                            <i class="fa fa-book" data-lang="help"></i>
                         </a>
-                        <p class="text-center no-margin" data-lang="purple"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-green" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-green top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="green"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-yellow" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-yellow top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="yellow"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-red" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-red top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="red"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-blue-light" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-light-blue top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="blue-light"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-black-light" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="white-light"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-purple-light" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-purple top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="purple-light"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-green-light" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-green top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="green-light"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-yellow-light" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-yellow top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="yellow-light"></p>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" data-skin="skin-red-light" class="clearfix full-opacity-hover">
-                            <div>
-                                <span class="bg-red top-span"></span>
-                            </div>
-                            <div>
-                                <span class="down-span-left"></span>
-                                <span class="down-span-right"></span>
-                            </div>
-                        </a>
-                        <p class="text-center no-margin" data-lang="red-light"></p>
                     </li>
                 </ul>
+            </section>
+        </aside>
+        <div id="content" class="lang-en">
+        </div>
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2004-2017 <a href="http://www.dangdang.com" data-lang="dangdang"></a>.</strong> All rights reserved.
+        </footer>
+        <aside class="control-sidebar control-sidebar-dark">
+            <div class="tab-content">
+                <div id="control-sidebar-theme-demo-options-tab" class="tab-pane active">
+                    <h4 class="control-sidebar-heading" data-lang="change-theme-skin"></h4>
+                    <ul class="list-unstyled clearfix">
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-blue top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="blue"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-black" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="white"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-purple" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-purple top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="purple"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-green" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-green top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="green"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-yellow" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-yellow top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="yellow"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-red" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-red top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="red"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-blue-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-light-blue top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="blue-light"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-black-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="white-light"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-purple-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-purple top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="purple-light"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-green-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-green top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="green-light"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-yellow-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-yellow top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="yellow-light"></p>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-skin="skin-red-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span class="bg-red top-span"></span>
+                                </div>
+                                <div>
+                                    <span class="down-span-left"></span>
+                                    <span class="down-span-right"></span>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin" data-lang="red-light"></p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+        </div>
+        <div id="message-dialog" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h4 id="message-info"></h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-xs btn-primary" data-dismiss="modal" data-lang="close"></button>
+                    </div>
+                </div>
             </div>
         </div>
-    </aside>
-</div>
-<div id="message-dialog" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h4 id="message-info"></h4>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-xs btn-primary" data-dismiss="modal" data-lang="close"></button>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="history-message-modal" class="modal">
-    <div class="modal-dialog" id="modal-dialog-width">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h5 id="history-message"></h5>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-xs btn-danger" data-dismiss="modal" data-lang="close"></button>
+        <div id="history-message-modal" class="modal">
+            <div class="modal-dialog" id="modal-dialog-width">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h5 id="history-message"></h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-xs btn-danger" data-dismiss="modal" data-lang="close"></button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<div id="confirm-dialog" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h4 id="confirm-info"></h4>
-            </div>
-            <div class="modal-footer">
-                <button id="confirm-btn" type="button" class="btn-xs btn-danger" data-lang="submit"></button>
-                <button type="button" class="btn-xs btn-success" data-dismiss="modal" data-lang="close"></button>
+        <div id="confirm-dialog" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h4 id="confirm-info"></h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="confirm-btn" type="button" class="btn-xs btn-danger" data-lang="submit"></button>
+                        <button type="button" class="btn-xs btn-success" data-dismiss="modal" data-lang="close"></button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>
