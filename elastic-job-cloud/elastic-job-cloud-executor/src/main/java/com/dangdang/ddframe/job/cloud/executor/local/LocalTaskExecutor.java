@@ -18,31 +18,35 @@
 package com.dangdang.ddframe.job.cloud.executor.local;
 
 import com.dangdang.ddframe.job.api.ElasticJob;
-import com.dangdang.ddframe.job.api.ShardingContext;
+import com.dangdang.ddframe.job.api.JobType;
 import com.dangdang.ddframe.job.api.dataflow.DataflowJob;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
+import com.dangdang.ddframe.job.cloud.executor.CloudJobFacade;
+import com.dangdang.ddframe.job.cloud.executor.JobConfigurationContext;
 import com.dangdang.ddframe.job.config.JobCoreConfiguration;
+import com.dangdang.ddframe.job.config.dataflow.DataflowJobConfiguration;
 import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
-import com.dangdang.ddframe.job.exception.JobConfigurationException;
+import com.dangdang.ddframe.job.event.JobEventBus;
 import com.dangdang.ddframe.job.exception.JobSystemException;
+import com.dangdang.ddframe.job.executor.AbstractElasticJobExecutor;
 import com.dangdang.ddframe.job.executor.ShardingContexts;
+import com.dangdang.ddframe.job.executor.type.DataflowJobExecutor;
+import com.dangdang.ddframe.job.executor.type.ScriptJobExecutor;
+import com.dangdang.ddframe.job.executor.type.SimpleJobExecutor;
 import com.dangdang.ddframe.job.util.config.ShardingItemParameters;
-import com.dangdang.ddframe.job.util.json.GsonFactory;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * 本地作业执行器.
  * 
  * @author gaohongtao
+ * @author zhangliang
  */
 @RequiredArgsConstructor
 public final class LocalTaskExecutor {
@@ -52,48 +56,48 @@ public final class LocalTaskExecutor {
     /**
      * 本地执行作业.
      */
+    @SuppressWarnings("unchecked")
     public void execute() {
+        AbstractElasticJobExecutor jobExecutor;
+        CloudJobFacade jobFacade = new CloudJobFacade(getShardingContexts(), getJobConfigurationContext(), new JobEventBus());
         switch (localCloudJobConfiguration.getTypeConfig().getJobType()) {
             case SIMPLE:
-                processSimple();
+                jobExecutor = new SimpleJobExecutor(getJobInstance(SimpleJob.class), jobFacade);
                 break;
-            case DATAFLOW: 
-                processDataflow();
+            case DATAFLOW:
+                jobExecutor = new DataflowJobExecutor(getJobInstance(DataflowJob.class), jobFacade);
                 break;
             case SCRIPT:
-                processScript();
+                jobExecutor = new ScriptJobExecutor(jobFacade);
                 break;
             default:
                 throw new UnsupportedOperationException(localCloudJobConfiguration.getTypeConfig().getJobType().name());
         }
+        jobExecutor.execute();
     }
     
-    private void processSimple() {
-        getJobInstance(SimpleJob.class).execute(getShardingContext());
+    private ShardingContexts getShardingContexts() {
+        JobCoreConfiguration coreConfig = localCloudJobConfiguration.getTypeConfig().getCoreConfig();
+        Map<Integer, String> shardingItemMap = new HashMap<>(1, 1);
+        shardingItemMap.put(localCloudJobConfiguration.getShardingItem(),
+                new ShardingItemParameters(coreConfig.getShardingItemParameters()).getMap().get(localCloudJobConfiguration.getShardingItem()));
+        return new ShardingContexts(Joiner.on("@-@").join(localCloudJobConfiguration.getJobName(), localCloudJobConfiguration.getShardingItem(), "READY", "foo_slave_id", "foo_uuid"),
+                localCloudJobConfiguration.getJobName(), coreConfig.getShardingTotalCount(), coreConfig.getJobParameter(), shardingItemMap);
     }
     
-    @SuppressWarnings("unchecked")
-    private void processDataflow() {
-        ShardingContext shardingContext = getShardingContext();
-        DataflowJob<Object> dataflowJob = getJobInstance(DataflowJob.class);
-        List<Object> data = dataflowJob.fetchData(shardingContext);
-        if (null != data && !data.isEmpty()) {
-            dataflowJob.processData(shardingContext, data);
+    private JobConfigurationContext getJobConfigurationContext() {
+        Map<String, String> jobConfigurationMap = new HashMap<>();
+        jobConfigurationMap.put("jobClass", localCloudJobConfiguration.getTypeConfig().getJobClass());
+        jobConfigurationMap.put("jobType", localCloudJobConfiguration.getTypeConfig().getJobType().name());
+        jobConfigurationMap.put("jobName", localCloudJobConfiguration.getJobName());
+        jobConfigurationMap.put("beanName", localCloudJobConfiguration.getBeanName());
+        jobConfigurationMap.put("applicationContext", localCloudJobConfiguration.getApplicationContext());
+        if (JobType.DATAFLOW == localCloudJobConfiguration.getTypeConfig().getJobType()) {
+            jobConfigurationMap.put("streamingProcess", Boolean.toString(((DataflowJobConfiguration) localCloudJobConfiguration.getTypeConfig()).isStreamingProcess()));
+        } else if (JobType.SCRIPT == localCloudJobConfiguration.getTypeConfig().getJobType()) {
+            jobConfigurationMap.put("scriptCommandLine", ((ScriptJobConfiguration) localCloudJobConfiguration.getTypeConfig()).getScriptCommandLine());
         }
-    }
-    
-    private void processScript() {
-        String scriptCommandLine = ((ScriptJobConfiguration) localCloudJobConfiguration.getTypeConfig()).getScriptCommandLine();
-        if (Strings.isNullOrEmpty(scriptCommandLine)) {
-            throw new JobConfigurationException("Cannot find script command line for job '%s', job is not executed.", localCloudJobConfiguration.getJobName());
-        }
-        CommandLine commandLine = CommandLine.parse(scriptCommandLine);
-        commandLine.addArgument(GsonFactory.getGson().toJson(getShardingContext()), false);
-        try {
-            new DefaultExecutor().execute(commandLine);
-        } catch (final IOException ex) {
-            throw new JobConfigurationException("Execute script failure.", ex);
-        }
+        return new JobConfigurationContext(jobConfigurationMap);
     }
     
     private <T extends ElasticJob> T getJobInstance(final Class<T> clazz) {
@@ -109,14 +113,5 @@ public final class LocalTaskExecutor {
             result = new ClassPathXmlApplicationContext(localCloudJobConfiguration.getApplicationContext()).getBean(localCloudJobConfiguration.getBeanName());
         }
         return clazz.cast(result);
-    }
-    
-    private ShardingContext getShardingContext() {
-        JobCoreConfiguration coreConfig = localCloudJobConfiguration.getTypeConfig().getCoreConfig();
-        Map<Integer, String> shardingItemMap = new HashMap<>(1, 1);
-        shardingItemMap.put(localCloudJobConfiguration.getShardingItem(), 
-                new ShardingItemParameters(coreConfig.getShardingItemParameters()).getMap().get(localCloudJobConfiguration.getShardingItem()));
-        return new ShardingContext(new ShardingContexts("foo_task_id", localCloudJobConfiguration.getJobName(), 
-                coreConfig.getShardingTotalCount(), coreConfig.getJobParameter(), shardingItemMap), localCloudJobConfiguration.getShardingItem());
     }
 }
