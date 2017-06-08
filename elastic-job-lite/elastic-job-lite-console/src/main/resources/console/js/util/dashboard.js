@@ -24,11 +24,12 @@ function renderRegCenterForDashboardNav() {
             var regCenterName = data[index].name;
             var regCenterDisplayName;
             if (activatedRegCenterName && activatedRegCenterName === regCenterName) {
-                regCenterDisplayName = "<b>" + regCenterName + "&nbsp;&nbsp;(已连接)</b>";
+                regCenterDisplayName = "<b>" + regCenterName + "(<span data-lang='connected'></span>)</b>";
             } else {
                 regCenterDisplayName = regCenterName;
             }
-            registryCenterDimension.append("<li><a href='#' reg-name='" + regCenterName + "' data-loading-text='切换中...'>" + regCenterDisplayName + "</a></li>");
+            registryCenterDimension.append("<li><a href='#' reg-name='" + regCenterName + "' data-loading-text='loading...'>" + regCenterDisplayName + "</a></li>");
+            doLocale();
         }
         if (0 === data.length) {
             registryCenterDimension.hide();
@@ -57,11 +58,12 @@ function renderDataSourceForDashboardNav() {
             var dataSourceName = data[index].name;
             var dataSourceDisplayName;
             if (activatedDataSource && activatedDataSource === dataSourceName) {
-                dataSourceDisplayName = "<b>" + dataSourceName + "&nbsp;&nbsp;(已连接)</b>";
+                dataSourceDisplayName = "<b>" + dataSourceName + "(<span data-lang='connected'></span>)</b>";
             } else {
                 dataSourceDisplayName = dataSourceName;
             }
-            dataSourceDimension.append("<li><a href='#' data-source-name='" + dataSourceName + "' data-loading-text='切换中...'>" + dataSourceDisplayName + "</a></li>");
+            dataSourceDimension.append("<li><a href='#' data-source-name='" + dataSourceName + "' data-loading-text='loading...'>" + dataSourceDisplayName + "</a></li>");
+            doLocale();
         }
         if (0 === data.length) {
             dataSourceDimension.hide();
@@ -97,7 +99,7 @@ function switchRegCenter() {
                     $("#reg-center").parent().addClass("active");
                 } else {
                     link.button("reset");
-                    showFailureDialog("操作未成功，原因：连接失败，请检查注册中心配置");
+                    showRegCenterFailureDialog();
                 }
             }
         });
@@ -125,7 +127,7 @@ function switchDataSource() {
                     $("#event-trace-data-source").parent().addClass("active");
                 } else {
                     link.button("reset");
-                    showFailureDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
+                    showDataSourceFailureDialog();
                 }
             }
         });

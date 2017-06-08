@@ -7,33 +7,9 @@ $(function() {
 function renderJobsOverview() {
     var jsonData = {
         cache: false,
-        columns:
-            [{
-                field: "jobName",
-                title: "作业名",
-                sortable: "true"
-            }, {
-                field: "shardingTotalCount",
-                title: "分片总数",
-                sortable: "true"
-            }, {
-                field: "cron",
-                title: "cron表达式",
-                sortable: "true"
-            }, {
-                field: "description",
-                title: "描述",
-                sortable: "true"
-            }, {
-                field: "status",
-                title: "运行状态",
-                formatter: "statusFormatter",
-                sortable: "true"
-            }, {
-                field: "operation",
-                title: "操作",
-                formatter: "generateOperationButtons"
-            }]
+        search: true,
+        showRefresh: true,
+        showColumns: true
     };
     var activated = false;
     $.ajax({
@@ -50,34 +26,36 @@ function renderJobsOverview() {
         columns: jsonData.columns,
         url: jsonData.url,
         cache: jsonData.cache
+    }).on("all.bs.table", function() {
+        doLocale();
     });
 }
 
 function statusFormatter(value, row) {
     switch(value) {
         case "OK":
-            return "<span class='label label-success'>正常</span>";
+            return "<span class='label label-success' data-lang='normal'></span>";
             break;
         case "DISABLED":
-            return "<span class='label label-warning'>已禁用</span>";
+            return "<span class='label label-warning' data-lang='disabled'></span>";
             break;
-        case "SHARDING_FLAG":
-            return "<span class='label label-info'>分片待调整</span>";
+        case "SHARDING_ERROR":
+            return "<span class='label label-info' data-lang='sharding-error'></span>";
             break;
         case "CRASHED":
-            return "<span class='label label-default'>已下线</span>";
+            return "<span class='label label-default' data-lang='crashed'></span>";
             break;
     }
 }
 
 function generateOperationButtons(val, row) {
-    var modifyButton = "<button operation='modify-job' class='btn-xs btn-primary' job-name='" + row.jobName + "'>修改</button>";
-    var shardingStatusButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "'>分片状态</button>";
-    var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "'>触发</button>";
-    var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "'>禁用</button>";
-    var enableButton = "<button operation='enable-job' class='btn-xs btn-success' job-name='" + row.jobName + "'>启用</button>";
-    var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>终止</button>";
-    var removeButton = "<button operation='remove-job' class='btn-xs btn-danger' job-name='" + row.jobName + "'>删除</button>";
+    var modifyButton = "<button operation='modify-job' class='btn-xs btn-primary' job-name='" + row.jobName + "' data-lang='update-job'></button>";
+    var shardingStatusButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "' data-lang='job-detail'></button>";
+    var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "' data-lang='trigger'></button>";
+    var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "' data-lang='disable'></button>";
+    var enableButton = "<button operation='enable-job' class='btn-xs btn-success' job-name='" + row.jobName + "' data-lang='enable'></button>";
+    var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='shutdown'></button>";
+    var removeButton = "<button operation='remove-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='remove'></button>";
     var operationTd = modifyButton + "&nbsp;" + shardingStatusButton  + "&nbsp;";
     if ("OK" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
@@ -85,7 +63,7 @@ function generateOperationButtons(val, row) {
     if ("DISABLED" === row.status) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
     }
-    if ("SHARDING_FLAG" === row.status) {
+    if ("SHARDING_ERROR" === row.status) {
         operationTd = operationTd + "&nbsp;" + shutdownButton;
     }
     if ("CRASHED" === row.status) {
@@ -114,6 +92,7 @@ function bindModifyButton() {
                 if (null !== data) {
                     $(".box-body").remove();
                     $('#update-job-body').load('html/status/job/job_config.html', null, function() {
+                        doLocale();
                         $('#data-update-job').modal({backdrop : 'static', keyboard : true});
                         renderJob(data);
                         $("#job-overviews-name").text(jobName);
@@ -129,7 +108,9 @@ function bindShardingStatusButton() {
     $(document).on("click", "button[operation='job-detail'][data-toggle!='modal']", function(event) {
         var jobName = $(event.currentTarget).attr("job-name");
         $("#index-job-name").text(jobName);
-        $("#content").load("html/status/job/job_status_detail.html");
+        $("#content").load("html/status/job/job_status_detail.html", null, function(){
+            doLocale();
+        });
     });
 }
 

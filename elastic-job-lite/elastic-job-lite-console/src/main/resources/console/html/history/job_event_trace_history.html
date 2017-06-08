@@ -1,71 +1,70 @@
 <div class="index-content">
     <section class="content-header">
-        <h4>历史作业执行轨迹 </h4>
+        <h4 data-lang="job-event-trace-history"></h4>
         <ol class="breadcrumb">
-            <li class="active"><i class="fa fa-history"></i> 作业历史</li>
-            <li class="active">历史轨迹</li>
+            <li class="active"><i class="fa fa-history" data-lang="job-history"></i></li>
+            <li class="active" data-lang="job-event-trace-history"></li>
         </ol>
     </section>
     <section class="content">
         <div id="jobExecDetailToolbar">
             <div class="form-inline" role="form">
                 <div class="form-group toolbar">
-                    <label for="job-name">作业名称:</label>
+                    <label for="job-name" data-lang="job-name"></label>
                     <input type="text" class="form-control" id="job-name" placeholder="">
                 </div>
                 <div class="form-group toolbar">
-                    <label for="ip">主机IP:</label>
+                    <label for="ip" data-lang="server-ip"></label>
                     <input type="text" class="form-control" data-inputmask="'alias': 'ip'" data-mask="" id="ip">
                 </div>
                 <br/>
                 <div class="form-group toolbar">
-                    <label for="start-time">执行时间:</label>
+                    <label for="start-time" data-lang="start-time"></label>
                     <input type="text" class="form-control pull-right custom-datepicker" id="start-time">
                 </div>
                 <div class="form-group toolbar">
-                    <label for="end-time">至</label>
+                    <label for="end-time" data-lang="end-time"></label>
                     <input type="text" class="form-control pull-right custom-datepicker" id="end-time">
                 </div>
                 <div class="form-group toolbar">
-                    <label>执行结果:</label>
-                    <input type="radio" name="isSuccess" value="1">成功
-                    <input type="radio" name="isSuccess" value="0">失败
-                    <input type="radio" name="isSuccess" value="" checked="checked">全部
+                    <label data-lang="execute-result"></label>:
+                    <input type="radio" name="isSuccess" value="1">Success
+                    <input type="radio" name="isSuccess" value="0">Failure
+                    <input type="radio" name="isSuccess" value="" checked="checked">All
                 </div>
             </div>
         </div>
         <table id="job-exec-details-table"
-            data-show-refresh="true"
-            data-show-toggle="true"
-            data-striped="true"
-            data-toggle="table"
-            data-url="/api/event-trace/execution"
-            data-flat="true"
-            data-click-to-select="true"
-            data-row-style="rowStyle"
-            data-query-params="queryParams"
-            data-query-params-type="notLimit"
-            data-side-pagination="server"
-            data-pagination="true"
-            data-page-list="[10, 20, 50, 100]"
-            data-show-columns="true"
-            data-toolbar="#jobExecDetailToolbar">
+               data-show-refresh="true"
+               data-show-toggle="true"
+               data-striped="true"
+               data-toggle="table"
+               data-url="/api/event-trace/execution"
+               data-flat="true"
+               data-click-to-select="true"
+               data-row-style="rowStyle"
+               data-query-params="queryParams"
+               data-query-params-type="notLimit"
+               data-side-pagination="server"
+               data-pagination="true"
+               data-page-list="[10, 20, 50, 100]"
+               data-show-columns="true"
+               data-toolbar="#jobExecDetailToolbar">
             <thead>
-                <tr>
-                    <th data-field="jobName" data-sortable="true">作业名称</th>
-                    <th data-field="ip" data-sortable="true">宿主机IP</th>
-                    <th data-field="shardingItem">分片项</th>
-                    <th data-field="success" data-sortable="true" data-formatter="successFormatter">执行结果</th>
-                    <th data-field="failureCause.plainText" data-formatter="splitFormatter">失败原因</th>
-                    <th data-field="startTime" data-sortable="true" data-formatter="dateTimeFormatter">执行开始时间</th>
-                    <th data-field="completeTime" data-sortable="true" data-formatter="dateTimeFormatter">执行结束时间</th>
-                </tr>
+            <tr>
+                <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                <th data-field="ip" data-sortable="true"><span data-lang="server-ip"></span></th>
+                <th data-field="shardingItem"><span data-lang="sharding-item"></span></th>
+                <th data-field="success" data-sortable="true" data-formatter="successFormatter"><span data-lang="execute-result"></span></th>
+                <th data-field="failureCause.plainText" data-formatter="splitFormatter"><span data-lang="failure-reason"></span></th>
+                <th data-field="startTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="execute-start-time"></span></th>
+                <th data-field="completeTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="execute-end-time"></span></th>
+            </tr>
             </thead>
         </table>
     </section>
 </div>
-<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
 <script src="lib/daterangepicker/moment.min.js"></script>
 <script src="lib/daterangepicker/daterangepicker.js"></script>
 <script src="lib/input-mask/jquery.inputmask.js"></script>

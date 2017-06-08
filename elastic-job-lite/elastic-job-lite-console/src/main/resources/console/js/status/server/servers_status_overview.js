@@ -7,28 +7,9 @@ $(function() {
 function renderServersOverview() {
     var jsonData = {
         cache: false,
-        columns:
-            [{
-                field: "serverIp",
-                title: "服务器IP",
-                sortable: "true"
-            }, {
-                field: "instancesNum",
-                title: "运行实例数",
-                sortable: "true"
-            }, {
-                field: "jobsNum",
-                title: "作业总数",
-                sortable: "true"
-            }, {
-                field: "disabledJobsNum",
-                title: "禁用作业数",
-                sortable: "true"
-            }, {
-                field: "operation",
-                title: "操作",
-                formatter: "generateOperationButtons"
-            }]
+        search: true,
+        showRefresh: true,
+        showColumns: true
     };
     var activated = false;
     $.ajax({
@@ -45,6 +26,8 @@ function renderServersOverview() {
         columns: jsonData.columns,
         url: jsonData.url,
         cache: jsonData.cache
+    }).on("all.bs.table", function() {
+        doLocale();
     });
 }
 
@@ -57,11 +40,11 @@ function bindButtons() {
 }
 
 function generateOperationButtons(val, row) {
-    var detailButton = "<button operation='server-detail' class='btn-xs btn-info' server-ip='" + row.serverIp + "'>详情</button>";
-    var disableButton = "<button operation='disable-server' class='btn-xs btn-warning' server-ip='" + row.serverIp + "'>禁用</button>";
-    var enableButton = "<button operation='enable-server' class='btn-xs btn-success' server-ip='" + row.serverIp + "'>启用</button>";
-    var shutdownButton = "<button operation='shutdown-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "'>终止</button>";
-    var removeButton = "<button operation='remove-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "'>清理</button>";
+    var detailButton = "<button operation='server-detail' class='btn-xs btn-info' server-ip='" + row.serverIp + "' data-lang='detail'></button>";
+    var disableButton = "<button operation='disable-server' class='btn-xs btn-warning' server-ip='" + row.serverIp + "' data-lang='disable'></button>";
+    var enableButton = "<button operation='enable-server' class='btn-xs btn-success' server-ip='" + row.serverIp + "' data-lang='enable'></button>";
+    var shutdownButton = "<button operation='shutdown-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "' data-lang='shutdown'></button>";
+    var removeButton = "<button operation='remove-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "' data-lang='remove'></button>";
     if (row.instancesNum == 0) {
         return removeButton;
     }
@@ -79,7 +62,9 @@ function bindServerStatusDetailButton() {
     $(document).on("click", "button[operation='server-detail'][data-toggle!='modal']", function(event) {
         var serverIp = $(event.currentTarget).attr("server-ip");
         $("#index-server-ip").text(serverIp);
-        $("#content").load("html/status/server/server_status_detail.html");
+        $("#content").load("html/status/server/server_status_detail.html", null, function(){
+            doLocale();
+        });
     });
 }
 

@@ -1,13 +1,24 @@
 <div class="index-content">
     <section class="content-header">
-        <h4>作业维度</h4>
+        <h4 data-lang="job-dimension"></h4>
         <ol class="breadcrumb">
-            <li class="active"><i class="fa fa-tasks"></i> 作业操作</li>
-            <li class="active">作业维度</li>
+            <li class="active"><i class="fa fa-tasks" data-lang="job-operation"></i></li>
+            <li class="active" data-lang="job-dimension"></li>
         </ol>
     </section>
     <section class="content">
-        <table id="jobs-status-overview-tbl" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true" data-show-columns="true"></table>
+        <table id="jobs-status-overview-tbl" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true">
+            <thead>
+            <tr>
+                <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                <th data-field="shardingTotalCount" data-sortable="true"><span data-lang="sharding-total-count"></span></th>
+                <th data-field="cron" data-sortable="true"><span data-lang="cron"></span></th>
+                <th data-field="description" data-sortable="true"><span data-lang="description"></span></th>
+                <th data-field="status" data-sortable="true" data-formatter="statusFormatter"><span data-lang="status"></span></th>
+                <th data-field="operation" data-formatter="generateOperationButtons"><span data-lang="operation"></span></th>
+            </tr>
+            </thead>
+        </table>
     </section>
 </div>
 <div class="modal" id="data-update-job" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
@@ -16,7 +27,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h2 class="modal-title">修改作业</h2>
+                    <h2 class="modal-title" data-lang="update-job"></h2>
                     <div id="job-overviews-name" hidden="hidden"></div>
                 </div>
                 <div class="modal-body" id="update-job-body">
@@ -25,7 +36,6 @@
         </div>
     </div>
 </div>
-<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
 <script src="js/util/common.js"></script>
 <script src="js/status/job/jobs_status_overview.js"></script>

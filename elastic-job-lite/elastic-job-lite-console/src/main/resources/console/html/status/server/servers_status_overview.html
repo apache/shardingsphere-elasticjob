@@ -1,16 +1,25 @@
 <div class="index-content">
     <section class="content-header">
-        <h4>服务器维度</h4>
+        <h4 data-lang="server-dimension"></h4>
         <ol class="breadcrumb">
-            <li class="active"><i class="fa fa-tasks"></i> 作业操作</li>
-            <li class="active">服务器维度</li>
+            <li class="active"><i class="fa fa-tasks" data-lang="job-operation"></i></li>
+            <li class="active" data-lang="server-dimension"></li>
         </ol>
     </section>
     <section class="content">
-        <table id="servers-overview-tbl" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true" data-show-columns="true"></table>
+        <table id="servers-overview-tbl" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true">
+            <thead>
+            <tr>
+                <th data-field="serverIp" data-sortable="true"><span data-lang="server-ip"></span></th>
+                <th data-field="instancesNum" data-sortable="true"><span data-lang="instance-count"></span></th>
+                <th data-field="jobsNum" data-sortable="true"><span data-lang="jobs-num"></span></th>
+                <th data-field="disabledJobsNum" data-sortable="true"><span data-lang="disabled-jobs-num"></span></th>
+                <th data-field="operation" data-formatter="generateOperationButtons"><span data-lang="operation"></span></th>
+            </tr>
+            </thead>
+        </table>
     </section>
 </div>
-<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
 <script src="js/util/common.js"></script>
 <script src="js/status/server/servers_status_overview.js"></script>
