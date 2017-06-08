@@ -1,4 +1,5 @@
 $(function() {
+    doLocale();
     authorityControl();
     renderDataSources();
     validate();
@@ -15,28 +16,9 @@ function renderDataSources() {
         cache: false,
         search: true,
         showRefresh: true,
-        showColumns: true,
-        columns: 
-        [{
-            field: "name",
-            title: "数据源名称",
-            sortable: true
-        }, {
-            field: "driver",
-            title: "数据库驱动",
-            sortable: true
-        }, {
-            field: "url",
-            title: "数据库连接地址",
-            sortable: true
-        }, {
-            field: "username",
-            title: "数据库用户名"
-        }, {
-            field: "operation",
-            title: "操作",
-            formatter: "generateOperationButtons"
-        }]
+        showColumns: true
+    }).on("all.bs.table", function() {
+        doLocale();
     });
     renderDataSourceForDashboardNav();
 }
@@ -45,9 +27,9 @@ function generateOperationButtons(val, row) {
     var operationTd;
     var name = row.name;
     if (row.activated) {
-        operationTd = "<button disabled operation='connect-datasource' class='btn-xs' dataSourceName='" + name + "'>已连</button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
+        operationTd = "<button disabled operation='connect-datasource' class='btn-xs' dataSourceName='" + name + "' data-lang='connected'></button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "' data-lang='delete'></button>";
     } else {
-        operationTd = "<button operation='connect-datasource' class='btn-xs btn-info' dataSourceName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connect-datasource' class='btn-xs btn-info' dataSourceName='" + name + "' data-loading-text='loading...' data-lang='connect'></button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "' data-lang='delete'></button>";
     }
     return operationTd;
 }
@@ -74,7 +56,7 @@ function bindConnectButtons() {
                     renderDataSourceForDashboardNav();
                     showSuccessDialog();
                 } else {
-                    showFailureDialog("操作未成功，原因：连接失败，请检查事件追踪数据源配置");
+                    showDataSourceFailureDialog();
                 }
                 btn.button("reset");
             }
@@ -179,14 +161,14 @@ function validate() {
             name: {
                 validators: {
                     notEmpty: {
-                        message: "数据源名称不能为空"
+                        message: $.i18n.prop("dataSource-name-not-null")
                     },
                     stringLength: {
                         max: 50,
-                        message: "数据源名称长度不能超过50字符大小"
+                        message: $.i18n.prop("dataSource-name-length-limit")
                     },
                     callback: {
-                        message: "数据源已经存在",
+                        message: $.i18n.prop("dataSource-existed"),
                         callback: function() {
                             var dataSourceName = $("#name").val();
                             var result = true;
@@ -210,22 +192,22 @@ function validate() {
             url: {
                 validators: {
                     notEmpty: {
-                        message: "数据库URL不能为空"
+                        message: $.i18n.prop("dataSource-url-not-null")
                     },
                     stringLength: {
                         max: 200,
-                        message: "数据库URL长度不能超过200字符大小"
+                        message: $.i18n.prop("dataSource-url-length-limit")
                     }
                 }
             },
             username: {
                 validators: {
                     notEmpty: {
-                        message: "数据库用户名不能为空"
+                        message: $.i18n.prop("dataSource-username-not-null")
                     },
                     stringLength: {
                         max: 50,
-                        message: "数据库用户名不能超过50字符大小"
+                        message: $.i18n.prop("dataSource-username-length-limit")
                     }
                 }
             },
@@ -233,7 +215,7 @@ function validate() {
                 validators: {
                     stringLength: {
                         max: 50,
-                        message: "数据库口令不能超过50字符大小"
+                        message: $.i18n.prop("dataSource-password-length-limit")
                     }
                 }
             }
@@ -259,9 +241,9 @@ function bindConnectionTest() {
             dataType: "json",
             success: function(data) {
                 if (data) {
-                    showInfoDialog("事件追踪数据源测试连接成功!");
+                    showDataSourceTestConnectionSuccessDialog();
                 } else {
-                    showFailureDialog("事件追踪数据源测试连接失败!");
+                    showDataSourceTestConnectionFailureDialog();
                 }
             }
         });

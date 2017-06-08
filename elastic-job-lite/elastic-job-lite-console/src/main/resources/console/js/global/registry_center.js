@@ -1,4 +1,5 @@
 $(function() {
+    doLocale();
     authorityControl();
     renderRegCenters();
     validate();
@@ -14,25 +15,9 @@ function renderRegCenters() {
         cache: false,
         search: true,
         showRefresh: true,
-        showColumns: true,
-        columns: 
-        [{
-            field: "name",
-            title: "注册中心名称",
-            sortable: true
-        }, {
-            field: "zkAddressList",
-            title: "连接地址",
-            sortable: true
-        }, {
-            field: "namespace",
-            title: "命名空间",
-            sortable: true
-        }, {
-            field: "operation",
-            title: "操作",
-            formatter: "generateOperationButtons"
-        }]
+        showColumns: true
+    }).on("all.bs.table", function() {
+        doLocale();
     });
     renderRegCenterForDashboardNav();
 }
@@ -41,9 +26,9 @@ function generateOperationButtons(val, row) {
     var operationTd;
     var name = row.name;
     if (row.activated) {
-        operationTd = "<button disabled operation='connect-reg-center' class='btn-xs' regName='" + name + "'>已连</button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button disabled operation='connect-reg-center' class='btn-xs' regName='" + name + "' data-lang='connected'></button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "' data-lang='delete'></button>";
     } else {
-        operationTd = "<button operation='connect-reg-center' class='btn-xs btn-info' regName='" + name + "' data-loading-text='切换中...'>连接</button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "'>删除</button>";
+        operationTd = "<button operation='connect-reg-center' class='btn-xs btn-info' regName='" + name + "' data-loading-text='loading...' data-lang='connect'></button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "' data-lang='delete'></button>";
     }
     return operationTd;
 }
@@ -72,7 +57,7 @@ function bindConnectButtons() {
                     refreshServerNavTag();
                     showSuccessDialog();
                 } else {
-                    showFailureDialog("操作未成功，原因：连接失败，请检查注册中心配置");
+                    showRegCenterFailureDialog();
                 }
                 btn.button("reset");
             }
@@ -185,14 +170,14 @@ function validate() {
             name: {
                 validators: {
                     notEmpty: {
-                        message: "注册中心名称不能为空"
+                        message: $.i18n.prop("regCenter-name-not-null")
                     },
                     stringLength: {
                         max: 50,
-                        message: "注册中心名称长度不能超过50字符大小"
+                        message: $.i18n.prop("regCenter-name-length-limit")
                     },
                     callback: {
-                        message: "注册中心已经存在",
+                        message: $.i18n.prop("regCenter-existed"),
                         callback: function() {
                             var regName = $("#name").val();
                             var result = true;
@@ -216,11 +201,11 @@ function validate() {
             zkAddressList: {
                 validators: {
                     notEmpty: {
-                        message: "注册中心地址不能为空"
+                        message: $.i18n.prop("regCenter-zkAddress-not-null")
                     },
                     stringLength: {
                         max: 100,
-                        message: "注册中心地址长度不能超过100字符大小"
+                        message: $.i18n.prop("regCenter-zkAddress-length-limit")
                     }
                 }
             },
@@ -228,7 +213,7 @@ function validate() {
                 validators: {
                     stringLength: {
                         max: 50,
-                        message: "命名空间长度不能超过50字符大小"
+                        message: $.i18n.prop("regCenter-namespace-length-limit")
                     }
                 }
             },
@@ -236,7 +221,7 @@ function validate() {
                 validators: {
                     stringLength: {
                         max: 20,
-                        message: "登录凭证长度不能超过20字符大小"
+                        message: $.i18n.prop("regCenter-digest-length-limit")
                     }
                 }
             }

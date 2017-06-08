@@ -1,37 +1,37 @@
 <div class="index-content">
     <section class="content-header">
-        <h4>历史作业执行状态 </h4>
+        <h4 data-lang="job-status-history"></h4>
         <ol class="breadcrumb">
-            <li class="active"><i class="fa fa-history"></i> 作业历史</li>
-            <li class="active">历史状态</li>
+            <li class="active"><i class="fa fa-history" data-lang="job-history"></i></li>
+            <li class="active" data-lang="job-status-history"></li>
         </ol>
     </section>
     <section class="content">
         <div id="jobExecStatusToolbar">
             <div class="form-inline" role="form">
                 <div class="form-group toolbar">
-                    <label for="job-name">作业名称:</label>
+                    <label for="job-name" data-lang="job-name"></label>
                     <input type="text" class="form-control" id="job-name" placeholder="">
                 </div>
                 <div class="form-group toolbar">
-                    <label for="state">状态:</label>
+                    <label for="state" data-lang="status"></label>
                     <select id="state" name="state" class="form-control" data-toggle="tooltip" data-placement="bottom" >
-                        <option value="">全部</option>
-                        <option value="TASK_STAGING" >准备中</option>
-                        <option value="TASK_FAILED">运行失败</option>
-                        <option value="TASK_FINISHED">已完成</option>
-                        <option value="TASK_RUNNING">运行中</option>
-                        <option value="TASK_ERROR">启动失败</option>
-                        <option value="TASK_KILLED">主动终止</option>
-                    </select> 
+                        <option value="" data-lang="all"></option>
+                        <option value="TASK_STAGING" data-lang="task-staging"></option>
+                        <option value="TASK_FAILED" data-lang="task-failed"></option>
+                        <option value="TASK_FINISHED" data-lang="task-finished"></option>
+                        <option value="TASK_RUNNING" data-lang="running"></option>
+                        <option value="TASK_ERROR" data-lang="task-error"></option>
+                        <option value="TASK_KILLED" data-lang="task-killed"></option>
+                    </select>
                 </div>
                 <br/>
                 <div class="form-group toolbar">
-                    <label for="start-time">创建时间:</label>
+                    <label for="start-time" data-lang="start-time"></label>
                     <input type="text" class="form-control pull-right custom-datepicker" id="start-time">
                 </div>
                 <div class="form-group toolbar">
-                    <label for="end-time">至</label>
+                    <label for="end-time" data-lang="end-time"></label>
                     <input type="text" class="form-control pull-right custom-datepicker" id="end-time">
                 </div>
             </div>
@@ -54,18 +54,17 @@
                data-toolbar="#jobExecStatusToolbar">
             <thead>
                 <tr>
-                    <th data-field="jobName" data-sortable="true">作业名称</th>
-                    <th data-field="shardingItems">分片项</th>
-                    <th data-field="state" data-sortable="true" data-formatter="stateFormatter">状态</th>
-                    <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter">创建时间</th>
-                    <th data-field="message" data-formatter="splitRemarkFormatter">备注</th>
+                    <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                    <th data-field="shardingItems"><span data-lang="sharding-item"></span></th>
+                    <th data-field="state" data-sortable="true" data-formatter="stateFormatter"><span data-lang="status"></span></th>
+                    <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="start-time"></span></th>
+                    <th data-field="message" data-formatter="splitRemarkFormatter"><span data-lang="comments"></span></th>
                 </tr>
             </thead>
         </table>
     </section>
 </div>
-<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
 <script src="lib/daterangepicker/moment.min.js"></script>
 <script src="lib/daterangepicker/daterangepicker.js"></script>
 <script src="lib/input-mask/jquery.inputmask.js"></script>

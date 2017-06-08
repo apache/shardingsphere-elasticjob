@@ -1,14 +1,24 @@
 <div class="index-content">
     <section class="content-header">
-        <h4>事件追踪数据源配置总览</h4>
+        <h4 data-lang="event-trace-data-source"></h4>
         <ol class="breadcrumb">
-            <li class="active"><i class="fa fa-cogs"></i> 全局配置</li>
-            <li class="active">事件追踪数据源配置</li>
+            <li class="active"><i class="fa fa-cogs" data-lang="global-settings"></i></li>
+            <li class="active" data-lang="event-trace-data-source"></li>
         </ol>
     </section>
     <section class="content">
-        <table id="data-sources" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true"></table>
-        <button type="button" class="btn-xs btn-success" data-toggle="modal" id="add-data-source">添加</button>
+        <table id="data-sources" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true">
+            <thead>
+            <tr>
+                <th data-field="name" data-sortable="true"><span data-lang="dataSource-name"></span></th>
+                <th data-field="driver" data-sortable="true"><span data-lang="dataSource-driver"></span></th>
+                <th data-field="url" data-sortable="true"><span data-lang="dataSource-url"></span></th>
+                <th data-field="username"><span data-lang="dataSource-username"></span></th>
+                <th data-field="operation" data-formatter="generateOperationButtons"><span data-lang="operation"></span></th>
+            </tr>
+            </thead>
+        </table>
+        <button type="button" class="btn-xs btn-success" data-toggle="modal" id="add-data-source" data-lang="add"></button>
     </section>
 </div>
 <div id="add-data-source-center" class="modal" tabindex="-1" role="dialog">
@@ -16,43 +26,42 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" id="close-add-data-source-form" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">添加事件追踪数据源</h4>
+                <h4 class="modal-title" data-lang="add-dataSource"></h4>
             </div>
             <form id="data-source-form">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name" class="control-label">数据源名称：</label>
+                        <label for="name" class="control-label" data-lang="dataSource-name"></label>
                         <input type="text" class="form-control" id="name" name="name" required autofocus>
                     </div>
                     <div class="form-group">
-                        <label for="driver" class="control-label">数据库驱动：</label>
+                        <label for="driver" class="control-label" data-lang="dataSource-driver"></label>
                         <select id="driver" name="driver" class="form-control">
                             MySQL:<option>com.mysql.jdbc.Driver</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="url" class="control-label">数据库连接地址：</label>
+                        <label for="url" class="control-label" data-lang="dataSource-url"></label>
                         <input type="text" class="form-control" id="url" name="url" required>
                     </div>
                     <div class="form-group">
-                        <label for="username" class="control-label">数据库用户名：</label>
+                        <label for="username" class="control-label" data-lang="dataSource-username"></label>
                         <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="form-group">
-                        <label for="password" class="control-label">数据库密码：</label>
+                        <label for="password" class="control-label" data-lang="dataSource-password"></label>
                         <input type="password" class="form-control" id="password" name="password">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="connect-test" type="button" class="btn-xs btn-info">测试连接</button>
-                    <button id="add-data-source-btn" type="button" class="btn-xs btn-primary">确认</button>
+                    <button id="connect-test" type="button" class="btn-xs btn-info" data-lang="test-connection"></button>
+                    <button id="add-data-source-btn" type="button" class="btn-xs btn-primary" data-lang="submit"></button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
 <script src="lib/BootstrapValidator/js/bootstrapValidator.js"></script>
 <script src="lib/BootstrapValidator/js/bootstrapValidator_zh_CN.js"></script>
 <script src="js/util/common.js"></script>
