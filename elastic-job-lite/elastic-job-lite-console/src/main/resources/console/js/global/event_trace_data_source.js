@@ -20,6 +20,7 @@ function renderDataSources() {
     }).on("all.bs.table", function() {
         doLocale();
     });
+    renderDataSourceForDashboardNav();
 }
 
 function generateOperationButtons(val, row) {

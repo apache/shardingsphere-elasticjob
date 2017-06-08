@@ -39,8 +39,8 @@ function statusFormatter(value, row) {
         case "DISABLED":
             return "<span class='label label-warning' data-lang='disabled'></span>";
             break;
-        case "SHARDING_ERROR":
-            return "<span class='label label-info' data-lang='sharding-error'></span>";
+        case "SHARDING_FLAG":
+            return "<span class='label label-info' data-lang='sharding-flag'></span>";
             break;
         case "CRASHED":
             return "<span class='label label-default' data-lang='crashed'></span>";
@@ -63,7 +63,7 @@ function generateOperationButtons(val, row) {
     if ("DISABLED" === row.status) {
         operationTd = operationTd + enableButton + "&nbsp;" + shutdownButton;
     }
-    if ("SHARDING_ERROR" === row.status) {
+    if ("SHARDING_FLAG" === row.status) {
         operationTd = operationTd + "&nbsp;" + shutdownButton;
     }
     if ("CRASHED" === row.status) {

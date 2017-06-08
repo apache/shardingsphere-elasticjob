@@ -27,8 +27,8 @@ function shardingStatusFormatter(value, row) {
         case "RUNNING":
             return "<span class='label label-primary' data-lang='running'></span>";
             break;
-        case "SHARDING_ERROR":
-            return "<span class='label label-info' data-lang='' data-lang='sharding-error'></span>";
+        case "SHARDING_FLAG":
+            return "<span class='label label-info' data-lang='' data-lang='sharding-flag'></span>";
             break;
         default:
             return "<span class='label label-default' data-lang='ready-to-run'></span>";

@@ -19,6 +19,7 @@ function renderRegCenters() {
     }).on("all.bs.table", function() {
         doLocale();
     });
+    renderRegCenterForDashboardNav();
 }
 
 function generateOperationButtons(val, row) {
@@ -107,13 +108,13 @@ function handleFieldValidator() {
         $("#reg-center-form").data("bootstrapValidator").enableFieldValidators("digest", true);
     });
     $("#digest").blur(function() {
-        $("#reg-center-form").data("bootstrapValidator").enableFieldValidators("digest", "" === $("#digest").val() ? false : true);
+        $("#reg-center-form").data("bootstrapValidator").enableFieldValidators("digest", "" !== $("#digest").val());
     });
     $("#namespace").focus(function() {
         $("#reg-center-form").data("bootstrapValidator").enableFieldValidators("namespace", true);
     });
     $("#namespace").blur(function() {
-        $("#reg-center-form").data("bootstrapValidator").enableFieldValidators("namespace", "" === $("#namespace").val() ? false : true);
+        $("#reg-center-form").data("bootstrapValidator").enableFieldValidators("namespace", "" !== $("#namespace").val());
     });
 }
 

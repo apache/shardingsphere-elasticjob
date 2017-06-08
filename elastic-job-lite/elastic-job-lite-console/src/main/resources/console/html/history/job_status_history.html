@@ -16,13 +16,13 @@
                 <div class="form-group toolbar">
                     <label for="state" data-lang="status"></label>
                     <select id="state" name="state" class="form-control" data-toggle="tooltip" data-placement="bottom" >
-                        <option value="" data-lang="all">全部</option>
+                        <option value="" data-lang="all"></option>
                         <option value="TASK_STAGING" data-lang="task-staging"></option>
                         <option value="TASK_FAILED" data-lang="task-failed"></option>
                         <option value="TASK_FINISHED" data-lang="task-finished"></option>
                         <option value="TASK_RUNNING" data-lang="running"></option>
-                        <option value="TASK_ERROR" data-lang="task-error">启动失败</option>
-                        <option value="TASK_KILLED" data-lang="task-killed">主动终止</option>
+                        <option value="TASK_ERROR" data-lang="task-error"></option>
+                        <option value="TASK_KILLED" data-lang="task-killed"></option>
                     </select>
                 </div>
                 <br/>
@@ -37,21 +37,21 @@
             </div>
         </div>
         <table id="job-exec-status-table"
-                data-show-refresh="true"
-                data-show-toggle="true"
-                data-striped="true"
-                data-toggle="table"
-                data-url="/api/event-trace/status"
-                data-flat="true"
-                data-click-to-select="true"
-                data-row-style="rowStyle"
-                data-query-params="queryParams"
-                data-query-params-type="notLimit"
-                data-side-pagination="server"
-                data-pagination="true"
-                data-page-list="[10, 20, 50, 100]"
-                data-show-columns="true"
-                data-toolbar="#jobExecStatusToolbar">
+               data-show-refresh="true"
+               data-show-toggle="true"
+               data-striped="true"
+               data-toggle="table"
+               data-url="/api/event-trace/status"
+               data-flat="true"
+               data-click-to-select="true"
+               data-row-style="rowStyle"
+               data-query-params="queryParams"
+               data-query-params-type="notLimit"
+               data-side-pagination="server"
+               data-pagination="true"
+               data-page-list="[10, 20, 50, 100]"
+               data-show-columns="true"
+               data-toolbar="#jobExecStatusToolbar">
             <thead>
                 <tr>
                     <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
