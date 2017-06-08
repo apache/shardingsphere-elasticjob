@@ -37,29 +37,29 @@
             </div>
         </div>
         <table id="job-exec-status-table"
-               data-show-refresh="true"
-               data-show-toggle="true"
-               data-striped="true"
-               data-toggle="table"
-               data-url="/api/event-trace/status"
-               data-flat="true"
-               data-click-to-select="true"
-               data-row-style="rowStyle"
-               data-query-params="queryParams"
-               data-query-params-type="notLimit"
-               data-side-pagination="server"
-               data-pagination="true"
-               data-page-list="[10, 20, 50, 100]"
-               data-show-columns="true"
-               data-toolbar="#jobExecStatusToolbar">
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-striped="true"
+                data-toggle="table"
+                data-url="/api/event-trace/status"
+                data-flat="true"
+                data-click-to-select="true"
+                data-row-style="rowStyle"
+                data-query-params="queryParams"
+                data-query-params-type="notLimit"
+                data-side-pagination="server"
+                data-pagination="true"
+                data-page-list="[10, 20, 50, 100]"
+                data-show-columns="true"
+                data-toolbar="#jobExecStatusToolbar">
             <thead>
-            <tr>
-                <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
-                <th data-field="shardingItems"><span data-lang="sharding-item"></span></th>
-                <th data-field="state" data-sortable="true" data-formatter="stateFormatter"><span data-lang="status"></span></th>
-                <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="start-time"></span></th>
-                <th data-field="message" data-formatter="splitRemarkFormatter"><span data-lang="comments"></span></th>
-            </tr>
+                <tr>
+                    <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                    <th data-field="shardingItems"><span data-lang="sharding-item"></span></th>
+                    <th data-field="state" data-sortable="true" data-formatter="stateFormatter"><span data-lang="status"></span></th>
+                    <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="start-time"></span></th>
+                    <th data-field="message" data-formatter="splitRemarkFormatter"><span data-lang="comments"></span></th>
+                </tr>
             </thead>
         </table>
     </section>
