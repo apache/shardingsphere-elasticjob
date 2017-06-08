@@ -129,7 +129,7 @@ function doLocale() {
     }
 }
 
-function changeLang() {
+function changeLanguage() {
     $("#lang-zh").click(function() {
         $("#content").removeClass("lang-en").addClass("lang-zh");
         doLocale();
