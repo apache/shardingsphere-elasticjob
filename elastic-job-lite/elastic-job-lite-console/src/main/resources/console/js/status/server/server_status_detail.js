@@ -21,25 +21,25 @@ function renderJobs() {
 
 function statusFormatter(val, row) {
     if (0 === row.instanceCount ) {
-        return "<span class='label label-default' data-lang='offline'></span>";
+        return "<span class='label label-default' data-lang='status-offline'></span>";
     }
     switch(val) {
         case "OK":
-            return "<span class='label label-success' data-lang='enabled'></span>";
+            return "<span class='label label-success' data-lang='status-enabled'></span>";
             break;
         case "DISABLED":
-            return "<span class='label label-warning' data-lang='disabled'></span>";
+            return "<span class='label label-warning' data-lang='status-disabled'></span>";
             break;
     }
 }
 
 function generateOperationButtons(val, row) {
     if (0 === row.instanceCount ) {
-        return "<button operation='remove-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='remove'></button>";
+        return "<button operation='remove-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='operation-remove'></button>";
     }
-    var disableButton = "<button operation='disable-server-job' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "' data-lang='disable'></button>";
-    var enableButton = "<button operation='enable-server-job' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "' data-lang='enable'></button>";
-    var shutdownButton = "<button operation='shutdown-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='shutdown'></button>";
+    var disableButton = "<button operation='disable-server-job' class='btn-xs btn-warning' ip='" + row.ip + "' job-name='" + row.jobName + "' data-lang='operation-disable'></button>";
+    var enableButton = "<button operation='enable-server-job' class='btn-xs btn-success' ip='" + row.ip + "' job-name='" + row.jobName + "' data-lang='operation-enable'></button>";
+    var shutdownButton = "<button operation='shutdown-server-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='operation-shutdown'></button>";
     var operationTd = "";
     if ("DISABLED" === row.status) {
         operationTd = enableButton + "&nbsp;" + shutdownButton;

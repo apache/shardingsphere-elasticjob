@@ -59,3 +59,7 @@
 #modal-dialog-width{
     width: 60%;
 }
+#execute-result {
+    float: top;
+    padding-left: 20px;
+}

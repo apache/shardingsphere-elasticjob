@@ -24,7 +24,7 @@ function renderRegCenterForDashboardNav() {
             var regCenterName = data[index].name;
             var regCenterDisplayName;
             if (activatedRegCenterName && activatedRegCenterName === regCenterName) {
-                regCenterDisplayName = "<b>" + regCenterName + "(<span data-lang='connected'></span>)</b>";
+                regCenterDisplayName = "<b>" + regCenterName + "(<span data-lang='status-connected'></span>)</b>";
             } else {
                 regCenterDisplayName = regCenterName;
             }
@@ -58,7 +58,7 @@ function renderDataSourceForDashboardNav() {
             var dataSourceName = data[index].name;
             var dataSourceDisplayName;
             if (activatedDataSource && activatedDataSource === dataSourceName) {
-                dataSourceDisplayName = "<b>" + dataSourceName + "(<span data-lang='connected'></span>)</b>";
+                dataSourceDisplayName = "<b>" + dataSourceName + "(<span data-lang='status-connected'></span>)</b>";
             } else {
                 dataSourceDisplayName = dataSourceName;
             }

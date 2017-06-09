@@ -40,11 +40,11 @@ function bindButtons() {
 }
 
 function generateOperationButtons(val, row) {
-    var detailButton = "<button operation='server-detail' class='btn-xs btn-info' server-ip='" + row.serverIp + "' data-lang='detail'></button>";
-    var disableButton = "<button operation='disable-server' class='btn-xs btn-warning' server-ip='" + row.serverIp + "' data-lang='disable'></button>";
-    var enableButton = "<button operation='enable-server' class='btn-xs btn-success' server-ip='" + row.serverIp + "' data-lang='enable'></button>";
-    var shutdownButton = "<button operation='shutdown-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "' data-lang='shutdown'></button>";
-    var removeButton = "<button operation='remove-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "' data-lang='remove'></button>";
+    var detailButton = "<button operation='server-detail' class='btn-xs btn-info' server-ip='" + row.serverIp + "' data-lang='server-detail'></button>";
+    var disableButton = "<button operation='disable-server' class='btn-xs btn-warning' server-ip='" + row.serverIp + "' data-lang='operation-disable'></button>";
+    var enableButton = "<button operation='enable-server' class='btn-xs btn-success' server-ip='" + row.serverIp + "' data-lang='operation-enable'></button>";
+    var shutdownButton = "<button operation='shutdown-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "' data-lang='operation-shutdown'></button>";
+    var removeButton = "<button operation='remove-server' class='btn-xs btn-danger' server-ip='" + row.serverIp + "' data-lang='operation-remove'></button>";
     if (row.instancesNum == 0) {
         return removeButton;
     }

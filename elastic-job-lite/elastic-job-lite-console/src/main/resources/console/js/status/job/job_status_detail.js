@@ -22,27 +22,27 @@ function renderShardingTable() {
 function shardingStatusFormatter(value, row) {
     switch(value) {
         case "DISABLED":
-            return "<span class='label label-warning' data-lang='disabled'></span>";
+            return "<span class='label label-warning' data-lang='status-disabled'></span>";
             break;
         case "RUNNING":
-            return "<span class='label label-primary' data-lang='running'></span>";
+            return "<span class='label label-primary' data-lang='status-running'></span>";
             break;
         case "SHARDING_FLAG":
-            return "<span class='label label-info' data-lang='' data-lang='sharding-flag'></span>";
+            return "<span class='label label-info' data-lang='' data-lang='status-sharding-flag'></span>";
             break;
         default:
-            return "<span class='label label-default' data-lang='ready-to-run'></span>";
+            return "<span class='label label-default' data-lang='status-staging'></span>";
             break;
     }
 }
 
 function failoverFormatter(value, row) {
-    return value ? "是" : "-";
+    return value ? "Y" : "-";
 }
 
 function generateOperationButtons(val, row) {
-    var disableButton = "<button operation='disable-sharding' class='btn-xs btn-warning' job-name='" + row.jobName + "' item='" + row.item + "' data-lang='disable'></button>";
-    var enableButton = "<button operation='enable-sharding' class='btn-xs btn-success' job-name='" + row.jobName + "' item='" + row.item + "' data-lang='enable'></button>";
+    var disableButton = "<button operation='disable-sharding' class='btn-xs btn-warning' job-name='" + row.jobName + "' item='" + row.item + "' data-lang='operation-disable'></button>";
+    var enableButton = "<button operation='enable-sharding' class='btn-xs btn-success' job-name='" + row.jobName + "' item='" + row.item + "' data-lang='operation-enable'></button>";
     if ("DISABLED" === row.status) {
         return enableButton;
     } else {

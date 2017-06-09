@@ -56,19 +56,19 @@ function showUpdateConfirmModal() {
 }
 
 function showDataSourceFailureDialog() {
-    showFailureDialog($.i18n.prop("dataSource-connect-failed"));
+    showFailureDialog($.i18n.prop("event-trace-data-source-connect-failed"));
 }
 
 function showRegCenterFailureDialog() {
-    showFailureDialog($.i18n.prop("regCenter-connect-failed"));
+    showFailureDialog($.i18n.prop("registry-center-connect-failed"));
 }
 
 function showDataSourceTestConnectionSuccessDialog() {
-    showInfoDialog($.i18n.prop("dataSource-test-succeed"));
+    showInfoDialog($.i18n.prop("event-trace-data-source-test-succeed"));
 }
 
 function showDataSourceTestConnectionFailureDialog() {
-    showInfoDialog($.i18n.prop("dataSource-test-fail"));
+    showInfoDialog($.i18n.prop("event-trace-data-source-test-fail"));
 }
 
 function i18n(lang) {
@@ -90,14 +90,12 @@ function i18n(lang) {
 function doLocale() {
     if ($("#content").hasClass("lang-en")) {
         i18n("en");
-        $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['en-US']);
     } else {
         i18n("zh");
-        $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
     }
 }
 
-function changeLanguage() {
+function switchLanguage() {
     $("#lang-zh").click(function() {
         $("#content").removeClass("lang-en").addClass("lang-zh");
         doLocale();

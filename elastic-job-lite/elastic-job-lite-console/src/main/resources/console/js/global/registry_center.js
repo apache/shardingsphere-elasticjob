@@ -26,9 +26,9 @@ function generateOperationButtons(val, row) {
     var operationTd;
     var name = row.name;
     if (row.activated) {
-        operationTd = "<button disabled operation='connect-reg-center' class='btn-xs' regName='" + name + "' data-lang='connected'></button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "' data-lang='delete'></button>";
+        operationTd = "<button disabled operation='connect-reg-center' class='btn-xs' regName='" + name + "' data-lang='status-connected'></button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "' data-lang='operation-delete'></button>";
     } else {
-        operationTd = "<button operation='connect-reg-center' class='btn-xs btn-info' regName='" + name + "' data-loading-text='loading...' data-lang='connect'></button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "' data-lang='delete'></button>";
+        operationTd = "<button operation='connect-reg-center' class='btn-xs btn-info' regName='" + name + "' data-loading-text='loading...' data-lang='operation-connect'></button>&nbsp;<button operation='delete-reg-center' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' regName='" + name + "' data-lang='operation-delete'></button>";
     }
     return operationTd;
 }
@@ -170,14 +170,14 @@ function validate() {
             name: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("regCenter-name-not-null")
+                        message: $.i18n.prop("registry-center-name-not-null")
                     },
                     stringLength: {
                         max: 50,
-                        message: $.i18n.prop("regCenter-name-length-limit")
+                        message: $.i18n.prop("registry-center-name-length-limit")
                     },
                     callback: {
-                        message: $.i18n.prop("regCenter-existed"),
+                        message: $.i18n.prop("registry-center-existed"),
                         callback: function() {
                             var regName = $("#name").val();
                             var result = true;
@@ -201,11 +201,11 @@ function validate() {
             zkAddressList: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("regCenter-zkAddress-not-null")
+                        message: $.i18n.prop("registry-center-zk-address-not-null")
                     },
                     stringLength: {
                         max: 100,
-                        message: $.i18n.prop("regCenter-zkAddress-length-limit")
+                        message: $.i18n.prop("registry-center-zk-address-length-limit")
                     }
                 }
             },
@@ -213,7 +213,7 @@ function validate() {
                 validators: {
                     stringLength: {
                         max: 50,
-                        message: $.i18n.prop("regCenter-namespace-length-limit")
+                        message: $.i18n.prop("registry-center-namespace-length-limit")
                     }
                 }
             },
@@ -221,7 +221,7 @@ function validate() {
                 validators: {
                     stringLength: {
                         max: 20,
-                        message: $.i18n.prop("regCenter-digest-length-limit")
+                        message: $.i18n.prop("registry-center-digest-length-limit")
                     }
                 }
             }

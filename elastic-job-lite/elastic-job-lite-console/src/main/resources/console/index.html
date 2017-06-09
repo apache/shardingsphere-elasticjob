@@ -34,7 +34,7 @@
                         <li class="dropdown"><a id="registry-center-dimension-link" href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="registry-center-dimension"><span class="caret"></span></a>
                             <ul id="registry-center-dimension" class="dropdown-menu"></ul>
                         </li>
-                        <li class="dropdown"><a id="data-source-dimension-link" href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="data-source-dimension"><span class="caret"></span></a>
+                        <li class="dropdown"><a id="data-source-dimension-link" href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="event-trace-data-source-dimension"><span class="caret"></span></a>
                             <ul id="data-source-dimension" class="dropdown-menu"></ul>
                         </li>
                         <li class="dropdown">
@@ -45,10 +45,10 @@
                         </li>
                         <li><a href="#" data-toggle="control-sidebar"><i class="fa fa-flag"></i></a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="select-lang"></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-lang="switch-language"></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#" id="lang-zh" data-lang="lang-zh"></a></li>
-                                <li><a href="#" id="lang-en" data-lang="lang-en"></a></li>
+                                <li><a href="#" id="lang-zh" data-lang="language-zh"></a></li>
+                                <li><a href="#" id="lang-en" data-lang="language-en"></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -60,42 +60,42 @@
                 <ul class="sidebar-menu">
                     <li class="treeview" id="settings">
                         <a href="#">
-                            <i class="fa fa-cogs" data-lang="global-settings"></i><i class="pull-right fa fa-angle-left "></i>
+                            <i class="fa fa-cogs" data-lang="sidebar-global-settings"></i><i class="pull-right fa fa-angle-left "></i>
                             <div class="pull-right">
                                 <span id="reg-nav-tag" class="label label-primary"></span>
                                 <span id="event-trace-nav-tag" class="label label-primary"></span>
                             </div>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#" id="reg-center" class="sub-menu"><i class="fa fa-circle-o" data-lang="reg-center"></i></a></li>
-                            <li><a href="#" id="event-trace-data-source" class="sub-menu"><i class="fa fa-circle-o" data-lang="event-trace-data-source"></i></a></li>
+                            <li><a href="#" id="reg-center" class="sub-menu"><i class="fa fa-circle-o" data-lang="sidebar-registry-center"></i></a></li>
+                            <li><a href="#" id="event-trace-data-source" class="sub-menu"><i class="fa fa-circle-o" data-lang="sidebar-event-trace-data-source"></i></a></li>
                         </ul>
                     </li>
                     <li class="treeview" id="server">
                         <a href="#">
-                            <i class="fa fa-tasks" data-lang="job-operation"></i><i class="pull-right fa fa-angle-left "></i>
+                            <i class="fa fa-tasks" data-lang="sidebar-job-operation"></i><i class="pull-right fa fa-angle-left "></i>
                             <div class="pull-right">
                                 <span id="job-nav-tag" class="label label-primary"></span>
                                 <span id="server-nav-tag" class="label label-primary"></span>
                             </div>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#" id="job-status" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-dimension"></i></a></li>
-                            <li><a href="#" id="server-status" class="sub-menu"><i class="fa fa-circle-o" data-lang="server-dimension"></i></a></li>
+                            <li><a href="#" id="job-status" class="sub-menu"><i class="fa fa-circle-o" data-lang="sidebar-job-dimension"></i></a></li>
+                            <li><a href="#" id="server-status" class="sub-menu"><i class="fa fa-circle-o" data-lang="sidebar-server-dimension"></i></a></li>
                         </ul>
                     </li>
                     <li class="treeview" id="history">
                         <a href="#">
-                            <i class="fa fa-history" data-lang="job-history"></i><i class="pull-right fa fa-angle-left "></i>
+                            <i class="fa fa-history" data-lang="sidebar-job-history"></i><i class="pull-right fa fa-angle-left "></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#" id="event-trace-history" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-event-trace-history"></i></a></li>
-                            <li><a href="#" id="status-history" class="sub-menu"><i class="fa fa-circle-o" data-lang="job-status-history"></i></a></li>
+                            <li><a href="#" id="event-trace-history" class="sub-menu"><i class="fa fa-circle-o" data-lang="sidebar-job-event-trace-history"></i></a></li>
+                            <li><a href="#" id="status-history" class="sub-menu"><i class="fa fa-circle-o" data-lang="sidebar-job-status-history"></i></a></li>
                         </ul>
                     </li>
                     <li class="treeview">
                         <a href="#" id="help" class="sub-menu">
-                            <i class="fa fa-book" data-lang="help"></i>
+                            <i class="fa fa-book" data-lang="sidebar-help"></i>
                         </a>
                     </li>
                 </ul>
@@ -121,7 +121,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="blue"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-blue"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-black" class="clearfix full-opacity-hover">
@@ -133,7 +133,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="white"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-white"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-purple" class="clearfix full-opacity-hover">
@@ -145,7 +145,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="purple"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-purple"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-green" class="clearfix full-opacity-hover">
@@ -157,7 +157,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="green"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-green"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-yellow" class="clearfix full-opacity-hover">
@@ -169,7 +169,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="yellow"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-yellow"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-red" class="clearfix full-opacity-hover">
@@ -181,7 +181,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="red"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-red"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-blue-light" class="clearfix full-opacity-hover">
@@ -193,7 +193,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="blue-light"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-blue-light"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-black-light" class="clearfix full-opacity-hover">
@@ -205,7 +205,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="white-light"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-white-light"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-purple-light" class="clearfix full-opacity-hover">
@@ -217,7 +217,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="purple-light"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-purple-light"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-green-light" class="clearfix full-opacity-hover">
@@ -229,7 +229,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="green-light"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-green-light"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-yellow-light" class="clearfix full-opacity-hover">
@@ -241,7 +241,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="yellow-light"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-yellow-light"></p>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-skin="skin-red-light" class="clearfix full-opacity-hover">
@@ -253,7 +253,7 @@
                                 <span class="down-span-right"></span>
                             </div>
                         </a>
-                        <p class="text-center no-margin" data-lang="red-light"></p>
+                        <p class="text-center no-margin" data-lang="switch-theme-red-light"></p>
                     </li>
                     </ul>
                 </div>
@@ -267,7 +267,7 @@
                         <h4 id="message-info"></h4>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn-xs btn-primary" data-dismiss="modal" data-lang="close"></button>
+                        <button type="button" class="btn-xs btn-primary" data-dismiss="modal" data-lang="operation-close"></button>
                     </div>
                 </div>
             </div>
@@ -279,7 +279,7 @@
                         <h5 id="history-message"></h5>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn-xs btn-danger" data-dismiss="modal" data-lang="close"></button>
+                        <button type="button" class="btn-xs btn-danger" data-dismiss="modal" data-lang="operation-close"></button>
                     </div>
                 </div>
             </div>
@@ -291,8 +291,8 @@
                         <h4 id="confirm-info"></h4>
                     </div>
                     <div class="modal-footer">
-                        <button id="confirm-btn" type="button" class="btn-xs btn-danger" data-lang="submit"></button>
-                        <button type="button" class="btn-xs btn-success" data-dismiss="modal" data-lang="close"></button>
+                        <button id="confirm-btn" type="button" class="btn-xs btn-danger" data-lang="operation-submit"></button>
+                        <button type="button" class="btn-xs btn-success" data-dismiss="modal" data-lang="operation-close"></button>
                     </div>
                 </div>
             </div>
