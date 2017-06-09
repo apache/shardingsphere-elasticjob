@@ -45,17 +45,17 @@ function stateFormatter(value) {
     switch(value)
     {
         case "TASK_STAGING":
-            return "<span class='label label-default' data-lang='ready-to-run'></span>";
+            return "<span class='label label-default' data-lang='status-staging'></span>";
         case "TASK_FAILED":
-            return "<span class='label label-danger' data-lang='task-failed'></span>";
+            return "<span class='label label-danger' data-lang='status-task-failed'></span>";
         case "TASK_FINISHED":
-            return "<span class='label label-success' data-lang='task-finished'></span>";
+            return "<span class='label label-success' data-lang='status-task-finished'></span>";
         case "TASK_RUNNING":
-            return "<span class='label label-primary' data-lang='running'></span>";
+            return "<span class='label label-primary' data-lang='status-running'></span>";
         case "TASK_ERROR":
-            return "<span class='label label-danger' data-lang='task-error'></span>";
+            return "<span class='label label-danger' data-lang='status-task-error'></span>";
         case "TASK_KILLED":
-            return "<span class='label label-warning' data-lang='task-killed'></span>";
+            return "<span class='label label-warning' data-lang='status-task-killed'></span>";
         default:
             return "-";
     }

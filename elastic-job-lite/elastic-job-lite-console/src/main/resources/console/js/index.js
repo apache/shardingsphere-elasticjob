@@ -23,5 +23,5 @@ $(function() {
             doLocale();
         });
     });
-    changeLanguage();
+    switchLanguage();
 });

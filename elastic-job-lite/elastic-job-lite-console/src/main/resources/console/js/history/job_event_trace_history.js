@@ -30,11 +30,11 @@ function successFormatter(value) {
     switch(value)
     {
     case true:
-        return "<span class='label label-success' data-lang='success'></span>";
+        return "<span class='label label-success' data-lang='execute-result-success'></span>";
       case false:
-          return "<span class='label label-danger' data-lang='failure'></span>";
+          return "<span class='label label-danger' data-lang='execute-result-failure'></span>";
       default:
-        return "<span class='label label-danger' data-lang='null'></span>";
+        return "<span class='label label-danger' data-lang='execute-result-null'></span>";
     }
 }
 

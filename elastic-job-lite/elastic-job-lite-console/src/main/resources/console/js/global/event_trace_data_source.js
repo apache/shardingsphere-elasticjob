@@ -27,9 +27,9 @@ function generateOperationButtons(val, row) {
     var operationTd;
     var name = row.name;
     if (row.activated) {
-        operationTd = "<button disabled operation='connect-datasource' class='btn-xs' dataSourceName='" + name + "' data-lang='connected'></button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "' data-lang='delete'></button>";
+        operationTd = "<button disabled operation='connect-datasource' class='btn-xs' dataSourceName='" + name + "' data-lang='status-connected'></button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "' data-lang='operation-delete'></button>";
     } else {
-        operationTd = "<button operation='connect-datasource' class='btn-xs btn-info' dataSourceName='" + name + "' data-loading-text='loading...' data-lang='connect'></button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "' data-lang='delete'></button>";
+        operationTd = "<button operation='connect-datasource' class='btn-xs btn-info' dataSourceName='" + name + "' data-loading-text='loading...' data-lang='operation-connect'></button>&nbsp;<button operation='delete-datasource' class='btn-xs btn-danger' data-toggle='modal' id='delete-dialog' dataSourceName='" + name + "' data-lang='operation-delete'></button>";
     }
     return operationTd;
 }
@@ -161,14 +161,14 @@ function validate() {
             name: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("dataSource-name-not-null")
+                        message: $.i18n.prop("event-trace-data-source-name-not-null")
                     },
                     stringLength: {
                         max: 50,
-                        message: $.i18n.prop("dataSource-name-length-limit")
+                        message: $.i18n.prop("event-trace-data-source-name-length-limit")
                     },
                     callback: {
-                        message: $.i18n.prop("dataSource-existed"),
+                        message: $.i18n.prop("event-trace-data-source-existed"),
                         callback: function() {
                             var dataSourceName = $("#name").val();
                             var result = true;
@@ -192,22 +192,22 @@ function validate() {
             url: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("dataSource-url-not-null")
+                        message: $.i18n.prop("event-trace-data-source-url-not-null")
                     },
                     stringLength: {
                         max: 200,
-                        message: $.i18n.prop("dataSource-url-length-limit")
+                        message: $.i18n.prop("event-trace-data-source-url-length-limit")
                     }
                 }
             },
             username: {
                 validators: {
                     notEmpty: {
-                        message: $.i18n.prop("dataSource-username-not-null")
+                        message: $.i18n.prop("event-trace-data-source-username-not-null")
                     },
                     stringLength: {
                         max: 50,
-                        message: $.i18n.prop("dataSource-username-length-limit")
+                        message: $.i18n.prop("event-trace-data-source-username-length-limit")
                     }
                 }
             },
@@ -215,7 +215,7 @@ function validate() {
                 validators: {
                     stringLength: {
                         max: 50,
-                        message: $.i18n.prop("dataSource-password-length-limit")
+                        message: $.i18n.prop("event-trace-data-source-password-length-limit")
                     }
                 }
             }

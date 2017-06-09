@@ -34,16 +34,16 @@ function renderJobsOverview() {
 function statusFormatter(value, row) {
     switch(value) {
         case "OK":
-            return "<span class='label label-success' data-lang='normal'></span>";
+            return "<span class='label label-success' data-lang='status-ok'></span>";
             break;
         case "DISABLED":
-            return "<span class='label label-warning' data-lang='disabled'></span>";
+            return "<span class='label label-warning' data-lang='status-disabled'></span>";
             break;
         case "SHARDING_FLAG":
-            return "<span class='label label-info' data-lang='sharding-flag'></span>";
+            return "<span class='label label-info' data-lang='status-sharding-flag'></span>";
             break;
         case "CRASHED":
-            return "<span class='label label-default' data-lang='crashed'></span>";
+            return "<span class='label label-default' data-lang='status-crashed'></span>";
             break;
     }
 }
@@ -51,11 +51,11 @@ function statusFormatter(value, row) {
 function generateOperationButtons(val, row) {
     var modifyButton = "<button operation='modify-job' class='btn-xs btn-primary' job-name='" + row.jobName + "' data-lang='update-job'></button>";
     var shardingStatusButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "' data-lang='job-detail'></button>";
-    var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "' data-lang='trigger'></button>";
-    var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "' data-lang='disable'></button>";
-    var enableButton = "<button operation='enable-job' class='btn-xs btn-success' job-name='" + row.jobName + "' data-lang='enable'></button>";
-    var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='shutdown'></button>";
-    var removeButton = "<button operation='remove-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='remove'></button>";
+    var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "' data-lang='operation-trigger'></button>";
+    var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "' data-lang='operation-disable'></button>";
+    var enableButton = "<button operation='enable-job' class='btn-xs btn-success' job-name='" + row.jobName + "' data-lang='operation-enable'></button>";
+    var shutdownButton = "<button operation='shutdown-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='operation-shutdown'></button>";
+    var removeButton = "<button operation='remove-job' class='btn-xs btn-danger' job-name='" + row.jobName + "' data-lang='operation-remove'></button>";
     var operationTd = modifyButton + "&nbsp;" + shardingStatusButton  + "&nbsp;";
     if ("OK" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
@@ -92,8 +92,9 @@ function bindModifyButton() {
                 if (null !== data) {
                     $(".box-body").remove();
                     $('#update-job-body').load('html/status/job/job_config.html', null, function() {
-                        doLocale();
+
                         $('#data-update-job').modal({backdrop : 'static', keyboard : true});
+                        doLocale();
                         renderJob(data);
                         $("#job-overviews-name").text(jobName);
                     });
