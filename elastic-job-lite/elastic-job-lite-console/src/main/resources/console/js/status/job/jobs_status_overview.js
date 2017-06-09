@@ -92,9 +92,8 @@ function bindModifyButton() {
                 if (null !== data) {
                     $(".box-body").remove();
                     $('#update-job-body').load('html/status/job/job_config.html', null, function() {
-
-                        $('#data-update-job').modal({backdrop : 'static', keyboard : true});
                         doLocale();
+                        $('#data-update-job').modal({backdrop : 'static', keyboard : true});
                         renderJob(data);
                         $("#job-overviews-name").text(jobName);
                     });
