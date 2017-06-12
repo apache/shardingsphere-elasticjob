@@ -1,15 +1,26 @@
 <div class="content-wrapper">
     <div class="page-height-min">
         <section class="content-header">
-            <h1>作业定义</h1>
+            <h1 data-lang="sidebar-defination"></h1>
             <ol class="breadcrumb">
-                <li class="active"><i class="fa fa-tasks"></i> 作业</li>
-                <li class="active">作业定义</li>
+                <li class="active"><i class="fa fa-tasks" data-lang="sidebar-job"></i></li>
+                <li class="active" data-lang="sidebar-defination"></li>
             </ol>
         </section>
         <section class="content">
-            <table id="job-table" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true" data-show-columns="true"></table>
-            <button type="button" class="btn-xs btn-success" data-toggle="modal" id="add-job">添加</button>
+            <table id="job-table" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true" data-show-columns="true">
+                <thead>
+                <tr>
+                    <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                    <th data-field="appName" data-sortable="true"><span data-lang="app-name"></span></th>
+                    <th data-field="jobClass" data-sortable="true"><span data-lang="job-class"></span></th>
+                    <th data-field="shardingTotalCount" data-sortable="true"><span data-lang="job-sharding-total-count"></span></th>
+                    <th data-field="cron" data-sortable="true"><span data-lang="job-cron"></span></th>
+                    <th data-field="operation" data-formatter="operationJob"><span data-lang="operation"></span></th>
+                </tr>
+                </thead>
+            </table>
+            <button type="button" class="btn-xs btn-success" data-toggle="modal" id="add-job" data-lang="operation-add"></button>
         </section>
     </div>
 </div>
@@ -19,7 +30,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h2 class="modal-title">作业详情</h2>
+                    <h2 class="modal-title" data-lang="job-detail"></h2>
                 </div>
                 <div class="modal-body" id="detail-job-body">
                 </div>
@@ -31,11 +42,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <h3 class="size-font">确认要删除该作业吗？</h3>
+                <h3 class="size-font" data-lang="confirm-to-delete-job"></h3>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-xs btn-danger" id="delete-job-confirm" data-dismiss="modal">确认</button>
-                <button type="button" class="btn-xs btn-success" id="delete-job-remove" data-dismiss="modal">取消</button>
+                <button type="button" class="btn-xs btn-danger" id="delete-job-confirm" data-dismiss="modal" data-lang="operation-submit"></button>
+                <button type="button" class="btn-xs btn-success" id="delete-job-remove" data-dismiss="modal" data-lang="operation-close"></button>
             </div>
         </div>
     </div>
@@ -46,7 +57,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h2 class="modal-title">修改作业</h2>
+                    <h2 class="modal-title" data-lang="update-job"></h2>
                 </div>
                 <div class="modal-body" id="update-job-body">
                 </div>
@@ -60,7 +71,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h2 class="modal-title">添加作业</h2>
+                    <h2 class="modal-title" data-lang="add-job"></h2>
                 </div>
                 <div class="modal-body" id="add-job-body">
                 </div>
@@ -73,10 +84,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Spring方式配置</h3>
+                <h3 data-lang="job-spring-type-settings"></h3>
             </div>
             <div class="modal-body">
-                <h3 class="size-font">请填写beanName名称</h3>
+                <h3 class="size-font" data-lang="job-bean-name-info"></h3>
             </div>
         </div>
     </div>
@@ -86,15 +97,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h3>Spring方式配置</h3>
+                <h3 data-lang="job-spring-type-settings"></h3>
             </div>
             <div class="modal-body">
-                <h3 class="size-font">请填写Spring配置文件相对路径及名称</h3>
+                <h3 class="size-font" data-lang="job-application-context-info"></h3>
             </div>
         </div>
     </div>
 </div>
-<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
 <script src="js/common/common.js"></script>
 <script src="js/job/jobs_overview.js"></script>

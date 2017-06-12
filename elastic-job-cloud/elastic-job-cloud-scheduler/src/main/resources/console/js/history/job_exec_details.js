@@ -5,6 +5,9 @@ $(function() {
             $("#job-exec-details-table").bootstrapTable("refresh", {silent: true});
         }
     });
+    $("#job-exec-details-table").bootstrapTable().on("all.bs.table", function() {
+        doLocale();
+    });
 });
 
 function queryParams(params) {
@@ -28,11 +31,11 @@ function successFormatter(value) {
     switch(value)
     {
     case true:
-      return "<span class='label label-success'>成功</span>";
+      return "<span class='label label-success' data-lang='execute-result-success'></span>";
     case false:
-        return "<span class='label label-danger'>失败</span>";
+        return "<span class='label label-danger' data-lang='execute-result-failure'></span>";
     default:
-      return "空";
+      return "<span class='label label-danger' data-lang='execute-result-null'></span>";
     }
 }
 

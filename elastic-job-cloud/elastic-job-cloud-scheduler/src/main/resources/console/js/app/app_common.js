@@ -10,14 +10,14 @@ function validate() {
             appName: {
                 validators: {
                     notEmpty: {
-                        message: "应用名称不能为空"
+                        message: $.i18n.prop("app-name-not-null")
                     },
                     stringLength: {
                         max: 100,
-                        message: "应用名称长度不能超过100字符大小"
+                        message: $.i18n.prop("app-name-length-limit")
                     },
                     callback: {
-                        message: "应用已经注册",
+                        message: $.i18n.prop("app-name-exists"),
                         callback: function() {
                             var appName = $("#app-name").val();
                             var result = true;
@@ -39,39 +39,39 @@ function validate() {
             bootstrapScript: {
                 validators: {
                     notEmpty: {
-                        message: "启动脚本不能为空"
+                        message: $.i18n.prop("app-bootstrap-script-not-null")
                     }
                 }
             },
             cpuCount: {
                 validators: {
                     notEmpty: {
-                        message: "cpu数量不能为空"
+                        message: $.i18n.prop("app-cpu-count-not-null")
                     },
                     regexp: {
                         regexp: /^(-?\d+)(\.\d+)?$/,
-                        message: "cpu数量只能包含数字和小数点"
+                        message: $.i18n.prop("app-cpu-count-regexp-limit")
                     }
                 }
             },
             appMemory: {
                 validators: {
                     notEmpty: {
-                        message: "单片内存不能为空"
+                        message: $.i18n.prop("app-memory-not-null")
                     }
                 }
             },
             eventTraceSamplingCount: {
                 validators: {
                     notEmpty: {
-                        message: "作业事件采样次数(Daemon)不能为空"
+                        message: $.i18n.prop("event-trace-sampling-count-not-null")
                     }
                 }
             },
             appURL: {
                 validators: {
                     notEmpty: {
-                        message: "应用所在路径不能为空"
+                        message: $.i18n.prop("app-url-not-null")
                     }
                 }
             }

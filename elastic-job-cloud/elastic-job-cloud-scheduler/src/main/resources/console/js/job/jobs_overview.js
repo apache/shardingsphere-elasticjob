@@ -3,7 +3,10 @@ $(function() {
     renderJobOverview();
     $("#add-job").click(function() {
         $(".box-body").remove();
-        $("#add-job-body").load("html/job/add_job.html");
+        $("#add-job-body").load("html/job/add_job.html", null, function() {
+            doLocale();
+            tooltipLocale();
+        });
         $("#data-add-job").modal({backdrop : "static", keyboard : true});
     });
     bindDetailJobButton();
@@ -16,47 +19,23 @@ $(function() {
 function renderJobOverview() {
     var jsonData = {
         url: "/api/job/jobs",
-        cache: false,
-        columns:
-            [{
-                field: "jobName",
-                title: "作业名",
-                sortable: "true"
-            }, {
-                field: "appName",
-                title: "应用名",
-                sortable: "true"
-            }, {
-                field: "jobClass",
-                title: "作业实现类",
-                sortable: "true"
-            }, {
-                field: "shardingTotalCount",
-                title: "分片总数",
-                sortable: "true"
-            }, {
-                field: "cron",
-                title: "cron表达式",
-                sortable: "true"
-            }, {
-                field: "operation",
-                title: "操作",
-                formatter: "operationJob"
-            }]
+        cache: false
     };
     $("#job-table").bootstrapTable({
         columns: jsonData.columns,
         url: jsonData.url,
         cache: jsonData.cache
+    }).on("all.bs.table", function() {
+        doLocale();
     });
 }
 
 function operationJob(val, row) {
-    var detailButton = "<button operation='detailJob' class='btn-xs btn-info' jobName='" + row.jobName + "'>详情</button>";
-    var modifyButton = "<button operation='modifyJob' class='btn-xs btn-warning' jobName='" + row.jobName + "'>修改</button>";
-    var deleteButton = "<button operation='deleteJob' class='btn-xs btn-danger' jobName='" + row.jobName + "'>删除</button>";
-    var enableButton = "<button operation='enableJob' class='btn-xs btn-success' jobName='" + row.jobName + "' appName='" + row.appName + "'>生效</button>";
-    var disableButton = "<button operation='disableJob' class='btn-xs btn-warning' jobName='" + row.jobName + "'  >失效</button>";
+    var detailButton = "<button operation='detailJob' class='btn-xs btn-info' jobName='" + row.jobName + "' data-lang='job-detail'></button>";
+    var modifyButton = "<button operation='modifyJob' class='btn-xs btn-warning' jobName='" + row.jobName + "' data-lang='update-job'></button>";
+    var deleteButton = "<button operation='deleteJob' class='btn-xs btn-danger' jobName='" + row.jobName + "' data-lang='operation-delete'></button>";
+    var enableButton = "<button operation='enableJob' class='btn-xs btn-success' jobName='" + row.jobName + "' appName='" + row.appName + "' data-lang='operation-enable'></button>";
+    var disableButton = "<button operation='disableJob' class='btn-xs btn-warning' jobName='" + row.jobName + "' data-lang='operation-disable'></button>";
     var operationId = detailButton + "&nbsp;" + modifyButton  +"&nbsp;" + deleteButton;
     if(selectJobStatus(row.jobName)) {
         operationId = operationId + "&nbsp;" + enableButton;
@@ -96,6 +75,8 @@ function bindDetailJobButton() {
                         $("#bootstrap-script-div").hide();
                     }
                     renderJob(result);
+                    doLocale();
+                    tooltipLocale();
                     $("#data-detail-job").modal({backdrop : "static", keyboard : true});
                     $("#close-button").on("click", function(){
                         $("#data-detail-job").modal("hide");
@@ -143,6 +124,8 @@ function bindModifyJobButton() {
                 if (null !== result) {
                     $(".box-body").remove();
                     $("#update-job-body").load("html/job/modify_job.html", null, function() {
+                        doLocale();
+                        tooltipLocale();
                         $('#data-update-job').modal({backdrop : "static", keyboard : true});
                         renderJob(result);
                     });
