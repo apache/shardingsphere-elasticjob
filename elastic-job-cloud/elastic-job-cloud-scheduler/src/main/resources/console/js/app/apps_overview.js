@@ -81,6 +81,7 @@ function bindModifyAppButton() {
                     $(".box-body").remove();
                     $("#update-app-body").load("html/app/modify_app.html", null, function() {
                         doLocale();
+                        tooltipLocale();
                         renderApp(result);
                         $("#data-update-app").modal({backdrop : "static", keyboard : true});
                     });
