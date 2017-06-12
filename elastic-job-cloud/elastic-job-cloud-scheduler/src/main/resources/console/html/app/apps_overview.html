@@ -1,15 +1,24 @@
 <div class="content-wrapper">
     <div class="page-height-min">
         <section class="content-header">
-            <h1>应用定义</h1>
+            <h1 data-lang="sidebar-defination"></h1>
             <ol class="breadcrumb">
-                <li class="active"><i class="fa fa-laptop"></i> 定义</li>
-                <li class="active">应用定义</li>
+                <li class="active"><i class="fa fa-laptop" data-lang="sidebar-app"></i></li>
+                <li class="active" data-lang="sidebar-defination"></li>
             </ol>
         </section>
         <section class="content">
-            <table id="app-table" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true" data-show-columns="true"></table>
-            <button type="button" class="btn-xs btn-success" data-toggle="modal" id="add-app">添加</button>
+            <table id="app-table" data-pagination="true" data-page-list="[10, 20, 50, 100]" data-search="true" data-show-refresh="true" data-show-toggle="true" data-striped="true" data-show-columns="true">
+                <thead>
+                <tr>
+                    <th data-field="appName" data-sortable="true"><span data-lang="app-name"></span></th>
+                    <th data-field="appURL" data-sortable="true"><span data-lang="app-url"></span></th>
+                    <th data-field="bootstrapScript" data-sortable="true"><span data-lang="app-bootstrap-script"></span></th>
+                    <th data-field="operation" data-formatter="operationApp"><span data-lang="operation"></span></th>
+                </tr>
+                </thead>
+            </table>
+            <button type="button" class="btn-xs btn-success" data-toggle="modal" id="add-app" data-lang="operation-add"></button>
         </section>
     </div>
 </div>
@@ -19,7 +28,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h2 class="modal-title">应用详情</h2>
+                    <h2 class="modal-title" data-lang="app-detail"></h2>
                 </div>
                 <div class="modal-body" id ="detail-app-body">
                 </div>
@@ -33,7 +42,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h2 class="modal-title">修改应用 </h2>
+                    <h2 class="modal-title" data-lang="update-app"></h2>
                 </div>
                 <div class="modal-body" id="update-app-body">
                 </div>
@@ -47,7 +56,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h2 class="modal-title">添加应用</h2>
+                    <h2 class="modal-title" data-lang="add-app"></h2>
                 </div>
                 <div class="modal-body" id="add-app-body">
                 </div>
@@ -59,16 +68,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <h3 class="size-font">确认要删除该应用吗？删除应用同时会删除关联作业。</h3>
+                <h3 class="size-font" data-lang="confirm-to-delete"></h3>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn-xs btn-danger" id="delete-app-confirm" data-dismiss="modal">确认</button>
-                <button type="button" class="btn-xs btn-success" id="delete-app-remove" data-dismiss="modal">取消</button>
+                <button type="button" class="btn-xs btn-danger" id="delete-app-confirm" data-dismiss="modal" data-lang="operation-submit"></button>
+                <button type="button" class="btn-xs btn-success" id="delete-app-remove" data-dismiss="modal" data-lang="operation-close"></button>
             </div>
         </div>
     </div>
 </div>
-<script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+<script src="lib/bootstrap-table/bootstrap-table.js"></script>
 <script src="js/common/common.js"></script>
 <script src="js/app/apps_overview.js"></script>

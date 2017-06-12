@@ -1,17 +1,17 @@
 <div class="content-wrapper">
     <div class="page-height-min">
         <section class="content-header">
-            <h1>作业状态</h1>
+            <h1 data-lang="job-status"></h1>
             <ol class="breadcrumb">
-                <li class="active"><i class="fa fa-tasks"></i> 作业</li>
-                <li class="active">作业状态</li>
+                <li class="active"><i class="fa fa-tasks" data-lang="sidebar-job"></i></li>
+                <li class="active" data-lang="job-status"></li>
             </ol>
         </section>
         <section class="content">
             <ul class="nav nav-tabs" role="tablist">
-                <li id="running_tab" role="presentation" class="active"><a href="#running" aria-controls="running" role="tab" data-toggle="tab">运行任务</a></li>
-                <li id="ready_tab" role="presentation"><a href="#ready" aria-controls="ready" role="tab" data-toggle="tab">待运行作业</a></li>
-                <li id="failover_tab" role="presentation"><a href="#failover" aria-controls="failover" role="tab" data-toggle="tab">待失效转移任务</a></li>
+                <li id="running_tab" role="presentation" class="active"><a href="#running" aria-controls="running" role="tab" data-toggle="tab" data-lang="tab-running-tasks"></a></li>
+                <li id="ready_tab" role="presentation"><a href="#ready" aria-controls="ready" role="tab" data-toggle="tab" data-lang="tab-ready-jobs"></a></li>
+                <li id="failover_tab" role="presentation"><a href="#failover" aria-controls="failover" role="tab" data-toggle="tab" data-lang="tab-failover-tasks"></a></li>
             </ul>
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="running">
@@ -33,11 +33,11 @@
                         data-show-columns="true">
                         <thead>
                             <tr>
-                                <th data-field="id" data-sortable="true">任务ID</th>
-                                <th data-field="metaInfo.jobName" data-sortable="true">任务名称</th>
-                                <th data-field="slaveId" data-sortable="true">宿主机ID</th>
-                                <th data-field="type" data-sortable="true">执行类型</th>
-                                <th data-field="metaInfo.shardingItems">分片项</th>
+                                <th data-field="id" data-sortable="true"><span data-lang="task-id"></span></th>
+                                <th data-field="metaInfo.jobName" data-sortable="true"><span data-lang="task-name"></span></th>
+                                <th data-field="slaveId" data-sortable="true"><span data-lang="server-ip"></span></th>
+                                <th data-field="type" data-sortable="true"><span data-lang="job-execution-type"></span></th>
+                                <th data-field="metaInfo.shardingItems"><span data-lang="job-sharding-item"></span></th>
                             </tr>
                         </thead>
                     </table>
@@ -61,8 +61,8 @@
                         data-show-columns="true">
                         <thead>
                             <tr>
-                                <th data-field="jobName" data-sortable="true">作业名称</th>
-                                <th data-field="times" data-sortable="true">剩余执行次数</th>
+                                <th data-field="jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                                <th data-field="times" data-sortable="true"><span data-lang="remaining-execute-times"></span></th>
                             </tr>
                         </thead>
                     </table>
@@ -86,9 +86,9 @@
                         data-show-columns="true">
                         <thead>
                             <tr>
-                                <th data-field="taskInfo.jobName" data-sortable="true">作业名称</th>
-                                <th data-field="originalTaskId">原任务ID</th>
-                                <th data-field="taskInfo.shardingItems">分片项</th>
+                                <th data-field="taskInfo.jobName" data-sortable="true"><span data-lang="job-name"></span></th>
+                                <th data-field="originalTaskId"><span data-lang="task-source-id"></span></th>
+                                <th data-field="taskInfo.shardingItems"><span data-lang="job-sharding-item"></span></th>
                             </tr>
                         </thead>
                     </table>
@@ -98,4 +98,3 @@
     </div>
 </div>
 <script src="lib/bootstrap-table/bootstrap-table.min.js"></script>
-<script src="lib/bootstrap-table/bootstrap-table-zh-CN.js"></script>

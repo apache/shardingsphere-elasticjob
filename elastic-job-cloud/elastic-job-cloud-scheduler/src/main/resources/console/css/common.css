@@ -1,6 +1,6 @@
 .form-group.toolbar label {
     float: left;
-    width: 90px;
+    width: 130px;
     height: 52px;
     padding-left: 20px;
     text-align: center;
@@ -134,4 +134,8 @@
 }
 #modal-dialog-width{
     width: 60%;
+}
+#execute-result {
+    float: top;
+    padding-left: 20px;
 }

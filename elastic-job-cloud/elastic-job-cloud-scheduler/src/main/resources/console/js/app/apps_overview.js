@@ -3,7 +3,10 @@ $(function() {
     renderAppOverview();
     $("#add-app").click(function() {
         $(".box-body").remove();
-        $("#add-app-body").load("html/app/add_app.html");
+        $("#add-app-body").load("html/app/add_app.html", null, function() {
+            doLocale();
+            tooltipLocale();
+        });
         $("#data-add-app").modal({backdrop: "static", keyboard: true});
     });
     bindDetailAppButton();
@@ -16,39 +19,23 @@ $(function() {
 function renderAppOverview() {
     var jsonData = {
         url: "/api/app/list",
-        cache: false,
-        columns:
-            [{
-                field: "appName",
-                title: "应用名称",
-                sortable: "true"
-            }, {
-                field: "appURL",
-                title: "应用下载路径",
-                sortable: "true"
-            }, {
-                field: "bootstrapScript",
-                title: "启动脚本",
-                sortable: "true"
-            },  {
-                field: "operation",
-                title: "操作",
-                formatter: "operationApp"
-            }]
+        cache: false
     };
     $("#app-table").bootstrapTable({
         columns: jsonData.columns,
         url: jsonData.url,
         cache: jsonData.cache
+    }).on("all.bs.table", function() {
+        doLocale();
     });
 }
 
 function operationApp(val, row) {
-    var detailButton = "<button operation='detailApp' class='btn-xs btn-info' appName='" + row.appName + "'>详情</button>";
-    var modifyButton = "<button operation='modifyApp' class='btn-xs btn-warning' appName='" + row.appName + "'>修改</button>";
-    var deleteButton = "<button operation='deleteApp' class='btn-xs btn-danger' appName='" + row.appName + "'>删除</button>";
-    var enableButton = "<button operation='enableApp' class='btn-xs btn-success' appName='" + row.appName + "'>生效</button>";
-    var disableButton = "<button operation='disableApp' class='btn-xs btn-warning' appName='" + row.appName + "'>失效</button>";
+    var detailButton = "<button operation='detailApp' class='btn-xs btn-info' appName='" + row.appName + "' data-lang='app-detail'></button>";
+    var modifyButton = "<button operation='modifyApp' class='btn-xs btn-warning' appName='" + row.appName + "' data-lang='update-app'></button>";
+    var deleteButton = "<button operation='deleteApp' class='btn-xs btn-danger' appName='" + row.appName + "' data-lang='operation-delete'></button>";
+    var enableButton = "<button operation='enableApp' class='btn-xs btn-success' appName='" + row.appName + "' data-lang='operation-enable'></button>";
+    var disableButton = "<button operation='disableApp' class='btn-xs btn-warning' appName='" + row.appName + "' data-lang='operation-disable'></button>";
     var operationId = detailButton + "&nbsp;" + modifyButton  +"&nbsp;" + deleteButton;
     if(selectAppStatus(row.appName)) {
         operationId = operationId + "&nbsp;" + enableButton;
@@ -69,6 +56,8 @@ function bindDetailAppButton() {
                 if (null !== result) {
                     $(".box-body").remove();
                     $("#detail-app-body").load("html/app/detail_app.html", null, function() {
+                        doLocale();
+                        tooltipLocale();
                         renderApp(result);
                         $("#data-detail-app").modal({backdrop : "static", keyboard : true});
                         $("#close-button").on("click", function() {
@@ -91,6 +80,7 @@ function bindModifyAppButton() {
                 if(null !== result) {
                     $(".box-body").remove();
                     $("#update-app-body").load("html/app/modify_app.html", null, function() {
+                        doLocale();
                         renderApp(result);
                         $("#data-update-app").modal({backdrop : "static", keyboard : true});
                     });
