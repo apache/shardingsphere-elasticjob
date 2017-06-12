@@ -3,7 +3,6 @@ $(function() {
     renderJobOverview();
     $("#add-job").click(function() {
         $(".box-body").remove();
-        doLocale();
         $("#add-job-body").load("html/job/add_job.html", null, function() {
             doLocale();
             tooltipLocale();
