@@ -2,6 +2,7 @@
 
 ### 功能提升
 
+1. [ISSUE #29](https://github.com/dangdangdotcom/elastic-job/issues/29) 英文版的job-console
 1. [ISSUE #352](https://github.com/dangdangdotcom/elastic-job/issues/352) elastic-job-cloud-executor本地运行模式
 
 ### 缺陷修正
