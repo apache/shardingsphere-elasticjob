@@ -1,9 +1,9 @@
 <div class="index-content">
     <section class="content-header">
-        <h4 data-lang="sidebar-job-event-trace-history"></h4>
+        <h4 data-lang="sidebar-job-trace"></h4>
         <ol class="breadcrumb">
             <li class="active"><i class="fa fa-history" data-lang="sidebar-job-history"></i></li>
-            <li class="active" data-lang="sidebar-job-event-trace-history"></li>
+            <li class="active" data-lang="sidebar-job-trace"></li>
         </ol>
     </section>
     <section class="content">
@@ -23,7 +23,7 @@
                     <input type="text" class="form-control custom-datepicker" id="start-time">
                 </div>
                 <div class="form-group toolbar">
-                    <label for="end-time" data-lang="end-time"></label>
+                    <label for="end-time" data-lang="complete-time"></label>
                     <input type="text" class="form-control custom-datepicker" id="end-time">
                 </div>
                 <div class="form-group">
@@ -60,7 +60,7 @@
                     <th data-field="success" data-sortable="true" data-formatter="successFormatter"><span data-lang="execute-result"></span></th>
                     <th data-field="failureCause.plainText" data-formatter="splitFormatter"><span data-lang="failure-reason"></span></th>
                     <th data-field="startTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="start-time"></span></th>
-                    <th data-field="completeTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="end-time"></span></th>
+                    <th data-field="completeTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="complete-time"></span></th>
                 </tr>
             </thead>
         </table>

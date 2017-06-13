@@ -31,8 +31,8 @@ function renderAppOverview() {
 }
 
 function operationApp(val, row) {
-    var detailButton = "<button operation='detailApp' class='btn-xs btn-info' appName='" + row.appName + "' data-lang='app-detail'></button>";
-    var modifyButton = "<button operation='modifyApp' class='btn-xs btn-warning' appName='" + row.appName + "' data-lang='update-app'></button>";
+    var detailButton = "<button operation='detailApp' class='btn-xs btn-info' appName='" + row.appName + "' data-lang='operation-detail'></button>";
+    var modifyButton = "<button operation='modifyApp' class='btn-xs btn-warning' appName='" + row.appName + "' data-lang='operation-update'></button>";
     var deleteButton = "<button operation='deleteApp' class='btn-xs btn-danger' appName='" + row.appName + "' data-lang='operation-delete'></button>";
     var enableButton = "<button operation='enableApp' class='btn-xs btn-success' appName='" + row.appName + "' data-lang='operation-enable'></button>";
     var disableButton = "<button operation='disableApp' class='btn-xs btn-warning' appName='" + row.appName + "' data-lang='operation-disable'></button>";
