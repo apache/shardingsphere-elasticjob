@@ -49,8 +49,8 @@ function statusFormatter(value, row) {
 }
 
 function generateOperationButtons(val, row) {
-    var modifyButton = "<button operation='modify-job' class='btn-xs btn-primary' job-name='" + row.jobName + "' data-lang='update-job'></button>";
-    var shardingStatusButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "' data-lang='job-detail'></button>";
+    var modifyButton = "<button operation='modify-job' class='btn-xs btn-primary' job-name='" + row.jobName + "' data-lang='operation-update'></button>";
+    var shardingStatusButton = "<button operation='job-detail' class='btn-xs btn-info' job-name='" + row.jobName + "' data-lang='operation-detail'></button>";
     var triggerButton = "<button operation='trigger-job' class='btn-xs btn-success' job-name='" + row.jobName + "' data-lang='operation-trigger'></button>";
     var disableButton = "<button operation='disable-job' class='btn-xs btn-warning' job-name='" + row.jobName + "' data-lang='operation-disable'></button>";
     var enableButton = "<button operation='enable-job' class='btn-xs btn-success' job-name='" + row.jobName + "' data-lang='operation-enable'></button>";

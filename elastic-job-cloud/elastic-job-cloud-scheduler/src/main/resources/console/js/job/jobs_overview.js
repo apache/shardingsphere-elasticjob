@@ -31,8 +31,8 @@ function renderJobOverview() {
 }
 
 function operationJob(val, row) {
-    var detailButton = "<button operation='detailJob' class='btn-xs btn-info' jobName='" + row.jobName + "' data-lang='job-detail'></button>";
-    var modifyButton = "<button operation='modifyJob' class='btn-xs btn-warning' jobName='" + row.jobName + "' data-lang='update-job'></button>";
+    var detailButton = "<button operation='detailJob' class='btn-xs btn-info' jobName='" + row.jobName + "' data-lang='operation-detail'></button>";
+    var modifyButton = "<button operation='modifyJob' class='btn-xs btn-warning' jobName='" + row.jobName + "' data-lang='operation-update'></button>";
     var deleteButton = "<button operation='deleteJob' class='btn-xs btn-danger' jobName='" + row.jobName + "' data-lang='operation-delete'></button>";
     var enableButton = "<button operation='enableJob' class='btn-xs btn-success' jobName='" + row.jobName + "' appName='" + row.appName + "' data-lang='operation-enable'></button>";
     var disableButton = "<button operation='disableJob' class='btn-xs btn-warning' jobName='" + row.jobName + "' data-lang='operation-disable'></button>";

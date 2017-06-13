@@ -1,10 +1,10 @@
 <div class="content-wrapper">
     <div class="page-height-min">
         <section class="content-header">
-            <h1 data-lang="sidebar-job-execute-status"></h1>
+            <h1 data-lang="sidebar-history-status"></h1>
             <ol class="breadcrumb">
                 <li class="active"><i class="fa fa-history" data-lang="sidebar-job-history"></i></li>
-                <li class="active" data-lang="sidebar-job-execute-status"></li>
+                <li class="active" data-lang="sidebar-history-status"></li>
             </ol>
         </section>
         <section class="content">
@@ -53,11 +53,11 @@
                         </select> 
                     </div>
                     <div class="form-group toolbar">
-                        <label for="start-time" data-lang="start-time"></label>
+                        <label for="start-time" data-lang="creation-start-time"></label>
                         <input type="text" class="form-control pull-right custom-datepicker" id="start-time">
                     </div>
                     <div class="form-group toolbar">
-                        <label for="end-time" data-lang="end-time"></label>
+                        <label for="end-time" data-lang="creation-end-time"></label>
                         <input type="text" class="form-control pull-right custom-datepicker" id="end-time">
                     </div>
                 </div>
@@ -87,7 +87,7 @@
                         <th data-field="shardingItems"><span data-lang="job-sharding-item"></span></th>
                         <th data-field="executionType" data-sortable="true"><span data-lang="execute-type"></span></th>
                         <th data-field="state" data-sortable="true" data-formatter="stateFormatter"><span data-lang="status"></span></th>
-                        <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="start-time"></span></th>
+                        <th data-field="creationTime" data-sortable="true" data-formatter="dateTimeFormatter"><span data-lang="creation-time"></span></th>
                         <th data-field="message" data-formatter="splitRemarkFormatter"><span data-lang="comments"></span></th>
                     </tr>
                 </thead>

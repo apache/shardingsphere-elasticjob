@@ -116,7 +116,7 @@ function renderStaticsJobsLineChart() {
                     failData.push([dateTime, jobData[i].failedCount]);
                 }
                 var resultData = [{type: "spline", name: $.i18n.prop("job-success-count"), data: successData}, {type: "spline", name: $.i18n.prop("job-failure-count"), data: failData}];
-                renderLineChart(chartName, $.i18n.prop("dashboard-succ-and-fail-pics"), resultData);
+                renderLineChart(chartName, $.i18n.prop("dashboard-succ-and-fail-count"), resultData);
             }
         }
     });
@@ -144,7 +144,7 @@ function renderRunningJobsAndTasksLineChart() {
                             taskRunningData.push([dateTime, taskData[i].runningCount]);
                         }
                         var resultData = [{type: "spline", name: $.i18n.prop("task-running-count"), data: taskRunningData}, {type: "spline", name: $.i18n.prop("task-running-count"), data: jobRunningData}];
-                        renderLineChart(chartName, $.i18n.prop("dashboard-job-task-running-pics"), resultData);
+                        renderLineChart(chartName, $.i18n.prop("dashboard-job-task-running-count"), resultData);
                     }
                 }
             });
@@ -164,8 +164,8 @@ function renderRegisteredJobs() {
                     var dateTime = new Date(jobData[i].statisticsTime).getTime() + 1000 * 60 * 60 * 8;
                     registerData.push([dateTime, jobData[i].registeredCount]);
                 }
-                var resultData = [{ type: "spline", name: $.i18n.prop("dashboard-import-jobs"), data: registerData}];
-                renderLineChart(chartName, $.i18n.prop("dashboard-import-jobs"), resultData);
+                var resultData = [{ type: "spline", name: $.i18n.prop("dashboard-current-jobs-count"), data: registerData}];
+                renderLineChart(chartName, $.i18n.prop("dashboard-current-jobs-count"), resultData);
             }
         }
     });
