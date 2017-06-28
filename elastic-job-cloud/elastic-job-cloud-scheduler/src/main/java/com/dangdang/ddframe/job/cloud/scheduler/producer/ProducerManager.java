@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.app.DisableAppService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.disable.job.DisableJobService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
@@ -54,6 +55,8 @@ public final class ProducerManager {
     
     private final RunningService runningService;
     
+    private final DisableAppService disableAppService;
+    
     private final DisableJobService disableJobService;
     
     private final TransientProducerScheduler transientProducerScheduler;
@@ -66,6 +69,7 @@ public final class ProducerManager {
         configService = new CloudJobConfigurationService(regCenter);
         readyService = new ReadyService(regCenter);
         runningService = new RunningService(regCenter);
+        disableAppService = new DisableAppService(regCenter);
         disableJobService = new DisableJobService(regCenter);
         transientProducerScheduler = new TransientProducerScheduler(readyService);
     }
@@ -137,7 +141,7 @@ public final class ProducerManager {
      * @param jobConfig 作业配置
      */
     public void schedule(final CloudJobConfiguration jobConfig) {
-        if (disableJobService.isDisabled(jobConfig.getAppName())) {
+        if (disableAppService.isDisabled(jobConfig.getAppName()) || disableJobService.isDisabled(jobConfig.getJobName())) {
             return;
         }
         if (CloudJobExecutionType.TRANSIENT == jobConfig.getJobExecutionType()) {
