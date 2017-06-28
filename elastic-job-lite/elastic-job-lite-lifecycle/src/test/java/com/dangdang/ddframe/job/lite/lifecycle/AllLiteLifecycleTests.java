@@ -18,14 +18,14 @@
 package com.dangdang.ddframe.job.lite.lifecycle;
 
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobAPIFactoryTest;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ExecutionStatusTest;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.JobStatusTest;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerBriefStatusTest;
-import com.dangdang.ddframe.job.lite.lifecycle.domain.ServerStatusTest;
+import com.dangdang.ddframe.job.lite.lifecycle.domain.ShardingStatusTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.JobOperateAPIImplTest;
+import com.dangdang.ddframe.job.lite.lifecycle.internal.operate.ShardingOperateAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.reg.RegistryCenterFactoryTest;
+import com.dangdang.ddframe.job.lite.lifecycle.internal.settings.JobSettingsAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.JobStatisticsAPIImplTest;
 import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.ServerStatisticsAPIImplTest;
+import com.dangdang.ddframe.job.lite.lifecycle.internal.statistics.ShardingStatisticsAPIImplTest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.junit.runner.RunWith;
@@ -34,15 +34,15 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        JobAPIFactoryTest.class, 
-        JobStatusTest.class,
-        ServerStatusTest.class, 
-        ServerBriefStatusTest.class, 
-        ExecutionStatusTest.class, 
+        JobAPIFactoryTest.class,
+        JobSettingsAPIImplTest.class,
+        ShardingStatusTest.class, 
         RegistryCenterFactoryTest.class, 
         JobOperateAPIImplTest.class,
+        ShardingOperateAPIImplTest.class,
         JobStatisticsAPIImplTest.class,
-        ServerStatisticsAPIImplTest.class
+        ServerStatisticsAPIImplTest.class,
+        ShardingStatisticsAPIImplTest.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllLiteLifecycleTests {

@@ -29,8 +29,14 @@ import java.io.StringWriter;
  * @author caohao
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ExceptionUtil {
+public final class ExceptionUtil {
     
+    /**
+     * 将Throwable异常转换为字符串.
+     *
+     * @param cause 需要转换的异常
+     * @return 转换后的异常字符串
+     */
     public static String transform(final Throwable cause) {
         if (null == cause) {
             return "";

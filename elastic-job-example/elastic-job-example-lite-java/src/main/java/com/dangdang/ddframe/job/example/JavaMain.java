@@ -23,8 +23,6 @@ import com.dangdang.ddframe.job.config.script.ScriptJobConfiguration;
 import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbConfiguration;
-import com.dangdang.ddframe.job.example.listener.JavaSimpleDistributeListener;
-import com.dangdang.ddframe.job.example.listener.JavaSimpleListener;
 import com.dangdang.ddframe.job.example.job.dataflow.JavaDataflowJob;
 import com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
@@ -91,7 +89,7 @@ public final class JavaMain {
     private static void setUpSimpleJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) {
         JobCoreConfiguration coreConfig = JobCoreConfiguration.newBuilder("javaSimpleJob", "0/5 * * * * ?", 3).shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou").build();
         SimpleJobConfiguration simpleJobConfig = new SimpleJobConfiguration(coreConfig, JavaSimpleJob.class.getCanonicalName());
-        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfig, new JavaSimpleListener(), new JavaSimpleDistributeListener(1000L, 2000L)).init();
+        new JobScheduler(regCenter, LiteJobConfiguration.newBuilder(simpleJobConfig).build(), jobEventConfig).init();
     }
     
     private static void setUpDataflowJob(final CoordinatorRegistryCenter regCenter, final JobEventConfiguration jobEventConfig) {

@@ -23,6 +23,7 @@ import com.dangdang.ddframe.job.example.fixture.entity.Foo;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,8 @@ public class SpringSimpleJob implements SimpleJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {
-        System.out.println(String.format("------Thread ID: %s, Date: %s, Sharding Context: %s, Action: %s", Thread.currentThread().getId(), new Date(), shardingContext, "simple job"));
+        System.out.println(String.format("Item: %s | Time: %s | Thread: %s | %s",
+                shardingContext.getShardingItem(), new SimpleDateFormat("HH:mm:ss").format(new Date()), Thread.currentThread().getId(), "SIMPLE"));
         List<Foo> data = fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
         for (Foo each : data) {
             fooRepository.setCompleted(each.getId());

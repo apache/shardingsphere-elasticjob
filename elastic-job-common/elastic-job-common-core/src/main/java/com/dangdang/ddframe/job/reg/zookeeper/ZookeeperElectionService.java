@@ -17,6 +17,7 @@
 
 package com.dangdang.ddframe.job.reg.zookeeper;
 
+import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.ElectionCandidate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
@@ -32,7 +33,7 @@ import java.util.concurrent.CountDownLatch;
  * @author caohao
  */
 @Slf4j
-public class ZookeeperElectionService {
+public final class ZookeeperElectionService {
     
     private final CountDownLatch leaderLatch = new CountDownLatch(1);
     
@@ -47,10 +48,11 @@ public class ZookeeperElectionService {
                 try {
                     electionCandidate.startLeadership();
                     leaderLatch.await();
-                } catch (final InterruptedException ex) {
                     log.warn("Elastic job: {} lost leadership.", identity);
-                } finally {
                     electionCandidate.stopLeadership();
+                } catch (final JobSystemException exception) {
+                    log.error("Elastic job: Starting error", exception);
+                    System.exit(1);  
                 }
             }
         });

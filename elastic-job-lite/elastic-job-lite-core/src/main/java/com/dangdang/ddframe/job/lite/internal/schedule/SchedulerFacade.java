@@ -20,13 +20,14 @@ package com.dangdang.ddframe.job.lite.internal.schedule;
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
-import com.dangdang.ddframe.job.lite.internal.election.LeaderElectionService;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
 import com.dangdang.ddframe.job.lite.internal.listener.ListenerManager;
 import com.dangdang.ddframe.job.lite.internal.monitor.MonitorService;
-import com.dangdang.ddframe.job.lite.internal.server.ServerService;
-import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.reconcile.ReconcileService;
+import com.dangdang.ddframe.job.lite.internal.server.ServerService;
+import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 
 import java.util.List;
@@ -36,13 +37,17 @@ import java.util.List;
  * 
  * @author zhangliang
  */
-public class SchedulerFacade {
+public final class SchedulerFacade {
+    
+    private final String jobName;
     
     private final ConfigurationService configService;
     
-    private final LeaderElectionService leaderElectionService;
+    private final LeaderService leaderService;
     
     private final ServerService serverService;
+    
+    private final InstanceService instanceService;
     
     private final ShardingService shardingService;
     
@@ -50,14 +55,28 @@ public class SchedulerFacade {
     
     private final MonitorService monitorService;
     
-    private final ListenerManager listenerManager;
-    
     private final ReconcileService reconcileService;
     
-    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+    private ListenerManager listenerManager;
+    
+    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName) {
+        this.jobName = jobName;
         configService = new ConfigurationService(regCenter, jobName);
-        leaderElectionService = new LeaderElectionService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
         serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
+        shardingService = new ShardingService(regCenter, jobName);
+        executionService = new ExecutionService(regCenter, jobName);
+        monitorService = new MonitorService(regCenter, jobName);
+        reconcileService = new ReconcileService(regCenter, jobName);
+    }
+    
+    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
+        this.jobName = jobName;
+        configService = new ConfigurationService(regCenter, jobName);
+        leaderService = new LeaderService(regCenter, jobName);
+        serverService = new ServerService(regCenter, jobName);
+        instanceService = new InstanceService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         executionService = new ExecutionService(regCenter, jobName);
         monitorService = new MonitorService(regCenter, jobName);
@@ -66,52 +85,53 @@ public class SchedulerFacade {
     }
     
     /**
-     * 每次作业启动前清理上次运行状态.
-     */
-    public void clearPreviousServerStatus() {
-        serverService.clearPreviousServerStatus();
-    }
-    
-    /**
-     * 注册Elastic-Job启动信息.
-     * 
-     * @param liteJobConfig 作业配置
-     */
-    public void registerStartUpInfo(final LiteJobConfiguration liteJobConfig) {
-        listenerManager.startAllListeners();
-        leaderElectionService.leaderForceElection();
-        configService.persist(liteJobConfig);
-        serverService.persistServerOnline(!liteJobConfig.isDisabled());
-        serverService.clearJobPausedStatus();
-        shardingService.setReshardingFlag();
-        monitorService.listen();
-        listenerManager.setCurrentShardingTotalCount(configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount());
-        reconcileService.startAsync();
-    }
-    
-    /**
-     * 释放作业占用的资源.
-     */
-    public void releaseJobResource() {
-        monitorService.close();
-        serverService.removeServerStatus();
-    }
-    
-    /**
-     * 读取作业配置.
-     *
-     * @return 作业配置
-     */
-    public LiteJobConfiguration loadJobConfiguration() {
-        return configService.load(false);
-    }
-    
-    /**
      * 获取作业触发监听器.
-     * 
+     *
      * @return 作业触发监听器
      */
     public JobTriggerListener newJobTriggerListener() {
         return new JobTriggerListener(executionService, shardingService);
+    }
+    
+    /**
+     * 更新作业配置.
+     *
+     * @param liteJobConfig 作业配置
+     * @return 更新后的作业配置
+     */
+    public LiteJobConfiguration updateJobConfiguration(final LiteJobConfiguration liteJobConfig) {
+        configService.persist(liteJobConfig);
+        return configService.load(false);
+    }
+    
+    /**
+     * 注册作业启动信息.
+     * 
+     * @param enabled 作业是否启用
+     */
+    public void registerStartUpInfo(final boolean enabled) {
+        listenerManager.startAllListeners();
+        leaderService.electLeader();
+        serverService.persistOnline(enabled);
+        instanceService.persistOnline();
+        shardingService.setReshardingFlag();
+        monitorService.listen();
+        if (!reconcileService.isRunning()) {
+            reconcileService.startAsync();
+        }
+    }
+    
+    /**
+     * 终止作业调度.
+     */
+    public void shutdownInstance() {
+        if (leaderService.isLeader()) {
+            leaderService.removeLeader();
+        }
+        monitorService.close();
+        if (reconcileService.isRunning()) {
+            reconcileService.stopAsync();
+        }
+        JobRegistry.getInstance().shutdown(jobName);
     }
 }

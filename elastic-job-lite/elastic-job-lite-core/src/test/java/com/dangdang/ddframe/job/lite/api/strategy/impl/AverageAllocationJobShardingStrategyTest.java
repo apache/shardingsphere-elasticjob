@@ -17,8 +17,8 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -36,53 +36,49 @@ public final class AverageAllocationJobShardingStrategyTest {
     
     @Test
     public void shardingForZeroServer() {
-        assertThat(jobShardingStrategy.sharding(Collections.<String>emptyList(), getJobShardingStrategyOption(3)), is(Collections.EMPTY_MAP));
+        assertThat(jobShardingStrategy.sharding(Collections.<JobInstance>emptyList(), "test_job", 3), is(Collections.<JobInstance, List<Integer>>emptyMap()));
     }
     
     @Test
     public void shardingForOneServer() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(1);
-        expected.put("host0", Arrays.asList(0, 1, 2));
-        assertThat(jobShardingStrategy.sharding(Collections.singletonList("host0"), getJobShardingStrategyOption(3)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(1, 1);
+        expected.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 2));
+        assertThat(jobShardingStrategy.sharding(Collections.singletonList(new JobInstance("host0@-@0")), "test_job", 3), is(expected));
     }
     
     @Test
     public void shardingForServersMoreThanShardingCount() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Collections.singletonList(0));
-        expected.put("host1", Collections.singletonList(1));
-        expected.put("host2", Collections.<Integer>emptyList());
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(2)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
+        expected.put(new JobInstance("host0@-@0"), Collections.singletonList(0));
+        expected.put(new JobInstance("host1@-@0"), Collections.singletonList(1));
+        expected.put(new JobInstance("host2@-@0"), Collections.<Integer>emptyList());
+        assertThat(jobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "test_job", 2), is(expected));
     }
     
     @Test
     public void shardingForServersLessThanShardingCountAliquot() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Arrays.asList(0, 1, 2));
-        expected.put("host1", Arrays.asList(3, 4, 5));
-        expected.put("host2", Arrays.asList(6, 7, 8));
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(9)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
+        expected.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 2));
+        expected.put(new JobInstance("host1@-@0"), Arrays.asList(3, 4, 5));
+        expected.put(new JobInstance("host2@-@0"), Arrays.asList(6, 7, 8));
+        assertThat(jobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "test_job", 9), is(expected));
     }
     
     @Test
     public void shardingForServersLessThanShardingCountAliquantFor8ShardingCountAnd3Servers() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Arrays.asList(0, 1, 6));
-        expected.put("host1", Arrays.asList(2, 3, 7));
-        expected.put("host2", Arrays.asList(4, 5));
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(8)), is(expected));
+        Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
+        expected.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 6));
+        expected.put(new JobInstance("host1@-@0"), Arrays.asList(2, 3, 7));
+        expected.put(new JobInstance("host2@-@0"), Arrays.asList(4, 5));
+        assertThat(jobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "test_job", 8), is(expected));
     }
     
     @Test
     public void shardingForServersLessThanShardingCountAliquantFor10ShardingCountAnd3Servers() {
-        Map<String, List<Integer>> expected = new LinkedHashMap<>(3);
-        expected.put("host0", Arrays.asList(0, 1, 2, 9));
-        expected.put("host1", Arrays.asList(3, 4, 5));
-        expected.put("host2", Arrays.asList(6, 7, 8));
-        assertThat(jobShardingStrategy.sharding(Arrays.asList("host0", "host1", "host2"), getJobShardingStrategyOption(10)), is(expected));
-    }
-    
-    private JobShardingStrategyOption getJobShardingStrategyOption(final int shardingTotalCount) {
-        return new JobShardingStrategyOption("test_job", shardingTotalCount);
+        Map<JobInstance, List<Integer>> expected = new LinkedHashMap<>(3, 1);
+        expected.put(new JobInstance("host0@-@0"), Arrays.asList(0, 1, 2, 9));
+        expected.put(new JobInstance("host1@-@0"), Arrays.asList(3, 4, 5));
+        expected.put(new JobInstance("host2@-@0"), Arrays.asList(6, 7, 8));
+        assertThat(jobShardingStrategy.sharding(Arrays.asList(new JobInstance("host0@-@0"), new JobInstance("host1@-@0"), new JobInstance("host2@-@0")), "test_job", 10), is(expected));
     }
 }

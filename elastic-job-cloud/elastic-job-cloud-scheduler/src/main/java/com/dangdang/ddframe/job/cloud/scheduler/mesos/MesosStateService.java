@@ -48,12 +48,10 @@ public class MesosStateService {
     
     private static String stateUrl;
     
-    private final String frameworkID;
+    private final FrameworkIDService frameworkIDService;
     
     public MesosStateService(final CoordinatorRegistryCenter regCenter) {
-        Optional<String> frameworkIDOptional = new FrameworkIDService(regCenter).fetch();
-        Preconditions.checkState(frameworkIDOptional.isPresent());
-        this.frameworkID = frameworkIDOptional.get();
+        frameworkIDService = new FrameworkIDService(regCenter);
     }
     
     /**
@@ -113,17 +111,27 @@ public class MesosStateService {
      * @return 执行器信息
      * @throws JSONException 解析JSON格式异常
      */
-    public Collection<ExecutorInfo> executors(final String appName) throws JSONException {
-        return Collections2.transform(findExecutors(fetch(stateUrl).getJSONArray("frameworks"), appName), new Function<JSONObject, ExecutorInfo>() {
+    public Collection<ExecutorStateInfo> executors(final String appName) throws JSONException {
+        return Collections2.transform(findExecutors(fetch(stateUrl).getJSONArray("frameworks"), appName), new Function<JSONObject, ExecutorStateInfo>() {
             @Override
-            public ExecutorInfo apply(final JSONObject input) {
+            public ExecutorStateInfo apply(final JSONObject input) {
                 try {
-                    return ExecutorInfo.builder().id(getExecutorId(input)).slaveId(input.getString("slave_id")).build();
+                    return ExecutorStateInfo.builder().id(getExecutorId(input)).slaveId(input.getString("slave_id")).build();
                 } catch (final JSONException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         });
+    }
+    
+    /**
+     * 获取所有执行器.
+     *
+     * @return 执行器信息
+     * @throws JSONException 解析JSON格式异常
+     */
+    public Collection<ExecutorStateInfo> executors() throws JSONException {
+        return executors(null);
     }
     
     private JSONObject fetch(final String url) {
@@ -133,6 +141,13 @@ public class MesosStateService {
     
     private Collection<JSONObject> findExecutors(final JSONArray frameworks, final String appName) throws JSONException {
         List<JSONObject> result = Lists.newArrayList();
+        Optional<String> frameworkIDOptional = frameworkIDService.fetch();
+        String frameworkID;
+        if (frameworkIDOptional.isPresent()) {
+            frameworkID = frameworkIDOptional.get();
+        } else {
+            return result;
+        }
         for (int i = 0; i < frameworks.length(); i++) {
             JSONObject framework = frameworks.getJSONObject(i);
             if (!framework.getString("id").equals(frameworkID)) {
@@ -141,7 +156,7 @@ public class MesosStateService {
             JSONArray executors = framework.getJSONArray("executors");
             for (int j = 0; j < executors.length(); j++) {
                 JSONObject executor = executors.getJSONObject(j);
-                if (appName.equals(getExecutorId(executor).split("@-@")[0])) {
+                if (null == appName || appName.equals(getExecutorId(executor).split("@-@")[0])) {
                     result.add(executor);
                 }
             }
@@ -155,7 +170,7 @@ public class MesosStateService {
     
     @Builder
     @Getter
-    public static final class ExecutorInfo {
+    public static final class ExecutorStateInfo {
         
         private final String id;
         

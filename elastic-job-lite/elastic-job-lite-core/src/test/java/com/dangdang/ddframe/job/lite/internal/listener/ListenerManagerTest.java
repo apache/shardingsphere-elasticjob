@@ -18,13 +18,15 @@
 package com.dangdang.ddframe.job.lite.internal.listener;
 
 import com.dangdang.ddframe.job.lite.api.listener.ElasticJobListener;
-import com.dangdang.ddframe.job.lite.internal.config.ConfigurationListenerManager;
+import com.dangdang.ddframe.job.lite.internal.config.RescheduleListenerManager;
 import com.dangdang.ddframe.job.lite.internal.election.ElectionListenerManager;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.failover.FailoverListenerManager;
 import com.dangdang.ddframe.job.lite.internal.guarantee.GuaranteeListenerManager;
-import com.dangdang.ddframe.job.lite.internal.server.JobOperationListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.ShutdownListenerManager;
+import com.dangdang.ddframe.job.lite.internal.instance.TriggerListenerManager;
+import com.dangdang.ddframe.job.lite.internal.sharding.MonitorExecutionListenerManager;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingListenerManager;
+import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,38 +40,50 @@ import static org.mockito.Mockito.verify;
 public class ListenerManagerTest {
     
     @Mock
+    private JobNodeStorage jobNodeStorage;
+    
+    @Mock
     private ElectionListenerManager electionListenerManager;
     
     @Mock
     private ShardingListenerManager shardingListenerManager;
     
     @Mock
-    private ExecutionListenerManager executionListenerManager;
-    
-    @Mock
     private FailoverListenerManager failoverListenerManager;
     
     @Mock
-    private JobOperationListenerManager jobOperationListenerManager;
+    private MonitorExecutionListenerManager monitorExecutionListenerManager;
     
     @Mock
-    private ConfigurationListenerManager configurationListenerManager;
+    private ShutdownListenerManager shutdownListenerManager;
+    
+    @Mock
+    private TriggerListenerManager triggerListenerManager;
+    
+    @Mock
+    private RescheduleListenerManager rescheduleListenerManager;
     
     @Mock
     private GuaranteeListenerManager guaranteeListenerManager;
+    
+    @Mock
+    private RegistryCenterConnectionStateListener regCenterConnectionStateListener;
     
     private final ListenerManager listenerManager = new ListenerManager(null, "test_job", Collections.<ElasticJobListener>emptyList());
     
     @Before
     public void setUp() throws NoSuchFieldException {
         MockitoAnnotations.initMocks(this);
+        ReflectionUtils.setFieldValue(listenerManager, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(listenerManager, "electionListenerManager", electionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "shardingListenerManager", shardingListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "executionListenerManager", executionListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "failoverListenerManager", failoverListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "jobOperationListenerManager", jobOperationListenerManager);
-        ReflectionUtils.setFieldValue(listenerManager, "configurationListenerManager", configurationListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "monitorExecutionListenerManager", monitorExecutionListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "shutdownListenerManager", shutdownListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "triggerListenerManager", triggerListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "rescheduleListenerManager", rescheduleListenerManager);
         ReflectionUtils.setFieldValue(listenerManager, "guaranteeListenerManager", guaranteeListenerManager);
+        ReflectionUtils.setFieldValue(listenerManager, "regCenterConnectionStateListener", regCenterConnectionStateListener);
     }
     
     @Test
@@ -77,16 +91,11 @@ public class ListenerManagerTest {
         listenerManager.startAllListeners();
         verify(electionListenerManager).start();
         verify(shardingListenerManager).start();
-        verify(executionListenerManager).start();
         verify(failoverListenerManager).start();
-        verify(jobOperationListenerManager).start();
-        verify(configurationListenerManager).start();
+        verify(monitorExecutionListenerManager).start();
+        verify(shutdownListenerManager).start();
+        verify(rescheduleListenerManager).start();
         verify(guaranteeListenerManager).start();
-    }
-    
-    @Test
-    public void assertSetCurrentShardingTotalCount() {
-        listenerManager.setCurrentShardingTotalCount(10);
-        verify(shardingListenerManager).setCurrentShardingTotalCount(10);
+        verify(jobNodeStorage).addConnectionStateListener(regCenterConnectionStateListener);
     }
 }

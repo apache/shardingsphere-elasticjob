@@ -17,15 +17,17 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
+import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfiguration;
-import com.dangdang.ddframe.job.cloud.scheduler.config.app.CloudAppConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.context.JobContext;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudAppConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.CloudJobConfigurationBuilder;
 import com.dangdang.ddframe.job.cloud.scheduler.fixture.TaskNode;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.app.DisableAppService;
+import com.dangdang.ddframe.job.cloud.scheduler.state.disable.job.DisableJobService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.cloud.scheduler.state.running.RunningService;
@@ -38,7 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -74,6 +76,15 @@ public final class FacadeServiceTest {
     @Mock
     private FailoverService failoverService;
     
+    @Mock
+    private DisableAppService disableAppService;
+    
+    @Mock
+    private DisableJobService disableJobService;
+    
+    @Mock
+    private MesosStateService mesosStateService;
+    
     private FacadeService facadeService;
     
     @Before
@@ -84,6 +95,9 @@ public final class FacadeServiceTest {
         ReflectionUtils.setFieldValue(facadeService, "readyService", readyService);
         ReflectionUtils.setFieldValue(facadeService, "runningService", runningService);
         ReflectionUtils.setFieldValue(facadeService, "failoverService", failoverService);
+        ReflectionUtils.setFieldValue(facadeService, "disableAppService", disableAppService);
+        ReflectionUtils.setFieldValue(facadeService, "disableJobService", disableJobService);
+        ReflectionUtils.setFieldValue(facadeService, "mesosStateService", mesosStateService);
     }
     
     @Test
@@ -213,12 +227,6 @@ public final class FacadeServiceTest {
     }
     
     @Test
-    public void assertIsRunningForJobName() {
-        when(runningService.getRunningTasks("test_job")).thenReturn(Collections.<TaskContext>emptyList());
-        assertFalse(facadeService.isRunning("test_job"));
-    }
-    
-    @Test
     public void assertIsRunningForReadyJobAndNotRunning() {
         when(runningService.getRunningTasks("test_job")).thenReturn(Collections.<TaskContext>emptyList());
         assertFalse(facadeService.isRunning(TaskContext.from(TaskNode.builder().type(ExecutionType.READY).build().getTaskNodeValue())));
@@ -262,7 +270,53 @@ public final class FacadeServiceTest {
         facadeService.recordFailoverTask(taskContext);
         verify(failoverService).add(taskContext);
         facadeService.getFailoverTaskId(taskContext.getMetaInfo());
-        when(facadeService.getFailoverTaskId(taskContext.getMetaInfo())).thenReturn(Optional.of(taskNode.getTaskNodePath()));
         verify(failoverService).getTaskId(taskContext.getMetaInfo());
+    }
+    
+    @Test
+    public void assertJobDisabledWhenAppEnabled() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(disableAppService.isDisabled("test_app")).thenReturn(false);
+        when(disableJobService.isDisabled("test_job")).thenReturn(true);
+        assertTrue(facadeService.isJobDisabled("test_job"));
+    }
+    
+    @Test
+    public void assertIsJobEnabled() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        assertFalse(facadeService.isJobDisabled("test_job"));
+    }
+    
+    @Test
+    public void assertIsJobDisabledWhenAppDisabled() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(disableAppService.isDisabled("test_app")).thenReturn(true);
+        assertTrue(facadeService.isJobDisabled("test_job"));
+    }
+    
+    @Test
+    public void assertIsJobDisabledWhenAppEnabled() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
+        when(disableAppService.isDisabled("test_app")).thenReturn(false);
+        when(disableJobService.isDisabled("test_job")).thenReturn(true);
+        assertTrue(facadeService.isJobDisabled("test_job"));
+    }
+    
+    @Test
+    public void assertEnableJob() {
+        facadeService.enableJob("test_job");
+        verify(disableJobService).remove("test_job");
+    }
+    
+    @Test
+    public void assertDisableJob() {
+        facadeService.disableJob("test_job");
+        verify(disableJobService).add("test_job");
+    }
+    
+    @Test
+    public void assertLoadExecutor() throws Exception {
+        facadeService.loadExecutorInfo();
+        verify(mesosStateService).executors();
     }
 }

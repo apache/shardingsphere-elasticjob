@@ -31,9 +31,7 @@ import com.dangdang.ddframe.job.fixture.job.TestSimpleJob;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Collections;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -48,35 +46,29 @@ public final class JobExecutorFactoryTest {
     
     @Test
     public void assertGetJobExecutorForScriptJob() {
-        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("fake_task_id", "script_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("test.sh", IgnoreJobExceptionHandler.class));
         assertThat(JobExecutorFactory.getJobExecutor(null, jobFacade), instanceOf(ScriptJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForSimpleJob() {
-        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("fake_task_id", "simple_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         assertThat(JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade), instanceOf(SimpleJobExecutor.class));
     }
     
     @Test
     public void assertGetJobExecutorForDataflowJob() {
-        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("fake_task_id", "dataflow_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
         assertThat(JobExecutorFactory.getJobExecutor(new TestDataflowJob(null), jobFacade), instanceOf(DataflowJobExecutor.class));
     }
     
     @Test(expected = JobConfigurationException.class)
     public void assertGetJobExecutorWhenJobClassWhenUnsupportedJob() {
-        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("fake_task_id", "unsupported_test_job", 10, "", Collections.<Integer, String>emptyMap()));
-        when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestSimpleJobConfiguration());
         JobExecutorFactory.getJobExecutor(new OtherJob(), jobFacade);
     }
     
     @Test
     public void assertGetJobExecutorTwice() {
-        when(jobFacade.getShardingContexts()).thenReturn(new ShardingContexts("fake_task_id", "twice_test_job", 10, "", Collections.<Integer, String>emptyMap()));
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestDataflowJobConfiguration(false));
         AbstractElasticJobExecutor executor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);
         AbstractElasticJobExecutor anotherExecutor = JobExecutorFactory.getJobExecutor(new TestSimpleJob(null), jobFacade);

@@ -22,7 +22,7 @@ import com.dangdang.ddframe.job.util.config.ShardingItemParametersTest;
 import com.dangdang.ddframe.job.util.config.ShardingItemsTest;
 import com.dangdang.ddframe.job.util.digest.EncryptionTest;
 import com.dangdang.ddframe.job.util.env.HostExceptionTest;
-import com.dangdang.ddframe.job.util.env.LocalHostServiceTest;
+import com.dangdang.ddframe.job.util.env.IpUtilsTest;
 import com.dangdang.ddframe.job.util.env.TimeServiceTest;
 import com.dangdang.ddframe.job.util.json.GsonFactoryTest;
 import com.dangdang.ddframe.job.util.json.JobConfigurationGsonTypeAdapterTest;
@@ -37,7 +37,7 @@ import org.junit.runners.Suite.SuiteClasses;
         ExecutorServiceObjectTest.class, 
         EncryptionTest.class, 
         TimeServiceTest.class, 
-        LocalHostServiceTest.class, 
+        IpUtilsTest.class, 
         HostExceptionTest.class, 
         GsonFactoryTest.class, 
         JobConfigurationGsonTypeAdapterTest.class, 

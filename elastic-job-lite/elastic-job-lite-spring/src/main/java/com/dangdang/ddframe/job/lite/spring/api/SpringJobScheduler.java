@@ -32,7 +32,7 @@ import com.google.common.base.Optional;
  * @author caohao
  * @author zhangliang
  */
-public class SpringJobScheduler extends JobScheduler {
+public final class SpringJobScheduler extends JobScheduler {
     
     private final ElasticJob elasticJob;
     

@@ -46,5 +46,5 @@ public interface JobTypeConfiguration {
      * 
      * @return 作业核心配置
      */
-    JobCoreConfiguration getCoreConfig(); 
+    JobCoreConfiguration getCoreConfig();
 }

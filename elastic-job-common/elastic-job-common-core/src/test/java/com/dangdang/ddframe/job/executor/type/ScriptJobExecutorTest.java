@@ -27,7 +27,7 @@ import com.dangdang.ddframe.job.fixture.handler.ThrowJobExceptionHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 
@@ -60,8 +60,7 @@ public final class ScriptJobExecutorTest {
         assertExecuteWhenExecuteFailure(ShardingContextsBuilder.getMultipleShardingContexts());
     }
     
-    @SuppressWarnings("unchecked")
-    private void assertExecuteWhenExecuteFailure(final ShardingContexts shardingContexts) throws IOException, NoSuchFieldException {
+    private void assertExecuteWhenExecuteFailure(final ShardingContexts shardingContexts) {
         ElasticJobVerify.prepareForIsNotMisfire(jobFacade, shardingContexts);
         when(jobFacade.loadJobRootConfiguration(true)).thenReturn(new TestScriptJobConfiguration("not_exists_file", ThrowJobExceptionHandler.class));
         scriptJobExecutor = new ScriptJobExecutor(jobFacade);

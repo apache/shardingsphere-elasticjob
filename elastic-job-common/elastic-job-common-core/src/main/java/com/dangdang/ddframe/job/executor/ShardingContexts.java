@@ -33,7 +33,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Getter
 @ToString
-public class ShardingContexts implements Serializable {
+public final class ShardingContexts implements Serializable {
     
     private static final long serialVersionUID = -4585977349142082152L;
     

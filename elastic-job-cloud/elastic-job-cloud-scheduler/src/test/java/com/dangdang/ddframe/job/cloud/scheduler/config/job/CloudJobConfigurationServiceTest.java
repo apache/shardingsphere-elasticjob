@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -78,8 +78,6 @@ public final class CloudJobConfigurationServiceTest {
     public void assertLoadAllWithRootNode() {
         when(regCenter.isExisted("/config/job")).thenReturn(true);
         when(regCenter.getChildrenKeys(CloudJobConfigurationNode.ROOT)).thenReturn(Arrays.asList("test_job_1", "test_job_2"));
-        when(regCenter.isExisted("/config/job/test_job_1")).thenReturn(true);
-        when(regCenter.isExisted("/config/job/test_job_2")).thenReturn(false);
         when(regCenter.get("/config/job/test_job_1")).thenReturn(CloudJsonConstants.getJobJson("test_job_1"));
         Collection<CloudJobConfiguration> actual = configService.loadAll();
         assertThat(actual.size(), is(1));
@@ -92,14 +90,12 @@ public final class CloudJobConfigurationServiceTest {
     
     @Test
     public void assertLoadWithoutConfig() {
-        when(regCenter.isExisted("/config/job/test_job")).thenReturn(false);
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
         assertFalse(actual.isPresent());
     }
     
     @Test
     public void assertLoadWithConfig() {
-        when(regCenter.isExisted("/config/job/test_job")).thenReturn(true);
         when(regCenter.get("/config/job/test_job")).thenReturn(CloudJsonConstants.getJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_job");
         assertTrue(actual.isPresent());
@@ -108,7 +104,6 @@ public final class CloudJobConfigurationServiceTest {
     
     @Test
     public void assertLoadWithSpringConfig() {
-        when(regCenter.isExisted("/config/job/test_spring_job")).thenReturn(true);
         when(regCenter.get("/config/job/test_spring_job")).thenReturn(CloudJsonConstants.getSpringJobJson());
         Optional<CloudJobConfiguration> actual = configService.load("test_spring_job");
         assertTrue(actual.isPresent());

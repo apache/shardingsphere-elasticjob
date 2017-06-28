@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.statistics.type.job;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Date;
 
 /**
  * 作业注册到Cloud平台统计数据.
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class JobRegisterStatistics {
+public final class JobRegisterStatistics {
     
     private long id;
     

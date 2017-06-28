@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 public final class JobShardingStrategyFactory {
     
     /**
-     * 获取 作业分片策略实例.
+     * 获取作业分片策略实例.
      * 
      * @param jobShardingStrategyClassName 作业分片策略类名
      * @return 作业分片策略实例

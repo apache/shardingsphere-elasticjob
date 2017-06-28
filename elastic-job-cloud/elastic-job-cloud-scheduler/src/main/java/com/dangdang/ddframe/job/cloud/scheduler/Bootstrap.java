@@ -23,6 +23,8 @@ import com.dangdang.ddframe.job.cloud.scheduler.ha.SchedulerElectionCandidate;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperElectionService;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 
@@ -33,6 +35,7 @@ import java.util.concurrent.CountDownLatch;
  *
  * @author caohao
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
 public final class Bootstrap {
     

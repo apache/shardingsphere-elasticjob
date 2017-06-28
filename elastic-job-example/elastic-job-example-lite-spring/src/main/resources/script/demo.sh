@@ -1,2 +1,2 @@
 #!/bin/bash
-echo sharding execution context is $*
+echo Sharding Context: $*

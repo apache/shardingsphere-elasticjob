@@ -23,6 +23,6 @@ package com.dangdang.ddframe.job.lite.internal.server;
  * @author zhangliang
  */
 public enum ServerStatus {
-    READY,
-    RUNNING
+    
+    DISABLED
 }

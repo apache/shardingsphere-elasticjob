@@ -22,7 +22,7 @@ package com.dangdang.ddframe.job.util.env;
  * 
  * @author zhangliang
  */
-public class TimeService {
+public final class TimeService {
     
     /**
      * 获取当前时间的毫秒数.

@@ -48,7 +48,7 @@ import java.util.Set;
  * @author zhangliang
  */
 @Slf4j
-public class FailoverService {
+public final class FailoverService {
     
     private final BootstrapEnvironment env = BootstrapEnvironment.getInstance();
     
@@ -105,10 +105,8 @@ public class FailoverService {
                 continue;
             }
             List<Integer> assignedShardingItems = getAssignedShardingItems(each, taskIdList, assignedTasks);
-            if (!assignedShardingItems.isEmpty()) {
-                if (jobConfig.isPresent()) {
-                    result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
-                }
+            if (!assignedShardingItems.isEmpty() && jobConfig.isPresent()) {
+                result.add(new JobContext(jobConfig.get(), assignedShardingItems, ExecutionType.FAILOVER));    
             }
         }
         return result;

@@ -17,15 +17,19 @@
 
 package com.dangdang.ddframe.job.lite.internal.listener.fixture;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
+import lombok.RequiredArgsConstructor;
+import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
+import java.util.List;
+
+@RequiredArgsConstructor
 public final class FooJobListener extends AbstractJobListener {
     
+    private final List list;
+    
     @Override
-    protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-        client.getNamespace();
+    protected void dataChanged(final String path, final Type eventType, final String data) {
+        list.clear();
     }
 }

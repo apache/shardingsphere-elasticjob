@@ -102,6 +102,7 @@ public class JobEventRdbStorageTest {
         JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
         assertTrue(storage.addJobExecutionEvent(failureEvent));
         assertThat(failureEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
+        assertTrue(null != failureEvent.getCompleteTime());
     }
     
     @Test

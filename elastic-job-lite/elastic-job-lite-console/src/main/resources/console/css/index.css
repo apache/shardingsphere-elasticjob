@@ -1,0 +1,65 @@
+.index-content{
+    min-height:670px;
+    background-color: #ecf0f5;
+    z-index: 800;
+    margin-left: 230px;
+}
+.form-group.toolbar label {
+    float: left;
+    width: 90px;
+    height: 52px;
+    padding-left: 20px;
+    text-align: center;
+}
+.form-group.toolbar span {
+    float: left;
+    width: 40px;
+    height: 52px;
+    text-align: center;
+}
+.update-model-size{
+    width:210%;
+    margin-left:-290px;
+}
+#control-sidebar-theme-demo-options-tab li {
+    float:left; 
+    width: 33.33333%; 
+    padding: 5px;
+}
+
+#control-sidebar-theme-demo-options-tab li a {
+    display: block; 
+    box-shadow: 0 0 3px rgba(0,0,0,0.4);
+}
+
+.top-span {
+    display:block; 
+    width: 100%; 
+    float: left; 
+    height: 7px; 
+}
+#span-black{
+    background: #fefefe;
+}
+
+.down-span-left {
+    display:block; 
+    width: 20%; 
+    float: left; 
+    height: 20px; 
+    background: #222d32;
+}
+.down-span-right {
+    display:block; 
+    width: 80%; 
+    float: left; 
+    height: 20px; 
+    background: #f4f5f7;
+}
+#modal-dialog-width{
+    width: 60%;
+}
+#execute-result {
+    float: top;
+    padding-left: 20px;
+}

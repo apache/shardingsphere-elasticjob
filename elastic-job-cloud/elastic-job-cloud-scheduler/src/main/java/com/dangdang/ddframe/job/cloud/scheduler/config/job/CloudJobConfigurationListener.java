@@ -20,6 +20,7 @@ package com.dangdang.ddframe.job.cloud.scheduler.config.job;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.state.ready.ReadyService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
@@ -35,7 +36,8 @@ import java.util.concurrent.Executors;
  * @author zhangliang
  * @author caohao
  */
-public class CloudJobConfigurationListener implements TreeCacheListener {
+@Slf4j
+public final class CloudJobConfigurationListener implements TreeCacheListener {
     
     private final CoordinatorRegistryCenter regCenter;
     
@@ -84,6 +86,7 @@ public class CloudJobConfigurationListener implements TreeCacheListener {
             return CloudJobConfigurationGsonFactory.fromJson(new String(event.getData().getData()));
             // CHECKSTYLE:OFF
         } catch (final Exception ex) {
+            log.warn("Wrong Cloud Job Configuration with:", ex.getMessage());
             // CHECKSTYLE:ON
             return null;
         }

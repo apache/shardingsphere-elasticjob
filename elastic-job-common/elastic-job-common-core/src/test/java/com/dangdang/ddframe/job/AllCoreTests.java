@@ -40,9 +40,9 @@ import org.junit.runners.Suite.SuiteClasses;
         AllConfigTests.class, 
         AllExecutorTests.class, 
         AllEventTests.class, 
-        AllExceptionTests.class, 
-        AllUtilTests.class,
-        AllStatisticsTests.class
+        AllExceptionTests.class,
+        AllStatisticsTests.class,
+        AllUtilTests.class
     })
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AllCoreTests {

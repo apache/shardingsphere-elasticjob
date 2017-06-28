@@ -32,7 +32,7 @@ public class MesosSlaveServerMock {
     public JsonObject state() throws JSONException {
         return (JsonObject) new JsonParser().parse("{\"version\":\"1.1.0\",\"build_date\":\"2017-02-27 10:51:31\",\"build_time\":1488163891.0,\"build_user\":\"gaohon"
                 + "gtao\",\"start_time\":1488179767.60204,\"id\":\"d8701508-41b7-471e-9b32-61cf824a660d-S0\",\"pid\":\"slave(1)@"
-                + "127.0.0.1:5051\",\"hostname\":\"127.0.0.1\",\"resources\":{\"disk\":416050.0,\"mem\":6883.0,\"gpus\":0.0,\""
+                + "127.0.0.1:9051\",\"hostname\":\"127.0.0.1\",\"resources\":{\"disk\":416050.0,\"mem\":6883.0,\"gpus\":0.0,\""
                 + "cpus\":4.0,\"ports\":\"[31000-32000]\"},\"reserved_resources\":{},\"unreserved_resources\":{\"disk\":416050.0,\""
                 + "mem\":6883.0,\"gpus\":0.0,\"cpus\":4.0,\"ports\":\"[31000-32000]\"},\"reserved_resources_full\":{},\"attributes\""
                 + ":{},\"master_hostname\":\"127.0.0.1\",\"flags\":{\"appc_simple_discovery_uri_prefix\":\"http:\\/\\/\",\"appc_"
@@ -52,7 +52,7 @@ public class MesosSlaveServerMock {
                 + ",cgroups\\/mem\",\"launcher\":\"linux\",\"launcher_dir\":\"\\/home\\/gaohongtao\\/mesos\\/mesos-1.1.0\\/build\\/src"
                 + "\",\"logbufsecs\":\"0\",\"logging_level\":\"INFO\",\"master\":\"zk:\\/\\/localhost:4181,\\/mesos\",\"max_completed_ex"
                 + "ecutors_per_framework\":\"150\",\"oversubscribed_resources_interval\":\"15secs\",\"perf_duration\":\"10secs\",\""
-                + "perf_interval\":\"1mins\",\"port\":\"5051\",\"qos_correction_interval_min\":\"0ns\",\"quiet\":\"false\",\"recover\":\""
+                + "perf_interval\":\"1mins\",\"port\":\"9051\",\"qos_correction_interval_min\":\"0ns\",\"quiet\":\"false\",\"recover\":\""
                 + "reconnect\",\"recovery_timeout\":\"15mins\",\"registration_backoff_factor\":\"1secs\",\"revocable_cpu_low_prio"
                 + "rity\":\"true\",\"runtime_dir\":\"\\/var\\/run\\/mesos\",\"sandbox_directory\":\"\\/mnt\\/mesos\\/sandbox\",\"strict\":"
                 + "\"true\",\"switch_user\":\"true\",\"systemd_enable_support\":\"true\",\"systemd_runtime_directory\":\"\\/run\\/syst"

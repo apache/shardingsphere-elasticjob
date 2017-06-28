@@ -1,20 +1,4 @@
 $(function() {
-    bootstrapValidator();
-    submitAppBootstrapValidator();
+    validate();
+    submitConfirm("put", $("#data-update-app"));
 });
-    
-function bindSubmitAppSettingsForm() {
-    $.ajax({
-        type: 'put',
-        dataType:'json',
-        data:JSON.stringify(dataAppInfo()),
-        url:'/app',
-        contentType: "application/json",
-        success: function(data) {
-            window.location="index.html?appName=appName"
-        },
-        error:function(XMLHttpRequest, textStatus, errorThrown){
-            alert ("XMLHttpRequest.status="+XMLHttpRequest.status+"\ntextStatus="+textStatus+"\nerrorThrown=" + errorThrown);
-        }
-    });
-}

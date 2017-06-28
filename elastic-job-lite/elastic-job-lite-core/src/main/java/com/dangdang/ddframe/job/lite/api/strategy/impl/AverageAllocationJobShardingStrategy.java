@@ -17,15 +17,14 @@
 
 package com.dangdang.ddframe.job.lite.api.strategy.impl;
 
+import com.dangdang.ddframe.job.lite.api.strategy.JobInstance;
 import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategy;
-import com.dangdang.ddframe.job.lite.api.strategy.JobShardingStrategyOption;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * 基于平均分配算法的分片策略.
@@ -43,20 +42,20 @@ import java.util.Map.Entry;
 public final class AverageAllocationJobShardingStrategy implements JobShardingStrategy {
     
     @Override
-    public Map<String, List<Integer>> sharding(final List<String> serversList, final JobShardingStrategyOption option) {
-        if (serversList.isEmpty()) {
+    public Map<JobInstance, List<Integer>> sharding(final List<JobInstance> jobInstances, final String jobName, final int shardingTotalCount) {
+        if (jobInstances.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, List<Integer>> result = shardingAliquot(serversList, option.getShardingTotalCount());
-        addAliquant(serversList, option.getShardingTotalCount(), result);
+        Map<JobInstance, List<Integer>> result = shardingAliquot(jobInstances, shardingTotalCount);
+        addAliquant(jobInstances, shardingTotalCount, result);
         return result;
     }
     
-    private Map<String, List<Integer>> shardingAliquot(final List<String> serversList, final int shardingTotalCount) {
-        Map<String, List<Integer>> result = new LinkedHashMap<>(serversList.size());
-        int itemCountPerSharding = shardingTotalCount / serversList.size();
+    private Map<JobInstance, List<Integer>> shardingAliquot(final List<JobInstance> shardingUnits, final int shardingTotalCount) {
+        Map<JobInstance, List<Integer>> result = new LinkedHashMap<>(shardingTotalCount, 1);
+        int itemCountPerSharding = shardingTotalCount / shardingUnits.size();
         int count = 0;
-        for (String each : serversList) {
+        for (JobInstance each : shardingUnits) {
             List<Integer> shardingItems = new ArrayList<>(itemCountPerSharding + 1);
             for (int i = count * itemCountPerSharding; i < (count + 1) * itemCountPerSharding; i++) {
                 shardingItems.add(i);
@@ -67,12 +66,12 @@ public final class AverageAllocationJobShardingStrategy implements JobShardingSt
         return result;
     }
     
-    private void addAliquant(final List<String> serversList, final int shardingTotalCount, final Map<String, List<Integer>> shardingResult) {
-        int aliquant = shardingTotalCount % serversList.size();
+    private void addAliquant(final List<JobInstance> shardingUnits, final int shardingTotalCount, final Map<JobInstance, List<Integer>> shardingResults) {
+        int aliquant = shardingTotalCount % shardingUnits.size();
         int count = 0;
-        for (Entry<String, List<Integer>> entry : shardingResult.entrySet()) {
+        for (Map.Entry<JobInstance, List<Integer>> entry : shardingResults.entrySet()) {
             if (count < aliquant) {
-                entry.getValue().add(shardingTotalCount / serversList.size() * serversList.size() + count);
+                entry.getValue().add(shardingTotalCount / shardingUnits.size() * shardingUnits.size() + count);
             }
             count++;
         }

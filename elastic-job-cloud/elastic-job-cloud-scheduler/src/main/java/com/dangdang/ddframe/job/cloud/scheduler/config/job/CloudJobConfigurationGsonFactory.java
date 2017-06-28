@@ -29,6 +29,13 @@ import lombok.NoArgsConstructor;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.APPLICATION_CONTEXT;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.APP_NAME;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.BEAN_NAME;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.CPU_COUNT;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.JOB_EXECUTION_TYPE;
+import static com.dangdang.ddframe.job.cloud.scheduler.config.constants.CloudConfigurationConstants.MEMORY_MB;
+
 /**
  * Cloud作业配置的Gson工厂.
  *
@@ -72,23 +79,15 @@ public final class CloudJobConfigurationGsonFactory {
         @Override
         protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
             switch (jsonName) {
-                case "appName":
-                    customizedValueMap.put("appName", in.nextString());
+                case CPU_COUNT:
+                case MEMORY_MB:
+                    customizedValueMap.put(jsonName, in.nextDouble());
                     break;
-                case "cpuCount":
-                    customizedValueMap.put("cpuCount", in.nextDouble());
-                    break;
-                case "memoryMB":
-                    customizedValueMap.put("memoryMB", in.nextDouble());
-                    break;
-                case "jobExecutionType":
-                    customizedValueMap.put("jobExecutionType", in.nextString());
-                    break;
-                case "beanName":
-                    customizedValueMap.put("beanName", in.nextString());
-                    break;
-                case "applicationContext":
-                    customizedValueMap.put("applicationContext", in.nextString());
+                case APP_NAME:
+                case APPLICATION_CONTEXT:
+                case BEAN_NAME:
+                case JOB_EXECUTION_TYPE:
+                    customizedValueMap.put(jsonName, in.nextString());
                     break;
                 default:
                     in.skipValue();
@@ -98,30 +97,30 @@ public final class CloudJobConfigurationGsonFactory {
         
         @Override
         protected CloudJobConfiguration getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap) {
-            Preconditions.checkNotNull(customizedValueMap.get("appName"), "appName cannot be null.");
-            Preconditions.checkNotNull(customizedValueMap.get("cpuCount"), "cpuCount cannot be null.");
-            Preconditions.checkArgument((double) customizedValueMap.get("cpuCount") >= 0.001, "cpuCount cannot be less than 0.001");
-            Preconditions.checkNotNull(customizedValueMap.get("memoryMB"), "memoryMB cannot be null.");
-            Preconditions.checkArgument((double) customizedValueMap.get("memoryMB") >= 1, "memory cannot be less than 1");
-            Preconditions.checkNotNull(customizedValueMap.get("jobExecutionType"), "jobExecutionType cannot be null.");
-            if (customizedValueMap.containsKey("beanName") && customizedValueMap.containsKey("applicationContext")) {
-                return new CloudJobConfiguration((String) customizedValueMap.get("appName"), typeConfig, (double) customizedValueMap.get("cpuCount"), 
-                        (double) customizedValueMap.get("memoryMB"), CloudJobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()), 
-                        customizedValueMap.get("beanName").toString(), customizedValueMap.get("applicationContext").toString());
+            Preconditions.checkNotNull(customizedValueMap.get(APP_NAME), "appName cannot be null.");
+            Preconditions.checkNotNull(customizedValueMap.get(CPU_COUNT), "cpuCount cannot be null.");
+            Preconditions.checkArgument((double) customizedValueMap.get(CPU_COUNT) >= 0.001, "cpuCount cannot be less than 0.001");
+            Preconditions.checkNotNull(customizedValueMap.get(MEMORY_MB), "memoryMB cannot be null.");
+            Preconditions.checkArgument((double) customizedValueMap.get(MEMORY_MB) >= 1, "memory cannot be less than 1");
+            Preconditions.checkNotNull(customizedValueMap.get(JOB_EXECUTION_TYPE), "jobExecutionType cannot be null.");
+            if (customizedValueMap.containsKey(BEAN_NAME) && customizedValueMap.containsKey(APPLICATION_CONTEXT)) {
+                return new CloudJobConfiguration((String) customizedValueMap.get(APP_NAME), typeConfig, (double) customizedValueMap.get(CPU_COUNT), 
+                        (double) customizedValueMap.get(MEMORY_MB), CloudJobExecutionType.valueOf(customizedValueMap.get(JOB_EXECUTION_TYPE).toString()), 
+                        customizedValueMap.get(BEAN_NAME).toString(), customizedValueMap.get(APPLICATION_CONTEXT).toString());
             } else {
-                return new CloudJobConfiguration((String) customizedValueMap.get("appName"), typeConfig, (double) customizedValueMap.get("cpuCount"), 
-                        (double) customizedValueMap.get("memoryMB"), CloudJobExecutionType.valueOf(customizedValueMap.get("jobExecutionType").toString()));
+                return new CloudJobConfiguration((String) customizedValueMap.get(APP_NAME), typeConfig, (double) customizedValueMap.get(CPU_COUNT), 
+                        (double) customizedValueMap.get(MEMORY_MB), CloudJobExecutionType.valueOf(customizedValueMap.get(JOB_EXECUTION_TYPE).toString()));
             }
         }
         
         @Override
         protected void writeCustomized(final JsonWriter out, final CloudJobConfiguration value) throws IOException {
-            out.name("appName").value(value.getAppName());
-            out.name("cpuCount").value(value.getCpuCount());
-            out.name("memoryMB").value(value.getMemoryMB());
-            out.name("jobExecutionType").value(value.getJobExecutionType().name());
-            out.name("beanName").value(value.getBeanName());
-            out.name("applicationContext").value(value.getApplicationContext());
+            out.name(APP_NAME).value(value.getAppName());
+            out.name(CPU_COUNT).value(value.getCpuCount());
+            out.name(MEMORY_MB).value(value.getMemoryMB());
+            out.name(JOB_EXECUTION_TYPE).value(value.getJobExecutionType().name());
+            out.name(BEAN_NAME).value(value.getBeanName());
+            out.name(APPLICATION_CONTEXT).value(value.getApplicationContext());
         }
     }
 }

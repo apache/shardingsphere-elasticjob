@@ -20,7 +20,6 @@ package com.dangdang.ddframe.job.lite.internal.listener;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
-import org.apache.curator.framework.state.ConnectionStateListener;
 
 /**
  * 作业注册中心的监听器管理者的抽象类.
@@ -42,9 +41,5 @@ public abstract class AbstractListenerManager {
     
     protected void addDataListener(final TreeCacheListener listener) {
         jobNodeStorage.addDataListener(listener);
-    }
-    
-    protected void addConnectionStateListener(final ConnectionStateListener listener) {
-        jobNodeStorage.addConnectionStateListener(listener);
     }
 }

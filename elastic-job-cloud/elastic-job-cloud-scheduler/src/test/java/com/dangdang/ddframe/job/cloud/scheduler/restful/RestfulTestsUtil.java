@@ -25,6 +25,21 @@ import javax.ws.rs.core.MediaType;
 
 public class RestfulTestsUtil {
     
+    public static int sentRequest(final String url, final String method) throws Exception {
+        HttpClient httpClient = new HttpClient();
+        try {
+            httpClient.start();
+            ContentExchange contentExchange = new ContentExchange();
+            contentExchange.setMethod(method);
+            contentExchange.setURL(url);
+            httpClient.send(contentExchange);
+            contentExchange.waitForDone();
+            return contentExchange.getResponseStatus();
+        } finally {
+            httpClient.stop();
+        }
+    }
+    
     public static int sentRequest(final String url, final String method, final String content) throws Exception {
         HttpClient httpClient = new HttpClient();
         try {

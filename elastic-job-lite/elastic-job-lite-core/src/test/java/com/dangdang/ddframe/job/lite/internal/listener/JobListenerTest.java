@@ -18,13 +18,15 @@
 package com.dangdang.ddframe.job.lite.internal.listener;
 
 import com.dangdang.ddframe.job.lite.internal.listener.fixture.FooJobListener;
-import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,24 +36,29 @@ import static org.mockito.Mockito.when;
 public final class JobListenerTest {
     
     @Mock
-    private CuratorFramework client;
-    
-    @Mock
     private TreeCacheEvent event;
     
-    private FooJobListener fooJobListener = new FooJobListener();
+    @Mock
+    private List list;
+    
+    private FooJobListener fooJobListener;
+    
+    @Before
+    public void setUp() {
+        fooJobListener = new FooJobListener(list);
+    }
     
     @Test
     public void assertChildEventWhenEventDataIsEmpty() throws Exception {
         when(event.getData()).thenReturn(null);
-        fooJobListener.childEvent(client, event);
-        verify(client, times(0)).getNamespace();
+        fooJobListener.childEvent(null, event);
+        verify(list, times(0)).clear();
     }
     
     @Test
     public void assertChildEventSuccess() throws Exception {
         when(event.getData()).thenReturn(new ChildData("/test_job", null, null));
-        fooJobListener.childEvent(client, event);
-        verify(client).getNamespace();
+        fooJobListener.childEvent(null, event);
+        verify(list).clear();
     }
 }

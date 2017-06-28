@@ -43,6 +43,6 @@ public final class SimpleElasticJobTest extends AbstractBaseStdJobAutoInitTest {
         while (!FooSimpleElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }

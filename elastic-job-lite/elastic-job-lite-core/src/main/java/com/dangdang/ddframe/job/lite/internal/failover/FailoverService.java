@@ -17,14 +17,13 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
 import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.server.ServerService;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNode;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -38,22 +37,17 @@ import java.util.List;
  * @author zhangliang
  */
 @Slf4j
-public class FailoverService {
+public final class FailoverService {
     
     private final String jobName;
     
-    private final LocalHostService localHostService = new LocalHostService();
-    
     private final JobNodeStorage jobNodeStorage;
-    
-    private final ServerService serverService;
     
     private final ShardingService shardingService;
     
     public FailoverService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         this.jobName = jobName;
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
-        serverService = new ServerService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
     }
     
@@ -73,7 +67,7 @@ public class FailoverService {
     }
     
     /**
-     * 如果需要失效转移, 则设置作业失效转移.
+     * 如果需要失效转移, 则执行作业失效转移.
      */
     public void failoverIfNecessary() {
         if (needFailover()) {
@@ -82,7 +76,8 @@ public class FailoverService {
     }
     
     private boolean needFailover() {
-        return jobNodeStorage.isJobNodeExisted(FailoverNode.ITEMS_ROOT) && !jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).isEmpty() && serverService.isLocalhostServerReady();
+        return jobNodeStorage.isJobNodeExisted(FailoverNode.ITEMS_ROOT) && !jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).isEmpty()
+                && !JobRegistry.getInstance().isJobRunning(jobName);
     }
     
     /**
@@ -97,18 +92,18 @@ public class FailoverService {
     }
     
     /**
-     * 获取运行在本作业服务器的失效转移序列号.
-     * 
-     * @return 运行在本作业服务器的失效转移序列号
+     * 获取作业服务器的失效转移分片项集合.
+     *
+     * @param jobInstanceId 作业运行实例主键
+     * @return 作业失效转移的分片项集合
      */
-    public List<Integer> getLocalHostFailoverItems() {
-        List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT);
+    public List<Integer> getFailoverItems(final String jobInstanceId) {
+        List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT);
         List<Integer> result = new ArrayList<>(items.size());
-        String ip = localHostService.getIp();
         for (String each : items) {
             int item = Integer.parseInt(each);
             String node = FailoverNode.getExecutionFailoverNode(item);
-            if (jobNodeStorage.isJobNodeExisted(node) && ip.equals(jobNodeStorage.getJobNodeDataDirectly(node))) {
+            if (jobNodeStorage.isJobNodeExisted(node) && jobInstanceId.equals(jobNodeStorage.getJobNodeDataDirectly(node))) {
                 result.add(item);
             }
         }
@@ -117,12 +112,24 @@ public class FailoverService {
     }
     
     /**
+     * 获取运行在本作业服务器的失效转移分片项集合.
+     * 
+     * @return 运行在本作业服务器的失效转移分片项集合
+     */
+    public List<Integer> getLocalFailoverItems() {
+        if (JobRegistry.getInstance().isShutdown(jobName)) {
+            return Collections.emptyList();
+        }
+        return getFailoverItems(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
+    }
+    
+    /**
      * 获取运行在本作业服务器的被失效转移的序列号.
      * 
      * @return 运行在本作业服务器的被失效转移的序列号
      */
-    public List<Integer> getLocalHostTakeOffItems() {
-        List<Integer> shardingItems = shardingService.getLocalHostShardingItems();
+    public List<Integer> getLocalTakeOffItems() {
+        List<Integer> shardingItems = shardingService.getLocalShardingItems();
         List<Integer> result = new ArrayList<>(shardingItems.size());
         for (int each : shardingItems) {
             if (jobNodeStorage.isJobNodeExisted(FailoverNode.getExecutionFailoverNode(each))) {
@@ -136,7 +143,7 @@ public class FailoverService {
      * 删除作业失效转移信息.
      */
     public void removeFailoverInfo() {
-        for (String each : jobNodeStorage.getJobNodeChildrenKeys(ExecutionNode.ROOT)) {
+        for (String each : jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)) {
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(Integer.parseInt(each)));
         }
     }
@@ -145,15 +152,18 @@ public class FailoverService {
         
         @Override
         public void execute() {
-            if (!needFailover()) {
+            if (JobRegistry.getInstance().isShutdown(jobName) || !needFailover()) {
                 return;
             }
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
             log.debug("Failover job '{}' begin, crashed item '{}'", jobName, crashedItem);
-            jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), localHostService.getIp());
+            jobNodeStorage.fillEphemeralJobNode(FailoverNode.getExecutionFailoverNode(crashedItem), JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId());
             jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getItemsNode(crashedItem));
             // TODO 不应使用triggerJob, 而是使用executor统一调度
-            JobRegistry.getInstance().getJobScheduleController(jobName).triggerJob();
+            JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
+            if (null != jobScheduleController) {
+                jobScheduleController.triggerJob();
+            }
         }
     }
 }

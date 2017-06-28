@@ -17,11 +17,11 @@
 
 package com.dangdang.ddframe.job.cloud.scheduler.restful;
 
-import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfiguration;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationGsonFactory;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobConfigurationService;
 import com.dangdang.ddframe.job.cloud.scheduler.config.job.CloudJobExecutionType;
+import com.dangdang.ddframe.job.cloud.scheduler.env.BootstrapEnvironment;
 import com.dangdang.ddframe.job.cloud.scheduler.mesos.FacadeService;
 import com.dangdang.ddframe.job.cloud.scheduler.producer.ProducerManager;
 import com.dangdang.ddframe.job.cloud.scheduler.state.failover.FailoverTaskInfo;
@@ -33,7 +33,6 @@ import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Condition;
 import com.dangdang.ddframe.job.event.rdb.JobEventRdbSearch.Result;
 import com.dangdang.ddframe.job.event.type.JobExecutionEvent;
 import com.dangdang.ddframe.job.event.type.JobStatusTraceEvent;
-import com.dangdang.ddframe.job.exception.JobConfigurationException;
 import com.dangdang.ddframe.job.exception.JobSystemException;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.dangdang.ddframe.job.statistics.StatisticInterval;
@@ -48,6 +47,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -56,9 +56,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -72,6 +74,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 /**
  * 作业云Job的REST API.
@@ -158,6 +162,48 @@ public final class CloudJobRestfulApi {
     }
     
     /**
+     * 查询作业是否被禁用.
+     *
+     * @param jobName 作业名称
+     * @return 作业是否被禁用
+     * @throws JSONException JSON解析异常
+     */
+    @GET
+    @Path("/{jobName}/disable")
+    @Produces(MediaType.APPLICATION_JSON)
+    public boolean isDisabled(@PathParam("jobName") final String jobName) throws JSONException {
+        return facadeService.isJobDisabled(jobName);
+    }
+    
+    /**
+     * 启用作业.
+     *
+     * @param jobName 作业名称
+     * @throws JSONException JSON解析异常
+     */
+    @DELETE
+    @Path("/{jobName}/disable")
+    public void enable(@PathParam("jobName") final String jobName) throws JSONException {
+        if (configService.load(jobName).isPresent()) {
+            facadeService.enableJob(jobName);
+        }
+    }
+    
+    /**
+     * 禁用作业.
+     *
+     * @param jobName 作业名称
+     */
+    @POST
+    @Path("/{jobName}/disable")
+    public void disable(@PathParam("jobName") final String jobName) {
+        if (configService.load(jobName).isPresent()) {
+            facadeService.disableJob(jobName);
+            producerManager.unschedule(jobName);
+        }
+    }
+    
+    /**
      * 触发一次作业.
      *
      * @param jobName 作业名称
@@ -182,12 +228,12 @@ public final class CloudJobRestfulApi {
     @GET
     @Path("/jobs/{jobName}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public CloudJobConfiguration detail(@PathParam("jobName") final String jobName) {
-        Optional<CloudJobConfiguration> config = configService.load(jobName);
-        if (config.isPresent()) {
-            return config.get();
+    public Response detail(@PathParam("jobName") final String jobName) {
+        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+        if (!jobConfig.isPresent()) {
+            return Response.status(NOT_FOUND).build();
         }
-        throw new JobConfigurationException("Cannot find job '%s', please check the jobName.", jobName);
+        return Response.ok(jobConfig.get()).build();
     }
     
     /**

@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * 线程池服务处理器.
  * 
- * <p>用于作业内部的线程池处理数据使用. 目前仅用于数据流类型.</p>
+ * <p>用于作业内部的线程池处理使用.</p>
  *
  * @author zhangliang
  */

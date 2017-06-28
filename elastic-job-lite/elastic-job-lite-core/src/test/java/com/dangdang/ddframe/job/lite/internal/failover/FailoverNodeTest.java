@@ -34,16 +34,16 @@ public final class FailoverNodeTest {
     
     @Test
     public void assertGetExecutionFailoverNode() {
-        assertThat(FailoverNode.getExecutionFailoverNode(0), is("execution/0/failover"));
+        assertThat(FailoverNode.getExecutionFailoverNode(0), is("sharding/0/failover"));
     }
     
     @Test
     public void assertGetItemWhenNotExecutionFailoverPath() {
-        assertNull(failoverNode.getItemByExecutionFailoverPath("/test_job/execution/0/completed"));
+        assertNull(failoverNode.getItemByExecutionFailoverPath("/test_job/sharding/0/completed"));
     }
     
     @Test
     public void assertGetItemByExecutionFailoverPath() {
-        assertThat(failoverNode.getItemByExecutionFailoverPath("/test_job/execution/0/failover"), is(0));
+        assertThat(failoverNode.getItemByExecutionFailoverPath("/test_job/sharding/0/failover"), is(0));
     }
 }

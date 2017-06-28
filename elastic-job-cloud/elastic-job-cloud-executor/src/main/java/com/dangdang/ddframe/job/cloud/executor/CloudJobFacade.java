@@ -38,7 +38,7 @@ import java.util.Collection;
  * @author zhangliang
  */
 @RequiredArgsConstructor
-public class CloudJobFacade implements JobFacade {
+public final class CloudJobFacade implements JobFacade {
     
     private final ShardingContexts shardingContexts;
     
@@ -72,7 +72,7 @@ public class CloudJobFacade implements JobFacade {
     }
     
     @Override
-    public boolean misfireIfNecessary(final Collection<Integer> shardingItems) {
+    public boolean misfireIfRunning(final Collection<Integer> shardingItems) {
         return false;
     }
     
@@ -93,10 +93,6 @@ public class CloudJobFacade implements JobFacade {
     @Override
     public boolean isNeedSharding() {
         return false;
-    }
-    
-    @Override
-    public void cleanPreviousExecutionInfo() {
     }
     
     @Override

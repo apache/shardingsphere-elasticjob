@@ -56,9 +56,21 @@ public final class BootstrapEnvironment {
         try (FileInputStream fileInputStream = new FileInputStream(PROPERTIES_PATH)) {
             result.load(fileInputStream);
         } catch (final IOException ex) {
-            log.warn("Cannot found conf/elastic-job-cloud-scheduler.properties, use default value now.");
+            log.warn("Can not load properties file from path: '{}'.", PROPERTIES_PATH);
         }
+        setPropertiesByEnv(result);
         return result;
+    }
+    
+    private void setPropertiesByEnv(final Properties prop) {
+        for (EnvironmentArgument each : EnvironmentArgument.values()) {
+            String key = each.getKey();
+            String value = System.getenv(key);
+            if (!Strings.isNullOrEmpty(value)) {
+                log.info("Load property {} with value {} from ENV.", key, value);
+                prop.setProperty(each.getKey(), value);
+            }
+        }
     }
     
     /**
@@ -109,7 +121,7 @@ public final class BootstrapEnvironment {
      * @return Mesos框架配置对象
      */
     public FrameworkConfiguration getFrameworkConfiguration() {
-        return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)));
+        return new FrameworkConfiguration(Integer.parseInt(getValue(EnvironmentArgument.JOB_STATE_QUEUE_SIZE)), Integer.parseInt(getValue(EnvironmentArgument.RECONCILE_INTERVAL_MINUTES)));
     }
     
     /**
@@ -149,6 +161,19 @@ public final class BootstrapEnvironment {
         return result;
     }
     
+    /**
+     * 获取该framework的mesos角色.
+     * 
+     * @return 角色的可选值.
+     */
+    public Optional<String> getMesosRole() {
+        String role = getValue(EnvironmentArgument.MESOS_ROLE);
+        if (Strings.isNullOrEmpty(role)) {
+            return Optional.absent();
+        }
+        return Optional.of(role);
+    }
+    
     private String getValue(final EnvironmentArgument environmentArgument) {
         String result = properties.getProperty(environmentArgument.getKey(), environmentArgument.getDefaultValue());
         if (environmentArgument.isRequired()) {
@@ -170,6 +195,8 @@ public final class BootstrapEnvironment {
         
         MESOS_URL("mesos_url", "zk://localhost:2181/mesos", true),
         
+        MESOS_ROLE("mesos_role", "", false),
+        
         USER("user", "", false),
         
         ZOOKEEPER_SERVERS("zk_servers", "localhost:2181", true),
@@ -183,12 +210,14 @@ public final class BootstrapEnvironment {
         JOB_STATE_QUEUE_SIZE("job_state_queue_size", "10000", true),
         
         EVENT_TRACE_RDB_DRIVER("event_trace_rdb_driver", "", false),
-        
+
         EVENT_TRACE_RDB_URL("event_trace_rdb_url", "", false),
-        
+
         EVENT_TRACE_RDB_USERNAME("event_trace_rdb_username", "", false),
-        
-        EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false);
+
+        EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false),
+    
+        RECONCILE_INTERVAL_MINUTES("reconcile_interval_minutes", "-1", false);
         
         private final String key;
         

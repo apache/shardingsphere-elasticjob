@@ -31,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author caohao
  * @author zhangliang
  */
-class TransientProducerRepository {
+final class TransientProducerRepository {
     
     private final ConcurrentHashMap<JobKey, List<String>> cronTasks = new ConcurrentHashMap<>(256, 1);
     

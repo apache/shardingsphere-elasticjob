@@ -1,0 +1,3 @@
+baseurl = "http://dangdangdotcom.github.io/elastic-job/elastic-job-lite-1.x/"
+canonifyurls = true
+theme = "hugo-theme-learn"

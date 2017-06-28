@@ -38,7 +38,7 @@ import org.apache.mesos.MesosSchedulerDriver;
 import org.apache.mesos.Protos;
 import org.apache.mesos.SchedulerDriver;
 
-import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT;
+import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FRAMEWORK_FAILOVER_TIMEOUT_SECONDS;
 import static com.dangdang.ddframe.job.cloud.scheduler.env.MesosConfiguration.FRAMEWORK_NAME;
 
 /**
@@ -69,6 +69,8 @@ public final class SchedulerService {
     
     private final RestfulService restfulService;
     
+    private final ReconcileService reconcileService;
+    
     public SchedulerService(final CoordinatorRegistryCenter regCenter) {
         env = BootstrapEnvironment.getInstance();
         facadeService = new FacadeService(regCenter);
@@ -79,7 +81,8 @@ public final class SchedulerService {
         producerManager = new ProducerManager(schedulerDriver, regCenter);
         cloudJobConfigurationListener =  new CloudJobConfigurationListener(regCenter, producerManager);
         taskLaunchScheduledService = new TaskLaunchScheduledService(schedulerDriver, taskScheduler, facadeService, jobEventBus);
-        restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager);
+        reconcileService = new ReconcileService(schedulerDriver, facadeService);
+        restfulService = new RestfulService(regCenter, env.getRestfulServerConfiguration(), producerManager, reconcileService);
     }
     
     private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
@@ -89,9 +92,15 @@ public final class SchedulerService {
         if (frameworkIDOptional.isPresent()) {
             builder.setId(Protos.FrameworkID.newBuilder().setValue(frameworkIDOptional.get()).build());
         }
-        Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(FRAMEWORK_NAME)
-                .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT)
-                .setWebuiUrl(WEB_UI_PROTOCOL + env.getFrameworkHostPort()).build();
+        Optional<String> role = env.getMesosRole();
+        String frameworkName = FRAMEWORK_NAME;
+        if (role.isPresent()) {
+            builder.setRole(role.get());
+            frameworkName += "-" + role.get();
+        }
+        Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(frameworkName)
+                .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT_SECONDS)
+                .setWebuiUrl(WEB_UI_PROTOCOL + env.getFrameworkHostPort()).setCheckpoint(true).build();
         return new MesosSchedulerDriver(new SchedulerEngine(taskScheduler, facadeService, jobEventBus, frameworkIDService, statisticManager), frameworkInfo, mesosConfig.getUrl());
     }
     
@@ -127,6 +136,9 @@ public final class SchedulerService {
         taskLaunchScheduledService.startAsync();
         restfulService.start();
         schedulerDriver.start();
+        if (env.getFrameworkConfiguration().isEnabledReconcile()) {
+            reconcileService.startAsync();
+        }
     }
     
     /**
@@ -140,5 +152,8 @@ public final class SchedulerService {
         producerManager.shutdown();
         schedulerDriver.stop(true);
         facadeService.stop();
+        if (env.getFrameworkConfiguration().isEnabledReconcile()) {
+            reconcileService.stopAsync();
+        }
     }
 }

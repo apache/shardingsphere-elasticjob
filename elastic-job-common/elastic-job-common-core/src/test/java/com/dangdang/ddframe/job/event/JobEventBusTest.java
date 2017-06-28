@@ -26,9 +26,9 @@ import com.dangdang.ddframe.job.event.type.JobExecutionEvent.ExecutionSource;
 import com.google.common.eventbus.EventBus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import static org.hamcrest.core.Is.is;
@@ -70,7 +70,7 @@ public final class JobEventBusTest {
         assertIsRegistered(false);
         ReflectionUtils.setFieldValue(jobEventBus, "eventBus", eventBus);
         jobEventBus.post(new JobExecutionEvent("fake_task_id", "test_event_bus_job", ExecutionSource.NORMAL_TRIGGER, 0));
-        verify(eventBus, times(0)).post(Matchers.<JobEvent>any());
+        verify(eventBus, times(0)).post(ArgumentMatchers.<JobEvent>any());
     }
     
     private void assertIsRegistered(final boolean actual) throws NoSuchFieldException {

@@ -50,6 +50,6 @@ public final class StreamingDataflowElasticJobForMultipleThreadsTest extends Abs
         while (!StreamingDataflowElasticJob.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }

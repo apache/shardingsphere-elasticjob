@@ -18,18 +18,14 @@
 package com.dangdang.ddframe.job.cloud.scheduler.mesos;
 
 import com.dangdang.ddframe.job.cloud.scheduler.ha.HANode;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.master.MesosMasterServerMock;
-import com.dangdang.ddframe.job.cloud.scheduler.mesos.fixture.slave.MesosSlaveServerMock;
+import com.dangdang.ddframe.job.cloud.scheduler.mesos.MesosStateService.ExecutorStateInfo;
+import com.dangdang.ddframe.job.cloud.scheduler.restful.AbstractCloudRestfulApiTest;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import com.dangdang.ddframe.job.restful.RestfulServer;
-import com.google.common.base.Optional;
 import com.google.gson.JsonArray;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collection;
 
@@ -38,30 +34,10 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class MesosStateServiceTest {
-    
-    private static RestfulServer masterServer;
-    
-    private static RestfulServer slaveServer;
+public class MesosStateServiceTest extends AbstractCloudRestfulApiTest {
     
     @Mock
     private CoordinatorRegistryCenter registryCenter;
-    
-    @BeforeClass
-    public static void startServer() throws Exception {
-        MesosStateService.register("127.0.0.1", 5050);
-        masterServer = new RestfulServer(5050);
-        masterServer.start(MesosMasterServerMock.class.getPackage().getName(), Optional.<String>absent());
-        slaveServer = new RestfulServer(5051);
-        slaveServer.start(MesosSlaveServerMock.class.getPackage().getName(), Optional.<String>absent());
-    }
-    
-    @AfterClass
-    public static void stopServer() {
-        masterServer.stop();
-        slaveServer.stop();
-        MesosStateService.deregister();
-    }
     
     @Test
     public void assertSandbox() throws Exception {
@@ -78,10 +54,21 @@ public class MesosStateServiceTest {
     public void assertExecutors() throws Exception {
         when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
         MesosStateService service = new MesosStateService(registryCenter);
-        Collection<MesosStateService.ExecutorInfo> executorInfos = service.executors("foo_app");
-        assertThat(executorInfos.size(), is(1));
-        MesosStateService.ExecutorInfo executorInfo = executorInfos.iterator().next();
-        assertThat(executorInfo.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
-        assertThat(executorInfo.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        Collection<ExecutorStateInfo> executorStateInfo = service.executors("foo_app");
+        assertThat(executorStateInfo.size(), is(1));
+        ExecutorStateInfo executor = executorStateInfo.iterator().next();
+        assertThat(executor.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        assertThat(executor.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+    }
+    
+    @Test
+    public void assertAllExecutors() throws Exception {
+        when(registryCenter.getDirectly(HANode.FRAMEWORK_ID_NODE)).thenReturn("d8701508-41b7-471e-9b32-61cf824a660d-0000");
+        MesosStateService service = new MesosStateService(registryCenter);
+        Collection<ExecutorStateInfo> executorStateInfo = service.executors();
+        assertThat(executorStateInfo.size(), is(1));
+        ExecutorStateInfo executor = executorStateInfo.iterator().next();
+        assertThat(executor.getId(), is("foo_app@-@d8701508-41b7-471e-9b32-61cf824a660d-S0"));
+        assertThat(executor.getSlaveId(), is("d8701508-41b7-471e-9b32-61cf824a660d-S0"));
     }
 }

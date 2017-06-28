@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Core
-- [x] Unify Job Config API
+- [x] Unified Job Config API
     - [x] Core Config
     - [x] Type Config
     - [x] Root Config
@@ -12,28 +12,29 @@
     - [ ] Http
 - [x] Event Trace
     - [x] Event Publisher
-    - [x] Log Event Listener
     - [x] Database Event Listener
     - [ ] Other Event Listener
+- [ ] Unified Schedule API
+- [ ] Unified Resource API
 
 ## Elastic-Job-Lite
 - [x] Distributed Features
     - [x] High Availability
-    - [x] Leadership Election
     - [x] Elastic scale in/out
     - [x] Failover
     - [x] Misfire
     - [x] Idempotency
+    - [x] Reconcile
 - [x] Registry Center
     - [x] Zookeeper
-    - [ ] Health Detection
     - [ ] Other Registry Center Supported
 - [x] Lifecycle Management
     - [x] Add/Remove
     - [x] Pause/Resume
     - [x] Disable/Enable
     - [x] Shutdown
-    - [ ] Restful API
+    - [x] Restful API
+    - [x] Web Console
 - [x] Job Dependency
     - [x] Listener
     - [ ] Workflow
@@ -41,7 +42,6 @@
 - [x] Spring Integrate
     - [x] Namespace
     - [x] Bean Injection
-- [x] Web Console
 
 ## Elastic-Job-Cloud
 - [x] Transient Job
@@ -56,20 +56,25 @@
     - [ ] Failover
     - [ ] Misfire
     - [x] Idempotency
-- [ ] Mesos Scheduler
-    - [x] Leadership Election
+- [x] Mesos Scheduler
+    - [x] High Availability
+    - [x] Reconcile
     - [ ] Redis Based Queue Improvement
-- [ ] Mesos Executor
-    - [x] Executor reuse pool
+    - [ ] Http Driver
+- [x] Mesos Executor
+    - [x] Executor Reuse Pool
     - [ ] Progress Reporting
     - [ ] Health Detection
     - [ ] Log Redirect
 - [x] Lifecycle Management
-    - [x] Add/Remove
-    - [ ] Pause/Resume
-    - [ ] Disable/Enable
-    - [ ] Shutdown
+    - [x] Job Add/Remove
+    - [ ] Job Pause/Resume
+    - [x] Job Disable/Enable
+    - [ ] Job Shutdown
+    - [x] App Add/Remove
+    - [x] App Disable/Enable
     - [x] Restful API
+    - [x] Web Console
 - [ ] Job Dependency
     - [ ] Listener
     - [ ] Workflow
@@ -77,10 +82,9 @@
 - [x] Job Distribution
     - [x] Mesos Based Distribution
     - [ ] Docker Based Distribution
-- [x] Resource Management
+- [x] Resources Management
     - [x] Resources Allocate
-    - [ ] Resources Isolation
     - [ ] Cross Data Center
     - [ ] A/B Test
 - [x] Spring Integrate
-- [x] Web Console
+    - [x] Bean Injection

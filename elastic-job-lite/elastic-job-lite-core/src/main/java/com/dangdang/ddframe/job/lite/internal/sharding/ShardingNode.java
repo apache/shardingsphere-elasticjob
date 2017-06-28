@@ -17,29 +17,81 @@
 
 package com.dangdang.ddframe.job.lite.internal.sharding;
 
-import com.dangdang.ddframe.job.lite.internal.election.ElectionNode;
-import com.dangdang.ddframe.job.lite.internal.server.ServerNode;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.dangdang.ddframe.job.lite.internal.election.LeaderNode;
+import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
- * Elastic Job分片节点名称的常量类.
+ * 分片节点路径.
  * 
  * @author zhangliang
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ShardingNode {
+public final class ShardingNode {
     
-    static final String LEADER_SHARDING_ROOT = ElectionNode.ROOT + "/sharding";
+    /**
+     * 执行状态根节点.
+     */
+    public static final String ROOT = "sharding";
     
-    static final String NECESSARY = LEADER_SHARDING_ROOT + "/necessary";
+    static final String INSTANCE_APPENDIX = "instance";
     
-    static final String PROCESSING = LEADER_SHARDING_ROOT + "/processing";
+    public static final String INSTANCE = ROOT + "/%s/" + INSTANCE_APPENDIX;
     
-    private static final String SERVER_SHARDING = ServerNode.ROOT + "/%s/sharding";
+    static final String RUNNING_APPENDIX = "running";
     
-    static String getShardingNode(final String ip) {
-        return String.format(SERVER_SHARDING, ip);
+    static final String RUNNING = ROOT + "/%s/" + RUNNING_APPENDIX;
+    
+    static final String MISFIRE = ROOT + "/%s/misfire";
+    
+    static final String DISABLED = ROOT + "/%s/disabled";
+    
+    static final String LEADER_ROOT = LeaderNode.ROOT + "/" + ROOT;
+    
+    static final String NECESSARY = LEADER_ROOT + "/necessary";
+    
+    static final String PROCESSING = LEADER_ROOT + "/processing";
+    
+    private final JobNodePath jobNodePath;
+    
+    public ShardingNode(final String jobName) {
+        jobNodePath = new JobNodePath(jobName);
+    }
+    
+    public static String getInstanceNode(final int item) {
+        return String.format(INSTANCE, item);
+    }
+    
+    /**
+     * 获取作业运行状态节点路径.
+     *
+     * @param item 作业项
+     * @return 作业运行状态节点路径
+     */
+    public static String getRunningNode(final int item) {
+        return String.format(RUNNING, item);
+    }
+    
+    static String getMisfireNode(final int item) {
+        return String.format(MISFIRE, item);
+    }
+    
+    static String getDisabledNode(final int item) {
+        return String.format(DISABLED, item);
+    }
+    
+    /**
+     * 根据运行中的分片路径获取分片项.
+     *
+     * @param path 运行中的分片路径
+     * @return 分片项, 不是运行中的分片路径获则返回null
+     */
+    public Integer getItemByRunningItemPath(final String path) {
+        if (!isRunningItemPath(path)) {
+            return null;
+        }
+        return Integer.parseInt(path.substring(jobNodePath.getFullPath(ROOT).length() + 1, path.lastIndexOf(RUNNING_APPENDIX) - 1));
+    }
+    
+    private boolean isRunningItemPath(final String path) {
+        return path.startsWith(jobNodePath.getFullPath(ROOT)) && path.endsWith(RUNNING_APPENDIX);
     }
 }

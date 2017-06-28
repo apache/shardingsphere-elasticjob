@@ -19,7 +19,7 @@ package com.dangdang.ddframe.job.event.type;
 
 import com.dangdang.ddframe.job.event.JobEvent;
 import com.dangdang.ddframe.job.exception.ExceptionUtil;
-import com.dangdang.ddframe.job.util.env.LocalHostService;
+import com.dangdang.ddframe.job.util.env.IpUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,15 +36,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
-public class JobExecutionEvent implements JobEvent {
-    
-    private static LocalHostService localHostService = new LocalHostService();
+public final class JobExecutionEvent implements JobEvent {
     
     private String id = UUID.randomUUID().toString();
     
-    private String hostname = localHostService.getHostName();
+    private String hostname = IpUtils.getHostName();
     
-    private String ip = localHostService.getIp();
+    private String ip = IpUtils.getIp();
     
     private final String taskId;
     

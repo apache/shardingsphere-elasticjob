@@ -22,7 +22,7 @@ package com.dangdang.ddframe.job.event;
  * 
  * @author zhangliang
  */
-public class JobEventListenerConfigurationException extends Exception {
+public final class JobEventListenerConfigurationException extends Exception {
     
     private static final long serialVersionUID = 4069519372148227761L;
     

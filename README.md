@@ -1,14 +1,14 @@
-##Elastic-Job - distributed scheduled job solution
-
-# [中文主页](README_cn.md) 
-  
-# [原1.x版本文档](README_1.x.md)
+# Elastic-Job - distributed scheduled job solution
 
 [![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
 [![Coverage Status](https://coveralls.io/repos/dangdangdotcom/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/dangdangdotcom/elastic-job?branch=master)
 [![GitHub release](https://img.shields.io/github/release/dangdangdotcom/elastic-job.svg)](https://github.com/dangdangdotcom/elastic-job/releases)
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+# [Elastic-Job-Lite中文主页](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite)
+# [Elastic-Job-Cloud中文主页](http://dangdangdotcom.github.io/elastic-job/elastic-job-cloud)
+# [Elastic-Job 1.x中文主页(已废弃)](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite-1.x)
 
 # Overview
 
@@ -28,6 +28,7 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 * Failover
 * Misfired jobs refire
 * Sharding consistently, same sharding item for a job only one running instance
+* Self diagnose and recover when distribute environment unstable
 * Parallel scheduling supported
 * Job lifecycle operation
 * Lavish job types
@@ -40,22 +41,21 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 * Fenzo based resources allocated elastically
 * Docker based processes isolation support (TBD)
 
-***
-
-# [Roadmap](ROADMAP.md)
-
-# [Release Notes](http://dangdangdotcom.github.io/elastic-job/post/release_notes/)
-
 # Architecture
 
 ## Elastic-Job-Lite
 
-![Elastic-Job-Lite Architecture](elastic-job-doc/content/img/architecture/elastic_job_lite.png)
+![Elastic-Job-Lite Architecture](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite/img/architecture/elastic_job_lite.png)
 ***
 
 ## Elastic-Job-Cloud
 
-![Elastic-Job-Cloud Architecture](elastic-job-doc/content/img/architecture/elastic_job_cloud.png)
+![Elastic-Job-Cloud Architecture](http://dangdangdotcom.github.io/elastic-job/elastic-job-cloud/img/architecture/elastic_job_cloud.png)
+
+
+# [Release Notes](https://github.com/dangdangdotcom/elastic-job/releases)
+
+# [Roadmap](ROADMAP.md)
 
 # Quick Start
 
@@ -138,6 +138,7 @@ public class MyElasticJob implements SimpleJob {
     <version>${lasted.release.version}</version>
 </dependency>
 ```
+
 ### Job development
 
 Same with `Elastic-Job-Lite`
@@ -145,15 +146,11 @@ Same with `Elastic-Job-Lite`
 ### Job App configuration
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d 
-'{"appName":"yourAppName","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' 
-http://elastic_job_cloud_host:8899/app
+curl -l -H "Content-type: application/json" -X POST -d '{"appName":"yourAppName","appURL":"http://app_host:8080/foo-job.tar.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true}' http://elastic_job_cloud_host:8899/api/app
 ```
 
 ### Job configuration
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' 
-http://elastic_job_cloud_host:8899/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","appName":"yourAppName","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_host:8899/api/job/register
 ```

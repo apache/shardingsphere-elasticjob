@@ -31,38 +31,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class JobNodePath {
     
-    /**
-     * 作业立刻触发节点名称.
-     */
-    public static final String TRIGGER_NODE = "trigger";
-    
-    /**
-     * 作业暂停节点名称.
-     */
-    public static final String PAUSED_NODE = "paused";
-    
-    /**
-     * 作业禁用节点名称.
-     */
-    public static final String DISABLED_NODE = "disabled";
-    
-    /**
-     * 作业关闭节点名称.
-     */
-    public static final String SHUTDOWN_NODE = "shutdown";
-    
-    /**
-     * 作业状态节点名称.
-     */
-    public static final String STATUS_NODE = "status";
-    
-    private static final String LEADER_HOST_NODE = "leader/election/host";
+    private static final String LEADER_HOST_NODE = "leader/election/instance";
     
     private static final String CONFIG_NODE = "config";
     
     private static final String SERVERS_NODE = "servers";
     
-    private static final String EXECUTION_NODE = "execution";
+    private static final String INSTANCES_NODE = "instances";
+    
+    private static final String SHARDING_NODE = "sharding";
     
     private final String jobName;
     
@@ -77,9 +54,9 @@ public final class JobNodePath {
     }
     
     /**
-     * 获取配置节点路径.
+     * 获取配置节点根路径.
      *
-     * @return 配置节点路径
+     * @return 配置节点根路径
      */
     public String getConfigNodePath() {
         return String.format("/%s/%s", jobName, CONFIG_NODE);
@@ -114,33 +91,41 @@ public final class JobNodePath {
     }
     
     /**
-     * 根据IP地址和子节点名称获取作业节点路径.
+     * 获取作业实例节点根路径.
      *
-     * @param serverIp 作业服务器IP地址
-     * @param nodeName 子节点名称
-     * @return 作业节点IP地址子节点路径
+     * @return 作业实例节点根路径
      */
-    public String getServerNodePath(final String serverIp, final String nodeName) {
-        return String.format("%s/%s", getServerNodePath(serverIp), nodeName);
+    public String getInstancesNodePath() {
+        return String.format("/%s/%s", jobName, INSTANCES_NODE);
     }
     
     /**
-     * 获取运行节点根路径.
+     * 根据作业实例ID获取作业实例节点路径.
      *
-     * @return 运行节点根路径
+     * @param instanceId 作业实例ID
+     * @return 作业实例节点路径
      */
-    public String getExecutionNodePath() {
-        return String.format("/%s/%s", jobName, EXECUTION_NODE);
+    public String getInstanceNodePath(final String instanceId) {
+        return String.format("%s/%s", getInstancesNodePath(), instanceId);
     }
     
     /**
-     * 获取运行节点路径.
+     * 获取分片节点根路径.
+     *
+     * @return 分片节点根路径
+     */
+    public String getShardingNodePath() {
+        return String.format("/%s/%s", jobName, SHARDING_NODE);
+    }
+    
+    /**
+     * 获取分片节点路径.
      *
      * @param item 分片项
      * @param nodeName 子节点名称
-     * @return 运行节点路径
+     * @return 分片节点路径
      */
-    public String getExecutionNodePath(final String item, final String nodeName) {
-        return String.format("%s/%s/%s", getExecutionNodePath(), item, nodeName);
+    public String getShardingNodePath(final String item, final String nodeName) {
+        return String.format("%s/%s/%s", getShardingNodePath(), item, nodeName);
     }
 }

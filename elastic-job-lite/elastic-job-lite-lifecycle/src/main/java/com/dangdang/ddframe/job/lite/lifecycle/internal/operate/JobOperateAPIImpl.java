@@ -21,114 +21,121 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 import com.dangdang.ddframe.job.lite.lifecycle.api.JobOperateAPI;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * 操作作业的实现类.
  *
- * @author zhangliang
+ * @author caohao
  */
 public final class JobOperateAPIImpl implements JobOperateAPI {
     
     private final CoordinatorRegistryCenter regCenter;
     
-    private final JobOperateTemplate jobOperatorTemplate;
-    
     public JobOperateAPIImpl(final CoordinatorRegistryCenter regCenter) {
         this.regCenter = regCenter;
-        jobOperatorTemplate = new JobOperateTemplate(regCenter);
     }
     
     @Override
     public void trigger(final Optional<String> jobName, final Optional<String> serverIp) {
-        jobOperatorTemplate.operate(jobName, serverIp, new JobOperateCallback() {
-            
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp) {
-                regCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.TRIGGER_NODE), "");
-                return true;
+        if (jobName.isPresent()) {
+            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+            for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
+                regCenter.persist(jobNodePath.getInstanceNodePath(each), "TRIGGER");
             }
-        });
-    }
-    
-    @Override
-    public void pause(final Optional<String> jobName, final Optional<String> serverIp) {
-        jobOperatorTemplate.operate(jobName, serverIp, new JobOperateCallback() {
-            
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp) {
-                regCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.PAUSED_NODE), "");
-                return true;
-            }
-        });
-    }
-    
-    @Override
-    public void resume(final Optional<String> jobName, final Optional<String> serverIp) {
-        jobOperatorTemplate.operate(jobName, serverIp, new JobOperateCallback() {
-        
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp) {
-                regCenter.remove(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.PAUSED_NODE));
-                return true;
-            }
-        });
+        }
     }
     
     @Override
     public void disable(final Optional<String> jobName, final Optional<String> serverIp) {
-        jobOperatorTemplate.operate(jobName, serverIp, new JobOperateCallback() {
-            
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp) {
-                regCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.DISABLED_NODE), "");
-                return true;
-            }
-        });
+        disableOrEnableJobs(jobName, serverIp, true);
     }
     
     @Override
     public void enable(final Optional<String> jobName, final Optional<String> serverIp) {
-        jobOperatorTemplate.operate(jobName, serverIp, new JobOperateCallback() {
-            
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp) {
-                regCenter.remove(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.DISABLED_NODE));
-                return true;
+        disableOrEnableJobs(jobName, serverIp, false);
+    }
+    
+    private void disableOrEnableJobs(final Optional<String> jobName, final Optional<String> serverIp, final boolean disabled) {
+        Preconditions.checkArgument(jobName.isPresent() || serverIp.isPresent(), "At least indicate jobName or serverIp.");
+        if (jobName.isPresent() && serverIp.isPresent()) {
+            persistDisabledOrEnabledJob(jobName.get(), serverIp.get(), disabled);
+        } else if (jobName.isPresent()) {
+            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+            for (String each : regCenter.getChildrenKeys(jobNodePath.getServerNodePath())) {
+                if (disabled) {
+                    regCenter.persist(jobNodePath.getServerNodePath(each), "DISABLED");
+                } else {
+                    regCenter.persist(jobNodePath.getServerNodePath(each), "");
+                }
             }
-        });
+        } else if (serverIp.isPresent()) {
+            List<String> jobNames = regCenter.getChildrenKeys("/");
+            for (String each : jobNames) {
+                if (regCenter.isExisted(new JobNodePath(each).getServerNodePath(serverIp.get()))) {
+                    persistDisabledOrEnabledJob(each, serverIp.get(), disabled);
+                }
+            }
+        }
+    }
+    
+    private void persistDisabledOrEnabledJob(final String jobName, final String serverIp, final boolean disabled) {
+        JobNodePath jobNodePath = new JobNodePath(jobName);
+        String serverNodePath = jobNodePath.getServerNodePath(serverIp);
+        if (disabled) {
+            regCenter.persist(serverNodePath, "DISABLED");
+        } else {
+            regCenter.persist(serverNodePath, "");
+        }
     }
     
     @Override
     public void shutdown(final Optional<String> jobName, final Optional<String> serverIp) {
-        jobOperatorTemplate.operate(jobName, serverIp, new JobOperateCallback() {
-            
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp) {
-                regCenter.persist(new JobNodePath(jobName).getServerNodePath(serverIp, JobNodePath.SHUTDOWN_NODE), "");
-                return true;
+        Preconditions.checkArgument(jobName.isPresent() || serverIp.isPresent(), "At least indicate jobName or serverIp.");
+        if (jobName.isPresent() && serverIp.isPresent()) {
+            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+            for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
+                if (serverIp.get().equals(each.split("@-@")[0])) {
+                    regCenter.remove(jobNodePath.getInstanceNodePath(each));
+                }
             }
-        });
+        } else if (jobName.isPresent()) {
+            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+            for (String each : regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath())) {
+                regCenter.remove(jobNodePath.getInstanceNodePath(each));
+            }
+        } else if (serverIp.isPresent()) {
+            List<String> jobNames = regCenter.getChildrenKeys("/");
+            for (String job : jobNames) {
+                JobNodePath jobNodePath = new JobNodePath(job);
+                List<String> instances = regCenter.getChildrenKeys(jobNodePath.getInstancesNodePath());
+                for (String each : instances) {
+                    if (serverIp.get().equals(each.split("@-@")[0])) {
+                        regCenter.remove(jobNodePath.getInstanceNodePath(each));
+                    }
+                }
+            }
+        }
     }
     
     @Override
-    public Collection<String> remove(final Optional<String> jobName, final Optional<String> serverIp) {
-        return jobOperatorTemplate.operate(jobName, serverIp, new JobOperateCallback() {
-            
-            @Override
-            public boolean doOperate(final String jobName, final String serverIp) {
-                JobNodePath jobNodePath = new JobNodePath(jobName);
-                if (regCenter.isExisted(jobNodePath.getServerNodePath(serverIp, JobNodePath.STATUS_NODE)) 
-                        || regCenter.isExisted(jobNodePath.getLeaderHostNodePath())) {
-                    return false;
-                }
-                regCenter.remove(jobNodePath.getServerNodePath(serverIp));
-                if (0 == regCenter.getNumChildren(jobNodePath.getServerNodePath())) {
-                    regCenter.remove("/" + jobName);
-                }
-                return true;
+    public void remove(final Optional<String> jobName, final Optional<String> serverIp) {
+        shutdown(jobName, serverIp);
+        if (jobName.isPresent() && serverIp.isPresent()) {
+            regCenter.remove(new JobNodePath(jobName.get()).getServerNodePath(serverIp.get()));
+        } else if (jobName.isPresent()) {
+            JobNodePath jobNodePath = new JobNodePath(jobName.get());
+            List<String> servers = regCenter.getChildrenKeys(jobNodePath.getServerNodePath());
+            for (String each : servers) {
+                regCenter.remove(jobNodePath.getServerNodePath(each));
             }
-        });
+        } else if (serverIp.isPresent()) {
+            List<String> jobNames = regCenter.getChildrenKeys("/");
+            for (String each : jobNames) {
+                regCenter.remove(new JobNodePath(each).getServerNodePath(serverIp.get()));
+            }
+        }
     }
 }

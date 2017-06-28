@@ -22,6 +22,7 @@ import com.dangdang.ddframe.job.exception.JobExecutionEnvironmentException;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.util.env.TimeService;
 import com.google.common.base.Optional;
 
 /**
@@ -30,12 +31,15 @@ import com.google.common.base.Optional;
  * @author zhangliang
  * @author caohao
  */
-public class ConfigurationService {
+public final class ConfigurationService {
+    
+    private final TimeService timeService;
     
     private final JobNodeStorage jobNodeStorage;
     
     public ConfigurationService(final CoordinatorRegistryCenter regCenter, final String jobName) {
         jobNodeStorage = new JobNodeStorage(regCenter, jobName);
+        timeService = new TimeService();
     }
     
     /**
@@ -99,10 +103,10 @@ public class ConfigurationService {
         if (-1  == maxTimeDiffSeconds) {
             return;
         }
-        long timeDiff = Math.abs(System.currentTimeMillis() - jobNodeStorage.getRegistryCenterTime());
+        long timeDiff = Math.abs(timeService.getCurrentMillis() - jobNodeStorage.getRegistryCenterTime());
         if (timeDiff > maxTimeDiffSeconds * 1000L) {
             throw new JobExecutionEnvironmentException(
-                    "Time different between job server and register center exceed '%s' seconds, max time different is '%s' seconds.", Long.valueOf(timeDiff / 1000).intValue(), maxTimeDiffSeconds);
+                    "Time different between job server and register center exceed '%s' seconds, max time different is '%s' seconds.", timeDiff / 1000, maxTimeDiffSeconds);
         }
     }
 }

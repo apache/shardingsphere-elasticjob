@@ -50,7 +50,7 @@ import java.util.Map;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class JobEventRdbSearch {
+public final class JobEventRdbSearch {
     
     private static final String TABLE_JOB_EXECUTION_LOG = "JOB_EXECUTION_LOG";
     
@@ -193,9 +193,9 @@ public class JobEventRdbSearch {
         StringBuilder sqlBuilder = new StringBuilder();
         sqlBuilder.append(" WHERE 1=1");
         if (null != condition.getFields() && !condition.getFields().isEmpty()) {
-            for (String each : condition.getFields().keySet()) {
-                String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, each);
-                if (null != condition.getFields().get(each) && tableFields.contains(lowerUnderscore)) {
+            for (Map.Entry<String, Object> entry : condition.getFields().entrySet()) {
+                String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entry.getKey());
+                if (null != entry.getValue() && tableFields.contains(lowerUnderscore)) {
                     sqlBuilder.append(" AND ").append(lowerUnderscore).append("=?");
                 }
             }
@@ -212,10 +212,10 @@ public class JobEventRdbSearch {
     private void setBindValue(final PreparedStatement preparedStatement, final Collection<String> tableFields, final Condition condition) throws SQLException {
         int index = 1;
         if (null != condition.getFields() && !condition.getFields().isEmpty()) {
-            for (String each : condition.getFields().keySet()) {
-                String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, each);
-                if (null != condition.getFields().get(each) && tableFields.contains(lowerUnderscore)) {
-                    preparedStatement.setString(index++, String.valueOf(condition.getFields().get(each)));
+            for (Map.Entry<String, Object> entry : condition.getFields().entrySet()) {
+                String lowerUnderscore = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entry.getKey());
+                if (null != entry.getValue() && tableFields.contains(lowerUnderscore)) {
+                    preparedStatement.setString(index++, String.valueOf(entry.getValue()));
                 }
             }
         }
@@ -223,7 +223,7 @@ public class JobEventRdbSearch {
             preparedStatement.setTimestamp(index++, new Timestamp(condition.getStartTime().getTime()));
         }
         if (null != condition.getEndTime()) {
-            preparedStatement.setTimestamp(index++, new Timestamp(condition.getEndTime().getTime()));
+            preparedStatement.setTimestamp(index, new Timestamp(condition.getEndTime().getTime()));
         }
     }
     

@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author caohao
  */
 @Slf4j
-public class JobEventBus {
+public final class JobEventBus {
     
     private final JobEventConfiguration jobEventConfig;
     

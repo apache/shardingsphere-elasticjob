@@ -20,7 +20,7 @@ package com.dangdang.ddframe.job.lite.internal.config;
 import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
 
 /**
- * Elastic Job配置根节点名称的常量类.
+ * 配置节点路径.
  * 
  * @author zhangliang
  */

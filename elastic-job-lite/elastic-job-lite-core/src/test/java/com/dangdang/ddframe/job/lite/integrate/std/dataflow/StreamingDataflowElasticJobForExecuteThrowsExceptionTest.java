@@ -50,6 +50,6 @@ public final class StreamingDataflowElasticJobForExecuteThrowsExceptionTest exte
         while (!StreamingDataflowElasticJobForExecuteThrowsException.isCompleted()) {
             WaitingUtils.waitingShortTime();
         }
-        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/execution"));
+        assertTrue(getRegCenter().isExisted("/" + getJobName() + "/sharding"));
     }
 }

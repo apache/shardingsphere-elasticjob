@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.unitils.util.ReflectionUtils;
 
 import java.util.Collections;
@@ -88,14 +88,14 @@ public final class SimpleJobExecutorTest {
     public void assertExecuteWhenPreviousJobStillRunning() throws JobExecutionEnvironmentException {
         ShardingContexts shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap());
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true);
+        when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true);
         simpleJobExecutor.execute();
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, 
                 "Previous job 'test_job' - shardingItems '[]' is still running, misfired job will start after previous job completed.");
         verify(jobFacade).checkJobExecutionEnvironment();
         verify(jobFacade).getShardingContexts();
-        verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
+        verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobCaller, times(0)).execute();
     }
     
@@ -108,7 +108,7 @@ public final class SimpleJobExecutorTest {
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, "Sharding item for job 'test_job' is empty.");
         verify(jobFacade).checkJobExecutionEnvironment();
         verify(jobFacade).getShardingContexts();
-        verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
+        verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobCaller, times(0)).execute();
     }
     
@@ -140,7 +140,7 @@ public final class SimpleJobExecutorTest {
             verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_ERROR, errorMessage);
             verify(jobFacade).checkJobExecutionEnvironment();
             verify(jobFacade).getShardingContexts();
-            verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
+            verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
             verify(jobFacade).registerJobBegin(shardingContexts);
             verify(jobCaller, times(shardingContexts.getShardingTotalCount())).execute();
             verify(jobFacade).registerJobCompleted(shardingContexts);
@@ -181,7 +181,6 @@ public final class SimpleJobExecutorTest {
         ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
-        when(jobFacade.isEligibleForJobRunning()).thenReturn(false);
         simpleJobExecutor.execute();
         ElasticJobVerify.verifyForIsNotMisfire(jobFacade, shardingContexts);
         verify(jobCaller, times(2)).execute();
@@ -192,15 +191,14 @@ public final class SimpleJobExecutorTest {
     public void assertExecuteWhenRunOnceWithMisfire() throws JobExecutionEnvironmentException {
         ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
+        when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(true, false);
-        when(jobFacade.isNeedSharding()).thenReturn(false);
         simpleJobExecutor.execute();
         verify(jobFacade).postJobStatusTraceEvent(shardingContexts.getTaskId(), JobStatusTraceEvent.State.TASK_STAGING, "Job 'test_job' execute begin.");
         verify(jobFacade, times(2)).postJobStatusTraceEvent(shardingContexts.getTaskId(), JobStatusTraceEvent.State.TASK_RUNNING, "");
         verify(jobFacade).checkJobExecutionEnvironment();
         verify(jobFacade).getShardingContexts();
-        verify(jobFacade).misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet());
+        verify(jobFacade).misfireIfRunning(shardingContexts.getShardingItemParameters().keySet());
         verify(jobFacade, times(2)).registerJobBegin(shardingContexts);
         verify(jobCaller, times(4)).execute();
         verify(jobFacade, times(2)).registerJobCompleted(shardingContexts);
@@ -210,7 +208,7 @@ public final class SimpleJobExecutorTest {
     public void assertBeforeJobExecutedFailure() {
         ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
+        when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         doThrow(RuntimeException.class).when(jobFacade).beforeJobExecuted(shardingContexts);
         try {
             simpleJobExecutor.execute();
@@ -223,7 +221,7 @@ public final class SimpleJobExecutorTest {
     public void assertAfterJobExecutedFailure() {
         ShardingContexts shardingContexts = ShardingContextsBuilder.getMultipleShardingContexts();
         when(jobFacade.getShardingContexts()).thenReturn(shardingContexts);
-        when(jobFacade.misfireIfNecessary(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
+        when(jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         when(jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())).thenReturn(false);
         doThrow(RuntimeException.class).when(jobFacade).afterJobExecuted(shardingContexts);
         try {

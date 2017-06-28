@@ -29,35 +29,35 @@ public final class LiteJsonConstants {
             + "\"executor_service_handler\":\"" + DefaultExecutorServiceHandler.class.getCanonicalName() + "\"}";
     
     private static final String JOB_JSON = "{\"jobName\":\"test_job\",\"jobClass\":\"%s\",\"jobType\":\"SIMPLE\",\"cron\":\"0/1 * * * * ?\","
-            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":true,\"misfire\":false,\"description\":\"desc\","
+            + "\"shardingTotalCount\":3,\"shardingItemParameters\":\"\",\"jobParameter\":\"param\",\"failover\":%s,\"misfire\":false,\"description\":\"desc\","
             + "\"jobProperties\":" + JOB_PROPS_JSON + ",\"monitorExecution\":%s,\"maxTimeDiffSeconds\":%s,"
-            + "\"monitorPort\":8888,\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true, \"reconcileIntervalMinutes\": %s}";
+            + "\"monitorPort\":8888,\"jobShardingStrategyClass\":\"testClass\",\"disabled\":true,\"overwrite\":true, \"reconcileIntervalMinutes\": 15}";
     
     private static final String DEFAULT_JOB_CLASS = "com.dangdang.ddframe.job.lite.fixture.TestSimpleJob";
+    
+    private static final boolean DEFAULT_FAILOVER = true;
     
     private static final boolean DEFAULT_MONITOR_EXECUTION = true;
     
     private static final int DEFAULT_MAX_TIME_DIFF_SECONDS = 1000;
     
-    private static final int DEFAULT_RECONCILE_CYCLE_TIME = 15;
-    
     public static String getJobJson() {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS, DEFAULT_RECONCILE_CYCLE_TIME);
+        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     public static String getJobJson(final String jobClass) {
-        return String.format(JOB_JSON, jobClass, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS, DEFAULT_RECONCILE_CYCLE_TIME);
-    }
-    
-    public static String getJobJson(final boolean monitorExecution) {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS, DEFAULT_RECONCILE_CYCLE_TIME);
+        return String.format(JOB_JSON, jobClass, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
     public static String getJobJson(final int maxTimeDiffSeconds) {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds, DEFAULT_RECONCILE_CYCLE_TIME);
+        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
     }
     
-    public static String getJobJson(final long reconcileCycleTime) {
-        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS, reconcileCycleTime);
+    public static String getJobJsonWithFailover(final boolean failover) {
+        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, failover, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
+    }
+    
+    public static String getJobJsonWithMonitorExecution(final boolean monitorExecution) {
+        return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
 }

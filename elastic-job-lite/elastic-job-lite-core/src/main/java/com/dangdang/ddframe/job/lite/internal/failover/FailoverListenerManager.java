@@ -17,29 +17,30 @@
 
 package com.dangdang.ddframe.job.lite.internal.failover;
 
+import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationNode;
 import com.dangdang.ddframe.job.lite.internal.config.ConfigurationService;
 import com.dangdang.ddframe.job.lite.internal.config.LiteJobConfigurationGsonFactory;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionNode;
-import com.dangdang.ddframe.job.lite.internal.execution.ExecutionService;
+import com.dangdang.ddframe.job.lite.internal.instance.InstanceNode;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractJobListener;
 import com.dangdang.ddframe.job.lite.internal.listener.AbstractListenerManager;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
 import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
 import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
+
+import java.util.List;
 
 /**
  * 失效转移监听管理器.
  * 
  * @author zhangliang
  */
-public class FailoverListenerManager extends AbstractListenerManager {
+public final class FailoverListenerManager extends AbstractListenerManager {
+    
+    private final String jobName;
     
     private final ConfigurationService configService;
-    
-    private final ExecutionService executionService;
     
     private final ShardingService shardingService;
     
@@ -47,64 +48,59 @@ public class FailoverListenerManager extends AbstractListenerManager {
     
     private final ConfigurationNode configNode;
     
-    private final ExecutionNode executionNode;
-    
-    private final FailoverNode failoverNode;
+    private final InstanceNode instanceNode;
     
     public FailoverListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
+        this.jobName = jobName;
         configService = new ConfigurationService(regCenter, jobName);
-        executionService = new ExecutionService(regCenter, jobName);
         shardingService = new ShardingService(regCenter, jobName);
         failoverService = new FailoverService(regCenter, jobName);
         configNode = new ConfigurationNode(jobName);
-        executionNode = new ExecutionNode(jobName);
-        failoverNode = new FailoverNode(jobName);
+        instanceNode = new InstanceNode(jobName);
     }
     
     @Override
     public void start() {
         addDataListener(new JobCrashedJobListener());
-        addDataListener(new FailoverJobCrashedJobListener());
         addDataListener(new FailoverSettingsChangedJobListener());
     }
     
-    private void failover(final Integer item, final TreeCacheEvent event) {
-        if (!isJobCrashAndNeedFailover(item, event)) {
-            return;
-        }
-        failoverService.setCrashedFailoverFlag(item);
-        if (!executionService.hasRunningItems(shardingService.getLocalHostShardingItems())) {
-            failoverService.failoverIfNecessary();
-        }
-    }
-    
-    private boolean isJobCrashAndNeedFailover(final Integer item, final TreeCacheEvent event) {
-        return null != item && Type.NODE_REMOVED == event.getType() && !executionService.isCompleted(item) && configService.load(true).isFailover();
+    private boolean isFailoverEnabled() {
+        LiteJobConfiguration jobConfig = configService.load(true);
+        return null != jobConfig && jobConfig.isFailover();
     }
     
     class JobCrashedJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            failover(executionNode.getItemByRunningItemPath(path), event);
-        }
-    }
-    
-    class FailoverJobCrashedJobListener extends AbstractJobListener {
-        
-        @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            failover(failoverNode.getItemByExecutionFailoverPath(path), event);
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (isFailoverEnabled() && Type.NODE_REMOVED == eventType && instanceNode.isInstancePath(path)) {
+                String jobInstanceId = path.substring(instanceNode.getInstanceFullPath().length() + 1);
+                if (jobInstanceId.equals(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())) {
+                    return;
+                }
+                List<Integer> failoverItems = failoverService.getFailoverItems(jobInstanceId);
+                if (!failoverItems.isEmpty()) {
+                    for (int each : failoverItems) {
+                        failoverService.setCrashedFailoverFlag(each);
+                        failoverService.failoverIfNecessary();
+                    }
+                } else {
+                    for (int each : shardingService.getShardingItems(jobInstanceId)) {
+                        failoverService.setCrashedFailoverFlag(each);
+                        failoverService.failoverIfNecessary();
+                    }
+                }
+            }
         }
     }
     
     class FailoverSettingsChangedJobListener extends AbstractJobListener {
         
         @Override
-        protected void dataChanged(final CuratorFramework client, final TreeCacheEvent event, final String path) {
-            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == event.getType()
-                    && !LiteJobConfigurationGsonFactory.fromJson(new String(event.getData().getData())).isFailover()) {
+        protected void dataChanged(final String path, final Type eventType, final String data) {
+            if (configNode.isConfigPath(path) && Type.NODE_UPDATED == eventType && !LiteJobConfigurationGsonFactory.fromJson(data).isFailover()) {
                 failoverService.removeFailoverInfo();
             }
         }
