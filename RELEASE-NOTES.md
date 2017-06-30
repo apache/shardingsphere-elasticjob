@@ -1,5 +1,9 @@
 ## 2.1.5
 
+### 缺陷修正
+
+1. [ISSUE #367](https://github.com/dangdangdotcom/elastic-job/issues/367) 禁用作业并未停止生成Ready队列，造成重新启用后堆积作业大量执行
+
 ## 2.1.4
 
 ### 功能提升
