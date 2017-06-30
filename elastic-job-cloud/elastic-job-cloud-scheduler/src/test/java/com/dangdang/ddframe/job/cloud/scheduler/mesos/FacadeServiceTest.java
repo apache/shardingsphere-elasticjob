@@ -222,6 +222,7 @@ public final class FacadeServiceTest {
     
     @Test
     public void assertAddDaemonJobToReadyQueue() {
+        when(jobConfigService.load("test_job")).thenReturn(Optional.of(CloudJobConfigurationBuilder.createCloudJobConfiguration("test_job")));
         facadeService.addDaemonJobToReadyQueue("test_job");
         verify(readyService).addDaemon("test_job");
     }

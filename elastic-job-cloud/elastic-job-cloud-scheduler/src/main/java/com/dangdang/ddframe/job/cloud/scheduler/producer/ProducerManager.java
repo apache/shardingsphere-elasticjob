@@ -117,7 +117,7 @@ public final class ProducerManager {
             throw new JobConfigurationException("Cannot found job '%s', please register first.", jobConfig.getJobName());
         }
         configService.update(jobConfig);
-        reschedule(jobConfig);
+        reschedule(jobConfig.getJobName());
     }
     
     /**
@@ -130,7 +130,6 @@ public final class ProducerManager {
         if (jobConfig.isPresent()) {
             disableJobService.remove(jobName);
             configService.remove(jobName);
-            transientProducerScheduler.deregister(jobConfig.get());
         }
         unschedule(jobName);
     }
@@ -162,16 +161,23 @@ public final class ProducerManager {
         }
         runningService.remove(jobName);
         readyService.remove(Lists.newArrayList(jobName));
+        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+        if (jobConfig.isPresent()) {
+            transientProducerScheduler.deregister(jobConfig.get());
+        }
     }
     
     /**
      * 重新调度作业.
      *
-     * @param jobConfig 作业配置
+     * @param jobName 作业名称
      */
-    public void reschedule(final CloudJobConfiguration jobConfig) {
-        unschedule(jobConfig.getJobName());
-        schedule(jobConfig);
+    public void reschedule(final String jobName) {
+        unschedule(jobName);
+        Optional<CloudJobConfiguration> jobConfig = configService.load(jobName);
+        if (jobConfig.isPresent()) {
+            schedule(jobConfig.get());
+        }
     }
     
     /**

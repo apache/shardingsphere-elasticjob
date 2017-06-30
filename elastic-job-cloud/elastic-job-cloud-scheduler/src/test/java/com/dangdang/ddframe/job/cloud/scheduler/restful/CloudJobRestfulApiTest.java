@@ -106,7 +106,7 @@ public final class CloudJobRestfulApiTest extends AbstractCloudRestfulApiTest {
     public void assertDeregister() throws Exception {
         when(getRegCenter().isExisted("/config/job/test_job")).thenReturn(false);
         assertThat(sentRequest("http://127.0.0.1:19000/api/job/deregister", "DELETE", "test_job"), is(204));
-        verify(getRegCenter(), times(2)).get("/config/job/test_job");
+        verify(getRegCenter(), times(3)).get("/config/job/test_job");
     }
     
     @Test
