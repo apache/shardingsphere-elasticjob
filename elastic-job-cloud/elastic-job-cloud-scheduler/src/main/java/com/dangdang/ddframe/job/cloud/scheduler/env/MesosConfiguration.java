@@ -44,4 +44,6 @@ public final class MesosConfiguration {
     private final String url;
     
     private final String hostname;
+    
+    private final Boolean enablePartitionAware;
 }
