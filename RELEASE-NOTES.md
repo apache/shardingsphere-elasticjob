@@ -1,8 +1,8 @@
 ## 2.1.5
 
-### 功能提升
+### 新功能
 
-1. [ISSUE #373](https://github.com/dangdangdotcom/elastic-job/issues/373) Cloud在配置PARTITION_AWAR时，可以处理TASK_UNREACHABLE, TASK_UNKNOW, TASK_DROPPED, TASK_GONE等状态
+1. [ISSUE #373](https://github.com/dangdangdotcom/elastic-job/issues/373) Cloud可区分处理TASK_UNREACHABLE, TASK_UNKNOW, TASK_DROPPED, TASK_GONE等状态
 
 ### 缺陷修正
 
