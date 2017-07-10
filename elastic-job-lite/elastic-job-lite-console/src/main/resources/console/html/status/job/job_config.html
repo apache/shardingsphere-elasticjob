@@ -38,7 +38,7 @@
                         <div class="form-group">
                             <label for="sharding-total-count" class="col-sm-6 control-label" data-lang="job-sharding-total-count"></label>
                             <div class="col-sm-6">
-                                <input type="number" min=1 max=100 id="sharding-total-count" name="shardingTotalCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业分片总数"/>
+                                <input type="number" min=1 id="sharding-total-count" name="shardingTotalCount" class="form-control" data-toggle="tooltip" data-placement="bottom" title="作业分片总数"/>
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         <div class="form-group">
                             <label for="monitor-port" class="col-sm-6 control-label" data-lang="job-monitor-port"></label>
                             <div class="col-sm-6">
-                                <input type="number" min=1000 max=65535 id="monitor-port" name="monitorPort" class="form-control" data-toggle="tooltip" data-placement="bottom" title="抓取作业注册信息监听服务端口。配置为-1表示不启用监听服务。" />
+                                <input type="number" max=65535 id="monitor-port" name="monitorPort" class="form-control" data-toggle="tooltip" data-placement="bottom" title="抓取作业注册信息监听服务端口。配置为-1表示不启用监听服务。" />
                             </div>
                         </div>
                     </div>
