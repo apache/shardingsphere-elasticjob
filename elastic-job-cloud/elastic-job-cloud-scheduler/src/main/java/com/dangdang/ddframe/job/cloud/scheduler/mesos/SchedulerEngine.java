@@ -113,12 +113,20 @@ public final class SchedulerEngine implements Scheduler {
                 unAssignTask(taskId);
                 break;
             case TASK_LOST:
+            case TASK_DROPPED:
+            case TASK_GONE:
+            case TASK_GONE_BY_OPERATOR:
             case TASK_FAILED:
             case TASK_ERROR:
                 log.warn("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 facadeService.removeRunning(taskContext);
                 facadeService.recordFailoverTask(taskContext);
                 unAssignTask(taskId);
+                statisticManager.taskRunFailed();
+                break;
+            case TASK_UNKNOWN:
+            case TASK_UNREACHABLE:
+                log.error("task id is: {}, status is: {}, message is: {}, source is: {}", taskId, taskStatus.getState(), taskStatus.getMessage(), taskStatus.getSource());
                 statisticManager.taskRunFailed();
                 break;
             default:
