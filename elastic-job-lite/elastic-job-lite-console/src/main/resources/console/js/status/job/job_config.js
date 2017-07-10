@@ -124,17 +124,6 @@ function validate() {
                     },
                     notEmpty: {
                         message: $.i18n.prop("job-monitor-port-not-null")
-                    },
-                    callback: {
-                        message: $.i18n.prop("job-monitor-port-range-limit"),
-                        callback: function(value, validator) {
-                            var monitorPort = parseInt(validator.getFieldElements("monitorPort").val(), 10);
-                            if ((monitorPort >= 1000 && monitorPort <= 65535) || monitorPort === -1) {
-                                validator.updateStatus("monitorPort", "VALID");
-                                return true;
-                            }
-                            return false;
-                        }
                     }
                 }
             }
