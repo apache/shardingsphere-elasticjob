@@ -129,7 +129,7 @@ function validate() {
                         message: $.i18n.prop("job-monitor-port-range-limit"),
                         callback: function(value, validator) {
                             var monitorPort = parseInt(validator.getFieldElements("monitorPort").val(), 10);
-                            if ((monitorPort >= 1000 && monitorPort <= 65535) || monitorPort === -1) {
+                            if (monitorPort <= 65535) {
                                 validator.updateStatus("monitorPort", "VALID");
                                 return true;
                             }

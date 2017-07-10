@@ -86,7 +86,6 @@ public final class SchedulerService {
     }
     
     private SchedulerDriver getSchedulerDriver(final TaskScheduler taskScheduler, final JobEventBus jobEventBus, final FrameworkIDService frameworkIDService) {
-        MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Optional<String> frameworkIDOptional = frameworkIDService.fetch();
         Protos.FrameworkInfo.Builder builder = Protos.FrameworkInfo.newBuilder();
         if (frameworkIDOptional.isPresent()) {
@@ -98,6 +97,8 @@ public final class SchedulerService {
             builder.setRole(role.get());
             frameworkName += "-" + role.get();
         }
+        builder.addCapabilitiesBuilder().setType(Protos.FrameworkInfo.Capability.Type.PARTITION_AWARE);
+        MesosConfiguration mesosConfig = env.getMesosConfiguration();
         Protos.FrameworkInfo frameworkInfo = builder.setUser(mesosConfig.getUser()).setName(frameworkName)
                 .setHostname(mesosConfig.getHostname()).setFailoverTimeout(FRAMEWORK_FAILOVER_TIMEOUT_SECONDS)
                 .setWebuiUrl(WEB_UI_PROTOCOL + env.getFrameworkHostPort()).setCheckpoint(true).build();

@@ -17,11 +17,11 @@ next = "/03-design"
 
 ```java
 LocalCloudJobConfiguration config = new LocalCloudJobConfiguration(
-        new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("FooJob", "*/2 * * * * ?", 3) //1
-                .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
-                .jobParameter("dbName=dangdang").build(), "com.dangdang.foo.FooJob"), 
-                1,                                                                               //2
-                "testSimpleJob" , "applicationContext.xml");                                     //3
+    new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("FooJob", "*/2 * * * * ?", 3) //1
+        .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
+        .jobParameter("dbName=dangdang").build(), "com.dangdang.foo.FooJob"), 
+        1,                                                                               //2
+        "testSimpleJob" , "applicationContext.xml");                                     //3
 ```
 
 1. 配置作业类型和作业基本信息。

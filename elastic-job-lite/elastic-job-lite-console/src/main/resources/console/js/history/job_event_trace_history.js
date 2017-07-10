@@ -43,7 +43,7 @@ function splitFormatter(value) {
     var replacement = "...";
     if(null != value && value.length > maxLength) {
         var vauleDetail = value.substring(0 , maxLength - replacement.length) + replacement;
-        value = value.replace(/\n/g,"<br/>").replace(/\'/g, "\\'").replace(/\r/g,"<br/>");
+        value = value.replace(/\r\n/g,"<br/>").replace(/\n/g,"<br/>").replace(/\'/g, "\\'");
         return '<a href="javascript: void(0);" style="color:#FF0000;" onClick="showHistoryMessage(\'' + value + '\')">' + vauleDetail + '</a>';
     }
     return value;

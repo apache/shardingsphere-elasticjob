@@ -1,3 +1,15 @@
+## 2.1.5
+
+### 新功能
+
+1. [ISSUE #373](https://github.com/dangdangdotcom/elastic-job/issues/373) Cloud可区分处理TASK_UNREACHABLE, TASK_UNKNOW, TASK_DROPPED, TASK_GONE等状态
+
+### 缺陷修正
+
+1. [ISSUE #367](https://github.com/dangdangdotcom/elastic-job/issues/367) 禁用作业并未停止生成Ready队列，造成重新启用后堆积作业大量执行
+1. [ISSUE #382](https://github.com/dangdangdotcom/elastic-job/issues/382) 界面验证错误，不应校验分片总数上限
+1. [ISSUE #383](https://github.com/dangdangdotcom/elastic-job/issues/383) 界面验证错误，不应校验监听端口下限
+
 ## 2.1.4
 
 ### 功能提升

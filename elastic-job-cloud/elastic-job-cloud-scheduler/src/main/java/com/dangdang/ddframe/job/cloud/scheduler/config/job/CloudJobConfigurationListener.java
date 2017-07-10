@@ -70,7 +70,7 @@ public final class CloudJobConfigurationListener implements TreeCacheListener {
             if (!jobConfig.getTypeConfig().getCoreConfig().isMisfire()) {
                 readyService.setMisfireDisabled(jobConfig.getJobName());
             }
-            producerManager.reschedule(jobConfig);
+            producerManager.reschedule(jobConfig.getJobName());
         } else if (isJobConfigNode(event, path, Type.NODE_REMOVED)) {
             String jobName = path.substring(CloudJobConfigurationNode.ROOT.length() + 1, path.length());
             producerManager.unschedule(jobName);

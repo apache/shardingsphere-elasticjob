@@ -32,7 +32,7 @@ function splitRemarkFormatter(value, row) {
     var replacement = "...";
     if(null != value && value.length > maxLength) {
         var valueDetail = value.substring(0 , maxLength - replacement.length) + replacement;
-        value = value.replace(/\n/g,"<br/>").replace(/\'/g, "\\'");
+        value = value.replace(/\r\n/g,"<br/>").replace(/\n/g,"<br/>").replace(/\'/g, "\\'");
         var remarkHtml;
         if ("TASK_FAILED" === row.state || "TASK_ERROR" === row.state) {
             remarkHtml = '<a href="javascript: void(0);" style="color:#FF0000;" onClick="showHistoryMessage(\'' + value + '\')">' + valueDetail + '</a>';

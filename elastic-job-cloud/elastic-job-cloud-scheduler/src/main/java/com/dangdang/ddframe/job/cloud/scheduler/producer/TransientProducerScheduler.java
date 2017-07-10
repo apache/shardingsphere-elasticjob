@@ -112,7 +112,7 @@ final class TransientProducerScheduler {
         return TriggerBuilder.newTrigger().withIdentity(cron).withSchedule(CronScheduleBuilder.cronSchedule(cron).withMisfireHandlingInstructionDoNothing()).build();
     }
     
-    void deregister(final CloudJobConfiguration jobConfig) {
+    synchronized void deregister(final CloudJobConfiguration jobConfig) {
         repository.remove(jobConfig.getJobName());
         String cron = jobConfig.getTypeConfig().getCoreConfig().getCron();
         if (!repository.containsKey(buildJobKey(cron))) {
