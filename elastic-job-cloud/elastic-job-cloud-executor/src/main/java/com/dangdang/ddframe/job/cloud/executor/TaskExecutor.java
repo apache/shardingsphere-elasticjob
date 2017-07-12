@@ -117,6 +117,7 @@ public final class TaskExecutor implements Executor {
         
         @Override
         public void run() {
+            Thread.currentThread().setContextClassLoader(TaskThread.class.getClassLoader());
             executorDriver.sendStatusUpdate(Protos.TaskStatus.newBuilder().setTaskId(taskInfo.getTaskId()).setState(Protos.TaskState.TASK_RUNNING).build());
             Map<String, Object> data = SerializationUtils.deserialize(taskInfo.getData().toByteArray());
             ShardingContexts shardingContexts = (ShardingContexts) data.get("shardingContext");

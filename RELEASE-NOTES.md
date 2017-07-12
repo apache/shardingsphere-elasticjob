@@ -1,5 +1,10 @@
 ## 2.1.6
 
+### 缺陷修正
+
+1. [ISSUE #384](https://github.com/dangdangdotcom/elastic-job/issues/384) Cloud的执行器线程ContextClassLoader为空
+
+
 ## 2.1.5
 
 ### 新功能
