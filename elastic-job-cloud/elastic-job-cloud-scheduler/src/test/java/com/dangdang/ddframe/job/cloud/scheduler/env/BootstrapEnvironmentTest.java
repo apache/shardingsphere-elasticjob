@@ -32,7 +32,6 @@ import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public final class BootstrapEnvironmentTest {
     
@@ -114,14 +113,5 @@ public final class BootstrapEnvironmentTest {
         configuration = bootstrapEnvironment.getFrameworkConfiguration();
         assertThat(configuration.getReconcileIntervalMinutes(), is(0));
         assertFalse(configuration.isEnabledReconcile());
-    }
-    
-    @Test
-    public void assertEnablePartitionAware() throws NoSuchFieldException {
-        assertFalse(bootstrapEnvironment.getMesosConfiguration().getEnablePartitionAware());
-        Properties properties = new Properties();
-        properties.setProperty(EnvironmentArgument.ENABLE_PARTITION_AWARE.getKey(), "true");
-        ReflectionUtils.setFieldValue(bootstrapEnvironment, "properties", properties);
-        assertTrue(bootstrapEnvironment.getMesosConfiguration().getEnablePartitionAware());
     }
 }

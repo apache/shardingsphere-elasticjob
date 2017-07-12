@@ -88,8 +88,7 @@ public final class BootstrapEnvironment {
      * @return Mesos配置对象
      */
     public MesosConfiguration getMesosConfiguration() {
-        return new MesosConfiguration(getValue(EnvironmentArgument.USER), getValue(EnvironmentArgument.MESOS_URL), getValue(EnvironmentArgument.HOSTNAME), Boolean
-                .valueOf(getValue(EnvironmentArgument.ENABLE_PARTITION_AWARE)));
+        return new MesosConfiguration(getValue(EnvironmentArgument.USER), getValue(EnvironmentArgument.MESOS_URL), getValue(EnvironmentArgument.HOSTNAME));
     }
     
     /**
@@ -218,9 +217,7 @@ public final class BootstrapEnvironment {
 
         EVENT_TRACE_RDB_PASSWORD("event_trace_rdb_password", "", false),
     
-        RECONCILE_INTERVAL_MINUTES("reconcile_interval_minutes", "-1", false),
-        
-        ENABLE_PARTITION_AWARE("enable_partition_aware", "false", false);
+        RECONCILE_INTERVAL_MINUTES("reconcile_interval_minutes", "-1", false);
         
         private final String key;
         
