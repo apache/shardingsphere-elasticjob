@@ -94,6 +94,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [捞财宝(证大爱特)](https://www.laocaibao.com)
 
+## [联想商城](https://www.lenovo.com.cn/)
+
 ## [米袋集团](http://www.midaigroup.com/)
 
 ## [全时](http://www.quanshi.com/)
