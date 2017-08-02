@@ -45,7 +45,7 @@ Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理�
 * 运维平台
 * 基于Docker的进程隔离(TBD)
 
-# Architecture
+# 架构图
 
 ## Elastic-Job-Lite
 
