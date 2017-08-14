@@ -74,6 +74,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [当当](http://www.dangdang.com/)
 
+## [凤凰汽车](http://auto.ifeng.com/)
+
 ## [国美](http://www.gome.com.cn/)
 
 ## [记健康](http://www.jjklife.com/)
