@@ -70,7 +70,9 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [PINTEC](http://www.pintec.com/)
 
-## [畅移（上海）信息科技有限公司](http://www.vchangyi.com)
+## [帮5采](http://www.b5cai.com/)
+
+## [畅移](http://www.vchangyi.com)
 
 ## [当当](http://www.dangdang.com/)
 
@@ -94,7 +96,7 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [懒人听书](www.lrts.me/)
 
-## [捞财宝(证大爱特)](https://www.laocaibao.com)
+## [捞财宝](https://www.laocaibao.com)
 
 ## [联想商城](https://www.lenovo.com.cn/)
 
@@ -147,3 +149,5 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 ## [赚啦理财](http://www.zhuanlalicai.com/)
 
 ## [自如网](http://www.ziroom.com/)
+
+## [走秀网](http://www.xiu.com/)
