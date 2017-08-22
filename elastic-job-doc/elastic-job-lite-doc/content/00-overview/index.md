@@ -106,6 +106,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [赛特斯](http://www.certusnet.com.cn/)
 
+## [首汽约车](http://01zhuanche.com/)
+
 ## [拓尔思](http://www.trs.com.cn/)
 
 ## [微盟](http://www.weimob.com/)
