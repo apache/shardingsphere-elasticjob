@@ -102,6 +102,8 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## [米袋集团](http://www.midaigroup.com/)
 
+## [摩拜单车](https://mobike.com/)
+
 ## [全时](http://www.quanshi.com/)
 
 ## [赛特斯](http://www.certusnet.com.cn/)
