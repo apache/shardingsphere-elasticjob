@@ -6,9 +6,13 @@
 [![GitHub release](https://img.shields.io/github/release/dangdangdotcom/elastic-job.svg)](https://github.com/dangdangdotcom/elastic-job/releases)
 [![Hex.pm](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-# [Elastic-Job-Lite中文主页](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite) [![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://dangdangdotcom.github.io/elastic-job/elastic-job-lite/dist/elastic-job-lite-console-2.1.4.tar.gz)
-# [Elastic-Job-Cloud中文主页](http://dangdangdotcom.github.io/elastic-job/elastic-job-cloud) [![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://dangdangdotcom.github.io/elastic-job/elastic-job-cloud/dist/elastic-job-cloud-scheduler-2.1.4.tar.gz)
-# [Elastic-Job 1.x中文主页(已废弃)](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite-1.x)
+# [Homepage](http://elasticjob.io/)
+
+# [中文主页](http://elasticjob.io/index_zh.html)
+
+# Elastic-Job-Lite Console [![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://dangdangdotcom.github.io/elastic-job/elastic-job-lite/dist/elastic-job-lite-console-2.1.4.tar.gz)
+
+# Elastic-Job-Cloud Framework[![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://dangdangdotcom.github.io/elastic-job/elastic-job-cloud/dist/elastic-job-cloud-scheduler-2.1.4.tar.gz)
 
 # Overview
 
