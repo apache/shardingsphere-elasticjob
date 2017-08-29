@@ -22,7 +22,7 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
 [![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
 [![Coverage Status](https://coveralls.io/repos/dangdangdotcom/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/dangdangdotcom/elastic-job?branch=master)
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Hex.pm](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 # 功能列表
 
@@ -38,8 +38,6 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 * Spring整合以及命名空间提供
 * 运维平台
 
-# [新闻](/00-overview/news)
-
 # 交流与参与
 
  - **官方群：** 430066234（仅限于讨论与Elastic-Job相关的话题。我们希望您在入群前仔细阅读文档。并在入群后阅读公告以及修改群名片。谢谢合作。）
@@ -47,5 +45,3 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
  - 报告确定的bug，提交增强功能建议和提交补丁等，请阅读[如何进行贡献](/00-overview/contribution)。
  
  **使用Elastic-Job的公司如果方便请留下公司+网址** https://github.com/dangdangdotcom/elastic-job/issues/254
-
-# [采用公司](/00-overview/company)
