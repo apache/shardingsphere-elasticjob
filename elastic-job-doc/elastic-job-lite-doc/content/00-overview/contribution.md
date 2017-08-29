@@ -2,8 +2,8 @@
 toc = true
 date = "2016-12-06T22:38:50+08:00"
 title = "贡献代码"
-weight = 3
-prev = "/00-overview/intro/"
+weight = 4
+prev = "/00-overview/company/"
 next = "/01-start"
 +++
 
