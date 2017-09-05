@@ -14,7 +14,7 @@ chapter = true
 
   elastic-job和ddframe关系见下图
 
-  ![ddframe演进图](/img/1.x/ddframe.jpg)
+  ![ddframe演进图](http://ovfotjrsi.bkt.clouddn.com/img/1.x/ddframe.jpg)
 
 **讨论QQ群：**430066234（仅限于讨论与Elastic-Job相关的话题。我们希望您在入群前仔细阅读文档。并在入群后阅读公告以及修改群名片。谢谢合作。）
 

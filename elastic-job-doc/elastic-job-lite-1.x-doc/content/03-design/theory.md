@@ -29,7 +29,7 @@ next = "/00-overview"
 
 ### 概览
 
-![注册中心数据结构](/img/1.x/reg_center.jpg)
+![注册中心数据结构](http://ovfotjrsi.bkt.clouddn.com/img/1.x/reg_center.jpg)
 
 ### config节点
 
@@ -104,8 +104,8 @@ leader节点是内部使用的节点，如果对作业框架原理不感兴趣�
 
 ### 作业启动
 
-![作业启动](/img/1.x/job_start.jpg)
+![作业启动](http://ovfotjrsi.bkt.clouddn.com/img/1.x/job_start.jpg)
 
 ### 作业执行
 
-![作业执行](/img/1.x/job_exec.jpg)
+![作业执行](http://ovfotjrsi.bkt.clouddn.com/img/1.x/job_exec.jpg)

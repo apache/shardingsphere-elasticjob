@@ -63,7 +63,7 @@ dump命令完全参照Zookeeper的四字命令理念
 echo "dump" | nc <任意一台作业服务器IP> 9888
 ```
 
-![dump命令](/img/dump/dump.jpg)
+![dump命令](http://ovfotjrsi.bkt.clouddn.com/img/dump/dump.jpg)
 
 导出至文件
 

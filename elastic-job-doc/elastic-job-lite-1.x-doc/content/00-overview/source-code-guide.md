@@ -15,7 +15,7 @@ next = "/01-start"
 
 首先配置好Eclipse环境，然后双击打开[lombok.jar](https://projectlombok.org/downloads/lombok.jar)文件。
 
-![lombok-eclipse](/img/1.x/lombok-eclipse.jpg)
+![lombok-eclipse](http://ovfotjrsi.bkt.clouddn.com/img/1.x/lombok-eclipse.jpg)
 
 确认Eclipse的安装路径，点击install/update按钮，即可完成安装，最后需要重启Eclipse。
 
@@ -32,7 +32,7 @@ next = "/01-start"
 
 安装完成后可直接使用元注解简化你的POJO。如：
 
-![lombok-pojo](/img/1.x/lombok-pojo.jpg)
+![lombok-pojo](http://ovfotjrsi.bkt.clouddn.com//img/1.x/lombok-pojo.jpg)
 
 ### 其它IDE
 
