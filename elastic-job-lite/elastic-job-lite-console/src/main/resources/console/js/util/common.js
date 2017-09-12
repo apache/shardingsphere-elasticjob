@@ -111,11 +111,7 @@ function switchLanguage() {
  */
 function initLanguage() {
     //获取浏览器语言
-    var lan = navigator.language;
-    if (!lan) {
-        //获取IE浏览器语言
-        currentLang = navigator.browserLanguage;
-    }
+    var lan = (navigator.language || navigator.browserLanguage).toLowerCase();
     if (lan && lan.indexOf('zh') > -1) {
         //切换成中文
         $("#lang-zh").click();
