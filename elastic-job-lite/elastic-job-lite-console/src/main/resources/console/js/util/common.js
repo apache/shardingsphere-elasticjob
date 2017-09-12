@@ -111,8 +111,8 @@ function switchLanguage() {
  */
 function initLanguage() {
     //获取浏览器语言
-    var lan = (navigator.language || navigator.browserLanguage).toLowerCase();
-    if (lan && lan.indexOf('zh') > -1) {
+    var lan = (navigator.language || navigator.browserLanguage);
+    if (lan && lan.toLowerCase().indexOf('zh') > -1) {
         //切换成中文
         $("#lang-zh").click();
     }
