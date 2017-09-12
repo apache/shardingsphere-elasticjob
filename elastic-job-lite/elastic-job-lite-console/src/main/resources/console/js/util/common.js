@@ -105,3 +105,19 @@ function switchLanguage() {
         doLocale();
     });
 }
+
+/**
+ * 根据浏览器语言初始化显示语言
+ */
+function initLanguage() {
+    //获取浏览器语言
+    var lan = navigator.language;
+    if (!lan) {
+        //获取IE浏览器语言
+        currentLang = navigator.browserLanguage;
+    }
+    if (lan && lan.indexOf('zh') > -1) {
+        //切换成中文
+        $("#lang-zh").click();
+    }
+}
