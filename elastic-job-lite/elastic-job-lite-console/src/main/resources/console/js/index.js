@@ -24,4 +24,7 @@ $(function() {
         });
     });
     switchLanguage();
+
+    //初始化显示语言
+    initLanguage();
 });
