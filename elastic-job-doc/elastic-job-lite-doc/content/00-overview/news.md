@@ -11,6 +11,8 @@ chapter = true
 
 # 新闻
 
+* 2017-09 [Mesosphere新闻：Q&A with Zhang Liang of Dangdang: the biggest book seller in China](https://mesosphere.com/blog/qa-dangdang-book-seller-china/?from=timeline&isappinstalled=0)
+
 * 2017-04 [InfoQ新闻：分布式调度中间件Elastic-Job 2.1.0发布：Cloud Native里程碑版本](http://www.infoq.com/cn/news/2017/04/Elastic-Job-2.1.0)
 
 * 2017-03 [源码分析：Elastic-Job项目源码分析系列](http://blog.csdn.net/spy19881201/article/category/6784965)
