@@ -108,7 +108,7 @@ public final class ShardingService {
             blockUntilShardingCompleted();
             return;
         }
-        waitingOtherJobCompleted();
+        waitingOtherShardingItemCompleted();
         LiteJobConfiguration liteJobConfig = configService.load(false);
         int shardingTotalCount = liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount();
         log.debug("Job '{}' sharding begin.", jobName);
@@ -126,7 +126,7 @@ public final class ShardingService {
         }
     }
     
-    private void waitingOtherJobCompleted() {
+    private void waitingOtherShardingItemCompleted() {
         while (executionService.hasRunningItems()) {
             log.debug("Job '{}' sleep short time until other job completed.", jobName);
             BlockUtils.waitingShortTime();
