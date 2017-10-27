@@ -1,0 +1,17 @@
+regCenter:
+  serverList: localhost:6181
+  namespace: elastic-job-lite-springboot
+  
+simpleJob:
+  cron: 0/5 * * * * ?
+  shardingTotalCount: 3
+  shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+  
+dataflowJob:
+  cron: 0/5 * * * * ?
+  shardingTotalCount: 3
+  shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+
+spring:
+  profiles:
+    active: dev
