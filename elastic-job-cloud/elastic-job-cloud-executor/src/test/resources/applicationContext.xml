@@ -4,6 +4,6 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans 
                         http://www.springframework.org/schema/beans/spring-beans.xsd 
                         ">
-    <bean id="testJob" class="com.dangdang.ddframe.job.cloud.executor.fixture.TestJob" />
-    <bean id="testSimpleJob" class="com.dangdang.ddframe.job.cloud.executor.local.fixture.TestSimpleJob" />
+    <bean id="testJob" class="io.elasticjob.cloud.executor.fixture.TestJob" />
+    <bean id="testSimpleJob" class="io.elasticjob.cloud.executor.local.fixture.TestSimpleJob" />
 </beans>

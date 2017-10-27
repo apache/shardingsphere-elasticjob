@@ -341,7 +341,7 @@
                     <configuration>
                         <argLine>-XX:-UseSplitVerifier</argLine>
                         <excludes>
-                            <exclude>com.dangdang.ddframe.job.lite.integrate.**</exclude>
+                            <exclude>io.elasticjob.lite.integrate.**</exclude>
                         </excludes>
                     </configuration>
                 </plugin>

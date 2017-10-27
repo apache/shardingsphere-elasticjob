@@ -19,5 +19,5 @@
         <appender-ref ref="STDOUT" />
     </root>
     
-    <logger name="com.dangdang.ddframe.job.cloud.executor.TaskExecutor" level="OFF" />
+    <logger name="io.elasticjob.cloud.executor.TaskExecutor" level="OFF" />
 </configuration>
