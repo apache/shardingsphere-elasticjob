@@ -49,12 +49,12 @@ Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理�
 
 ## Elastic-Job-Lite
 
-![Elastic-Job-Lite Architecture](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite/img/architecture/elastic_job_lite.png)
+![Elastic-Job-Lite Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_lite.png)
 ***
 
 ## Elastic-Job-Cloud
 
-![Elastic-Job-Cloud Architecture](http://dangdangdotcom.github.io/elastic-job/elastic-job-cloud/img/architecture/elastic_job_cloud.png)
+![Elastic-Job-Cloud Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_cloud.png)
 
 
 # [Release Notes](https://github.com/dangdangdotcom/elastic-job/releases)
