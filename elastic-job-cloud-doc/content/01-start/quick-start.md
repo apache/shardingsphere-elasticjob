@@ -12,7 +12,7 @@ next = "/01-start/faq/"
 ```xml
 <!-- 引入elastic-job-cloud执行器模块 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-cloud-executor</artifactId>
     <version>${latest.release.version}</version>
 </dependency>

@@ -64,14 +64,14 @@ Elastic-Job-Lite也提供最灵活的方式，最大限度的提高执行作业�
 ```xml
 <!-- 引入elastic-job-lite核心模块 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-lite-core</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 
 <!-- 使用springframework自定义命名空间时引入 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>

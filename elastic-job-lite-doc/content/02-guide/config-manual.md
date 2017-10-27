@@ -85,7 +85,7 @@ Spring命名空间与Java Code方式配置类似，大部分属性只是将命�
 
 ```xml
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>

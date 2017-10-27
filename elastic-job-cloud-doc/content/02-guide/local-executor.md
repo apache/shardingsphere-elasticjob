@@ -13,13 +13,13 @@ next = "/03-design"
 
 ## 配置
 
-使用`com.dangdang.ddframe.job.cloud.executor.local.LocalCloudJobConfiguration`配置本地作业。
+使用`io.elasticjob.cloud.executor.local.LocalCloudJobConfiguration`配置本地作业。
 
 ```java
 LocalCloudJobConfiguration config = new LocalCloudJobConfiguration(
     new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("FooJob", "*/2 * * * * ?", 3) //1
         .shardingItemParameters("0=Beijing,1=Shanghai,2=Guangzhou")
-        .jobParameter("dbName=dangdang").build(), "com.dangdang.foo.FooJob"), 
+        .jobParameter("dbName=dangdang").build(), "com.xxx.foo.FooJob"), 
         1,                                                                               //2
         "testSimpleJob" , "applicationContext.xml");                                     //3
 ```
@@ -30,7 +30,7 @@ LocalCloudJobConfiguration config = new LocalCloudJobConfiguration(
 
 ## 运行
 
-使用`com.dangdang.ddframe.job.cloud.executor.local.LocalTaskExecutor`运行作业。
+使用`io.elasticjob.cloud.executor.local.LocalTaskExecutor`运行作业。
 
 ```java
 new LocalTaskExecutor(localJobConfig).execute();

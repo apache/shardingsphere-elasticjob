@@ -100,64 +100,26 @@ Elastic-Job的Spring版本支持从3.1.0.RELEASE至4的任何版本。Spring 5�
 
 ***
 
-### 10. Elastic-Job 2.0.0版本API改动较大，升级时需要注意哪些问题?
-
-回答：
-
-基于扩展性提升，概念明晰和命名规范化的考虑，elastic-job 2.0.0版本决定抛弃原有包袱的束缚，重新定义了JAVA API，Spring命名空间并且删除了已废弃的API。
-
-**重新定义JAVA API**
-
-* 配置分为Core, Type和Root3个层级，使用类装饰者模式创建。
-
-* 作业从继承抽象类改为接口化，提供SimpleJob, DataflowJob和ScriptJob接口。
-
-* DataflowJob作业类型简化，去除批量和逐条处理分别，统一使用批量处理，THROUGHPUT和SEQUENCE作业不再提供单独接口，而是统一通过配置方式实现。
-
-**重新定义Spring命名空间**
-
-* 删除`<job:bean>`，细化为`<job:simple>, <job:dataflow>, <job:script>`具体类型。
-
-* Spring命名空间属性由驼峰式修正为Spring命名空间标准命名规范(多单词以-分隔)。
-
-* 作业的Spring命名空间属性regCenter变更为registry-center-ref。
-
-**删除非核心功能**
-
-* 删除offset功能。
-
-* 删除n分钟内正确错误数量统计功能，未来由更加全面的作业事件追踪功能替换。
-
-* 删除内嵌的Zookeeper注册中心，改为在example启动时开启内嵌注册中心，而非在Elastic-Job的核心代码中开启。
-
-**废弃过时API**
-
-* 删除废弃作业类，包括AbstractOneOffElasticJob，AbstractPerpetualElasticJob和AbstractSequencePerpetualElasticJob。
-
-* 删除废弃作业调度器类，包括com.dangdang.ddframe.job.schedule.JobController和com.dangdang.ddframe.job.spring.schedule.SpringJobController。
-
-* 不再支持非Spring命名空间通过xml方式配置bean，如有需要请使用Spring Java Config。
-
-### 11. Elastic-Job 2.1.0版本支持单节点运行多个相同的作业实例，是否兼容原来的数据结构?
+### 10. Elastic-Job 2.1.0版本支持单节点运行多个相同的作业实例，是否兼容原来的数据结构?
 
 回答：
 
 是的。新Elastic-Job Lite的数据结构和原有结构完全兼容。
 
-### 12. 界面Console无法正常显示?
+### 11. 界面Console无法正常显示?
 
 回答：
 
 使用Web Console时应确保与Elastic-Job相关jar包版本保持一致，否则会导致不可用。
 
-### 13. 作业与注册中心无法通信会如何?
+### 12. 作业与注册中心无法通信会如何?
 
 回答：
 
 为了保证作业的在分布式场景下的一致性，一旦作业与注册中心无法通信，运行中的作业会立刻停止执行，但作业的进程不会退出，这样做的目的是为了防止作业重分片时，将与注册中心失去联系的节点执行的分片分配给另外节点，导致同一分片在两个节点中同时执行。
 当作业节点恢复与注册中心联系时，将重新参与分片并恢复执行新的分配到的分片。
 
-### 14. 为什么界面Console中的作业状态是分片待调整?
+### 13. 为什么界面Console中的作业状态是分片待调整?
 
 回答：
 

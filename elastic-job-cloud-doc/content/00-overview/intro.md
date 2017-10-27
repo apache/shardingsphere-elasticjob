@@ -62,7 +62,7 @@ Elastic-Job-Cloud分为2种作业运行模式：瞬时作业 和 常驻作业。
 ```xml
 <!-- 引入elastic-job-cloud执行器模块 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-cloud-executor</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
