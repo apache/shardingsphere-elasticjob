@@ -70,14 +70,14 @@ Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理�
 ```xml
 <!-- 引入elastic-job-lite核心模块 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-lite-core</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 
 <!-- 使用springframework自定义命名空间时引入 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
@@ -137,7 +137,7 @@ public class MyElasticJob implements SimpleJob {
 ```xml
 <!-- 引入elastic-job-cloud执行器模块 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-cloud-executor</artifactId>
     <version>${latest.release.version}</version>
 </dependency>

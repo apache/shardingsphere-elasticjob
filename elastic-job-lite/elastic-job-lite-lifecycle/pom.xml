@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>elastic-job-lite</artifactId>
-        <groupId>com.dangdang</groupId>
+        <groupId>io.elasticjob</groupId>
         <version>2.1.6-SNAPSHOT</version>
     </parent>
     <artifactId>elastic-job-lite-lifecycle</artifactId>
@@ -11,12 +11,12 @@
     
     <dependencies>
         <dependency>
-            <groupId>com.dangdang</groupId>
+            <groupId>io.elasticjob</groupId>
             <artifactId>elastic-job-common-restful</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.dangdang</groupId>
+            <groupId>io.elasticjob</groupId>
             <artifactId>elastic-job-lite-core</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
