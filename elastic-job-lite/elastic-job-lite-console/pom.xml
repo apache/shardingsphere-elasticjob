@@ -3,7 +3,7 @@
     <parent>
         <groupId>io.elasticjob</groupId>
         <artifactId>elastic-job-lite</artifactId>
-        <version>2.1.6-SNAPSHOT</version>
+        <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
     <artifactId>elastic-job-lite-console</artifactId>
     <packaging>jar</packaging>

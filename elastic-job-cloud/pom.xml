@@ -4,7 +4,7 @@
     <parent>
         <artifactId>elastic-job</artifactId>
         <groupId>io.elasticjob</groupId>
-        <version>2.1.6-SNAPSHOT</version>
+        <version>3.0.0.M1-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
     <artifactId>elastic-job-cloud</artifactId>
