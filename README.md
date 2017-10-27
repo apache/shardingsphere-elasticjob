@@ -1,18 +1,18 @@
 # Elastic-Job - distributed scheduled job solution
 
-[![Build Status](https://secure.travis-ci.org/dangdangdotcom/elastic-job.png?branch=master)](https://travis-ci.org/dangdangdotcom/elastic-job)
+[![Build Status](https://secure.travis-ci.org/elasticjob/elastic-job.png?branch=master)](https://travis-ci.org/elasticjob/elastic-job)
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
-[![Coverage Status](https://coveralls.io/repos/dangdangdotcom/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/dangdangdotcom/elastic-job?branch=master)
-[![GitHub release](https://img.shields.io/github/release/dangdangdotcom/elastic-job.svg)](https://github.com/dangdangdotcom/elastic-job/releases)
-[![Hex.pm](http://dangdangdotcom.github.io/elastic-job/elastic-job-lite/img/license.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Coverage Status](https://coveralls.io/repos/elasticjob/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/elasticjob/elastic-job?branch=master)
+[![GitHub release](https://img.shields.io/github/release/elasticjob/elastic-job.svg)](https://github.com/elasticjob/elastic-job/releases)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 # [Homepage](http://elasticjob.io/)
 
 # [中文主页](http://elasticjob.io/index_zh.html)
 
-# Elastic-Job-Lite Console [![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://dangdangdotcom.github.io/elastic-job/elastic-job-lite/dist/elastic-job-lite-console-2.1.4.tar.gz)
+# Elastic-Job-Lite Console [![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://elasticjob.io/elastic-job/elastic-job-lite/dist/elastic-job-lite-console-2.1.4.tar.gz)
 
-# Elastic-Job-Cloud Framework[![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://dangdangdotcom.github.io/elastic-job/elastic-job-cloud/dist/elastic-job-cloud-scheduler-2.1.4.tar.gz)
+# Elastic-Job-Cloud Framework[![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://elasticjob.io/elastic-job/elastic-job-cloud/dist/elastic-job-cloud-scheduler-2.1.4.tar.gz)
 
 # Overview
 
@@ -57,7 +57,7 @@ Elastic-Job-Lite and Elastic-Job-Cloud provide unified API. Developers only need
 ![Elastic-Job-Cloud Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_cloud.png)
 
 
-# [Release Notes](https://github.com/dangdangdotcom/elastic-job/releases)
+# [Release Notes](https://github.com/elasticjob/elastic-job/releases)
 
 # [Roadmap](ROADMAP.md)
 

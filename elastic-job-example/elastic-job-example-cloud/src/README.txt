@@ -18,7 +18,7 @@ curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jo
 2. Spring启动方式作业注册
 curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appName":"foo_app","failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/register
 
-参数详细配置请见：http://dangdangdotcom.github.io/elastic-job/elastic-job-cloud/02-guide/cloud-restful-api/
+参数详细配置请见：http://elasticjob.io/elastic-job/elastic-job-cloud/02-guide/cloud-restful-api/
 
 
 注册demo作业的快捷命令:

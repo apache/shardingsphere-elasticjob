@@ -623,7 +623,7 @@
         </repository>
     </repositories>
     
-    <url>https://github.com/dangdangdotcom/elastic-job</url>
+    <url>https://github.com/elasticjob/elastic-job</url>
     <licenses> 
         <license>
             <name>Apache License 2.0</name>
@@ -633,9 +633,9 @@
     </licenses>
     
     <scm>
-        <connection>scm:git:https://github.com/terrymanu/dangdangdotcom/elastic-job.git</connection>
-        <developerConnection>scm:git:git@github.com:terrymanu/dangdangdotcom/elastic-job.git</developerConnection>
-        <url>https://github.com/terrymanu/dangdangdotcom/elastic-job</url>
+        <connection>scm:git:https://github.com/elasticjob/elastic-job.git</connection>
+        <developerConnection>scm:git:git@github.com:elasticjob/elastic-job.git</developerConnection>
+        <url>https://github.com/elasticjob/elastic-job</url>
     </scm>
     
     <mailingLists>
