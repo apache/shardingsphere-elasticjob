@@ -74,8 +74,6 @@ url：job/register
 |shardingTotalCount                  |int    |是      |       | 作业分片总数                                                                       |
 |cpuCount                            |double |是      |       | 单片作业所需要的CPU数量，最小值为0.001                                                |
 |memoryMB                            |double |是      |       | 单片作业所需要的内存MB，最小值为1                                                     |
-|appURL                              |String |是      |       | 应用所在路径。必须是可以通过网络访问到的路径                                            |
-|bootstrapScript                     |String |是      |       | 启动脚本，如：bin\start.sh。                                                        |
 |shardingItemParameters              |String |否      |       | 分片序列号和参数用等号分隔，多个键值对用逗号分隔<br />分片序列号从0开始，不可大于或等于作业分片总数<br />如：<br/>0=a,1=b,2=c|
 |jobParameter                        |String |否      |       | 作业自定义参数<br />作业自定义参数，可通过传递该参数为作业调度的业务方法传参，用于实现带参数的作业<br />例：每次获取的数据量、作业实例从数据库读取的主键等 |
 |failover                            |boolean|否      |false  | 是否开启失效转移，开启表示如果作业在一次任务执行中途宕机，允许将该次未完成的任务在另一作业节点上补偿执行 |
@@ -94,13 +92,13 @@ url：job/register
 **Java启动方式作业注册**
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_host:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/register
 ```
 
 **Spring启动方式作业注册**
 
 ```shell
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://file_host:8080/foo-job.tar.gz","failover":false,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_masterhost:8899/api/job/register
+curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","beanName":"yourBeanName","applicationContext":"applicationContext.xml","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"failover":false,"misfire":true}' http://elastic_job_cloud_masterhost:8899/api/job/register
 ```
 
 ### 修改作业配置
@@ -115,7 +113,7 @@ url：job/update
 
 ```shell
 curl -l -H "Content-type: application/json" -X PUT -d 
-'{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appURL":"http://app_host:8080/foo-job.tar.gz","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_host:8899/api/job/update
+'{"jobName":"foo_job","appName":"foo_app","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"failover":true,"misfire":true}' http://elastic_job_cloud_host:8899/api/job/update
 ```
 
 ### 注销作业
