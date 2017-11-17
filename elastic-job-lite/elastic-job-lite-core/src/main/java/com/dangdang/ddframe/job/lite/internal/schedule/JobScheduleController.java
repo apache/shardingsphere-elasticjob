@@ -117,17 +117,28 @@ public final class JobScheduleController {
         }
     }
     
-    /**
+       /**
      * 立刻启动作业.
      */
     public synchronized void triggerJob() {
         try {
             if (!scheduler.isShutdown()) {
-                scheduler.triggerJob(jobDetail.getKey());
+            	JobDetail jobDetailInQuartz = scheduler.getJobDetail(jobDetail.getKey());
+            	if(jobDetailInQuartz==null){//说明job被quartz删除,用SimpleScheduleBuilder创建一个job临时执行
+            		scheduler.scheduleJob(jobDetail, createSimpleTrigger());
+            		scheduler.start();
+            	}else
+            		scheduler.triggerJob(jobDetail.getKey());
             }
         } catch (final SchedulerException ex) {
             throw new JobSystemException(ex);
         }
+    }
+    
+    private SimpleTrigger createSimpleTrigger() {
+        return TriggerBuilder.newTrigger().withIdentity(triggerIdentity).withSchedule(SimpleScheduleBuilder.simpleSchedule()
+                .withIntervalInMilliseconds(1)
+                .withRepeatCount(0)).build();
     }
     
     /**
