@@ -40,7 +40,7 @@ public final class JobExecutionEvent implements JobEvent {
     
     private String id = UUID.randomUUID().toString();
     
-    private String hostname = getHostName();
+    private String hostname = getLocalHostName();
     
     private String ip = IpUtils.getIp();
     
@@ -108,7 +108,7 @@ public final class JobExecutionEvent implements JobEvent {
      * 获取本机Host名称
      * @return
      */
-	private static String getHostName() {
+	private static String getLocalHostName() {
 		try {
 			return IpUtils.getHostName();
 		} catch (Exception e) {
