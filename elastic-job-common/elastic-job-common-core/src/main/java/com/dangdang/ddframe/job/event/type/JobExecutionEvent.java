@@ -40,7 +40,7 @@ public final class JobExecutionEvent implements JobEvent {
     
     private String id = UUID.randomUUID().toString();
     
-    private String hostname = IpUtils.getHostName();
+    private String hostname = getLocalHostName();
     
     private String ip = IpUtils.getIp();
     
@@ -103,4 +103,19 @@ public final class JobExecutionEvent implements JobEvent {
     public enum ExecutionSource {
         NORMAL_TRIGGER, MISFIRE, FAILOVER
     }
+    
+    /**
+     * 获取本机Host名称
+     * @return
+     */
+	private static String getLocalHostName() {
+		try {
+			return IpUtils.getHostName();
+		} catch (Exception e) {
+			//当项目部署在docker中，如果docker与宿主机的网络通过桥接的方式，该方法可能会抛异常：解析域名暂时失败
+			//为了不影响Job的执行，此处只打印异常，不抛出异常
+			e.printStackTrace();
+		}
+		return "";
+	}
 }
