@@ -162,7 +162,7 @@ final class JobEventRdbStorage {
     
     private boolean insertJobExecutionEvent(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
+        String sql = "REPLACE INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
                 Connection conn = dataSource.getConnection();
@@ -215,7 +215,7 @@ final class JobEventRdbStorage {
     
     private boolean insertJobExecutionEventWhenSuccess(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`, `complete_time`) "
+        String sql = "REPLACE INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `is_success`, `start_time`, `complete_time`) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
                 Connection conn = dataSource.getConnection();
@@ -265,7 +265,7 @@ final class JobEventRdbStorage {
     
     private boolean insertJobExecutionEventWhenFailure(final JobExecutionEvent jobExecutionEvent) {
         boolean result = false;
-        String sql = "INSERT INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `failure_cause`, `is_success`, `start_time`) "
+        String sql = "REPLACE INTO `" + TABLE_JOB_EXECUTION_LOG + "` (`id`, `job_name`, `task_id`, `hostname`, `ip`, `sharding_item`, `execution_source`, `failure_cause`, `is_success`, `start_time`) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (
                 Connection conn = dataSource.getConnection();
