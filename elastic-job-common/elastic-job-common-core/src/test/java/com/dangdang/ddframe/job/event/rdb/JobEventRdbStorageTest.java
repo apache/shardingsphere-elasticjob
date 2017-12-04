@@ -27,22 +27,24 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 public class JobEventRdbStorageTest {
-    
+
+    BasicDataSource dataSource;
     private JobEventRdbStorage storage;
     
     @Before
     public void setup() throws SQLException {
-        BasicDataSource dataSource = new BasicDataSource();
+        dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");
         dataSource.setUsername("sa");
@@ -110,7 +112,16 @@ public class JobEventRdbStorageTest {
         JobExecutionEvent startEvent = new JobExecutionEvent("fake_task_id", "test_job", ExecutionSource.NORMAL_TRIGGER, 0);
         JobExecutionEvent successEvent = startEvent.executionSuccess();
         assertTrue(storage.addJobExecutionEvent(successEvent));
-        assertFalse(storage.addJobExecutionEvent(startEvent));
+        //改成Replace后，都会成功，并且各自的字段更新都应用到了数据库中
+        assertTrue(storage.addJobExecutionEvent(startEvent));
+        Connection conn= DriverManager.getConnection("jdbc:h2:mem:job_event_storage", "sa", "");
+        Statement stmt=conn.createStatement();
+        ResultSet resultSet = stmt.executeQuery("Select * from JOB_EXECUTION_LOG where task_id = 'fake_task_id'");
+        while(resultSet.next())
+        {
+            assertNotNull(resultSet.getTimestamp("start_time"));
+            assertNotNull(resultSet.getTimestamp("complete_time"));
+        }
     }
     
     @Test
@@ -119,7 +130,7 @@ public class JobEventRdbStorageTest {
         JobExecutionEvent failureEvent = startEvent.executionFailure(new RuntimeException("failure"));
         assertTrue(storage.addJobExecutionEvent(failureEvent));
         assertThat(failureEvent.getFailureCause(), startsWith("java.lang.RuntimeException: failure"));
-        assertFalse(storage.addJobExecutionEvent(startEvent));
+        assertTrue(storage.addJobExecutionEvent(startEvent));
     }
     
     @Test
