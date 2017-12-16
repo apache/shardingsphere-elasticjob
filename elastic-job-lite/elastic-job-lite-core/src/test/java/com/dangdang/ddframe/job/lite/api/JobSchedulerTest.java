@@ -79,7 +79,7 @@ public final class JobSchedulerTest {
         assertTrue(scheduler.isStarted());
     }
 	
-	@Test
+    @Test
     public void assertInitForClassLoader() throws NoSuchFieldException, SchedulerException {
         when(schedulerFacade.updateJobConfiguration(liteJobConfig)).thenReturn(liteJobConfig);
         when(schedulerFacade.newJobTriggerListener()).thenReturn(new JobTriggerListener(null, null));
