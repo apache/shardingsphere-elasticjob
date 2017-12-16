@@ -105,13 +105,26 @@ public class JobScheduler {
         LiteJobConfiguration liteJobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(liteJobConfig);
         JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCenter.getJobName(), liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());
         JobScheduleController jobScheduleController = new JobScheduleController(
-                createScheduler(), createJobDetail(liteJobConfigFromRegCenter.getTypeConfig().getJobClass()), liteJobConfigFromRegCenter.getJobName());
+                createScheduler(), createJobDetail(liteJobConfigFromRegCenter.getTypeConfig().getJobClass(),null), liteJobConfigFromRegCenter.getJobName());
+        JobRegistry.getInstance().registerJob(liteJobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);
+        schedulerFacade.registerStartUpInfo(!liteJobConfigFromRegCenter.isDisabled());
+        jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
+    }
+	
+	/**
+     * 初始化作业.
+     */
+    public void init(final ClassLoader cl) {
+        LiteJobConfiguration liteJobConfigFromRegCenter = schedulerFacade.updateJobConfiguration(liteJobConfig);
+        JobRegistry.getInstance().setCurrentShardingTotalCount(liteJobConfigFromRegCenter.getJobName(), liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getShardingTotalCount());
+        JobScheduleController jobScheduleController = new JobScheduleController(
+                createScheduler(), createJobDetail(liteJobConfigFromRegCenter.getTypeConfig().getJobClass(),cl), liteJobConfigFromRegCenter.getJobName());
         JobRegistry.getInstance().registerJob(liteJobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);
         schedulerFacade.registerStartUpInfo(!liteJobConfigFromRegCenter.isDisabled());
         jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
     }
     
-    private JobDetail createJobDetail(final String jobClass) {
+    private JobDetail createJobDetail(final String jobClass,final ClassLoader cl) {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
         Optional<ElasticJob> elasticJobInstance = createElasticJobInstance();
@@ -119,7 +132,7 @@ public class JobScheduler {
             result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance.get());
         } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
             try {
-                result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
+                result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass,true,null == cl ? JobScheduler.class.getClassLoader() : cl).newInstance());
             } catch (final ReflectiveOperationException ex) {
                 throw new JobConfigurationException("Elastic-Job: Job class '%s' can not initialize.", jobClass);
             }
