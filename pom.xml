@@ -2,15 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.elasticjob</groupId>
-    <artifactId>elastic-job</artifactId>
+    <artifactId>elastic-job-lite</artifactId>
     <version>3.0.0.M1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Elastic-Job - distributed scheduled job solution</description>
     
     <modules>
-        <module>elastic-job-common</module>
-        <module>elastic-job-lite</module>
+        <module>elastic-job-lite-core</module>
+        <module>elastic-job-lite-spring</module>
+        <module>elastic-job-lite-lifecycle</module>
+        <module>elastic-job-lite-console</module>
     </modules>
     
     <properties>
