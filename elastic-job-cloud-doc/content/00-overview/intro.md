@@ -53,7 +53,7 @@ Elastic-Job-Cloud分为2种作业运行模式：瞬时作业 和 常驻作业。
 
 # 整体架构图
 
-![Elastic-Job-Cloud Architecture](/img/architecture/elastic_job_cloud.png)
+![Elastic-Job-Cloud Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_cloud.png)
 
 # 快速入门
 
