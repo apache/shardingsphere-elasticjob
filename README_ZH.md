@@ -1,7 +1,8 @@
 # Elastic-Job - 分布式作业调度解决方案
 
-[![Build Status](https://secure.travis-ci.org/elasticjob/elastic-job.png?branch=master)](https://travis-ci.org/elasticjob/elastic-job)
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job)
+[![Build Status](https://secure.travis-ci.org/elasticjob/elastic-job-lite.png?branch=master)](https://travis-ci.org/elasticjob/elastic-job-lite)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-lite/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-lite)
+[![Gitter](https://badges.gitter.im/Elastic-JOB/elastic-job-lite.svg)](https://gitter.im/Elastic-JOB/elasticjob?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Coverage Status](https://coveralls.io/repos/elasticjob/elastic-job/badge.svg?branch=master&service=github)](https://coveralls.io/github/elasticjob/elastic-job?branch=master)
 [![GitHub release](https://img.shields.io/github/release/elasticjob/elastic-job.svg)](https://github.com/elasticjob/elastic-job/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
@@ -12,11 +13,7 @@ Elastic-Job是一个分布式调度解决方案，由两个相互独立的子项
 
 Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形式提供分布式任务的协调服务。
 
-Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理、应用分发以及进程隔离等服务。
-
 # 功能列表
-
-## 1. Elastic-Job-Lite
 
 * 分布式调度协调
 * 弹性扩容缩容
@@ -30,31 +27,11 @@ Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理�
 * Spring整合以及命名空间提供
 * 运维平台
 
-## 2. Elastic-Job-Cloud
-* 应用自动分发
-* 基于Fenzo的弹性资源分配
-* 分布式调度协调
-* 弹性扩容缩容
-* 失效转移
-* 错过执行作业重触发
-* 作业分片一致性，保证同一分片在分布式环境中仅一个执行实例
-* 支持并行调度
-* 支持作业生命周期操作
-* 丰富的作业类型
-* Spring整合
-* 运维平台
-* 基于Docker的进程隔离(TBD)
-
 # 架构图
 
 ## Elastic-Job-Lite
 
 ![Elastic-Job-Lite Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_lite.png)
-***
-
-## Elastic-Job-Cloud
-
-![Elastic-Job-Cloud Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_cloud.png)
 
 
 # [Release Notes](https://github.com/elasticjob/elastic-job/releases)
@@ -63,26 +40,25 @@ Elastic-Job-Cloud使用Mesos + Docker的解决方案，额外提供资源治理�
 
 # 快速入门
 
-## Elastic-Job-Lite
-
-### 引入maven依赖
+## 引入maven依赖
 
 ```xml
 <!-- 引入elastic-job-lite核心模块 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-lite-core</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 
 <!-- 使用springframework自定义命名空间时引入 -->
 <dependency>
-    <groupId>com.dangdang</groupId>
+    <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-lite-spring</artifactId>
     <version>${latest.release.version}</version>
 </dependency>
 ```
-### 作业开发
+
+## 作业开发
 
 ```java
 public class MyElasticJob implements SimpleJob {
@@ -105,7 +81,7 @@ public class MyElasticJob implements SimpleJob {
 }
 ```
 
-### 作业配置
+## 作业配置
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -126,57 +102,4 @@ public class MyElasticJob implements SimpleJob {
     <!-- 配置作业-->
     <job:simple id="oneOffElasticJob" class="xxx.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
 </beans>
-```
-
-***
-
-## Elastic-Job-Cloud
-
-### 引入maven依赖
-
-```xml
-<!-- 引入elastic-job-cloud执行器模块 -->
-<dependency>
-    <groupId>com.dangdang</groupId>
-    <artifactId>elastic-job-cloud-executor</artifactId>
-    <version>${latest.release.version}</version>
-</dependency>
-```
-
-### 作业开发
-
-```java
-public class MyElasticJob implements SimpleJob {
-    
-    @Override
-    public void execute(ShardingContext context) {
-        switch (context.getShardingItem()) {
-            case 0: 
-                // do something by sharding item 0
-                break;
-            case 1: 
-                // do something by sharding item 1
-                break;
-            case 2: 
-                // do something by sharding item 2
-                break;
-            // case n: ...
-        }
-    }
-}
-```
-
-### 打包作业
-tar -cvf yourJobs.tar.gz yourJobs
-
-### 发布APP
-
-```shell
-curl -l -H "Content-type: application/json" -X POST -d '{"appName":"foo_app","appURL":"http://app_host:8080/yourJobs.gz","cpuCount":0.1,"memoryMB":64.0,"bootstrapScript":"bin/start.sh","appCacheEnable":true,"eventTraceSamplingCount":0}' http://elastic_job_cloud_host:8899/api/app
-```
-
-### 发布作业
-
-```shell
-curl -l -H "Content-type: application/json" -X POST -d '{"jobName":"foo_job","jobClass":"yourJobClass","jobType":"SIMPLE","jobExecutionType":"TRANSIENT","cron":"0/5 * * * * ?","shardingTotalCount":5,"cpuCount":0.1,"memoryMB":64.0,"appName":"foo_app","failover":true,"misfire":true,"bootstrapScript":"bin/start.sh"}' http://elastic_job_cloud_host:8899/api/job/register
 ```
