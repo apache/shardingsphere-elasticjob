@@ -22,7 +22,7 @@ import io.elasticjob.lite.event.type.JobExecutionEvent;
 import io.elasticjob.lite.event.type.JobStatusTraceEvent;
 import io.elasticjob.lite.event.type.JobStatusTraceEvent.Source;
 import io.elasticjob.lite.event.type.JobStatusTraceEvent.State;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 

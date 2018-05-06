@@ -18,7 +18,7 @@
 package io.elasticjob.lite.event.rdb;
 
 import io.elasticjob.lite.event.JobEventListenerConfigurationException;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;

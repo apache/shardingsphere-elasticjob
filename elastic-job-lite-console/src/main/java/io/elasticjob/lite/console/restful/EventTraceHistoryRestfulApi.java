@@ -25,7 +25,6 @@ import io.elasticjob.lite.console.util.SessionEventTraceDataSourceConfiguration;
 import io.elasticjob.lite.event.rdb.JobEventRdbSearch;
 import io.elasticjob.lite.event.type.JobExecutionEvent;
 import io.elasticjob.lite.event.type.JobStatusTraceEvent;
-import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
@@ -41,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
  * 事件追踪历史记录的RESTful API.

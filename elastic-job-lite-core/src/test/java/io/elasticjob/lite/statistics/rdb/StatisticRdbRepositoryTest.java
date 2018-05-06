@@ -23,7 +23,7 @@ import io.elasticjob.lite.statistics.type.job.JobRegisterStatistics;
 import io.elasticjob.lite.statistics.type.job.JobRunningStatistics;
 import io.elasticjob.lite.statistics.type.task.TaskResultStatistics;
 import io.elasticjob.lite.statistics.type.task.TaskRunningStatistics;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
