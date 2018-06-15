@@ -15,15 +15,15 @@
  * </p>
  */
 
-package io.elasticjob.lite.internal.failover;
+package com.dangdang.ddframe.job.lite.internal.failover;
 
-import io.elasticjob.lite.internal.schedule.JobRegistry;
-import io.elasticjob.lite.internal.schedule.JobScheduleController;
-import io.elasticjob.lite.internal.sharding.ShardingNode;
-import io.elasticjob.lite.internal.sharding.ShardingService;
-import io.elasticjob.lite.internal.storage.JobNodeStorage;
-import io.elasticjob.lite.internal.storage.LeaderExecutionCallback;
-import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
+import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingNode;
+import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
+import com.dangdang.ddframe.job.lite.internal.storage.JobNodeStorage;
+import com.dangdang.ddframe.job.lite.internal.storage.LeaderExecutionCallback;
+import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -152,7 +152,7 @@ public final class FailoverService {
         
         @Override
         public void execute() {
-            if (JobRegistry.getInstance().isShutdown(jobName) || !needFailover()) {
+            if (JobRegistry.getInstance().isShutdown(jobName) || !JobRegistry.getInstance().isJobRunning(jobName) || !needFailover()) {
                 return;
             }
             int crashedItem = Integer.parseInt(jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).get(0));
