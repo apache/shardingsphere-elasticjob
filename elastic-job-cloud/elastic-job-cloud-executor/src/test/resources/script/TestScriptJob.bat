@@ -1,1 +1,0 @@
-@echo sharding context is %*

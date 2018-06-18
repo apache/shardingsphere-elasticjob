@@ -1,3 +1,0 @@
-baseurl = "http://elasticjob.io/docs/elastic-job-lite"
-canonifyurls = true
-theme = "hugo-theme-learn"

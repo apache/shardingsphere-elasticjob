@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:reg="http://www.dangdang.com/schema/ddframe/reg" 
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd 
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context.xsd 
+                        http://www.dangdang.com/schema/ddframe/reg 
+                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd 
+                        ">
+    <context:property-placeholder location="classpath:conf/reg/conf.properties" ignore-unresolvable="true" />
+    <reg:zookeeper id="regCenter1" server-lists="${regCenter1.serverLists}" namespace="${regCenter1.namespace}" base-sleep-time-milliseconds="${regCenter1.baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${regCenter1.maxSleepTimeMilliseconds}" max-retries="${regCenter1.maxRetries}" />
+    <reg:zookeeper id="regCenter2" server-lists="${regCenter2.serverLists}" namespace="${regCenter2.namespace}" base-sleep-time-milliseconds="${regCenter2.baseSleepTimeMilliseconds}" max-sleep-time-milliseconds="${regCenter2.maxSleepTimeMilliseconds}" max-retries="${regCenter2.maxRetries}" session-timeout-milliseconds="${regCenter2.sessionTimeoutMilliseconds}" connection-timeout-milliseconds="${regCenter2.connectionTimeoutMilliseconds}" digest="${regCenter2.digest}" />
+</beans>

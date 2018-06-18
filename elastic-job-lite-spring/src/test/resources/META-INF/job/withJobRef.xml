@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.dangdang.com/schema/ddframe/job 
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd 
+                        ">
+    <import resource="base.xml"/>
+    <bean id="refSimpleJob" class="io.elasticjob.lite.spring.fixture.job.ref.RefFooSimpleElasticJob">
+        <property name="fooService" ref="foo"/>
+    </bean>
+    <bean id="refDataflowJob" class="io.elasticjob.lite.spring.fixture.job.ref.RefFooDataflowElasticJob">
+        <property name="fooService" ref="foo"/>
+    </bean>
+    <job:simple id="simpleElasticJob_job_ref" job-ref="refSimpleJob" registry-center-ref="regCenter" cron="${simpleJob.cron}" sharding-total-count="${simpleJob.shardingTotalCount}" sharding-item-parameters="${simpleJob.shardingItemParameters}" disabled="${simpleJob.disabled}" overwrite="${simpleJob.overwrite}" executor-service-handler="io.elasticjob.lite.spring.fixture.handler.SimpleExecutorServiceHandler" />
+    <job:dataflow id="dataflowElasticJob_job_ref" job-ref="refDataflowJob" registry-center-ref="regCenter" cron="${dataflowJob.cron}" sharding-total-count="${dataflowJob.shardingTotalCount}" sharding-item-parameters="${dataflowJob.shardingItemParameters}" overwrite="${dataflowJob.overwrite}" streaming-process="${dataflowJob.streamingProcess}" />
+</beans>
