@@ -1,12 +1,12 @@
-package com.dangdang.ddframe.job.lite.internal.listener;
+package io.elasticjob.lite.internal.listener;
 
-import com.dangdang.ddframe.job.lite.internal.sharding.ExecutionService;
-import com.dangdang.ddframe.job.lite.internal.instance.InstanceService;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.lite.internal.server.ServerService;
-import com.dangdang.ddframe.job.lite.internal.sharding.ShardingService;
-import com.dangdang.ddframe.job.reg.base.CoordinatorRegistryCenter;
+import io.elasticjob.lite.internal.sharding.ExecutionService;
+import io.elasticjob.lite.internal.instance.InstanceService;
+import io.elasticjob.lite.internal.schedule.JobRegistry;
+import io.elasticjob.lite.internal.schedule.JobScheduleController;
+import io.elasticjob.lite.internal.server.ServerService;
+import io.elasticjob.lite.internal.sharding.ShardingService;
+import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
@@ -38,7 +38,7 @@ public final class RegistryCenterConnectionStateListener implements ConnectionSt
     
     @Override
     public void stateChanged(final CuratorFramework client, final ConnectionState newState) {
-        if (JobRegistry.getInstance().isShutdown(jobName) || !JobRegistry.getInstance().isJobRunning(jobName)) {
+        if (JobRegistry.getInstance().isShutdown(jobName)) {
             return;
         }
         JobScheduleController jobScheduleController = JobRegistry.getInstance().getJobScheduleController(jobName);
