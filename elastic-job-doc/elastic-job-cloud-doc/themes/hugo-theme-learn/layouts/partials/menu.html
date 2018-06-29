@@ -3,9 +3,6 @@
     <div id="header">
       {{ partial "logo.html" . }}
     </div>
-    {{ if .Site.Params.search }}
-        {{ partial "search.html" . }}
-    {{ end }}
 </div>
 
 
@@ -80,8 +77,5 @@
      {{ if .Site.Params.showVisitedLinks}}
      <a class="padding" href="#" data-clear-history-toggle=""><i class="fa fa-fw fa-history"></i> Clear History</a>
      {{ end }}
-    <section id="footer">
-      {{ partial "menu-footer.html" . }}
-    </section>
   </div>
 </nav>

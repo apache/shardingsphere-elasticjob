@@ -34,7 +34,7 @@ next = "/02-guide/job-listener/"
                         http://www.dangdang.com/schema/ddframe/job/job.xsd 
                         ">
     <!--配置作业注册中心 -->
-    <reg:zookeeper id="regCenter" server-lists=" yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
+    <reg:zookeeper id="regCenter" server-lists="yourhost:2181" namespace="dd-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
     
     <!-- 配置作业-->
     <job:simple id="oneOffElasticJob" monitor-port="9888" class="xxx.MyElasticJob" registry-center-ref="regCenter" cron="0/10 * * * * ?"   sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C" />
@@ -63,7 +63,7 @@ dump命令完全参照Zookeeper的四字命令理念
 echo "dump" | nc <任意一台作业服务器IP> 9888
 ```
 
-![dump命令](/img/dump/dump.jpg)
+![dump命令](http://ovfotjrsi.bkt.clouddn.com/img/dump/dump.jpg)
 
 导出至文件
 

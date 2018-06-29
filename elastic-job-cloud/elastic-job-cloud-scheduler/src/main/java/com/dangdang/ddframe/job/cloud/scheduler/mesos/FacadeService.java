@@ -172,10 +172,17 @@ public final class FacadeService {
         if (!jobConfigOptional.isPresent()) {
             return;
         }
+        if (isDisable(jobConfigOptional.get())) {
+            return;
+        }
         CloudJobConfiguration jobConfig = jobConfigOptional.get();
         if (jobConfig.getTypeConfig().getCoreConfig().isFailover() || CloudJobExecutionType.DAEMON == jobConfig.getJobExecutionType()) {
             failoverService.add(taskContext);
         }
+    }
+    
+    private boolean isDisable(final CloudJobConfiguration jobConfiguration) {
+        return disableAppService.isDisabled(jobConfiguration.getAppName()) || disableJobService.isDisabled(jobConfiguration.getJobName());
     }
     
     /**
@@ -223,6 +230,13 @@ public final class FacadeService {
      * @param jobName 作业名称
      */
     public void addDaemonJobToReadyQueue(final String jobName) {
+        Optional<CloudJobConfiguration> jobConfigOptional = jobConfigService.load(jobName);
+        if (!jobConfigOptional.isPresent()) {
+            return;
+        }
+        if (isDisable(jobConfigOptional.get())) {
+            return;
+        }
         readyService.addDaemon(jobName);
     }
     

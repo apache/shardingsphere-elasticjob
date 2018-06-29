@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dangdang</groupId>
     <artifactId>elastic-job</artifactId>
-    <version>2.1.4</version>
+    <version>2.1.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Elastic-Job - distributed scheduled job solution</description>
@@ -623,7 +623,7 @@
         </repository>
     </repositories>
     
-    <url>https://github.com/dangdangdotcom/elastic-job</url>
+    <url>https://github.com/elasticjob/elastic-job</url>
     <licenses> 
         <license>
             <name>Apache License 2.0</name>
@@ -633,9 +633,9 @@
     </licenses>
     
     <scm>
-        <connection>scm:git:https://github.com/terrymanu/dangdangdotcom/elastic-job.git</connection>
-        <developerConnection>scm:git:git@github.com:terrymanu/dangdangdotcom/elastic-job.git</developerConnection>
-        <url>https://github.com/terrymanu/dangdangdotcom/elastic-job</url>
+        <connection>scm:git:https://github.com/elasticjob/elastic-job.git</connection>
+        <developerConnection>scm:git:git@github.com:elasticjob/elastic-job.git</developerConnection>
+        <url>https://github.com/elasticjob/elastic-job</url>
     </scm>
     
     <mailingLists>

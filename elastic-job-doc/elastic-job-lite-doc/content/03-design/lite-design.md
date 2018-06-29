@@ -72,8 +72,8 @@ leader节点是内部使用的节点，如果对作业框架原理不感兴趣�
 
 ### 作业启动
 
-![作业启动](/img/principles/job_start.jpg)
+![作业启动](http://ovfotjrsi.bkt.clouddn.com/docs/img/principles/job_start.jpg)
 
 ### 作业执行
 
-![作业执行](/img/principles/job_exec.jpg)
+![作业执行](http://ovfotjrsi.bkt.clouddn.com/docs/img/principles/job_exec.jpg)

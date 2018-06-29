@@ -210,6 +210,71 @@ public final class SchedulerEngineTest {
     }
     
     @Test
+    public void assertDroppedStatusUpdate() {
+        @SuppressWarnings("unchecked")
+        Action2<String, String> taskUnAssigner = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
+        TaskNode taskNode = TaskNode.builder().build();
+        when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
+        schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
+                .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_DROPPED)
+                .setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
+        verify(statisticManager).taskRunFailed();
+    }
+    
+    @Test
+    public void assertGoneStatusUpdate() {
+        @SuppressWarnings("unchecked")
+        Action2<String, String> taskUnAssigner = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
+        TaskNode taskNode = TaskNode.builder().build();
+        when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
+        schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
+                .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_GONE).setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
+        verify(statisticManager).taskRunFailed();
+    }
+    
+    @Test
+    public void assertGoneByOperatorStatusUpdate() {
+        @SuppressWarnings("unchecked")
+        Action2<String, String> taskUnAssigner = mock(Action2.class);
+        when(taskScheduler.getTaskUnAssigner()).thenReturn(taskUnAssigner);
+        TaskNode taskNode = TaskNode.builder().build();
+        when(facadeService.popMapping(taskNode.getTaskNodeValue())).thenReturn("localhost");
+        schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
+                .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_GONE_BY_OPERATOR)
+                .setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(facadeService).recordFailoverTask(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(facadeService).removeRunning(TaskContext.from(taskNode.getTaskNodeValue()));
+        verify(taskUnAssigner).call(TaskContext.getIdForUnassignedSlave(taskNode.getTaskNodeValue()), "localhost");
+        verify(statisticManager).taskRunFailed();
+    }
+    
+    @Test
+    public void assertUnknownStatusUpdate() {
+        TaskNode taskNode = TaskNode.builder().build();
+        schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
+                .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_UNKNOWN)
+                .setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(statisticManager).taskRunFailed();
+    }
+    
+    @Test
+    public void assertUnReachedStatusUpdate() {
+        TaskNode taskNode = TaskNode.builder().build();
+        schedulerEngine.statusUpdate(null, Protos.TaskStatus.newBuilder()
+                .setTaskId(Protos.TaskID.newBuilder().setValue(taskNode.getTaskNodeValue())).setState(Protos.TaskState.TASK_UNREACHABLE)
+                .setSlaveId(Protos.SlaveID.newBuilder().setValue("slave-S0")).build());
+        verify(statisticManager).taskRunFailed();
+    }
+    
+    @Test
     public void assertFrameworkMessage() {
         schedulerEngine.frameworkMessage(null, null, Protos.SlaveID.newBuilder().setValue("slave-S0").build(), new byte[1]);
     }
