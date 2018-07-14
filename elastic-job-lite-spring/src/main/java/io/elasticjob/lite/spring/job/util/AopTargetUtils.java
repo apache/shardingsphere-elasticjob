@@ -50,6 +50,19 @@ public final class AopTargetUtils {
         }
     }
     
+    
+    /**
+     * 获取目标对象类名
+     * @param proxy
+     * @return
+     */
+    public static  String getTargetCglibClassName(final Object proxy ) {
+    
+      Class<?> target = (AopUtils.isCglibProxy(proxy) ? proxy.getClass().getSuperclass() : proxy.getClass());
+      return target.getName();
+    
+    }
+    
     private static Object getProxyTargetObject(final Object proxy, final String proxyType) {
         Field h;
         try {
