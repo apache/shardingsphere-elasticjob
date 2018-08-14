@@ -35,8 +35,10 @@ public final class SensitiveInfoUtilsTest {
     
     @Test
     public void assertFilterContentWithSensitiveIp() {
-        List<String> actual = Arrays.asList("/simpleElasticDemoJob/servers/127.0.0.100", "/simpleElasticDemoJob/servers/192.168.0.1/hostName | 192.168.0.1");
-        List<String> expected = Arrays.asList("/simpleElasticDemoJob/servers/ip1", "/simpleElasticDemoJob/servers/ip2/hostName | ip2");
+        List<String> actual = Arrays.asList("/simpleElasticDemoJob/servers/127.0.0.1", "/simpleElasticDemoJob/servers/192.168.0.1/hostName | 192.168.0.1",
+                "/simpleElasticDemoJob/servers/192.168.0.11", "/simpleElasticDemoJob/servers/192.168.0.111");
+        List<String> expected = Arrays.asList("/simpleElasticDemoJob/servers/ip1", "/simpleElasticDemoJob/servers/ip2/hostName | ip2",
+                "/simpleElasticDemoJob/servers/ip3", "/simpleElasticDemoJob/servers/ip4");
         assertThat(SensitiveInfoUtils.filterSensitiveIps(actual), is(expected));
     }
 }
