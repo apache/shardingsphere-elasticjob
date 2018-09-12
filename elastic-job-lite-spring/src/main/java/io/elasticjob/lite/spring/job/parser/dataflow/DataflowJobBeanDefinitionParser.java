@@ -41,8 +41,10 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
         if (!Strings.isNullOrEmpty(element.getAttribute(JOB_REF_ATTRIBUTE)) && parserContext.getRegistry().containsBeanDefinition(element.getAttribute(JOB_REF_ATTRIBUTE))) {
             result.addConstructorArgValue(parserContext.getRegistry().getBeanDefinition(element.getAttribute(JOB_REF_ATTRIBUTE)).getBeanClassName());
-        } else {
+        } else if (!Strings.isNullOrEmpty(element.getAttribute(CLASS_ATTRIBUTE))) {
             result.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
+        } else {
+            throw new NullPointerException("plz make sure the [job-ref] attribute was defined and initially successful, or the class attribute was defined");
         }
         result.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
         return result.getBeanDefinition();
