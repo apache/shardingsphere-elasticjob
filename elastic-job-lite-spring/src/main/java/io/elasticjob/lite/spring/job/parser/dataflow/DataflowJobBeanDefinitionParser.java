@@ -39,7 +39,7 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(DataflowJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
-        if (Strings.isNullOrEmpty(element.getAttribute(CLASS_ATTRIBUTE)) && parserContext.getRegistry().containsBeanDefinition(element.getAttribute(JOB_REF_ATTRIBUTE))) {
+        if (!Strings.isNullOrEmpty(element.getAttribute(JOB_REF_ATTRIBUTE)) && parserContext.getRegistry().containsBeanDefinition(element.getAttribute(JOB_REF_ATTRIBUTE))) {
             result.addConstructorArgValue(parserContext.getRegistry().getBeanDefinition(element.getAttribute(JOB_REF_ATTRIBUTE)).getBeanClassName());
         } else {
             result.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
