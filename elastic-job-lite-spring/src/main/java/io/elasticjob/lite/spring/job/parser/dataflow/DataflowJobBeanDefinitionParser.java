@@ -30,16 +30,16 @@ import static io.elasticjob.lite.spring.job.parser.common.BaseJobBeanDefinitionP
 
 /**
  * 数据流作业的命名空间解析器.
- * 
+ *
  * @author caohao
  */
 public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefinitionParser {
-    
+
     @Override
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(DataflowJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
-        if (Strings.isNullOrEmpty(element.getAttribute(CLASS_ATTRIBUTE))) {
+        if (Strings.isNullOrEmpty(element.getAttribute(CLASS_ATTRIBUTE)) && parserContext.getRegistry().containsBeanDefinition(element.getAttribute(JOB_REF_ATTRIBUTE))) {
             result.addConstructorArgValue(parserContext.getRegistry().getBeanDefinition(element.getAttribute(JOB_REF_ATTRIBUTE)).getBeanClassName());
         } else {
             result.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
