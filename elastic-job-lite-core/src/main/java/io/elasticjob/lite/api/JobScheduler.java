@@ -151,6 +151,8 @@ public class JobScheduler {
         result.put("org.quartz.jobStore.misfireThreshold", "1");
         result.put("org.quartz.plugin.shutdownhook.class", JobShutdownHookPlugin.class.getName());
         result.put("org.quartz.plugin.shutdownhook.cleanShutdown", Boolean.TRUE.toString());
+        result.put("org.terracotta.quartz.skipUpdateCheck", Boolean.TRUE.toString()); 
+        result.put("org.quartz.scheduler.skipUpdateCheck", Boolean.TRUE.toString());
         return result;
     }
 }
