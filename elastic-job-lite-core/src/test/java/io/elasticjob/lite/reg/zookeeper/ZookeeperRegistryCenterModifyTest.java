@@ -99,6 +99,8 @@ public final class ZookeeperRegistryCenterModifyTest {
             assertThat(each, startsWith("test_sequential"));
             assertThat(zkRegCenter.get("/sequential/" + each), startsWith("test_value"));
         }
+        zkRegCenter.remove("/sequential");
+        assertFalse(zkRegCenter.isExisted("/sequential"));
     }
     
     @Test
