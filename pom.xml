@@ -24,7 +24,7 @@
         <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
         
         <lombok.version>1.16.4</lombok.version>
-        <guava.version>18.0</guava.version>
+        <guava.version>27.1-jre</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.2.1</quartz.version>
         <curator.version>2.10.0</curator.version>

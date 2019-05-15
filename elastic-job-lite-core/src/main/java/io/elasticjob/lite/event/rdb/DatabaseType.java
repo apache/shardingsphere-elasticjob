@@ -20,6 +20,7 @@ package io.elasticjob.lite.event.rdb;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Arrays;
 
@@ -49,6 +50,11 @@ public enum DatabaseType {
             @Override
             public boolean apply(final DatabaseType input) {
                 return input.productName.equals(databaseProductName);
+            }
+
+            @Override
+            public boolean test(@Nullable DatabaseType input) {
+                return false;
             }
         });
         if (databaseTypeOptional.isPresent()) {
