@@ -51,11 +51,6 @@ public enum DatabaseType {
             public boolean apply(final DatabaseType input) {
                 return input.productName.equals(databaseProductName);
             }
-
-            @Override
-            public boolean test(@Nullable DatabaseType input) {
-                return false;
-            }
         });
         if (databaseTypeOptional.isPresent()) {
             return databaseTypeOptional.get();
