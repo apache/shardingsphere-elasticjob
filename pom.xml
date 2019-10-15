@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.elasticjob</groupId>
     <artifactId>elastic-job-lite</artifactId>
@@ -7,22 +8,22 @@
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Elastic-Job - distributed scheduled job solution</description>
-    
+
     <modules>
         <module>elastic-job-lite-core</module>
         <module>elastic-job-lite-spring</module>
         <module>elastic-job-lite-lifecycle</module>
         <module>elastic-job-lite-console</module>
     </modules>
-    
+
     <properties>
         <java.version>1.7</java.version>
         <maven.version.range>[3.0.4,)</maven.version.range>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
-        
+
         <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
-        
+
         <lombok.version>1.16.4</lombok.version>
         <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
@@ -42,7 +43,7 @@
         <junit.version>4.12</junit.version>
         <unitils.core.version>3.4.2</unitils.core.version>
         <mockito.version>2.7.21</mockito.version>
-        
+
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
         <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
@@ -59,15 +60,15 @@
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <coveralls-maven-plugin.version>4.1.0</coveralls-maven-plugin.version>
         <findbugs-maven-plugin.version>3.0.2</findbugs-maven-plugin.version>
-        <maven-checkstyle-plugin.version>2.16</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
         <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
         <jdepend-maven-plugin.version>2.0</jdepend-maven-plugin.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        
+
         <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -102,7 +103,7 @@
                 <artifactId>curator-framework</artifactId>
                 <version>${curator.version}</version>
             </dependency>
-             <dependency>
+            <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-client</artifactId>
                 <version>${curator.version}</version>
@@ -263,7 +264,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <build>
         <pluginManagement>
             <plugins>
@@ -329,7 +330,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -342,7 +343,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -431,7 +432,25 @@
                     </execution>
                 </executions>
             </plugin>
-             <plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>src/main/resources/checkstyle_ci.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>${cobertura-maven-plugin.version}</version>
@@ -482,7 +501,7 @@
              -->
         </plugins>
     </build>
-    
+
     <reporting>
         <plugins>
             <plugin>
@@ -521,7 +540,8 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
-                    <configLocation>src/main/resources/dd_checks.xml</configLocation>
+                    <configLocation>src/main/resources/checkstyle_ci.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -549,7 +569,7 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
     <repositories>
         <repository>
             <id>alfresco-maven-repo</id>
@@ -576,33 +596,33 @@
             </releases>
         </repository>
     </repositories>
-    
+
     <url>https://github.com/elasticjob/elastic-job</url>
-    <licenses> 
+    <licenses>
         <license>
             <name>Apache License 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
     <scm>
         <connection>scm:git:https://github.com/elasticjob/elastic-job.git</connection>
         <developerConnection>scm:git:git@github.com:elasticjob/elastic-job.git</developerConnection>
         <url>https://github.com/elasticjob/elastic-job</url>
     </scm>
-    
+
     <mailingLists>
         <mailingList>
             <name>ZhangLiang</name>
             <post>zhangliang@dangdang.com</post>
         </mailingList>
-         <mailingList>
+        <mailingList>
             <name>CaoHao</name>
             <post>caohao@dangdang.com</post>
         </mailingList>
     </mailingLists>
-    
+
     <developers>
         <developer>
             <id>zhangliang</id>
@@ -617,7 +637,7 @@
             <timezone>8</timezone>
         </developer>
     </developers>
-    
+
     <distributionManagement>
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
