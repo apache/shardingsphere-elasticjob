@@ -117,7 +117,7 @@ public final class MonitorService {
             }
             TreeCache treeCache = (TreeCache) regCenter.getRawCache("/" + jobName);
             ChildData treeCacheData = treeCache.getCurrentData(zkPath);
-            String treeCachePath =  null == treeCacheData ? "" : treeCacheData.getPath();
+            String treeCachePath = null == treeCacheData ? "" : treeCacheData.getPath();
             String treeCacheValue = null == treeCacheData ? "" : new String(treeCacheData.getData());
             if (zkValue.equals(treeCacheValue) && zkPath.equals(treeCachePath)) {
                 result.add(Joiner.on(" | ").join(zkPath, zkValue));

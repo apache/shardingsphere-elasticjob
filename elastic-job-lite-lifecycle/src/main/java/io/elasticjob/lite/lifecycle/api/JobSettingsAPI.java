@@ -46,5 +46,5 @@ public interface JobSettingsAPI {
      *
      * @param jobName 作业名称
      */
-    void removeJobSettings(final String jobName);
+    void removeJobSettings(String jobName);
 }

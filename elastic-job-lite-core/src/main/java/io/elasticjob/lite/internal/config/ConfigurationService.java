@@ -99,8 +99,8 @@ public final class ConfigurationService {
      * @throws JobExecutionEnvironmentException 本机与注册中心的时间误差秒数不在允许范围所抛出的异常
      */
     public void checkMaxTimeDiffSecondsTolerable() throws JobExecutionEnvironmentException {
-        int maxTimeDiffSeconds =  load(true).getMaxTimeDiffSeconds();
-        if (-1  == maxTimeDiffSeconds) {
+        int maxTimeDiffSeconds = load(true).getMaxTimeDiffSeconds();
+        if (-1 == maxTimeDiffSeconds) {
             return;
         }
         long timeDiff = Math.abs(timeService.getCurrentMillis() - jobNodeStorage.getRegistryCenterTime());

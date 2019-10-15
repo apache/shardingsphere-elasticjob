@@ -31,7 +31,7 @@ public final class EventTraceDataSourceFactory {
      * @return 事件追踪数据源
      */
     public static EventTraceDataSource createEventTraceDataSource(final String driver, final String url, final String username, final Optional<String> password) {
-        Hasher hasher =  Hashing.md5().newHasher().putString(driver, Charsets.UTF_8).putString(url, Charsets.UTF_8);
+        Hasher hasher = Hashing.md5().newHasher().putString(driver, Charsets.UTF_8).putString(url, Charsets.UTF_8);
         if (!Strings.isNullOrEmpty(username)) {
             hasher.putString(username, Charsets.UTF_8);
         }

@@ -35,5 +35,5 @@ public interface ExecutorServiceHandler {
      * 
      * @return 线程池服务对象
      */
-    ExecutorService createExecutorService(final String jobName);
+    ExecutorService createExecutorService(String jobName);
 }

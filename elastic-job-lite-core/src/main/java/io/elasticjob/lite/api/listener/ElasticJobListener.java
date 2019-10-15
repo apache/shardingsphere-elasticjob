@@ -31,12 +31,12 @@ public interface ElasticJobListener {
      * 
      * @param shardingContexts 分片上下文
      */
-    void beforeJobExecuted(final ShardingContexts shardingContexts);
+    void beforeJobExecuted(ShardingContexts shardingContexts);
     
     /**
      * 作业执行后的执行的方法.
      *
      * @param shardingContexts 分片上下文
      */
-    void afterJobExecuted(final ShardingContexts shardingContexts);
+    void afterJobExecuted(ShardingContexts shardingContexts);
 }
