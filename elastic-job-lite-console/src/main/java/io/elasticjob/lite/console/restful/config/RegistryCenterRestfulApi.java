@@ -99,7 +99,14 @@ public final class RegistryCenterRestfulApi {
     public void delete(final RegistryCenterConfiguration config) {
         regCenterService.delete(config.getName());
     }
-    
+
+    /**
+     * Connect to registry center.
+     *
+     * @param config config of registry center
+     * @param request http request
+     * @return true if connected
+     */
     @POST
     @Path("/connect")
     @Produces(MediaType.APPLICATION_JSON)
