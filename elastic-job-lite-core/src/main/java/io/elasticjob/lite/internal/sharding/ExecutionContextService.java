@@ -26,6 +26,7 @@ import io.elasticjob.lite.internal.schedule.JobRegistry;
 import io.elasticjob.lite.internal.storage.JobNodeStorage;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import io.elasticjob.lite.util.config.ShardingItemParameters;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,11 +34,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.elasticjob.lite.internal.sharding.ShardingNode.INTERRUPTED;
+
 /**
  * 作业运行时上下文服务.
  * 
  * @author zhangliang
  */
+@Slf4j
 public final class ExecutionContextService {
     
     private final String jobName;
@@ -61,11 +65,13 @@ public final class ExecutionContextService {
     public ShardingContexts getJobShardingContext(final List<Integer> shardingItems) {
         LiteJobConfiguration liteJobConfig = configService.load(false);
         removeRunningIfMonitorExecution(liteJobConfig.isMonitorExecution(), shardingItems);
+        log.debug("After remove running sharding item, result is {}", shardingItems);
         if (shardingItems.isEmpty()) {
             return new ShardingContexts(buildTaskId(liteJobConfig, shardingItems), liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
                     liteJobConfig.getTypeConfig().getCoreConfig().getJobParameter(), Collections.<Integer, String>emptyMap());
         }
         Map<Integer, String> shardingItemParameterMap = new ShardingItemParameters(liteJobConfig.getTypeConfig().getCoreConfig().getShardingItemParameters()).getMap();
+        log.info("sharding Item parameters : {}", shardingItemParameterMap);
         return new ShardingContexts(buildTaskId(liteJobConfig, shardingItems), liteJobConfig.getJobName(), liteJobConfig.getTypeConfig().getCoreConfig().getShardingTotalCount(), 
                 liteJobConfig.getTypeConfig().getCoreConfig().getJobParameter(), getAssignedShardingItemParameterMap(shardingItems, shardingItemParameterMap));
     }
@@ -82,17 +88,13 @@ public final class ExecutionContextService {
         }
         List<Integer> runningShardingItems = new ArrayList<>(shardingItems.size());
         for (int each : shardingItems) {
-            if (isRunning(each)) {
+            if (jobNodeStorage.isRunning(each)) {
                 runningShardingItems.add(each);
             }
         }
         shardingItems.removeAll(runningShardingItems);
     }
-    
-    private boolean isRunning(final int shardingItem) {
-        return jobNodeStorage.isJobNodeExisted(ShardingNode.getRunningNode(shardingItem));
-    }
-    
+
     private Map<Integer, String> getAssignedShardingItemParameterMap(final List<Integer> shardingItems, final Map<Integer, String> shardingItemParameterMap) {
         Map<Integer, String> result = new HashMap<>(shardingItemParameterMap.size(), 1);
         for (int each : shardingItems) {

@@ -25,6 +25,7 @@ import io.elasticjob.lite.internal.listener.AbstractListenerManager;
 import io.elasticjob.lite.internal.schedule.JobRegistry;
 import io.elasticjob.lite.internal.server.ServerNode;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 /**
@@ -32,6 +33,7 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
  * 
  * @author zhangliang
  */
+@Slf4j
 public final class ShardingListenerManager extends AbstractListenerManager {
     
     private final String jobName;
@@ -65,7 +67,9 @@ public final class ShardingListenerManager extends AbstractListenerManager {
         protected void dataChanged(final String path, final Type eventType, final String data) {
             if (configNode.isConfigPath(path) && 0 != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
                 int newShardingTotalCount = LiteJobConfigurationGsonFactory.fromJson(data).getTypeConfig().getCoreConfig().getShardingTotalCount();
-                if (newShardingTotalCount != JobRegistry.getInstance().getCurrentShardingTotalCount(jobName)) {
+                int currentShardingCount = JobRegistry.getInstance().getCurrentShardingTotalCount(jobName);
+                if (newShardingTotalCount != currentShardingCount) {
+                    log.info("Job '{}' sharding count changed! before:{} after:{}", jobName, currentShardingCount, newShardingTotalCount);
                     shardingService.setReshardingFlag();
                     JobRegistry.getInstance().setCurrentShardingTotalCount(jobName, newShardingTotalCount);
                 }

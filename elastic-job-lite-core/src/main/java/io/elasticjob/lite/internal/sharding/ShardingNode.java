@@ -49,13 +49,19 @@ public final class ShardingNode {
     static final String NECESSARY = LEADER_ROOT + "/necessary";
     
     static final String PROCESSING = LEADER_ROOT + "/processing";
-    
+
+    public static final String INTERRUPTED = "interrupted";
+
     private final JobNodePath jobNodePath;
     
     public ShardingNode(final String jobName) {
         jobNodePath = new JobNodePath(jobName);
     }
-    
+
+    public static String getProcessingNode() {
+        return PROCESSING;
+    }
+
     public static String getInstanceNode(final int item) {
         return String.format(INSTANCE, item);
     }

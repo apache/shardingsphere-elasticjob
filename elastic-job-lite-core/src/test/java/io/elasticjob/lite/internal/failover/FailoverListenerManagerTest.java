@@ -105,27 +105,34 @@ public final class FailoverListenerManagerTest {
         verify(failoverService, times(0)).failoverIfNecessary();
         JobRegistry.getInstance().shutdown("test_job");
     }
-    
+
+    /**
+     * total shard is 3
+     * 127.0.0.1@-@1 crashed (execute shardItem 1)
+     * both 127.0.0.1@-@0 and 127.0.0.1@-@2 responsible for shardItem 1
+     */
     @Test
     public void assertJobCrashedJobListenerWhenIsOtherInstanceCrashed() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class.getCanonicalName())).build());
-        when(shardingService.getShardingItems("127.0.0.1@-@1")).thenReturn(Arrays.asList(0, 2));
+        when(shardingService.getShardItemsForFailover("127.0.0.1@-@1")).thenReturn(Arrays.asList(1));
         failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@1", Type.NODE_REMOVED, "");
-        verify(failoverService).setCrashedFailoverFlag(0);
-        verify(failoverService).setCrashedFailoverFlag(2);
-        verify(failoverService, times(2)).failoverIfNecessary();
+        verify(failoverService).setCrashedFailoverFlag(1);
+        verify(failoverService, times(1)).failoverIfNecessary();
         JobRegistry.getInstance().shutdown("test_job");
     }
-    
+
+    /**
+     * responsible for crashed shardItem 1 also crashed
+     */
     @Test
     public void assertJobCrashedJobListenerWhenIsOtherFailoverInstanceCrashed() {
         JobRegistry.getInstance().addJobInstance("test_job", new JobInstance("127.0.0.1@-@0"));
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(
                 new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).failover(true).build(), TestSimpleJob.class.getCanonicalName())).build());
         when(failoverService.getFailoverItems("127.0.0.1@-@1")).thenReturn(Collections.singletonList(1));
-        when(shardingService.getShardingItems("127.0.0.1@-@1")).thenReturn(Arrays.asList(0, 2));
+        when(shardingService.getShardItemsForFailover("127.0.0.1@-@1")).thenReturn(Arrays.asList(0, 2));
         failoverListenerManager.new JobCrashedJobListener().dataChanged("/test_job/instances/127.0.0.1@-@1", Type.NODE_REMOVED, "");
         verify(failoverService).setCrashedFailoverFlag(1);
         verify(failoverService).failoverIfNecessary();

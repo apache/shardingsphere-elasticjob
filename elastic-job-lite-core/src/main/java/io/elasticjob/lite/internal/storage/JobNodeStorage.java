@@ -18,6 +18,7 @@
 package io.elasticjob.lite.internal.storage;
 
 import io.elasticjob.lite.exception.JobSystemException;
+import io.elasticjob.lite.internal.sharding.ShardingNode;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import io.elasticjob.lite.reg.exception.RegExceptionHandler;
 import org.apache.curator.framework.CuratorFramework;
@@ -233,5 +234,9 @@ public final class JobNodeStorage {
      */
     public long getRegistryCenterTime() {
         return regCenter.getRegistryCenterTime(jobNodePath.getFullPath("systemTime/current"));
+    }
+
+    public boolean isRunning(final int shardingItem) {
+        return isJobNodeExisted(ShardingNode.getRunningNode(shardingItem)) && getJobNodeData(ShardingNode.getRunningNode(shardingItem)).equals("");
     }
 }

@@ -41,6 +41,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static io.elasticjob.lite.internal.sharding.ShardingNode.INTERRUPTED;
+
 /**
  * 作业分片服务.
  * 
@@ -162,6 +164,27 @@ public final class ShardingService {
         for (int i = 0; i < shardingTotalCount; i++) {
             if (jobInstance.getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
                 result.add(i);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 获取该实例上分配的Job分片
+     * @param jobInstanceId 作业运行实例主键
+     * @return 作业运行实例的分片项集合
+     */
+    public List<Integer> getShardItemsForFailover(final String jobInstanceId) {
+        List<Integer> result = new LinkedList<>();
+        for (String item : jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT)) {
+            int shardIndex = Integer.parseInt(item);
+            String willFailoverInstance = jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(shardIndex));
+            // 该IP负责执行的任务分片(前提是每个ip只启动一个实例)
+            boolean isInstanceMatchShardItem = jobInstanceId.equals(willFailoverInstance);
+            boolean isJobShardItemRunning = jobNodeStorage.isJobNodeExisted(ShardingNode.getRunningNode(shardIndex));
+            if (isInstanceMatchShardItem && isJobShardItemRunning) {
+                jobNodeStorage.fillJobNode(ShardingNode.getRunningNode(shardIndex), INTERRUPTED);
+                result.add(shardIndex);
             }
         }
         return result;

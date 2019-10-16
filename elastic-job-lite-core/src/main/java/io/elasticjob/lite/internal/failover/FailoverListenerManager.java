@@ -27,6 +27,7 @@ import io.elasticjob.lite.internal.listener.AbstractListenerManager;
 import io.elasticjob.lite.internal.schedule.JobRegistry;
 import io.elasticjob.lite.internal.sharding.ShardingService;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 
 import java.util.List;
@@ -36,6 +37,7 @@ import java.util.List;
  * 
  * @author zhangliang
  */
+@Slf4j
 public final class FailoverListenerManager extends AbstractListenerManager {
     
     private final String jobName;
@@ -80,6 +82,8 @@ public final class FailoverListenerManager extends AbstractListenerManager {
                 if (jobInstanceId.equals(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())) {
                     return;
                 }
+                log.info("Job instance '{}' with path '{}' crashed! will trigger failover.", jobInstanceId, path);
+
                 List<Integer> failoverItems = failoverService.getFailoverItems(jobInstanceId);
                 if (!failoverItems.isEmpty()) {
                     for (int each : failoverItems) {
@@ -87,7 +91,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
                         failoverService.failoverIfNecessary();
                     }
                 } else {
-                    for (int each : shardingService.getShardingItems(jobInstanceId)) {
+                    for (int each : shardingService.getShardItemsForFailover(jobInstanceId)) {
                         failoverService.setCrashedFailoverFlag(each);
                         failoverService.failoverIfNecessary();
                     }

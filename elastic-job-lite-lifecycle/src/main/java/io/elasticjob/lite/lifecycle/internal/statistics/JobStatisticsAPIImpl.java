@@ -19,6 +19,7 @@ package io.elasticjob.lite.lifecycle.internal.statistics;
 
 import io.elasticjob.lite.config.LiteJobConfiguration;
 import io.elasticjob.lite.internal.config.LiteJobConfigurationGsonFactory;
+import io.elasticjob.lite.internal.sharding.ShardingNode;
 import io.elasticjob.lite.internal.storage.JobNodePath;
 import io.elasticjob.lite.lifecycle.api.JobStatisticsAPI;
 import io.elasticjob.lite.lifecycle.domain.JobBriefInfo;
@@ -106,14 +107,7 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
     }
     
     private boolean isHasShardingFlag(final JobNodePath jobNodePath, final List<String> instances) {
-        Set<String> shardingInstances = new HashSet<>();
-        for (String each : regCenter.getChildrenKeys(jobNodePath.getShardingNodePath())) {
-            String instanceId = regCenter.get(jobNodePath.getShardingNodePath(each, "instance"));
-            if (null != instanceId && !instanceId.isEmpty()) {
-                shardingInstances.add(instanceId);
-            }
-        }
-        return !instances.containsAll(shardingInstances) || shardingInstances.isEmpty();
+        return regCenter.isExisted(jobNodePath.getFullPath(ShardingNode.getProcessingNode()));
     }
     
     private int getJobInstanceCount(final String jobName) {

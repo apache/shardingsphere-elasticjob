@@ -59,7 +59,7 @@ public final class ExecutionService {
             return;
         }
         for (int each : shardingContexts.getShardingItemParameters().keySet()) {
-            jobNodeStorage.fillEphemeralJobNode(ShardingNode.getRunningNode(each), "");
+            jobNodeStorage.fillJobNode(ShardingNode.getRunningNode(each), "");
         }
     }
     
@@ -108,7 +108,7 @@ public final class ExecutionService {
             return false;
         }
         for (int each : items) {
-            if (jobNodeStorage.isJobNodeExisted(ShardingNode.getRunningNode(each))) {
+            if (jobNodeStorage.isRunning(each)) {
                 return true;
             }
         }
