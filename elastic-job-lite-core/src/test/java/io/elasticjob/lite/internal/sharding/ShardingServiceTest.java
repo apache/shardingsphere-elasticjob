@@ -192,7 +192,23 @@ public final class ShardingServiceTest {
         assertThat(shardingService.getShardingItems("127.0.0.1@-@0"), is(Arrays.asList(0, 2)));
         JobRegistry.getInstance().shutdown("test_job");
     }
-    
+
+    @Test
+    public void assertGetShardItemsForFailoverWithRunningJobMatchInstanceId() {
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@0");
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(true);
+        assertThat(shardingService.getShardItemsForFailover("127.0.0.1@-@0"), is(Collections.singletonList(0)));
+    }
+
+    @Test
+    public void assertGetShardItemsForFailoverWithRunningJobNonMatchInstanceId() {
+        when(jobNodeStorage.getJobNodeChildrenKeys("sharding")).thenReturn(Arrays.asList("0", "1", "2"));
+        when(jobNodeStorage.getJobNodeData("sharding/0/instance")).thenReturn("127.0.0.1@-@8899");
+        when(jobNodeStorage.isJobNodeExisted("sharding/0/running")).thenReturn(true);
+        assertThat(shardingService.getShardItemsForFailover("127.0.0.1@-@0"), is(Collections.<Integer>emptyList()));
+    }
+
     @Test
     public void assertGetLocalShardingItemsWithInstanceShutdown() {
         assertThat(shardingService.getLocalShardingItems(), is(Collections.<Integer>emptyList()));

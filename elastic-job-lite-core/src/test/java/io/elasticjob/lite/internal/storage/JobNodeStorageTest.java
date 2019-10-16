@@ -19,11 +19,7 @@ package io.elasticjob.lite.internal.storage;
 
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.transaction.CuratorTransaction;
-import org.apache.curator.framework.api.transaction.CuratorTransactionBridge;
-import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
-import org.apache.curator.framework.api.transaction.TransactionCheckBuilder;
-import org.apache.curator.framework.api.transaction.TransactionCreateBuilder;
+import org.apache.curator.framework.api.transaction.*;
 import org.apache.curator.framework.listen.Listenable;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
@@ -39,10 +35,7 @@ import java.util.Arrays;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public final class JobNodeStorageTest {
     
@@ -250,5 +243,14 @@ public final class JobNodeStorageTest {
         when(regCenter.getRegistryCenterTime("/test_job/systemTime/current")).thenReturn(0L);
         assertThat(jobNodeStorage.getRegistryCenterTime(), is(0L));
         verify(regCenter).getRegistryCenterTime("/test_job/systemTime/current");
+    }
+
+    @Test
+    public void assertIsRunning() {
+        when(regCenter.isExisted("/test_job/sharding/0/running")).thenReturn(true);
+        when(regCenter.get("/test_job/sharding/0/running")).thenReturn("");
+        assertThat(jobNodeStorage.isRunning(0), is(true));
+        verify(regCenter).isExisted("/test_job/sharding/0/running");
+        verify(regCenter).get("/test_job/sharding/0/running");
     }
 }

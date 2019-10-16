@@ -26,7 +26,12 @@ import static org.junit.Assert.assertThat;
 public final class ShardingNodeTest {
     
     private ShardingNode shardingNode = new ShardingNode("test_job");
-    
+
+    @Test
+    public void assertGetProcessingNode() {
+        assertThat(ShardingNode.getProcessingNode(), is(ShardingNode.PROCESSING));
+    }
+
     @Test
     public void assertGetRunningNode() {
         assertThat(ShardingNode.getRunningNode(0), is("sharding/0/running"));
