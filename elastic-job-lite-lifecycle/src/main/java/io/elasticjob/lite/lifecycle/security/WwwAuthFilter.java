@@ -57,7 +57,7 @@ public final class WwwAuthFilter implements Filter {
     private static final String GUEST_DEFAULT_USERNAME = "guest";
     
     private static final String GUEST_DEFAULT_PASSWORD = "guest";
-
+    
     private String rootUsername;
     
     private String rootPassword;
