@@ -28,9 +28,10 @@ import java.io.File;
 
 /**
  * 基于XML的数据访问器实现类.
- * 
- * @param <E> 数据类型
+ *
  * @author zhangliang
+ *
+ * @param <E> 数据类型
  */
 public abstract class AbstractXmlRepositoryImpl<E> implements XmlRepository<E> {
     

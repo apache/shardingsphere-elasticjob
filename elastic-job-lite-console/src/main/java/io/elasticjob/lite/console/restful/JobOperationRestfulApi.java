@@ -124,14 +124,26 @@ public final class JobOperationRestfulApi {
     public Collection<ShardingInfo> getShardingInfo(@PathParam("jobName") final String jobName) {
         return jobAPIService.getShardingStatisticsAPI().getShardingInfo(jobName);
     }
-    
+
+    /**
+     * Disable Sharding.
+     *
+     * @param jobName job name
+     * @param item sharding item
+     */
     @POST
     @Path("/{jobName}/sharding/{item}/disable")
     @Consumes(MediaType.APPLICATION_JSON)
     public void disableSharding(@PathParam("jobName") final String jobName, @PathParam("item") final String item) {
         jobAPIService.getShardingOperateAPI().disable(jobName, item);
     }
-    
+
+    /**
+     * EnableS Sharding.
+     *
+     * @param jobName job name
+     * @param item sharding item
+     */
     @DELETE
     @Path("/{jobName}/sharding/{item}/disable")
     @Consumes(MediaType.APPLICATION_JSON)

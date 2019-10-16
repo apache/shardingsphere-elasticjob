@@ -22,13 +22,13 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public final class JobEventRdbConfigurationTest {
     
     @Test
-    public void assertGetDataSource() throws JobEventListenerConfigurationException {
+    public void assertGetDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(org.h2.Driver.class.getName());
         dataSource.setUrl("jdbc:h2:mem:job_event_storage");

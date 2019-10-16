@@ -85,7 +85,6 @@ public final class ZookeeperRegistryCenterModifyTest {
         zkRegCenter.init();
     }
     
-    
     @Test
     public void assertPersistSequential() throws Exception {
         assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));

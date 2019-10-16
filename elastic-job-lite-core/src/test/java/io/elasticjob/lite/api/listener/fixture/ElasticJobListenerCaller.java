@@ -19,7 +19,13 @@ package io.elasticjob.lite.api.listener.fixture;
 
 public interface ElasticJobListenerCaller {
     
+    /**
+     * Execute before.
+     */
     void before();
     
+    /**
+     * Execute after.
+     */
     void after();
 }

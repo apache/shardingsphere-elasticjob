@@ -50,7 +50,7 @@ public interface EventTraceDataSourceConfigurationService {
      * @param configs 全部事件追踪数据源配置
      * @return 事件追踪数据源配置
      */
-    EventTraceDataSourceConfiguration find(final String name, final EventTraceDataSourceConfigurations configs);
+    EventTraceDataSourceConfiguration find(String name, EventTraceDataSourceConfigurations configs);
     
     /**
      * 读取已连接的事件追踪数据源配置.

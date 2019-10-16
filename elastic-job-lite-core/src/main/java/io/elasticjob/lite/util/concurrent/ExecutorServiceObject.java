@@ -53,7 +53,12 @@ public final class ExecutorServiceObject {
     public ExecutorService createExecutorService() {
         return MoreExecutors.listeningDecorator(MoreExecutors.getExitingExecutorService(threadPoolExecutor));
     }
-    
+
+    /**
+     * Whether the threadPoolExecutor has been shut down.
+     *
+     * @return Whether the threadPoolExecutor has been shut down
+     */
     public boolean isShutdown() {
         return threadPoolExecutor.isShutdown();
     }

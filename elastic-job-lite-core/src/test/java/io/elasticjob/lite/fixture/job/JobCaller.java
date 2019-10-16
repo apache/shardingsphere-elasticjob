@@ -21,9 +21,23 @@ import java.util.List;
 
 public interface JobCaller {
     
+    /**
+     * Execute job.
+     */
     void execute();
     
+    /**
+     * Fetch the data.
+     *
+     * @param shardingItem sharding items of job
+     * @return the list of data fetched
+     */
     List<Object> fetchData(int shardingItem);
     
+    /**
+     * Process the data.
+     *
+     * @param data the data of the job
+     */
     void processData(Object data);
 }

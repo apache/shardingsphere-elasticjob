@@ -29,12 +29,22 @@ public final class ShardingContextsBuilder {
     
     public static final String JOB_NAME = "test_job";
     
+    /**
+     * Get single ShardingContexts.
+     *
+     * @return ShardingContexts
+     */
     public static ShardingContexts getSingleShardingContexts() {
         Map<Integer, String> map = new HashMap<>(1, 1);
         map.put(0, "A");
         return new ShardingContexts("fake_task_id", JOB_NAME, 1, "", map);
     }
     
+    /**
+     * Get multiple ShardingContexts.
+     *
+     * @return ShardingContexts
+     */
     public static ShardingContexts getMultipleShardingContexts() {
         Map<Integer, String> map = new HashMap<>(2, 1);
         map.put(0, "A");

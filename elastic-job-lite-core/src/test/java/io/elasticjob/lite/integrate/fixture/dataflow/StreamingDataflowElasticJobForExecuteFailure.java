@@ -42,6 +42,9 @@ public class StreamingDataflowElasticJobForExecuteFailure implements DataflowJob
         completed = true;
     }
     
+    /**
+     * Set completed to false.
+     */
     public static void reset() {
         completed = false;
     }

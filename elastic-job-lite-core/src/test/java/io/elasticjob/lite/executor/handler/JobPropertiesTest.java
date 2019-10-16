@@ -26,9 +26,9 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public final class JobPropertiesTest {
@@ -59,14 +59,14 @@ public final class JobPropertiesTest {
     }
     
     @Test
-    public void assertGetWhenValueIsEmpty() throws NoSuchFieldException {
+    public void assertGetWhenValueIsEmpty() {
         JobProperties actual = new JobProperties();
         assertThat(actual.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(DefaultJobExceptionHandler.class.getCanonicalName()));
         assertThat(actual.get(JobProperties.JobPropertiesEnum.EXECUTOR_SERVICE_HANDLER), is(DefaultExecutorServiceHandler.class.getCanonicalName()));
     }
     
     @Test
-    public void assertGetWhenValueIsNotEmpty() throws NoSuchFieldException {
+    public void assertGetWhenValueIsNotEmpty() {
         JobProperties actual = new JobProperties();
         actual.put(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER.getKey(), IgnoreJobExceptionHandler.class.getCanonicalName());
         assertThat(actual.get(JobProperties.JobPropertiesEnum.JOB_EXCEPTION_HANDLER), is(IgnoreJobExceptionHandler.class.getCanonicalName()));

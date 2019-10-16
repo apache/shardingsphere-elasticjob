@@ -55,7 +55,13 @@ public final class ShardingNode {
     public ShardingNode(final String jobName) {
         jobNodePath = new JobNodePath(jobName);
     }
-    
+
+    /**
+     * Get the path of instance node.
+     *
+     * @param item sharding item
+     * @return the path of instance node
+     */
     public static String getInstanceNode(final int item) {
         return String.format(INSTANCE, item);
     }

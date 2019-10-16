@@ -30,6 +30,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SocketUtils {
     
+    /**
+     * Send command.
+     *
+     * @param command command
+     * @param monitorPort the port for monitor
+     * @return result of command
+     * @throws IOException io exception
+     */
     public static String sendCommand(final String command, final int monitorPort) throws IOException {
         try (
                 Socket socket = new Socket("127.0.0.1", monitorPort);

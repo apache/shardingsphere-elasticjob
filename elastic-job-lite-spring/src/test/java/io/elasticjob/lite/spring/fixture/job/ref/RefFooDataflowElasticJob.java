@@ -49,6 +49,9 @@ public class RefFooDataflowElasticJob implements DataflowJob<String> {
         completed = true;
     }
     
+    /**
+     * Set completed to false.
+     */
     public static void reset() {
         completed = false;
     }

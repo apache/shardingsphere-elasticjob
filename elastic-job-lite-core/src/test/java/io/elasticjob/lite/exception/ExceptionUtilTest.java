@@ -19,9 +19,9 @@ package io.elasticjob.lite.exception;
 
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class ExceptionUtilTest {
     

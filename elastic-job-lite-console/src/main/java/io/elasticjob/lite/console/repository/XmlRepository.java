@@ -19,10 +19,10 @@ package io.elasticjob.lite.console.repository;
 
 /**
  * 基于XML的数据访问器.
+ *
+ * @author zhangliang
  * 
  * @param <E> 数据类型
- * 
- * @author zhangliang
  */
 public interface XmlRepository<E> {
     

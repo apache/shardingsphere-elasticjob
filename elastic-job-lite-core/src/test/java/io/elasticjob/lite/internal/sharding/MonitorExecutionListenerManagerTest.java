@@ -20,7 +20,6 @@ public final class MonitorExecutionListenerManagerTest {
     @Mock
     private ExecutionService executionService;
     
-    
     private final MonitorExecutionListenerManager monitorExecutionListenerManager = new MonitorExecutionListenerManager(null, "test_job");
     
     @Before

@@ -155,7 +155,6 @@ public final class JobStatisticsAPIImpl implements JobStatisticsAPI {
         }
     }
     
-    
     private int getJobInstanceCountByJobNameAndIp(final String jobName, final String ip) {
         int instanceCount = 0;
         JobNodePath jobNodePath = new JobNodePath(jobName);

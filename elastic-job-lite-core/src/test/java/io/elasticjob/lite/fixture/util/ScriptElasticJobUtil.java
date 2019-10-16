@@ -30,6 +30,12 @@ import java.nio.file.attribute.PosixFilePermission;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ScriptElasticJobUtil {
     
+    /**
+     * Build script command line.
+     *
+     * @return the result of script command line
+     * @throws IOException io exception
+     */
     public static String buildScriptCommandLine() throws IOException {
         if (System.getProperties().getProperty("os.name").contains("Windows")) {
             return Paths.get(ScriptElasticJobUtil.class.getResource("/script/test.bat").getPath().substring(1)).toString();

@@ -20,13 +20,11 @@ package io.elasticjob.lite.spring.job.parser.dataflow;
 import com.google.common.base.Strings;
 import io.elasticjob.lite.config.dataflow.DataflowJobConfiguration;
 import io.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
+import io.elasticjob.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
-
-import static io.elasticjob.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE;
-import static io.elasticjob.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE;
 
 /**
  * 数据流作业的命名空间解析器.
@@ -39,10 +37,10 @@ public final class DataflowJobBeanDefinitionParser extends AbstractJobBeanDefini
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(DataflowJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
-        if (Strings.isNullOrEmpty(element.getAttribute(CLASS_ATTRIBUTE))) {
-            result.addConstructorArgValue(parserContext.getRegistry().getBeanDefinition(element.getAttribute(JOB_REF_ATTRIBUTE)).getBeanClassName());
+        if (Strings.isNullOrEmpty(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE))) {
+            result.addConstructorArgValue(parserContext.getRegistry().getBeanDefinition(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE)).getBeanClassName());
         } else {
-            result.addConstructorArgValue(element.getAttribute(CLASS_ATTRIBUTE));
+            result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE));
         }
         result.addConstructorArgValue(element.getAttribute(DataflowJobBeanDefinitionParserTag.STREAMING_PROCESS_ATTRIBUTE));
         return result.getBeanDefinition();

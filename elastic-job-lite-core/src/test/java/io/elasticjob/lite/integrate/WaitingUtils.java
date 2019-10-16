@@ -23,6 +23,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class WaitingUtils {
     
+    /**
+     * Wait for a short time.
+     */
     public static void waitingShortTime() {
         sleep(300L);
     }

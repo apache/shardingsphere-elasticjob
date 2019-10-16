@@ -17,7 +17,6 @@
 
 package io.elasticjob.lite.event;
 
-
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import io.elasticjob.lite.event.type.JobExecutionEvent;
