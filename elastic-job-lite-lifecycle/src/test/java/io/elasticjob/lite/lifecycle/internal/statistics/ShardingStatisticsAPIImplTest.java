@@ -20,7 +20,6 @@ package io.elasticjob.lite.lifecycle.internal.statistics;
 import io.elasticjob.lite.lifecycle.api.ShardingStatisticsAPI;
 import io.elasticjob.lite.lifecycle.domain.ShardingInfo;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,9 +27,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 public final class ShardingStatisticsAPIImplTest {
@@ -79,12 +78,12 @@ public final class ShardingStatisticsAPIImplTest {
                     assertThat(each.getInstanceId(), is("2341"));
                     break;
                 case 3:
-                    assertThat(each.getStatus(), Is.is(ShardingInfo.ShardingStatus.DISABLED));
+                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.DISABLED));
                     assertThat(each.getServerIp(), is("ip3"));
                     assertThat(each.getInstanceId(), is("3412"));
                     break;
                 case 4:
-                    assertThat(each.getStatus(), Is.is(ShardingInfo.ShardingStatus.PENDING));
+                    assertThat(each.getStatus(), is(ShardingInfo.ShardingStatus.PENDING));
                     assertThat(each.getServerIp(), is("ip4"));
                     assertThat(each.getInstanceId(), is("4123"));
                     break;

@@ -41,22 +41,51 @@ public final class LiteJsonConstants {
     
     private static final int DEFAULT_MAX_TIME_DIFF_SECONDS = 1000;
     
+    /**
+     * Get the config of simple job in json format.
+     *
+     * @return the string of job config
+     */
     public static String getJobJson() {
         return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
+    /**
+     * Get the config of simple job in json format.
+     *
+     * @param jobClass the class name of job
+     * @return the string of job config
+     */
     public static String getJobJson(final String jobClass) {
         return String.format(JOB_JSON, jobClass, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
+    /**
+     * Get the config of simple job in json format.
+     *
+     * @param maxTimeDiffSeconds max different time in seconds
+     * @return the string of job config
+     */
     public static String getJobJson(final int maxTimeDiffSeconds) {
         return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, DEFAULT_MONITOR_EXECUTION, maxTimeDiffSeconds);
     }
     
+    /**
+     * Get the config of simple job in json format.
+     *
+     * @param failover Whether to enable failover
+     * @return the string of job config
+     */
     public static String getJobJsonWithFailover(final boolean failover) {
         return String.format(JOB_JSON, DEFAULT_JOB_CLASS, failover, DEFAULT_MONITOR_EXECUTION, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }
     
+    /**
+     * Get the config of simple job in json format.
+     *
+     * @param monitorExecution Whether to enable monitor execution
+     * @return the string of job config
+     */
     public static String getJobJsonWithMonitorExecution(final boolean monitorExecution) {
         return String.format(JOB_JSON, DEFAULT_JOB_CLASS, DEFAULT_FAILOVER, monitorExecution, DEFAULT_MAX_TIME_DIFF_SECONDS);
     }

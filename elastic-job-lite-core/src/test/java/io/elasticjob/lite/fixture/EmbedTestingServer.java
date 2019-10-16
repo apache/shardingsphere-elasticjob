@@ -33,10 +33,18 @@ public final class EmbedTestingServer {
     
     private static volatile TestingServer testingServer;
     
+    /**
+     * Get the connection string.
+     *
+     * @return connection string
+     */
     public static String getConnectionString() {
         return Joiner.on(":").join("localhost", PORT);
     }
     
+    /**
+     * Start the server.
+     */
     public static void start() {
         if (null != testingServer) {
             return;

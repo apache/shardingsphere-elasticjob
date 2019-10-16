@@ -42,6 +42,9 @@ public final class TestJobEventListener extends TestJobEventIdentity implements 
         jobEventCaller.call();
     }
     
+    /**
+     * Set executionEventCalled to false.
+     */
     public static void reset() {
         executionEventCalled = false;
     }

@@ -61,6 +61,11 @@ public abstract class AbstractEmbedZookeeperBaseTest {
         }
     }
     
+    /**
+     * Get the connection string.
+     *
+     * @return connection string
+     */
     public static String getConnectionString() {
         return Joiner.on(":").join("localhost", PORT);
     }

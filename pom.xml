@@ -438,7 +438,7 @@
                 <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
                     <configLocation>src/main/resources/checkstyle_ci.xml</configLocation>
-                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -456,13 +456,13 @@
                 <version>${cobertura-maven-plugin.version}</version>
                 <configuration>
                     <check>
-                        <!--                        <branchRate>85</branchRate>-->
-                        <!--                        <lineRate>85</lineRate>-->
-                        <!--                        <haltOnFailure>true</haltOnFailure>-->
-                        <!--                        <totalBranchRate>85</totalBranchRate>-->
-                        <!--                        <totalLineRate>85</totalLineRate>-->
-                        <!--                        <packageLineRate>85</packageLineRate>-->
-                        <!--                        <packageBranchRate>85</packageBranchRate>-->
+                        <branchRate>80</branchRate>
+                        <lineRate>80</lineRate>
+                        <haltOnFailure>true</haltOnFailure>
+                        <totalBranchRate>80</totalBranchRate>
+                        <totalLineRate>80</totalLineRate>
+                        <packageLineRate>80</packageLineRate>
+                        <packageBranchRate>80</packageBranchRate>
                     </check>
                     <aggregate>true</aggregate>
                     <encoding>${project.build.sourceEncoding}</encoding>
@@ -544,7 +544,7 @@
                 <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
                     <configLocation>src/main/resources/checkstyle.xml</configLocation>
-                    <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
             </plugin>
             <plugin>

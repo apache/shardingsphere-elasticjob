@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Method;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 

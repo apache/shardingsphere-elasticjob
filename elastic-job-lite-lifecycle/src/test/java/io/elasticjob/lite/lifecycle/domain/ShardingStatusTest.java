@@ -17,30 +17,30 @@
 
 package io.elasticjob.lite.lifecycle.domain;
 
-import org.hamcrest.core.Is;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public final class ShardingStatusTest {
     
     @Test
     public void assertGetShardingStatusWhenIsDisabled() {
-        assertThat(ShardingInfo.ShardingStatus.getShardingStatus(true, false,  true), Is.is(ShardingInfo.ShardingStatus.DISABLED));
+        assertThat(ShardingInfo.ShardingStatus.getShardingStatus(true, false, true), is(ShardingInfo.ShardingStatus.DISABLED));
     }
     
     @Test
     public void assertGetShardingStatusWhenIsRunning() {
-        assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, true,  false), Is.is(ShardingInfo.ShardingStatus.RUNNING));
+        assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, true, false), is(ShardingInfo.ShardingStatus.RUNNING));
     }
     
     @Test
     public void assertGetShardingStatusWhenIsPending() {
-        assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, false,  false), Is.is(ShardingInfo.ShardingStatus.PENDING));
+        assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, false, false), is(ShardingInfo.ShardingStatus.PENDING));
     }
     
     @Test
     public void assertGetShardingStatusWhenIsShardingError() {
-        assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, false,  true), Is.is(ShardingInfo.ShardingStatus.SHARDING_FLAG));
+        assertThat(ShardingInfo.ShardingStatus.getShardingStatus(false, false, true), is(ShardingInfo.ShardingStatus.SHARDING_FLAG));
     }
 }

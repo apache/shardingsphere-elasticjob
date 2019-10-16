@@ -21,18 +21,16 @@ import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class ExecutorServiceObjectTest {
     
-    private ExecutorServiceObject executorServiceObject;
-    
     @Test
     public void assertCreateExecutorService() {
-        executorServiceObject = new ExecutorServiceObject("executor-service-test", 1);
+        ExecutorServiceObject executorServiceObject = new ExecutorServiceObject("executor-service-test", 1);
         assertThat(executorServiceObject.getActiveThreadCount(), is(0));
         assertThat(executorServiceObject.getWorkQueueSize(), is(0));
         assertFalse(executorServiceObject.isShutdown());

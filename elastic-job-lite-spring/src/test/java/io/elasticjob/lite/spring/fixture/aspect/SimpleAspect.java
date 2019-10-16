@@ -27,6 +27,9 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class SimpleAspect {
     
+    /**
+     * Aspect.
+     */
     @Pointcut("execution(* io.elasticjob.lite.spring.fixture..*(..))")
     public void aspect() {
     }

@@ -19,7 +19,7 @@ package io.elasticjob.lite.lifecycle.restful;
 
 import org.junit.Test;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public final class RestfulExceptionTest {
