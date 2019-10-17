@@ -25,7 +25,7 @@ import lombok.Setter;
 
 /**
  * 在分布式作业中只执行一次的监听器.
- * 
+ *
  * @author zhangliang
  */
 public abstract class AbstractDistributeOnceElasticJobListener implements ElasticJobListener {
@@ -50,7 +50,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
             this.startedTimeoutMilliseconds = startedTimeoutMilliseconds;
         }
         if (completedTimeoutMilliseconds <= 0L) {
-            this.completedTimeoutMilliseconds = Long.MAX_VALUE; 
+            this.completedTimeoutMilliseconds = Long.MAX_VALUE;
         } else {
             this.completedTimeoutMilliseconds = completedTimeoutMilliseconds;
         }
@@ -59,44 +59,72 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     @Override
     public final void beforeJobExecuted(final ShardingContexts shardingContexts) {
         guaranteeService.registerStart(shardingContexts.getShardingItemParameters().keySet());
-        if (guaranteeService.isAllStarted()) {
-            doBeforeJobExecutedAtLastStarted(shardingContexts);
-            guaranteeService.clearAllStartedInfo();
-            return;
-        }
         long before = timeService.getCurrentMillis();
-        try {
-            synchronized (startedWait) {
-                startedWait.wait(startedTimeoutMilliseconds);
+        if (shardingContexts.getShardingItemParameters().containsKey(0)) {
+            while (true) {
+                if (guaranteeService.isAllStarted()) {
+                    doBeforeJobExecutedAtLastStarted(shardingContexts);
+                    guaranteeService.clearAllStartedInfo();
+                    return;
+                }
+                try {
+                    Thread.sleep(500L);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+                if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
+                    guaranteeService.clearAllStartedInfo();
+                    handleTimeout(startedTimeoutMilliseconds);
+                }
             }
-        } catch (final InterruptedException ex) {
-            Thread.interrupted();
-        }
-        if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
-            guaranteeService.clearAllStartedInfo();
-            handleTimeout(startedTimeoutMilliseconds);
+        } else {
+            try {
+                synchronized (startedWait) {
+                    startedWait.wait(startedTimeoutMilliseconds);
+                }
+            } catch (final InterruptedException ex) {
+                Thread.interrupted();
+            }
+            if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
+                guaranteeService.clearAllStartedInfo();
+                handleTimeout(startedTimeoutMilliseconds);
+            }
         }
     }
     
     @Override
     public final void afterJobExecuted(final ShardingContexts shardingContexts) {
         guaranteeService.registerComplete(shardingContexts.getShardingItemParameters().keySet());
-        if (guaranteeService.isAllCompleted()) {
-            doAfterJobExecutedAtLastCompleted(shardingContexts);
-            guaranteeService.clearAllCompletedInfo();
-            return;
-        }
         long before = timeService.getCurrentMillis();
-        try {
-            synchronized (completedWait) {
-                completedWait.wait(completedTimeoutMilliseconds);
+        if (shardingContexts.getShardingItemParameters().containsKey(0)) {
+            while (true) {
+                if (guaranteeService.isAllCompleted()) {
+                    doAfterJobExecutedAtLastCompleted(shardingContexts);
+                    guaranteeService.clearAllCompletedInfo();
+                    return;
+                }
+                try {
+                    Thread.sleep(500L);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+                if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
+                    guaranteeService.clearAllCompletedInfo();
+                    handleTimeout(completedTimeoutMilliseconds);
+                }
             }
-        } catch (final InterruptedException ex) {
-            Thread.interrupted();
-        }
-        if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
-            guaranteeService.clearAllCompletedInfo();
-            handleTimeout(completedTimeoutMilliseconds);
+        } else {
+            try {
+                synchronized (completedWait) {
+                    completedWait.wait(completedTimeoutMilliseconds);
+                }
+            } catch (final InterruptedException ex) {
+                Thread.interrupted();
+            }
+            if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
+                guaranteeService.clearAllCompletedInfo();
+                handleTimeout(completedTimeoutMilliseconds);
+            }
         }
     }
     
