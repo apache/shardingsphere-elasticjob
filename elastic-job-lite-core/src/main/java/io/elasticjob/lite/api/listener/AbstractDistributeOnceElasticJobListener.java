@@ -20,6 +20,7 @@ package io.elasticjob.lite.api.listener;
 import io.elasticjob.lite.exception.JobSystemException;
 import io.elasticjob.lite.executor.ShardingContexts;
 import io.elasticjob.lite.internal.guarantee.GuaranteeService;
+import io.elasticjob.lite.util.concurrent.BlockUtils;
 import io.elasticjob.lite.util.env.TimeService;
 import lombok.Setter;
 
@@ -67,11 +68,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
                     guaranteeService.clearAllStartedInfo();
                     return;
                 }
-                try {
-                    Thread.sleep(500L);
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+                BlockUtils.sleep(500L);
                 if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
                     guaranteeService.clearAllStartedInfo();
                     handleTimeout(startedTimeoutMilliseconds);
@@ -103,11 +100,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
                     guaranteeService.clearAllCompletedInfo();
                     return;
                 }
-                try {
-                    Thread.sleep(500L);
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+                BlockUtils.sleep(500L);
                 if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
                     guaranteeService.clearAllCompletedInfo();
                     handleTimeout(completedTimeoutMilliseconds);
