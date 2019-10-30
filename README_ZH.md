@@ -31,7 +31,7 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## Elastic-Job-Lite
 
-![Elastic-Job-Lite Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_lite.png)
+![Elastic-Job-Lite Architecture](http://elasticjob.io/docs/elastic-job-lite/img/architecture/elastic_job_lite.png)
 
 
 # [Release Notes](https://github.com/elasticjob/elastic-job/releases)
