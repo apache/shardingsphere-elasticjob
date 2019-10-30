@@ -40,10 +40,10 @@ import org.apache.zookeeper.data.Stat;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,7 +57,7 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     @Getter(AccessLevel.PROTECTED)
     private ZookeeperConfiguration zkConfig;
     
-    private final Map<String, TreeCache> caches = new HashMap<>();
+    private final Map<String, TreeCache> caches = new ConcurrentHashMap<>();
     
     @Getter
     private CuratorFramework client;
