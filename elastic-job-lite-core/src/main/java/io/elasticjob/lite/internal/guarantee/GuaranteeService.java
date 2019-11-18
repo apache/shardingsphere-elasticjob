@@ -20,8 +20,8 @@ package io.elasticjob.lite.internal.guarantee;
 import io.elasticjob.lite.internal.config.ConfigurationService;
 import io.elasticjob.lite.internal.storage.JobNodeStorage;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
-
-import java.util.Collection;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * 保证分布式任务全部开始和结束状态的服务.
@@ -40,24 +40,38 @@ public final class GuaranteeService {
     }
     
     /**
-     * 根据分片项注册任务开始运行.
-     * 
-     * @param shardingItems 待注册的分片项
+     * Register the start status of job with the sharding count.
+     *
+     * @param itemCount the count of items
+     * @param shardingTotalCount the total count of sharding
+     * @return the num of items which has been registered
      */
-    public void registerStart(final Collection<Integer> shardingItems) {
-        for (int each : shardingItems) {
-            jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.getStartedNode(each));
+    public int registerStart(final int itemCount, final int shardingTotalCount) {
+        int each = 0;
+        while (each++ < shardingTotalCount + 3) {
+            Pair<String, Integer> dataAndVerionPair = jobNodeStorage.getNodeDataAndVersion(GuaranteeNode.STARTED_ROOT);
+            if (null == dataAndVerionPair) {
+                jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.STARTED_ROOT);
+                continue;
+            }
+            String oldValue = StringUtils.isBlank(dataAndVerionPair.getLeft()) ? "0" : dataAndVerionPair.getLeft().trim();
+            String setValue = String.valueOf(Integer.parseInt(oldValue) + itemCount);
+            if (jobNodeStorage.setNodeDataAndVersion(GuaranteeNode.STARTED_ROOT, setValue, dataAndVerionPair.getRight())) {
+                return Integer.parseInt(setValue);
+            }
         }
+        return 0;
     }
     
     /**
-     * 判断是否所有的任务均启动完毕.
+     * Determines if all task have been started.
      *
-     * @return 是否所有的任务均启动完毕
+     * @param registeredItemCount the count of item which has been registered
+     * @return Whether all tasks have been started
      */
-    public boolean isAllStarted() {
+    public boolean isAllStarted(final int registeredItemCount) {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT)
-                && configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
+                && configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount() == registeredItemCount;
     }
     
     /**
@@ -68,24 +82,38 @@ public final class GuaranteeService {
     }
     
     /**
-     * 根据分片项注册任务完成运行.
+     * Register the complete status of job with the sharding count.
      *
-     * @param shardingItems 待注册的分片项
+     * @param itemCount the count of items
+     * @param shardingTotalCount the total count of sharding
+     * @return the num of items which has been registered
      */
-    public void registerComplete(final Collection<Integer> shardingItems) {
-        for (int each : shardingItems) {
-            jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.getCompletedNode(each));
+    public int registerComplete(final int itemCount, final int shardingTotalCount) {
+        int each = 0;
+        while (each++ < shardingTotalCount + 3) {
+            Pair<String, Integer> dataAndVerionPair = jobNodeStorage.getNodeDataAndVersion(GuaranteeNode.COMPLETED_ROOT);
+            if (null == dataAndVerionPair) {
+                jobNodeStorage.createJobNodeIfNeeded(GuaranteeNode.COMPLETED_ROOT);
+                continue;
+            }
+            String oldValue = StringUtils.isBlank(dataAndVerionPair.getLeft()) ? "0" : dataAndVerionPair.getLeft().trim();
+            String setValue = String.valueOf(Integer.parseInt(oldValue) + itemCount);
+            if (jobNodeStorage.setNodeDataAndVersion(GuaranteeNode.COMPLETED_ROOT, setValue, dataAndVerionPair.getRight())) {
+                return Integer.parseInt(setValue);
+            }
         }
+        return 0;
     }
     
     /**
-     * 判断是否所有的任务均执行完毕.
+     * Determines if all task have been completed.
      *
-     * @return 是否所有的任务均执行完毕
+     * @param registeredItemCount the count of item which has been registered
+     * @return Whether all tasks have been started
      */
-    public boolean isAllCompleted() {
+    public boolean isAllCompleted(final int registeredItemCount) {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT)
-                && configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
+                && configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount() == registeredItemCount;
     }
     
     /**

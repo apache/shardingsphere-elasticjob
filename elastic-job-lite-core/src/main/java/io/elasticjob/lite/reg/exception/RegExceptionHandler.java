@@ -20,6 +20,7 @@ package io.elasticjob.lite.reg.exception;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.KeeperException.ConnectionLossException;
 import org.apache.zookeeper.KeeperException.NoNodeException;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
@@ -54,6 +55,6 @@ public final class RegExceptionHandler {
     }
     
     private static boolean isIgnoredException(final Throwable cause) {
-        return cause instanceof ConnectionLossException || cause instanceof NoNodeException || cause instanceof NodeExistsException;
+        return cause instanceof ConnectionLossException || cause instanceof NoNodeException || cause instanceof NodeExistsException || cause instanceof KeeperException.BadVersionException;
     }
 }

@@ -20,6 +20,7 @@ package io.elasticjob.lite.internal.storage;
 import io.elasticjob.lite.exception.JobSystemException;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import io.elasticjob.lite.reg.exception.RegExceptionHandler;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.transaction.CuratorTransactionFinal;
 import org.apache.curator.framework.recipes.cache.TreeCache;
@@ -233,5 +234,26 @@ public final class JobNodeStorage {
      */
     public long getRegistryCenterTime() {
         return regCenter.getRegistryCenterTime(jobNodePath.getFullPath("systemTime/current"));
+    }
+    
+    /**
+     * Get the date and version of node.
+     * @param node the node path
+     * @return the value and version pair
+     */
+    public Pair<String, Integer> getNodeDataAndVersion(final String node) {
+        return regCenter.getDataAndVersion(jobNodePath.getFullPath(node));
+    }
+    
+    /**
+     * Set the date of node with version.
+     *
+     * @param node the node path
+     * @param value the data value
+     * @param version the data version
+     * @return true if set date with version successful
+     */
+    public Boolean setNodeDataAndVersion(final String node, final Object value, final int version) {
+        return regCenter.setDataWithVersion(jobNodePath.getFullPath(node), value.toString(), version);
     }
 }

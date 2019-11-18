@@ -25,6 +25,8 @@ import io.elasticjob.lite.reg.exception.RegExceptionHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.ACLProvider;
@@ -330,4 +332,34 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public Object getRawCache(final String cachePath) {
         return caches.get(cachePath + "/");
     }
+    
+    @Override
+    public Pair<String, Integer> getDataAndVersion(final String key) {
+        Stat stat = new Stat();
+        try {
+            byte[] bytes = client.getData().storingStatIn(stat).forPath(key);
+            return new ImmutablePair<>(new String(bytes, Charsets.UTF_8), stat.getVersion());
+            //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            //CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+        return null;
+    }
+    
+    @Override
+    public Boolean setDataWithVersion(final String key, final String value, final int version) {
+        try {
+            Stat stat = client.setData().withVersion(version).forPath(key, value.getBytes());
+            if (stat != null && stat.getVersion() == (version + 1)) {
+                return true;
+            }
+            //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            //CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+        return false;
+    }
+    
 }

@@ -17,6 +17,8 @@
 
 package io.elasticjob.lite.reg.base;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 /**
  * 注册中心.
  * 
@@ -88,4 +90,23 @@ public interface RegistryCenter {
      * @return 注册中心的原生客户端
      */
     Object getRawClient();
+    
+    /**
+     * Set data with version.
+     *
+     * @param key the key of the node
+     * @param value the value of the node
+     * @param version the version of the date
+     * @return true if set date with version successful
+     */
+    Boolean setDataWithVersion(String key, String value, int version);
+    
+    
+    /**
+     * Get data and version.
+     *
+     * @param key the key
+     * @return the value and version pair
+     */
+    Pair<String, Integer> getDataAndVersion(String key);
 }

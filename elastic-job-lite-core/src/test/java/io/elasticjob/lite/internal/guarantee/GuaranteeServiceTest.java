@@ -25,16 +25,18 @@ import io.elasticjob.lite.fixture.TestDataflowJob;
 import io.elasticjob.lite.fixture.TestSimpleJob;
 import io.elasticjob.lite.internal.config.ConfigurationService;
 import io.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
-
-import java.util.Arrays;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,33 +59,51 @@ public final class GuaranteeServiceTest {
     
     @Test
     public void assertRegisterStart() {
-        guaranteeService.registerStart(Arrays.asList(0, 1));
-        verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/started/0");
-        verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/started/1");
+        when(jobNodeStorage.getNodeDataAndVersion("guarantee/started")).thenReturn(new ImmutablePair<String, Integer>("", 0));
+        when(jobNodeStorage.setNodeDataAndVersion(anyString(), anyString(), anyInt())).thenReturn(true);
+        int res = guaranteeService.registerStart(2, anyInt());
+        verify(jobNodeStorage).setNodeDataAndVersion("guarantee/started", "2", 0);
+        assertEquals(2, res);
+    }
+    
+    @Test
+    public void assertRegisterStartWhenGetDataFirstNull() {
+        when(jobNodeStorage.getNodeDataAndVersion("guarantee/started")).thenReturn(null).thenReturn(new ImmutablePair<String, Integer>("1", 0));
+        when(jobNodeStorage.setNodeDataAndVersion(anyString(), anyString(), anyInt())).thenReturn(true);
+        int res = guaranteeService.registerStart(2, anyInt());
+        verify(jobNodeStorage).setNodeDataAndVersion("guarantee/started", "3", 0);
+        assertEquals(3, res);
+    }
+    
+    @Test
+    public void assertRegisterStartWhenSetDataFalse() {
+        when(jobNodeStorage.getNodeDataAndVersion("guarantee/started")).thenReturn(new ImmutablePair<String, Integer>("", 0));
+        when(jobNodeStorage.setNodeDataAndVersion(anyString(), anyString(), anyInt())).thenReturn(false);
+        int res = guaranteeService.registerStart(2, anyInt());
+        verify(jobNodeStorage, times(3)).setNodeDataAndVersion("guarantee/started", "2", 0);
+        assertEquals(0, res);
     }
     
     @Test
     public void assertIsNotAllStartedWhenRootNodeIsNotExisted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(false);
-        assertFalse(guaranteeService.isAllStarted());
+        assertFalse(guaranteeService.isAllStarted(anyInt()));
     }
     
     @Test
     public void assertIsNotAllStarted() {
-        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new DataflowJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 2).build(),
                 TestDataflowJob.class.getCanonicalName(), true)).build());
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
-        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1"));
-        assertFalse(guaranteeService.isAllStarted());
+        assertFalse(guaranteeService.isAllStarted(1));
     }
     
     @Test
     public void assertIsAllStarted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/started")).thenReturn(true);
-        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 2).build(),
                 TestSimpleJob.class.getCanonicalName())).build());
-        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/started")).thenReturn(Arrays.asList("0", "1", "2"));
-        assertTrue(guaranteeService.isAllStarted());
+        assertTrue(guaranteeService.isAllStarted(2));
     }
     
     @Test
@@ -94,33 +114,51 @@ public final class GuaranteeServiceTest {
     
     @Test
     public void assertRegisterComplete() {
-        guaranteeService.registerComplete(Arrays.asList(0, 1));
-        verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/completed/0");
-        verify(jobNodeStorage).createJobNodeIfNeeded("guarantee/completed/1");
+        when(jobNodeStorage.getNodeDataAndVersion("guarantee/completed")).thenReturn(new ImmutablePair<String, Integer>("", 0));
+        when(jobNodeStorage.setNodeDataAndVersion(anyString(), anyString(), anyInt())).thenReturn(true);
+        int res = guaranteeService.registerComplete(2, anyInt());
+        verify(jobNodeStorage).setNodeDataAndVersion("guarantee/completed", "2", 0);
+        assertEquals(2, res);
+    }
+    
+    @Test
+    public void assertRegisterCompleteWhenGetDataFirstNull() {
+        when(jobNodeStorage.getNodeDataAndVersion("guarantee/completed")).thenReturn(null).thenReturn(new ImmutablePair<String, Integer>("1", 0));
+        when(jobNodeStorage.setNodeDataAndVersion(anyString(), anyString(), anyInt())).thenReturn(true);
+        int res = guaranteeService.registerComplete(2, anyInt());
+        verify(jobNodeStorage).setNodeDataAndVersion("guarantee/completed", "3", 0);
+        assertEquals(3, res);
+    }
+    
+    @Test
+    public void assertRegisterCompleteWhenSetDataFalse() {
+        when(jobNodeStorage.getNodeDataAndVersion("guarantee/completed")).thenReturn(new ImmutablePair<String, Integer>("", 0));
+        when(jobNodeStorage.setNodeDataAndVersion(anyString(), anyString(), anyInt())).thenReturn(false);
+        int res = guaranteeService.registerComplete(2, anyInt());
+        verify(jobNodeStorage, times(3)).setNodeDataAndVersion("guarantee/completed", "2", 0);
+        assertEquals(0, res);
     }
     
     @Test
     public void assertIsNotAllCompletedWhenRootNodeIsNotExisted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(false);
-        assertFalse(guaranteeService.isAllCompleted());
+        assertFalse(guaranteeService.isAllCompleted(anyInt()));
     }
     
     @Test
     public void assertIsNotAllCompleted() {
-        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 10).build(),
+        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 2).build(),
                 TestSimpleJob.class.getCanonicalName())).build());
-        when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(false);
-        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1"));
-        assertFalse(guaranteeService.isAllCompleted());
+        when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
+        assertFalse(guaranteeService.isAllCompleted(1));
     }
     
     @Test
     public void assertIsAllCompleted() {
         when(jobNodeStorage.isJobNodeExisted("guarantee/completed")).thenReturn(true);
-        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 3).build(),
+        when(configService.load(false)).thenReturn(LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder("test_job", "0/1 * * * * ?", 2).build(),
                 TestSimpleJob.class.getCanonicalName())).build());
-        when(jobNodeStorage.getJobNodeChildrenKeys("guarantee/completed")).thenReturn(Arrays.asList("0", "1", "2"));
-        assertTrue(guaranteeService.isAllCompleted());
+        assertTrue(guaranteeService.isAllCompleted(2));
     }
     
     @Test

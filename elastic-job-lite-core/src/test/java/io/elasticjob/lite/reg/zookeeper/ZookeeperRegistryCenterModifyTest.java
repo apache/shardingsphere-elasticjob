@@ -18,18 +18,23 @@
 package io.elasticjob.lite.reg.zookeeper;
 
 import io.elasticjob.lite.fixture.EmbedTestingServer;
+import io.elasticjob.lite.reg.exception.RegException;
 import io.elasticjob.lite.reg.zookeeper.util.ZookeeperRegistryCenterTestUtil;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryOneTime;
+import org.apache.zookeeper.KeeperException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -122,5 +127,51 @@ public final class ZookeeperRegistryCenterModifyTest {
     public void assertRemove() {
         zkRegCenter.remove("/test");
         assertFalse(zkRegCenter.isExisted("/test"));
+    }
+    
+    @Test
+    public void assertGetDataAndVersion() {
+        zkRegCenter.persist("/test_get_data_ver", "value_0");
+        Pair<String, Integer> resultPair = zkRegCenter.getDataAndVersion("/test_get_data_ver");
+        assertEquals(resultPair.getRight(), new Integer(0));
+        zkRegCenter.update("/test_get_data_ver", "value_1");
+        resultPair = zkRegCenter.getDataAndVersion("/test_get_data_ver");
+        assertEquals(resultPair.getRight(), new Integer(1));
+        zkRegCenter.remove("/test_get_data_ver");
+        zkRegCenter.persist("/test_get_data_ver", "value_2");
+        resultPair = zkRegCenter.getDataAndVersion("/test_get_data_ver");
+        assertEquals(resultPair.getRight(), new Integer(0));
+        zkRegCenter.remove("/test_get_data_ver");
+    }
+    
+    @Test
+    public void assertGetDataAndVersionNodeNotExist() {
+        Pair<String, Integer> resultPair = zkRegCenter.getDataAndVersion("/test_get_data_ver");
+        assertNull(resultPair);
+    }
+    
+    @Test
+    public void assertSetDataWithValidVersion() {
+        zkRegCenter.persist("/test_set_data_wv", "3");
+        Pair<String, Integer> resultPair = zkRegCenter.getDataAndVersion("/test_set_data_wv");
+        Boolean isSetSuccessful = zkRegCenter.setDataWithVersion("/test_set_data_wv", String.valueOf(Integer.parseInt(resultPair.getLeft()) + 1), resultPair.getRight());
+        assertThat(zkRegCenter.getDirectly("/test_set_data_wv"), is("4"));
+        zkRegCenter.remove("/test_set_data_wv");
+    }
+    
+    @Test
+    public void assertSetDataWithInvalidVersion() {
+        zkRegCenter.persistEphemeral("/test_set_data_wv", "1");
+        Pair<String, Integer> resultPair = zkRegCenter.getDataAndVersion("/test_set_data_wv");
+        zkRegCenter.update("/test_set_data_wv", "0");
+        try {
+            zkRegCenter.setDataWithVersion("/test_set_data_wv", String.valueOf(Integer.parseInt(resultPair.getLeft()) + 1), resultPair.getRight());
+            // CHECKSTYLE:OFF
+        } catch (Exception e){
+            // CHECKSTYLE:on
+            assertThat(e, instanceOf(RegException.class));
+            assertThat(e.getCause(), instanceOf(KeeperException.BadVersionException.class));
+        }
+        zkRegCenter.remove("/test_set_data_wv");
     }
 }
