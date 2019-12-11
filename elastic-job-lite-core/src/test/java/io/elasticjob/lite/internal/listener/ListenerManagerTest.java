@@ -24,6 +24,7 @@ import io.elasticjob.lite.internal.failover.FailoverListenerManager;
 import io.elasticjob.lite.internal.guarantee.GuaranteeListenerManager;
 import io.elasticjob.lite.internal.instance.ShutdownListenerManager;
 import io.elasticjob.lite.internal.instance.TriggerListenerManager;
+import io.elasticjob.lite.internal.schedule.SchedulerFacade;
 import io.elasticjob.lite.internal.sharding.MonitorExecutionListenerManager;
 import io.elasticjob.lite.internal.sharding.ShardingListenerManager;
 import io.elasticjob.lite.internal.storage.JobNodeStorage;
@@ -69,6 +70,9 @@ public class ListenerManagerTest {
     @Mock
     private RegistryCenterConnectionStateListener regCenterConnectionStateListener;
     
+    @Mock
+    private SchedulerFacade schedulerFacade;
+    
     private final ListenerManager listenerManager = new ListenerManager(null, "test_job", Collections.<ElasticJobListener>emptyList());
     
     @Before
@@ -88,11 +92,12 @@ public class ListenerManagerTest {
     
     @Test
     public void assertStartAllListeners() {
-        listenerManager.startAllListeners();
+        listenerManager.startAllListeners(schedulerFacade);
         verify(electionListenerManager).start();
         verify(shardingListenerManager).start();
         verify(failoverListenerManager).start();
         verify(monitorExecutionListenerManager).start();
+        verify(shutdownListenerManager).setSchedulerFacade(schedulerFacade);
         verify(shutdownListenerManager).start();
         verify(rescheduleListenerManager).start();
         verify(guaranteeListenerManager).start();

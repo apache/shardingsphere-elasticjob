@@ -24,6 +24,7 @@ import io.elasticjob.lite.internal.failover.FailoverListenerManager;
 import io.elasticjob.lite.internal.guarantee.GuaranteeListenerManager;
 import io.elasticjob.lite.internal.instance.ShutdownListenerManager;
 import io.elasticjob.lite.internal.instance.TriggerListenerManager;
+import io.elasticjob.lite.internal.schedule.SchedulerFacade;
 import io.elasticjob.lite.internal.sharding.MonitorExecutionListenerManager;
 import io.elasticjob.lite.internal.sharding.ShardingListenerManager;
 import io.elasticjob.lite.internal.storage.JobNodeStorage;
@@ -73,16 +74,26 @@ public final class ListenerManager {
     
     /**
      * 开启所有监听器.
+     *
+     * @param schedulerFacade scheduler facade
      */
-    public void startAllListeners() {
+    public void startAllListeners(final SchedulerFacade schedulerFacade) {
         electionListenerManager.start();
         shardingListenerManager.start();
         failoverListenerManager.start();
         monitorExecutionListenerManager.start();
+        shutdownListenerManager.setSchedulerFacade(schedulerFacade);
         shutdownListenerManager.start();
         triggerListenerManager.start();
         rescheduleListenerManager.start();
         guaranteeListenerManager.start();
         jobNodeStorage.addConnectionStateListener(regCenterConnectionStateListener);
+    }
+    
+    /**
+     * Remove connection state listener.
+     */
+    public void removeConnectionStateListener() {
+        jobNodeStorage.removeConnectionStateListener(regCenterConnectionStateListener);
     }
 }
