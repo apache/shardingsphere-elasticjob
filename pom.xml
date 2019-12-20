@@ -27,7 +27,6 @@
         <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
         
         <lombok.version>1.16.4</lombok.version>
-        <guava.version>18.0</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.3.0</quartz.version>
         <curator.version>2.13.0</curator.version>
@@ -78,11 +77,6 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

@@ -10,11 +10,6 @@
     
     <dependencies>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>io.elasticjob</groupId>
             <artifactId>elastic-job-lite-spring</artifactId>
             <version>${project.parent.version}</version>
