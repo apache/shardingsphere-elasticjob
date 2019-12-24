@@ -17,7 +17,6 @@
 
 package io.elasticjob.lite.spring.api;
 
-import com.google.common.base.Optional;
 import io.elasticjob.lite.api.ElasticJob;
 import io.elasticjob.lite.api.JobScheduler;
 import io.elasticjob.lite.api.listener.ElasticJobListener;
@@ -56,7 +55,7 @@ public final class SpringJobScheduler extends JobScheduler {
     }
     
     @Override
-    protected Optional<ElasticJob> createElasticJobInstance() {
-        return Optional.fromNullable(elasticJob);
+    protected ElasticJob createElasticJobInstance() {
+        return elasticJob;
     }
 }

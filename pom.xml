@@ -14,8 +14,6 @@
         <module>elastic-job-lite-spring</module>
         <module>elastic-job-lite-lifecycle</module>
         <module>elastic-job-lite-console</module>
-        <module>elastic-job-lite-core-shade</module>
-        <module>elastic-job-lite-spring-shade</module>
     </modules>
     
     <properties>
@@ -27,6 +25,7 @@
         <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
         
         <lombok.version>1.16.4</lombok.version>
+        <guava.version>16.0.1</guava.version>
         <commons-lang3.version>3.4</commons-lang3.version>
         <quartz.version>2.3.0</quartz.version>
         <curator.version>2.13.0</curator.version>
@@ -57,6 +56,7 @@
         <maven-project-info-reports-plugin.version>2.8</maven-project-info-reports-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
+        <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
         <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <coveralls-maven-plugin.version>4.1.0</coveralls-maven-plugin.version>
@@ -77,6 +77,11 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -369,6 +374,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

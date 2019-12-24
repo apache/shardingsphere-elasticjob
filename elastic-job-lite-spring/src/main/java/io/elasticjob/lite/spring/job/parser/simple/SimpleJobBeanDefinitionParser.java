@@ -17,10 +17,10 @@
 
 package io.elasticjob.lite.spring.job.parser.simple;
 
-import com.google.common.base.Strings;
 import io.elasticjob.lite.config.simple.SimpleJobConfiguration;
 import io.elasticjob.lite.spring.job.parser.common.AbstractJobBeanDefinitionParser;
 import io.elasticjob.lite.spring.job.parser.common.BaseJobBeanDefinitionParserTag;
+import io.elasticjob.lite.spring.job.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.ParserContext;
@@ -37,7 +37,7 @@ public final class SimpleJobBeanDefinitionParser extends AbstractJobBeanDefiniti
     protected BeanDefinition getJobTypeConfigurationBeanDefinition(final ParserContext parserContext, final BeanDefinition jobCoreConfigurationBeanDefinition, final Element element) {
         BeanDefinitionBuilder result = BeanDefinitionBuilder.rootBeanDefinition(SimpleJobConfiguration.class);
         result.addConstructorArgValue(jobCoreConfigurationBeanDefinition);
-        if (Strings.isNullOrEmpty(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE))) {
+        if (StringUtils.isNullOrEmpty(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE))) {
             result.addConstructorArgValue(parserContext.getRegistry().getBeanDefinition(element.getAttribute(BaseJobBeanDefinitionParserTag.JOB_REF_ATTRIBUTE)).getBeanClassName());
         } else {
             result.addConstructorArgValue(element.getAttribute(BaseJobBeanDefinitionParserTag.CLASS_ATTRIBUTE));

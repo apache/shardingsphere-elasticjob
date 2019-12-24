@@ -17,12 +17,12 @@
 
 package io.elasticjob.lite.spring.job.parser.common;
 
-import com.google.common.base.Strings;
 import io.elasticjob.lite.config.JobCoreConfiguration;
 import io.elasticjob.lite.config.LiteJobConfiguration;
 import io.elasticjob.lite.event.rdb.JobEventRdbConfiguration;
 import io.elasticjob.lite.executor.handler.JobProperties;
 import io.elasticjob.lite.spring.api.SpringJobScheduler;
+import io.elasticjob.lite.spring.job.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -111,7 +111,7 @@ public abstract class AbstractJobBeanDefinitionParser extends AbstractBeanDefini
     
     private BeanDefinition createJobEventConfig(final Element element) {
         String eventTraceDataSourceName = element.getAttribute(BaseJobBeanDefinitionParserTag.EVENT_TRACE_RDB_DATA_SOURCE_ATTRIBUTE);
-        if (Strings.isNullOrEmpty(eventTraceDataSourceName)) {
+        if (StringUtils.isNullOrEmpty(eventTraceDataSourceName)) {
             return null;
         }
         BeanDefinitionBuilder factory = BeanDefinitionBuilder.rootBeanDefinition(JobEventRdbConfiguration.class);

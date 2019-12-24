@@ -17,7 +17,6 @@
 
 package io.elasticjob.lite.api;
 
-import com.google.common.base.Optional;
 import io.elasticjob.lite.api.listener.AbstractDistributeOnceElasticJobListener;
 import io.elasticjob.lite.api.listener.ElasticJobListener;
 import io.elasticjob.lite.api.script.ScriptJob;
@@ -113,9 +112,9 @@ public class JobScheduler {
     private JobDetail createJobDetail(final String jobClass) {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
-        Optional<ElasticJob> elasticJobInstance = createElasticJobInstance();
-        if (elasticJobInstance.isPresent()) {
-            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance.get());
+        ElasticJob elasticJobInstance = createElasticJobInstance();
+        if (elasticJobInstance != null) {
+            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance);
         } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
             try {
                 result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
@@ -126,8 +125,8 @@ public class JobScheduler {
         return result;
     }
     
-    protected Optional<ElasticJob> createElasticJobInstance() {
-        return Optional.absent();
+    protected ElasticJob createElasticJobInstance() {
+        return null;
     }
     
     private Scheduler createScheduler() {
