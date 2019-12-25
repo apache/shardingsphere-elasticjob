@@ -19,7 +19,6 @@ public final class JobShutdownHookPlugin extends ShutdownHookPlugin {
     
     @Override
     public void initialize(final String name, final Scheduler scheduler, final ClassLoadHelper classLoadHelper) throws SchedulerException {
-        super.initialize(name, scheduler, classLoadHelper);
         jobName = scheduler.getSchedulerName();
     }
     

@@ -37,14 +37,22 @@ public final class ShutdownListenerManager extends AbstractListenerManager {
     
     private final InstanceService instanceService;
     
-    private final SchedulerFacade schedulerFacade;
+    private SchedulerFacade schedulerFacade;
     
     public ShutdownListenerManager(final CoordinatorRegistryCenter regCenter, final String jobName) {
         super(regCenter, jobName);
         this.jobName = jobName;
         instanceNode = new InstanceNode(jobName);
         instanceService = new InstanceService(regCenter, jobName);
-        schedulerFacade = new SchedulerFacade(regCenter, jobName);
+    }
+    
+    /**
+     * Set schedulerFacade.
+     *
+     * @param schedulerFacade scheduler facade
+     */
+    public void setSchedulerFacade(final SchedulerFacade schedulerFacade) {
+        this.schedulerFacade = schedulerFacade;
     }
     
     @Override

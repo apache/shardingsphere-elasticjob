@@ -59,18 +59,6 @@ public final class SchedulerFacade {
     
     private ListenerManager listenerManager;
     
-    public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName) {
-        this.jobName = jobName;
-        configService = new ConfigurationService(regCenter, jobName);
-        leaderService = new LeaderService(regCenter, jobName);
-        serverService = new ServerService(regCenter, jobName);
-        instanceService = new InstanceService(regCenter, jobName);
-        shardingService = new ShardingService(regCenter, jobName);
-        executionService = new ExecutionService(regCenter, jobName);
-        monitorService = new MonitorService(regCenter, jobName);
-        reconcileService = new ReconcileService(regCenter, jobName);
-    }
-    
     public SchedulerFacade(final CoordinatorRegistryCenter regCenter, final String jobName, final List<ElasticJobListener> elasticJobListeners) {
         this.jobName = jobName;
         configService = new ConfigurationService(regCenter, jobName);
@@ -110,7 +98,7 @@ public final class SchedulerFacade {
      * @param enabled 作业是否启用
      */
     public void registerStartUpInfo(final boolean enabled) {
-        listenerManager.startAllListeners();
+        listenerManager.startAllListeners(this);
         leaderService.electLeader();
         serverService.persistOnline(enabled);
         instanceService.persistOnline();
@@ -125,6 +113,7 @@ public final class SchedulerFacade {
      * 终止作业调度.
      */
     public void shutdownInstance() {
+        listenerManager.removeConnectionStateListener();
         if (leaderService.isLeader()) {
             leaderService.removeLeader();
         }
