@@ -212,6 +212,15 @@ public final class JobNodeStorage {
         getClient().getConnectionStateListenable().addListener(listener);
     }
     
+    /**
+     * 注销连接状态监听器.
+     *
+     * @param listener 连接状态监听器
+     */
+    public void removeConnectionStateListener(final ConnectionStateListener listener) {
+        getClient().getConnectionStateListenable().removeListener(listener);
+    }
+    
     private CuratorFramework getClient() {
         return (CuratorFramework) regCenter.getRawClient();
     }

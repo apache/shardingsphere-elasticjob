@@ -18,6 +18,7 @@
 package io.elasticjob.lite.internal.schedule;
 
 import io.elasticjob.lite.api.strategy.JobInstance;
+import io.elasticjob.lite.executor.handler.ExecutorServiceHandlerRegistry;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -174,6 +175,7 @@ public final class JobRegistry {
         jobInstanceMap.remove(jobName);
         jobRunningMap.remove(jobName);
         currentShardingTotalCountMap.remove(jobName);
+        ExecutorServiceHandlerRegistry.remove(jobName);
     }
     
     /**
