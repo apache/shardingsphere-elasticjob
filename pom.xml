@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.locale>zh_CN</project.build.locale>
         
-        <springframework.version>[3.1.0.RELEASE,5.0.0.M1)</springframework.version>
+        <springframework.version>[3.1.0.RELEASE,5.2.2.RELEASE)</springframework.version>
         
         <lombok.version>1.16.4</lombok.version>
         <guava.version>16.0.1</guava.version>
@@ -125,12 +125,6 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>${springframework.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
                 <version>${springframework.version}</version>
                 <scope>provided</scope>
             </dependency>
