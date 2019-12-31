@@ -31,7 +31,15 @@ public final class GuaranteeNode {
     
     static final String STARTED_ROOT = ROOT + "/started";
     
+    static final String STARTED_SEQUENTIAL_ROOT = ROOT + "/started_sequential";
+    
+    static final String STARTED_SEQUENTIAL_NODE = STARTED_SEQUENTIAL_ROOT + "/instance";
+    
     static final String COMPLETED_ROOT = ROOT + "/completed";
+    
+    static final String COMPLETED_SEQUENTIAL_ROOT = ROOT + "/completed_sequential";
+    
+    static final String COMPLETED_SEQUENTIAL_NODE = COMPLETED_SEQUENTIAL_ROOT + "/instance";
     
     private final JobNodePath jobNodePath;
     

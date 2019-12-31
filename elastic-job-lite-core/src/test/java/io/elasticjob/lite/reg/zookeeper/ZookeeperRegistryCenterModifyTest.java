@@ -28,8 +28,10 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -87,35 +89,63 @@ public final class ZookeeperRegistryCenterModifyTest {
     
     @Test
     public void assertPersistSequential() throws Exception {
-        assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
-        assertThat(zkRegCenter.persistSequential("/sequential/test_sequential", "test_value"), startsWith("/sequential/test_sequential"));
+        assertThat(zkRegCenter.persistSequential("/persist/sequential/test_sequential", "test_value"), startsWith("/persist/sequential/test_sequential"));
+        assertThat(zkRegCenter.persistSequential("/persist/sequential/test_sequential", "test_value"), startsWith("/persist/sequential/test_sequential"));
         CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
-        List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/sequential");
+        List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/persist/sequential");
         assertThat(actual.size(), is(2));
         for (String each : actual) {
             assertThat(each, startsWith("test_sequential"));
-            assertThat(zkRegCenter.get("/sequential/" + each), startsWith("test_value"));
+            assertThat(zkRegCenter.get("/persist/sequential/" + each), startsWith("test_value"));
         }
     }
     
     @Test
     public void assertPersistEphemeralSequential() throws Exception {
-        zkRegCenter.persistEphemeralSequential("/sequential/test_ephemeral_sequential");
-        zkRegCenter.persistEphemeralSequential("/sequential/test_ephemeral_sequential");
+        zkRegCenter.persistEphemeralSequential("/ephemeral/sequential/test_ephemeral_sequential");
+        zkRegCenter.persistEphemeralSequential("/ephemeral/sequential/test_ephemeral_sequential");
         CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
         client.start();
         client.blockUntilConnected();
-        List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/sequential");
+        List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/ephemeral/sequential");
         assertThat(actual.size(), is(2));
         for (String each : actual) {
             assertThat(each, startsWith("test_ephemeral_sequential"));
         }
         zkRegCenter.close();
-        actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/sequential");
+        actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/ephemeral/sequential");
         assertTrue(actual.isEmpty());
         zkRegCenter.init();
+    }
+    
+    @Test
+    public void assertRemoveEphemeralSequentialRoot() throws Exception {
+        assertThat(zkRegCenter.persistEphemeralSequential("/ephemeral/sequential/test_ephemeral_sequential"), endsWith("test_ephemeral_sequential0000000000"));
+        zkRegCenter.remove("/ephemeral/sequential");
+        assertThat(zkRegCenter.persistEphemeralSequential("/ephemeral/sequential/test_ephemeral_sequential"), endsWith("test_ephemeral_sequential0000000000"));
+        assertThat(zkRegCenter.persistEphemeralSequential("/ephemeral/sequential/test_ephemeral_sequential"), endsWith("test_ephemeral_sequential0000000001"));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        client.start();
+        client.blockUntilConnected();
+        List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/ephemeral/sequential");
+        assertThat(actual.size(), is(2));
+        zkRegCenter.remove("/ephemeral/sequential");
+    }
+    
+    @Test
+    public void assertRemoveEphemeralSequentialChild() throws Exception {
+        String ephemeralSequentialNode = zkRegCenter.persistEphemeralSequential("/ephemeral/sequential/test_ephemeral_sequential");
+        assertThat(ephemeralSequentialNode, equalTo("/ephemeral/sequential/test_ephemeral_sequential0000000000"));
+        zkRegCenter.remove(ephemeralSequentialNode);
+        assertThat(zkRegCenter.persistEphemeralSequential("/ephemeral/sequential/test_ephemeral_sequential"), endsWith("test_ephemeral_sequential0000000001"));
+        CuratorFramework client = CuratorFrameworkFactory.newClient(EmbedTestingServer.getConnectionString(), new RetryOneTime(2000));
+        client.start();
+        client.blockUntilConnected();
+        List<String> actual = client.getChildren().forPath("/" + ZookeeperRegistryCenterModifyTest.class.getName() + "/ephemeral/sequential");
+        assertThat(actual.size(), is(1));
+        zkRegCenter.remove("/ephemeral/sequential");
     }
     
     @Test

@@ -68,6 +68,7 @@ public final class DistributeOnceElasticJobListenerTest {
     @Test
     public void assertBeforeJobExecutedWhenIsAllStarted() {
         when(guaranteeService.isAllStarted()).thenReturn(true);
+        when(guaranteeService.isQualifiedBeforeAllStarted()).thenReturn(true);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
         verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
         verify(elasticJobListenerCaller).before();
@@ -95,6 +96,7 @@ public final class DistributeOnceElasticJobListenerTest {
     @Test
     public void assertAfterJobExecutedWhenIsAllCompleted() {
         when(guaranteeService.isAllCompleted()).thenReturn(true);
+        when(guaranteeService.isQualifiedAfterAllCompleted()).thenReturn(true);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
         verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
         verify(elasticJobListenerCaller).after();

@@ -141,6 +141,16 @@ public final class JobNodeStorage {
     }
     
     /**
+     * 创建临时有序作业节点.
+     *
+     * @param node 作业节点名称
+     * @return the node
+     */
+    public String createEphemeralSequentialJobNode(final String node) {
+        return regCenter.persistEphemeralSequential(jobNodePath.getFullPath(node));
+    }
+    
+    /**
      * 更新节点数据.
      * 
      * @param node 作业节点名称

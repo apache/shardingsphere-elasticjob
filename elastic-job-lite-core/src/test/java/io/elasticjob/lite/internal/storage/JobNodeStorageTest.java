@@ -144,6 +144,12 @@ public final class JobNodeStorageTest {
     }
     
     @Test
+    public void assertcreateEphemeralSequentialJobNode() {
+        jobNodeStorage.createEphemeralSequentialJobNode("test_ephemeral_sequential");
+        verify(regCenter).persistEphemeralSequential("/test_job/test_ephemeral_sequential");
+    }
+    
+    @Test
     public void assertUpdateJobNode() {
         jobNodeStorage.updateJobNode("config/cron", "0/1 * * * * ?");
         verify(regCenter).update("/test_job/config/cron", "0/1 * * * * ?");

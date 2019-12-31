@@ -17,11 +17,15 @@
 
 package io.elasticjob.lite.internal.guarantee;
 
+import com.google.common.collect.Lists;
 import io.elasticjob.lite.internal.config.ConfigurationService;
 import io.elasticjob.lite.internal.storage.JobNodeStorage;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * 保证分布式任务全部开始和结束状态的服务.
@@ -57,7 +61,33 @@ public final class GuaranteeService {
      */
     public boolean isAllStarted() {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.STARTED_ROOT)
-                && configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount() == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
+                && configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount()
+                == jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size();
+    }
+    
+    /**
+     * 判断是否有资格执行分布式任务.
+     *
+     * @return 是否获取资格执行分布式任务
+     */
+    public boolean isQualifiedBeforeAllStarted() {
+        String sequentialJobNode = jobNodeStorage.createEphemeralSequentialJobNode(GuaranteeNode.STARTED_SEQUENTIAL_NODE);
+        if (sequentialJobNode == null || sequentialJobNode.isEmpty()) {
+            return false;
+        }
+        List<String> children = jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_SEQUENTIAL_ROOT);
+        if (children != null && children.size() > 0 && jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT).size() > 0) {
+            List<String> sortedList = Lists.newArrayList(children);
+            Collections.sort(sortedList,
+                new Comparator<String>() {
+                    @Override
+                    public int compare(final String lhs, final String rhs) {
+                        return lhs.compareTo(rhs);
+                    }
+                });
+            return sortedList.get(0) != null && sequentialJobNode.endsWith(sortedList.get(0));
+        }
+        return false;
     }
     
     /**
@@ -65,6 +95,7 @@ public final class GuaranteeService {
      */
     public void clearAllStartedInfo() {
         jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.STARTED_ROOT);
+        jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.STARTED_SEQUENTIAL_ROOT);
     }
     
     /**
@@ -85,7 +116,33 @@ public final class GuaranteeService {
      */
     public boolean isAllCompleted() {
         return jobNodeStorage.isJobNodeExisted(GuaranteeNode.COMPLETED_ROOT)
-                && configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount() <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
+                && configService.load(false).getTypeConfig().getCoreConfig().getShardingTotalCount()
+                <= jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size();
+    }
+    
+    /**
+     * 判断是否有资格执行分布式任务.
+     *
+     * @return 是否获取资格执行分布式任务
+     */
+    public boolean isQualifiedAfterAllCompleted() {
+        String sequentialJobNode = jobNodeStorage.createEphemeralSequentialJobNode(GuaranteeNode.COMPLETED_SEQUENTIAL_NODE);
+        if (sequentialJobNode == null || sequentialJobNode.isEmpty()) {
+            return false;
+        }
+        List<String> children = jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_SEQUENTIAL_ROOT);
+        if (children != null && children.size() > 0 && jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT).size() > 0) {
+            List<String> sortedList = Lists.newArrayList(children);
+            Collections.sort(sortedList,
+                    new Comparator<String>() {
+                        @Override
+                        public int compare(final String lhs, final String rhs) {
+                            return lhs.compareTo(rhs);
+                        }
+                    });
+            return sortedList.get(0) != null && sequentialJobNode.endsWith(sortedList.get(0));
+        }
+        return false;
     }
     
     /**
@@ -93,5 +150,6 @@ public final class GuaranteeService {
      */
     public void clearAllCompletedInfo() {
         jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.COMPLETED_ROOT);
+        jobNodeStorage.removeJobNodeIfExisted(GuaranteeNode.COMPLETED_SEQUENTIAL_ROOT);
     }
 }

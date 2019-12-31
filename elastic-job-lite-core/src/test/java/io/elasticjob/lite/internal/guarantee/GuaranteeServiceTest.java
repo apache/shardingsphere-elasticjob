@@ -31,7 +31,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -87,9 +89,33 @@ public final class GuaranteeServiceTest {
     }
     
     @Test
+    public void assertIsQualifiedBeforeAllStarted() {
+        when(jobNodeStorage.createEphemeralSequentialJobNode(GuaranteeNode.STARTED_SEQUENTIAL_NODE)).thenReturn("instance0000000000");
+        List<String> children = new ArrayList<String>();
+        children.add("instance0000000001");
+        children.add("instance0000000002");
+        children.add("instance0000000000");
+        when(jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_SEQUENTIAL_ROOT)).thenReturn(children);
+        when(jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT)).thenReturn(children);
+        assertTrue(guaranteeService.isQualifiedBeforeAllStarted());
+    }
+    
+    @Test
+    public void assertIsNotQualifiedBeforeAllStarted() {
+        when(jobNodeStorage.createEphemeralSequentialJobNode(GuaranteeNode.STARTED_SEQUENTIAL_NODE)).thenReturn("instance0000000001");
+        List<String> children = new ArrayList<String>();
+        children.add("instance0000000000");
+        children.add("instance0000000001");
+        when(jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_SEQUENTIAL_ROOT)).thenReturn(children);
+        when(jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.STARTED_ROOT)).thenReturn(children);
+        assertFalse(guaranteeService.isQualifiedBeforeAllStarted());
+    }
+    
+    @Test
     public void assertClearAllStartedInfo() {
         guaranteeService.clearAllStartedInfo();
         verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/started");
+        verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/started_sequential");
     }
     
     @Test
@@ -124,8 +150,32 @@ public final class GuaranteeServiceTest {
     }
     
     @Test
+    public void assertIsQualifiedAfterAllCompleted() {
+        when(jobNodeStorage.createEphemeralSequentialJobNode(GuaranteeNode.COMPLETED_SEQUENTIAL_NODE)).thenReturn("instance0000000000");
+        List<String> children = new ArrayList<String>();
+        children.add("instance0000000001");
+        children.add("instance0000000002");
+        children.add("instance0000000000");
+        when(jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_SEQUENTIAL_ROOT)).thenReturn(children);
+        when(jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT)).thenReturn(children);
+        assertTrue(guaranteeService.isQualifiedAfterAllCompleted());
+    }
+    
+    @Test
+    public void assertIsNotQualifiedAfterAllCompleted() {
+        when(jobNodeStorage.createEphemeralSequentialJobNode(GuaranteeNode.COMPLETED_SEQUENTIAL_NODE)).thenReturn("instance0000000001");
+        List<String> children = new ArrayList<String>();
+        children.add("instance0000000000");
+        children.add("instance0000000001");
+        when(jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_SEQUENTIAL_ROOT)).thenReturn(children);
+        when(jobNodeStorage.getJobNodeChildrenKeys(GuaranteeNode.COMPLETED_ROOT)).thenReturn(children);
+        assertFalse(guaranteeService.isQualifiedAfterAllCompleted());
+    }
+    
+    @Test
     public void assertClearAllCompletedInfo() {
         guaranteeService.clearAllCompletedInfo();
         verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/completed");
+        verify(jobNodeStorage).removeJobNodeIfExisted("guarantee/completed_sequential");
     }
 }

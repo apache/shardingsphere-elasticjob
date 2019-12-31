@@ -59,7 +59,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     @Override
     public final void beforeJobExecuted(final ShardingContexts shardingContexts) {
         guaranteeService.registerStart(shardingContexts.getShardingItemParameters().keySet());
-        if (guaranteeService.isAllStarted()) {
+        if (guaranteeService.isAllStarted() && guaranteeService.isQualifiedBeforeAllStarted()) {
             doBeforeJobExecutedAtLastStarted(shardingContexts);
             guaranteeService.clearAllStartedInfo();
             return;
@@ -81,7 +81,7 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
     @Override
     public final void afterJobExecuted(final ShardingContexts shardingContexts) {
         guaranteeService.registerComplete(shardingContexts.getShardingItemParameters().keySet());
-        if (guaranteeService.isAllCompleted()) {
+        if (guaranteeService.isAllCompleted() && guaranteeService.isQualifiedAfterAllCompleted()) {
             doAfterJobExecutedAtLastCompleted(shardingContexts);
             guaranteeService.clearAllCompletedInfo();
             return;
