@@ -30,15 +30,18 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.unitils.util.ReflectionUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public final class DistributeOnceElasticJobListenerTest {
+    
+    private Map<Integer, String> map = new HashMap<>(2, 1);
     
     @Mock
     private GuaranteeService guaranteeService;
@@ -59,10 +62,40 @@ public final class DistributeOnceElasticJobListenerTest {
         distributeOnceElasticJobListener = new TestDistributeOnceElasticJobListener(elasticJobListenerCaller);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "guaranteeService", false), guaranteeService);
         ReflectionUtils.setFieldValue(distributeOnceElasticJobListener, ReflectionUtils.getFieldWithName(AbstractDistributeOnceElasticJobListener.class, "timeService", false), timeService);
-        Map<Integer, String> map = new HashMap<>(2, 1);
+        map.clear();
         map.put(0, "");
         map.put(1, "");
         shardingContexts = new ShardingContexts("fake_task_id", "test_job", 10, "", map);
+    }
+    
+    @Test
+    public void assertBeforeJobExecutedWhenNotTimeoutWithoutItem0() {
+        map.clear();
+        map.put(2, "");
+        when(timeService.getCurrentMillis()).thenReturn(0L);
+        distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
+        verify(guaranteeService).registerStart(Sets.newHashSet(2));
+        verify(guaranteeService, times(0)).isAllStarted();
+        verify(elasticJobListenerCaller, times(0)).before();
+        verify(guaranteeService, times(0)).clearAllStartedInfo();
+    }
+    
+    @Test
+    public void assertBeforeJobExecutedWhenTimeoutWithoutItem0() {
+        map.clear();
+        map.put(2, "");
+        when(timeService.getCurrentMillis()).thenReturn(0L, 1L);
+        try {
+            distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
+            // CHECKSTYLE:OFF
+        } catch (Exception ex){
+            // CHECKSTYLE:ON
+            assertThat(ex, instanceOf(JobSystemException.class));
+        }
+        verify(guaranteeService).registerStart(Sets.newHashSet(2));
+        verify(guaranteeService, times(0)).isAllStarted();
+        verify(elasticJobListenerCaller, times(0)).before();
+        verify(guaranteeService).clearAllStartedInfo();
     }
     
     @Test
@@ -70,26 +103,84 @@ public final class DistributeOnceElasticJobListenerTest {
         when(guaranteeService.isAllStarted()).thenReturn(true);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
         verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
+        verify(guaranteeService).isAllStarted();
         verify(elasticJobListenerCaller).before();
         verify(guaranteeService).clearAllStartedInfo();
     }
     
     @Test
-    public void assertBeforeJobExecutedWhenIsNotAllStartedAndNotTimeout() {
-        when(guaranteeService.isAllStarted()).thenReturn(false);
+    public void assertBeforeJobExecutedAtLastAllStartedBeforeTimeout() {
+        when(guaranteeService.isAllStarted()).thenReturn(false, true);
         when(timeService.getCurrentMillis()).thenReturn(0L);
         distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
         verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
-        verify(guaranteeService, times(0)).clearAllStartedInfo();
+        verify(guaranteeService, times(2)).isAllStarted();
+        verify(elasticJobListenerCaller).before();
+        verify(guaranteeService).clearAllStartedInfo();
     }
     
-    @Test(expected = JobSystemException.class)
+    @Test
     public void assertBeforeJobExecutedWhenIsNotAllStartedAndTimeout() {
         when(guaranteeService.isAllStarted()).thenReturn(false);
-        when(timeService.getCurrentMillis()).thenReturn(0L, 2L);
-        distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
-        verify(guaranteeService).registerStart(Arrays.asList(0, 1));
-        verify(guaranteeService, times(0)).clearAllStartedInfo();
+        when(timeService.getCurrentMillis()).thenReturn(0L, 1L);
+        try {
+            distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
+            // CHECKSTYLE:OFF
+        } catch (Exception ex){
+            // CHECKSTYLE:ON
+            assertThat(ex, instanceOf(JobSystemException.class));
+        }
+        verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
+        verify(guaranteeService).isAllStarted();
+        verify(elasticJobListenerCaller, times(0)).before();
+        verify(guaranteeService).clearAllStartedInfo();
+    }
+    
+    @Test
+    public void assertBeforeJobExecutedWhenIsNotAllStartedAndAtLastTimeout() {
+        when(guaranteeService.isAllStarted()).thenReturn(false);
+        when(timeService.getCurrentMillis()).thenReturn(0L, 0L, 1L);
+        try {
+            distributeOnceElasticJobListener.beforeJobExecuted(shardingContexts);
+            // CHECKSTYLE:OFF
+        } catch (Exception ex){
+            // CHECKSTYLE:ON
+            assertThat(ex, instanceOf(JobSystemException.class));
+        }
+        verify(guaranteeService).registerStart(Sets.newHashSet(0, 1));
+        verify(guaranteeService, times(2)).isAllStarted();
+        verify(elasticJobListenerCaller, times(0)).before();
+        verify(guaranteeService).clearAllStartedInfo();
+    }
+    
+    @Test
+    public void assertAfterJobExecutedWhenNotTimeoutWithoutItem0() {
+        map.clear();
+        map.put(2, "");
+        when(timeService.getCurrentMillis()).thenReturn(0L);
+        distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
+        verify(guaranteeService).registerComplete(Sets.newHashSet(2));
+        verify(guaranteeService, times(0)).isAllCompleted();
+        verify(elasticJobListenerCaller, times(0)).after();
+        verify(guaranteeService, times(0)).clearAllCompletedInfo();
+    }
+    
+    @Test
+    public void assertAfterJobExecutedWhenTimeoutWithoutItem0() {
+        map.clear();
+        map.put(2, "");
+        when(timeService.getCurrentMillis()).thenReturn(0L, 1L);
+        try {
+            distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
+            // CHECKSTYLE:OFF
+        } catch (Exception ex){
+            // CHECKSTYLE:ON
+            assertThat(ex, instanceOf(JobSystemException.class));
+        }
+        verify(guaranteeService).registerComplete(Sets.newHashSet(2));
+        verify(guaranteeService, times(0)).isAllCompleted();
+        verify(elasticJobListenerCaller, times(0)).after();
+        verify(guaranteeService).clearAllCompletedInfo();
     }
     
     @Test
@@ -97,25 +188,53 @@ public final class DistributeOnceElasticJobListenerTest {
         when(guaranteeService.isAllCompleted()).thenReturn(true);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
         verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
+        verify(guaranteeService).isAllCompleted();
         verify(elasticJobListenerCaller).after();
         verify(guaranteeService).clearAllCompletedInfo();
     }
     
     @Test
-    public void assertAfterJobExecutedWhenIsAllCompletedAndNotTimeout() {
-        when(guaranteeService.isAllCompleted()).thenReturn(false);
+    public void assertAfterJobExecutedAtLastAllCompletedBeforeTimeout() {
+        when(guaranteeService.isAllCompleted()).thenReturn(false, true);
         when(timeService.getCurrentMillis()).thenReturn(0L);
         distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
         verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
-        verify(guaranteeService, times(0)).clearAllCompletedInfo();
+        verify(guaranteeService, times(2)).isAllCompleted();
+        verify(elasticJobListenerCaller).after();
+        verify(guaranteeService).clearAllCompletedInfo();
     }
     
-    @Test(expected = JobSystemException.class)
-    public void assertAfterJobExecutedWhenIsAllCompletedAndTimeout() {
+    @Test
+    public void assertAfterJobExecutedWhenIsNotCompletedAndTimeout() {
         when(guaranteeService.isAllCompleted()).thenReturn(false);
-        when(timeService.getCurrentMillis()).thenReturn(0L, 2L);
-        distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
-        verify(guaranteeService).registerComplete(Arrays.asList(0, 1));
-        verify(guaranteeService, times(0)).clearAllCompletedInfo();
+        when(timeService.getCurrentMillis()).thenReturn(0L, 1L);
+        try {
+            distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
+            // CHECKSTYLE:OFF
+        } catch (Exception ex){
+            // CHECKSTYLE:ON
+            assertThat(ex, instanceOf(JobSystemException.class));
+        }
+        verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
+        verify(guaranteeService).isAllCompleted();
+        verify(elasticJobListenerCaller, times(0)).after();
+        verify(guaranteeService).clearAllCompletedInfo();
+    }
+    
+    @Test
+    public void assertAfterJobExecutedWhenIsNotCompletedAndAtLastTimeout() {
+        when(guaranteeService.isAllCompleted()).thenReturn(false);
+        when(timeService.getCurrentMillis()).thenReturn(0L, 0L, 1L);
+        try {
+            distributeOnceElasticJobListener.afterJobExecuted(shardingContexts);
+            // CHECKSTYLE:OFF
+        } catch (Exception ex){
+            // CHECKSTYLE:ON
+            assertThat(ex, instanceOf(JobSystemException.class));
+        }
+        verify(guaranteeService).registerComplete(Sets.newHashSet(0, 1));
+        verify(guaranteeService, times(2)).isAllCompleted();
+        verify(elasticJobListenerCaller, times(0)).after();
+        verify(guaranteeService).clearAllCompletedInfo();
     }
 }
