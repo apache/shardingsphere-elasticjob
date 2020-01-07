@@ -152,15 +152,19 @@ public final class LiteJobFacade implements JobFacade {
     
     @Override
     public void beforeJobExecuted(final ShardingContexts shardingContexts) {
-        for (ElasticJobListener each : elasticJobListeners) {
-            each.beforeJobExecuted(shardingContexts);
+        if (!shardingContexts.getShardingItemParameters().isEmpty()) {
+            for (ElasticJobListener each : elasticJobListeners) {
+                each.beforeJobExecuted(shardingContexts);
+            }
         }
     }
     
     @Override
     public void afterJobExecuted(final ShardingContexts shardingContexts) {
-        for (ElasticJobListener each : elasticJobListeners) {
-            each.afterJobExecuted(shardingContexts);
+        if (!shardingContexts.getShardingItemParameters().isEmpty()) {
+            for (ElasticJobListener each : elasticJobListeners) {
+                each.afterJobExecuted(shardingContexts);
+            }
         }
     }
     
