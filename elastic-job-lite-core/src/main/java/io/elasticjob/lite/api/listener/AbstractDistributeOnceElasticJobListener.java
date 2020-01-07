@@ -68,11 +68,11 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
                     guaranteeService.clearAllStartedInfo();
                     return;
                 }
-                BlockUtils.sleep(500L);
                 if (timeService.getCurrentMillis() - before >= startedTimeoutMilliseconds) {
                     guaranteeService.clearAllStartedInfo();
                     handleTimeout(startedTimeoutMilliseconds);
                 }
+                BlockUtils.sleep(500L);
             }
         } else {
             try {
@@ -100,11 +100,11 @@ public abstract class AbstractDistributeOnceElasticJobListener implements Elasti
                     guaranteeService.clearAllCompletedInfo();
                     return;
                 }
-                BlockUtils.sleep(500L);
                 if (timeService.getCurrentMillis() - before >= completedTimeoutMilliseconds) {
                     guaranteeService.clearAllCompletedInfo();
                     handleTimeout(completedTimeoutMilliseconds);
                 }
+                BlockUtils.sleep(500L);
             }
         } else {
             try {
