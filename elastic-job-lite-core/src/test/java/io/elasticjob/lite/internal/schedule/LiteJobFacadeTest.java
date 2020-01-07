@@ -43,6 +43,8 @@ import org.unitils.util.ReflectionUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -208,14 +210,30 @@ public class LiteJobFacadeTest {
     }
     
     @Test
-    public void assertBeforeJobExecuted() {
+    public void assertNotBeforeJobExecuted() {
         liteJobFacade.beforeJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
+        verify(caller, times(0)).before();
+    }
+    
+    @Test
+    public void assertNotAfterJobExecuted() {
+        liteJobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
+        verify(caller, times(0)).after();
+    }
+    
+    @Test
+    public void assertBeforeJobExecuted() {
+        Map<Integer, String> shardingItems = new HashMap<Integer, String>(1);
+        shardingItems.put(0, "");
+        liteJobFacade.beforeJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", shardingItems));
         verify(caller).before();
     }
     
     @Test
     public void assertAfterJobExecuted() {
-        liteJobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", Collections.<Integer, String>emptyMap()));
+        Map<Integer, String> shardingItems = new HashMap<Integer, String>(1);
+        shardingItems.put(0, "");
+        liteJobFacade.afterJobExecuted(new ShardingContexts("fake_task_id", "test_job", 10, "", shardingItems));
         verify(caller).after();
     }
     
