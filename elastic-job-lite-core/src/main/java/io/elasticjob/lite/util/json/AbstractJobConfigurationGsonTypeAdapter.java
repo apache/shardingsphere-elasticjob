@@ -38,10 +38,10 @@ import java.util.Map;
 /**
  * 作业配置的Json转换适配器.
  *
- * @param <T> 作业配置对象泛型
- *
  * @author zhangliang
  * @author caohao
+ *
+ * @param <T> 作业配置对象泛型
  */
 public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootConfiguration> extends TypeAdapter<T> {
     
@@ -135,7 +135,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         return result;
     }
     
-    protected abstract void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException;
+    protected abstract void addToCustomizedValueMap(String jsonName, JsonReader in, Map<String, Object> customizedValueMap) throws IOException;
     
     private JobCoreConfiguration getJobCoreConfiguration(final String jobName, final String cron, final int shardingTotalCount,
                                                          final String shardingItemParameters, final String jobParameter, final boolean failover,
@@ -165,7 +165,7 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         }
     }
     
-    protected abstract T getJobRootConfiguration(final JobTypeConfiguration typeConfig, final Map<String, Object> customizedValueMap);
+    protected abstract T getJobRootConfiguration(JobTypeConfiguration typeConfig, Map<String, Object> customizedValueMap);
     
     @Override
     public void write(final JsonWriter out, final T value) throws IOException {
@@ -192,5 +192,5 @@ public abstract class AbstractJobConfigurationGsonTypeAdapter<T extends JobRootC
         out.endObject();
     }
     
-    protected abstract void writeCustomized(final JsonWriter out, final T value) throws IOException;
+    protected abstract void writeCustomized(JsonWriter out, T value) throws IOException;
 }

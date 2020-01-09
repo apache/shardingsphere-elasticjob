@@ -37,7 +37,10 @@ public class RefFooSimpleElasticJob implements SimpleJob {
         fooService.foo();
         completed = true;
     }
-
+    
+    /**
+     * Set completed to false.
+     */
     public static void reset() {
         completed = false;
     }

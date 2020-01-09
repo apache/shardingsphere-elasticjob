@@ -38,7 +38,7 @@ public class JobEventRdbSearchTest {
     
     private static JobEventRdbStorage storage;
     
-    private static JobEventRdbSearch  repository;
+    private static JobEventRdbSearch repository;
     
     @BeforeClass
     public static void setUpClass() throws SQLException {

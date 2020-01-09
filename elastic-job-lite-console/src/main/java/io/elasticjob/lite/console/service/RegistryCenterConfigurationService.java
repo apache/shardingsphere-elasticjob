@@ -50,7 +50,7 @@ public interface RegistryCenterConfigurationService {
      * @param configs 全部注册中心配置
      * @return 注册中心配置
      */
-    RegistryCenterConfiguration find(final String name, final RegistryCenterConfigurations configs);
+    RegistryCenterConfiguration find(String name, RegistryCenterConfigurations configs);
     
     /**
      * 读取已连接的注册中心配置.

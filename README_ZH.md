@@ -1,5 +1,5 @@
 # Elastic-Job - 分布式作业调度解决方案
-
+[![Total Lines](https://tokei.rs/b1/github/elasticjob/elastic-job-lite?category=lines)](https://github.com/elasticjob/elastic-job-lite)
 [![Build Status](https://secure.travis-ci.org/elasticjob/elastic-job-lite.png?branch=master)](https://travis-ci.org/elasticjob/elastic-job-lite)
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-lite/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.dangdang/elastic-job-lite)
 [![Gitter](https://badges.gitter.im/Elastic-JOB/elastic-job-lite.svg)](https://gitter.im/Elastic-JOB/elasticjob?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -31,7 +31,7 @@ Elastic-Job-Lite定位为轻量级无中心化解决方案，使用jar包的形�
 
 ## Elastic-Job-Lite
 
-![Elastic-Job-Lite Architecture](http://ovfotjrsi.bkt.clouddn.com/docs/img/architecture/elastic_job_lite.png)
+![Elastic-Job-Lite Architecture](http://elasticjob.io/docs/elastic-job-lite/img/architecture/elastic_job_lite.png)
 
 
 # [Release Notes](https://github.com/elasticjob/elastic-job/releases)

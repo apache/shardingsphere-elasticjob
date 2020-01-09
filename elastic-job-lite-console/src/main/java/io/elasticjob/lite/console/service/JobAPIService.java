@@ -25,17 +25,47 @@ import io.elasticjob.lite.lifecycle.api.ShardingOperateAPI;
 import io.elasticjob.lite.lifecycle.api.ShardingStatisticsAPI;
 
 public interface JobAPIService {
-    
+
+    /**
+     * Job settings API.
+     *
+     * @return JobSettingsAPI
+     */
     JobSettingsAPI getJobSettingsAPI();
-    
+
+    /**
+     * Job operate API.
+     *
+     * @return JobOperateAPI
+     */
     JobOperateAPI getJobOperatorAPI();
-    
+
+    /**
+     * Sharding operate API.
+     *
+     * @return ShardingOperateAPI
+     */
     ShardingOperateAPI getShardingOperateAPI();
-    
+
+    /**
+     * Job statistics API.
+     *
+     * @return JobStatisticsAPI
+     */
     JobStatisticsAPI getJobStatisticsAPI();
-    
+
+    /**
+     * Servers statistics API.
+     *
+     * @return ServerStatisticsAPI
+     */
     ServerStatisticsAPI getServerStatisticsAPI();
-    
+
+    /**
+     * Sharding statistics API.
+     *
+     * @return ShardingStatisticsAPI
+     */
     ShardingStatisticsAPI getShardingStatisticsAPI();
     
 }

@@ -44,5 +44,5 @@ public abstract class AbstractJobListener implements TreeCacheListener {
         dataChanged(path, event.getType(), null == childData.getData() ? "" : new String(childData.getData(), Charsets.UTF_8));
     }
     
-    protected abstract void dataChanged(final String path, final Type eventType, final String data);
+    protected abstract void dataChanged(String path, Type eventType, String data);
 }

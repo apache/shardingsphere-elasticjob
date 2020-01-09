@@ -109,7 +109,6 @@ public final class ExecutionServiceTest {
         assertFalse(JobRegistry.getInstance().isJobRunning("test_job"));
     }
     
-    
     @Test
     public void assertClearAllRunningInfo() {
         when(configService.load(true)).thenReturn(LiteJobConfiguration.newBuilder(

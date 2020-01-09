@@ -22,7 +22,6 @@ import io.elasticjob.lite.lifecycle.domain.JobBriefInfo;
 import io.elasticjob.lite.lifecycle.fixture.LifecycleJsonConstants;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import com.google.common.collect.Lists;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -31,7 +30,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -71,7 +70,7 @@ public final class JobStatisticsAPIImplTest {
         assertThat(jobBrief.getCron(), is("0/1 * * * * ?"));
         assertThat(jobBrief.getInstanceCount(), is(2));
         assertThat(jobBrief.getShardingTotalCount(), is(3));
-        assertThat(jobBrief.getStatus(), Is.is(JobBriefInfo.JobStatus.OK));
+        assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.OK));
     }
     
     @Test
@@ -85,7 +84,7 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
         when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
-        assertThat(jobBrief.getStatus(), Is.is(JobBriefInfo.JobStatus.OK));
+        assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.OK));
     }
     
     @Test
@@ -100,7 +99,7 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job/sharding/0/instance")).thenReturn("ip1@-@defaultInstance");
         when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
-        assertThat(jobBrief.getStatus(), Is.is(JobBriefInfo.JobStatus.DISABLED));
+        assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.DISABLED));
     }
     
     @Test
@@ -114,7 +113,7 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job/sharding/1/instance")).thenReturn("ip2@-@defaultInstance");
         when(regCenter.get("/test_job/sharding/2/instance")).thenReturn("ip3@-@defaultInstance");
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
-        assertThat(jobBrief.getStatus(), Is.is(JobBriefInfo.JobStatus.SHARDING_FLAG));
+        assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.SHARDING_FLAG));
     }
     
     @Test
@@ -123,7 +122,7 @@ public final class JobStatisticsAPIImplTest {
         when(regCenter.get("/test_job/config")).thenReturn(LifecycleJsonConstants.getSimpleJobJson("test_job", "desc"));
         when(regCenter.getChildrenKeys("/test_job/servers")).thenReturn(Arrays.asList("ip1", "ip2"));
         JobBriefInfo jobBrief = jobStatisticsAPI.getJobBriefInfo("test_job");
-        assertThat(jobBrief.getStatus(), Is.is(JobBriefInfo.JobStatus.CRASHED));
+        assertThat(jobBrief.getStatus(), is(JobBriefInfo.JobStatus.CRASHED));
     }
     
     @Test
@@ -155,7 +154,7 @@ public final class JobStatisticsAPIImplTest {
             assertThat(each.getCron(), is("0/1 * * * * ?"));
             assertThat(each.getInstanceCount(), is(2));
             assertThat(each.getShardingTotalCount(), is(3));
-            assertThat(each.getStatus(), Is.is(JobBriefInfo.JobStatus.OK));
+            assertThat(each.getStatus(), is(JobBriefInfo.JobStatus.OK));
         }
     }
     
@@ -174,10 +173,10 @@ public final class JobStatisticsAPIImplTest {
             assertThat(each.getJobName(), is("test_job_" + ++i));
             if (i == 1) {
                 assertThat(each.getInstanceCount(), is(1));
-                assertThat(each.getStatus(), Is.is(JobBriefInfo.JobStatus.OK));
+                assertThat(each.getStatus(), is(JobBriefInfo.JobStatus.OK));
             } else if (i == 2) {
                 assertThat(each.getInstanceCount(), is(0));
-                assertThat(each.getStatus(), Is.is(JobBriefInfo.JobStatus.DISABLED));
+                assertThat(each.getStatus(), is(JobBriefInfo.JobStatus.DISABLED));
             }
         }
     }

@@ -19,8 +19,8 @@ package io.elasticjob.lite.internal.guarantee;
 
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertFalse;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 

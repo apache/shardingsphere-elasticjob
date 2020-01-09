@@ -62,6 +62,13 @@ public final class ShardingNode {
         return PROCESSING;
     }
 
+
+    /**
+     * Get the path of instance node.
+     *
+     * @param item sharding item
+     * @return the path of instance node
+     */
     public static String getInstanceNode(final int item) {
         return String.format(INSTANCE, item);
     }

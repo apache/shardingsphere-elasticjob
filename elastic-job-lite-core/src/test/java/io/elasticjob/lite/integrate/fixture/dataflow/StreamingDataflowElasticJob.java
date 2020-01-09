@@ -38,15 +38,21 @@ public final class StreamingDataflowElasticJob implements DataflowJob<String> {
     
     @Override
     public void processData(final ShardingContext shardingContext, final List<String> data) {
-        for (String each : data) {
-            processedData.add(each);
-        }
+        processedData.addAll(data);
     }
     
+    /**
+     * Is completed.
+     *
+     * @return true if is completed
+     */
     public static boolean isCompleted() {
         return result.size() == processedData.size();
     }
     
+    /**
+     * Reset the processed data set.
+     */
     public static void reset() {
         processedData.clear();
     }

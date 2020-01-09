@@ -30,11 +30,9 @@ import io.elasticjob.lite.config.JobTypeConfiguration;
 import io.elasticjob.lite.executor.handler.impl.DefaultExecutorServiceHandler;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.IOException;
 import java.util.Map;
 
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public final class JobConfigurationGsonTypeAdapterTest {
@@ -91,7 +89,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
     private static class JobConfigurationGsonTypeAdapter extends AbstractJobConfigurationGsonTypeAdapter<TestJobRootConfiguration> {
     
         @Override
-        protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) throws IOException {
+        protected void addToCustomizedValueMap(final String jsonName, final JsonReader in, final Map<String, Object> customizedValueMap) {
         }
     
         @Override
@@ -100,7 +98,7 @@ public final class JobConfigurationGsonTypeAdapterTest {
         }
     
         @Override
-        protected void writeCustomized(final JsonWriter out, final TestJobRootConfiguration value) throws IOException {
+        protected void writeCustomized(final JsonWriter out, final TestJobRootConfiguration value) {
         }
     }
 }

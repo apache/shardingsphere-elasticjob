@@ -44,6 +44,9 @@ public class StreamingDataflowElasticJobForExecuteThrowsException implements Dat
         throw new JobSystemException("I want an error.");
     }
     
+    /**
+     * Set completed to false.
+     */
     public static void reset() {
         completed = false;
     }

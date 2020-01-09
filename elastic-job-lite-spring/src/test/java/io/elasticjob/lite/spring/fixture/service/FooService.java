@@ -19,5 +19,10 @@ package io.elasticjob.lite.spring.fixture.service;
 
 public interface FooService {
     
+    /**
+     * Execute foo.
+     *
+     * @return string
+     */
     String foo();
 }

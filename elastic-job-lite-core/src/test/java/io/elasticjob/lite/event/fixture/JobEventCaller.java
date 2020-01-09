@@ -19,5 +19,8 @@ package io.elasticjob.lite.event.fixture;
 
 public interface JobEventCaller {
     
+    /**
+     * Execute call.
+     */
     void call();
 }

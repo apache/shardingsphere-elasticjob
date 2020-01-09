@@ -19,14 +19,14 @@ package io.elasticjob.lite.util.env;
 
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 public class TimeServiceTest {
     
     private TimeService timeService = new TimeService();
     
     @Test
-    public void assertGetCurrentMillis() throws Exception {
+    public void assertGetCurrentMillis() {
         assertTrue(timeService.getCurrentMillis() <= System.currentTimeMillis());
     }
 }

@@ -19,11 +19,10 @@ package io.elasticjob.lite.context;
 
 import com.google.common.collect.Lists;
 import io.elasticjob.lite.fixture.context.TaskNode;
-import org.hamcrest.core.Is;
 import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -55,7 +54,7 @@ public final class TaskContextTest {
     @Test
     public void assertTaskContextFrom() {
         TaskContext actual = TaskContext.from(TaskNode.builder().build().getTaskNodeValue());
-        assertThat(actual.getId(), Is.is(TaskNode.builder().build().getTaskNodeValue()));
+        assertThat(actual.getId(), is(TaskNode.builder().build().getTaskNodeValue()));
         assertThat(actual.getMetaInfo().getJobName(), is("test_job"));
         assertThat(actual.getMetaInfo().getShardingItems().get(0), is(0));
         assertThat(actual.getType(), is(ExecutionType.READY));

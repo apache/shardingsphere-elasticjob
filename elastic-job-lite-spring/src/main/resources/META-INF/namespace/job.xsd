@@ -38,7 +38,7 @@
                 <xsd:attribute name="monitor-port" type="xsd:string" default="-1"/>
                 <xsd:attribute name="max-time-diff-seconds" type="xsd:string" default="-1"/>
                 <xsd:attribute name="failover" type="xsd:string" default="false"/>
-                <xsd:attribute name="reconcile-interval-minutes" type="xsd:int" default="10"/>
+                <xsd:attribute name="reconcile-interval-minutes" type="xsd:string" default="10"/>
                 <xsd:attribute name="misfire" type="xsd:string" default="true"/>
                 <xsd:attribute name="job-sharding-strategy-class" type="xsd:string" />
                 <xsd:attribute name="description" type="xsd:string" />

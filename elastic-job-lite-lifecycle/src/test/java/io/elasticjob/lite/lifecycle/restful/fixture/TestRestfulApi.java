@@ -32,7 +32,9 @@ public final class TestRestfulApi {
     @Setter
     private static Caller caller;
     
+    //CHECKSTYLE:OFF
     @POST
+    //CHECKSTYLE:ON
     @Path("/call")
     @Consumes(MediaType.APPLICATION_JSON)
     public Map<String, String> call(final Map<String, String> map) {

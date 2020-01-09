@@ -19,7 +19,17 @@ package io.elasticjob.lite.lifecycle.restful.fixture;
 
 public interface Caller {
     
+    /**
+     * Execute call.
+     *
+     * @param value value
+     */
     void call(String value);
     
+    /**
+     * Execute call.
+     *
+     * @param value value
+     */
     void call(int value);
 }
