@@ -211,6 +211,18 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         }
     }
 
+    @Override
+    public void persist(final String key, final String value) {
+        this.persist(key, false);
+        this.update(key, value, false);
+    }
+
+    /**
+     * 持久化注册数据.
+     *
+     * @param key 键
+     * @param ephemeral 是否临时节点
+     */
     private void persist(final String key, final boolean ephemeral) {
         if (!ephemeral) {
             if (isExisted(key)) {
@@ -227,33 +239,11 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             } else {
                 client.create().forPath(key);
             }
+            //CHECKSTYLE:OFF
         } catch (final Exception ex) {
+            //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
-    }
-
-    public void update(final String key, final String value, final boolean ephemeral) {
-        try {
-            client.setData().forPath(key, value.getBytes(Charsets.UTF_8));
-        } catch (KeeperException.NoNodeException e) {
-            try {
-                if (ephemeral) {
-                    client.create().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(Charsets.UTF_8));
-                } else {
-                    client.create().forPath(key, value.getBytes(Charsets.UTF_8));
-                }
-            } catch (final Exception ex) {
-                RegExceptionHandler.handleException(ex);
-            }
-        } catch (final Exception ex) {
-            RegExceptionHandler.handleException(ex);
-        }
-    }
-
-    @Override
-    public void persist(final String key, final String value) {
-        this.persist(key, false);
-        this.update(key, value, false);
     }
 
     @Override
@@ -263,6 +253,37 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
+            RegExceptionHandler.handleException(ex);
+        }
+    }
+
+    /**
+     * 更新注册数据.
+     *
+     * @param key 键
+     * @param value 值
+     * @param ephemeral 是否临时节点
+     */
+    public void update(final String key, final String value, final boolean ephemeral) {
+        try {
+            client.setData().forPath(key, value.getBytes(Charsets.UTF_8));
+            //CHECKSTYLE:OFF
+        } catch (KeeperException.NoNodeException e) {
+            //CHECKSTYLE:ON
+            try {
+                if (ephemeral) {
+                    client.create().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(Charsets.UTF_8));
+                } else {
+                    client.create().forPath(key, value.getBytes(Charsets.UTF_8));
+                }
+                //CHECKSTYLE:OFF
+            } catch (final Exception ex) {
+                //CHECKSTYLE:ON
+                RegExceptionHandler.handleException(ex);
+            }
+            //CHECKSTYLE:OFF
+        } catch (final Exception ex) {
+            //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }
