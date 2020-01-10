@@ -210,22 +210,52 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
             return false;
         }
     }
-    
-    @Override
-    public void persist(final String key, final String value) {
-        try {
-            if (!isExisted(key)) {
-                client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(key, value.getBytes(Charsets.UTF_8));
-            } else {
-                update(key, value);
+
+    private void persist(final String key, final boolean ephemeral) {
+        if (!ephemeral) {
+            if (isExisted(key)) {
+                return;
             }
-        //CHECKSTYLE:OFF
+        }
+        try {
+            int i = key.lastIndexOf("/");
+            if (i > 0) {
+                persist(key.substring(0, i), false);
+            }
+            if (ephemeral) {
+                client.create().withMode(CreateMode.EPHEMERAL).forPath(key);
+            } else {
+                client.create().forPath(key);
+            }
         } catch (final Exception ex) {
-        //CHECKSTYLE:ON
             RegExceptionHandler.handleException(ex);
         }
     }
-    
+
+    public void update(final String key, final String value, final boolean ephemeral) {
+        try {
+            client.setData().forPath(key, value.getBytes(Charsets.UTF_8));
+        } catch (KeeperException.NoNodeException e) {
+            try {
+                if (ephemeral) {
+                    client.create().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(Charsets.UTF_8));
+                } else {
+                    client.create().forPath(key, value.getBytes(Charsets.UTF_8));
+                }
+            } catch (final Exception ex) {
+                RegExceptionHandler.handleException(ex);
+            }
+        } catch (final Exception ex) {
+            RegExceptionHandler.handleException(ex);
+        }
+    }
+
+    @Override
+    public void persist(final String key, final String value) {
+        this.persist(key, false);
+        this.update(key, value, false);
+    }
+
     @Override
     public void update(final String key, final String value) {
         try {
