@@ -271,9 +271,10 @@ public final class ZookeeperRegistryCenter implements CoordinatorRegistryCenter 
     public void persistEphemeral(final String key, final String value) {
         try {
             if (isExisted(key)) {
-                client.delete().deletingChildrenIfNeeded().forPath(key);
+                this.remove(key);
             }
-            client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(key, value.getBytes(Charsets.UTF_8));
+            this.persist(key, true);
+            this.update(key, value, true);
         //CHECKSTYLE:OFF
         } catch (final Exception ex) {
         //CHECKSTYLE:ON
