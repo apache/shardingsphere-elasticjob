@@ -61,7 +61,7 @@ function generateOperationButtons(val, row) {
         operationTd = operationTd + triggerButton + "&nbsp;" + disableButton + "&nbsp;" + shutdownButton;
     }
     if ("DISABLED" === row.status) {
-        operationTd = operationTd + triggerButton + "&nbsp;" + enableButton + "&nbsp;" + shutdownButton;
+        operationTd = operationTd + "&nbsp;" + enableButton + "&nbsp;" + shutdownButton;
     }
     if ("SHARDING_FLAG" === row.status) {
         operationTd = operationTd + triggerButton + "&nbsp;" + shutdownButton;
