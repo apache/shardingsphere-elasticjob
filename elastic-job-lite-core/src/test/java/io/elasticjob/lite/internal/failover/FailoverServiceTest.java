@@ -82,6 +82,12 @@ public final class FailoverServiceTest {
     }
     
     @Test
+    public void assertSetCrashedFailoverFlagDirectly() {
+        failoverService.setCrashedFailoverFlag(0);
+        verify(jobNodeStorage).createJobNodeIfNeeded("leader/failover/items/0");
+    }
+    
+    @Test
     public void assertFailoverIfUnnecessaryWhenItemsRootNodeNotExisted() {
         when(jobNodeStorage.isJobNodeExisted("leader/failover/items")).thenReturn(false);
         failoverService.failoverIfNecessary();

@@ -83,15 +83,14 @@ public final class FailoverListenerManager extends AbstractListenerManager {
                 List<Integer> failoverItems = failoverService.getFailoverItems(jobInstanceId);
                 if (!failoverItems.isEmpty()) {
                     for (int each : failoverItems) {
-                        failoverService.setCrashedFailoverFlag(each);
-                        failoverService.failoverIfNecessary();
+                        failoverService.setCrashedFailoverFlagDirectly(each);
                     }
                 } else {
-                    for (int each : shardingService.getShardingItems(jobInstanceId)) {
+                    for (int each : shardingService.getCrashedShardingItems(jobInstanceId)) {
                         failoverService.setCrashedFailoverFlag(each);
-                        failoverService.failoverIfNecessary();
                     }
                 }
+                failoverService.failoverIfNecessary();
             }
         }
     }

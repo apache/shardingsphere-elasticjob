@@ -168,6 +168,27 @@ public final class ShardingService {
     }
     
     /**
+     * 获取crashed作业实例上的分片项集合.
+     *
+     * @param jobInstanceId crashed作业运行实例主键
+     * @return 作业运行实例的分片项集合
+     */
+    public List<Integer> getCrashedShardingItems(final String jobInstanceId) {
+        JobInstance jobInstance = new JobInstance(jobInstanceId);
+        if (!serverService.isEnableServer(jobInstance.getIp())) {
+            return Collections.emptyList();
+        }
+        List<Integer> result = new LinkedList<>();
+        int shardingTotalCount = configService.load(true).getTypeConfig().getCoreConfig().getShardingTotalCount();
+        for (int i = 0; i < shardingTotalCount; i++) {
+            if (jobInstance.getJobInstanceId().equals(jobNodeStorage.getJobNodeData(ShardingNode.getInstanceNode(i)))) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
+    
+    /**
      * 获取运行在本作业实例的分片项集合.
      * 
      * @return 运行在本作业实例的分片项集合

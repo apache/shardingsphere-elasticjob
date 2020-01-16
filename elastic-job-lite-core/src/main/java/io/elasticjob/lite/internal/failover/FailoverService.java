@@ -62,6 +62,15 @@ public final class FailoverService {
         }
     }
     
+    /**
+     * 直接设置失效的分片项标记.
+     *
+     * @param item 崩溃的作业项
+     */
+    public void setCrashedFailoverFlagDirectly(final int item) {
+        jobNodeStorage.createJobNodeIfNeeded(FailoverNode.getItemsNode(item));
+    }
+    
     private boolean isFailoverAssigned(final Integer item) {
         return jobNodeStorage.isJobNodeExisted(FailoverNode.getExecutionFailoverNode(item));
     }
