@@ -80,7 +80,7 @@ public final class FailoverListenerManager extends AbstractListenerManager {
                 if (jobInstanceId.equals(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())) {
                     return;
                 }
-                List<Integer> failoverItems = failoverService.getFailoverItems(jobInstanceId);
+                List<Integer> failoverItems = failoverService.getFailoveringItems(jobInstanceId);
                 if (!failoverItems.isEmpty()) {
                     for (int each : failoverItems) {
                         failoverService.setCrashedFailoverFlagDirectly(each);

@@ -38,6 +38,11 @@ public final class FailoverNodeTest {
     }
     
     @Test
+    public void assertGetProcessingFailoverNode() {
+        assertThat(FailoverNode.getExecutingFailoverNode(0), is("sharding/0/failovering"));
+    }
+    
+    @Test
     public void assertGetItemWhenNotExecutionFailoverPath() {
         assertNull(failoverNode.getItemByExecutionFailoverPath("/test_job/sharding/0/completed"));
     }

@@ -40,6 +40,10 @@ public final class FailoverNode {
     
     private static final String EXECUTION_FAILOVER = ShardingNode.ROOT + "/%s/" + FAILOVER;
     
+    private static final String FAILOVERING = "failovering";
+    
+    private static final String EXECUTING_FAILOVER = ShardingNode.ROOT + "/%s/" + FAILOVERING;
+    
     private final JobNodePath jobNodePath;
     
     public FailoverNode(final String jobName) {
@@ -52,6 +56,10 @@ public final class FailoverNode {
     
     static String getExecutionFailoverNode(final int item) {
         return String.format(EXECUTION_FAILOVER, item);
+    }
+    
+    static String getExecutingFailoverNode(final int item) {
+        return String.format(EXECUTING_FAILOVER, item);
     }
     
     /**
