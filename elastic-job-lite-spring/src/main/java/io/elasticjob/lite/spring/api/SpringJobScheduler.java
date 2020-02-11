@@ -24,6 +24,7 @@ import io.elasticjob.lite.config.LiteJobConfiguration;
 import io.elasticjob.lite.event.JobEventConfiguration;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import io.elasticjob.lite.spring.job.util.AopTargetUtils;
+import io.elasticjob.lite.util.Optional;
 
 /**
  * 基于Spring的作业启动器.
@@ -55,7 +56,7 @@ public final class SpringJobScheduler extends JobScheduler {
     }
     
     @Override
-    protected ElasticJob createElasticJobInstance() {
-        return elasticJob;
+    protected Optional<ElasticJob> createElasticJobInstance() {
+        return Optional.ofNullable(elasticJob);
     }
 }

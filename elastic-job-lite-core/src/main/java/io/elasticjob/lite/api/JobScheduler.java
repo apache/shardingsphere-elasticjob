@@ -35,6 +35,7 @@ import io.elasticjob.lite.internal.schedule.LiteJob;
 import io.elasticjob.lite.internal.schedule.LiteJobFacade;
 import io.elasticjob.lite.internal.schedule.SchedulerFacade;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import io.elasticjob.lite.util.Optional;
 import lombok.Getter;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -48,7 +49,7 @@ import java.util.Properties;
 
 /**
  * 作业调度器.
- * 
+ *
  * @author zhangliang
  * @author caohao
  */
@@ -72,7 +73,7 @@ public class JobScheduler {
         this(regCenter, liteJobConfig, new JobEventBus(), elasticJobListeners);
     }
     
-    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventConfiguration jobEventConfig, 
+    public JobScheduler(final CoordinatorRegistryCenter regCenter, final LiteJobConfiguration liteJobConfig, final JobEventConfiguration jobEventConfig,
                         final ElasticJobListener... elasticJobListeners) {
         this(regCenter, liteJobConfig, new JobEventBus(jobEventConfig), elasticJobListeners);
     }
@@ -112,9 +113,9 @@ public class JobScheduler {
     private JobDetail createJobDetail(final String jobClass) {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);
-        ElasticJob elasticJobInstance = createElasticJobInstance();
-        if (elasticJobInstance != null) {
-            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance);
+        Optional<ElasticJob> elasticJobInstance = createElasticJobInstance();
+        if (elasticJobInstance.isPresent()) {
+            result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, elasticJobInstance.get());
         } else if (!jobClass.equals(ScriptJob.class.getCanonicalName())) {
             try {
                 result.getJobDataMap().put(ELASTIC_JOB_DATA_MAP_KEY, Class.forName(jobClass).newInstance());
@@ -125,8 +126,8 @@ public class JobScheduler {
         return result;
     }
     
-    protected ElasticJob createElasticJobInstance() {
-        return null;
+    protected Optional<ElasticJob> createElasticJobInstance() {
+        return Optional.empty();
     }
     
     private Scheduler createScheduler() {
