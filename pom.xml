@@ -590,7 +590,7 @@
         </repository>
         <repository>
             <id>terracotta-releases</id>
-            <url>http://terracotta.org/download/</url>
+            <url>https://terracotta.org/download/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
