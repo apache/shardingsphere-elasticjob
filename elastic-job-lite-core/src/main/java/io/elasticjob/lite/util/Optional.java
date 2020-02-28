@@ -103,29 +103,4 @@ public final class Optional<T> {
         return value != null;
     }
     
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        
-        if (!(obj instanceof Optional)) {
-            return false;
-        }
-        
-        Optional<?> other = (Optional<?>) obj;
-        return Objects.equals(value, other.value);
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(value);
-    }
-    
-    @Override
-    public String toString() {
-        return value != null
-                ? String.format("Optional[%s]", value)
-                : "Optional.empty";
-    }
 }
