@@ -26,6 +26,7 @@ import io.elasticjob.lite.internal.config.ConfigurationService;
 import io.elasticjob.lite.internal.schedule.JobRegistry;
 import io.elasticjob.lite.internal.schedule.JobScheduleController;
 import io.elasticjob.lite.internal.storage.JobNodeStorage;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -64,6 +65,11 @@ public final class ExecutionServiceTest {
         MockitoAnnotations.initMocks(this);
         ReflectionUtils.setFieldValue(executionService, "jobNodeStorage", jobNodeStorage);
         ReflectionUtils.setFieldValue(executionService, "configService", configService);
+    }
+
+    @After
+    public void tearDown() {
+        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test

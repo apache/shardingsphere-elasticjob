@@ -28,6 +28,7 @@ import io.elasticjob.lite.internal.schedule.JobScheduleController;
 import io.elasticjob.lite.internal.schedule.JobTriggerListener;
 import io.elasticjob.lite.internal.schedule.SchedulerFacade;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -78,5 +79,10 @@ public final class JobSchedulerTest {
         assertThat(scheduler.getListenerManager().getTriggerListeners().get(0), instanceOf(JobTriggerListener.class));
         assertTrue(scheduler.isStarted());
         jobScheduler.shutdown();
+    }
+
+    @After
+    public void tearDown() {
+        JobRegistry.getInstance().shutdown("test_job");
     }
 }
