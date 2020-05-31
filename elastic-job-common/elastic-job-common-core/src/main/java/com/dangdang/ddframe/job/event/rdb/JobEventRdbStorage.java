@@ -26,12 +26,7 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,7 +66,7 @@ final class JobEventRdbStorage {
     
     private void createJobExecutionTableAndIndexIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
+        try (ResultSet resultSet = dbMetaData.getTables(conn.getCatalog(), null, TABLE_JOB_EXECUTION_LOG, new String[]{"TABLE"})) {
             if (!resultSet.next()) {
                 createJobExecutionTable(conn);
             }
@@ -80,7 +75,7 @@ final class JobEventRdbStorage {
     
     private void createJobStatusTraceTableAndIndexIfNeeded(final Connection conn) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getTables(null, null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"})) {
+        try (ResultSet resultSet = dbMetaData.getTables(conn.getCatalog(), null, TABLE_JOB_STATUS_TRACE_LOG, new String[]{"TABLE"})) {
             if (!resultSet.next()) {
                 createJobStatusTraceTable(conn);
             }
@@ -90,7 +85,7 @@ final class JobEventRdbStorage {
     
     private void createTaskIdIndexIfNeeded(final Connection conn, final String tableName, final String indexName) throws SQLException {
         DatabaseMetaData dbMetaData = conn.getMetaData();
-        try (ResultSet resultSet = dbMetaData.getIndexInfo(null, null, tableName, false, false)) {
+        try (ResultSet resultSet = dbMetaData.getIndexInfo(conn.getCatalog(), null, tableName, false, false)) {
             boolean hasTaskIdIndex = false;
             while (resultSet.next()) {
                 if (indexName.equals(resultSet.getString("INDEX_NAME"))) {
@@ -142,7 +137,13 @@ final class JobEventRdbStorage {
     }
     
     private void createTaskIdAndStateIndex(final Connection conn, final String tableName) throws SQLException {
-        String sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`, `state`);";
+        String sql;
+        DatabaseMetaData dbMetaData = conn.getMetaData();
+        if ("MySQL".equalsIgnoreCase(dbMetaData.getDatabaseProductName())) {
+            sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`(128), `state`);";
+        } else {
+            sql = "CREATE INDEX " + TASK_ID_STATE_INDEX + " ON " + tableName + " (`task_id`, `state`);";
+        }
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.execute();
         }
