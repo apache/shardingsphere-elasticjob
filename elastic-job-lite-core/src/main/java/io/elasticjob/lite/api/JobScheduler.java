@@ -110,6 +110,13 @@ public class JobScheduler {
         jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
     }
     
+   /**
+    * 关闭服务
+    */
+   public void shutdown() {
+	   schedulerFacade.shutdownInstance();
+   }
+    
     private JobDetail createJobDetail(final String jobClass) {
         JobDetail result = JobBuilder.newJob(LiteJob.class).withIdentity(liteJobConfig.getJobName()).build();
         result.getJobDataMap().put(JOB_FACADE_DATA_MAP_KEY, jobFacade);

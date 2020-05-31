@@ -17,6 +17,8 @@
 
 package io.elasticjob.lite.spring.api;
 
+import org.springframework.beans.factory.DisposableBean;
+
 import com.google.common.base.Optional;
 import io.elasticjob.lite.api.ElasticJob;
 import io.elasticjob.lite.api.JobScheduler;
@@ -32,7 +34,7 @@ import io.elasticjob.lite.spring.job.util.AopTargetUtils;
  * @author caohao
  * @author zhangliang
  */
-public final class SpringJobScheduler extends JobScheduler {
+public final class SpringJobScheduler extends JobScheduler implements DisposableBean {
     
     private final ElasticJob elasticJob;
     
@@ -59,4 +61,10 @@ public final class SpringJobScheduler extends JobScheduler {
     protected Optional<ElasticJob> createElasticJobInstance() {
         return Optional.fromNullable(elasticJob);
     }
+
+	@Override
+	public void destroy() throws Exception {
+		shutdown();
+	}
+    
 }
