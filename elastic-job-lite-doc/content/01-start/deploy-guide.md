@@ -11,7 +11,7 @@ next = "/02-guide"
 
 1. 启动Elastic-Job-Lite指定注册中心的Zookeeper。
 
-2. 运行包含Elastic-Job-Lite和业务代码的jar文件。不限与jar或war的启动方式。
+2. 运行包含Elastic-Job-Lite和业务代码的jar文件。不限于jar或war的启动方式。
 
 ## 运维平台和RESTFul API部署(可选)
 
