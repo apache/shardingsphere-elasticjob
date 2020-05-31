@@ -8,6 +8,7 @@ import io.elasticjob.lite.internal.storage.JobNodeStorage;
 import io.elasticjob.lite.reg.base.CoordinatorRegistryCenter;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent.Type;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -47,6 +48,11 @@ public final class ShutdownListenerManagerTest {
         ReflectionUtils.setFieldValue(shutdownListenerManager, "schedulerFacade", schedulerFacade);
         ReflectionUtils.setFieldValue(shutdownListenerManager, shutdownListenerManager.getClass().getSuperclass().getDeclaredField("jobNodeStorage"), jobNodeStorage);
     }
+
+    @After
+    public void tearDown() {
+        JobRegistry.getInstance().shutdown("test_job");
+    }
     
     @Test
     public void assertStart() {
@@ -65,7 +71,6 @@ public final class ShutdownListenerManagerTest {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.2@-@0", Type.NODE_REMOVED, "");
         verify(schedulerFacade, times(0)).shutdownInstance();
-        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
@@ -73,7 +78,6 @@ public final class ShutdownListenerManagerTest {
         JobRegistry.getInstance().registerJob("test_job", jobScheduleController, regCenter);
         shutdownListenerManager.new InstanceShutdownStatusJobListener().dataChanged("/test_job/instances/127.0.0.1@-@0", Type.NODE_UPDATED, "");
         verify(schedulerFacade, times(0)).shutdownInstance();
-        JobRegistry.getInstance().shutdown("test_job");
     }
     
     @Test
